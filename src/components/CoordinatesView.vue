@@ -1,5 +1,5 @@
 <template>
-  <p>X: {{ pointerX }}, Y: {{ pointerY }}</p>
+  <p class="bottom left ontop coord">X: {{ pointerX }}, Y: {{ pointerY }}</p>
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
@@ -10,3 +10,9 @@ export default defineComponent({
   computed: mapState(["pointerX", "pointerY"]),
 });
 </script>
+
+<style scoped>
+.coord {
+  background-color: white;
+}
+</style>

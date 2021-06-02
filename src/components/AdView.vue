@@ -18,9 +18,13 @@ export default defineComponent({
 </script>
 
 <style scoped>
-div#ad_container {
+#ad_container {
   color: tomato;
   background-color: teal;
   height: 50px;
+}
+p {
+  margin: 0;
+  padding: 5px;
 }
 </style>

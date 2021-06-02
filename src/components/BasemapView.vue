@@ -1,5 +1,9 @@
 <template>
-  <button @click="toggleBasemap">{{ store.state.basemap }}</button>
+  <div class="bottom right ontop">
+    <button @click="toggleBasemap">
+      {{ store.state.basemap }}
+    </button>
+  </div>
 </template>
 
 <script lang="ts">
@@ -21,5 +25,3 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-</style>

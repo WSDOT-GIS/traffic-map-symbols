@@ -21,18 +21,16 @@ export default defineComponent({
       esriMap.init(mapDiv);
     });
   },
-  
 });
 </script>
 
 <style scoped>
 @import "https://js.arcgis.com/4.19/@arcgis/core/assets/esri/themes/light/main.css";
-div#map_view {
-    padding: 0;
-    margin: 0;
-    height: 70%;
-    width: 100%;
+#map_view {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
 }
-
 
 </style>
