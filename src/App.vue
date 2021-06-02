@@ -2,6 +2,8 @@
   <!-- <div class="app"> -->
   <HeaderView :text="headerText" />
   <AlertView :alert="alert" />
+  <BasemapView />
+  <CoordinatesView />
   <EsriMap />
   <AdView :text="adText" />
   <FooterView :text="footerText" />
@@ -10,18 +12,26 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import EsriMap from "./components/EsriMap.vue";
+import BasemapView from "./components/BasemapView.vue";
+import CoordinatesView from "./components/CoordinatesView.vue";
 import HeaderView from "./components/HeaderView.vue";
 import AlertView from "./components/AlertView.vue";
-import EsriMap from "./components/EsriMap.vue";
 import AdView from "./components/AdView.vue";
 import FooterView from "./components/FooterView.vue";
 import Alert from "./types/AlertInfo";
 
-// What is this used for?
-
 export default defineComponent({
   name: "App",
-  components: { EsriMap, HeaderView, AlertView, AdView, FooterView },
+  components: {
+    EsriMap,
+    BasemapView,
+    CoordinatesView,
+    HeaderView,
+    AlertView,
+    AdView,
+    FooterView,
+  },
   setup() {
     const headerText = "This is the header";
     const alert = ref<Alert>({

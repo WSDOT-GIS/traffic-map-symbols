@@ -1,7 +1,7 @@
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import Symbol from "@/symbols/ParkRideSymbol";
-import Popup from "@/popup-templates/ParkRidePopup"; 
+import Popup from "@/popup-templates/ParkRidePopup";
 
 const rdrParkRide = new SimpleRenderer({ symbol: Symbol });
 
@@ -11,5 +11,14 @@ const layer = new GeoJSONLayer({
     renderer: rdrParkRide,
     popupTemplate: Popup,
 });
+
+// fetch("/data/park-ride.json")
+//     .then(response => {
+//         return response.json();
+//     })
+//     .then(data => {
+//         console.log(data)
+        
+//     });
 
 export default layer
