@@ -1,15 +1,54 @@
 /*Defines the placement of elements on the page*/
-#wrapper{
+
+#wrapper {
     position: relative;
 }
-#app{
-    position:absolute;  
+
+#app {
+    position: absolute;
     z-index: 0;
     width: 100vw;
     height: 100vh
 }
-#basemapWidget{
-    position:absolute;
+
+#map_container {
+    padding: 0;
+    margin: 0;
+    height: 70vh;
+    width: 100vw;
+    position: relative;
+}
+
+#map_container>* {
+    position: absolute;
+}
+
+.left {
+    left: 0;
+    margin-left: 16px;
+}
+
+.right {
+    right: 0;
+    margin-right: 16px;
+}
+
+.top {
+    top: 0;
+    margin-top: 16px;
+}
+
+.bottom {
+    bottom: 0;
+    margin-bottom: 16px;
+}
+
+.ontop {
+    z-index: 9;
+}
+
+#basemapWidget {
+    position: absolute;
     margin-left: 91vw;
     margin-top: 71vh;
     left: 0;

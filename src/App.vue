@@ -63,33 +63,4 @@ body,
   width: 100%;
   height: 100%;
 }
-#map_container {
-  padding: 0;
-  margin: 0;
-  height: 70%;
-  width: 100%;
-  position: relative;
-}
-#map_container > * {
-  position: absolute;
-}
-.left {
-  left: 0;
-  margin-left: 16px;
-}
-.right {
-  right: 0;
-  margin-right: 16px;
-}
-.top {
-  top: 0;
-  margin-top: 16px;
-}
-.bottom {
-  bottom: 0;
-  margin-bottom: 16px;
-}
-.ontop {
-  z-index: 9;
-}
 </style>
