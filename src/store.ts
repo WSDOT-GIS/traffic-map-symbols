@@ -3,7 +3,7 @@ import { createStore, useStore as baseUseStore, Store } from "vuex";
 import { webmap } from "./esri-stuff/esriMap";
 import { wsdotBasemap, satelliteBasemap } from "./layers/Basemaps";
 
-// https://next.vuex.vuejs.org/guide/typescript-support.html#typing-usestore-composition-function
+// Reference - https://next.vuex.vuejs.org/guide/typescript-support.html#typing-usestore-composition-function
 // define typings for the store state...
 export interface State {
     basemap: string,
@@ -48,7 +48,7 @@ export const store = createStore<State>({
 
 })
 
-// define custom useStore method...
+// define custom useStore that supply key so do not have to do this in each component...
 export function useStore() {
     return baseUseStore(key);
 }

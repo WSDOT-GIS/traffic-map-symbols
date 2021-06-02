@@ -5,4 +5,5 @@ import "./assets/global.css"
 import "./assets/basemapWidget.css"
 import { store, key } from "./store";
 
+// adding store as a plugin while creating an app...
 createApp(App).use(store, key).mount('#app')

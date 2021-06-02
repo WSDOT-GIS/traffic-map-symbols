@@ -1,4 +1,4 @@
-import EsriConfig from "@arcgis/core/config";
+// import EsriConfig from "@arcgis/core/config";
 import WebMap from "@arcgis/core/WebMap";
 import MapView from "@arcgis/core/views/MapView";
 import Bookmarks from "@arcgis/core/widgets/Bookmarks";
@@ -7,6 +7,9 @@ import Expand from "@arcgis/core/widgets/Expand";
 import { wsdotBasemap } from "@/layers/Basemaps";
 import TrafficLayer from "@/layers/TrafficLayer";
 import ParkRideLayer from "@/layers/ParkRideLayer";
+
+// What is this used for?
+//EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
 
 export const webmap = new WebMap({
     basemap: wsdotBasemap,

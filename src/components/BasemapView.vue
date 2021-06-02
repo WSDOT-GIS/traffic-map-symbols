@@ -15,6 +15,7 @@ export default defineComponent({
     };
   },
   methods: {
+    // Using a utility function to get a mutation and make it available in the view.
     ...mapMutations(["toggleBasemap"]),
   },
 });
