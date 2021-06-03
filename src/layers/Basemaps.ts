@@ -1,12 +1,12 @@
 import Basemap from "@arcgis/core/Basemap";
-import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
+import TileLayer from "@arcgis/core/layers/TileLayer";
 
 const urlBasemap =
     "https://data.wsdot.wa.gov/arcgis/rest/services/Shared/WebBaseMapWebMercator/MapServer";
 
 export const wsdotBasemap = new Basemap({
     baseLayers: [
-        new MapImageLayer({
+        new TileLayer({
             url: urlBasemap,
         }),
     ],
