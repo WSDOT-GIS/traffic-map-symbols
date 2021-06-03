@@ -26,7 +26,7 @@ export const generateClusterConfig = (popupTitle: string, name: string, labelCol
         }],
         popupTemplate: {
             title: popupTitle,
-            content: "{cluster_count} " + name + "s exist in this area. Zoom to locate the individual " + name + "s or click \"Browse features\" below.",
+            content: "{cluster_count} " + name + "s exist in this area. Zoom to locate the individual " + name + "s or click \"Browse features\".",
             fieldInfos: [{
                 fieldName: "cluster_count",
                 format: {
