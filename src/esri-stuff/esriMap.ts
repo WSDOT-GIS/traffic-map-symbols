@@ -29,6 +29,8 @@ export const mapView = new MapView({
     },
 });
 
+
+
 const bookmarks = new Bookmarks({
     view: mapView,
     editingEnabled: true,

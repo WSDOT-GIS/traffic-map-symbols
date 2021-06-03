@@ -2,23 +2,17 @@ import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import Symbol from "@/symbols/ParkRideSymbol";
 import Popup from "@/popup-templates/ParkRidePopup";
+import { generateClusterConfig } from "@/utils/layerUtil";
 
-const rdrParkRide = new SimpleRenderer({ symbol: Symbol });
+const clusterConfig = generateClusterConfig("Park & Rides", "park & ride", "#065535");
+
+const renderer = new SimpleRenderer({ symbol: Symbol });
 
 const layer = new GeoJSONLayer({
-    //   url: "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson",
     url: "/data/park-ride.geojson",
-    renderer: rdrParkRide,
+    renderer: renderer,
     popupTemplate: Popup,
+    featureReduction: clusterConfig
 });
-
-// fetch("/data/park-ride.json")
-//     .then(response => {
-//         return response.json();
-//     })
-//     .then(data => {
-//         console.log(data)
-        
-//     });
 
 export default layer
