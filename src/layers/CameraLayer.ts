@@ -10,6 +10,7 @@ const renderer = new SimpleRenderer({ symbol: Symbol });
 
 const layer = new GeoJSONLayer({
     url: "/data/camera.geojson",
+    title:"Traffic Cameras",
     renderer: renderer,
     popupTemplate: Popup,
     featureReduction: clusterConfig

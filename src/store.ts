@@ -31,6 +31,7 @@ export const store = createStore<State>({
     },
     mutations: {
         toggleBasemap(state) {
+            
             if (state.basemap == "wsdot") {
                 state.basemap = "satellite"
             } else {
@@ -43,6 +44,8 @@ export const store = createStore<State>({
             else {
                 webmap.basemap = satelliteBasemap
             }
+            console.log(state.basemap)
+            console.log(webmap.basemap)
         },
         setPointerX(state, payload) {
             state.pointerX = payload;
@@ -54,6 +57,11 @@ export const store = createStore<State>({
             state.layerList = payload;
         }
     },
+   /* actions:{
+        toggleLayer (context, target) {
+            context.commit('toggleLayer',target)
+          }
+    }*/
 })
 
 // define custom useStore that supply key so do not have to do this in each component...

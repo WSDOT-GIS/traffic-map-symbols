@@ -10,6 +10,7 @@ const renderer = new SimpleRenderer({ symbol: Symbol });
 
 const layer = new GeoJSONLayer({
     url: "/data/park-ride.geojson",
+    title:"Park and Rides",
     renderer: renderer,
     popupTemplate: Popup,
     featureReduction: clusterConfig
