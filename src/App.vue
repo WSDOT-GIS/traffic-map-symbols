@@ -5,6 +5,7 @@
   <div id="map_container">
     <BasemapView />
     <CoordinatesView />
+    <LayerListView/>
     <EsriMap />
   </div>
   <AdView :text="adText" />
@@ -22,6 +23,7 @@ import AlertView from "./components/AlertView.vue";
 import AdView from "./components/AdView.vue";
 import FooterView from "./components/FooterView.vue";
 import Alert from "./types/AlertInfo";
+import LayerListView from "./components/LayerListView.vue"
 
 export default defineComponent({
   name: "App",
@@ -33,6 +35,7 @@ export default defineComponent({
     AlertView,
     AdView,
     FooterView,
+    LayerListView
   },
   setup() {
     const headerText = "This is the header";

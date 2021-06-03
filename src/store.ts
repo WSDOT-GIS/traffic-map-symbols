@@ -8,7 +8,8 @@ import { wsdotBasemap, satelliteBasemap } from "./layers/Basemaps";
 export interface State {
     basemap: string,
     pointerX: number,
-    pointerY: number
+    pointerY: number,
+    layerList: { index: number, title: string, visible: boolean }[]
 }
 
 // define injection key...
@@ -19,8 +20,13 @@ export const store = createStore<State>({
         return {
             basemap: "wsdot",
             pointerX: 0,
-            pointerY: 0
-
+            pointerY: 0,
+            layerList: []
+        }
+    },
+    getters:{
+        completeLayerList: state =>{
+            return state.layerList
         }
     },
     mutations: {
@@ -43,9 +49,11 @@ export const store = createStore<State>({
         },
         setPointerY(state, payload) {
             state.pointerY = payload;
+        },
+        setLayerList(state, payload) {
+            state.layerList = payload;
         }
     },
-
 })
 
 // define custom useStore that supply key so do not have to do this in each component...

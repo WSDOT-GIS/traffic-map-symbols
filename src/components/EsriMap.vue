@@ -11,6 +11,16 @@ export default defineComponent({
     const store = useStore();
     onMounted(async () => {
       const esriMap = await import("../esri-stuff/esriMap");
+      
+      //#region register layer list to state
+      let layerList: { index: number, title: string, visible: boolean }[] = []
+      esriMap.mapView.map.layers.map((layer,index)=>{
+        layerList.push({index: index,title: layer.title, visible: layer.visible})
+      })
+      store.commit("setLayerList",layerList)
+      console.log(store.state.layerList)
+      //#endregion
+
       esriMap.mapView.on("pointer-move", (event) => {
         console.log("pointer move event");
         let pt = esriMap.mapView.toMap({ x: event.x, y: event.y });
