@@ -9,6 +9,8 @@ const clusterConfig = generateClusterConfig("Park & Rides", "park & ride", "#065
 const renderer = new SimpleRenderer({ symbol: Symbol });
 
 const layer = new GeoJSONLayer({
+    id: "park-ride-layer",
+    title: "Park & Ride",
     url: "/data/park-ride.geojson",
     renderer: renderer,
     popupTemplate: Popup,

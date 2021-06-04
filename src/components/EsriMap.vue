@@ -11,14 +11,18 @@ export default defineComponent({
     const store = useStore();
     onMounted(async () => {
       const esriMap = await import("../esri-stuff/esriMap");
-      
+
       //#region register layer list to state
-      let layerList: { index: number, title: string, visible: boolean }[] = []
-      esriMap.mapView.map.layers.map((layer,index)=>{
-        layerList.push({index: index,title: layer.title, visible: layer.visible})
-      })
-      store.commit("setLayerList",layerList)
-      console.log(store.state.layerList)
+      let layerList: { index: number; title: string; visible: boolean }[] = [];
+      esriMap.mapView.map.layers.map((layer, index) => {
+        layerList.push({
+          index: index,
+          title: layer.title,
+          visible: layer.visible,
+        });
+      });
+      store.commit("setLayerList", layerList);
+      console.log(store.state.layerList);
       //#endregion
 
       esriMap.mapView.on("pointer-move", (event) => {
@@ -27,6 +31,15 @@ export default defineComponent({
         store.commit("setPointerX", pt.longitude);
         store.commit("setPointerY", pt.latitude);
       });
+
+      esriMap.mapView.watch(
+        "extent",
+        (newValue, oldValue) => {
+          if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+            store.commit("setCurrentExtent", newValue);
+          }
+        }
+      );
       const mapDiv = document.getElementById("map_view") as HTMLDivElement;
       esriMap.init(mapDiv);
     });
@@ -42,5 +55,4 @@ export default defineComponent({
   height: 100%;
   width: 100%;
 }
-
 </style>
