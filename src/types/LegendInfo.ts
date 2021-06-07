@@ -1,6 +1,7 @@
 interface LegendInfo {
-    title: string,
-    index: number
+    id: number,
+    color: string, 
+    title: string, 
 }
 
 export default LegendInfo

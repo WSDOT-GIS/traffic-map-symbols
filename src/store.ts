@@ -21,7 +21,11 @@ export const store = createStore<State>({
             basemap: "wsdot",
             pointerX: 0,
             pointerY: 0,
-            layerList: []
+            layerList: [
+                {index: 0, title: "Traffic", visible: true},
+                {index: 1, title: "Park and Rides", visible: false},
+                {index: 2, title: "Traffic Cameras", visible: false}
+            ]
         }
     },
     getters:{
@@ -55,13 +59,11 @@ export const store = createStore<State>({
         },
         setLayerList(state, payload) {
             state.layerList = payload;
-        }
+            webmap.layers.map((layer,index)=>{
+                layer.visible = state.layerList[index].visible
+            })
+        },
     },
-   /* actions:{
-        toggleLayer (context, target) {
-            context.commit('toggleLayer',target)
-          }
-    }*/
 })
 
 // define custom useStore that supply key so do not have to do this in each component...
