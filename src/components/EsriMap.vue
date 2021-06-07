@@ -11,7 +11,6 @@ export default defineComponent({
     const store = useStore();
     onMounted(async () => {
       const esriMap = await import("../esri-stuff/esriMap");
-
       esriMap.mapView.on("pointer-move", (event) => {
         console.log("pointer move event");
         let pt = esriMap.mapView.toMap({ x: event.x, y: event.y });
