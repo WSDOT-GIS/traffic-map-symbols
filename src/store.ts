@@ -17,7 +17,6 @@ export interface State {
     pointerY: number,
     layerList: { index: number, title: string, visible: boolean }[],
     currentExtent: ExtentInfo,
-    //savedMapList: SavedMapInfo[]
 }
 
 // define injection key...
@@ -36,13 +35,13 @@ export const store = createStore<State>({
                 ymin: 0,
                 ymax: 0
             },
-            //savedMapList: []
         }
     },
     getters: {
         completeLayerList: state => {
             return state.layerList
         }
+
     },
     mutations: {
         toggleBasemap(state) {

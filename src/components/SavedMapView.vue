@@ -12,7 +12,8 @@
       </a>
     </div>
 
-    <button @click="saveList">Save current map view</button>
+    <button @click="saveMapView">Save current map view</button>
+    <div></div>
   </div>
 </template>
 
@@ -20,15 +21,17 @@
 import { defineComponent, ref } from "vue";
 import SavedMapInfo from "@/types/SavedMapInfo";
 import { setCookie, getCookie } from "@/utils/cookieUtil";
+import { Convert2EsriExtent } from "@/utils/extentUtil";
 
 export default defineComponent({
   setup() {
     const cookieText = getCookie("saved-map-list");
-    let mapList: SavedMapInfo[] = [];
+    //let mapList: SavedMapInfo[] = [];
+    const mapList = ref<SavedMapInfo[]>([]);
     if (cookieText) {
       const json = JSON.parse(cookieText);
-      mapList = json as SavedMapInfo[]
-    }
+      mapList.value = json as SavedMapInfo[];
+    } 
     // const mapList = ref<SavedMapInfo[]>([
     //   {
     //     title: "test 1",
@@ -63,6 +66,11 @@ export default defineComponent({
     // ]);
     return { mapList };
   },
+  data() {
+    return {
+      formVisibility: false,
+    };
+  },
   methods: {
     updateSelected(event: Event, item: SavedMapInfo) {
       console.log(item);
@@ -80,9 +88,17 @@ export default defineComponent({
       element.classList.add("saved-map-item-selected");
     },
 
-    saveList() {
-      const value = JSON.stringify(this.mapList);
-      setCookie("saved-map-list", value);
+    saveMapView() {
+      const x = Convert2EsriExtent(this.$store.state.currentExtent);
+      console.log(x.xmin)
+      this.mapList.push({
+        title: "test",
+        extent: Convert2EsriExtent(this.$store.state.currentExtent),
+        layers: [],
+      });
+      // console.log(JSON.stringify(this.mapList));
+      // const value = JSON.stringify(this.mapList);
+      // setCookie("saved-map-list", value);
     },
   },
 });
