@@ -28,13 +28,17 @@ export const store = createStore<State>({
             basemap: "wsdot",
             pointerX: 0,
             pointerY: 0,
-            layerList: [],
             currentExtent: {
                 xmin: 0,
                 xmax: 0,
                 ymin: 0,
                 ymax: 0
             },
+            layerList: [
+                {index: 0, title: "Traffic", visible: true},
+                {index: 1, title: "Park and Rides", visible: false},
+                {index: 2, title: "Traffic Cameras", visible: false}
+            ]
         }
     },
     getters: {
@@ -45,6 +49,7 @@ export const store = createStore<State>({
     },
     mutations: {
         toggleBasemap(state) {
+            
             if (state.basemap == "wsdot") {
                 state.basemap = "satellite"
             } else {
@@ -57,6 +62,8 @@ export const store = createStore<State>({
             else {
                 webmap.basemap = satelliteBasemap
             }
+            console.log(state.basemap)
+            console.log(webmap.basemap)
         },
         setPointerX(state, payload) {
             state.pointerX = payload;
@@ -66,6 +73,7 @@ export const store = createStore<State>({
         },
         setLayerList(state, payload) {
             state.layerList = payload;
+<<<<<<< HEAD
         },
         setCurrentExtent(state, payload) {
             if (payload instanceof Extent) {
@@ -77,6 +85,12 @@ export const store = createStore<State>({
                 mapView.extent = extent;
             }
         }
+=======
+            webmap.layers.map((layer,index)=>{
+                layer.visible = state.layerList[index].visible
+            })
+        },
+>>>>>>> 82846084d7544b71bf2a96e986be3aa7b5929c91
     },
 })
 

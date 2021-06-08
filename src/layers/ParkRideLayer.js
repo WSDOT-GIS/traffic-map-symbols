@@ -9,6 +9,10 @@ define(["require", "exports", "tslib", "@arcgis/core/renderers/SimpleRenderer", 
     var renderer = new SimpleRenderer_1.default({ symbol: ParkRideSymbol_1.default });
     var layer = new GeoJSONLayer_1.default({
         url: "/data/park-ride.geojson",
+<<<<<<< HEAD
+=======
+        title: "Park and Rides",
+>>>>>>> 82846084d7544b71bf2a96e986be3aa7b5929c91
         renderer: renderer,
         popupTemplate: ParkRidePopup_1.default,
         featureReduction: clusterConfig

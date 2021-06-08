@@ -12,6 +12,7 @@ const layer = new GeoJSONLayer({
     id: "park-ride-layer",
     title: "Park & Ride",
     url: "/data/park-ride.geojson",
+    title:"Park and Rides",
     renderer: renderer,
     popupTemplate: Popup,
     featureReduction: clusterConfig

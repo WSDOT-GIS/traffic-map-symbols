@@ -5,8 +5,13 @@
   <div id="map_container">
     <BasemapView />
     <CoordinatesView />
+<<<<<<< HEAD
     <LayerListView />
     <SavedMapView />
+=======
+    <LayerListView/>
+    <LegendVue/>
+>>>>>>> 82846084d7544b71bf2a96e986be3aa7b5929c91
     <EsriMap />
   </div>
   <AdView :text="adText" />
@@ -26,6 +31,7 @@ import FooterView from "./components/FooterView.vue";
 import Alert from "./types/AlertInfo";
 import LayerListView from "./components/LayerListView.vue";
 import SavedMapView from "./components/SavedMapView.vue";
+import LegendVue from "./components/LegendVue.vue"
 
 export default defineComponent({
   name: "App",
@@ -39,6 +45,7 @@ export default defineComponent({
     FooterView,
     LayerListView,
     SavedMapView,
+    LegendVue
   },
   setup() {
     const headerText = "This is the header";

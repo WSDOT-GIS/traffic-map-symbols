@@ -10,6 +10,7 @@ define(["require", "exports", "vuex", "./esri-stuff/esriMap", "./layers/Basemaps
                 basemap: "wsdot",
                 pointerX: 0,
                 pointerY: 0,
+<<<<<<< HEAD
                 layerList: [],
                 // mapExtent: {
                 //     xmin: 0,
@@ -18,6 +19,13 @@ define(["require", "exports", "vuex", "./esri-stuff/esriMap", "./layers/Basemaps
                 //     ymax: 0,
                 //     name: ""
                 // }
+=======
+                layerList: [
+                    { index: 0, title: "Traffic", visible: true },
+                    { index: 1, title: "Park and Rides", visible: false },
+                    { index: 2, title: "Traffic Cameras", visible: false }
+                ]
+>>>>>>> 82846084d7544b71bf2a96e986be3aa7b5929c91
             };
         },
         getters: {
@@ -39,6 +47,11 @@ define(["require", "exports", "vuex", "./esri-stuff/esriMap", "./layers/Basemaps
                 else {
                     esriMap_1.webmap.basemap = Basemaps_1.satelliteBasemap;
                 }
+<<<<<<< HEAD
+=======
+                console.log(state.basemap);
+                console.log(esriMap_1.webmap.basemap);
+>>>>>>> 82846084d7544b71bf2a96e986be3aa7b5929c91
             },
             setPointerX: function (state, payload) {
                 state.pointerX = payload;
@@ -48,7 +61,14 @@ define(["require", "exports", "vuex", "./esri-stuff/esriMap", "./layers/Basemaps
             },
             setLayerList: function (state, payload) {
                 state.layerList = payload;
+<<<<<<< HEAD
             }
+=======
+                esriMap_1.webmap.layers.map(function (layer, index) {
+                    layer.visible = state.layerList[index].visible;
+                });
+            },
+>>>>>>> 82846084d7544b71bf2a96e986be3aa7b5929c91
         },
     });
     // define custom useStore that supply key so do not have to do this in each component...
