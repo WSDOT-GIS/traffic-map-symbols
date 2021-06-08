@@ -1,21 +1,13 @@
-<<<<<<< HEAD
 define(["require", "exports", "tslib", "@arcgis/core/renderers/SimpleRenderer", "@arcgis/core/layers/GeoJSONLayer", "@arcgis/core/layers/support/Field", "@/symbols/CameraSymbol", "@/popup-templates/CameraPopup", "@/utils/layerUtil"], function (require, exports, tslib_1, SimpleRenderer_1, GeoJSONLayer_1, Field_1, CameraSymbol_1, CameraPopup_1, layerUtil_1) {
-=======
-define(["require", "exports", "tslib", "@arcgis/core/renderers/SimpleRenderer", "@arcgis/core/layers/GeoJSONLayer", "@/symbols/CameraSymbol", "@/popup-templates/CameraPopup", "@/utils/layerUtil"], function (require, exports, tslib_1, SimpleRenderer_1, GeoJSONLayer_1, CameraSymbol_1, CameraPopup_1, layerUtil_1) {
->>>>>>> 82846084d7544b71bf2a96e986be3aa7b5929c91
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     SimpleRenderer_1 = tslib_1.__importDefault(SimpleRenderer_1);
     GeoJSONLayer_1 = tslib_1.__importDefault(GeoJSONLayer_1);
-<<<<<<< HEAD
     Field_1 = tslib_1.__importDefault(Field_1);
-=======
->>>>>>> 82846084d7544b71bf2a96e986be3aa7b5929c91
     CameraSymbol_1 = tslib_1.__importDefault(CameraSymbol_1);
     CameraPopup_1 = tslib_1.__importDefault(CameraPopup_1);
     var clusterConfig = layerUtil_1.generateClusterConfig("Cameras", "camera", "#000000");
     var renderer = new SimpleRenderer_1.default({ symbol: CameraSymbol_1.default });
-<<<<<<< HEAD
     var fields = [
         new Field_1.default({
             name: "CameraID",
@@ -74,19 +66,13 @@ define(["require", "exports", "tslib", "@arcgis/core/renderers/SimpleRenderer", 
         }),
     ];
     var layer = new GeoJSONLayer_1.default({
-        url: "/data/camera.geojson",
-        renderer: renderer,
-        popupTemplate: CameraPopup_1.default,
-        featureReduction: clusterConfig,
-        fields: fields
-=======
-    var layer = new GeoJSONLayer_1.default({
+        id: "weather-camera-layer",
         url: "/data/camera.geojson",
         title: "Traffic Cameras",
         renderer: renderer,
         popupTemplate: CameraPopup_1.default,
-        featureReduction: clusterConfig
->>>>>>> 82846084d7544b71bf2a96e986be3aa7b5929c91
+        featureReduction: clusterConfig,
+        fields: fields
     });
     exports.default = layer;
 });

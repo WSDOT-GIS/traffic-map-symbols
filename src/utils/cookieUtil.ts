@@ -1,6 +1,6 @@
 const maxDays = 30;
 
-export const setCookie = (name: string, val: string) => {
+export const setCookie = (name: string, val: string): void => {
     const date = new Date();
     const value = val;
 
@@ -11,24 +11,26 @@ export const setCookie = (name: string, val: string) => {
     document.cookie = name + "=" + value + "; expires=" + date.toUTCString() + "; path=/";
 }
 
-export const getCookie = (name: string) => {
+export const getCookie = (name: string): string => {
     const value = "; " + document.cookie;
     const parts = value.split("; " + name + "=");
-
+    let cookieValue = "";
     if (parts.length == 2) {
         const partsPop = parts.pop();
         if (partsPop) {
-            return partsPop.split(";").shift();
+            const val = partsPop.split(";").shift();
+            if (val) { cookieValue = val;}
         }
     }
+    return cookieValue;
 }
 
-export const checkCookie = (name: string) => {
+export const checkCookie = (name: string): boolean => {
     if (getCookie(name)) return true;
     else return false;
 }
 
-export const deleteCookie = (name: string) => {
+export const deleteCookie = (name: string): void => {
     const date = new Date();
 
     // Set it expire in -1 days

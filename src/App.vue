@@ -5,13 +5,9 @@
   <div id="map_container">
     <BasemapView />
     <CoordinatesView />
-<<<<<<< HEAD
-    <LayerListView />
     <SavedMapView />
-=======
     <LayerListView/>
     <LegendVue/>
->>>>>>> 82846084d7544b71bf2a96e986be3aa7b5929c91
     <EsriMap />
   </div>
   <AdView :text="adText" />

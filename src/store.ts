@@ -5,7 +5,6 @@ import Extent from "@arcgis/core/geometry/Extent";
 import { webmap, mapView } from "./esri-stuff/esriMap";
 import { wsdotBasemap, satelliteBasemap } from "./layers/Basemaps";
 import ExtentInfo from "./types/ExtentInfo";
-import SavedMapInfo from "./types/SavedMapInfo";
 import { Convert2EsriExtent, Convert2ExtentInfo } from "./utils/extentUtil";
 
 
@@ -35,9 +34,9 @@ export const store = createStore<State>({
                 ymax: 0
             },
             layerList: [
-                {index: 0, title: "Traffic", visible: true},
-                {index: 1, title: "Park and Rides", visible: false},
-                {index: 2, title: "Traffic Cameras", visible: false}
+                { index: 0, title: "Traffic", visible: true },
+                { index: 1, title: "Park and Rides", visible: false },
+                { index: 2, title: "Traffic Cameras", visible: false }
             ]
         }
     },
@@ -49,7 +48,7 @@ export const store = createStore<State>({
     },
     mutations: {
         toggleBasemap(state) {
-            
+
             if (state.basemap == "wsdot") {
                 state.basemap = "satellite"
             } else {
@@ -73,7 +72,9 @@ export const store = createStore<State>({
         },
         setLayerList(state, payload) {
             state.layerList = payload;
-<<<<<<< HEAD
+            webmap.layers.map((layer, index) => {
+                layer.visible = state.layerList[index].visible
+            })
         },
         setCurrentExtent(state, payload) {
             if (payload instanceof Extent) {
@@ -84,17 +85,12 @@ export const store = createStore<State>({
                 const extent = Convert2EsriExtent(payload);
                 mapView.extent = extent;
             }
-        }
-=======
-            webmap.layers.map((layer,index)=>{
-                layer.visible = state.layerList[index].visible
-            })
         },
->>>>>>> 82846084d7544b71bf2a96e986be3aa7b5929c91
+
     },
 })
 
 // define custom useStore that supply key so do not have to do this in each component...
-export function useStore() {
+export const useStore = (): Store<State> => {
     return baseUseStore(key);
 }
