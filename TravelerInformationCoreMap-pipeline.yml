@@ -1,0 +1,31 @@
+TravelerInformationCoreMap
+
+name: Map-$(Date:yyyyMMdd)$(Rev:.r)
+
+pool:
+  name: TeamAwesomeQA
+
+variables:
+  solution: TravelerInformationCoreMap
+  ArtifactName: TravelerInformationCoreMapDrop
+  
+
+steps:
+- task: PublishSymbols@1
+  displayName: 'Publish symbols path'
+  inputs:
+    SearchPattern: '**\bin\**\*.pdb'
+  continueOnError: true
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)/_PublishedWebsites/TrafficMap'
+  inputs:
+    SourceFolder: TrafficMap/TrafficMap
+    Contents: 'web.*.config'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/_PublishedWebsites/TrafficMap'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/_PublishedWebsites/TrafficMap'
+    ArtifactName: '$(Parameters.ArtifactName)'
