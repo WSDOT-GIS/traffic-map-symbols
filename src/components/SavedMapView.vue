@@ -85,6 +85,7 @@ export default defineComponent({
   validations: {},
   methods: {
     selectItem(event: Event, item: SavedMapInfo) {
+      // Removing the reactivity so the saved state is not altered by store state changes...
       this.$store.commit("setCurrentExtent", cloneProxyTarget(item.extent));
       this.$store.commit("setLayerList", cloneProxyTarget(item.layers));
       this.$store.commit("setBasemap", item.basemap);
@@ -98,11 +99,10 @@ export default defineComponent({
       this.mapList.forEach((each) => {
         each.selected = false;
       });
-      // console.log("extent: " + this.$store.state.currentExtent);
-      // console.log("copy: " + cloneState(this.$store.state.layerList));
       if (this.newMapTitle) {
         this.mapList.push({
           title: this.newMapTitle,
+          // removing reactivity so the saved state is not tied to the store state...
           extent: cloneProxyTarget(this.$store.state.currentExtent),
           layers: cloneProxyTarget(this.$store.state.layerList),
           basemap: this.$store.state.basemap,
