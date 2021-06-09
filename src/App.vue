@@ -75,7 +75,7 @@ body,
 }
 hr.horizontal-divider {
   border-top: 3px solid #bbb;
-  margin: 3px 10px 3px 0px;
+  margin: 1vh 1vw;
 }
 /* App elements positioning */
 
@@ -100,8 +100,7 @@ hr.horizontal-divider {
 
 #map-top-left-container {
   position: absolute;
-  margin-left: 1vw;
-  margin-top: 1vh;
+  margin: 1vh 1vw;
   left: 0;
   right: 0;
   width: 150px;

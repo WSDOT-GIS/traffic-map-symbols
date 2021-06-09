@@ -33,7 +33,7 @@
       </div>
     </div>
     <hr class="horizontal-divider" />
-    <form @submit.prevent="addItem">
+    <form @submit.prevent="addItem" id="save-map-form">
       <input
         type="text"
         v-model="newMapTitle"
@@ -133,9 +133,11 @@ export default defineComponent({
 #savedMapWidget {
   background-color: white;
   text-align: left;
+  width: 100%;
 }
 #saved-map-list-title {
   display: block;
+  padding: 0 5px;
 }
 
 .saved-map-item-container {
@@ -144,9 +146,9 @@ export default defineComponent({
 .saved-map-item {
   display: inline-block;
   text-decoration: none;
-  margin: 0.2em;
   cursor: pointer;
   font-size: small;
+  margin: 2px 5px;
 }
 
 .saved-map-item:hover {
@@ -166,6 +168,10 @@ export default defineComponent({
   right: 10%;
   top: 30%;
 }
+#save-map-form {
+  position: relative;
+  margin: 5px 5px;
+}
 #save-map-button {
   display: inline-block;
   outline: none;
@@ -173,12 +179,9 @@ export default defineComponent({
   background-color: transparent;
   cursor: pointer;
   overflow: hidden;
-  position: relative;
-}
-/* #save-map-button-icon {
   position: absolute;
-  top: -50%;
-} */
+}
+
 #new-map-title {
   display: inline-block;
   width: 100px;
