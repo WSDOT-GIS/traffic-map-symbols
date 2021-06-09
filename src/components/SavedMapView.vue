@@ -1,6 +1,6 @@
 <template>
   <div id="savedMapWidget">
-    <div class="list-title">My saved maps</div>
+    <div id="saved-map-list-title">My saved maps</div>
     <div id="saved-map-list-container">
       <div
         v-for="(item, index) in mapList"
@@ -62,6 +62,7 @@
 import { defineComponent, ref } from "vue";
 import SavedMapInfo from "@/types/SavedMapInfo";
 import { setCookie, getCookie } from "@/utils/cookieUtil";
+import { cloneProxyTarget } from "@/store";
 
 export default defineComponent({
   setup() {
@@ -84,8 +85,8 @@ export default defineComponent({
   validations: {},
   methods: {
     selectItem(event: Event, item: SavedMapInfo) {
-      this.$store.commit("setCurrentExtent", item.extent);
-      this.$store.commit("setLayerList", item.layers);
+      this.$store.commit("setCurrentExtent", cloneProxyTarget(item.extent));
+      this.$store.commit("setLayerList", cloneProxyTarget(item.layers));
       this.$store.commit("setBasemap", item.basemap);
       this.mapList.forEach((each) => {
         each.selected = false;
@@ -97,11 +98,13 @@ export default defineComponent({
       this.mapList.forEach((each) => {
         each.selected = false;
       });
+      // console.log("extent: " + this.$store.state.currentExtent);
+      // console.log("copy: " + cloneState(this.$store.state.layerList));
       if (this.newMapTitle) {
         this.mapList.push({
           title: this.newMapTitle,
-          extent: this.$store.state.currentExtent,
-          layers: this.$store.state.layerList,
+          extent: cloneProxyTarget(this.$store.state.currentExtent),
+          layers: cloneProxyTarget(this.$store.state.layerList),
           basemap: this.$store.state.basemap,
           selected: true,
         });
@@ -124,46 +127,14 @@ export default defineComponent({
     },
   },
 });
-
-// const mapList = ref<SavedMapInfo[]>([
-//   {
-//     title: "test 1",
-//     extent: {
-//       xmin: -13690939.537010245,
-//       xmax: -13666569.30389912,
-//       ymin: 5935927.002373494,
-//       ymax: 5949179.247262843,
-//     },
-//     layers: [],
-//   },
-//   {
-//     title: "test 2",
-//     extent: {
-//       xmin: -13604963.712901168,
-//       xmax: -13598167.95639842,
-//       ymin: 6043726.623441402,
-//       ymax: 6047422.075551856,
-//     },
-//     layers: [],
-//   },
-//   {
-//     title: "test 3",
-//     extent: {
-//       xmin: -13604963.712901168,
-//       xmax: -13598167.95639842,
-//       ymin: 6043726.623441402,
-//       ymax: 6047422.075551856,
-//     },
-//     layers: [],
-//   },
-// ]);
 </script>
 
 <style scoped>
 #savedMapWidget {
   background-color: white;
+  text-align: left;
 }
-.list-title {
+#saved-map-list-title {
   display: block;
 }
 

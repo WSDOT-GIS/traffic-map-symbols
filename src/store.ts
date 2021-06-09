@@ -6,6 +6,7 @@ import { webmap, mapView } from "./esri-stuff/esriMap";
 import { wsdotBasemap, satelliteBasemap } from "./layers/Basemaps";
 import ExtentInfo from "./types/ExtentInfo";
 import { Convert2EsriExtent, Convert2ExtentInfo } from "./utils/extentUtil";
+import LayerInfo from "./types/LayerInfo";
 
 
 // Reference - https://next.vuex.vuejs.org/guide/typescript-support.html#typing-usestore-composition-function
@@ -43,8 +44,7 @@ export const store = createStore<State>({
     getters: {
         completeLayerList: state => {
             return state.layerList
-        }
-
+        },
     },
     mutations: {
         setBasemap(state, payload) {
@@ -83,6 +83,7 @@ export const store = createStore<State>({
             state.layerList = payload;
             webmap.layers.map((layer, index) => {
                 layer.visible = state.layerList[index].visible
+                console.log(index + " " + layer.title + " " + layer.visible)
             })
         },
         setCurrentExtent(state, payload) {
@@ -98,6 +99,12 @@ export const store = createStore<State>({
 
     },
 })
+// Clone the target of proxy (i.e. removing the reactivity)
+export const cloneProxyTarget = (proxy: any): any => {
+    const copy = JSON.parse(JSON.stringify(proxy));
+    console.log(JSON.stringify(copy));
+    return copy;
+}
 
 // define custom useStore that supply key so do not have to do this in each component...
 export const useStore = (): Store<State> => {

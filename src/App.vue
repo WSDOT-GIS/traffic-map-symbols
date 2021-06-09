@@ -75,7 +75,7 @@ body,
 }
 hr.horizontal-divider {
   border-top: 3px solid #bbb;
-  margin: 3px 10px;
+  margin: 3px 10px 3px 0px;
 }
 /* App elements positioning */
 
