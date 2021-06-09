@@ -2,14 +2,18 @@
   <div id="savedMapWidget">
     <div class="list-title">My saved maps</div>
     <div id="saved-map-list-container">
-      <form
+      <div
         v-for="(item, index) in mapList"
         :key="index"
-        class="saved-map-item-form"
+        class="saved-map-item-container"
       >
         <a
-          class="saved-map-item saved-map-item-unselected"
-          @click="updateSelected($event, item)"
+          class="saved-map-item"
+          :class="{
+            'saved-map-item-selected': item.selected,
+            'saved-map-item-unselected': !item.selected,
+          }"
+          @click="selectItem($event, item)"
         >
           {{ item.title }}
         </a>
@@ -26,10 +30,10 @@
             d="M18.404 16l9.9 9.9-2.404 2.404-9.9-9.9-9.9 9.9L3.696 25.9l9.9-9.9-9.9-9.898L6.1 3.698l9.9 9.899 9.9-9.9 2.404 2.406-9.9 9.898z"
           />
         </svg>
-      </form>
+      </div>
     </div>
     <hr class="horizontal-divider" />
-    <form @submit.prevent="addAndSave">
+    <form @submit.prevent="addItem">
       <input
         type="text"
         v-model="newMapTitle"
@@ -62,19 +66,14 @@ import { setCookie, getCookie } from "@/utils/cookieUtil";
 export default defineComponent({
   setup() {
     const cookieText = getCookie("saved-map-list");
-    //let mapList: SavedMapInfo[] = [];
     const mapList = ref<SavedMapInfo[]>([]);
     if (cookieText) {
       const json = JSON.parse(cookieText);
       mapList.value = json as SavedMapInfo[];
     }
-    // let newMapTitle = ref(null);
-    // const mapTitleError = computed(() => {
-    //   return newMapTitle.value === ""
-    //     ? "Please enter title for the map view."
-    //     : "";
-    // });
-
+    mapList.value.forEach((each) => {
+      each.selected = false;
+    });
     return { mapList };
   },
   data() {
@@ -84,31 +83,29 @@ export default defineComponent({
   },
   validations: {},
   methods: {
-    updateSelected(event: Event, item: SavedMapInfo) {
-      console.log(item);
+    selectItem(event: Event, item: SavedMapInfo) {
       this.$store.commit("setCurrentExtent", item.extent);
-      const element = event.target as HTMLElement;
-      const siblings =
-        element.parentElement?.getElementsByClassName("saved-map-item");
-      if (siblings) {
-        for (let i = 0; i < siblings.length; i++) {
-          siblings[i].classList.remove("saved-map-item-selected");
-          siblings[i].classList.add("saved-map-item-unselected");
-        }
-      }
-      element.classList.remove("saved-map-item-unselected");
-      element.classList.add("saved-map-item-selected");
+      this.$store.commit("setLayerList", item.layers);
+      this.mapList.forEach((each) => {
+        each.selected = false;
+      });
+      item.selected = true;
     },
 
-    addAndSave() {
+    addItem() {
+      this.mapList.forEach((each) => {
+        each.selected = false;
+      });
       if (this.newMapTitle) {
         this.mapList.push({
           title: this.newMapTitle,
           extent: this.$store.state.currentExtent,
-          layers: [],
+          layers: this.$store.state.layerList,
+          selected: true,
         });
         const value = JSON.stringify(this.mapList);
         setCookie("saved-map-list", value);
+        this.newMapTitle = "";
       }
     },
 
@@ -168,7 +165,7 @@ export default defineComponent({
   display: block;
 }
 
-.saved-map-item-form {
+.saved-map-item-container {
   position: relative;
 }
 .saved-map-item {
