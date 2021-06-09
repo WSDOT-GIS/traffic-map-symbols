@@ -6,7 +6,7 @@
     <CoordinatesView />
     <div id="map-top-left-container">
       <LayerListView />
-      <hr class="horizontal-divider">
+      <hr class="horizontal-divider" />
       <SavedMapView />
     </div>
     <LegendVue />
@@ -73,8 +73,10 @@ body,
   width: 100%;
   height: 100%;
 }
-
-
+hr.horizontal-divider {
+  border-top: 3px solid #bbb;
+  margin: 3px 10px;
+}
 /* App elements positioning */
 
 #app {
@@ -105,6 +107,7 @@ body,
   width: 150px;
   float: left;
   z-index: 1;
+  background-color: #fff;
 }
 #layerListWidget {
   margin: 0;

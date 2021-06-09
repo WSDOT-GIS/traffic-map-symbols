@@ -47,6 +47,16 @@ export const store = createStore<State>({
 
     },
     mutations: {
+        setBasemap(state, payload) {
+            state.basemap = payload;
+            switch (state.basemap) {
+                case "satellite":
+                    webmap.basemap = satelliteBasemap;
+                    break;
+                default:
+                    webmap.basemap = wsdotBasemap;
+            }
+        },
         toggleBasemap(state) {
 
             if (state.basemap == "wsdot") {
@@ -55,14 +65,13 @@ export const store = createStore<State>({
                 state.basemap = "wsdot"
             }
 
-            if (state.basemap == "wsdot") {
-                webmap.basemap = wsdotBasemap
+            switch (state.basemap) {
+                case "satellite":
+                    webmap.basemap = satelliteBasemap;
+                    break;
+                default:
+                    webmap.basemap = wsdotBasemap;
             }
-            else {
-                webmap.basemap = satelliteBasemap
-            }
-            console.log(state.basemap)
-            console.log(webmap.basemap)
         },
         setPointerX(state, payload) {
             state.pointerX = payload;

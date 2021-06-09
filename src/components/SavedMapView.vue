@@ -86,6 +86,7 @@ export default defineComponent({
     selectItem(event: Event, item: SavedMapInfo) {
       this.$store.commit("setCurrentExtent", item.extent);
       this.$store.commit("setLayerList", item.layers);
+      this.$store.commit("setBasemap", item.basemap);
       this.mapList.forEach((each) => {
         each.selected = false;
       });
@@ -101,6 +102,7 @@ export default defineComponent({
           title: this.newMapTitle,
           extent: this.$store.state.currentExtent,
           layers: this.$store.state.layerList,
+          basemap: this.$store.state.basemap,
           selected: true,
         });
         const value = JSON.stringify(this.mapList);
