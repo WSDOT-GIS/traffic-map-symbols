@@ -1,18 +1,19 @@
 <template>
-  <!-- <div class="app"> -->
   <HeaderView :text="headerText" />
   <AlertView :alert="alert" />
-  <div id="map_container">
+  <div id="map-container">
     <BasemapView />
     <CoordinatesView />
-    <SavedMapView />
-    <LayerListView/>
-    <LegendVue/>
+    <div id="map-top-left-container">
+      <LayerListView />
+      <hr class="horizontal-divider">
+      <SavedMapView />
+    </div>
+    <LegendVue />
     <EsriMap />
   </div>
   <AdView :text="adText" />
   <FooterView :text="footerText" />
-  <!-- </div> -->
 </template>
 
 <script lang="ts">
@@ -27,7 +28,7 @@ import FooterView from "./components/FooterView.vue";
 import Alert from "./types/AlertInfo";
 import LayerListView from "./components/LayerListView.vue";
 import SavedMapView from "./components/SavedMapView.vue";
-import LegendVue from "./components/LegendVue.vue"
+import LegendVue from "./components/LegendVue.vue";
 
 export default defineComponent({
   name: "App",
@@ -41,7 +42,7 @@ export default defineComponent({
     FooterView,
     LayerListView,
     SavedMapView,
-    LegendVue
+    LegendVue,
   },
   setup() {
     const headerText = "This is the header";
@@ -71,5 +72,73 @@ body,
   margin: 0;
   width: 100%;
   height: 100%;
+}
+
+
+/* App elements positioning */
+
+#app {
+  position: absolute;
+  z-index: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+#map-container {
+  padding: 0;
+  margin: 0;
+  height: 70%;
+  width: 100%;
+  position: relative;
+}
+
+#map-container > * {
+  position: absolute;
+}
+
+#map-top-left-container {
+  position: absolute;
+  margin-left: 1vw;
+  margin-top: 1vh;
+  left: 0;
+  right: 0;
+  width: 150px;
+  float: left;
+  z-index: 1;
+}
+#layerListWidget {
+  margin: 0;
+  text-align: center;
+  width: 100%;
+}
+
+#savedMapWidget {
+  margin: 0;
+  text-align: center;
+  width: 100%;
+}
+
+#basemapWidget {
+  position: absolute;
+  margin-left: 91vw;
+  margin-top: 71vh;
+  left: 0;
+  right: 0;
+  text-align: center;
+  width: 100px;
+  float: left;
+  z-index: 1;
+}
+
+#legendWidget {
+  position: absolute;
+  margin-left: 91vw;
+  margin-top: 3vh;
+  left: 0;
+  right: 0;
+  text-align: center;
+  width: 100px;
+  float: left;
+  z-index: 1;
 }
 </style>
