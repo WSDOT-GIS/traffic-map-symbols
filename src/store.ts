@@ -3,9 +3,10 @@ import { createStore, useStore as baseUseStore, Store } from "vuex";
 import Extent from "@arcgis/core/geometry/Extent";
 
 import { webmap, mapView } from "./esri-stuff/esriMap";
-import { wsdotBasemap, satelliteBasemap } from "./layers/Basemaps";
+import { getBasemapInfo, toggleBasemapInfo, getDefaultBasemapInfo } from "./layers/Basemaps";
 import ExtentInfo from "./types/ExtentInfo";
 import { Convert2EsriExtent, Convert2ExtentInfo } from "./utils/extentUtil";
+import { setLayerFromUrl } from "./utils/urlParamUtil";
 import LayerInfo from "./types/LayerInfo";
 
 
@@ -15,7 +16,7 @@ export interface State {
     basemap: string,
     pointerX: number,
     pointerY: number,
-    layerList: { index: number, title: string, visible: boolean }[],
+    layerList: LayerInfo[],//{ index: number, title: string, visible: boolean }[],
     currentExtent: ExtentInfo,
 }
 
@@ -24,8 +25,15 @@ export const key: InjectionKey<Store<State>> = Symbol()
 
 export const store = createStore<State>({
     state() {
+        const layerList = [
+            { index: 0, title: "Traffic", visible: true },
+            { index: 1, title: "Park and Rides", visible: false },
+            { index: 2, title: "Traffic Cameras", visible: false }
+        ]
+        setLayerFromUrl(layerList);
+
         return {
-            basemap: "wsdot",
+            basemap: "",
             pointerX: 0,
             pointerY: 0,
             currentExtent: {
@@ -34,11 +42,12 @@ export const store = createStore<State>({
                 ymin: 0,
                 ymax: 0
             },
-            layerList: [
-                { index: 0, title: "Traffic", visible: true },
-                { index: 1, title: "Park and Rides", visible: false },
-                { index: 2, title: "Traffic Cameras", visible: false }
-            ]
+            layerList: layerList
+            // layerList: [
+            //     { index: 0, title: "Traffic", visible: true },
+            //     { index: 1, title: "Park and Rides", visible: false },
+            //     { index: 2, title: "Traffic Cameras", visible: false }
+            // ]
         }
     },
     getters: {
@@ -48,30 +57,35 @@ export const store = createStore<State>({
     },
     mutations: {
         setBasemap(state, payload) {
-            state.basemap = payload;
-            switch (state.basemap) {
-                case "satellite":
-                    webmap.basemap = satelliteBasemap;
-                    break;
-                default:
-                    webmap.basemap = wsdotBasemap;
+            if (state.basemap != payload || !state.basemap) {
+                const basemapInfo = getBasemapInfo(payload);
+                state.basemap = basemapInfo.name;
+                webmap.basemap = basemapInfo.basemap;
             }
+            // switch (state.basemap) {
+            //     case "satellite":
+            //         webmap.basemap = satelliteBasemap;
+            //         break;
+            //     default:
+            //         webmap.basemap = wsdotBasemap;
+            // }
         },
         toggleBasemap(state) {
-
-            if (state.basemap == "wsdot") {
-                state.basemap = "satellite"
-            } else {
-                state.basemap = "wsdot"
-            }
-
-            switch (state.basemap) {
-                case "satellite":
-                    webmap.basemap = satelliteBasemap;
-                    break;
-                default:
-                    webmap.basemap = wsdotBasemap;
-            }
+            const basemapInfo = toggleBasemapInfo(state.basemap);
+            state.basemap = basemapInfo.name;
+            // if (state.basemap == "wsdot") {
+            //     state.basemap = "satellite"
+            // } else {
+            //     state.basemap = "wsdot"
+            // }
+            webmap.basemap = basemapInfo.basemap;
+            // switch (state.basemap) {
+            //     case "satellite":
+            //         webmap.basemap = satelliteBasemap;
+            //         break;
+            //     default:
+            //         webmap.basemap = wsdotBasemap;
+            // }
         },
         setPointerX(state, payload) {
             state.pointerX = payload;

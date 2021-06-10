@@ -1,6 +1,6 @@
 interface LayerInfo {
     index: number;
-    id: string;
+    //id: number;
     title: string;
     visible: boolean;
 }
