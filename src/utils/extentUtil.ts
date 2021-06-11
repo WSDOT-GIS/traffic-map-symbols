@@ -14,17 +14,17 @@ const defaultExtents: ExtentInfo[] = [
     },
 ];
 
-export const GetExtentInfo = (id: string): ExtentInfo => {
+export const getExtentInfo = (id: string): ExtentInfo => {
     const result = defaultExtents.filter(x => x.id == id);
     return result[0];
 };
 
-export const GetEsriExtent = (name: string): Extent => {
-    const info = GetExtentInfo(name);
-    return Convert2EsriExtent(info);
+export const getEsriExtent = (name: string): Extent => {
+    const info = getExtentInfo(name);
+    return convert2EsriExtent(info);
 };
 
-export const Convert2EsriExtent = (extentInfo: ExtentInfo): Extent => {
+export const convert2EsriExtent = (extentInfo: ExtentInfo): Extent => {
     const extent = new Extent({
         xmin: extentInfo.xmin,
         xmax: extentInfo.xmax,
@@ -35,7 +35,7 @@ export const Convert2EsriExtent = (extentInfo: ExtentInfo): Extent => {
     return extent;
 };
 
-export const Convert2ExtentInfo = (extent: Extent): ExtentInfo => {
+export const convert2ExtentInfo = (extent: Extent): ExtentInfo => {
     const info: ExtentInfo = {
         xmin: extent.xmin,
         xmax: extent.xmax,

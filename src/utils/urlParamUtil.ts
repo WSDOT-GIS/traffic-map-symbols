@@ -17,7 +17,7 @@ import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Extent from "@arcgis/core/geometry/Extent";
 
 import LayerInfo from "@/types/LayerInfo";
-import { GetEsriExtent } from "./extentUtil";
+import { getEsriExtent } from "./extentUtil";
 import { getBasemapInfo } from "@/layers/Basemaps";
 import BasemapInfo from "@/types/BasemapInfo";
 
@@ -70,7 +70,7 @@ export const getExtentFromUrl = (): Extent => {
         }
     }
     if (extent === undefined) {
-        extent = GetEsriExtent("full");
+        extent = getEsriExtent("full");
     }
 
     return extent;
