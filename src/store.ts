@@ -5,7 +5,7 @@ import Extent from "@arcgis/core/geometry/Extent";
 import { webmap, mapView } from "./esri-stuff/esriMap";
 import { getBasemapInfo, toggleBasemapInfo, getDefaultBasemapInfo } from "./layers/Basemaps";
 import ExtentInfo from "./types/ExtentInfo";
-import { Convert2EsriExtent, Convert2ExtentInfo } from "./utils/extentUtil";
+import { convert2EsriExtent, convert2ExtentInfo } from "./utils/extentUtil";
 import { setLayerFromUrl } from "./utils/urlParamUtil";
 import LayerInfo from "./types/LayerInfo";
 
@@ -102,11 +102,11 @@ export const store = createStore<State>({
         },
         setCurrentExtent(state, payload) {
             if (payload instanceof Extent) {
-                const extentInfo = Convert2ExtentInfo(payload);
+                const extentInfo = convert2ExtentInfo(payload);
                 state.currentExtent = extentInfo;
                 console.log(JSON.stringify(state.currentExtent));
             } else {
-                const extent = Convert2EsriExtent(payload);
+                const extent = convert2EsriExtent(payload);
                 mapView.extent = extent;
             }
         },

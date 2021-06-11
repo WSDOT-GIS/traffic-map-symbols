@@ -23,7 +23,7 @@ export const mapView = new MapView({
 
 mapView.ui.move("zoom", "bottom-right");
 
-//mapView.extent = GetEsriExtent("full");
+//mapView.extent = getEsriExtent("full");
 
 
 // const bookmarks = new Bookmarks({
