@@ -8,7 +8,7 @@ URL query parameters:
 * base
     Name of the basemap
 Sample URLs
-Zoom to Seattle metro area and turn on Park & Rides and Traffic Camera layers
+Zoom to Seattle metro area and turn off traffic layer, turn on Park & Rides and Traffic Camera layers, satellite basemap
 ?extent=-122.4489756,47.7741882,-122.1102255,47.5032113&layer=1,2&base=satellite
 */
 
