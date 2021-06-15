@@ -2,6 +2,10 @@ define(["require", "exports", "tslib", "vue", "./App.vue", "./store", "./assets/
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     App_vue_1 = tslib_1.__importDefault(App_vue_1);
+    // const router = createRouter({
+    //     history: createWebHashHistory(),
+    //     routes: []
+    // })
     // adding store as a plugin while creating an app...
     vue_1.createApp(App_vue_1.default).use(store_1.store, store_1.key).mount('#app');
 });
