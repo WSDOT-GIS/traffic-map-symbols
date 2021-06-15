@@ -18,12 +18,13 @@ steps:
     npm install
     npm run build
   displayName: 'npm install and build'
+  workingDirectory: $(Build.SourcesDirectory)
 
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
   inputs:
-    SourceFolder: '$(Build.SourcesDirectory)/dist'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    Contents: 'dist/**'
 
 - task: PublishBuildArtifacts@1
   inputs: 
