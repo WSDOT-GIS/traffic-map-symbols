@@ -6,8 +6,7 @@
 trigger:
 - Develop
 
-pool:
-  vmImage: ubuntu-latest
+pool: TeamAwesomeDEVQA
 
 steps:
 - task: NodeTool@0
