@@ -1,10 +1,9 @@
 // import EsriConfig from "@arcgis/core/config";
 import WebMap from "@arcgis/core/WebMap";
 import MapView from "@arcgis/core/views/MapView";
-import Bookmarks from "@arcgis/core/widgets/Bookmarks";
-import Expand from "@arcgis/core/widgets/Expand";
+// import Bookmarks from "@arcgis/core/widgets/Bookmarks";
+// import Expand from "@arcgis/core/widgets/Expand";
 
-import { wsdotBasemap } from "@/layers/Basemaps";
 import TrafficLayer from "@/layers/TrafficLayer";
 import ParkRideLayer from "@/layers/ParkRideLayer";
 import CameraLayer from "@/layers/CameraLayer";
@@ -13,38 +12,34 @@ import CameraLayer from "@/layers/CameraLayer";
 //EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
 
 export const webmap = new WebMap({
-    basemap: wsdotBasemap,
+    // basemap: basemapInfo.basemap,
     layers: [TrafficLayer, ParkRideLayer, CameraLayer],
 });
 
 export const mapView = new MapView({
     container: "map_view", // https://v3.vuejs.org/api/instance-properties.html
     map: webmap,
-    extent: {
-        ymax: 6316025.98739708,
-        xmin: -13911155.7073957,
-        xmax: -12984203.1967109,
-        ymin: 5704865.77272526,
-        spatialReference: { wkid: 102100 },
-    },
 });
 
+mapView.ui.move("zoom", "bottom-right");
+
+//mapView.extent = getEsriExtent("full");
 
 
-const bookmarks = new Bookmarks({
-    view: mapView,
-    editingEnabled: true,
-});
+// const bookmarks = new Bookmarks({
+//     view: mapView,
+//     editingEnabled: true,
+// });
 
-const bookmarkExpand = new Expand({
-    view: mapView,
-    content: bookmarks,
-    expanded: false,
-});
+// const bookmarkExpand = new Expand({
+//     view: mapView,
+//     content: bookmarks,
+//     expanded: false,
+// });
 
-mapView.ui.add(bookmarkExpand, "top-right");
+// mapView.ui.add(bookmarkExpand, "top-right");
 
-export const init = (container: HTMLDivElement) => {
+export const init = (container: HTMLDivElement): void => {
     mapView.container = container;
     mapView.when()
         .then(_ => {

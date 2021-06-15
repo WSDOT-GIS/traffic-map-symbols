@@ -1,5 +1,5 @@
 <template>
-  <div class="bottom right ontop">
+  <div id="basemap-widget-container" class="bottom right ontop">
     <button @click="toggleBasemap">
       {{ store.state.basemap }}
     </button>
@@ -24,4 +24,8 @@ export default defineComponent({
   },
 });
 </script>
-
+ <style scoped>
+ #basemap-widget-container {
+   right: 50px;
+ }
+ </style>

@@ -1,6 +1,6 @@
 import FeatureReductionCluster from "@arcgis/core/layers/support/FeatureReductionCluster";
 
-export const generateClusterConfig = (popupTitle: string, name: string, labelColor: string) => {
+export const generateClusterConfig = (popupTitle: string, name: string, labelColor: string): FeatureReductionCluster => {
 
     const clusterConfig = new FeatureReductionCluster({
         clusterRadius: "100px",

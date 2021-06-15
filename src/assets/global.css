@@ -1,9 +1,12 @@
+
+
 /*Defines the placement of elements on the page*/
 
 #wrapper {
     position: relative;
 }
 
+/*
 #app {
     position: absolute;
     z-index: 0;
@@ -11,7 +14,7 @@
     height: 100vh
 }
 
-#map_container {
+#map-container {
     padding: 0;
     margin: 0;
     height: 70%;
@@ -19,9 +22,19 @@
     position: relative;
 }
 
-#map_container>* {
+#map-container>* {
     position: absolute;
 }
+
+#map-top-left-container {
+    position: absolute;
+    margin-left: 3vw;
+    margin-top: 1vh;
+    left: 0;
+    right: 0;
+    width: 100px;
+    float: left;
+} */
 
 .left {
     left: 0;
@@ -47,6 +60,20 @@
     z-index: 9;
 }
 
+/* #layerListWidget {
+    margin: 0;
+    text-align: center;
+    width: 100%;
+    z-index: 1;
+}
+
+#savedMapWidget {
+    margin: 0;
+    text-align: center;
+    width: 100%;
+    z-index: 1;
+}
+
 #basemapWidget {
     position: absolute;
     margin-left: 91vw;
@@ -58,3 +85,15 @@
     float: left;
     z-index: 1;
 }
+
+#legendWidget {
+    position: absolute;
+    margin-left: 91vw;
+    margin-top: 3vh;
+    left: 0;
+    right: 0;
+    text-align: center;
+    width: 100px;
+    float: left;
+    z-index: 1;
+} */
