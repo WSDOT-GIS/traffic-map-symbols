@@ -16,8 +16,11 @@ steps:
 
 - script: |
     npm install
+  displayName: 'npm install'
+
+- script: |
     npm run build
-  displayName: 'npm install and build'
+  displayName: 'npm build using $(Build.SourcesDirectory)'
   workingDirectory: $(Build.SourcesDirectory)
 
 - task: CopyFiles@2
