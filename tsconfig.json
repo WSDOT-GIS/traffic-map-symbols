@@ -10,13 +10,13 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
-    "baseUrl": "/travel/map/",
+    "baseUrl": "./",
     "types": [
       "webpack-env"
     ],
     "paths": {
-      "@/*": [
-        "src/*","../../src/*"
+      "@./*": [
+        "src/*"
       ]
     },
     "lib": [
