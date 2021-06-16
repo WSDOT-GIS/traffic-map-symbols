@@ -13,11 +13,11 @@ import LayerInfo from "./types/LayerInfo";
 // Reference - https://next.vuex.vuejs.org/guide/typescript-support.html#typing-usestore-composition-function
 // define typings for the store state...
 export interface State {
-    basemap: string,
-    pointerX: number,
-    pointerY: number,
-    layerList: LayerInfo[],//{ index: number, title: string, visible: boolean }[],
-    currentExtent: ExtentInfo,
+    basemap: string;
+    pointerX: number;
+    pointerY: number;
+    layerList: LayerInfo[];//{ index: number, title: string, visible: boolean }[],
+    currentExtent: ExtentInfo;
 }
 
 // define injection key...
@@ -28,7 +28,7 @@ export const store = createStore<State>({
         const layerList = [
             { index: 0, title: "Traffic", visible: true },
             { index: 1, title: "Park and Rides", visible: false },
-            { index: 2, title: "Traffic Cameras", visible: false }
+            { index: 2, title: "Traffic Cameras", visible: false },
         ]
         setLayerFromUrl(layerList);
 
@@ -42,7 +42,7 @@ export const store = createStore<State>({
                 ymin: 0,
                 ymax: 0
             },
-            layerList: layerList
+            layerList: layerList,
             // layerList: [
             //     { index: 0, title: "Traffic", visible: true },
             //     { index: 1, title: "Park and Rides", visible: false },
@@ -62,30 +62,11 @@ export const store = createStore<State>({
                 state.basemap = basemapInfo.name;
                 webmap.basemap = basemapInfo.basemap;
             }
-            // switch (state.basemap) {
-            //     case "satellite":
-            //         webmap.basemap = satelliteBasemap;
-            //         break;
-            //     default:
-            //         webmap.basemap = wsdotBasemap;
-            // }
         },
         toggleBasemap(state) {
             const basemapInfo = toggleBasemapInfo(state.basemap);
             state.basemap = basemapInfo.name;
-            // if (state.basemap == "wsdot") {
-            //     state.basemap = "satellite"
-            // } else {
-            //     state.basemap = "wsdot"
-            // }
             webmap.basemap = basemapInfo.basemap;
-            // switch (state.basemap) {
-            //     case "satellite":
-            //         webmap.basemap = satelliteBasemap;
-            //         break;
-            //     default:
-            //         webmap.basemap = wsdotBasemap;
-            // }
         },
         setPointerX(state, payload) {
             state.pointerX = payload;
@@ -102,10 +83,13 @@ export const store = createStore<State>({
         },
         setCurrentExtent(state, payload) {
             if (payload instanceof Extent) {
+                // If the payload is ESRI extent, then update the state only.
                 const extentInfo = convert2ExtentInfo(payload);
                 state.currentExtent = extentInfo;
                 console.log(JSON.stringify(state.currentExtent));
             } else {
+                // If the payload is ExtentInfo, actually zoom the map. Once the map extent 
+                // is changed, ESRI extent will be sent to this again and set the state.
                 const extent = convert2EsriExtent(payload);
                 mapView.extent = extent;
             }

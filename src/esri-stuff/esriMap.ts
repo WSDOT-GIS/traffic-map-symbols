@@ -1,5 +1,6 @@
 // import EsriConfig from "@arcgis/core/config";
 import WebMap from "@arcgis/core/WebMap";
+// import Map from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
 // import Bookmarks from "@arcgis/core/widgets/Bookmarks";
 // import Expand from "@arcgis/core/widgets/Expand";
@@ -13,14 +14,13 @@ import CameraLayer from "@/layers/CameraLayer";
 
 export const webmap = new WebMap({
     // basemap: basemapInfo.basemap,
-    layers: [TrafficLayer, ParkRideLayer, CameraLayer],
+    layers: [TrafficLayer, ParkRideLayer, CameraLayer]
 });
 
 export const mapView = new MapView({
     container: "map_view", // https://v3.vuejs.org/api/instance-properties.html
     map: webmap,
 });
-
 mapView.ui.move("zoom", "bottom-right");
 
 //mapView.extent = getEsriExtent("full");
@@ -42,8 +42,9 @@ mapView.ui.move("zoom", "bottom-right");
 export const init = (container: HTMLDivElement): void => {
     mapView.container = container;
     mapView.when()
-        .then(_ => {
-            console.log("Map is ready.");
+        .then(x => {
+            console.log("Map is ready. " + typeof (x));
+
         })
         .catch(error => {
             console.warn("Failed to initialize map. Error: ", error);

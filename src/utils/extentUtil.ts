@@ -2,6 +2,7 @@ import Extent from "@arcgis/core/geometry/Extent";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 
 import ExtentInfo from "@/types/ExtentInfo";
+import { mapView } from "@/esri-stuff/esriMap";
 
 const defaultExtents: ExtentInfo[] = [
     {
@@ -44,3 +45,4 @@ export const convert2ExtentInfo = (extent: Extent): ExtentInfo => {
     }
     return info;
 };
+

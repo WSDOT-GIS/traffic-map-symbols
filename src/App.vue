@@ -43,6 +43,7 @@ export default defineComponent({
     LayerListView,
     SavedMapView,
     LegendVue,
+    // ZoomPopupView,
   },
   setup() {
     const headerText = "This is the header";

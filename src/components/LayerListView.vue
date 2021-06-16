@@ -23,12 +23,12 @@
 <script lang="ts">
 import { store, useStore } from "@/store";
 import { defineComponent, onMounted, ref} from "vue";
-import { LayerListInfo} from "../types/LayerListInfo";
+import LayerInfo from "../types/LayerInfo";
 import {webmap} from "../esri-stuff/esriMap";
 export default defineComponent({
   setup(){
     //#region populate the layer list
-    let layerList = ref<LayerListInfo[]>([]);
+    let layerList = ref<LayerInfo[]>([]);
     const expandIconPath = ref<string>("M31.047 28h-5l-12-12 12-12h5l-12 12 12 12zm-26-12l12-12h-5l-12 12 12 12h5l-12-12z");
     const expanded = ref<string>("block")
     const store = useStore()
@@ -41,7 +41,7 @@ export default defineComponent({
       })
     }
     store.commit("setLayerList",layerList)
-    console.log(store.state.layerList)
+    console.log("LayerListView setup() setLayerList");
     return{layerList, expandIconPath, expanded}
     //#endregion
   },
@@ -57,6 +57,7 @@ export default defineComponent({
         }
       })
       store.commit("setLayerList",store.state.layerList)
+      console.log("LayerListView clickEvent setLayerList");
     },
     handleExpandClicked:function(){
       this.expanded=="block"?this.expanded="none":this.expanded="block";
