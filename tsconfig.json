@@ -16,7 +16,7 @@
     ],
     "paths": {
       "@/*": [
-        "src/*","travel/map/src/*"
+        "src/*","../../src/*"
       ]
     },
     "lib": [
