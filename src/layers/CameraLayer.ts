@@ -69,7 +69,7 @@ const fields = [
 
 const layer = new GeoJSONLayer({
     id: "weather-camera-layer",
-    url: "/data/camera.geojson",
+    url: "http://hqtob1webtmdev1/GISData/camera.json",
     title:"Traffic Cameras",
     renderer: renderer,
     popupTemplate: Popup,
