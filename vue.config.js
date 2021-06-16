@@ -5,6 +5,7 @@ const { SourceMapConsumer, SourceMapGenerator } = require('source-map');
 const sourceMaps = {};
 
 module.exports = {
+    publicPath: '/Travel/Map/',
     configureWebpack() {
         return {
             devtool: 'source-map',
