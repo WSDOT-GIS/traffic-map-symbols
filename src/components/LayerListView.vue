@@ -1,5 +1,5 @@
 <template>
-  <div id="layerListWidget">
+  <div id="layerListWidget" title="Map Features">
     <table>
       <td>
         <label style="font-size:large">Map Features</label>
@@ -14,7 +14,10 @@
       <tr v-for="layer in layerList" :key="layer.index">
         <td style="font-size:small; text-align:left">{{layer.title}}</td>
         <td>
-          <input type="checkbox" @change="clickEvent" :checked="layer.visible" :value="layer.index"/>
+          <label class="switch">
+            <input type="checkbox" @change="clickEvent" :checked="layer.visible" :value="layer.index"/>
+            <span class="slider round"></span>
+          </label>
         </td>
       </tr>
     </table>
@@ -23,25 +26,25 @@
 <script lang="ts">
 import { store, useStore } from "@/store";
 import { defineComponent, onMounted, ref} from "vue";
-import { LayerListInfo} from "../types/LayerListInfo";
+import LayerInfo from "../types/LayerInfo";
 import {webmap} from "../esri-stuff/esriMap";
 export default defineComponent({
   setup(){
     //#region populate the layer list
-    let layerList = ref<LayerListInfo[]>([]);
+    let layerList = ref<LayerInfo[]>([]);
     const expandIconPath = ref<string>("M31.047 28h-5l-12-12 12-12h5l-12 12 12 12zm-26-12l12-12h-5l-12 12 12 12h5l-12-12z");
     const expanded = ref<string>("block")
     const store = useStore()
-    if(store.state.layerList.length>0){
+    /*if(store.state.layerList.length>0){
       layerList.value = store.state.layerList
-    }
-    else{
+    }*/
+   // else{
       webmap.layers.map((layer,index)=>{
         layerList.value.push({index: index,title: layer.title, visible: layer.visible});
       })
-    }
+   // }
     store.commit("setLayerList",layerList)
-    console.log(store.state.layerList)
+    console.log("LayerListView setup() setLayerList");
     return{layerList, expandIconPath, expanded}
     //#endregion
   },
@@ -57,6 +60,7 @@ export default defineComponent({
         }
       })
       store.commit("setLayerList",store.state.layerList)
+      console.log("LayerListView clickEvent setLayerList");
     },
     handleExpandClicked:function(){
       this.expanded=="block"?this.expanded="none":this.expanded="block";

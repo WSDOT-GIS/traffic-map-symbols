@@ -8,9 +8,7 @@ define(["require", "exports", "tslib", "@arcgis/core/layers/MapImageLayer"], fun
     var layer = new MapImageLayer_1.default({
         url: urlTraffic,
         sublayers: [
-            { id: 6, visible: true, title: "Live Traffic Flow" }, // live traffic
-            // { id: 2, visible: false }, // incidents overview: critical and major incidents
-            // { id: 4, visible: true }, // incidents detail: critical, major, minor as well as low impact incidents
+            { id: 6, visible: true, title: "Live Traffic Flow" },
         ],
     });
     exports.default = layer;

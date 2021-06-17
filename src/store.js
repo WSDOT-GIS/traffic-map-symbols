@@ -24,11 +24,14 @@ define(["require", "exports", "tslib", "vuex", "@arcgis/core/geometry/Extent", "
                     ymax: 0
                 },
                 layerList: layerList
+<<<<<<< HEAD
                 // layerList: [
                 //     { index: 0, title: "Traffic", visible: true },
                 //     { index: 1, title: "Park and Rides", visible: false },
                 //     { index: 2, title: "Traffic Cameras", visible: false }
                 // ]
+=======
+>>>>>>> Develop-AddRestrictionLayers
             };
         },
         getters: {
@@ -43,6 +46,7 @@ define(["require", "exports", "tslib", "vuex", "@arcgis/core/geometry/Extent", "
                     state.basemap = basemapInfo.name;
                     esriMap_1.webmap.basemap = basemapInfo.basemap;
                 }
+<<<<<<< HEAD
                 // switch (state.basemap) {
                 //     case "satellite":
                 //         webmap.basemap = satelliteBasemap;
@@ -67,12 +71,19 @@ define(["require", "exports", "tslib", "vuex", "@arcgis/core/geometry/Extent", "
                 //     default:
                 //         webmap.basemap = wsdotBasemap;
                 // }
+=======
+            },
+            toggleBasemap: function (state) {
+                var basemapInfo = Basemaps_1.toggleBasemapInfo(state.basemap); //Look at this with masao
+                state.basemap = basemapInfo.name;
+                esriMap_1.webmap.basemap = basemapInfo.basemap;
+>>>>>>> Develop-AddRestrictionLayers
             },
             setPointerX: function (state, payload) {
-                state.pointerX = payload;
+                state.pointerX = payload.toFixed(6);
             },
             setPointerY: function (state, payload) {
-                state.pointerY = payload;
+                state.pointerY = payload.toFixed(6);
             },
             setLayerList: function (state, payload) {
                 state.layerList = payload;
