@@ -2,10 +2,11 @@ import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import Field from "@arcgis/core/layers/support/Field";
 import Symbol from "@/symbols/CameraSymbol";
+import { clusterSymbol } from "@/symbols/CameraSymbol";
 import Popup from "@/popup-templates/CameraPopup";
 import { generateClusterConfig } from "@/utils/layerUtil"
 
-const clusterConfig = generateClusterConfig("Cameras", "camera", "#000000")
+const clusterConfig = generateClusterConfig("Cameras", "camera", "#000000", clusterSymbol)
 
 const renderer = new SimpleRenderer({ symbol: Symbol });
 

@@ -1,6 +1,7 @@
 import FeatureReductionCluster from "@arcgis/core/layers/support/FeatureReductionCluster";
+import Symbol from "@arcgis/core/symbols/Symbol";
 
-export const generateClusterConfig = (popupTitle: string, name: string, labelColor: string): FeatureReductionCluster => {
+export const generateClusterConfig = (popupTitle: string, name: string, labelColor: string, symbol?: any): FeatureReductionCluster => {
 
     const clusterConfig = new FeatureReductionCluster({
         clusterRadius: "100px",
@@ -36,6 +37,12 @@ export const generateClusterConfig = (popupTitle: string, name: string, labelCol
             }]
         },
     });
+    // The symbol property is undocumented, so use with caution.
+    // https://community.esri.com/t5/arcgis-api-for-javascript-ideas/arcgis-javascript-4-cluster-renderer/idc-p/1059638#M48
+    if (symbol) {
+        clusterConfig.set("symbol", symbol);
+    }
+
     return clusterConfig
 
 }
