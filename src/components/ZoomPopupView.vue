@@ -1,9 +1,9 @@
 <template>
   <div
-    class="zoom-popup-container"
+    id="zoom-popup-container"
     v-if="Visible"
     :style="{ marginTop: PositionY + 'px', marginLeft: PositionX + 'px' }"
-    @click="ClickHandler"
+    @click="onClick"
   >
     <p>
       <span class="esri-icon-zoom-in-magnifying-glass"></span>
@@ -12,7 +12,9 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
+import { zoomOnClick } from "@/esri-stuff/esriMap";
+import ExtentInfo from "@/types/ExtentInfo";
 
 export default defineComponent({
   props: {
@@ -32,16 +34,23 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    ClickHandler: {
-      type: Function,
+    ExtentInfo: {
+      type: Object as PropType<ExtentInfo>,
       required: true,
+    },
+  },
+  methods: {
+    onClick() {
+      console.log("Popup onClick");
+      zoomOnClick(this.ExtentInfo);
+      this.$emit('clicked');
     },
   },
 });
 </script>
 
 <style scoped>
-.zoom-popup-container {
+#zoom-popup-container {
   position: absolute;
   margin-top: 0;
   margin-left: 0;

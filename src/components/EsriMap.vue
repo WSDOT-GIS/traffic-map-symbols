@@ -5,7 +5,8 @@
     :PositionX="zoomPopupX"
     :PositionY="zoomPopupY"
     :Label="zoomPopupLabel"
-    :ClickHandler="zoomOnClick"
+    :ExtentInfo="zoomExtentInfo"
+    @clicked="onZoomPopupClicked"
   ></ZoomPopupView>
 </template>
 
@@ -21,7 +22,7 @@ import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 import { getFeatureById } from "@/layers/ZoomExtentLayer";
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
 import ExtentInfo from "@/types/ExtentInfo";
-import Extent from "@arcgis/core/geometry/Extent";
+import { zoomOnClick } from "@/esri-stuff/esriMap";
 
 export default defineComponent({
   components: { ZoomPopupView },
@@ -31,18 +32,25 @@ export default defineComponent({
     let zoomPopupX = ref(0);
     let zoomPopupY = ref(0);
     let zoomPopupLabel = ref("");
-    let zoomExtentInfo = reactive({
+    const zoomExtentInfo = reactive({
       xmin: 0,
       xmax: 0,
       ymin: 0,
       ymax: 0,
     } as ExtentInfo);
-    const zoomOnClick = () => {
-      store.commit("setCurrentExtent", zoomExtentInfo);
+    const zoomMetroEventHandler = () => {
+      console.log("zoom event");
+      zoomOnClick(zoomExtentInfo);
     };
+    let mapDiv: HTMLDivElement;
+    const onZoomPopupClicked = () => {
+      console.log("onZoomPopupClicked")
+      mapDiv?.removeEventListener("click", zoomMetroEventHandler);
+    };
+
     onMounted(async () => {
       const esriMap = await import("../esri-stuff/esriMap");
-      const mapDiv = document.getElementById("map_view") as HTMLDivElement;
+      mapDiv = document.getElementById("map_view") as HTMLDivElement;
       esriMap.init(mapDiv);
       //#region register layer list to state
       let layerList: { index: number; title: string; visible: boolean }[] = [];
@@ -89,43 +97,35 @@ export default defineComponent({
               zoomExtentInfo.xmax = extent.xmax;
               zoomExtentInfo.ymin = extent.ymin;
               zoomExtentInfo.ymax = extent.ymax;
-              console.log("Extent Info - " + JSON.stringify(zoomExtentInfo));
               zoomPopupLabel.value = response.attributes.Label;
             });
             zoomPopupX.value = event.x;
             zoomPopupY.value = event.y;
             mapDiv.style.cursor = "zoom-in";
-            mapDiv.addEventListener("click", zoomOnClick);
+            mapDiv.addEventListener(
+              "click",
+              zoomMetroEventHandler,
+              // () => {
+              //   console.log("zoom event");
+              //   zoomOnClick(zoomExtentInfo);
+              // },
+              { once: true }
+            );
           } else {
             // Resume normal map operation...
             zoomPopupVisible.value = false;
             mapDiv.style.cursor = "auto";
-            mapDiv.removeEventListener("click", zoomOnClick);
           }
         });
       });
-
+      // Keep track of map extent and scale in the state store...
       esriMap.mapView.watch("extent", (newValue, oldValue) => {
         if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
           store.commit("setCurrentExtent", newValue);
-          const extent = newValue as Extent;
-          console.log("View height: " + extent.height);
         }
       });
       // Set extent based on the URL query parameter...
       esriMap.mapView.extent = getExtentFromUrl();
-
-      // Set up zoom event handler for zoom extent box...
-      const zoomToPopupFeature = () => {
-        var extent = esriMap.mapView.popup.selectedFeature.geometry.extent;
-        store.commit("setCurrentExtent", extent);
-      };
-
-      esriMap.mapView.popup.on("trigger-action", (event) => {
-        if (event.action.id === "zoom-to-popup-feature") {
-          zoomToPopupFeature();
-        }
-      });
     });
     return {
       zoomPopupVisible,
@@ -133,7 +133,7 @@ export default defineComponent({
       zoomPopupY,
       zoomPopupLabel,
       zoomExtentInfo,
-      zoomOnClick,
+      onZoomPopupClicked,
     };
   },
 });

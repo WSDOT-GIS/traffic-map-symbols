@@ -107,21 +107,6 @@ const layer = new FeatureLayer({
 
 export default layer;
 
-const query = layer.createQuery();
-query.where = "1 = 1";
-query.outFields = ["ObjectID"];
-let heightMax = -1;
-layer.queryFeatures(query).then((result) => {
-    result.features.forEach((eachFeature) => {
-        if (eachFeature.geometry.extent.height > heightMax) {
-            heightMax = eachFeature.geometry.extent.height;
-        }
-    });
-    console.log("Max height: " + heightMax);
-});
-
-// const setVisibility = ()
-
 export const getFeatureById = async (id: number): Promise<Graphic> => {
     const query = layer.createQuery();
     query.where = "ObjectID =" + id;

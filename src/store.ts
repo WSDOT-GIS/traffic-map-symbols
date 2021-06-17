@@ -3,7 +3,7 @@ import { createStore, useStore as baseUseStore, Store } from "vuex";
 import Extent from "@arcgis/core/geometry/Extent";
 
 import { webmap, mapView } from "./esri-stuff/esriMap";
-import { getBasemapInfo, toggleBasemapInfo, getDefaultBasemapInfo } from "./layers/Basemaps";
+import { getBasemapInfo, toggleBasemapInfo } from "./layers/Basemaps";
 import ExtentInfo from "./types/ExtentInfo";
 import { convert2EsriExtent, convert2ExtentInfo } from "./utils/extentUtil";
 import { setLayerFromUrl } from "./utils/urlParamUtil";
@@ -86,7 +86,7 @@ export const store = createStore<State>({
                 // If the payload is ESRI extent, then update the state only.
                 const extentInfo = convert2ExtentInfo(payload);
                 state.currentExtent = extentInfo;
-                console.log(JSON.stringify(state.currentExtent));
+                //console.log(JSON.stringify(state.currentExtent));
             } else {
                 // If the payload is ExtentInfo, actually zoom the map. Once the map extent 
                 // is changed, ESRI extent will be sent to this again and set the state.
@@ -94,7 +94,6 @@ export const store = createStore<State>({
                 mapView.extent = extent;
             }
         },
-
     },
 })
 // Clone the target of proxy (i.e. removing the reactivity)
