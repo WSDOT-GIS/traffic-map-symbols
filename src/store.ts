@@ -1,7 +1,6 @@
 import { InjectionKey } from "vue";
 import { createStore, useStore as baseUseStore, Store } from "vuex";
 import Extent from "@arcgis/core/geometry/Extent";
-
 import { webmap, mapView } from "./esri-stuff/esriMap";
 import { getBasemapInfo, toggleBasemapInfo, getDefaultBasemapInfo } from "./layers/Basemaps";
 import ExtentInfo from "./types/ExtentInfo";
@@ -18,17 +17,21 @@ export interface State {
     pointerY: number,
     layerList: LayerInfo[],//{ index: number, title: string, visible: boolean }[],
     currentExtent: ExtentInfo,
+    userLocation: number[]|null
 }
 
 // define injection key...
 export const key: InjectionKey<Store<State>> = Symbol()
 
 export const store = createStore<State>({
-    state() {
+    state() {//ask masao about this
         const layerList = [
             { index: 0, title: "Traffic", visible: true },
             { index: 1, title: "Park and Rides", visible: false },
-            { index: 2, title: "Traffic Cameras", visible: false }
+            { index: 2, title: "Traffic Cameras", visible: false },
+            { index: 3, title:"test1", visible: true},
+            { index: 4, title: "test2", visible:false}
+
         ]
         setLayerFromUrl(layerList);
 
@@ -42,12 +45,8 @@ export const store = createStore<State>({
                 ymin: 0,
                 ymax: 0
             },
-            layerList: layerList
-            // layerList: [
-            //     { index: 0, title: "Traffic", visible: true },
-            //     { index: 1, title: "Park and Rides", visible: false },
-            //     { index: 2, title: "Traffic Cameras", visible: false }
-            // ]
+            layerList: layerList,
+            userLocation:null
         }
     },
     getters: {
@@ -62,36 +61,20 @@ export const store = createStore<State>({
                 state.basemap = basemapInfo.name;
                 webmap.basemap = basemapInfo.basemap;
             }
-            // switch (state.basemap) {
-            //     case "satellite":
-            //         webmap.basemap = satelliteBasemap;
-            //         break;
-            //     default:
-            //         webmap.basemap = wsdotBasemap;
-            // }
         },
         toggleBasemap(state) {
-            const basemapInfo = toggleBasemapInfo(state.basemap);
+            const basemapInfo = toggleBasemapInfo(state.basemap);//Look at this with masao
             state.basemap = basemapInfo.name;
-            // if (state.basemap == "wsdot") {
-            //     state.basemap = "satellite"
-            // } else {
-            //     state.basemap = "wsdot"
-            // }
             webmap.basemap = basemapInfo.basemap;
-            // switch (state.basemap) {
-            //     case "satellite":
-            //         webmap.basemap = satelliteBasemap;
-            //         break;
-            //     default:
-            //         webmap.basemap = wsdotBasemap;
-            // }
         },
         setPointerX(state, payload) {
-            state.pointerX = payload;
+            state.pointerX = payload.toFixed(6);
         },
         setPointerY(state, payload) {
-            state.pointerY = payload;
+            state.pointerY = payload.toFixed(6);
+        },
+        setUserLocation(state, payload) {
+            state.userLocation = payload;
         },
         setLayerList(state, payload) {
             state.layerList = payload;

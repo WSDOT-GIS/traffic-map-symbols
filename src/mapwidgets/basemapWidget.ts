@@ -1,7 +1,7 @@
-import WebMap from "@arcgis/core/WebMap";
+/*import WebMap from "@arcgis/core/WebMap";
 import MapView from "@arcgis/core/views/MapView";
 import Basemap from "@arcgis/core/Basemap"
-import WsdotBasemap from "@/layers/WsdotBasemap";
+import WsdotBasemap from "/layers/WsdotBasemap";
 import { withScopeId } from "@vue/runtime-core";
 class basemapWidget{
     widgetDiv: HTMLElement;
@@ -29,4 +29,4 @@ class basemapWidget{
         }
     }
 }
-export {basemapWidget}
+export {basemapWidget}*/

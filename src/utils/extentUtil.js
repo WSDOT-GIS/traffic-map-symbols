@@ -1,7 +1,7 @@
 define(["require", "exports", "tslib", "@arcgis/core/geometry/Extent", "@arcgis/core/geometry/SpatialReference"], function (require, exports, tslib_1, Extent_1, SpatialReference_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.Convert2ExtentInfo = exports.Convert2EsriExtent = exports.GetEsriExtent = exports.GetExtentInfo = void 0;
+    exports.convert2ExtentInfo = exports.convert2EsriExtent = exports.getEsriExtent = exports.getExtentInfo = void 0;
     Extent_1 = tslib_1.__importDefault(Extent_1);
     SpatialReference_1 = tslib_1.__importDefault(SpatialReference_1);
     var defaultExtents = [
@@ -14,17 +14,17 @@ define(["require", "exports", "tslib", "@arcgis/core/geometry/Extent", "@arcgis/
             ymax: 6316025.98739708,
         },
     ];
-    var GetExtentInfo = function (id) {
+    var getExtentInfo = function (id) {
         var result = defaultExtents.filter(function (x) { return x.id == id; });
         return result[0];
     };
-    exports.GetExtentInfo = GetExtentInfo;
-    var GetEsriExtent = function (name) {
-        var info = exports.GetExtentInfo(name);
-        return exports.Convert2EsriExtent(info);
+    exports.getExtentInfo = getExtentInfo;
+    var getEsriExtent = function (name) {
+        var info = exports.getExtentInfo(name);
+        return exports.convert2EsriExtent(info);
     };
-    exports.GetEsriExtent = GetEsriExtent;
-    var Convert2EsriExtent = function (extentInfo) {
+    exports.getEsriExtent = getEsriExtent;
+    var convert2EsriExtent = function (extentInfo) {
         var extent = new Extent_1.default({
             xmin: extentInfo.xmin,
             xmax: extentInfo.xmax,
@@ -34,8 +34,8 @@ define(["require", "exports", "tslib", "@arcgis/core/geometry/Extent", "@arcgis/
         });
         return extent;
     };
-    exports.Convert2EsriExtent = Convert2EsriExtent;
-    var Convert2ExtentInfo = function (extent) {
+    exports.convert2EsriExtent = convert2EsriExtent;
+    var convert2ExtentInfo = function (extent) {
         var info = {
             xmin: extent.xmin,
             xmax: extent.xmax,
@@ -44,6 +44,6 @@ define(["require", "exports", "tslib", "@arcgis/core/geometry/Extent", "@arcgis/
         };
         return info;
     };
-    exports.Convert2ExtentInfo = Convert2ExtentInfo;
+    exports.convert2ExtentInfo = convert2ExtentInfo;
 });
 //# sourceMappingURL=extentUtil.js.map

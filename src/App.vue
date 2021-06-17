@@ -4,6 +4,7 @@
   <div id="map-container">
     <BasemapView />
     <CoordinatesView />
+    <MyLocationView />
     <div id="map-top-left-container">
       <LayerListView />
       <hr class="horizontal-divider" />
@@ -28,8 +29,8 @@ import FooterView from "./components/FooterView.vue";
 import Alert from "./types/AlertInfo";
 import LayerListView from "./components/LayerListView.vue";
 import SavedMapView from "./components/SavedMapView.vue";
-import LegendVue from "./components/LegendVue.vue";
-
+import LegendVue from "./components/LegendView.vue";
+import MyLocationView from"./components/MyLocationView.vue";
 export default defineComponent({
   name: "App",
   components: {
@@ -43,6 +44,7 @@ export default defineComponent({
     LayerListView,
     SavedMapView,
     LegendVue,
+    MyLocationView,
   },
   setup() {
     const headerText = "This is the header";
@@ -120,7 +122,7 @@ hr.horizontal-divider {
   width: 100%;
 }
 
-#basemapWidget {
+#basemap-widget-container {
   position: absolute;
   margin-left: 91vw;
   margin-top: 71vh;
@@ -142,5 +144,18 @@ hr.horizontal-divider {
   width: 100px;
   float: left;
   z-index: 1;
+}
+
+#locationWidget {
+  position: absolute;
+  left: 0px;
+  bottom: 30px;
+  margin-bottom: 8px;
+  text-align: center;
+  width: 100px;
+  float: left;
+  z-index: 1;
+  height: 50px;
+  width: 50px
 }
 </style>

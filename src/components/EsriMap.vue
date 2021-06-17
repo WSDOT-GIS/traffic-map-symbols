@@ -15,7 +15,9 @@ export default defineComponent({
 
       //#region register layer list to state
       let layerList: { index: number; title: string; visible: boolean }[] = [];
+      console.log( esriMap.mapView.map.layers)
       esriMap.mapView.map.layers.map((layer, index) => {
+        console.log([layer, index])
         layerList.push({
           index: index,
           title: layer.title,

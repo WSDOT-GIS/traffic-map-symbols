@@ -1,5 +1,5 @@
 <template>
-  <div id="layerListWidget">
+  <div id="layerListWidget" title="Map Features">
     <table>
       <td>
         <label style="font-size:large">Map Features</label>
@@ -14,7 +14,10 @@
       <tr v-for="layer in layerList" :key="layer.index">
         <td style="font-size:small; text-align:left">{{layer.title}}</td>
         <td>
-          <input type="checkbox" @change="clickEvent" :checked="layer.visible" :value="layer.index"/>
+          <label class="switch">
+            <input type="checkbox" @change="clickEvent" :checked="layer.visible" :value="layer.index"/>
+            <span class="slider round"></span>
+          </label>
         </td>
       </tr>
     </table>
@@ -32,14 +35,14 @@ export default defineComponent({
     const expandIconPath = ref<string>("M31.047 28h-5l-12-12 12-12h5l-12 12 12 12zm-26-12l12-12h-5l-12 12 12 12h5l-12-12z");
     const expanded = ref<string>("block")
     const store = useStore()
-    if(store.state.layerList.length>0){
+    /*if(store.state.layerList.length>0){
       layerList.value = store.state.layerList
-    }
-    else{
+    }*/
+   // else{
       webmap.layers.map((layer,index)=>{
         layerList.value.push({index: index,title: layer.title, visible: layer.visible});
       })
-    }
+   // }
     store.commit("setLayerList",layerList)
     console.log(store.state.layerList)
     return{layerList, expandIconPath, expanded}
