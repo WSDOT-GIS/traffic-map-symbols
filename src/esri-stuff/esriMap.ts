@@ -23,24 +23,17 @@ const lineRestrictions = new MapImageLayer({
 //EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
 
 export const webmap = new WebMap({
-<<<<<<< HEAD
     // basemap: basemapInfo.basemap,
     layers: [TrafficLayer, ParkRideLayer, CameraLayer, pointRestrictions, lineRestrictions],
-=======
-    layers: [TrafficLayer, ParkRideLayer, CameraLayer]
->>>>>>> 073e1d03a32392513c2dc4c7c6d259ccd444225c
 });
 
 export const mapView = new MapView({
     container: "map_view", // https://v3.vuejs.org/api/instance-properties.html
     map: webmap,
 });
-<<<<<<< HEAD
 mapView.on("click",(()=>{
     mapView.graphics.removeAll()
 }))
-=======
->>>>>>> 073e1d03a32392513c2dc4c7c6d259ccd444225c
 mapView.ui.move("zoom", "bottom-right");
 
 // const bookmarks = new Bookmarks({
