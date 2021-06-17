@@ -49,20 +49,17 @@ export const convert2ExtentInfo = (extent: Extent): ExtentInfo => {
 };
 
 export const zoomOnClick = (extentInfo: ExtentInfo): void => {
-    console.log("zoomOnClick");
     const extent = convert2EsriExtent(extentInfo);
     mapView.extent = extent;
     ZoomExtentLayer.visible = false;
+    // Remember the scale zoomed into so it can detect when map is zoomed out.
     const zoomExtentLayerMaxScale = mapView.scale;
-    console.log("C:zoomExtentLayerMaxScale = " + zoomExtentLayerMaxScale);
+    // Set watch to make the layer visible again when user zoomed out.
     const watchHandle = whenTrue(mapView, "stationary", () => {
         if (mapView.scale > zoomExtentLayerMaxScale) {
             ZoomExtentLayer.visible = true;
-            console.log("C:ZoomExtentLayer.visible = true");
+            // Watch is no longer needed.
             watchHandle.remove();
-            console.log("C:Removed the watch");
-        } else {
-            console.log("C:stationary = true");
         }
     });
 };
