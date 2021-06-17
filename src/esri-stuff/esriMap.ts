@@ -2,24 +2,38 @@
 import WebMap from "@arcgis/core/WebMap";
 // import Map from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
+import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 // import Bookmarks from "@arcgis/core/widgets/Bookmarks";
 // import Expand from "@arcgis/core/widgets/Expand";
 
 import TrafficLayer from "@/layers/TrafficLayer";
 import ParkRideLayer from "@/layers/ParkRideLayer";
 import CameraLayer from "@/layers/CameraLayer";
-
+const pointRestrictions = new MapImageLayer({
+    url:"https://hqolymgis30s.wsdot.loc:6443/arcgis/rest/services/TravelCenter/TravelCenter/MapServer/2",
+    visible:true,
+    title:"Point Restrictions"
+})
+const lineRestrictions = new MapImageLayer({
+    url:"https://hqolymgis30s.wsdot.loc:6443/arcgis/rest/services/TravelCenter/TravelCenter/MapServer/3",
+    visible:true,
+    title:"Line Restrictions"
+})
 // What is this used for?
 //EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
 
 export const webmap = new WebMap({
-    layers: [TrafficLayer, ParkRideLayer, CameraLayer]
+    // basemap: basemapInfo.basemap,
+    layers: [TrafficLayer, ParkRideLayer, CameraLayer, pointRestrictions, lineRestrictions],
 });
 
 export const mapView = new MapView({
     container: "map_view", // https://v3.vuejs.org/api/instance-properties.html
     map: webmap,
 });
+mapView.on("click",(()=>{
+    mapView.graphics.removeAll()
+}))
 mapView.ui.move("zoom", "bottom-right");
 
 // const bookmarks = new Bookmarks({

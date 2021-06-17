@@ -13,7 +13,6 @@ define(["require", "exports", "tslib", "@arcgis/core/renderers/SimpleRenderer", 
         title: "Park and Rides",
         renderer: renderer,
         popupTemplate: ParkRidePopup_1.default,
-        featureReduction: clusterConfig
     });
     exports.default = layer;
 });

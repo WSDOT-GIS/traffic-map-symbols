@@ -35,6 +35,7 @@
     <hr class="horizontal-divider" />
     <form @submit.prevent="addItem" id="save-map-form">
       <input
+        title="Input Map Name"
         type="text"
         v-model="newMapTitle"
         id="new-map-title"

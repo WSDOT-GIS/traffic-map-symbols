@@ -3,7 +3,6 @@ import LegendInfo from "../types/LegendInfo"
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import MapView from "@arcgis/core/views/MapView";
 import Basemap from "@arcgis/core/Basemap"
-import WsdotBasemap from "@/layers/WsdotBasemap";
 import { withScopeId } from "@vue/runtime-core";
 import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 class legendWidget{
