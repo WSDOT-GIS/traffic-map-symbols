@@ -24,14 +24,11 @@ define(["require", "exports", "tslib", "vuex", "@arcgis/core/geometry/Extent", "
                     ymax: 0
                 },
                 layerList: layerList
-<<<<<<< HEAD
                 // layerList: [
                 //     { index: 0, title: "Traffic", visible: true },
                 //     { index: 1, title: "Park and Rides", visible: false },
                 //     { index: 2, title: "Traffic Cameras", visible: false }
                 // ]
-=======
->>>>>>> Develop-AddRestrictionLayers
             };
         },
         getters: {
