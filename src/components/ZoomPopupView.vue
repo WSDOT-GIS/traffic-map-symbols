@@ -35,7 +35,6 @@ export default defineComponent({
   },
   methods: {
     onClick() {
-      console.log("Popup onClick");
       this.$emit("clicked");
     },
   },
