@@ -89,6 +89,7 @@ export default defineComponent({
       // Removing the reactivity so the saved state is not altered by store state changes...
       this.$store.commit("setCurrentExtent", cloneProxyTarget(item.extent));
       this.$store.commit("setLayerList", cloneProxyTarget(item.layers));
+      console.log("SavedMapView selectItem setLayerList");
       this.$store.commit("setBasemap", item.basemap);
       this.mapList.forEach((each) => {
         each.selected = false;
@@ -139,6 +140,7 @@ export default defineComponent({
 #saved-map-list-title {
   display: block;
   padding: 0 5px;
+  font-size: medium;
 }
 
 .saved-map-item-container {

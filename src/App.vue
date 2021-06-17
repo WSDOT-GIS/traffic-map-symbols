@@ -44,7 +44,11 @@ export default defineComponent({
     LayerListView,
     SavedMapView,
     LegendVue,
+<<<<<<< HEAD
     MyLocationView,
+=======
+    // ZoomPopupView,
+>>>>>>> 073e1d03a32392513c2dc4c7c6d259ccd444225c
   },
   setup() {
     const headerText = "This is the header";

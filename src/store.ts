@@ -2,7 +2,7 @@ import { InjectionKey } from "vue";
 import { createStore, useStore as baseUseStore, Store } from "vuex";
 import Extent from "@arcgis/core/geometry/Extent";
 import { webmap, mapView } from "./esri-stuff/esriMap";
-import { getBasemapInfo, toggleBasemapInfo, getDefaultBasemapInfo } from "./layers/Basemaps";
+import { getBasemapInfo, toggleBasemapInfo } from "./layers/Basemaps";
 import ExtentInfo from "./types/ExtentInfo";
 import { convert2EsriExtent, convert2ExtentInfo } from "./utils/extentUtil";
 import { setLayerFromUrl } from "./utils/urlParamUtil";
@@ -12,12 +12,20 @@ import LayerInfo from "./types/LayerInfo";
 // Reference - https://next.vuex.vuejs.org/guide/typescript-support.html#typing-usestore-composition-function
 // define typings for the store state...
 export interface State {
+<<<<<<< HEAD
     basemap: string,
     pointerX: number,
     pointerY: number,
     layerList: LayerInfo[],//{ index: number, title: string, visible: boolean }[],
     currentExtent: ExtentInfo,
     userLocation: number[]|null
+=======
+    basemap: string;
+    pointerX: number;
+    pointerY: number;
+    layerList: LayerInfo[];//{ index: number, title: string, visible: boolean }[],
+    currentExtent: ExtentInfo;
+>>>>>>> 073e1d03a32392513c2dc4c7c6d259ccd444225c
 }
 
 // define injection key...
@@ -29,9 +37,12 @@ export const store = createStore<State>({
             { index: 0, title: "Traffic", visible: true },
             { index: 1, title: "Park and Rides", visible: false },
             { index: 2, title: "Traffic Cameras", visible: false },
+<<<<<<< HEAD
             { index: 3, title:"test1", visible: true},
             { index: 4, title: "test2", visible:false}
 
+=======
+>>>>>>> 073e1d03a32392513c2dc4c7c6d259ccd444225c
         ]
         setLayerFromUrl(layerList);
 
@@ -46,7 +57,15 @@ export const store = createStore<State>({
                 ymax: 0
             },
             layerList: layerList,
+<<<<<<< HEAD
             userLocation:null
+=======
+            // layerList: [
+            //     { index: 0, title: "Traffic", visible: true },
+            //     { index: 1, title: "Park and Rides", visible: false },
+            //     { index: 2, title: "Traffic Cameras", visible: false }
+            // ]
+>>>>>>> 073e1d03a32392513c2dc4c7c6d259ccd444225c
         }
     },
     getters: {
@@ -85,15 +104,17 @@ export const store = createStore<State>({
         },
         setCurrentExtent(state, payload) {
             if (payload instanceof Extent) {
+                // If the payload is ESRI extent, then update the state only.
                 const extentInfo = convert2ExtentInfo(payload);
                 state.currentExtent = extentInfo;
-                console.log(JSON.stringify(state.currentExtent));
+                //console.log(JSON.stringify(state.currentExtent));
             } else {
+                // If the payload is ExtentInfo, actually zoom the map. Once the map extent 
+                // is changed, ESRI extent will be sent to this again and set the state.
                 const extent = convert2EsriExtent(payload);
                 mapView.extent = extent;
             }
         },
-
     },
 })
 // Clone the target of proxy (i.e. removing the reactivity)
