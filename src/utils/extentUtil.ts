@@ -1,8 +1,10 @@
 import Extent from "@arcgis/core/geometry/Extent";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
+import { whenTrue } from "@arcgis/core/core/watchUtils";
 
 import ExtentInfo from "@/types/ExtentInfo";
 import { mapView } from "@/esri-stuff/esriMap";
+import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 
 const defaultExtents: ExtentInfo[] = [
     {
@@ -44,5 +46,24 @@ export const convert2ExtentInfo = (extent: Extent): ExtentInfo => {
         ymax: extent.ymax
     }
     return info;
+};
+
+export const zoomOnClick = (extentInfo: ExtentInfo): void => {
+    const extent = convert2EsriExtent(extentInfo);
+    mapView.extent = extent;
+    ZoomExtentLayer.visible = false;
+    const zoomExtentLayerMaxScale = mapView.scale;
+    console.log("C:zoomExtentLayerMaxScale = " + zoomExtentLayerMaxScale);
+    const watchHandle = whenTrue(mapView, "stationary", () => {
+        if (mapView.scale > zoomExtentLayerMaxScale) {
+            ZoomExtentLayer.visible = true;
+            //zoomExtentLayerMaxScale = -1;
+            console.log("C:ZoomExtentLayer.visible = true");
+            watchHandle.remove();
+            console.log("C:Removed the watch");
+        } else {
+            console.log("C:stationary = true");
+        }
+    });
 };
 

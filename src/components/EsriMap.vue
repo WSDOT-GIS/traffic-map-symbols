@@ -5,8 +5,7 @@
     :PositionX="zoomPopupX"
     :PositionY="zoomPopupY"
     :Label="zoomPopupLabel"
-    :ExtentInfo="zoomExtentInfo"
-    @clicked="onZoomPopupClicked"
+    @clicked="zoomMetroEventHandler"
   ></ZoomPopupView>
 </template>
 
@@ -22,7 +21,7 @@ import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 import { getFeatureById } from "@/layers/ZoomExtentLayer";
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
 import ExtentInfo from "@/types/ExtentInfo";
-import { zoomOnClick } from "@/esri-stuff/esriMap";
+import { zoomOnClick } from "@/utils/extentUtil";
 
 export default defineComponent({
   components: { ZoomPopupView },
@@ -38,14 +37,13 @@ export default defineComponent({
       ymin: 0,
       ymax: 0,
     } as ExtentInfo);
-    const zoomMetroEventHandler = () => {
-      console.log("zoom event");
-      zoomOnClick(zoomExtentInfo);
-    };
     let mapDiv: HTMLDivElement;
-    const onZoomPopupClicked = () => {
-      console.log("onZoomPopupClicked")
-      mapDiv?.removeEventListener("click", zoomMetroEventHandler);
+    const zoomMetroEventHandler = () => {
+      console.log("zoom metro event handler");
+      zoomOnClick(zoomExtentInfo);
+      mapDiv.removeEventListener("click", zoomMetroEventHandler);
+      zoomPopupVisible.value = false;
+      mapDiv.style.cursor = "auto";
     };
 
     onMounted(async () => {
@@ -85,7 +83,7 @@ export default defineComponent({
           if (response.results.length) {
             zoomPopupVisible.value = true;
             const zoomGraphic = response.results[0].graphic;
-            // Set popup properties...
+            // Set zoom popup properties...
             const id = zoomGraphic.attributes["ObjectID"];
             getFeatureById(id).then((response) => {
               const geom = project(
@@ -102,15 +100,7 @@ export default defineComponent({
             zoomPopupX.value = event.x;
             zoomPopupY.value = event.y;
             mapDiv.style.cursor = "zoom-in";
-            mapDiv.addEventListener(
-              "click",
-              zoomMetroEventHandler,
-              // () => {
-              //   console.log("zoom event");
-              //   zoomOnClick(zoomExtentInfo);
-              // },
-              { once: true }
-            );
+            mapDiv.addEventListener("click", zoomMetroEventHandler); 
           } else {
             // Resume normal map operation...
             zoomPopupVisible.value = false;
@@ -132,8 +122,7 @@ export default defineComponent({
       zoomPopupX,
       zoomPopupY,
       zoomPopupLabel,
-      zoomExtentInfo,
-      onZoomPopupClicked,
+      zoomMetroEventHandler,
     };
   },
 });

@@ -12,9 +12,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
-import { zoomOnClick } from "@/esri-stuff/esriMap";
-import ExtentInfo from "@/types/ExtentInfo";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   props: {
@@ -34,16 +32,11 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    ExtentInfo: {
-      type: Object as PropType<ExtentInfo>,
-      required: true,
-    },
   },
   methods: {
     onClick() {
       console.log("Popup onClick");
-      zoomOnClick(this.ExtentInfo);
-      this.$emit('clicked');
+      this.$emit("clicked");
     },
   },
 });
