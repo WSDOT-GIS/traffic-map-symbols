@@ -38,10 +38,14 @@ export default defineComponent({
       ymax: 0,
     } as ExtentInfo);
     let mapDiv: HTMLDivElement;
+    // Setup event handler for metro zoom...
+    let zoomEventIsOn = false;
     const zoomMetroEventHandler = () => {
-      console.log("zoom metro event handler");
       zoomOnClick(zoomExtentInfo);
-      mapDiv.removeEventListener("click", zoomMetroEventHandler);
+      if (zoomEventIsOn) {
+        mapDiv.removeEventListener("click", zoomMetroEventHandler);
+        zoomEventIsOn = false;
+      }
       zoomPopupVisible.value = false;
       mapDiv.style.cursor = "auto";
     };
@@ -70,7 +74,6 @@ export default defineComponent({
       // Track pointer location...
       esriMap.mapView.on("pointer-move", (event) => {
         // Update current poitner x/y in the store...
-        console.log("pointer move event");
         let pt = esriMap.mapView.toMap({ x: event.x, y: event.y });
         store.commit("setPointerX", pt.longitude);
         store.commit("setPointerY", pt.latitude);
@@ -100,11 +103,18 @@ export default defineComponent({
             zoomPopupX.value = event.x;
             zoomPopupY.value = event.y;
             mapDiv.style.cursor = "zoom-in";
-            mapDiv.addEventListener("click", zoomMetroEventHandler); 
+            if (!zoomEventIsOn) {
+              mapDiv.addEventListener("click", zoomMetroEventHandler);
+              zoomEventIsOn = true;
+            }
           } else {
             // Resume normal map operation...
             zoomPopupVisible.value = false;
             mapDiv.style.cursor = "auto";
+            if (zoomEventIsOn) {
+              mapDiv.removeEventListener("click", zoomMetroEventHandler);
+              zoomEventIsOn = false;
+            }
           }
         });
       });

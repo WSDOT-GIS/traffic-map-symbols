@@ -49,6 +49,7 @@ export const convert2ExtentInfo = (extent: Extent): ExtentInfo => {
 };
 
 export const zoomOnClick = (extentInfo: ExtentInfo): void => {
+    console.log("zoomOnClick");
     const extent = convert2EsriExtent(extentInfo);
     mapView.extent = extent;
     ZoomExtentLayer.visible = false;
@@ -57,7 +58,6 @@ export const zoomOnClick = (extentInfo: ExtentInfo): void => {
     const watchHandle = whenTrue(mapView, "stationary", () => {
         if (mapView.scale > zoomExtentLayerMaxScale) {
             ZoomExtentLayer.visible = true;
-            //zoomExtentLayerMaxScale = -1;
             console.log("C:ZoomExtentLayer.visible = true");
             watchHandle.remove();
             console.log("C:Removed the watch");
