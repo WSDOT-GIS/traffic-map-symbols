@@ -67,7 +67,7 @@ define(["require", "exports", "tslib", "@arcgis/core/renderers/SimpleRenderer", 
     ];
     var layer = new GeoJSONLayer_1.default({
         id: "weather-camera-layer",
-        url: "http://hqtob1webtmdev1/GISData/camera.json",
+        url: "http://hqtob1webtmdev1/GISData/camera.geojson",
         title: "Traffic Cameras",
         renderer: renderer,
         popupTemplate: CameraPopup_1.default,
