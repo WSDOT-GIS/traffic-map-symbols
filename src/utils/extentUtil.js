@@ -1,9 +1,10 @@
-define(["require", "exports", "tslib", "@arcgis/core/geometry/Extent", "@arcgis/core/geometry/SpatialReference"], function (require, exports, tslib_1, Extent_1, SpatialReference_1) {
+define(["require", "exports", "tslib", "@arcgis/core/geometry/Extent", "@arcgis/core/geometry/SpatialReference", "@arcgis/core/core/watchUtils", "@/esri-stuff/esriMap", "@/layers/ZoomExtentLayer"], function (require, exports, tslib_1, Extent_1, SpatialReference_1, watchUtils_1, esriMap_1, ZoomExtentLayer_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.convert2ExtentInfo = exports.convert2EsriExtent = exports.getEsriExtent = exports.getExtentInfo = void 0;
+    exports.zoomOnClick = exports.convert2ExtentInfo = exports.convert2EsriExtent = exports.getEsriExtent = exports.getExtentInfo = void 0;
     Extent_1 = tslib_1.__importDefault(Extent_1);
     SpatialReference_1 = tslib_1.__importDefault(SpatialReference_1);
+    ZoomExtentLayer_1 = tslib_1.__importDefault(ZoomExtentLayer_1);
     var defaultExtents = [
         {
             id: "full",
@@ -45,5 +46,21 @@ define(["require", "exports", "tslib", "@arcgis/core/geometry/Extent", "@arcgis/
         return info;
     };
     exports.convert2ExtentInfo = convert2ExtentInfo;
+    var zoomOnClick = function (extentInfo) {
+        var extent = exports.convert2EsriExtent(extentInfo);
+        esriMap_1.mapView.extent = extent;
+        ZoomExtentLayer_1.default.visible = false;
+        // Remember the scale zoomed into so it can detect when map is zoomed out.
+        var zoomExtentLayerMaxScale = esriMap_1.mapView.scale;
+        // Set watch to make the layer visible again when user zoomed out.
+        var watchHandle = watchUtils_1.whenTrue(esriMap_1.mapView, "stationary", function () {
+            if (esriMap_1.mapView.scale > zoomExtentLayerMaxScale) {
+                ZoomExtentLayer_1.default.visible = true;
+                // Watch is no longer needed.
+                watchHandle.remove();
+            }
+        });
+    };
+    exports.zoomOnClick = zoomOnClick;
 });
 //# sourceMappingURL=extentUtil.js.map
