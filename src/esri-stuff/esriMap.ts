@@ -9,22 +9,14 @@ import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 import TrafficLayer from "@/layers/TrafficLayer";
 import ParkRideLayer from "@/layers/ParkRideLayer";
 import CameraLayer from "@/layers/CameraLayer";
-const pointRestrictions = new MapImageLayer({
-    url:"https://hqolymgis30s.wsdot.loc:6443/arcgis/rest/services/TravelCenter/TravelCenter/MapServer/2",
-    visible:true,
-    title:"Point Restrictions"
-})
-const lineRestrictions = new MapImageLayer({
-    url:"https://hqolymgis30s.wsdot.loc:6443/arcgis/rest/services/TravelCenter/TravelCenter/MapServer/3",
-    visible:true,
-    title:"Line Restrictions"
-})
+import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
+import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
 // What is this used for?
 //EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
 
 export const webmap = new WebMap({
     // basemap: basemapInfo.basemap,
-    layers: [TrafficLayer, ParkRideLayer, CameraLayer, pointRestrictions, lineRestrictions],
+    layers: [TrafficLayer, ParkRideLayer, CameraLayer, PointRestrictionsLayer, LineRestrictionsLayer],
 });
 
 export const mapView = new MapView({
