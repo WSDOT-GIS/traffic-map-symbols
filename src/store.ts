@@ -1,7 +1,6 @@
 import { InjectionKey } from "vue";
 import { createStore, useStore as baseUseStore, Store } from "vuex";
 import Extent from "@arcgis/core/geometry/Extent";
-
 import { webmap, mapView } from "./esri-stuff/esriMap";
 import { getBasemapInfo, toggleBasemapInfo } from "./layers/Basemaps";
 import ExtentInfo from "./types/ExtentInfo";
@@ -13,22 +12,25 @@ import LayerInfo from "./types/LayerInfo";
 // Reference - https://next.vuex.vuejs.org/guide/typescript-support.html#typing-usestore-composition-function
 // define typings for the store state...
 export interface State {
-    basemap: string;
-    pointerX: number;
-    pointerY: number;
-    layerList: LayerInfo[];//{ index: number, title: string, visible: boolean }[],
-    currentExtent: ExtentInfo;
+    basemap: string,
+    pointerX: number,
+    pointerY: number,
+    layerList: LayerInfo[],//{ index: number, title: string, visible: boolean }[],
+    currentExtent: ExtentInfo,
+    userLocation: number[]|null
 }
 
 // define injection key...
 export const key: InjectionKey<Store<State>> = Symbol()
 
 export const store = createStore<State>({
-    state() {
+    state() {//ask masao about this
         const layerList = [
             { index: 0, title: "Traffic", visible: true },
             { index: 1, title: "Park and Rides", visible: false },
             { index: 2, title: "Traffic Cameras", visible: false },
+            { index: 3, title:"test1", visible: true},
+            { index: 4, title: "test2", visible:false}
         ]
         setLayerFromUrl(layerList);
 
@@ -43,6 +45,7 @@ export const store = createStore<State>({
                 ymax: 0
             },
             layerList: layerList,
+            userLocation:null
             // layerList: [
             //     { index: 0, title: "Traffic", visible: true },
             //     { index: 1, title: "Park and Rides", visible: false },
@@ -64,15 +67,18 @@ export const store = createStore<State>({
             }
         },
         toggleBasemap(state) {
-            const basemapInfo = toggleBasemapInfo(state.basemap);
+            const basemapInfo = toggleBasemapInfo(state.basemap);//Look at this with masao
             state.basemap = basemapInfo.name;
             webmap.basemap = basemapInfo.basemap;
         },
         setPointerX(state, payload) {
-            state.pointerX = payload;
+            state.pointerX = payload.toFixed(6);
         },
         setPointerY(state, payload) {
-            state.pointerY = payload;
+            state.pointerY = payload.toFixed(6);
+        },
+        setUserLocation(state, payload) {
+            state.userLocation = payload;
         },
         setLayerList(state, payload) {
             state.layerList = payload;

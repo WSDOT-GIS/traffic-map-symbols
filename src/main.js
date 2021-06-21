@@ -1,4 +1,4 @@
-define(["require", "exports", "tslib", "vue", "./App.vue", "./store", "./assets/popups.css", "./assets/global.css", "./assets/basemapWidget.css"], function (require, exports, tslib_1, vue_1, App_vue_1, store_1) {
+define(["require", "exports", "tslib", "vue", "./App.vue", "./store", "./assets/popups.css", "./assets/global.css", "./assets/main.css", "./assets/basemapWidget.css", "./assets/toggleSlider.css"], function (require, exports, tslib_1, vue_1, App_vue_1, store_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     App_vue_1 = tslib_1.__importDefault(App_vue_1);
