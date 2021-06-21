@@ -6,7 +6,7 @@ import { clusterSymbol } from "@/symbols/CameraSymbol";
 import Popup from "@/popup-templates/CameraPopup";
 import { generateClusterConfig } from "@/utils/layerUtil"
 
-const clusterConfig = generateClusterConfig("Cameras", "camera", "#000000", clusterSymbol)
+const clusterConfig = generateClusterConfig("Cameras", "camera", "#fff", clusterSymbol)
 
 const renderer = new SimpleRenderer({ symbol: Symbol });
 
