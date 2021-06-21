@@ -24,8 +24,8 @@ const symbol = new CIMSymbol({
                     "frame": {
                         "xmin": 0,
                         "ymin": 0,
-                        "xmax": 28,
-                        "ymax": 17
+                        "xmax": 30,
+                        "ymax": 20
                     },
                     "markerGraphics": [
                         {
@@ -34,90 +34,92 @@ const symbol = new CIMSymbol({
                                 "rings": [
                                     [
                                         [
-                                            23.36,
-                                            0
+                                            21.36,
+                                            1
                                         ],
                                         [
                                             2.64,
-                                            0
+                                            1
                                         ],
                                         [
                                             1.63,
-                                            0.19
+                                            1.19
                                         ],
                                         [
                                             0.77,
-                                            0.74
+                                            1.74
                                         ],
                                         [
                                             0.2,
-                                            1.56
+                                            2.56
                                         ],
                                         [
                                             0,
-                                            2.52
+                                            3.52
                                         ],
                                         [
                                             0,
-                                            14.48
+                                            13.48
                                         ],
                                         [
                                             0.2,
-                                            15.44
+                                            14.44
                                         ],
                                         [
                                             0.77,
-                                            16.26
+                                            15.26
                                         ],
                                         [
                                             1.63,
-                                            16.81
+                                            15.81
                                         ],
                                         [
                                             2.64,
-                                            17
+                                            16
                                         ],
                                         [
-                                            23.36,
-                                            17
+                                            16.36,
+                                            16
                                         ],
                                         [
-                                            24.37,
-                                            16.81
+                                            17.37,
+                                            15.81
                                         ],
                                         [
-                                            25.23,
-                                            16.26
+                                            18.23,
+                                            15.26
                                         ],
                                         [
-                                            25.8,
-                                            15.44
+                                            18.8,
+                                            14.44
+                                        ],
+
+                                        [
+                                            19,
+                                            13.48
                                         ],
                                         [
-                                            26,
-                                            14.48
+                                            19,
+                                            3.52
                                         ],
                                         [
-                                            26,
-                                            2.52
+                                            18.8,
+                                            2.56
                                         ],
                                         [
-                                            25.8,
-                                            1.56
+                                            18.23,
+                                            1.74
                                         ],
                                         [
-                                            25.23,
-                                            0.74
+                                            17.37,
+                                            1.19
                                         ],
                                         [
-                                            24.37,
-                                            0.19
-                                        ],
-                                        [
-                                            23.36,
-                                            0
+                                            16.36,
+                                            1
                                         ]
                                     ]
+
                                 ]
                             },
                             "symbol": {
@@ -130,11 +132,11 @@ const symbol = new CIMSymbol({
                                         "joinStyle": "Round",
                                         "lineStyle3D": "Strip",
                                         "miterLimit": 10,
-                                        "width": 0,
+                                        "width": 1,
                                         "color": [
-                                            0,
-                                            0,
-                                            0,
+                                            255,
+                                            255,
+                                            255,
                                             255
                                         ]
                                     },
@@ -142,9 +144,9 @@ const symbol = new CIMSymbol({
                                         "type": "CIMSolidFill",
                                         "enable": true,
                                         "color": [
-                                            51,
-                                            51,
-                                            51,
+                                            0,
+                                            0,
+                                            0,
                                             255
                                         ]
                                     }
@@ -154,7 +156,7 @@ const symbol = new CIMSymbol({
                     ],
                     "scaleSymbolsProportionally": true,
                     "respectFrame": true,
-                    "offsetX": -2
+                    "offsetX": 0
                 },
                 {
                     "type": "CIMVectorMarker",
@@ -166,8 +168,8 @@ const symbol = new CIMSymbol({
                     "frame": {
                         "xmin": 0,
                         "ymin": 0,
-                        "xmax": 17,
-                        "ymax": 17
+                        "xmax": 30,
+                        "ymax": 20
                     },
                     "markerGraphics": [
                         {
@@ -176,20 +178,32 @@ const symbol = new CIMSymbol({
                                 "rings": [
                                     [
                                         [
-                                            0,
-                                            0.65
+                                            20,
+                                            11
                                         ],
                                         [
-                                            8.5,
-                                            16.35
+                                            27,
+                                            17
                                         ],
                                         [
-                                            17,
-                                            0.65
+                                            30,
+                                            17
                                         ],
                                         [
-                                            0,
-                                            0.65
+                                            30,
+                                            0
+                                        ],
+                                        [
+                                            27,
+                                            0
+                                        ],
+                                        [
+                                            20,
+                                            6
+                                        ],
+                                        [
+                                            20,
+                                            11
                                         ]
                                     ]
                                 ]
@@ -204,11 +218,11 @@ const symbol = new CIMSymbol({
                                         "joinStyle": "Round",
                                         "lineStyle3D": "Strip",
                                         "miterLimit": 10,
-                                        "width": 0,
+                                        "width": 1,
                                         "color": [
-                                            0,
-                                            0,
-                                            0,
+                                            255,
+                                            255,
+                                            255,
                                             255
                                         ]
                                     },
@@ -216,9 +230,9 @@ const symbol = new CIMSymbol({
                                         "type": "CIMSolidFill",
                                         "enable": true,
                                         "color": [
-                                            51,
-                                            51,
-                                            51,
+                                            0,
+                                            0,
+                                            0,
                                             255
                                         ]
                                     }
@@ -228,9 +242,9 @@ const symbol = new CIMSymbol({
                     ],
                     "scaleSymbolsProportionally": true,
                     "respectFrame": true,
-                    "offsetX": 7,
-                    "rotation": -28,
-                    "offsetY": 1
+                    "offsetX": 0,
+                    "rotation": 0,
+                    "offsetY": 0
                 }
             ]
         }
@@ -255,8 +269,8 @@ export const clusterSymbol = new CIMSymbol({
                     "frame": {
                         "xmin": 0,
                         "ymin": 0,
-                        "xmax": 28,
-                        "ymax": 17
+                        "xmax": 30,
+                        "ymax": 20
                     },
                     "markerGraphics": [
                         {
@@ -265,89 +279,174 @@ export const clusterSymbol = new CIMSymbol({
                                 "rings": [
                                     [
                                         [
-                                            23.36,
-                                            0
+                                            21.36,
+                                            1
                                         ],
                                         [
                                             2.64,
-                                            0
+                                            1
                                         ],
                                         [
                                             1.63,
-                                            0.19
+                                            1.19
                                         ],
                                         [
                                             0.77,
-                                            0.74
+                                            1.74
                                         ],
                                         [
                                             0.2,
-                                            1.56
+                                            2.56
                                         ],
                                         [
                                             0,
-                                            2.52
+                                            3.52
                                         ],
                                         [
                                             0,
-                                            14.48
+                                            13.48
                                         ],
                                         [
                                             0.2,
-                                            15.44
+                                            14.44
                                         ],
                                         [
                                             0.77,
-                                            16.26
+                                            15.26
                                         ],
                                         [
                                             1.63,
-                                            16.81
+                                            15.81
                                         ],
                                         [
                                             2.64,
-                                            17
+                                            16
                                         ],
                                         [
-                                            23.36,
-                                            17
+                                            16.36,
+                                            16
                                         ],
                                         [
-                                            24.37,
-                                            16.81
+                                            17.37,
+                                            15.81
                                         ],
                                         [
-                                            25.23,
-                                            16.26
+                                            18.23,
+                                            15.26
                                         ],
                                         [
-                                            25.8,
-                                            15.44
+                                            18.8,
+                                            14.44
+                                        ],
+
+                                        [
+                                            19,
+                                            13.48
                                         ],
                                         [
-                                            26,
-                                            14.48
+                                            19,
+                                            3.52
                                         ],
                                         [
-                                            26,
-                                            2.52
+                                            18.8,
+                                            2.56
                                         ],
                                         [
-                                            25.8,
-                                            1.56
+                                            18.23,
+                                            1.74
                                         ],
                                         [
-                                            25.23,
-                                            0.74
+                                            17.37,
+                                            1.19
                                         ],
                                         [
-                                            24.37,
-                                            0.19
-                                        ],
-                                        [
-                                            23.36,
-                                            0
+                                            16.36,
+                                            1
                                         ]
+                                        // [
+                                        //     23.36,
+                                        //     0
+                                        // ],
+                                        // [
+                                        //     2.64,
+                                        //     0
+                                        // ],
+                                        // [
+                                        //     1.63,
+                                        //     0.19
+                                        // ],
+                                        // [
+                                        //     0.77,
+                                        //     0.74
+                                        // ],
+                                        // [
+                                        //     0.2,
+                                        //     1.56
+                                        // ],
+                                        // [
+                                        //     0,
+                                        //     2.52
+                                        // ],
+                                        // [
+                                        //     0,
+                                        //     14.48
+                                        // ],
+                                        // [
+                                        //     0.2,
+                                        //     15.44
+                                        // ],
+                                        // [
+                                        //     0.77,
+                                        //     16.26
+                                        // ],
+                                        // [
+                                        //     1.63,
+                                        //     16.81
+                                        // ],
+                                        // [
+                                        //     2.64,
+                                        //     17
+                                        // ],
+                                        // [
+                                        //     23.36,
+                                        //     17
+                                        // ],
+                                        // [
+                                        //     24.37,
+                                        //     16.81
+                                        // ],
+                                        // [
+                                        //     25.23,
+                                        //     16.26
+                                        // ],
+                                        // [
+                                        //     25.8,
+                                        //     15.44
+                                        // ],
+                                        // [
+                                        //     26,
+                                        //     14.48
+                                        // ],
+                                        // [
+                                        //     26,
+                                        //     2.52
+                                        // ],
+                                        // [
+                                        //     25.8,
+                                        //     1.56
+                                        // ],
+                                        // [
+                                        //     25.23,
+                                        //     0.74
+                                        // ],
+                                        // [
+                                        //     24.37,
+                                        //     0.19
+                                        // ],
+                                        // [
+                                        //     23.36,
+                                        //     0
+                                        // ]
                                     ]
                                 ]
                             },
@@ -385,7 +484,7 @@ export const clusterSymbol = new CIMSymbol({
                     ],
                     "scaleSymbolsProportionally": true,
                     "respectFrame": true,
-                    "offsetX": -2
+                    "offsetX": 0
                 },
                 {
                     "type": "CIMVectorMarker",
@@ -397,8 +496,8 @@ export const clusterSymbol = new CIMSymbol({
                     "frame": {
                         "xmin": 0,
                         "ymin": 0,
-                        "xmax": 17,
-                        "ymax": 17
+                        "xmax": 30,
+                        "ymax": 20
                     },
                     "markerGraphics": [
                         {
@@ -407,21 +506,49 @@ export const clusterSymbol = new CIMSymbol({
                                 "rings": [
                                     [
                                         [
-                                            0,
-                                            0.65
+                                            20,
+                                            11
                                         ],
                                         [
-                                            8.5,
-                                            16.35
+                                            27,
+                                            17
                                         ],
                                         [
-                                            17,
-                                            0.65
+                                            30,
+                                            17
                                         ],
                                         [
-                                            0,
-                                            0.65
+                                            30,
+                                            0
+                                        ],
+                                        [
+                                            27,
+                                            0
+                                        ],
+                                        [
+                                            20,
+                                            6
+                                        ],
+                                        [
+                                            20,
+                                            11
                                         ]
+                                        // [
+                                        //     0,
+                                        //     0.65
+                                        // ],
+                                        // [
+                                        //     8.5,
+                                        //     16.35
+                                        // ],
+                                        // [
+                                        //     17,
+                                        //     0.65
+                                        // ],
+                                        // [
+                                        //     0,
+                                        //     0.65
+                                        // ]
                                     ]
                                 ]
                             },
@@ -459,9 +586,9 @@ export const clusterSymbol = new CIMSymbol({
                     ],
                     "scaleSymbolsProportionally": true,
                     "respectFrame": true,
-                    "offsetX": 7,
-                    "rotation": -28,
-                    "offsetY": 1
+                    "offsetX": 0,
+                    "rotation": 0,
+                    "offsetY": 0
                 },
                 {
                     "type": "CIMVectorMarker",
@@ -472,7 +599,7 @@ export const clusterSymbol = new CIMSymbol({
                     },
                     "anchorPointUnits": "Relative",
                     "dominantSizeAxis3D": "Y",
-                    "size": 21,
+                    "size": 16,
                     "billboardMode3D": "FaceNearPlane",
                     "frame": {
                         "xmin": 0,

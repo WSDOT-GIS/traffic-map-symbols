@@ -1,5 +1,4 @@
 import FeatureReductionCluster from "@arcgis/core/layers/support/FeatureReductionCluster";
-import Symbol from "@arcgis/core/symbols/Symbol";
 
 export const generateClusterConfig = (popupTitle: string, name: string, labelColor: string, symbol?: any): FeatureReductionCluster => {
 
