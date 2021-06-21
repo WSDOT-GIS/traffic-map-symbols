@@ -20,7 +20,7 @@ export const generateClusterConfig = (popupTitle: string, name: string, labelCol
                         family: "Noto Sans",
                         size: "12px"
                     },
-                    haloColor: "#3675bc",
+                    haloColor: "#45b6fe",
                     haloSize: 0
                 },
                 labelPlacement: "center-center",
@@ -38,11 +38,11 @@ export const generateClusterConfig = (popupTitle: string, name: string, labelCol
                         family: "Noto Sans",
                         size: "13px"
                     },
-                    haloColor: "#3169a9",
+                    haloColor: "#3792cd",
                     haloSize: 1
                 },
                 labelPlacement: "center-center",
-            }, 
+            },
             {
                 deconflictionStrategy: "none",
                 labelExpressionInfo: {
@@ -56,7 +56,7 @@ export const generateClusterConfig = (popupTitle: string, name: string, labelCol
                         family: "Noto Sans",
                         size: "14px"
                     },
-                    haloColor: "#2b5e96",
+                    haloColor: "#296d98",
                     haloSize: 1
                 },
                 labelPlacement: "center-center",
@@ -73,7 +73,7 @@ export const generateClusterConfig = (popupTitle: string, name: string, labelCol
                         family: "Noto Sans",
                         size: "15px"
                     },
-                    haloColor: "#265284",
+                    haloColor: "#1c4966",
                     haloSize: 1
                 },
                 labelPlacement: "center-center",
@@ -90,7 +90,7 @@ export const generateClusterConfig = (popupTitle: string, name: string, labelCol
                         family: "Noto Sans",
                         size: "16px"
                     },
-                    haloColor: "#204671",
+                    haloColor: "#0e2433",
                     haloSize: 1
                 },
                 labelPlacement: "center-center",
