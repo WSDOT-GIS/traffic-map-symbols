@@ -36,10 +36,10 @@ export const generateClusterConfig = (popupTitle: string, name: string, labelCol
                     font: {
                         weight: "bold",
                         family: "Noto Sans",
-                        size: "12px"
+                        size: "13px"
                     },
                     haloColor: "#3169a9",
-                    haloSize: 1.5
+                    haloSize: 1
                 },
                 labelPlacement: "center-center",
             }, 
@@ -54,10 +54,10 @@ export const generateClusterConfig = (popupTitle: string, name: string, labelCol
                     font: {
                         weight: "bold",
                         family: "Noto Sans",
-                        size: "12px"
+                        size: "14px"
                     },
                     haloColor: "#2b5e96",
-                    haloSize: 2
+                    haloSize: 1
                 },
                 labelPlacement: "center-center",
             }, {
@@ -71,10 +71,10 @@ export const generateClusterConfig = (popupTitle: string, name: string, labelCol
                     font: {
                         weight: "bold",
                         family: "Noto Sans",
-                        size: "12px"
+                        size: "15px"
                     },
                     haloColor: "#265284",
-                    haloSize: 2.5
+                    haloSize: 1
                 },
                 labelPlacement: "center-center",
             }, {
@@ -88,10 +88,10 @@ export const generateClusterConfig = (popupTitle: string, name: string, labelCol
                     font: {
                         weight: "bold",
                         family: "Noto Sans",
-                        size: "12px"
+                        size: "16px"
                     },
                     haloColor: "#204671",
-                    haloSize: 3
+                    haloSize: 1
                 },
                 labelPlacement: "center-center",
             }
