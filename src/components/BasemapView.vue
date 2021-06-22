@@ -1,7 +1,7 @@
 <template>
   <div id="basemap-widget-container" class="bottom right ontop" @click="toggleStyleClass">
     <div @click="toggleBasemap">
-      <svg xmlns="http://www.w3.org/2000/svg" :title="nextMapTitle" :class="styleClass" @click="getLocation"  viewBox="0 0 32 32" class="locateIcon"><path :d="nextMapIcon"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" :title="nextMapTitle" :class="styleClass"  viewBox="0 0 32 32" class="locateIcon"><path :d="nextMapIcon"/></svg>
     </div>
   </div>
 </template>
