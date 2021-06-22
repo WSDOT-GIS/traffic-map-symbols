@@ -44,13 +44,8 @@ export const store = createStore<State>({
                 ymin: 0,
                 ymax: 0
             },
-<<<<<<< HEAD
-            layerList: layerList,
-            userLocation:null
-=======
             layerList: [],//layerList,
             userLocation: null
->>>>>>> 452929c767d7611a18ddf388b86f356325c892ce
         }
     },
     getters: {
@@ -83,14 +78,8 @@ export const store = createStore<State>({
         setLayerList(state, payload) {
             state.layerList = payload;
             webmap.layers.map((layer, index) => {
-<<<<<<< HEAD
                 if(layer.title && state.layerList[index] && layer.title==state.layerList[index].title){
                     layer.visible = state.layerList[index].visible
-=======
-                if (state.layerList[index]) {
-                    layer.visible = state.layerList[index].visible
-                    console.log(index + " " + layer.title + " " + layer.visible)
->>>>>>> 452929c767d7611a18ddf388b86f356325c892ce
                 }
             })
         },
