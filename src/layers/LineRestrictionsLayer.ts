@@ -24,7 +24,11 @@ const lineRestrictionsRenderer = new SimpleRenderer({
 })
 const LineRestrictionsLayer = new GeoJSONLayer({
     id: "line-restrictions-layer",
+<<<<<<< HEAD
     url: "http://hqtob1webtmdev1/GISData/LineRestrictions.json",
+=======
+    url: "http://hqtob1webtmdev1/GISData/park-ride.json",   //extension needs to be .json.  Server not configure to support .geojson.
+>>>>>>> 452929c767d7611a18ddf388b86f356325c892ce
     title: "Restriction Lines",
     renderer: lineRestrictionsRenderer,
    /* fields: [

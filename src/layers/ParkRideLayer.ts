@@ -10,7 +10,11 @@ const renderer = new SimpleRenderer({ symbol: Symbol });
 
 const layer = new GeoJSONLayer({
     id: "park-ride-layer",
+<<<<<<< HEAD
     url: "http://hqtob1webtmdev1/GISData/ParkAndRides.json",
+=======
+    url: "http://hqtob1webtmdev1/GISData/park-ride.json",
+>>>>>>> 452929c767d7611a18ddf388b86f356325c892ce
     title: "Park and Rides",
     renderer: renderer,
     popupTemplate: Popup,

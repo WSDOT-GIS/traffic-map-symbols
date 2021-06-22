@@ -22,6 +22,7 @@ import { getFeatureById } from "@/layers/ZoomExtentLayer";
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
 import ExtentInfo from "@/types/ExtentInfo";
 import { zoomOnClick } from "@/utils/extentUtil";
+import { setLayerFromUrl } from "@/utils/urlParamUtil";
 
 export default defineComponent({
   components: { ZoomPopupView },
@@ -65,6 +66,8 @@ export default defineComponent({
           visible: layer.visible,
         });
       });
+      //
+      setLayerFromUrl(layerList);
       store.commit("setLayerList", layerList);
       console.log("EsriMap setLayerList");
       //#endregion

@@ -21,7 +21,11 @@ const pointRestrictionsRenderer2 = new SimpleRenderer({
 })
 const PointRestrictionsLayer = new GeoJSONLayer({
     id: "point-restrictions-layer",
+<<<<<<< HEAD
     url: "http://hqtob1webtmdev1/GISData/PointRestrictions.json",
+=======
+    url: "http://hqtob1webtmdev1/GISData/park-ride.json", //extension needs to be .json.  Server not configure to support .geojson.
+>>>>>>> 452929c767d7611a18ddf388b86f356325c892ce
     title: "Restriction Points",
     renderer: pointRestrictionsRenderer,
     /*fields: [

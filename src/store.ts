@@ -5,7 +5,7 @@ import { webmap, mapView } from "./esri-stuff/esriMap";
 import { getBasemapInfo, toggleBasemapInfo } from "./layers/Basemaps";
 import ExtentInfo from "./types/ExtentInfo";
 import { convert2EsriExtent, convert2ExtentInfo } from "./utils/extentUtil";
-import { setLayerFromUrl } from "./utils/urlParamUtil";
+//import { setLayerFromUrl } from "./utils/urlParamUtil";
 import LayerInfo from "./types/LayerInfo";
 
 
@@ -17,7 +17,7 @@ export interface State {
     pointerY: number,
     layerList: LayerInfo[],//{ index: number, title: string, visible: boolean }[],
     currentExtent: ExtentInfo,
-    userLocation: number[]|null
+    userLocation: number[] | null
 }
 
 // define injection key...
@@ -25,14 +25,14 @@ export const key: InjectionKey<Store<State>> = Symbol()
 
 export const store = createStore<State>({
     state() {//ask masao about this
-        const layerList = [
-            { index: 0, title: "Traffic", visible: true },
-            { index: 1, title: "Park and Rides", visible: false },
-            { index: 2, title: "Traffic Cameras", visible: false },
-            { index: 3, title:"test1", visible: true},
-            { index: 4, title: "test2", visible:false}
-        ]
-        setLayerFromUrl(layerList);
+        // const layerList = [
+        //     { index: 0, title: "Traffic", visible: true },
+        //     { index: 1, title: "Park and Rides", visible: false },
+        //     { index: 2, title: "Traffic Cameras", visible: false },
+        //     { index: 3, title: "test1", visible: true },
+        //     { index: 4, title: "test2", visible: false }
+        // ]
+        // setLayerFromUrl(layerList);
 
         return {
             basemap: "",
@@ -44,8 +44,13 @@ export const store = createStore<State>({
                 ymin: 0,
                 ymax: 0
             },
+<<<<<<< HEAD
             layerList: layerList,
             userLocation:null
+=======
+            layerList: [],//layerList,
+            userLocation: null
+>>>>>>> 452929c767d7611a18ddf388b86f356325c892ce
         }
     },
     getters: {
@@ -78,8 +83,14 @@ export const store = createStore<State>({
         setLayerList(state, payload) {
             state.layerList = payload;
             webmap.layers.map((layer, index) => {
+<<<<<<< HEAD
                 if(layer.title && state.layerList[index] && layer.title==state.layerList[index].title){
                     layer.visible = state.layerList[index].visible
+=======
+                if (state.layerList[index]) {
+                    layer.visible = state.layerList[index].visible
+                    console.log(index + " " + layer.title + " " + layer.visible)
+>>>>>>> 452929c767d7611a18ddf388b86f356325c892ce
                 }
             })
         },
