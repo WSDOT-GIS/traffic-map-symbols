@@ -57,9 +57,7 @@ export default defineComponent({
       esriMap.init(mapDiv);
       //#region register layer list to state
       let layerList: { index: number; title: string; visible: boolean }[] = [];
-      console.log( esriMap.mapView.map.layers)
       esriMap.mapView.map.layers.map((layer, index) => {
-        console.log([layer, index])
         layerList.push({
           index: index,
           title: layer.title,
@@ -69,7 +67,6 @@ export default defineComponent({
       //
       setLayerFromUrl(layerList);
       store.commit("setLayerList", layerList);
-      console.log("EsriMap setLayerList");
       //#endregion
       // Add quick zoom boxes around metro areas...
       esriMap.webmap.add(ZoomExtentLayer);

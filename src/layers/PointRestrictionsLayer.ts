@@ -235,7 +235,4 @@ const PointRestrictionsLayer = new GeoJSONLayer({
     },
     // featureReduction: clusterConfig
 });
-PointRestrictionsLayer.queryFeatures({where: "1=1"}).then((result)=>{
-    console.log(result)
-})
 export default PointRestrictionsLayer

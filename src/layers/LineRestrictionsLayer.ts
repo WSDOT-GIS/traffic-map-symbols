@@ -4,8 +4,6 @@ import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import SimpleMarkerSymbol from "@arcgis/core/symbols/SimpleMarkerSymbol";
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import Field from "@arcgis/core/layers/support/Field";
-console.log(roadRestrictionLine)
-console.log(bridgeRestrictionLine)
 /*const lineRestrictionsRenderer = new UniqueValueRenderer({
     field:"TType",
     uniqueValueInfos: [{
@@ -228,7 +226,4 @@ const LineRestrictionsLayer = new GeoJSONLayer({
    // popupTemplate: Popup,
     // featureReduction: clusterConfig
 });
-LineRestrictionsLayer.queryFeatures({where: "1=1"}).then((result)=>{
-    console.log(result)
-})
 export default LineRestrictionsLayer

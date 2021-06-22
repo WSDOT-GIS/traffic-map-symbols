@@ -3,8 +3,6 @@ define(["require", "exports", "tslib", "../symbols/LineRestrictionsSymbol", "@ar
     Object.defineProperty(exports, "__esModule", { value: true });
     GeoJSONLayer_1 = tslib_1.__importDefault(GeoJSONLayer_1);
     SimpleRenderer_1 = tslib_1.__importDefault(SimpleRenderer_1);
-    console.log(LineRestrictionsSymbol_1.roadRestrictionLine);
-    console.log(LineRestrictionsSymbol_1.bridgeRestrictionLine);
     /*const lineRestrictionsRenderer = new UniqueValueRenderer({
         field:"TType",
         uniqueValueInfos: [{
@@ -26,9 +24,6 @@ define(["require", "exports", "tslib", "../symbols/LineRestrictionsSymbol", "@ar
         url: "http://hqtob1webtmdev1/GISData/LineRestrictions.json",
         title: "Restriction Lines",
         renderer: lineRestrictionsRenderer,
-    });
-    LineRestrictionsLayer.queryFeatures({ where: "1=1" }).then(function (result) {
-        console.log(result);
     });
     exports.default = LineRestrictionsLayer;
 });

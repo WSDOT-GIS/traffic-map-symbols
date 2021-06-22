@@ -101,7 +101,6 @@ export const store = createStore<State>({
 // Clone the target of proxy (i.e. removing the reactivity)
 export const cloneProxyTarget = (proxy: any): any => {
     const copy = JSON.parse(JSON.stringify(proxy));
-    console.log(JSON.stringify(copy));
     return copy;
 }
 

@@ -33,7 +33,6 @@ export default defineComponent({
     
     getLocation:function(){
         mapView.graphics.removeAll()
-        console.log(this.store.state.userLocation)
         this.warningDisplayClass="warningOff"
         if(this.store.state.userLocation==null){
             navigator.geolocation.getCurrentPosition(this.success,this.error, this.options)
@@ -67,7 +66,6 @@ export default defineComponent({
                 width: 1
             }
         };
-        console.log(point)
         const pointGraphic = new Graphic({
             geometry: point,
             symbol: simpleMarkerSymbol,

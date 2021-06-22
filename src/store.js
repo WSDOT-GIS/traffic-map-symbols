@@ -83,7 +83,6 @@ define(["require", "exports", "tslib", "vuex", "@arcgis/core/geometry/Extent", "
     // Clone the target of proxy (i.e. removing the reactivity)
     var cloneProxyTarget = function (proxy) {
         var copy = JSON.parse(JSON.stringify(proxy));
-        console.log(JSON.stringify(copy));
         return copy;
     };
     exports.cloneProxyTarget = cloneProxyTarget;

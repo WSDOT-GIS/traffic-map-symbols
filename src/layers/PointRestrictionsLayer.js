@@ -235,9 +235,6 @@ define(["require", "exports", "tslib", "@arcgis/core/renderers/UniqueValueRender
                 }]
         },
     });
-    PointRestrictionsLayer.queryFeatures({ where: "1=1" }).then(function (result) {
-        console.log(result);
-    });
     exports.default = PointRestrictionsLayer;
 });
 //# sourceMappingURL=PointRestrictionsLayer.js.map

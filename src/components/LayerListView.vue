@@ -44,7 +44,6 @@ export default defineComponent({
       })
    // }
     store.commit("setLayerList",layerList)
-    console.log("LayerListView setup() setLayerList");
     return{layerList, expandIconPath, expanded}
     //#endregion
   },
@@ -60,7 +59,6 @@ export default defineComponent({
         }
       })
       store.commit("setLayerList",store.state.layerList)
-      console.log("LayerListView clickEvent setLayerList");
     },
     handleExpandClicked:function(){
       this.expanded=="block"?this.expanded="none":this.expanded="block";
