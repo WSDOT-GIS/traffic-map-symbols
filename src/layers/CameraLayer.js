@@ -1,4 +1,4 @@
-define(["require", "exports", "tslib", "@arcgis/core/renderers/SimpleRenderer", "@arcgis/core/layers/GeoJSONLayer", "@arcgis/core/layers/support/Field", "@/symbols/CameraSymbol", "@/popup-templates/CameraPopup", "@/utils/layerUtil"], function (require, exports, tslib_1, SimpleRenderer_1, GeoJSONLayer_1, Field_1, CameraSymbol_1, CameraPopup_1, layerUtil_1) {
+define(["require", "exports", "tslib", "@arcgis/core/renderers/SimpleRenderer", "@arcgis/core/layers/GeoJSONLayer", "@arcgis/core/layers/support/Field", "@/symbols/CameraSymbol", "@/symbols/CameraSymbol", "@/popup-templates/CameraPopup", "@/utils/layerUtil"], function (require, exports, tslib_1, SimpleRenderer_1, GeoJSONLayer_1, Field_1, CameraSymbol_1, CameraSymbol_2, CameraPopup_1, layerUtil_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     SimpleRenderer_1 = tslib_1.__importDefault(SimpleRenderer_1);
@@ -6,7 +6,7 @@ define(["require", "exports", "tslib", "@arcgis/core/renderers/SimpleRenderer", 
     Field_1 = tslib_1.__importDefault(Field_1);
     CameraSymbol_1 = tslib_1.__importDefault(CameraSymbol_1);
     CameraPopup_1 = tslib_1.__importDefault(CameraPopup_1);
-    var clusterConfig = layerUtil_1.generateClusterConfig("Cameras", "camera", "#000000");
+    var clusterConfig = layerUtil_1.generateClusterConfig("Cameras", "camera", "#fff", CameraSymbol_2.clusterSymbol);
     var renderer = new SimpleRenderer_1.default({ symbol: CameraSymbol_1.default });
     var fields = [
         new Field_1.default({
@@ -67,7 +67,7 @@ define(["require", "exports", "tslib", "@arcgis/core/renderers/SimpleRenderer", 
     ];
     var layer = new GeoJSONLayer_1.default({
         id: "weather-camera-layer",
-        url: "http://hqtob1webtmdev1/GISData/camera.geojson",
+        url: "http://hqtob1webtmdev1/GISData/camera.json",
         title: "Traffic Cameras",
         renderer: renderer,
         popupTemplate: CameraPopup_1.default,

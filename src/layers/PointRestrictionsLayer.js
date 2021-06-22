@@ -17,7 +17,7 @@ define(["require", "exports", "tslib", "@arcgis/core/renderers/UniqueValueRender
     });
     var PointRestrictionsLayer = new GeoJSONLayer_1.default({
         id: "point-restrictions-layer",
-        url: "http://hqtob1webtmdev1/GISData/park-ride.geojson",
+        url: "http://hqtob1webtmdev1/GISData/park-ride.json",
         title: "Restriction Points",
         renderer: pointRestrictionsRenderer,
     });

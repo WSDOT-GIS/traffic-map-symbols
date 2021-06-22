@@ -1,4 +1,4 @@
-define(["require", "exports", "tslib", "vuex", "@arcgis/core/geometry/Extent", "./esri-stuff/esriMap", "./layers/Basemaps", "./utils/extentUtil", "./utils/urlParamUtil"], function (require, exports, tslib_1, vuex_1, Extent_1, esriMap_1, Basemaps_1, extentUtil_1, urlParamUtil_1) {
+define(["require", "exports", "tslib", "vuex", "@arcgis/core/geometry/Extent", "./esri-stuff/esriMap", "./layers/Basemaps", "./utils/extentUtil"], function (require, exports, tslib_1, vuex_1, Extent_1, esriMap_1, Basemaps_1, extentUtil_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.useStore = exports.cloneProxyTarget = exports.store = exports.key = void 0;
@@ -7,14 +7,14 @@ define(["require", "exports", "tslib", "vuex", "@arcgis/core/geometry/Extent", "
     exports.key = Symbol();
     exports.store = vuex_1.createStore({
         state: function () {
-            var layerList = [
-                { index: 0, title: "Traffic", visible: true },
-                { index: 1, title: "Park and Rides", visible: false },
-                { index: 2, title: "Traffic Cameras", visible: false },
-                { index: 3, title: "test1", visible: true },
-                { index: 4, title: "test2", visible: false }
-            ];
-            urlParamUtil_1.setLayerFromUrl(layerList);
+            // const layerList = [
+            //     { index: 0, title: "Traffic", visible: true },
+            //     { index: 1, title: "Park and Rides", visible: false },
+            //     { index: 2, title: "Traffic Cameras", visible: false },
+            //     { index: 3, title: "test1", visible: true },
+            //     { index: 4, title: "test2", visible: false }
+            // ]
+            // setLayerFromUrl(layerList);
             return {
                 basemap: "",
                 pointerX: 0,
@@ -25,13 +25,8 @@ define(["require", "exports", "tslib", "vuex", "@arcgis/core/geometry/Extent", "
                     ymin: 0,
                     ymax: 0
                 },
-                layerList: layerList,
+                layerList: [],
                 userLocation: null
-                // layerList: [
-                //     { index: 0, title: "Traffic", visible: true },
-                //     { index: 1, title: "Park and Rides", visible: false },
-                //     { index: 2, title: "Traffic Cameras", visible: false }
-                // ]
             };
         },
         getters: {
@@ -64,8 +59,10 @@ define(["require", "exports", "tslib", "vuex", "@arcgis/core/geometry/Extent", "
             setLayerList: function (state, payload) {
                 state.layerList = payload;
                 esriMap_1.webmap.layers.map(function (layer, index) {
-                    layer.visible = state.layerList[index].visible;
-                    console.log(index + " " + layer.title + " " + layer.visible);
+                    if (state.layerList[index]) {
+                        layer.visible = state.layerList[index].visible;
+                        console.log(index + " " + layer.title + " " + layer.visible);
+                    }
                 });
             },
             setCurrentExtent: function (state, payload) {
