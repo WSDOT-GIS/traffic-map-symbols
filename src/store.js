@@ -27,11 +27,6 @@ define(["require", "exports", "tslib", "vuex", "@arcgis/core/geometry/Extent", "
                 },
                 layerList: layerList,
                 userLocation: null
-                // layerList: [
-                //     { index: 0, title: "Traffic", visible: true },
-                //     { index: 1, title: "Park and Rides", visible: false },
-                //     { index: 2, title: "Traffic Cameras", visible: false }
-                // ]
             };
         },
         getters: {
@@ -64,8 +59,9 @@ define(["require", "exports", "tslib", "vuex", "@arcgis/core/geometry/Extent", "
             setLayerList: function (state, payload) {
                 state.layerList = payload;
                 esriMap_1.webmap.layers.map(function (layer, index) {
-                    layer.visible = state.layerList[index].visible;
-                    console.log(index + " " + layer.title + " " + layer.visible);
+                    if (layer.title && state.layerList[index] && layer.title == state.layerList[index].title) {
+                        layer.visible = state.layerList[index].visible;
+                    }
                 });
             },
             setCurrentExtent: function (state, payload) {

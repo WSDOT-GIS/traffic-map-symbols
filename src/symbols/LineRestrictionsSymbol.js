@@ -6,13 +6,13 @@ define(["require", "exports", "tslib", "@arcgis/core/symbols/SimpleLineSymbol"],
     var roadRestrictionLine = new SimpleLineSymbol_1.default({
         style: "solid",
         color: "green",
-        width: "2px",
+        width: "5px",
     });
     exports.roadRestrictionLine = roadRestrictionLine;
     var bridgeRestrictionLine = new SimpleLineSymbol_1.default({
         style: "solid",
         color: "orange",
-        width: "2px",
+        width: "5px",
     });
     exports.bridgeRestrictionLine = bridgeRestrictionLine;
 });
