@@ -59,9 +59,8 @@ define(["require", "exports", "tslib", "vuex", "@arcgis/core/geometry/Extent", "
             setLayerList: function (state, payload) {
                 state.layerList = payload;
                 esriMap_1.webmap.layers.map(function (layer, index) {
-                    if (state.layerList[index]) {
+                    if (layer.title && state.layerList[index] && layer.title == state.layerList[index].title) {
                         layer.visible = state.layerList[index].visible;
-                        console.log(index + " " + layer.title + " " + layer.visible);
                     }
                 });
             },

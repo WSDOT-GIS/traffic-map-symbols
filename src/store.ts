@@ -78,9 +78,8 @@ export const store = createStore<State>({
         setLayerList(state, payload) {
             state.layerList = payload;
             webmap.layers.map((layer, index) => {
-                if (state.layerList[index]) {
+                if(layer.title && state.layerList[index] && layer.title==state.layerList[index].title){
                     layer.visible = state.layerList[index].visible
-                    console.log(index + " " + layer.title + " " + layer.visible)
                 }
             })
         },

@@ -6,7 +6,9 @@ define(["require", "exports", "tslib", "@arcgis/core/Basemap", "@arcgis/core/lay
     TileLayer_1 = tslib_1.__importDefault(TileLayer_1);
     var getDefaultBasemapInfo = function () { return basemaps[0]; };
     exports.getDefaultBasemapInfo = getDefaultBasemapInfo;
-    var urlBasemap = "https://data.wsdot.wa.gov/arcgis/rest/services/Shared/WebBaseMapWebMercator/MapServer";
+    var urlBasemap = 
+    //"https://data.wsdot.wa.gov/arcgis/rest/services/Shared/WebBaseMapWebMercator/MapServer";
+    "https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/TravelCenterBasemapTileTest/MapServer";
     // Array of basemaps. The first one is the default.
     var basemaps = [
         {
