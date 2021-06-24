@@ -37,6 +37,7 @@ import {
   getCameraInfosFromCluster,
 } from "@/layers/CameraLayer";
 import CameraInfo from "@/types/CameraInfo";
+import Graphic from "@arcgis/core/Graphic";
 
 export default defineComponent({
   components: { ZoomPopupView, CameraPopupView },
@@ -70,6 +71,7 @@ export default defineComponent({
     const cameraInfos = ref<CameraInfo[]>([]);
     const cameraPopupX = ref(0);
     const cameraPopupY = ref(0);
+    let cameraGraphic: Graphic;
     const cameraPopupEventHandler = () => {
       cameraPopupVisible.value = false;
     };
@@ -158,7 +160,7 @@ export default defineComponent({
           // check if a feature is returned from the zoom layer...
           if (response.results.length) {
             // Show custom popup...
-            let cameraGraphic = response.results[0].graphic;
+            cameraGraphic = response.results[0].graphic;
             const cameraLoc = esriMap.mapView.toScreen(
               cameraGraphic.geometry as Point
             );
@@ -223,6 +225,17 @@ export default defineComponent({
               cameraPopupOrgY = 0;
             }
           }
+        }
+      });
+      // View resize event handler...
+      esriMap.mapView.on("resize", () => {
+        console.log("resize event");
+        if (cameraPopupVisible.value && cameraGraphic) {
+          const screenLoc = esriMap.mapView.toScreen(
+            cameraGraphic.geometry as Point
+          );
+          cameraPopupX.value = screenLoc.x;
+          cameraPopupY.value = screenLoc.y;
         }
       });
       // Keep track of map extent and scale in the state store...
