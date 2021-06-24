@@ -99,7 +99,7 @@ export default defineComponent({
       // Set basemap based on URL query parameter...
       const basemapInfo = getBasemapFromUrl();
       store.commit("setBasemap", basemapInfo.name);
-      // Track pointer location...
+      // Pointer move event handler...
       esriMap.mapView.on("pointer-move", (event) => {
         // Update current poitner x/y in the store...
         let pt = esriMap.mapView.toMap({ x: event.x, y: event.y });
@@ -147,7 +147,7 @@ export default defineComponent({
           }
         });
       });
-      // Click event...
+      // Click event handler...
       esriMap.mapView.on("click", (event) => {
         // Check if pointer is over one of the zoom extents...
         const opts = {
@@ -159,7 +159,9 @@ export default defineComponent({
           if (response.results.length) {
             // Show custom popup...
             let cameraGraphic = response.results[0].graphic;
-            const cameraLoc = esriMap.mapView.toScreen(cameraGraphic.geometry as Point);
+            const cameraLoc = esriMap.mapView.toScreen(
+              cameraGraphic.geometry as Point
+            );
             cameraPopupX.value = cameraLoc.x;
             cameraPopupY.value = cameraLoc.y;
             if (cameraGraphic.isAggregate) {
@@ -173,7 +175,8 @@ export default defineComponent({
                     // Show multiple pictures if infos are returned...
                     cameraInfos.value = results ? results : [];
                     cameraPopupVisible.value = results ? true : false;
-                    if (!results) { // Zoom-in more...
+                    if (!results) {
+                      // Zoom-in more...
                       esriMap.zoomToPoint(cameraGraphic.geometry as Point);
                     }
                   }
@@ -199,6 +202,28 @@ export default defineComponent({
             cameraPopupVisible.value = false;
           }
         });
+      });
+      // Pointer drag event handler...
+      let cameraPopupOrgX = 0;
+      let cameraPopupOrgY = 0;
+      esriMap.mapView.on("drag", (event) => {
+        if (event.button === 0) {
+          // Update popup position...
+          if (cameraPopupVisible.value) {
+            if (event.action === "start") {
+              cameraPopupOrgX = cameraPopupX.value;
+              cameraPopupOrgY = cameraPopupY.value;
+            }
+            const diffX = event.x - event.origin.x;
+            const diffY = event.y - event.origin.y;
+            cameraPopupX.value = cameraPopupOrgX + diffX;
+            cameraPopupY.value = cameraPopupOrgY + diffY;
+            if (event.action === "end") {
+              cameraPopupOrgX = 0;
+              cameraPopupOrgY = 0;
+            }
+          }
+        }
       });
       // Keep track of map extent and scale in the state store...
       esriMap.mapView.watch("extent", (newValue, oldValue) => {

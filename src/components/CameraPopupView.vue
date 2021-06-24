@@ -15,13 +15,13 @@
         class="camera-popup-img"
         :src="eachInfo.imageURL"
         :alt="eachInfo.id"
-        @load="onImgLoad"
+        @load="fixPositionSize"
       />
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, PropType, ref } from "vue";
+import { computed, defineComponent, PropType, ref, watch } from "vue";
 import CameraInfo from "@/types/CameraInfo";
 
 export default defineComponent({
@@ -47,17 +47,15 @@ export default defineComponent({
     const maxHeight = ref(1000);
     const left = ref(0);
     const top = ref(0);
-
-    const onImgLoad = () => {
+    // Adjust popup position when the props change...
+    watch(
+      () => [props.PositionX, props.PositionY],
+      () => fixPositionSize()
+    );
+    // Make sure the popup is displayed in the map view area by adjusting position and height...
+    const fixPositionSize = () => {
       const div = document.getElementById("camera-popup-container");
       if (div) {
-        console.log(props.PositionY);
-        console.log(
-          "Popup Client Height: " +
-            div.clientHeight +
-            ", Offset: " +
-            div.offsetHeight
-        );
         const h = div.offsetHeight;
         const w = div.offsetWidth;
         const mapDiv = document.getElementById("map_view");
@@ -66,16 +64,6 @@ export default defineComponent({
           maxHeight.value = mapDiv.clientHeight - 22; // 22 = padding top + bottom + border top + bottom
           if (maxHeight.value < props.PositionY + h) {
             const h2 = h > mapDiv.clientHeight ? mapDiv.clientHeight : h;
-            console.log(
-              "PositionY:" +
-                props.PositionY +
-                "h:" +
-                h +
-                ", h2:" +
-                h2 +
-                ", maxHeight.value:" +
-                maxHeight.value
-            );
             top.value = mapDiv.clientHeight - h2; // props.PositionY - ((h2 + props.PositionY) - mapDiv.clientHeight);
           } else {
             top.value = Number(props.PositionY.toString());
@@ -91,11 +79,10 @@ export default defineComponent({
       }
     };
     return {
-      // maxHeight,
       left,
       top,
       maxHeight,
-      onImgLoad,
+      fixPositionSize,
     };
   },
 
