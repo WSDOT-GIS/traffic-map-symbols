@@ -63,13 +63,20 @@ export default defineComponent({
         const mapDiv = document.getElementById("map_view");
         if (mapDiv) {
           // Adjust vertical position to make sure it fits in the map view.
-          maxHeight.value = mapDiv.clientHeight - 12;
+          maxHeight.value = mapDiv.clientHeight - 22; // 22 = padding top + bottom + border top + bottom
           if (maxHeight.value < props.PositionY + h) {
             const h2 = h > mapDiv.clientHeight ? mapDiv.clientHeight : h;
             console.log(
-              "PositionY:" + props.PositionY + "h:" + h + ", h2:" + h2 + ", maxHeight.value:" + maxHeight.value
+              "PositionY:" +
+                props.PositionY +
+                "h:" +
+                h +
+                ", h2:" +
+                h2 +
+                ", maxHeight.value:" +
+                maxHeight.value
             );
-            top.value = mapDiv.clientHeight - h2;// props.PositionY - ((h2 + props.PositionY) - mapDiv.clientHeight);
+            top.value = mapDiv.clientHeight - h2; // props.PositionY - ((h2 + props.PositionY) - mapDiv.clientHeight);
           } else {
             top.value = Number(props.PositionY.toString());
           }
@@ -109,11 +116,29 @@ export default defineComponent({
   background-color: #fff;
   border-radius: 10px;
   border: 1px solid #808080;
-  padding: 5px;
+  padding: 10px;
   width: 200px;
   overflow-y: auto;
 }
 .camera-popup-img {
   max-width: 100%;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
 }
 </style>
