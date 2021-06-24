@@ -3,9 +3,9 @@ import FeatureReductionCluster from "@arcgis/core/layers/support/FeatureReductio
 export const generateClusterConfig = (popupTitle: string, name: string, labelColor: string, symbol?: any): FeatureReductionCluster => {
 
     const clusterConfig = new FeatureReductionCluster({
-        clusterRadius: "75px",
-        clusterMinSize: "20px",
-        clusterMaxSize: "40px",
+        clusterRadius: "80px",
+        clusterMinSize: "16px",
+        clusterMaxSize: "32px",
         labelingInfo: [
             {
                 deconflictionStrategy: "none",
@@ -18,7 +18,7 @@ export const generateClusterConfig = (popupTitle: string, name: string, labelCol
                     font: {
                         weight: "bold",
                         family: "Noto Sans",
-                        size: "12px"
+                        size: "11px"
                     },
                     haloColor: "#3675bc",
                     haloSize: 0
@@ -36,13 +36,13 @@ export const generateClusterConfig = (popupTitle: string, name: string, labelCol
                     font: {
                         weight: "bold",
                         family: "Noto Sans",
-                        size: "13px"
+                        size: "11px"
                     },
                     haloColor: "#3169a9",
                     haloSize: 1
                 },
                 labelPlacement: "center-center",
-            }, 
+            },
             {
                 deconflictionStrategy: "none",
                 labelExpressionInfo: {
@@ -54,7 +54,7 @@ export const generateClusterConfig = (popupTitle: string, name: string, labelCol
                     font: {
                         weight: "bold",
                         family: "Noto Sans",
-                        size: "14px"
+                        size: "11px"
                     },
                     haloColor: "#2b5e96",
                     haloSize: 1
@@ -71,7 +71,7 @@ export const generateClusterConfig = (popupTitle: string, name: string, labelCol
                     font: {
                         weight: "bold",
                         family: "Noto Sans",
-                        size: "15px"
+                        size: "11px"
                     },
                     haloColor: "#265284",
                     haloSize: 1
@@ -88,7 +88,7 @@ export const generateClusterConfig = (popupTitle: string, name: string, labelCol
                     font: {
                         weight: "bold",
                         family: "Noto Sans",
-                        size: "16px"
+                        size: "11px"
                     },
                     haloColor: "#204671",
                     haloSize: 1
@@ -96,17 +96,17 @@ export const generateClusterConfig = (popupTitle: string, name: string, labelCol
                 labelPlacement: "center-center",
             }
         ],
-        popupTemplate: {
-            title: popupTitle,
-            content: "{cluster_count} " + name + "s exist in this area. Zoom to locate the individual " + name + "s or click \"Browse features\".",
-            fieldInfos: [{
-                fieldName: "cluster_count",
-                format: {
-                    places: 0,
-                    digitSeparator: true
-                }
-            }]
-        },
+        // popupTemplate: {
+        //     title: popupTitle,
+        //     content: "{cluster_count} " + name + "s exist in this area. Zoom to locate the individual " + name + "s or click \"Browse features\".",
+        //     fieldInfos: [{
+        //         fieldName: "cluster_count",
+        //         format: {
+        //             places: 0,
+        //             digitSeparator: true
+        //         }
+        //     }]
+        // },
     });
     // The symbol property is undocumented, so use with caution.
     // https://community.esri.com/t5/arcgis-api-for-javascript-ideas/arcgis-javascript-4-cluster-renderer/idc-p/1059638#M48

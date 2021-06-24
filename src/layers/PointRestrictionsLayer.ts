@@ -16,7 +16,7 @@ const pointRestrictionsRenderer = new UniqueValueRenderer({
 })
 const PointRestrictionsLayer = new GeoJSONLayer({
     id: "point-restrictions-layer",
-    url: "http://hqtob1webtmdev1/GISData/park-ride.geojson",
+    url: "http://hqtob1webtmdev1/GISData/park-ride.json",
     title: "Restriction Points",
     renderer: pointRestrictionsRenderer,
    // popupTemplate: Popup,

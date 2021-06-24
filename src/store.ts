@@ -89,7 +89,6 @@ export const store = createStore<State>({
                 // If the payload is ESRI extent, then update the state only.
                 const extentInfo = convert2ExtentInfo(payload);
                 state.currentExtent = extentInfo;
-                //console.log(JSON.stringify(state.currentExtent));
             } else {
                 // If the payload is ExtentInfo, actually zoom the map. Once the map extent 
                 // is changed, ESRI extent will be sent to this again and set the state.

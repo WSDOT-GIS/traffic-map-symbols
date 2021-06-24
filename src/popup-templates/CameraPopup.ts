@@ -1,14 +1,28 @@
 const template = {
-    "title": "<div class='popup_header_text'>Camera</div>",
+    "title": "<div class='popup_header_text'>{CameraTitle}</div>",
     "content": [
         {
-            type: "text",
-            text: "<div class='popup_content_text'><h1 class=>{CameraTitle}</h1>"
-
+            type: "media",
+            mediaInfos: [{
+                type: "image",
+                value: {
+                    sourceURL: "{ImageURL}"
+                },
+                altText: "Image not available"
+            }]
         },
+        // {
+        //     type: "text",
+        //     text: "<div class='popup_content_text'><h1 class=>{CameraTitle}</h1>"
+
+        // },
         {
             type: "fields",
             fieldInfos: [
+                {
+                    fieldName: "CameraID",
+                    label: "ID"
+                },
                 {
                     fieldName: "WSDOTSRID",
                     label: "SR"
@@ -29,6 +43,7 @@ const template = {
                     fieldName: "CameraOwnerName",
                     label: "Owner"
                 },
+                
             ]
         },
     ]
