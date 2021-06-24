@@ -238,8 +238,21 @@ export default defineComponent({
           cameraPopupY.value = screenLoc.y;
         }
       });
-      // Keep track of map extent and scale in the state store...
+      // Watch scale change...
+      esriMap.mapView.watch("scale", (newValue, oldValue) => {
+        if (cameraPopupVisible.value) {
+          if (cameraPopupVisible.value && cameraGraphic) {
+            const screenLoc = esriMap.mapView.toScreen(
+              cameraGraphic.geometry as Point
+            );
+            cameraPopupX.value = screenLoc.x;
+            cameraPopupY.value = screenLoc.y;
+          }
+        }
+      });
+      // Watch extent change...
       esriMap.mapView.watch("extent", (newValue, oldValue) => {
+        // Keep track of map extent in the state store...
         if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
           store.commit("setCurrentExtent", newValue);
         }
