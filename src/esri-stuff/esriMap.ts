@@ -11,12 +11,13 @@ import ParkRideLayer from "@/layers/ParkRideLayer";
 import CameraLayer from "@/layers/CameraLayer";
 import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
 import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
+import WeatherStationsLayer from "@/layers/WeatherStationsLayer"
 // What is this used for?
 //EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
 
 export const webmap = new WebMap({
     // basemap: basemapInfo.basemap,
-    layers: [TrafficLayer, ParkRideLayer, CameraLayer, PointRestrictionsLayer, LineRestrictionsLayer],
+    layers: [TrafficLayer, ParkRideLayer, CameraLayer, PointRestrictionsLayer, LineRestrictionsLayer, WeatherStationsLayer],
 });
 
 export const mapView = new MapView({

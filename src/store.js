@@ -26,7 +26,8 @@ define(["require", "exports", "tslib", "vuex", "@arcgis/core/geometry/Extent", "
                     ymax: 0
                 },
                 layerList: [],
-                userLocation: null
+                userLocation: null,
+                mapFeaturesExpanded: "block"
             };
         },
         getters: {
@@ -78,6 +79,9 @@ define(["require", "exports", "tslib", "vuex", "@arcgis/core/geometry/Extent", "
                     esriMap_1.mapView.extent = extent;
                 }
             },
+            setMapFeaturesExpanded: function (state, payload) {
+                state.mapFeaturesExpanded == "block" ? state.mapFeaturesExpanded = "none" : state.mapFeaturesExpanded = "block";
+            }
         },
     });
     // Clone the target of proxy (i.e. removing the reactivity)

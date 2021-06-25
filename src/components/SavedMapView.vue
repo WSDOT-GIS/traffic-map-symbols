@@ -1,5 +1,6 @@
 <template>
-  <div id="savedMapWidget">
+  <div id="savedMapWidget" :style="{display:mapFeaturesExpanded}">
+    <hr class="horizontal-divider" />
     <div id="saved-map-list-title">My saved maps</div>
     <div id="saved-map-list-container">
       <div
@@ -64,7 +65,7 @@ import { defineComponent, ref } from "vue";
 import SavedMapInfo from "@/types/SavedMapInfo";
 import { setCookie, getCookie } from "@/utils/cookieUtil";
 import { cloneProxyTarget } from "@/store";
-
+import { mapState } from "vuex";
 export default defineComponent({
   setup() {
     const cookieText = getCookie("saved-map-list");
@@ -82,6 +83,9 @@ export default defineComponent({
     return {
       newMapTitle: "",
     };
+  },
+  computed:{
+    ...mapState(["mapFeaturesExpanded"])
   },
   validations: {},
   methods: {

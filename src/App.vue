@@ -7,10 +7,9 @@
     <MyLocationView />
     <div id="map-top-left-container">
       <LayerListView />
-      <hr class="horizontal-divider" />
       <SavedMapView />
     </div>
-    <LegendVue />
+   <!--LegendVue /-->
     <EsriMap />
   </div>
   <AdView :text="adText" />
@@ -29,7 +28,7 @@ import FooterView from "./components/FooterView.vue";
 import Alert from "./types/AlertInfo";
 import LayerListView from "./components/LayerListView.vue";
 import SavedMapView from "./components/SavedMapView.vue";
-import LegendVue from "./components/LegendView.vue";
+//import LegendVue from "./components/LegendView.vue";
 import MyLocationView from"./components/MyLocationView.vue";
 export default defineComponent({
   name: "App",
@@ -43,7 +42,7 @@ export default defineComponent({
     FooterView,
     LayerListView,
     SavedMapView,
-    LegendVue,
+   // LegendVue,
     MyLocationView,
     // ZoomPopupView,
   },

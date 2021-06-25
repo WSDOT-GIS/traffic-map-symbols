@@ -1,10 +1,11 @@
-define(["require", "exports", "tslib", "@arcgis/core/renderers/UniqueValueRenderer", "../symbols/PointRestrictionsSymbol", "@arcgis/core/layers/GeoJSONLayer", "@arcgis/core/renderers/SimpleRenderer", "@/symbols/ParkRideSymbol"], function (require, exports, tslib_1, UniqueValueRenderer_1, PointRestrictionsSymbol_1, GeoJSONLayer_1, SimpleRenderer_1, ParkRideSymbol_1) {
+define(["require", "exports", "tslib", "@arcgis/core/renderers/UniqueValueRenderer", "../symbols/PointRestrictionsSymbol", "@arcgis/core/layers/GeoJSONLayer", "@arcgis/core/renderers/SimpleRenderer", "@/symbols/ParkRideSymbol", "@/popup-templates/RestrictionsPopup"], function (require, exports, tslib_1, UniqueValueRenderer_1, PointRestrictionsSymbol_1, GeoJSONLayer_1, SimpleRenderer_1, ParkRideSymbol_1, RestrictionsPopup_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     UniqueValueRenderer_1 = tslib_1.__importDefault(UniqueValueRenderer_1);
     GeoJSONLayer_1 = tslib_1.__importDefault(GeoJSONLayer_1);
     SimpleRenderer_1 = tslib_1.__importDefault(SimpleRenderer_1);
     ParkRideSymbol_1 = tslib_1.__importDefault(ParkRideSymbol_1);
+    RestrictionsPopup_1 = tslib_1.__importDefault(RestrictionsPopup_1);
     var pointRestrictionsRenderer = new UniqueValueRenderer_1.default({
         field: "TType",
         uniqueValueInfos: [{
@@ -222,18 +223,7 @@ define(["require", "exports", "tslib", "@arcgis/core/renderers/UniqueValueRender
                 type: "integer"
             }),
         ],*/
-        popupTemplate: {
-            content: [{
-                    type: "fields",
-                    fieldInfos: [{
-                            fieldName: "TType",
-                            label: "Type"
-                        }, {
-                            fieldName: "UniqueId",
-                            label: "ID"
-                        }]
-                }]
-        },
+        popupTemplate: RestrictionsPopup_1.default,
     });
     exports.default = PointRestrictionsLayer;
 });

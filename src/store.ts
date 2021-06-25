@@ -17,7 +17,8 @@ export interface State {
     pointerY: number,
     layerList: LayerInfo[],//{ index: number, title: string, visible: boolean }[],
     currentExtent: ExtentInfo,
-    userLocation: number[] | null
+    userLocation: number[] | null,
+    mapFeaturesExpanded: string
 }
 
 // define injection key...
@@ -45,7 +46,8 @@ export const store = createStore<State>({
                 ymax: 0
             },
             layerList: [],//layerList,
-            userLocation: null
+            userLocation: null,
+            mapFeaturesExpanded: "block"
         }
     },
     getters: {
@@ -96,6 +98,9 @@ export const store = createStore<State>({
                 mapView.extent = extent;
             }
         },
+        setMapFeaturesExpanded(state, payload) {
+            state.mapFeaturesExpanded=="block"?state.mapFeaturesExpanded="none":state.mapFeaturesExpanded="block"
+        }
     },
 })
 // Clone the target of proxy (i.e. removing the reactivity)

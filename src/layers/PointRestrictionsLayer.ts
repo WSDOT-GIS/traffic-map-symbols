@@ -3,7 +3,7 @@ import {roadRestrictionPoint, bridgeRestrictionPoint} from "../symbols/PointRest
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import Symbol from "@/symbols/ParkRideSymbol";
-import Field from "@arcgis/core/layers/support/Field";
+import restrictionsPopup from "@/popup-templates/RestrictionsPopup"
 const pointRestrictionsRenderer = new UniqueValueRenderer({
     field:"TType",
     uniqueValueInfos: [{
@@ -221,18 +221,7 @@ const PointRestrictionsLayer = new GeoJSONLayer({
             type: "integer"
         }),
     ],*/
-    popupTemplate: {
-        content:[{
-            type: "fields",
-            fieldInfos: [{
-                fieldName: "TType",
-                label: "Type"
-              },{
-                fieldName: "UniqueId",
-                label: "ID"
-              }]
-        }]
-    },
+    popupTemplate: restrictionsPopup,
     // featureReduction: clusterConfig
 });
 export default PointRestrictionsLayer
