@@ -1,17 +1,17 @@
 <template>
   <div
     id="camera-popup-container"
-    v-if="Visible"
+    v-if="visible"
     :style="{
-      marginTop: top + 'px',
-      marginLeft: left + 'px',
+      marginTop: screenY_adjusted + 'px',
+      marginLeft: screenX_adjusted + 'px',
     }"
   >
     <div class="popup-header">
       Traffic Camera{{
         CameraInfos.length > 1 ? " (" + CameraInfos.length + ")" : ""
       }}
-      <button class="popup-close-button" @click="onClickX">x</button>
+      <button class="popup-close-button" @click="close">x</button>
     </div>
     <div
       class="popup-content"
@@ -25,7 +25,7 @@
           class="camera-popup-img"
           :src="eachInfo.imageURL"
           :alt="eachInfo.id"
-          @load="fixPositionSize"
+          @load="adjustPositionSize"
         />
       </div>
     </div>
@@ -33,19 +33,17 @@
 </template>
 <script lang="ts">
 import { defineComponent, PropType, ref, watch } from "vue";
+
 import CameraInfo from "@/types/CameraInfo";
+import { mapView, toScreenXY } from "@/esri-stuff/esriMap";
 
 export default defineComponent({
   props: {
-    Visible: {
-      type: Boolean,
-      requied: true,
-    },
-    PositionX: {
+    MapX: {
       type: Number,
       required: true,
     },
-    PositionY: {
+    MapY: {
       type: Number,
       required: true,
     },
@@ -56,16 +54,50 @@ export default defineComponent({
   },
   setup(props) {
     const maxHeight = ref(1000);
-    const left = ref(0);
-    const top = ref(0);
-    const visible = ref(props.Visible);
+    const mapX = ref(0);
+    const mapY = ref(0);
+    const screenX = ref(0);
+    const screenY = ref(0);
+    const screenX_adjusted = ref(0);
+    const screenY_adjusted = ref(0);
+    const visible = ref(false);
+    
     // Adjust popup position when the props change...
     watch(
-      () => [props.PositionX, props.PositionY],
-      () => fixPositionSize()
+      () => [props.MapX, props.MapY],
+      () => setPosition()
     );
+    // Pointer drag event handler...
+    mapView.on("drag", (event) => {
+      onMapViewDrag(event);
+    });
+    mapView.on("resize", () => {
+      if (visible.value && mapX.value < 0 && mapY.value > 0) {
+        setScreenXY();
+      }
+    });
+    // Watch scale change...
+    mapView.watch("scale", () => {
+      console.log(visible.value + " " + mapX.value + " " + mapY.value);
+      if (visible.value && mapX.value < 0 && mapY.value > 0) {
+        setScreenXY();
+      }
+    });
     // Make sure the popup is displayed in the map view area by adjusting position and height...
-    const fixPositionSize = () => {
+    const setPosition = () => {
+      mapX.value = props.MapX;
+      mapY.value = props.MapY;
+      setScreenXY();
+    };
+    // Convert map coordinates to screen coordinates and calculate the popup position...
+    const setScreenXY = () => {
+      const screenXY = toScreenXY(mapX.value, mapY.value);
+      screenX.value = screenXY.x;
+      screenY.value = screenXY.y;
+      adjustPositionSize();
+    };
+    // Make sure the popup is displyed within the map view...
+    const adjustPositionSize = () => {
       const div = document.getElementById("camera-popup-container");
       if (div) {
         const h = div.offsetHeight;
@@ -75,41 +107,83 @@ export default defineComponent({
           // Adjust vertical position to make sure it fits in the map view.
           maxHeight.value = mapDiv.clientHeight - 25; // Map view height - header etc
           let y: number;
-          if (maxHeight.value < props.PositionY + h) {
+          if (maxHeight.value < screenY.value + h) {
             const h2 = h > mapDiv.clientHeight ? mapDiv.clientHeight : h;
             y = mapDiv.clientHeight - h2; // props.PositionY - ((h2 + props.PositionY) - mapDiv.clientHeight);
           } else {
-            y = Number(props.PositionY.toString());
+            y = screenY.value;
           }
-          top.value = y >= 0 ? y : 0;
+          screenY_adjusted.value = y >= 0 ? y : 0;
           // Adjust horizontal position.
           let x: number;
-          if (mapDiv.clientWidth < props.PositionX) {
+          if (mapDiv.clientWidth < screenX.value) {
             x = mapDiv.clientWidth - w - 10;
-          } else if (mapDiv.clientWidth < props.PositionX + w) {
+          } else if (mapDiv.clientWidth < screenX.value + w) {
             // Show it on the left side of the feature...
-            x = props.PositionX - w;
+            x = screenX.value - w;
           } else {
-            x = Number(props.PositionX.toString());
+            x = screenX.value;
           }
-          left.value = x >= 0 ? x : 0;
+          screenX_adjusted.value = x >= 0 ? x : 0;
         }
-        console.log("Popup top: " + top.value + ", left: " + left.value);
+        console.log(
+          "Popup top: " +
+            screenY_adjusted.value +
+            ", left: " +
+            screenX_adjusted.value
+        );
       }
     };
+    const show = () => {
+      visible.value = true;
+    };
+    const close = () => {
+      visible.value = false;
+    };
+    // Variables used to store the original position while map view is being dragged.
+    let orgScreenX = 0;
+    let orgScreenY = 0;
+    // MapView drag event handler
+    const onMapViewDrag = (event: {
+      button: number;
+      action: string;
+      x: number;
+      y: number;
+      origin: { x: number; y: number };
+    }) => {
+      if (event.button === 0) {
+        console.log("MapView drag");
+        // Update popup position...
+        if (visible.value) {
+          if (event.action === "start") {
+            orgScreenX = screenX.value;
+            orgScreenY = screenY.value;
+          }
+          const diffX = event.x - event.origin.x;
+          const diffY = event.y - event.origin.y;
+          screenX.value = orgScreenX + diffX;
+          screenY.value = orgScreenY + diffY;
+          if (event.action === "end") {
+            orgScreenX = 0;
+            orgScreenY = 0;
+          }
+          adjustPositionSize();
+        }
+      }
+    };
+
     return {
-      left,
-      top,
+      screenX,
+      screenY,
+      screenX_adjusted,
+      screenY_adjusted,
       maxHeight,
       visible,
-      fixPositionSize,
+      adjustPositionSize,
+      show,
+      close,
+      onMapViewDrag,
     };
-  },
-
-  methods: {
-    onClickX() {
-      this.$emit("clickedX");
-    },
   },
 });
 </script>

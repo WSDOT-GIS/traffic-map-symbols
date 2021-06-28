@@ -8,11 +8,11 @@
     @clicked="zoomMetroEventHandler"
   ></ZoomPopupView>
   <CameraPopupView
-    :Visible="cameraPopupVisible"
-    :PositionX="cameraPopupX"
-    :PositionY="cameraPopupY"
+    LayerId="traffic-camera-layer"
+    :MapX="cameraPopupX"
+    :MapY="cameraPopupY"
     :CameraInfos="cameraInfos"
-    @clickedX="cameraPopupCloseHandler"
+    ref="cameraPopupRef"
   ></CameraPopupView>
 </template>
 
@@ -67,14 +67,12 @@ export default defineComponent({
       mapDiv.style.cursor = "auto";
     };
     // Cameral popup...
-    const cameraPopupVisible = ref(false);
+    // https://forum.vuejs.org/t/vue3-accessing-child-component-data-values-and-methods/111329/5
+    const cameraPopupRef = ref<InstanceType<typeof CameraPopupView>>();
     const cameraInfos = ref<CameraInfo[]>([]);
     const cameraPopupX = ref(0);
     const cameraPopupY = ref(0);
     let cameraGraphic: Graphic;
-    const cameraPopupCloseHandler = () => {
-      cameraPopupVisible.value = false;
-    };
 
     onMounted(async () => {
       const esriMap = await import("../esri-stuff/esriMap");
@@ -161,9 +159,7 @@ export default defineComponent({
           if (response.results.length) {
             // Show custom popup...
             cameraGraphic = response.results[0].graphic;
-            const cameraLoc = esriMap.mapView.toScreen(
-              cameraGraphic.geometry as Point
-            );
+            const cameraLoc = cameraGraphic.geometry as Point;
             cameraPopupX.value = cameraLoc.x;
             cameraPopupY.value = cameraLoc.y;
             if (cameraGraphic.isAggregate) {
@@ -176,7 +172,9 @@ export default defineComponent({
                   (results) => {
                     // Show multiple pictures if infos are returned...
                     cameraInfos.value = results ? results : [];
-                    cameraPopupVisible.value = results ? true : false;
+                    results
+                      ? cameraPopupRef.value?.show()
+                      : cameraPopupRef.value?.close();
                     if (!results) {
                       // Zoom-in more...
                       esriMap.zoomToPoint(cameraGraphic.geometry as Point);
@@ -185,12 +183,12 @@ export default defineComponent({
                 );
               } else {
                 // Too many in a cluster, so click to zoom-in...
-                cameraPopupVisible.value = false;
+                cameraPopupRef.value?.close();
                 cameraInfos.value = [];
                 esriMap.zoomToPoint(cameraGraphic.geometry as Point);
               }
             } else {
-              cameraPopupVisible.value = true;
+              cameraPopupRef.value?.show();
               const cameraId = cameraGraphic.getObjectId();
               getCameraInfoById(cameraId).then((response) => {
                 cameraInfos.value = [];
@@ -201,54 +199,9 @@ export default defineComponent({
               });
             }
           } else {
-            cameraPopupVisible.value = false;
+            cameraPopupRef.value?.close();
           }
         });
-      });
-      // Pointer drag event handler...
-      let cameraPopupOrgX = 0;
-      let cameraPopupOrgY = 0;
-      esriMap.mapView.on("drag", (event) => {
-        if (event.button === 0) {
-          // Update popup position...
-          if (cameraPopupVisible.value) {
-            if (event.action === "start") {
-              cameraPopupOrgX = cameraPopupX.value;
-              cameraPopupOrgY = cameraPopupY.value;
-            }
-            const diffX = event.x - event.origin.x;
-            const diffY = event.y - event.origin.y;
-            cameraPopupX.value = cameraPopupOrgX + diffX;
-            cameraPopupY.value = cameraPopupOrgY + diffY;
-            if (event.action === "end") {
-              cameraPopupOrgX = 0;
-              cameraPopupOrgY = 0;
-            }
-          }
-        }
-      });
-      // View resize event handler...
-      esriMap.mapView.on("resize", () => {
-        console.log("resize event");
-        if (cameraPopupVisible.value && cameraGraphic) {
-          const screenLoc = esriMap.mapView.toScreen(
-            cameraGraphic.geometry as Point
-          );
-          cameraPopupX.value = screenLoc.x;
-          cameraPopupY.value = screenLoc.y;
-        }
-      });
-      // Watch scale change...
-      esriMap.mapView.watch("scale", (newValue, oldValue) => {
-        if (cameraPopupVisible.value) {
-          if (cameraPopupVisible.value && cameraGraphic) {
-            const screenLoc = esriMap.mapView.toScreen(
-              cameraGraphic.geometry as Point
-            );
-            cameraPopupX.value = screenLoc.x;
-            cameraPopupY.value = screenLoc.y;
-          }
-        }
       });
       // Watch extent change...
       esriMap.mapView.watch("extent", (newValue, oldValue) => {
@@ -266,11 +219,10 @@ export default defineComponent({
       zoomPopupY,
       zoomPopupLabel,
       zoomMetroEventHandler,
-      cameraPopupVisible,
       cameraInfos,
       cameraPopupX,
       cameraPopupY,
-      cameraPopupCloseHandler,
+      cameraPopupRef,
     };
   },
 });

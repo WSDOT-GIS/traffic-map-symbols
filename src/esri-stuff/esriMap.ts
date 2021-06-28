@@ -2,11 +2,13 @@
 import WebMap from "@arcgis/core/WebMap";
 // import Map from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
-import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
+// import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 // import Bookmarks from "@arcgis/core/widgets/Bookmarks";
 // import Expand from "@arcgis/core/widgets/Expand";
 import Point from "@arcgis/core/geometry/Point";
 import { whenTrue } from "@arcgis/core/core/watchUtils";
+import SpatialReference from "@arcgis/core/geometry/SpatialReference";
+import Layer from "@arcgis/core/layers/Layer";
 
 import TrafficLayer from "@/layers/TrafficLayer";
 import ParkRideLayer from "@/layers/ParkRideLayer";
@@ -89,3 +91,13 @@ export const zoomOnClick = (extentInfo: ExtentInfo): void => {
         }
     });
 };
+
+export const toScreenXY = (mapX: number, mapY: number): { x: number, y: number } => {
+    const pt = new Point({ x: mapX, y: mapY, spatialReference: SpatialReference.WebMercator });
+    const screenPt = mapView.toScreen(pt);
+    return { x: screenPt.x, y: screenPt.y };
+}
+
+export const getLayer = (id: string): Layer => {
+    return webmap.findLayerById(id);
+}
