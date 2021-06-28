@@ -12,7 +12,7 @@
     :PositionX="cameraPopupX"
     :PositionY="cameraPopupY"
     :CameraInfos="cameraInfos"
-    @clicked="cameraPopupEventHandler"
+    @clickedX="cameraPopupCloseHandler"
   ></CameraPopupView>
 </template>
 
@@ -72,7 +72,7 @@ export default defineComponent({
     const cameraPopupX = ref(0);
     const cameraPopupY = ref(0);
     let cameraGraphic: Graphic;
-    const cameraPopupEventHandler = () => {
+    const cameraPopupCloseHandler = () => {
       cameraPopupVisible.value = false;
     };
 
@@ -270,7 +270,7 @@ export default defineComponent({
       cameraInfos,
       cameraPopupX,
       cameraPopupY,
-      cameraPopupEventHandler,
+      cameraPopupCloseHandler,
     };
   },
 });

@@ -6,12 +6,12 @@
       marginTop: top + 'px',
       marginLeft: left + 'px',
     }"
-    @click="onClick"
   >
     <div class="popup-header">
       Traffic Camera{{
         CameraInfos.length > 1 ? " (" + CameraInfos.length + ")" : ""
       }}
+      <button class="popup-close-button" @click="onClickX">x</button>
     </div>
     <div
       class="popup-content"
@@ -58,6 +58,7 @@ export default defineComponent({
     const maxHeight = ref(1000);
     const left = ref(0);
     const top = ref(0);
+    const visible = ref(props.Visible);
     // Adjust popup position when the props change...
     watch(
       () => [props.PositionX, props.PositionY],
@@ -100,13 +101,14 @@ export default defineComponent({
       left,
       top,
       maxHeight,
+      visible,
       fixPositionSize,
     };
   },
 
   methods: {
-    onClick() {
-      this.$emit("clicked");
+    onClickX() {
+      this.$emit("clickedX");
     },
   },
 });
@@ -139,6 +141,15 @@ export default defineComponent({
 .popup-content {
   padding: 0 10px 10px 10px;
   overflow-y: auto;
+}
+
+.popup-close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: #fff;
+  border-style: none;
+  background-color: transparent;
 }
 
 .camera-popup-img {
