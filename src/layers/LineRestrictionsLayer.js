@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-undef
 define(["require", "exports", "tslib", "../symbols/LineRestrictionsSymbol", "@arcgis/core/layers/GeoJSONLayer", "@/popup-templates/RestrictionsPopup", "@arcgis/core/renderers/UniqueValueRenderer"], function (require, exports, tslib_1, LineRestrictionsSymbol_1, GeoJSONLayer_1, RestrictionsPopup_1, UniqueValueRenderer_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
