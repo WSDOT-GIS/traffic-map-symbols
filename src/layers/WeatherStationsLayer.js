@@ -1,8 +1,9 @@
-define(["require", "exports", "tslib", "@arcgis/core/layers/GeoJSONLayer", "@arcgis/core/renderers/SimpleRenderer", "@/symbols/WeatherStationSymbol"], function (require, exports, tslib_1, GeoJSONLayer_1, SimpleRenderer_1, WeatherStationSymbol_1) {
+define(["require", "exports", "tslib", "@arcgis/core/layers/GeoJSONLayer", "@arcgis/core/renderers/SimpleRenderer", "@/symbols/WeatherStationSymbol", "@/popup-templates/WeatherStationsPopup"], function (require, exports, tslib_1, GeoJSONLayer_1, SimpleRenderer_1, WeatherStationSymbol_1, WeatherStationsPopup_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     GeoJSONLayer_1 = tslib_1.__importDefault(GeoJSONLayer_1);
     SimpleRenderer_1 = tslib_1.__importDefault(SimpleRenderer_1);
+    WeatherStationsPopup_1 = tslib_1.__importDefault(WeatherStationsPopup_1);
     var weatherStationRenderer = new SimpleRenderer_1.default({
         symbol: WeatherStationSymbol_1.weatherStationSymbol
     });
@@ -10,7 +11,8 @@ define(["require", "exports", "tslib", "@arcgis/core/layers/GeoJSONLayer", "@arc
         id: "weather-stations-layer",
         url: "http://hqtob1webtmdev1/GISData/WeatherStations.json",
         title: "Weather Stations",
-        renderer: weatherStationRenderer
+        renderer: weatherStationRenderer,
+        popupTemplate: WeatherStationsPopup_1.default
     });
     exports.default = PointRestrictionsLayer;
 });
