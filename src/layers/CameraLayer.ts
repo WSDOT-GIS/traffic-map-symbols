@@ -3,12 +3,13 @@ import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import Field from "@arcgis/core/layers/support/Field";
 import Symbol from "@/symbols/CameraSymbol";
 import Graphic from "@arcgis/core/Graphic";
+import MapView from "@arcgis/core/views/MapView";
+import Point from "@arcgis/core/geometry/Point";
 
 import { clusterSymbol } from "@/symbols/CameraSymbol";
 import { generateClusterConfig } from "@/utils/layerUtil";
 import CameraInfo from "@/types/CameraInfo";
-import MapView from "@arcgis/core/views/MapView";
-import Point from "@arcgis/core/geometry/Point";
+
 
 const clusterConfig = generateClusterConfig("Cameras", "camera", "#fff", clusterSymbol)
 

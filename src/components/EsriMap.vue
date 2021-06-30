@@ -7,12 +7,7 @@
     :Label="zoomPopupLabel"
     @clicked="zoomMetroEventHandler"
   ></ZoomPopupView>
-  <CameraPopupView
-    :MapX="cameraPopupX"
-    :MapY="cameraPopupY"
-    :CameraInfos="cameraInfos"
-    ref="cameraPopupRef"
-  ></CameraPopupView>
+  <CameraPopupView />
 </template>
 
 <script lang="ts">
@@ -20,7 +15,7 @@ import { defineComponent, onMounted, ref, reactive } from "vue";
 import { useStore } from "@/store";
 import { project } from "@arcgis/core/geometry/projection";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
-import { Geometry, Point } from "@arcgis/core/geometry";
+import { Geometry } from "@arcgis/core/geometry";
 
 import { getExtentFromUrl, getBasemapFromUrl } from "@/utils/urlParamUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
@@ -30,13 +25,6 @@ import ExtentInfo from "@/types/ExtentInfo";
 import { zoomOnClick } from "@/esri-stuff/esriMap";
 import { setLayerFromUrl } from "@/utils/urlParamUtil";
 import CameraPopupView from "@/components/CameraPopupView.vue";
-import CameraLayer from "@/layers/CameraLayer";
-import {
-  getCameraInfoById,
-  getCameraInfosFromCluster,
-} from "@/layers/CameraLayer";
-import CameraInfo from "@/types/CameraInfo";
-import Graphic from "@arcgis/core/Graphic";
 
 export default defineComponent({
   components: { ZoomPopupView, CameraPopupView },
@@ -65,13 +53,6 @@ export default defineComponent({
       zoomPopupVisible.value = false;
       mapDiv.style.cursor = "auto";
     };
-    // Cameral popup...
-    // https://forum.vuejs.org/t/vue3-accessing-child-component-data-values-and-methods/111329/5
-    const cameraPopupRef = ref<InstanceType<typeof CameraPopupView>>();
-    const cameraInfos = ref<CameraInfo[]>([]);
-    const cameraPopupX = ref(0);
-    const cameraPopupY = ref(0);
-    let cameraGraphic: Graphic;
 
     onMounted(async () => {
       const esriMap = await import("../esri-stuff/esriMap");
@@ -146,63 +127,6 @@ export default defineComponent({
           }
         });
       });
-      // Click event handler...
-      esriMap.mapView.on("click", (event) => {
-        // Check if pointer is over one of the zoom extents...
-        const opts = {
-          include: [CameraLayer],
-        };
-        esriMap.mapView.hitTest(event, opts).then((response) => {
-          //console.log("Click hit test results: " + response.results.length);
-          // check if a feature is returned from the zoom layer...
-          if (response.results.length) {
-            // Show custom popup...
-            cameraGraphic = response.results[0].graphic;
-            const cameraLoc = cameraGraphic.geometry as Point;
-            cameraPopupX.value = cameraLoc.x;
-            cameraPopupY.value = cameraLoc.y;
-            if (cameraGraphic.isAggregate) {
-              // console.log(
-              //   "Cluster count: " + cameraGraphic.attributes.cluster_count
-              // );
-              if (cameraGraphic.attributes.cluster_count < 10) {
-                // Try to get camera infos from the cluster...
-                getCameraInfosFromCluster(cameraGraphic, esriMap.mapView).then(
-                  (results) => {
-                    // Show multiple pictures if infos are returned...
-                    cameraInfos.value = results ? results : [];
-                    results
-                      ? cameraPopupRef.value?.show()
-                      : cameraPopupRef.value?.close();
-                    //console.log("Popup visibility: " + cameraPopupRef.value?.visible)
-                    if (!results) {
-                      // Zoom-in more...
-                      esriMap.zoomToPoint(cameraGraphic.geometry as Point);
-                    }
-                  }
-                );
-              } else {
-                // Too many in a cluster, so click to zoom-in...
-                cameraPopupRef.value?.close();
-                cameraInfos.value = [];
-                esriMap.zoomToPoint(cameraGraphic.geometry as Point);
-              }
-            } else {
-              cameraPopupRef.value?.show();
-              const cameraId = cameraGraphic.getObjectId();
-              getCameraInfoById(cameraId).then((response) => {
-                cameraInfos.value = [];
-                if (response) {
-                  // console.log(response);
-                  cameraInfos.value.push(response);
-                }
-              });
-            }
-          } else {
-            cameraPopupRef.value?.close();
-          }
-        });
-      });
       // Watch extent change...
       esriMap.mapView.watch("extent", (newValue, oldValue) => {
         // Keep track of map extent in the state store...
@@ -219,10 +143,6 @@ export default defineComponent({
       zoomPopupY,
       zoomPopupLabel,
       zoomMetroEventHandler,
-      cameraInfos,
-      cameraPopupX,
-      cameraPopupY,
-      cameraPopupRef,
     };
   },
 });
