@@ -28,7 +28,7 @@ export const webmap = new WebMap({
 });
 
 export const mapView = new MapView({
-    container: "map_view", // https://v3.vuejs.org/api/instance-properties.html
+    container: "map_view",
     map: webmap,
 });
 mapView.on("click", (() => {
@@ -54,18 +54,19 @@ export const init = (container: HTMLDivElement): void => {
     mapView.when()
         .then(x => {
             console.log("Map is ready. " + typeof (x));
-
         })
         .catch(error => {
             console.warn("Failed to initialize map. Error: ", error);
         });
 };
 
-export const zoomToPoint = (point: Point, numLevels?: number): void => {
+export const tryZoomToPoint = (point: Point, numLevels?: number): boolean => {
+    let isSuccess = true;
     if (!numLevels) {
         numLevels = 1;
     }
     mapView.center = point;
+    const orgLevel = mapView.zoom;
     mapView.zoom = mapView.zoom += numLevels;
     // Tried goTo() as well, but it is a bit jumpy...
     // esriMap.mapView.goTo({
@@ -75,6 +76,11 @@ export const zoomToPoint = (point: Point, numLevels?: number): void => {
     //   duration: 1000,
     //   easing: "ease-out"
     // });
+    if (mapView.zoom === orgLevel) {
+        console.log("Cannot zoom in any more.");
+        isSuccess = false;
+    }
+    return isSuccess;
 }
 
 export const zoomOnClick = (extentInfo: ExtentInfo): void => {

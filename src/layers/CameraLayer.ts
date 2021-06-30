@@ -78,7 +78,6 @@ const layer = new GeoJSONLayer({
     url: "http://hqtob1webtmdev1/GISData/camera.json",
     title: "Traffic Cameras",
     renderer: renderer,
-    //popupTemplate: Popup,
     featureReduction: clusterConfig,
     fields: fields
 });
@@ -104,17 +103,18 @@ export const getCameraInfoById = async (id: number): Promise<CameraInfo | undefi
 
 /* 
 NOTE: This function only returns each feature if one of the following coditions is met:
-1. The number of features is less than the threashold.
-2. All the features are at the identical location.
+- maxCount is not set 
+- The number of features is less than the maxCount.
+- All the features are at the identical location.
 */
-export const getCameraInfosFromCluster = async (clusterGraphic: Graphic, mapView: MapView): Promise<CameraInfo[] | undefined> => {
+export const getCameraInfosFromCluster = async (clusterGraphic: Graphic, mapView: MapView, maxCount?: number): Promise<CameraInfo[] | undefined> => {
     const layerView = await mapView.whenLayerView(layer);
     const query = layerView.createQuery();
     query.aggregateIds = [clusterGraphic.getObjectId()];
     query.outFields = outFields;
     const result = await layerView.queryFeatures(query);
     let doReturn = false;
-    if (result.features.length < 4) {
+    if (!maxCount || result.features.length <= maxCount) {
         doReturn = true;
     }
     else {
@@ -133,7 +133,6 @@ export const getCameraInfosFromCluster = async (clusterGraphic: Graphic, mapView
     if (doReturn) {
         const ids = result.features.map((feature) => { return feature.attributes.CameraID; })
         const features = await getCameraInfosByIds(ids);
-        // console.log("Feature count:" + features.length);
         return features;
     }
 }
@@ -141,7 +140,6 @@ export const getCameraInfosFromCluster = async (clusterGraphic: Graphic, mapView
 const getCameraInfosByIds = async (ids: number[]): Promise<CameraInfo[]> => {
     const query = layer.createQuery();
     query.where = "CameraID IN (" + ids.join(",") + ")";
-    // console.log(query.where);
     query.outFields = outFields;
     const response = await layer.queryFeatures(query);
     const infos = response.features.map(convert2Info);
@@ -150,7 +148,6 @@ const getCameraInfosByIds = async (ids: number[]): Promise<CameraInfo[]> => {
 
 
 const convert2Info = (g: Graphic): CameraInfo => {
-    // console.log(JSON.stringify(g.attributes));
     const info: CameraInfo = {
         id: g.attributes.CameraID,
         title: g.getAttribute("CameraTitle"),

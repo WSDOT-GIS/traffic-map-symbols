@@ -79,9 +79,9 @@ hr.horizontal-divider {
   margin: 1vh 1vw;
 }
 /* Remove the border when the map is in focus. */
-.esri-view .esri-view-surface--inset-outline:focus::after {
+/* .esri-view .esri-view-surface--inset-outline:focus::after {
   outline: none !important;
-}
+} */
 /* App elements positioning */
 
 #app {

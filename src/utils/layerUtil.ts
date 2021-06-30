@@ -3,7 +3,7 @@ import FeatureReductionCluster from "@arcgis/core/layers/support/FeatureReductio
 export const generateClusterConfig = (popupTitle: string, name: string, labelColor: string, symbol?: any): FeatureReductionCluster => {
 
     const clusterConfig = new FeatureReductionCluster({
-        clusterRadius: "80px",
+        clusterRadius: "70px",
         clusterMinSize: "16px",
         clusterMaxSize: "32px",
         labelingInfo: [

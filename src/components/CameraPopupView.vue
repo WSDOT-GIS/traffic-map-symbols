@@ -20,7 +20,7 @@
 import { defineComponent, ref } from "vue";
 import PopupView from "./PopupView.vue";
 import CameraInfo from "@/types/CameraInfo";
-import { mapView, zoomToPoint } from "@/esri-stuff/esriMap";
+import { mapView, tryZoomToPoint } from "@/esri-stuff/esriMap";
 import CameraLayer from "@/layers/CameraLayer";
 import {
   getCameraInfosFromCluster,
@@ -38,14 +38,16 @@ export default defineComponent({
     const mapY = ref(0);
     const infos = ref<CameraInfo[]>([]);
 
-    const show = (x: number, y: number) => {
-      mapX.value = x;
-      mapY.value = y;
+    const show = (pt: Point, cameraInfos: CameraInfo[]) => {
+      mapX.value = pt.x;
+      mapY.value = pt.y;
+      infos.value = cameraInfos;
     };
     // Setting XY to 0 closes the popup...
     const close = () => {
       mapX.value = 0;
       mapY.value = 0;
+      infos.value = [];
     };
 
     const onImageLoaded = () => {
@@ -66,28 +68,34 @@ export default defineComponent({
           if (g.isAggregate) {
             if (g.attributes.cluster_count < 10) {
               // Try to get camera infos from the cluster...
-              getCameraInfosFromCluster(g, mapView).then((results) => {
+              getCameraInfosFromCluster(g, mapView, 3).then((results) => {
                 // Show multiple pictures if infos are returned...
-                infos.value = results ? results : [];
-                results ? show(pt.x, pt.y) : close();
+                // infos.value = results ? results : [];
+                results ? show(pt, results) : close();
                 if (!results) {
                   // Zoom-in more...
-                  zoomToPoint(g.geometry as Point);
+                  const zoomResult = tryZoomToPoint(g.geometry as Point);
+                  if (!zoomResult) {
+                    getCameraInfosFromCluster(g, mapView).then((results) => {
+                      results ? show(pt, results) : close();
+                    });
+                  }
                 }
               });
             } else {
               // Too many in a cluster, so click to zoom-in...
               close();
               infos.value = [];
-              zoomToPoint(g.geometry as Point);
+              tryZoomToPoint(g.geometry as Point);
             }
           } else {
-            show(pt.x, pt.y);
+            //show(pt.x, pt.y);
             const cameraId = g.getObjectId();
             getCameraInfoById(cameraId).then((response) => {
-              infos.value = [];
+              //infos.value = [];
               if (response) {
-                infos.value.push(response);
+                //infos.value.push(response);
+                show(pt, [response]);
               }
             });
           }
