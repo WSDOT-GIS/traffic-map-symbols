@@ -132,7 +132,7 @@ export const getCameraInfosFromCluster = async (clusterGraphic: Graphic, mapView
     if (doReturn) {
         const ids = result.features.map((feature) => { return feature.attributes.CameraID; })
         const features = await getCameraInfosByIds(ids);
-        console.log("Feature count:" + features.length);
+        // console.log("Feature count:" + features.length);
         return features;
     }
 }
@@ -140,7 +140,7 @@ export const getCameraInfosFromCluster = async (clusterGraphic: Graphic, mapView
 const getCameraInfosByIds = async (ids: number[]): Promise<CameraInfo[]> => {
     const query = layer.createQuery();
     query.where = "CameraID IN (" + ids.join(",") + ")";
-    console.log(query.where);
+    // console.log(query.where);
     query.outFields = outFields;
     const response = await layer.queryFeatures(query);
     const infos = response.features.map(convert2Info);
@@ -149,7 +149,7 @@ const getCameraInfosByIds = async (ids: number[]): Promise<CameraInfo[]> => {
 
 
 const convert2Info = (g: Graphic): CameraInfo => {
-    console.log(JSON.stringify(g.attributes));
+    // console.log(JSON.stringify(g.attributes));
     const info: CameraInfo = {
         id: g.attributes.CameraID,
         title: g.getAttribute("CameraTitle"),

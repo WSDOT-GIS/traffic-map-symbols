@@ -8,7 +8,6 @@
     @clicked="zoomMetroEventHandler"
   ></ZoomPopupView>
   <CameraPopupView
-    LayerId="traffic-camera-layer"
     :MapX="cameraPopupX"
     :MapY="cameraPopupY"
     :CameraInfos="cameraInfos"
@@ -154,7 +153,7 @@ export default defineComponent({
           include: [CameraLayer],
         };
         esriMap.mapView.hitTest(event, opts).then((response) => {
-          console.log("Click hit test results: " + response.results.length);
+          //console.log("Click hit test results: " + response.results.length);
           // check if a feature is returned from the zoom layer...
           if (response.results.length) {
             // Show custom popup...
@@ -163,9 +162,9 @@ export default defineComponent({
             cameraPopupX.value = cameraLoc.x;
             cameraPopupY.value = cameraLoc.y;
             if (cameraGraphic.isAggregate) {
-              console.log(
-                "Cluster count: " + cameraGraphic.attributes.cluster_count
-              );
+              // console.log(
+              //   "Cluster count: " + cameraGraphic.attributes.cluster_count
+              // );
               if (cameraGraphic.attributes.cluster_count < 10) {
                 // Try to get camera infos from the cluster...
                 getCameraInfosFromCluster(cameraGraphic, esriMap.mapView).then(
@@ -175,6 +174,7 @@ export default defineComponent({
                     results
                       ? cameraPopupRef.value?.show()
                       : cameraPopupRef.value?.close();
+                    //console.log("Popup visibility: " + cameraPopupRef.value?.visible)
                     if (!results) {
                       // Zoom-in more...
                       esriMap.zoomToPoint(cameraGraphic.geometry as Point);
@@ -193,7 +193,7 @@ export default defineComponent({
               getCameraInfoById(cameraId).then((response) => {
                 cameraInfos.value = [];
                 if (response) {
-                  console.log(response);
+                  // console.log(response);
                   cameraInfos.value.push(response);
                 }
               });
