@@ -44,7 +44,6 @@ export default defineComponent({
     SavedMapView,
    // LegendVue,
     MyLocationView,
-    // ZoomPopupView,
   },
   setup() {
     const headerText = "This is the header";
@@ -78,6 +77,10 @@ body,
 hr.horizontal-divider {
   border-top: 3px solid #bbb;
   margin: 1vh 1vw;
+}
+/* Remove the border when the map is in focus. */
+.esri-view .esri-view-surface--inset-outline:focus::after {
+  outline: none !important;
 }
 /* App elements positioning */
 

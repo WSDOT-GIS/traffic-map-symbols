@@ -1,10 +1,7 @@
 import Extent from "@arcgis/core/geometry/Extent";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
-import { whenTrue } from "@arcgis/core/core/watchUtils";
 
 import ExtentInfo from "@/types/ExtentInfo";
-import { mapView } from "@/esri-stuff/esriMap";
-import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 
 const defaultExtents: ExtentInfo[] = [
     {
@@ -48,19 +45,4 @@ export const convert2ExtentInfo = (extent: Extent): ExtentInfo => {
     return info;
 };
 
-export const zoomOnClick = (extentInfo: ExtentInfo): void => {
-    const extent = convert2EsriExtent(extentInfo);
-    mapView.extent = extent;
-    ZoomExtentLayer.visible = false;
-    // Remember the scale zoomed into so it can detect when map is zoomed out.
-    const zoomExtentLayerMaxScale = mapView.scale;
-    // Set watch to make the layer visible again when user zoomed out.
-    const watchHandle = whenTrue(mapView, "stationary", () => {
-        if (mapView.scale > zoomExtentLayerMaxScale) {
-            ZoomExtentLayer.visible = true;
-            // Watch is no longer needed.
-            watchHandle.remove();
-        }
-    });
-};
 

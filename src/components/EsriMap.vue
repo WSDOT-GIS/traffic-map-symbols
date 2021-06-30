@@ -7,6 +7,7 @@
     :Label="zoomPopupLabel"
     @clicked="zoomMetroEventHandler"
   ></ZoomPopupView>
+  <CameraPopupView />
 </template>
 
 <script lang="ts">
@@ -18,20 +19,22 @@ import { Geometry } from "@arcgis/core/geometry";
 
 import { getExtentFromUrl, getBasemapFromUrl } from "@/utils/urlParamUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
-import { getFeatureById } from "@/layers/ZoomExtentLayer";
+import { getFeatureById as getZoomFeatureById } from "@/layers/ZoomExtentLayer";
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
 import ExtentInfo from "@/types/ExtentInfo";
-import { zoomOnClick } from "@/utils/extentUtil";
+import { zoomOnClick } from "@/esri-stuff/esriMap";
 import { setLayerFromUrl } from "@/utils/urlParamUtil";
+import CameraPopupView from "@/components/CameraPopupView.vue";
 
 export default defineComponent({
-  components: { ZoomPopupView },
+  components: { ZoomPopupView, CameraPopupView },
   setup() {
     const store = useStore();
-    let zoomPopupVisible = ref(false);
-    let zoomPopupX = ref(0);
-    let zoomPopupY = ref(0);
-    let zoomPopupLabel = ref("");
+    // Zoom popup...
+    const zoomPopupVisible = ref(false);
+    const zoomPopupLabel = ref("");
+    const zoomPopupX = ref(0);
+    const zoomPopupY = ref(0);
     const zoomExtentInfo = reactive({
       xmin: 0,
       xmax: 0,
@@ -64,7 +67,7 @@ export default defineComponent({
           visible: layer.visible,
         });
       });
-      //
+      // Set layer visibility based on URL query...
       setLayerFromUrl(layerList);
       store.commit("setLayerList", layerList);
       //#endregion
@@ -73,7 +76,7 @@ export default defineComponent({
       // Set basemap based on URL query parameter...
       const basemapInfo = getBasemapFromUrl();
       store.commit("setBasemap", basemapInfo.name);
-      // Track pointer location...
+      // Pointer move event handler...
       esriMap.mapView.on("pointer-move", (event) => {
         // Update current poitner x/y in the store...
         let pt = esriMap.mapView.toMap({ x: event.x, y: event.y });
@@ -83,14 +86,17 @@ export default defineComponent({
         const opts = {
           include: [ZoomExtentLayer],
         };
-        esriMap.mapView.hitTest(event, opts).then(function (response) {
+        esriMap.mapView.hitTest(event, opts).then((response) => {
           // check if a feature is returned from the zoom layer...
           if (response.results.length) {
-            zoomPopupVisible.value = true;
+            // Show custom popup...
+            zoomPopupX.value = event.x;
+            zoomPopupY.value = event.y;
             const zoomGraphic = response.results[0].graphic;
+            zoomPopupVisible.value = true;
             // Set zoom popup properties...
             const id = zoomGraphic.attributes["ObjectID"];
-            getFeatureById(id).then((response) => {
+            getZoomFeatureById(id).then((response) => {
               const geom = project(
                 response.geometry,
                 SpatialReference.WebMercator
@@ -102,8 +108,6 @@ export default defineComponent({
               zoomExtentInfo.ymax = extent.ymax;
               zoomPopupLabel.value = response.attributes.Label;
             });
-            zoomPopupX.value = event.x;
-            zoomPopupY.value = event.y;
             mapDiv.style.cursor = "zoom-in";
             if (!zoomEventIsOn) {
               mapDiv.addEventListener("click", zoomMetroEventHandler);
@@ -120,8 +124,9 @@ export default defineComponent({
           }
         });
       });
-      // Keep track of map extent and scale in the state store...
+      // Watch extent change...
       esriMap.mapView.watch("extent", (newValue, oldValue) => {
+        // Keep track of map extent in the state store...
         if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
           store.commit("setCurrentExtent", newValue);
         }

@@ -5,7 +5,6 @@ import { webmap, mapView } from "./esri-stuff/esriMap";
 import { getBasemapInfo, toggleBasemapInfo } from "./layers/Basemaps";
 import ExtentInfo from "./types/ExtentInfo";
 import { convert2EsriExtent, convert2ExtentInfo } from "./utils/extentUtil";
-//import { setLayerFromUrl } from "./utils/urlParamUtil";
 import LayerInfo from "./types/LayerInfo";
 
 
@@ -25,16 +24,7 @@ export interface State {
 export const key: InjectionKey<Store<State>> = Symbol()
 
 export const store = createStore<State>({
-    state() {//ask masao about this
-        // const layerList = [
-        //     { index: 0, title: "Traffic", visible: true },
-        //     { index: 1, title: "Park and Rides", visible: false },
-        //     { index: 2, title: "Traffic Cameras", visible: false },
-        //     { index: 3, title: "test1", visible: true },
-        //     { index: 4, title: "test2", visible: false }
-        // ]
-        // setLayerFromUrl(layerList);
-
+    state() {
         return {
             basemap: "",
             pointerX: 0,
@@ -45,7 +35,7 @@ export const store = createStore<State>({
                 ymin: 0,
                 ymax: 0
             },
-            layerList: [],//layerList,
+            layerList: [],
             userLocation: null,
             mapFeaturesExpanded: "block"
         }
@@ -90,7 +80,6 @@ export const store = createStore<State>({
                 // If the payload is ESRI extent, then update the state only.
                 const extentInfo = convert2ExtentInfo(payload);
                 state.currentExtent = extentInfo;
-                //console.log(JSON.stringify(state.currentExtent));
             } else {
                 // If the payload is ExtentInfo, actually zoom the map. Once the map extent 
                 // is changed, ESRI extent will be sent to this again and set the state.
