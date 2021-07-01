@@ -1,15 +1,18 @@
 <template>
   <HeaderView :text="headerText" />
   <AlertView :alert="alert" />
-  <div id="map-container">
+  <div id="map-container" class="w3-row w3-display-container">
     <BasemapView />
     <CoordinatesView />
     <MyLocationView />
-    <div id="map-top-left-container">
+    <div
+      id="map-top-left-container"
+      class="w3-sidebar w3-bar-block w3-collapse w3-card w3-animate-left w3-white w3-col m2 l1"
+    >
       <LayerListView />
       <SavedMapView />
     </div>
-   <!--LegendVue /-->
+    <!--LegendVue /-->
     <EsriMap />
   </div>
   <AdView :text="adText" />
@@ -29,7 +32,7 @@ import Alert from "./types/AlertInfo";
 import LayerListView from "./components/LayerListView.vue";
 import SavedMapView from "./components/SavedMapView.vue";
 //import LegendVue from "./components/LegendView.vue";
-import MyLocationView from"./components/MyLocationView.vue";
+import MyLocationView from "./components/MyLocationView.vue";
 export default defineComponent({
   name: "App",
   components: {
@@ -42,7 +45,7 @@ export default defineComponent({
     FooterView,
     LayerListView,
     SavedMapView,
-   // LegendVue,
+    // LegendVue,
     MyLocationView,
   },
   setup() {
@@ -103,7 +106,7 @@ hr.horizontal-divider {
   position: absolute;
 }
 
-#map-top-left-container {
+/* #map-top-left-container {
   position: absolute;
   margin: 1vh 1vw;
   left: 0;
@@ -112,7 +115,7 @@ hr.horizontal-divider {
   float: left;
   z-index: 1;
   background-color: #fff;
-}
+} */
 #layerListWidget {
   margin: 0;
   text-align: center;
@@ -159,6 +162,6 @@ hr.horizontal-divider {
   float: left;
   z-index: 1;
   height: 50px;
-  width: 50px
+  width: 50px;
 }
 </style>

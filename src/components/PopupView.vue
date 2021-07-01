@@ -1,7 +1,7 @@
 <template>
   <div
     ref="containerRef"
-    class="popup-container"
+    class="popup-container w3-card w3-col m4 l2"
     v-if="visible"
     :style="{
       marginTop: screenY_adjusted + 'px',
@@ -195,14 +195,14 @@ export default defineComponent({
 
 <style scoped>
 .popup-container {
-  position: absolute;
+  /* position: absolute;
   margin-top: 0;
-  margin-left: 0;
+  margin-left: 0; */
   z-index: 99;
   background-color: #fff;
-  border: 1px solid #808080;
-  padding: 0;
-  width: 200px;
+  /* border: 1px solid #808080;
+  padding: 0; */
+  /* width: 200px; */
   overflow-y: auto;
 }
 .popup-header {

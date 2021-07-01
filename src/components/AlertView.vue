@@ -1,5 +1,5 @@
 <template>
-  <div id="alert_container">
+  <div id="alert_container" class="w3-container">
     <b>ALERT: {{ alert.title }}</b>
   </div>
 </template>
@@ -20,7 +20,6 @@ export default defineComponent({
 
 <style scoped>
 div#alert_container {
-  padding: 5px;
   background-color: orange;
 }
 </style>

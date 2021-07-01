@@ -1,5 +1,5 @@
 <template>
-  <footer>{{ text }}</footer>
+  <footer class="w3-container">{{ text }}</footer>
 </template>
 
 <script lang="ts">
@@ -17,7 +17,6 @@ export default defineComponent({
 
 <style scoped>
 footer {
-  padding: 5px;
   color: white;
   background-color: grey;
 }
