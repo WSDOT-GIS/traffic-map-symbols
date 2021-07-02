@@ -1,13 +1,13 @@
 <template>
   <HeaderView :text="headerText" />
   <AlertView :alert="alert" />
-  <div id="map-container" class="w3-row w3-display-container">
+  <div id="map-container" class="w3-row w3-main">
     <BasemapView />
     <CoordinatesView />
     <MyLocationView />
     <div
       id="map-top-left-container"
-      class="w3-sidebar w3-bar-block w3-collapse w3-card w3-animate-left w3-white w3-col m2 l1"
+      class="z1 w3-collapse w3-container w3-padding-small w3-card w3-animate-left w3-white w3-col m3 l2"
     >
       <LayerListView />
       <SavedMapView />
@@ -78,7 +78,7 @@ body,
   height: 100%;
 }
 hr.horizontal-divider {
-  border-top: 3px solid #bbb;
+  border-top: 1px solid #bbb;
   margin: 1vh 1vw;
 }
 /* Remove the border when the map is in focus. */
@@ -106,6 +106,10 @@ hr.horizontal-divider {
   position: absolute;
 }
 
+#map-top-left-container {
+  z-index: 1;
+}
+
 /* #map-top-left-container {
   position: absolute;
   margin: 1vh 1vw;
@@ -115,7 +119,8 @@ hr.horizontal-divider {
   float: left;
   z-index: 1;
   background-color: #fff;
-} */
+}  */
+/* 
 #layerListWidget {
   margin: 0;
   text-align: center;
@@ -126,7 +131,7 @@ hr.horizontal-divider {
   margin: 0;
   text-align: center;
   width: 100%;
-}
+} */
 
 #basemap-widget-container {
   position: absolute;
