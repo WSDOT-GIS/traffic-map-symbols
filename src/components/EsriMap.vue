@@ -1,5 +1,6 @@
 <template>
   <div id="map_view"></div>
+  <LeftPaneView />
   <ZoomPopupView
     :Visible="zoomPopupVisible"
     :PositionX="zoomPopupX"
@@ -25,9 +26,10 @@ import ExtentInfo from "@/types/ExtentInfo";
 import { zoomOnClick } from "@/esri-stuff/esriMap";
 import { setLayerFromUrl } from "@/utils/urlParamUtil";
 import CameraPopupView from "@/components/CameraPopupView.vue";
+import LeftPaneView from "@/components/LeftPaneView.vue"
 
 export default defineComponent({
-  components: { ZoomPopupView, CameraPopupView },
+  components: { ZoomPopupView, CameraPopupView, LeftPaneView },
   setup() {
     const store = useStore();
     // Zoom popup...

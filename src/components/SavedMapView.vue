@@ -4,13 +4,16 @@
     class="w3-left-align"
     :style="{ display: mapFeaturesExpanded }"
   >
-    <hr class="horizontal-divider" />
-    <div id="saved-map-list-title w3-large">My saved maps</div>
+    
+    <div id="saved-map-list-title w3-medium">My saved maps</div>
     <ul id="saved-map-list-container" class="w3-ul">
       <li
         v-for="(item, index) in mapList"
         :key="index"
-        class="saved-map-item-container w3-display-container w3-hover-shadow w3-padding-small w3-border-0"
+        class="
+          saved-map-item-container
+          w3-display-container w3-hover-shadow w3-padding-small w3-border-0
+        "
       >
         <a
           class="saved-map-item"
@@ -25,8 +28,9 @@
         <span
           class="w3-button w3-transparent w3-display-right"
           @click="removeItem($event, item)"
-          >&times;</span
         >
+          &times;
+        </span>
         <!-- <svg
           @click="removeItem($event, item)"
           xmlns="http://www.w3.org/2000/svg"
@@ -41,16 +45,24 @@
         </svg>-->
       </li>
     </ul>
-    <hr class="horizontal-divider" />
-    <form @submit.prevent="addItem" id="save-map-form" class="w3-display-container">
-      <input class="w3-input w3-border"
+    
+    <form
+      @submit.prevent="addItem"
+      id="save-map-form"
+      class="w3-display-container"
+    >
+      <input
+        class="w3-input w3-border"
         title="Input Map Name"
         type="text"
         v-model="newMapTitle"
         id="new-map-title"
         placeholder="map view title"
       />
-      <button id="save-map-button" class="w3-button w3-transparent w3-display-right">
+      <button
+        id="save-map-button"
+        class="w3-button w3-transparent w3-display-right"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="16"

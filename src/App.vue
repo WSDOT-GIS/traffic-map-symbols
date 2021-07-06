@@ -1,17 +1,29 @@
 <template>
   <HeaderView :text="headerText" />
   <AlertView :alert="alert" />
+  
   <div id="map-container" class="w3-row w3-main">
     <BasemapView />
     <CoordinatesView />
     <MyLocationView />
-    <div
+    <!-- <div
       id="map-top-left-container"
-      class="z1 w3-collapse w3-container w3-padding-small w3-card w3-animate-left w3-white w3-col m3 l2"
+      class="
+        z1
+        w3-collapse
+        w3-container
+        w3-padding-small
+        w3-card
+        w3-animate-left
+        w3-white
+        w3-col
+        m3
+        l2
+      "
     >
       <LayerListView />
       <SavedMapView />
-    </div>
+    </div> -->
     <!--LegendVue /-->
     <EsriMap />
   </div>
@@ -29,8 +41,9 @@ import AlertView from "./components/AlertView.vue";
 import AdView from "./components/AdView.vue";
 import FooterView from "./components/FooterView.vue";
 import Alert from "./types/AlertInfo";
-import LayerListView from "./components/LayerListView.vue";
-import SavedMapView from "./components/SavedMapView.vue";
+// import LeftPaneView from "./components/LeftPaneView.vue";
+// import LayerListView from "./components/LayerListView.vue";
+// import SavedMapView from "./components/SavedMapView.vue";
 //import LegendVue from "./components/LegendView.vue";
 import MyLocationView from "./components/MyLocationView.vue";
 export default defineComponent({
@@ -43,8 +56,9 @@ export default defineComponent({
     AlertView,
     AdView,
     FooterView,
-    LayerListView,
-    SavedMapView,
+    // LeftPaneView,
+    // LayerListView,
+    // SavedMapView,
     // LegendVue,
     MyLocationView,
   },

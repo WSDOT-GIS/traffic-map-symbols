@@ -1,6 +1,6 @@
 <template>
   <div id="layerListWidget" title="Map Features">
-    <div :style="{ display: mapFeaturesExpanded }">
+    <!-- <div :style="{ display: mapFeaturesExpanded }">
       <div class="w3-display-container">
       <label class="w3-large">Map Features</label>
       <svg
@@ -16,7 +16,7 @@
       </svg>
       </div>
       <hr class="horizontal-divider" />
-    </div>
+    </div> -->
     <div id="mapFeaturesDiv" :style="{ display: mapFeaturesExpanded }">
       <table class="mapFeatureTable">
         <tr>
@@ -99,7 +99,7 @@
 </template>
 <script lang="ts">
 import { store, useStore } from "@/store";
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, ref } from "vue";
 import LayerInfo from "../types/LayerInfo";
 import { webmap } from "../esri-stuff/esriMap";
 import { mapState } from "vuex";
@@ -158,9 +158,7 @@ export default defineComponent({
 </script>
 <style scoped>
 #layerListWidget {
-  background-color: white;
   box-shadow: 1pt solid grey;
-  width: 150px;
 }
 
 #slowLegendCell {
@@ -189,7 +187,6 @@ export default defineComponent({
   width: 95%;
 }
 .mapFeatureTable {
-  width: 150px;
 }
 .trafficLegendTable {
   margin: auto;
