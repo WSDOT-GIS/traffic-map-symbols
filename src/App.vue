@@ -62,6 +62,7 @@ export default defineComponent({
 </script>
 
 <style>
+
 html,
 body,
 #app {
@@ -110,6 +111,18 @@ hr.horizontal-divider {
   z-index: 1;
   background-color: #fff;
 }
+
+@media screen and (max-width: 400px) {
+  #map-top-left-container {
+    position: relative;
+    margin: auto;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    background-color: lavender;
+  }
+}
+
 #layerListWidget {
   margin: 0;
   text-align: center;

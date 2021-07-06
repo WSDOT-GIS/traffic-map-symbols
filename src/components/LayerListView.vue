@@ -115,7 +115,6 @@ export default defineComponent({
     box-shadow: 1pt solid grey;
     width: 150px;
   }
-  
   #slowLegendCell{
     background-color: firebrick
   }

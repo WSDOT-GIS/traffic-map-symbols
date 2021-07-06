@@ -1,4 +1,4 @@
-define(["require", "exports"], function (require, exports) {
+define(["require", "exports", "tslib"], function (require, exports, tslib_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var weatherStationsPopup = {
@@ -109,7 +109,12 @@ define(["require", "exports"], function (require, exports) {
         var popupDiv = document.createElement("div");
         var attributesDiv = document.createElement("div");
         attributesDiv.setAttribute("id", "attributesDiv");
+        attributesDiv.style.display = "none";
         var attributesTable = document.createElement("table");
+        var attributesTableToggle = document.createElement("button");
+        attributesTableToggle.setAttribute("class", "sectionToggleButton");
+        attributesTableToggle.innerHTML = "Show Attributes";
+        attributesTableToggle.addEventListener("click", toggleStationAttributes);
         for (var i = 0; i < weatherStationsPopup.fieldInfos.length; i++) {
             var value = void 0;
             var label = void 0;
@@ -128,8 +133,32 @@ define(["require", "exports"], function (require, exports) {
                 attributesTable.appendChild(attributeRow);
             }
         }
+        popupDiv.appendChild(attributesTableToggle);
         attributesDiv.appendChild(attributesTable);
         popupDiv.appendChild(attributesDiv);
+        function toggleStationAttributes() {
+            attributesDiv.style.display == "block" ? attributesDiv.style.display = "none" : attributesDiv.style.display = "block";
+            attributesDiv.style.display == "none" ? attributesTableToggle.innerHTML = "Show Attributes" : attributesTableToggle.innerHTML = "Hide Attributes";
+        }
+        getWeatherGrid(feature.graphic);
+        function getWeatherGrid(graphic) {
+            return tslib_1.__awaiter(this, void 0, void 0, function () {
+                return tslib_1.__generator(this, function (_a) {
+                    console.log(graphic);
+                    fetch("http://api.weather.gov/points/" + graphic.geometry.latitude + "," + graphic.geometry.longitude).then(function (results) {
+                        return results.json();
+                    }).then(function (data) {
+                        console.log(data);
+                        fetch("https://api.weather.gov/gridpoints/" + data.properties.gridId + "/" + data.properties.gridX + "," + data.properties.gridY + "/forecast").then(function (forecastData) {
+                            return forecastData.json();
+                        }).then(function (forecastDataJson) {
+                            console.log(forecastDataJson);
+                        });
+                    });
+                    return [2 /*return*/];
+                });
+            });
+        }
         return popupDiv;
     }
     exports.default = weatherStationsPopup;

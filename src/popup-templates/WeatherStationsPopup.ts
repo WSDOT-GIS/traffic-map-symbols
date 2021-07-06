@@ -108,7 +108,12 @@ function myContent(feature:any) {
     const popupDiv = document.createElement("div");
     const attributesDiv = document.createElement("div");
     attributesDiv.setAttribute("id","attributesDiv")
+    attributesDiv.style.display="none"
     const attributesTable = document.createElement("table")
+    const attributesTableToggle = document.createElement("button")
+    attributesTableToggle.setAttribute("class","sectionToggleButton")
+    attributesTableToggle.innerHTML = "Show Attributes"
+    attributesTableToggle.addEventListener("click",toggleStationAttributes)
     for(let i=0;i<weatherStationsPopup.fieldInfos.length;i++){
         let value;
         let label;
@@ -137,10 +142,35 @@ function myContent(feature:any) {
             `
             attributesTable.appendChild(attributeRow)
         }
-        
     }
+    popupDiv.appendChild(attributesTableToggle);
     attributesDiv.appendChild(attributesTable)
     popupDiv.appendChild(attributesDiv)
+    function toggleStationAttributes(){
+        attributesDiv.style.display=="block"?attributesDiv.style.display="none":attributesDiv.style.display="block"
+        attributesDiv.style.display=="none"?attributesTableToggle.innerHTML="Show Attributes":attributesTableToggle.innerHTML="Hide Attributes"
+    }
+    getWeatherGrid(feature.graphic)
+    getMoreDetailsLink(feature.graphic)
+    function getWeatherGrid(graphic:any){
+        console.log(graphic)
+        fetch(
+            `http://api.weather.gov/points/${graphic.geometry.latitude},${graphic.geometry.longitude}`
+        ).then((results:any)=>{
+            return results.json()
+            }).then((data)=>{
+                console.log(data)
+                fetch(`https://api.weather.gov/gridpoints/${data.properties.gridId}/${data.properties.gridX},${data.properties.gridY}/forecast`).then((forecastData)=>{
+                    return forecastData.json()
+                }).then((forecastDataJson)=>{
+                    console.log(forecastDataJson)
+                    
+                })
+            })
+        }
+    function getMoreDetailsLink(graphic:any){
+
+    }
     return popupDiv;
 }
 export default weatherStationsPopup
