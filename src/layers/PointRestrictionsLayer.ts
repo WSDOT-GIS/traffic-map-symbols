@@ -1,11 +1,11 @@
 import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer"
-import {roadRestrictionPoint, bridgeRestrictionPoint} from "../symbols/PointRestrictionsSymbol"
+import { roadRestrictionPoint, bridgeRestrictionPoint } from "../symbols/PointRestrictionsSymbol"
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import Symbol from "@/symbols/ParkRideSymbol";
 import restrictionsPopup from "@/popup-templates/RestrictionsPopup"
 const pointRestrictionsRenderer = new UniqueValueRenderer({
-    field:"TType",
+    field: "TType",
     uniqueValueInfos: [{
         // All features with value of "North" will be blue
         value: "R",
