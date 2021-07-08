@@ -1,6 +1,20 @@
 <template>
-  <div id="map_view"></div>
+  <div id="esri-map-view"></div>
   <LeftPaneView />
+  <div class="w3-display-bottomleft w3-container">
+    <CoordinatesView />
+  </div>
+  <div id="map-bottom-right-container" class="w3-display-bottomright">
+    <div class="map-bottom-right-container-row">
+      <div class="map-bottom-right-container-column">
+        <BasemapView />
+      </div>
+      <div class="map-bottom-right-container-column">
+        <MyLocationView />
+        <ZoomButtonView />
+      </div>
+    </div>
+  </div>
   <ZoomPopupView
     :Visible="zoomPopupVisible"
     :PositionX="zoomPopupX"
@@ -26,10 +40,22 @@ import ExtentInfo from "@/types/ExtentInfo";
 import { zoomOnClick } from "@/esri-stuff/esriMap";
 import { setLayerFromUrl } from "@/utils/urlParamUtil";
 import CameraPopupView from "@/components/CameraPopupView.vue";
-import LeftPaneView from "@/components/LeftPaneView.vue"
+import LeftPaneView from "@/components/LeftPaneView.vue";
+import BasemapView from "@/components/BasemapView.vue";
+import CoordinatesView from "@/components/CoordinatesView.vue";
+import MyLocationView from "@/components/MyLocationView.vue";
+import ZoomButtonView from "@/components/ZoomButtonView.vue";
 
 export default defineComponent({
-  components: { ZoomPopupView, CameraPopupView, LeftPaneView },
+  components: {
+    ZoomPopupView,
+    CameraPopupView,
+    LeftPaneView,
+    BasemapView,
+    CoordinatesView,
+    MyLocationView,
+    ZoomButtonView,
+  },
   setup() {
     const store = useStore();
     // Zoom popup...
@@ -58,7 +84,7 @@ export default defineComponent({
 
     onMounted(async () => {
       const esriMap = await import("../esri-stuff/esriMap");
-      mapDiv = document.getElementById("map_view") as HTMLDivElement;
+      mapDiv = document.getElementById("esri-map-view") as HTMLDivElement;
       esriMap.init(mapDiv);
       //#region register layer list to state
       let layerList: { index: number; title: string; visible: boolean }[] = [];
@@ -149,10 +175,31 @@ export default defineComponent({
 
 <style scoped>
 @import "https://js.arcgis.com/4.19/@arcgis/core/assets/esri/themes/light/main.css";
-#map_view {
+#esri-map-view {
   padding: 0;
   margin: 0;
   height: 100%;
   width: 100%;
+}
+
+#map-bottom-right-container {
+  width: 100px;
+  text-align: right;
+  margin: 16px 8px;
+}
+
+.map-bottom-right-container-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.map-bottom-right-container-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 150px;
+  justify-content: flex-end;
 }
 </style>

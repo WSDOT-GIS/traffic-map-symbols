@@ -28,13 +28,13 @@ export const webmap = new WebMap({
 });
 
 export const mapView = new MapView({
-    container: "map_view",
+    container: "esri-map-view",
     map: webmap,
 });
 mapView.on("click", (() => {
     mapView.graphics.removeAll()
 }))
-mapView.ui.move("zoom", "bottom-right");
+// mapView.ui.move("zoom", "bottom-right");
 
 // const bookmarks = new Bookmarks({
 //     view: mapView,

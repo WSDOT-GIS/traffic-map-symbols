@@ -19,7 +19,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-div#alert_container {
+#alert_container {
   background-color: orange;
 }
 </style>

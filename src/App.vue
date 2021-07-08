@@ -1,66 +1,42 @@
 <template>
-  <HeaderView :text="headerText" />
-  <AlertView :alert="alert" />
-  
-  <div id="map-container" class="w3-row w3-main">
-    <BasemapView />
-    <CoordinatesView />
-    <MyLocationView />
-    <!-- <div
-      id="map-top-left-container"
-      class="
-        z1
-        w3-collapse
-        w3-container
-        w3-padding-small
-        w3-card
-        w3-animate-left
-        w3-white
-        w3-col
-        m3
-        l2
-      "
-    >
-      <LayerListView />
-      <SavedMapView />
-    </div> -->
-    <!--LegendVue /-->
+  <div id="app-top-container" ref="topRef">
+    <HeaderView :text="headerText" />
+    <AlertView :alert="alert" />
+  </div>
+  <div id="map-container" :style="{ height: mapHeight }" class="w3-display-container">
+    <!-- <BasemapView /> -->
+    <!-- <CoordinatesView /> -->
+    <!-- <MyLocationView /> -->
     <EsriMap />
   </div>
-  <AdView :text="adText" />
-  <FooterView :text="footerText" />
+  <div id="app-bottom-container" ref="bottomRef">
+    <AdView :text="adText" />
+    <FooterView :text="footerText" />
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import EsriMap from "./components/EsriMap.vue";
-import BasemapView from "./components/BasemapView.vue";
-import CoordinatesView from "./components/CoordinatesView.vue";
+// import BasemapView from "./components/BasemapView.vue";
+// import CoordinatesView from "./components/CoordinatesView.vue";
 import HeaderView from "./components/HeaderView.vue";
 import AlertView from "./components/AlertView.vue";
 import AdView from "./components/AdView.vue";
 import FooterView from "./components/FooterView.vue";
 import Alert from "./types/AlertInfo";
-// import LeftPaneView from "./components/LeftPaneView.vue";
-// import LayerListView from "./components/LayerListView.vue";
-// import SavedMapView from "./components/SavedMapView.vue";
-//import LegendVue from "./components/LegendView.vue";
-import MyLocationView from "./components/MyLocationView.vue";
+// import MyLocationView from "./components/MyLocationView.vue";
 export default defineComponent({
   name: "App",
   components: {
     EsriMap,
-    BasemapView,
-    CoordinatesView,
+    // BasemapView,
+    // CoordinatesView,
     HeaderView,
     AlertView,
     AdView,
     FooterView,
-    // LeftPaneView,
-    // LayerListView,
-    // SavedMapView,
-    // LegendVue,
-    MyLocationView,
+    // MyLocationView,
   },
   setup() {
     const headerText = "This is the header";
@@ -72,7 +48,32 @@ export default defineComponent({
     });
     const adText = "This is advertisement";
     const footerText = "This is the footer";
-    return { headerText, alert, adText, footerText };
+    const topRef = ref<HTMLDivElement>();
+    const bottomRef = ref<HTMLDivElement>();
+    const mapHeight = ref("500px");
+    onMounted(() => {
+      resizeMapContainer();
+    });
+    const resizeMapContainer = () => {
+      console.log("resizeMapContainer");
+      if (topRef.value && bottomRef.value) {
+        const h =
+          window.innerHeight -
+          topRef.value.offsetHeight -
+          bottomRef.value.offsetHeight;
+        mapHeight.value = h + "px";
+      }
+    };
+    window.addEventListener("resize", resizeMapContainer);
+    return {
+      headerText,
+      alert,
+      adText,
+      footerText,
+      mapHeight,
+      topRef,
+      bottomRef,
+    };
   },
 });
 </script>
@@ -104,25 +105,23 @@ hr.horizontal-divider {
 #app {
   position: absolute;
   z-index: 0;
-  width: 100vw;
-  height: 100vh;
 }
 
 #map-container {
   padding: 0;
   margin: 0;
-  height: 70%;
-  width: 100%;
   position: relative;
+  width: 100%;
+  height: 80%;
 }
 
 #map-container > * {
   position: absolute;
 }
 
-#map-top-left-container {
+/* #map-top-left-container {
   z-index: 1;
-}
+} */
 
 /* #map-top-left-container {
   position: absolute;
@@ -147,7 +146,7 @@ hr.horizontal-divider {
   width: 100%;
 } */
 
-#basemap-widget-container {
+/* #basemap-widget-container {
   position: absolute;
   margin-left: 91vw;
   margin-top: 71vh;
@@ -157,9 +156,9 @@ hr.horizontal-divider {
   width: 100px;
   float: left;
   z-index: 1;
-}
+} */
 
-#legendWidget {
+/* #legendWidget {
   position: absolute;
   margin-left: 91vw;
   margin-top: 3vh;
@@ -182,5 +181,5 @@ hr.horizontal-divider {
   z-index: 1;
   height: 50px;
   width: 50px;
-}
+} */
 </style>

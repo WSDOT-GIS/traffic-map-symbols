@@ -1,5 +1,5 @@
 <template>
-  <p title="Cursor Coordinates" class="bottom left ontop coord">X: {{ pointerX }}, Y: {{ pointerY }}</p>
+  <p title="Cursor Coordinates" class="coord">X: {{ pointerX }}, Y: {{ pointerY }}</p>
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
