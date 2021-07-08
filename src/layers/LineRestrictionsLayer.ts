@@ -1,10 +1,10 @@
-import {roadRestrictionLine, bridgeRestrictionLine} from "../symbols/LineRestrictionsSymbol"
+import { roadRestrictionLine, bridgeRestrictionLine } from "../symbols/LineRestrictionsSymbol"
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import restrictionsPopup from "@/popup-templates/RestrictionsPopup"
 import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer"
 const lineRestrictionsRenderer = new UniqueValueRenderer({
-    field:"TType",
+    field: "TType",
     uniqueValueInfos: [{
         // All features with value of "North" will be blue
         value: "R",
@@ -25,6 +25,6 @@ const LineRestrictionsLayer = new GeoJSONLayer({
     title: "Restriction Lines",
     renderer: lineRestrictionsRenderer,
     popupTemplate: restrictionsPopup,
-    // featureReduction: clusterConfig
-});
+    visible: false
+})
 export default LineRestrictionsLayer

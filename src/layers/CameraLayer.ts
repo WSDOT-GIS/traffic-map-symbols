@@ -11,7 +11,7 @@ import { generateClusterConfig } from "@/utils/layerUtil";
 import CameraInfo from "@/types/CameraInfo";
 
 
-const clusterConfig = generateClusterConfig("Cameras", "camera", "#fff", clusterSymbol)
+const clusterConfig = generateClusterConfig("Cameras", "camera", "#fff", clusterSymbol);
 
 const renderer = new SimpleRenderer({ symbol: Symbol });
 

@@ -161,6 +161,11 @@ export default defineComponent({
       });
       // Set extent based on the URL query parameter...
       esriMap.mapView.extent = getExtentFromUrl();
+      // Watch scale change...
+      esriMap.mapView.watch("scale", (newValue, oldValue) => {
+        // Turn off clustering at max scale...
+        
+      });
     });
     return {
       zoomPopupVisible,

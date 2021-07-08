@@ -10,6 +10,7 @@ const PointRestrictionsLayer = new GeoJSONLayer({
     url: "http://hqtob1webtmdev1/GISData/WeatherStations.json",
     title: "Weather Stations",
     renderer: weatherStationRenderer,
-    popupTemplate: weatherStationsPopup
+    popupTemplate: weatherStationsPopup,
+    visible: false
 })
 export default PointRestrictionsLayer

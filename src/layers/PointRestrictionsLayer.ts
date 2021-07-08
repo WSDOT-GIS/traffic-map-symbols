@@ -24,6 +24,7 @@ const PointRestrictionsLayer = new GeoJSONLayer({
     url: "http://hqtob1webtmdev1/GISData/PointRestrictions.json",
     title: "Restriction Points",
     renderer: pointRestrictionsRenderer,
+    visible: false,
     /*fields: [
         new Field({
             name: "UniqueId",
