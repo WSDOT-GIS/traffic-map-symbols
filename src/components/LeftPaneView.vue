@@ -61,7 +61,8 @@ import SavedMapView from "./SavedMapView.vue";
 export default defineComponent({
   components: { LayerListView, SavedMapView },
   setup() {
-    const isOpen = ref(true);
+    // If it is on small device, close it by default.
+    const isOpen = ref(window.innerWidth > 400);
 
     const toggleDisplay = () => {
       isOpen.value = !isOpen.value;

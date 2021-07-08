@@ -151,7 +151,7 @@ export const generateClusterConfig = (popupTitle: string, name: string, labelCol
 }
 
 export const disableCluster = (config: FeatureReductionCluster) => {
-    config.clusterRadius = 1;
+    config.clusterRadius = 0;
 }
 
 export const enableCluster = (config: FeatureReductionCluster) => {
