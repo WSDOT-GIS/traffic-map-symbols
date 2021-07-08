@@ -1,13 +1,15 @@
 <template>
   <div id="locationWidget">
-    <MapButtonView Height="35px" Width="35px">
+    <MapButtonView Height="32px" Width="32px">
       <template v-slot>
         <div title="My Location">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             @click="getLocation"
-            viewBox="-2 -4 35 35"
+            viewBox="-4 -7 40 40"
             class="locateIcon"
+            height="32px"
+            width="32px"
           >
             <path
               d="M16.047.447c-8.615 0-15.6 6.983-15.6 15.6s6.984 15.6 15.6 15.6c8.617 0 15.6-6.983 15.6-15.6s-6.982-15.6-15.6-15.6zM18 29.079v-5.032h-3.953v5.032C8.371 28.21 3.883 23.722 3.016 18.047L8 18v-3.953H3.016C3.883 8.371 8.371 3.884 14.047 3.015V8H18V3.015c5.676.869 10.209 5.356 11.078 11.032h-5.031L24 18h5.078C28.209 23.676 23.676 28.21 18 29.079z"
@@ -123,12 +125,15 @@ export default defineComponent({
 .warningOn {
   display: block;
 }
-.locateIcon {
+/* .locateIcon {
   width: 30px;
   height: 30px;
   border-radius: 30px / 30px;
   padding: 0px;
   background-color: white;
+} */
+svg {
+  fill: grey;
 }
 #warningIcon {
   width: 20px;

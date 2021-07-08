@@ -1,7 +1,6 @@
 <template>
   <button
     class="w3-button w3-border w3-round w3-card-2"
-    @click="$emit('click')"
     :style="{ width: Width, height: Height }"
   >
     <slot></slot>

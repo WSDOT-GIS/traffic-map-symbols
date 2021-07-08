@@ -35,6 +35,7 @@ mapView.on("click", (() => {
     mapView.graphics.removeAll()
 }))
 // mapView.ui.move("zoom", "bottom-right");
+mapView.ui.remove("zoom");
 
 // const bookmarks = new Bookmarks({
 //     view: mapView,

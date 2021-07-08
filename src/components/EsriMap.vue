@@ -184,8 +184,6 @@ export default defineComponent({
 
 #map-bottom-right-container {
   width: 100px;
-  text-align: right;
-  margin: 16px 8px;
 }
 
 .map-bottom-right-container-row {
@@ -201,5 +199,8 @@ export default defineComponent({
   align-items: center;
   height: 150px;
   justify-content: flex-end;
+}
+.esri-zoom {
+  display: none;
 }
 </style>

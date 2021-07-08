@@ -7,9 +7,11 @@
     >
       <div class="w3-display-container w3-padding-small w3-border-0">
         <label class="w3-large">Map Features</label>
-        <div class="w3-button w3-transparent w3-display-right">
+        <div
+          class="w3-button w3-transparent w3-display-right"
+          @click="toggleDisplay"
+        >
           <svg
-            @click="toggleDisplay"
             id="expand"
             xmlns="http://www.w3.org/2000/svg"
             width="10"
@@ -33,9 +35,10 @@
     v-if="!isOpen"
     id="map-top-left-container-closed"
     class="z1 w3-container w3-padding-small w3-card w3-white w3-button"
+    @click="toggleDisplay"
   >
+    <label class="w3-medium">Map Features</label>
     <svg
-      @click="toggleDisplay"
       id="expand"
       xmlns="http://www.w3.org/2000/svg"
       width="10"
@@ -88,6 +91,9 @@ export default defineComponent({
 .left-pane-slide-leave-to {
   transform: translateX(-100%);
   transition: all 150ms ease-in 0s;
+}
+label {
+  margin-right: 20px;
 }
 </style>
 

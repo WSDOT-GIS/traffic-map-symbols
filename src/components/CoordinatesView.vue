@@ -1,5 +1,7 @@
 <template>
-  <p title="Cursor Coordinates" class="coord">X: {{ pointerX }}, Y: {{ pointerY }}</p>
+  <div title="Cursor Coordinates" class="w3-border w3-round w3-card-2 w3-white w3-panel w3-small">
+      Lat: {{ pointerY }}, Long: {{ pointerX }}
+  </div>
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";

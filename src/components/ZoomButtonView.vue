@@ -34,7 +34,7 @@ export default defineComponent({
 });
 </script>
 <style scoped>
-#zoom-button-container {
+/* #zoom-button-container {
   width: 32px;
-}
+} */
 </style>
