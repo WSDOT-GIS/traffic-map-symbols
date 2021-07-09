@@ -12,7 +12,8 @@ define(["require", "exports", "tslib", "@arcgis/core/layers/GeoJSONLayer", "@arc
         url: "http://hqtob1webtmdev1/GISData/WeatherStations.json",
         title: "Weather Stations",
         renderer: weatherStationRenderer,
-        popupTemplate: WeatherStationsPopup_1.default
+        popupTemplate: WeatherStationsPopup_1.default,
+        visible: false
     });
     exports.default = PointRestrictionsLayer;
 });

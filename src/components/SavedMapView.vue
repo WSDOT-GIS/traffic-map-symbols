@@ -1,48 +1,56 @@
 <template>
-  <div id="savedMapWidget" :style="{display:mapFeaturesExpanded}">
-    <hr class="horizontal-divider" />
-    <div id="saved-map-list-title">My saved maps</div>
-    <div id="saved-map-list-container">
-      <div
+  <div
+    id="savedMapWidget"
+    class="w3-left-align"
+    :style="{ display: mapFeaturesExpanded }"
+  >
+    
+    <div id="saved-map-list-title w3-medium">My saved maps</div>
+    <ul id="saved-map-list-container" class="w3-ul">
+      <li
         v-for="(item, index) in mapList"
         :key="index"
-        class="saved-map-item-container"
+        class="
+          saved-map-item-container
+          w3-display-container w3-hover-shadow w3-padding-small w3-border-0
+        "
       >
         <a
           class="saved-map-item"
           :class="{
-            'saved-map-item-selected': item.selected,
-            'saved-map-item-unselected': !item.selected,
+            'saved-map-item-selected w3-text-blue': item.selected,
+            'saved-map-item-unselected w3-text-dark-grey': !item.selected,
           }"
           @click="selectItem($event, item)"
         >
           {{ item.title }}
         </a>
-
-        <svg
+        <span
+          class="w3-button w3-transparent w3-display-right"
           @click="removeItem($event, item)"
-          xmlns="http://www.w3.org/2000/svg"
-          width="8"
-          height="8"
-          viewBox="0 0 32 32"
-          class="svg-icon saved-map-item-remove svg-icon-red"
         >
-          <path
-            d="M18.404 16l9.9 9.9-2.404 2.404-9.9-9.9-9.9 9.9L3.696 25.9l9.9-9.9-9.9-9.898L6.1 3.698l9.9 9.899 9.9-9.9 2.404 2.406-9.9 9.898z"
-          />
-        </svg>
-      </div>
-    </div>
-    <hr class="horizontal-divider" />
-    <form @submit.prevent="addItem" id="save-map-form">
+          &times;
+        </span>
+      </li>
+    </ul>
+    
+    <form
+      @submit.prevent="addItem"
+      id="save-map-form"
+      class="w3-display-container"
+    >
       <input
+        class="w3-input w3-border"
         title="Input Map Name"
         type="text"
         v-model="newMapTitle"
         id="new-map-title"
         placeholder="map view title"
       />
-      <button id="save-map-button">
+      <button
+        id="save-map-button"
+        class="w3-button w3-transparent w3-display-right"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="16"
@@ -84,8 +92,8 @@ export default defineComponent({
       newMapTitle: "",
     };
   },
-  computed:{
-    ...mapState(["mapFeaturesExpanded"])
+  computed: {
+    ...mapState(["mapFeaturesExpanded"]),
   },
   validations: {},
   methods: {
@@ -136,7 +144,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-#savedMapWidget {
+/* #savedMapWidget {
   background-color: white;
   text-align: left;
   width: 100%;
@@ -174,8 +182,8 @@ export default defineComponent({
   position: absolute;
   right: 10%;
   top: 30%;
-}
-#save-map-form {
+} */
+/* #save-map-form {
   position: relative;
   margin: 5px 5px;
 }
@@ -193,7 +201,7 @@ export default defineComponent({
   display: inline-block;
   width: 100px;
   margin-left: 3px;
-}
+} */
 </style>
 
 

@@ -1,5 +1,5 @@
 <template>
-  <header>{{ text }}</header>
+  <header class="w3-container">{{ text }}</header>
 </template>
 
 <script lang="ts">

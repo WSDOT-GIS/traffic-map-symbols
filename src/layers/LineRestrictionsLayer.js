@@ -25,8 +25,10 @@ define(["require", "exports", "tslib", "../symbols/LineRestrictionsSymbol", "@ar
         url: "http://hqtob1webtmdev1/GISData/LineRestrictions.json",
         title: "Restriction Lines",
         renderer: lineRestrictionsRenderer,
+        visible: false
+        //popupTemplate: restrictionsPopup,
+        // featureReduction: clusterConfig
     });
-    exports.default = LineRestrictionsLayer;
     var getLineRestrictionInfoById = function (id) { return tslib_1.__awaiter(void 0, void 0, void 0, function () {
         var query, response, g, info;
         return tslib_1.__generator(this, function (_a) {
@@ -94,5 +96,6 @@ define(["require", "exports", "tslib", "../symbols/LineRestrictionsSymbol", "@ar
         };
         return info;
     };
+    exports.default = LineRestrictionsLayer;
 });
 //# sourceMappingURL=LineRestrictionsLayer.js.map

@@ -1,5 +1,20 @@
 <template>
-  <div id="map_view"></div>
+  <div id="esri-map-view"></div>
+  <LeftPaneView />
+  <div class="w3-display-bottomleft w3-container">
+    <CoordinatesView />
+  </div>
+  <div id="map-bottom-right-container" class="w3-display-bottomright">
+    <div class="map-bottom-right-container-row">
+      <div class="map-bottom-right-container-column">
+        <BasemapView />
+      </div>
+      <div class="map-bottom-right-container-column">
+        <MyLocationView />
+        <ZoomButtonView />
+      </div>
+    </div>
+  </div>
   <ZoomPopupView
     :Visible="zoomPopupVisible"
     :PositionX="zoomPopupX"
@@ -20,19 +35,40 @@ import { project } from "@arcgis/core/geometry/projection";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import { Geometry } from "@arcgis/core/geometry";
 
-import { getExtentFromUrl, getBasemapFromUrl } from "@/utils/urlParamUtil";
-import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
-import { getFeatureById as getZoomFeatureById } from "@/layers/ZoomExtentLayer";
-import ZoomPopupView from "@/components/ZoomPopupView.vue";
-import ExtentInfo from "@/types/ExtentInfo";
 import { zoomOnClick } from "@/esri-stuff/esriMap";
+import { getExtentFromUrl, getBasemapFromUrl } from "@/utils/urlParamUtil";
+import ZoomExtentLayer, {
+  getFeatureById as getZoomFeatureById,
+} from "@/layers/ZoomExtentLayer";
+import ExtentInfo from "@/types/ExtentInfo";
 import { setLayerFromUrl } from "@/utils/urlParamUtil";
+import { adjustCluster } from "@/utils/clusterUtil";
+// import { toggleCluster } from "@/layers/CameraLayer";
+/* Components */
+import ZoomPopupView from "@/components/ZoomPopupView.vue";
 import CameraPopupView from "@/components/CameraPopupView.vue";
 import ParkRidePopupView from "@/components/ParkAndRidePopupView.vue"
 import PointRestrictionPopupView from "@/components/PointRestrictionPopupView.vue"
 import LineRestrictionPopupView from "@/components/LineRestrictionPopupView.vue"
+import LeftPaneView from "@/components/LeftPaneView.vue";
+import BasemapView from "@/components/BasemapView.vue";
+import CoordinatesView from "@/components/CoordinatesView.vue";
+import MyLocationView from "@/components/MyLocationView.vue";
+import ZoomButtonView from "@/components/ZoomButtonView.vue";
+
 export default defineComponent({
-  components: { ZoomPopupView, CameraPopupView, ParkRidePopupView, PointRestrictionPopupView, LineRestrictionPopupView },
+  components: {
+    ZoomPopupView,
+    CameraPopupView,
+    ParkRidePopupView, 
+    PointRestrictionPopupView, 
+    LineRestrictionPopupView, 
+    LeftPaneView,
+    BasemapView,
+    CoordinatesView,
+    MyLocationView,
+    ZoomButtonView,
+  },
   setup() {
     const store = useStore();
     // Zoom popup...
@@ -61,7 +97,7 @@ export default defineComponent({
 
     onMounted(async () => {
       const esriMap = await import("../esri-stuff/esriMap");
-      mapDiv = document.getElementById("map_view") as HTMLDivElement;
+      mapDiv = document.getElementById("esri-map-view") as HTMLDivElement;
       esriMap.init(mapDiv);
       //#region register layer list to state
       let layerList: { index: number; title: string; visible: boolean }[] = [];
@@ -138,6 +174,13 @@ export default defineComponent({
       });
       // Set extent based on the URL query parameter...
       esriMap.mapView.extent = getExtentFromUrl();
+      //
+      esriMap.mapView.watch("scale", (newValue, oldValue) => {
+        if (oldValue > 0) {
+          adjustCluster(newValue, oldValue);
+          //toggleCluster(newValue, oldValue, 19000);
+        }
+      });
     });
     return {
       zoomPopupVisible,
@@ -152,10 +195,32 @@ export default defineComponent({
 
 <style scoped>
 @import "https://js.arcgis.com/4.19/@arcgis/core/assets/esri/themes/light/main.css";
-#map_view {
+#esri-map-view {
   padding: 0;
   margin: 0;
   height: 100%;
   width: 100%;
+}
+
+#map-bottom-right-container {
+  width: 100px;
+}
+
+.map-bottom-right-container-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.map-bottom-right-container-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 150px;
+  justify-content: flex-end;
+}
+.esri-zoom {
+  display: none;
 }
 </style>

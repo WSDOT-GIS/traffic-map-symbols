@@ -1,12 +1,12 @@
-define(["require", "exports", "tslib", "@arcgis/core/renderers/SimpleRenderer", "@arcgis/core/layers/GeoJSONLayer", "@arcgis/core/layers/support/Field", "@/symbols/CameraSymbol", "@/symbols/CameraSymbol", "@/utils/layerUtil"], function (require, exports, tslib_1, SimpleRenderer_1, GeoJSONLayer_1, Field_1, CameraSymbol_1, CameraSymbol_2, layerUtil_1) {
+define(["require", "exports", "tslib", "@arcgis/core/renderers/SimpleRenderer", "@arcgis/core/layers/GeoJSONLayer", "@arcgis/core/layers/support/Field", "@/symbols/CameraSymbol", "@/utils/clusterUtil"], function (require, exports, tslib_1, SimpleRenderer_1, GeoJSONLayer_1, Field_1, CameraSymbol_1, clusterUtil_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.getCameraInfosFromCluster = exports.getCameraInfoById = void 0;
+    exports.getCameraInfosFromCluster = exports.getCameraInfoById = exports.toggleCluster = void 0;
     SimpleRenderer_1 = tslib_1.__importDefault(SimpleRenderer_1);
     GeoJSONLayer_1 = tslib_1.__importDefault(GeoJSONLayer_1);
     Field_1 = tslib_1.__importDefault(Field_1);
     CameraSymbol_1 = tslib_1.__importDefault(CameraSymbol_1);
-    var clusterConfig = layerUtil_1.generateClusterConfig("Cameras", "camera", "#fff", CameraSymbol_2.clusterSymbol);
+    // const clusterConfig = generateClusterConfig("Cameras", "camera", "#fff", clusterSymbol);
     var renderer = new SimpleRenderer_1.default({ symbol: CameraSymbol_1.default });
     var fields = [
         new Field_1.default({
@@ -70,11 +70,25 @@ define(["require", "exports", "tslib", "@arcgis/core/renderers/SimpleRenderer", 
         url: "http://hqtob1webtmdev1/GISData/camera.json",
         title: "Traffic Cameras",
         renderer: renderer,
-        featureReduction: clusterConfig,
+        featureReduction: clusterUtil_1.clusterConfig,
         fields: fields
     });
     exports.default = layer;
     /*** Helper functions **************/
+    // Watch scale change...
+    var toggleCluster = function (newScale, oldScale, maxScale) {
+        console.log("toggleCluster scale: " + newScale);
+        // Turn off clustering at max scale...
+        if (newScale > maxScale && oldScale < maxScale) {
+            layer.featureReduction = clusterUtil_1.clusterConfig;
+            console.log("Turn on cluster: " + clusterUtil_1.clusterConfig.clusterRadius + " scale: " + oldScale + " > " + newScale);
+        }
+        else if (newScale < maxScale && oldScale > maxScale) {
+            layer.set("featureReduction", undefined);
+            console.log("Turn off cluster: " + clusterUtil_1.clusterConfig.clusterRadius + " scale: " + oldScale + " > " + newScale);
+        }
+    };
+    exports.toggleCluster = toggleCluster;
     var outFields = ["CameraID", "CameraTitle", "ImageURL", "WSDOTSRID", "StateRouteMilepost",
         "CompassDirection", "Location", "CameraOwnerName", "CameraOwnerURL",
         "ImageWidth", "ImageHeight"];

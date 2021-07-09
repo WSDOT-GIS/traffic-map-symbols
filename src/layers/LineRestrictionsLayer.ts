@@ -1,4 +1,4 @@
-import {roadRestrictionLine, bridgeRestrictionLine} from "../symbols/LineRestrictionsSymbol"
+import { roadRestrictionLine, bridgeRestrictionLine } from "../symbols/LineRestrictionsSymbol"
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import restrictionsPopup from "@/popup-templates/RestrictionsPopup"
@@ -6,7 +6,7 @@ import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer"
 import RestrictionInfo from "@/types/RestrictionInfo";
 import Graphic from "@arcgis/core/Graphic";
 const lineRestrictionsRenderer = new UniqueValueRenderer({
-    field:"TType",
+    field: "TType",
     uniqueValueInfos: [{
         // All features with value of "North" will be blue
         value: "R",
@@ -26,10 +26,10 @@ const LineRestrictionsLayer = new GeoJSONLayer({
     url: "http://hqtob1webtmdev1/GISData/LineRestrictions.json",
     title: "Restriction Lines",
     renderer: lineRestrictionsRenderer,
+    visible: false
     //popupTemplate: restrictionsPopup,
     // featureReduction: clusterConfig
 });
-export default LineRestrictionsLayer
 
 export const getLineRestrictionInfoById = async (id: number) => {
     console.log(id)
@@ -91,3 +91,5 @@ const convert2Info = (g: Graphic): RestrictionInfo => {
 
     return info;
 }
+    
+export default LineRestrictionsLayer

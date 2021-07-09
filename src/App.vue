@@ -1,49 +1,42 @@
 <template>
-  <HeaderView :text="headerText" />
-  <AlertView :alert="alert" />
-  <div id="map-container">
-    <BasemapView />
-    <CoordinatesView />
-    <MyLocationView />
-    <div id="map-top-left-container">
-      <LayerListView />
-      <SavedMapView />
-    </div>
-   <!--LegendVue /-->
+  <div id="app-top-container" ref="topRef">
+    <HeaderView :text="headerText" />
+    <AlertView :alert="alert" />
+  </div>
+  <div id="map-container" :style="{ height: mapHeight }" class="w3-display-container">
+    <!-- <BasemapView /> -->
+    <!-- <CoordinatesView /> -->
+    <!-- <MyLocationView /> -->
     <EsriMap />
   </div>
-  <AdView :text="adText" />
-  <FooterView :text="footerText" />
+  <div id="app-bottom-container" ref="bottomRef">
+    <AdView :text="adText" />
+    <FooterView :text="footerText" />
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import EsriMap from "./components/EsriMap.vue";
-import BasemapView from "./components/BasemapView.vue";
-import CoordinatesView from "./components/CoordinatesView.vue";
+// import BasemapView from "./components/BasemapView.vue";
+// import CoordinatesView from "./components/CoordinatesView.vue";
 import HeaderView from "./components/HeaderView.vue";
 import AlertView from "./components/AlertView.vue";
 import AdView from "./components/AdView.vue";
 import FooterView from "./components/FooterView.vue";
 import Alert from "./types/AlertInfo";
-import LayerListView from "./components/LayerListView.vue";
-import SavedMapView from "./components/SavedMapView.vue";
-//import LegendVue from "./components/LegendView.vue";
-import MyLocationView from"./components/MyLocationView.vue";
+// import MyLocationView from "./components/MyLocationView.vue";
 export default defineComponent({
   name: "App",
   components: {
     EsriMap,
-    BasemapView,
-    CoordinatesView,
+    // BasemapView,
+    // CoordinatesView,
     HeaderView,
     AlertView,
     AdView,
     FooterView,
-    LayerListView,
-    SavedMapView,
-   // LegendVue,
-    MyLocationView,
+    // MyLocationView,
   },
   setup() {
     const headerText = "This is the header";
@@ -55,7 +48,32 @@ export default defineComponent({
     });
     const adText = "This is advertisement";
     const footerText = "This is the footer";
-    return { headerText, alert, adText, footerText };
+    const topRef = ref<HTMLDivElement>();
+    const bottomRef = ref<HTMLDivElement>();
+    const mapHeight = ref("500px");
+    onMounted(() => {
+      resizeMapContainer();
+    });
+    const resizeMapContainer = () => {
+      console.log("resizeMapContainer");
+      if (topRef.value && bottomRef.value) {
+        const h =
+          window.innerHeight -
+          topRef.value.offsetHeight -
+          bottomRef.value.offsetHeight;
+        mapHeight.value = h + "px";
+      }
+    };
+    window.addEventListener("resize", resizeMapContainer);
+    return {
+      headerText,
+      alert,
+      adText,
+      footerText,
+      mapHeight,
+      topRef,
+      bottomRef,
+    };
   },
 });
 </script>
@@ -76,7 +94,7 @@ body,
   height: 100%;
 }
 hr.horizontal-divider {
-  border-top: 3px solid #bbb;
+  border-top: 1px solid #bbb;
   margin: 1vh 1vw;
 }
 /* Remove the border when the map is in focus. */
@@ -88,23 +106,25 @@ hr.horizontal-divider {
 #app {
   position: absolute;
   z-index: 0;
-  width: 100vw;
-  height: 100vh;
 }
 
 #map-container {
   padding: 0;
   margin: 0;
-  height: 70%;
-  width: 100%;
   position: relative;
+  width: 100%;
+  height: 80%;
 }
 
 #map-container > * {
   position: absolute;
 }
 
-#map-top-left-container {
+/* #map-top-left-container {
+  z-index: 1;
+} */
+
+/* #map-top-left-container {
   position: absolute;
   margin: 1vh 1vw;
   left: 0;
@@ -113,19 +133,8 @@ hr.horizontal-divider {
   float: left;
   z-index: 1;
   background-color: #fff;
-}
-
-@media screen and (max-width: 400px) {
-  #map-top-left-container {
-    position: relative;
-    margin: auto;
-    left: 0;
-    right: 0;
-    width: 100vw;
-    background-color: lavender;
-  }
-}
-
+}  */
+/* 
 #layerListWidget {
   margin: 0;
   text-align: center;
@@ -136,9 +145,9 @@ hr.horizontal-divider {
   margin: 0;
   text-align: center;
   width: 100%;
-}
+} */
 
-#basemap-widget-container {
+/* #basemap-widget-container {
   position: absolute;
   margin-left: 91vw;
   margin-top: 71vh;
@@ -148,9 +157,9 @@ hr.horizontal-divider {
   width: 100px;
   float: left;
   z-index: 1;
-}
+} */
 
-#legendWidget {
+/* #legendWidget {
   position: absolute;
   margin-left: 91vw;
   margin-top: 3vh;
@@ -172,6 +181,6 @@ hr.horizontal-divider {
   float: left;
   z-index: 1;
   height: 50px;
-  width: 50px
-}
+  width: 50px;
+} */
 </style>

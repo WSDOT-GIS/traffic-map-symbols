@@ -70,9 +70,8 @@ const layer = new GeoJSONLayer({
     url: "http://hqtob1webtmdev1/GISData/ParkAndRides.json",
     title: "Park and Rides",
     renderer: renderer,
-    fields: fields
-    //popupTemplate: Popup,
-    // featureReduction: clusterConfig
+    fields: fields,
+    visible: false
 });
 
 export default layer

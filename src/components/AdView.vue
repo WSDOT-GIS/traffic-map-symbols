@@ -1,5 +1,5 @@
 <template>
-  <div id="ad_container">
+  <div id="ad_container" class="w3-container">
     <p>{{ text }}</p>
   </div>
 </template>
@@ -23,8 +23,8 @@ export default defineComponent({
   background-color: teal;
   height: 50px;
 }
-p {
+/* p {
   margin: 0;
   padding: 5px;
-}
+} */
 </style>

@@ -16,17 +16,17 @@ define(["require", "exports", "tslib", "@arcgis/core/WebMap", "@arcgis/core/view
     // What is this used for?
     //EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
     exports.webmap = new WebMap_1.default({
-        // basemap: basemapInfo.basemap,
         layers: [TrafficLayer_1.default, ParkRideLayer_1.default, CameraLayer_1.default, PointRestrictionsLayer_1.default, LineRestrictionsLayer_1.default, WeatherStationsLayer_1.default],
     });
     exports.mapView = new MapView_1.default({
-        container: "map_view",
+        container: "esri-map-view",
         map: exports.webmap,
     });
     exports.mapView.on("click", (function () {
         exports.mapView.graphics.removeAll();
     }));
-    exports.mapView.ui.move("zoom", "bottom-right");
+    // Zoom buttons are replaced with the custom Vue components.
+    exports.mapView.ui.remove("zoom");
     // const bookmarks = new Bookmarks({
     //     view: mapView,
     //     editingEnabled: true,

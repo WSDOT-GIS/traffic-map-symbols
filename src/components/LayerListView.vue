@@ -1,24 +1,39 @@
 <template>
   <div id="layerListWidget" title="Map Features">
-    <table>
-      <td :style="{display: mapFeaturesExpanded}">
-        <label style="font-size:large">Map Features</label>
-        <hr>
-      </td>
-      <td>
-        <svg @click="handleExpandClicked(store)" id="expand" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 32 32" class="svg-icon"><path :d="expandIconPath"/></svg>      
-      </td>
-    </table>
-    <div id="mapFeaturesDiv" :style="{display: mapFeaturesExpanded}">
+    <!-- <div :style="{ display: mapFeaturesExpanded }">
+      <div class="w3-display-container">
+      <label class="w3-large">Map Features</label>
+      <svg
+        @click="handleExpandClicked(store)"
+        id="expand"
+        xmlns="http://www.w3.org/2000/svg"
+        width="10"
+        height="10"
+        viewBox="0 0 32 32"
+        class="svg-icon w3-display-right"
+      >
+        <path :d="expandIconPath" />
+      </svg>
+      </div>
+      <hr class="horizontal-divider" />
+    </div> -->
+    <div id="mapFeaturesDiv" :style="{ display: mapFeaturesExpanded }">
       <table class="mapFeatureTable">
         <tr>
           <td class="layerSwitchCell mapFeatureCell">
             <label class="switch">
-              <input type="checkbox" @change="clickEvent" :checked="layerList[0].visible" :value="layerList[0].index"/>
+              <input
+                type="checkbox"
+                @change="clickEvent"
+                :checked="layerList[0].visible"
+                :value="layerList[0].index"
+              />
               <span class="slider round"></span>
             </label>
           </td>
-          <td class="layerLabelCell mapFeatureCell">{{layerList[0].title}}</td>
+          <td class="layerLabelCell mapFeatureCell">
+            {{ layerList[0].title }}
+          </td>
         </tr>
       </table>
       <table class="trafficLegendTable">
@@ -27,10 +42,14 @@
             <div class="trafficLegendSymbolDiv" id="slowLegendCell">&nbsp;</div>
           </td>
           <td class="trafficLegendCell">
-            <div class="trafficLegendSymbolDiv" id="slowMediumLegendCell">&nbsp;</div>
+            <div class="trafficLegendSymbolDiv" id="slowMediumLegendCell">
+              &nbsp;
+            </div>
           </td>
           <td class="trafficLegendCell">
-            <div class="trafficLegendSymbolDiv" id="mediumFastLegendCell">&nbsp;</div>
+            <div class="trafficLegendSymbolDiv" id="mediumFastLegendCell">
+              &nbsp;
+            </div>
           </td>
           <td class="trafficLegendCell">
             <div class="trafficLegendSymbolDiv" id="fastLegendCell">&nbsp;</div>
@@ -47,7 +66,12 @@
         <tr v-for="layer in layerList.slice(1)" :key="layer.index">
           <td class="layerSwitchCell mapFeatureCell">
             <label class="switch">
-              <input type="checkbox" @change="clickEvent" :checked="layer.visible" :value="layer.index"/>
+              <input
+                type="checkbox"
+                @change="clickEvent"
+                :checked="layer.visible"
+                :value="layer.index"
+              />
               <span class="slider round"></span>
             </label>
           </td>
@@ -56,7 +80,7 @@
              </div>
             
           </td>
-          <td class="layerLabelCell mapFeatureCell">{{layer.title}}</td>
+          <td class="layerLabelCell mapFeatureCell">{{ layer.title }}</td>
         </tr>
       </table>
     </div>
@@ -64,50 +88,61 @@
 </template>
 <script lang="ts">
 import { store, useStore } from "@/store";
-import { defineComponent, onMounted, ref} from "vue";
+import { defineComponent, ref } from "vue";
 import LayerInfo from "../types/LayerInfo";
-import {webmap} from "../esri-stuff/esriMap";
+import { webmap } from "../esri-stuff/esriMap";
 import { mapState } from "vuex";
 import {layerListIcons} from "@/symbols/IconDefinitions"
 export default defineComponent({
-  setup(){
+  setup() {
     //#region populate the layer list
-    const store = useStore()
+    const store = useStore();
     let layerList = ref<LayerInfo[]>([]);
-    const layerIcons = layerListIcons
-    const expandIconPath = ref<string>("M1.047 4h5l12 12-12 12h-5l12-12-12-12zm26 12l-12 12h5l12-12-12-12h-5l12 12z");
-   // const expanded = ref<string>(store.state.mapFeaturesExpanded)
-    webmap.layers.map((layer,index)=>{
-      layerList.value.push({index: index,title: layer.title, visible: layer.visible});
-    })
-    store.commit("setLayerList",layerList)
-    return{layerList, layerIcons, expandIconPath, store}
+    const layerIcons = layerListIcons;
+    const expandIconPath = ref<string>(
+      "M1.047 4h5l12 12-12 12h-5l12-12-12-12zm26 12l-12 12h5l12-12-12-12h-5l12 12z"
+    );
+    // const expanded = ref<string>(store.state.mapFeaturesExpanded)
+    webmap.layers.map((layer, index) => {
+      layerList.value.push({
+        index: index,
+        title: layer.title,
+        visible: layer.visible,
+      });
+    });
+    store.commit("setLayerList", layerList);
+    return { layerList, layerIcons, expandIconPath, store };
     //#endregion
   },
-  computed:{
-    ...mapState(["mapFeaturesExpanded"])
+  computed: {
+    ...mapState(["mapFeaturesExpanded"]),
   },
-  methods:{
+  methods: {
     //#region toggle layer on and off
-    clickEvent: async(evt:Event)=>{
-      store.state.layerList.map((layer, index)=>{
-        if(evt.target){
+    clickEvent: async (evt: Event) => {
+      store.state.layerList.map((layer, index) => {
+        if (evt.target) {
           const target = evt.currentTarget as HTMLInputElement;
-          if(index.toString() == target.value){
-            layer.visible==true?layer.visible = false:layer.visible=true;
+          if (index.toString() == target.value) {
+            layer.visible == true
+              ? (layer.visible = false)
+              : (layer.visible = true);
           }
         }
-      })
-      store.commit("setLayerList",store.state.layerList)
+      });
+      store.commit("setLayerList", store.state.layerList);
     },
-    handleExpandClicked:function(){
-      console.log(store)
-      store.state.mapFeaturesExpanded=="block"?this.expandIconPath="M31.047 28h-5l-12-12 12-12h5l-12 12 12 12zm-26-12l12-12h-5l-12 12 12 12h5l-12-12z":this.expandIconPath="M1.047 4h5l12 12-12 12h-5l12-12-12-12zm26 12l-12 12h5l12-12-12-12h-5l12 12z";
-      store.commit("setMapFeaturesExpanded")
-    }   
-   
+    handleExpandClicked: function () {
+      console.log(store);
+      store.state.mapFeaturesExpanded == "block"
+        ? (this.expandIconPath =
+            "M31.047 28h-5l-12-12 12-12h5l-12 12 12 12zm-26-12l12-12h-5l-12 12 12 12h5l-12-12z")
+        : (this.expandIconPath =
+            "M1.047 4h5l12 12-12 12h-5l12-12-12-12zm26 12l-12 12h5l12-12-12-12h-5l12 12z");
+      store.commit("setMapFeaturesExpanded");
+    },
     //#endregion
-  }
+  },
 });
 </script>
 <style scoped>

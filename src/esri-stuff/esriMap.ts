@@ -23,18 +23,18 @@ import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 //EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
 
 export const webmap = new WebMap({
-    // basemap: basemapInfo.basemap,
     layers: [TrafficLayer, ParkRideLayer, CameraLayer, PointRestrictionsLayer, LineRestrictionsLayer, WeatherStationsLayer],
 });
 
 export const mapView = new MapView({
-    container: "map_view",
+    container: "esri-map-view",
     map: webmap,
 });
 mapView.on("click", (() => {
     mapView.graphics.removeAll()
 }))
-mapView.ui.move("zoom", "bottom-right");
+// Zoom buttons are replaced with the custom Vue components.
+mapView.ui.remove("zoom");
 
 // const bookmarks = new Bookmarks({
 //     view: mapView,
