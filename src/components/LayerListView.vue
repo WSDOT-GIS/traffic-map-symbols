@@ -75,21 +75,10 @@
               <span class="slider round"></span>
             </label>
           </td>
-          <td>
-            <svg
-              preserveAspectRatio="none"
-              width="25"
-              height="25"
-              viewBox="-2 -2 30 30"
-              class="mapFeaturesIcon"
-            >
-              <path
-                width="15"
-                height="15"
-                :d="layerIcons.find((x) => x.title == layer.title).path"
-              />
-              <path fill="none" />
-            </svg>
+           <td>
+             <div class="mapFeaturesIcon" v-html="layerIcons.find((x) => x.title == layer.title).paths">
+             </div>
+            
           </td>
           <td class="layerLabelCell mapFeatureCell">{{ layer.title }}</td>
         </tr>
@@ -103,7 +92,7 @@ import { defineComponent, ref } from "vue";
 import LayerInfo from "../types/LayerInfo";
 import { webmap } from "../esri-stuff/esriMap";
 import { mapState } from "vuex";
-import { layerListIcons } from "@/symbols/SVGIconDefinitions";
+import {layerListIcons} from "@/symbols/IconDefinitions"
 export default defineComponent({
   setup() {
     //#region populate the layer list
@@ -157,61 +146,65 @@ export default defineComponent({
 });
 </script>
 <style scoped>
-#layerListWidget {
-  box-shadow: 1pt solid grey;
-}
-
-#slowLegendCell {
-  background-color: firebrick;
-}
-#slowMediumLegendCell {
-  background-color: orange;
-}
-#mediumFastLegendCell {
-  background-color: yellow;
-}
-#fastLegendCell {
-  background-color: limegreen;
-}
-.trafficLegendSymbolDiv {
-  height: 8px;
-}
-.layerSwitchCell {
-  align-content: center;
-  width: 10px;
-}
-.layerLabelCell {
-  align-content: center;
-  font-size: small;
-  text-align: left;
-  width: 95%;
-}
-.mapFeatureTable {
-}
-.trafficLegendTable {
-  margin: auto;
-  width: 95%;
-  border-collapse: collapse;
-}
-.trafficLegendCell {
-  width: 25%;
-  padding: 2px 0px 2px 0px;
-  border: 0px;
-}
-.trafficLegendRow {
-  height: 10px;
-}
-.trafficLegendLabelCell {
-  background-color: white;
-  border: none;
-  box-shadow: none;
-}
-.mapFeatureCell {
-  padding: 2px 2px 2px 0px;
-}
-.mapFeaturesIcon {
-}
-tr {
-  border: none;
-}
+  #layerListWidget{
+    background-color: white;
+    box-shadow: 1pt solid grey;
+    width: 150px;
+  }
+  #slowLegendCell{
+    background-color: firebrick
+  }
+  #slowMediumLegendCell{
+    background-color: orange
+  }
+  #mediumFastLegendCell{
+    background-color: yellow
+  }
+  #fastLegendCell{
+    background-color: limegreen
+  }
+  .trafficLegendSymbolDiv{
+    height: 8px
+  }
+  .layerSwitchCell{
+    align-content:center;
+    width: 10px
+  }
+  .layerLabelCell{
+    align-content:center;
+    font-size:small; 
+    text-align:left;
+    width: 95%
+  }
+  .mapFeatureTable{
+    width: 150px
+  }
+  .trafficLegendTable{
+    margin: auto;
+    width: 95%;
+    border-collapse:collapse;
+  }
+  .trafficLegendCell{
+    width: 25%;
+    padding: 2px 0px 2px 0px;
+    border: 0px;
+  }
+  .trafficLegendRow{
+    height: 10px;
+  }
+  .trafficLegendLabelCell{
+    background-color: white;
+    border: none;
+    box-shadow: none;
+  }
+  .mapFeatureCell{
+    padding: 2px 2px 2px 0px;
+  }
+  .mapFeaturesIcon{
+    height: 20px;
+    width: 20px
+  }
+  tr{
+    border: none;
+  }
 </style>
