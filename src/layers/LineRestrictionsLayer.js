@@ -26,6 +26,7 @@ define(["require", "exports", "tslib", "../symbols/LineRestrictionsSymbol", "@ar
         title: "Restriction Lines",
         renderer: lineRestrictionsRenderer,
         popupTemplate: RestrictionsPopup_1.default,
+        visible: false
     });
     exports.default = LineRestrictionsLayer;
 });
