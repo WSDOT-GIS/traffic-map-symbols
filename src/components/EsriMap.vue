@@ -32,13 +32,17 @@ import { project } from "@arcgis/core/geometry/projection";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import { Geometry } from "@arcgis/core/geometry";
 
-import { getExtentFromUrl, getBasemapFromUrl } from "@/utils/urlParamUtil";
-import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
-import { getFeatureById as getZoomFeatureById } from "@/layers/ZoomExtentLayer";
-import ZoomPopupView from "@/components/ZoomPopupView.vue";
-import ExtentInfo from "@/types/ExtentInfo";
 import { zoomOnClick } from "@/esri-stuff/esriMap";
+import { getExtentFromUrl, getBasemapFromUrl } from "@/utils/urlParamUtil";
+import ZoomExtentLayer, {
+  getFeatureById as getZoomFeatureById,
+} from "@/layers/ZoomExtentLayer";
+import ExtentInfo from "@/types/ExtentInfo";
 import { setLayerFromUrl } from "@/utils/urlParamUtil";
+import { adjustCluster } from "@/utils/clusterUtil";
+// import { toggleCluster } from "@/layers/CameraLayer";
+/* Components */
+import ZoomPopupView from "@/components/ZoomPopupView.vue";
 import CameraPopupView from "@/components/CameraPopupView.vue";
 import LeftPaneView from "@/components/LeftPaneView.vue";
 import BasemapView from "@/components/BasemapView.vue";
@@ -161,10 +165,12 @@ export default defineComponent({
       });
       // Set extent based on the URL query parameter...
       esriMap.mapView.extent = getExtentFromUrl();
-      // Watch scale change...
+      //
       esriMap.mapView.watch("scale", (newValue, oldValue) => {
-        // Turn off clustering at max scale...
-        
+        if (oldValue > 0) {
+          adjustCluster(newValue, oldValue);
+          //toggleCluster(newValue, oldValue, 19000);
+        }
       });
     });
     return {

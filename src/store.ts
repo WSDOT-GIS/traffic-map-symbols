@@ -11,13 +11,13 @@ import LayerInfo from "./types/LayerInfo";
 // Reference - https://next.vuex.vuejs.org/guide/typescript-support.html#typing-usestore-composition-function
 // define typings for the store state...
 export interface State {
-    basemap: string,
-    pointerX: number,
-    pointerY: number,
-    layerList: LayerInfo[],//{ index: number, title: string, visible: boolean }[],
-    currentExtent: ExtentInfo,
-    userLocation: number[] | null,
-    mapFeaturesExpanded: string
+    basemap: string;
+    pointerX: number;
+    pointerY: number;
+    layerList: LayerInfo[];//{ index: number, title: string, visible: boolean }[],
+    currentExtent: ExtentInfo;
+    userLocation: number[] | null;
+    mapFeaturesExpanded: string;
 }
 
 // define injection key...
@@ -70,7 +70,7 @@ export const store = createStore<State>({
         setLayerList(state, payload) {
             state.layerList = payload;
             webmap.layers.map((layer, index) => {
-                if(layer.title && state.layerList[index] && layer.title==state.layerList[index].title){
+                if (layer.title && state.layerList[index] && layer.title == state.layerList[index].title) {
                     layer.visible = state.layerList[index].visible
                 }
             })
@@ -88,7 +88,7 @@ export const store = createStore<State>({
             }
         },
         setMapFeaturesExpanded(state, payload) {
-            state.mapFeaturesExpanded=="block"?state.mapFeaturesExpanded="none":state.mapFeaturesExpanded="block"
+            state.mapFeaturesExpanded == "block" ? state.mapFeaturesExpanded = "none" : state.mapFeaturesExpanded = "block"
         }
     },
 })

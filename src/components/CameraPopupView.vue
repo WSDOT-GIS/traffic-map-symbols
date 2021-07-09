@@ -1,5 +1,5 @@
 <template>
-  <PopupView :MapX="mapX" :MapY="mapY" ref="popupRef" @close="close">
+  <PopupView :MapX="mapX" :MapY="mapY" Width="w" ref="popupRef" @close="close">
     <template v-slot:title>
       Camera{{ infos.length > 1 ? " (" + infos.length + ")" : "" }}
     </template>

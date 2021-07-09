@@ -6,12 +6,12 @@ import Graphic from "@arcgis/core/Graphic";
 import MapView from "@arcgis/core/views/MapView";
 import Point from "@arcgis/core/geometry/Point";
 
-import { clusterSymbol } from "@/symbols/CameraSymbol";
-import { generateClusterConfig } from "@/utils/layerUtil";
+// import { clusterSymbol } from "@/symbols/CameraSymbol";
+import { clusterConfig } from "@/utils/clusterUtil";
 import CameraInfo from "@/types/CameraInfo";
 
 
-const clusterConfig = generateClusterConfig("Cameras", "camera", "#fff", clusterSymbol);
+// const clusterConfig = generateClusterConfig("Cameras", "camera", "#fff", clusterSymbol);
 
 const renderer = new SimpleRenderer({ symbol: Symbol });
 
@@ -85,6 +85,21 @@ const layer = new GeoJSONLayer({
 export default layer
 
 /*** Helper functions **************/
+// Watch scale change...
+export const toggleCluster = (newScale: number, oldScale: number, maxScale: number) => {
+    console.log("toggleCluster scale: " + newScale);
+    // Turn off clustering at max scale...
+    if (newScale > maxScale && oldScale < maxScale) {
+        layer.featureReduction = clusterConfig;
+        console.log("Turn on cluster: " + clusterConfig.clusterRadius + " scale: " + oldScale + " > " + newScale);
+    }
+    else if (newScale < maxScale && oldScale > maxScale) {
+        layer.set("featureReduction", undefined);
+        console.log("Turn off cluster: " + clusterConfig.clusterRadius + " scale: " + oldScale + " > " + newScale);
+    }
+
+}
+
 const outFields = ["CameraID", "CameraTitle", "ImageURL", "WSDOTSRID", "StateRouteMilepost",
     "CompassDirection", "Location", "CameraOwnerName", "CameraOwnerURL",
     "ImageWidth", "ImageHeight"];
@@ -164,3 +179,4 @@ const convert2Info = (g: Graphic): CameraInfo => {
 
     return info;
 }
+

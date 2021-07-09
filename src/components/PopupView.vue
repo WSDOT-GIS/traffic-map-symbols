@@ -1,7 +1,8 @@
 <template>
   <div
     ref="containerRef"
-    class="popup-container w3-card w3-col m4 l2"
+    class="popup-container w3-card w3-col"
+    :class="sizeClass"
     v-if="visible"
     :style="{
       marginTop: screenY_adjusted + 'px',
@@ -35,6 +36,10 @@ export default defineComponent({
       type: Number,
       required: true,
     },
+    Width: { // "m (medium) or w (wide)"
+      type: String,
+      required: false
+    }
   },
   setup(props, context) {
     // The DOM only exists while the visibility is true. Get it in onUpdate().
@@ -50,6 +55,21 @@ export default defineComponent({
     const screenX_adjusted = ref(-1);
     const screenY_adjusted = ref(-1);
     const visible = ref(false);
+    // Set the width...
+    // Default...
+    const sizeClass = {
+      m4: true, m6: false,
+      l2: true, l3: false
+    }
+    if (props.Width) {
+      // Wide...
+      if (props.Width === "w") {
+        sizeClass.m4 = false;
+        sizeClass.m6 = true;
+        sizeClass.l2 = false;
+        sizeClass.l3 = true;
+      }
+    }
 
     const close = () => {
       // Let the parent handle the close event.
@@ -186,6 +206,7 @@ export default defineComponent({
       screenY_adjusted,
       maxHeight,
       visible,
+      sizeClass,
       close,
       adjustPositionSize,
     };
