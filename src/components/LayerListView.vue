@@ -51,10 +51,10 @@
               <span class="slider round"></span>
             </label>
           </td>
-          <td>
-            <svg preserveAspectRatio="none" width="25" height="25" viewBox="-2 -2 30 30" class="mapFeaturesIcon">
-              <path width="15" height="15" :d="layerIcons.find(x=>x.title==layer.title).path"/><path fill="none"/>
-            </svg>
+           <td>
+             <div class="mapFeaturesIcon" v-html="layerIcons.find((x) => x.title == layer.title).paths">
+             </div>
+            
           </td>
           <td class="layerLabelCell mapFeatureCell">{{layer.title}}</td>
         </tr>
@@ -68,7 +68,7 @@ import { defineComponent, onMounted, ref} from "vue";
 import LayerInfo from "../types/LayerInfo";
 import {webmap} from "../esri-stuff/esriMap";
 import { mapState } from "vuex";
-import {layerListIcons} from "@/symbols/SVGIconDefinitions"
+import {layerListIcons} from "@/symbols/IconDefinitions"
 export default defineComponent({
   setup(){
     //#region populate the layer list
@@ -104,7 +104,8 @@ export default defineComponent({
       console.log(store)
       store.state.mapFeaturesExpanded=="block"?this.expandIconPath="M31.047 28h-5l-12-12 12-12h5l-12 12 12 12zm-26-12l12-12h-5l-12 12 12 12h5l-12-12z":this.expandIconPath="M1.047 4h5l12 12-12 12h-5l12-12-12-12zm26 12l-12 12h5l12-12-12-12h-5l12 12z";
       store.commit("setMapFeaturesExpanded")
-    }    
+    }   
+   
     //#endregion
   }
 });
@@ -165,7 +166,8 @@ export default defineComponent({
     padding: 2px 2px 2px 0px;
   }
   .mapFeaturesIcon{
-    
+    height: 20px;
+    width: 20px
   }
   tr{
     border: none;

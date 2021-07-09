@@ -1,4 +1,4 @@
-define(["require", "exports", "tslib"], function (require, exports, tslib_1) {
+define(["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var weatherStationsPopup = {
@@ -140,25 +140,23 @@ define(["require", "exports", "tslib"], function (require, exports, tslib_1) {
             attributesDiv.style.display == "block" ? attributesDiv.style.display = "none" : attributesDiv.style.display = "block";
             attributesDiv.style.display == "none" ? attributesTableToggle.innerHTML = "Show Attributes" : attributesTableToggle.innerHTML = "Hide Attributes";
         }
-        getWeatherGrid(feature.graphic);
-        function getWeatherGrid(graphic) {
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
-                return tslib_1.__generator(this, function (_a) {
-                    console.log(graphic);
-                    fetch("http://api.weather.gov/points/" + graphic.geometry.latitude + "," + graphic.geometry.longitude).then(function (results) {
-                        return results.json();
-                    }).then(function (data) {
-                        console.log(data);
-                        fetch("https://api.weather.gov/gridpoints/" + data.properties.gridId + "/" + data.properties.gridX + "," + data.properties.gridY + "/forecast").then(function (forecastData) {
-                            return forecastData.json();
-                        }).then(function (forecastDataJson) {
-                            console.log(forecastDataJson);
-                        });
-                    });
-                    return [2 /*return*/];
-                });
-            });
-        }
+        /*getWeatherGrid(feature.graphic)
+        function getWeatherGrid(graphic:any){
+            console.log(graphic)
+            fetch(
+                `http://api.weather.gov/points/${graphic.geometry.latitude},${graphic.geometry.longitude}`
+            ).then((results:any)=>{
+                return results.json()
+                }).then((data)=>{
+                    console.log(data)
+                    fetch(`https://api.weather.gov/gridpoints/${data.properties.gridId}/${data.properties.gridX},${data.properties.gridY}/forecast`).then((forecastData)=>{
+                        return forecastData.json()
+                    }).then((forecastDataJson)=>{
+                        console.log(forecastDataJson)
+                        
+                    })
+                })
+            }*/
         return popupDiv;
     }
     exports.default = weatherStationsPopup;

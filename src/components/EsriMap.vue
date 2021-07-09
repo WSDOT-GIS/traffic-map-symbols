@@ -8,6 +8,9 @@
     @clicked="zoomMetroEventHandler"
   ></ZoomPopupView>
   <CameraPopupView />
+  <ParkRidePopupView/>
+  <PointRestrictionPopupView/>
+  <LineRestrictionPopupView/>
 </template>
 
 <script lang="ts">
@@ -25,9 +28,11 @@ import ExtentInfo from "@/types/ExtentInfo";
 import { zoomOnClick } from "@/esri-stuff/esriMap";
 import { setLayerFromUrl } from "@/utils/urlParamUtil";
 import CameraPopupView from "@/components/CameraPopupView.vue";
-
+import ParkRidePopupView from "@/components/ParkAndRidePopupView.vue"
+import PointRestrictionPopupView from "@/components/PointRestrictionPopupView.vue"
+import LineRestrictionPopupView from "@/components/LineRestrictionPopupView.vue"
 export default defineComponent({
-  components: { ZoomPopupView, CameraPopupView },
+  components: { ZoomPopupView, CameraPopupView, ParkRidePopupView, PointRestrictionPopupView, LineRestrictionPopupView },
   setup() {
     const store = useStore();
     // Zoom popup...

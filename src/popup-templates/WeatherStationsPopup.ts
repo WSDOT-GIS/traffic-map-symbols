@@ -150,8 +150,7 @@ function myContent(feature:any) {
         attributesDiv.style.display=="block"?attributesDiv.style.display="none":attributesDiv.style.display="block"
         attributesDiv.style.display=="none"?attributesTableToggle.innerHTML="Show Attributes":attributesTableToggle.innerHTML="Hide Attributes"
     }
-    getWeatherGrid(feature.graphic)
-    getMoreDetailsLink(feature.graphic)
+    /*getWeatherGrid(feature.graphic)
     function getWeatherGrid(graphic:any){
         console.log(graphic)
         fetch(
@@ -167,10 +166,7 @@ function myContent(feature:any) {
                     
                 })
             })
-        }
-    function getMoreDetailsLink(graphic:any){
-
-    }
+        }*/
     return popupDiv;
 }
 export default weatherStationsPopup
