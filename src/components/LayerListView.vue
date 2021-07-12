@@ -78,7 +78,6 @@
            <td>
              <div class="mapFeaturesIcon" v-html="layerIcons.find((x) => x.title == layer.title).paths">
              </div>
-            
           </td>
           <td class="layerLabelCell mapFeatureCell">{{ layer.title }}</td>
         </tr>

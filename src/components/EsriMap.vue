@@ -1,6 +1,6 @@
 <template>
   <div id="esri-map-view"></div>
-  <LeftPaneView />
+  
   <div class="w3-display-bottomleft w3-container">
     <CoordinatesView />
   </div>
@@ -26,6 +26,8 @@
   <ParkRidePopupView/>
   <PointRestrictionPopupView/>
   <LineRestrictionPopupView/>
+  <MountainPassesPopupView/>
+  <LeftPaneView />
 </template>
 
 <script lang="ts">
@@ -34,7 +36,6 @@ import { useStore } from "@/store";
 import { project } from "@arcgis/core/geometry/projection";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import { Geometry } from "@arcgis/core/geometry";
-
 import { zoomOnClick } from "@/esri-stuff/esriMap";
 import { getExtentFromUrl, getBasemapFromUrl } from "@/utils/urlParamUtil";
 import ZoomExtentLayer, {
@@ -47,9 +48,10 @@ import { adjustCluster } from "@/utils/clusterUtil";
 /* Components */
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
 import CameraPopupView from "@/components/CameraPopupView.vue";
-import ParkRidePopupView from "@/components/ParkAndRidePopupView.vue"
-import PointRestrictionPopupView from "@/components/PointRestrictionPopupView.vue"
-import LineRestrictionPopupView from "@/components/LineRestrictionPopupView.vue"
+import ParkRidePopupView from "@/components/ParkAndRidePopupView.vue";
+import PointRestrictionPopupView from "@/components/PointRestrictionPopupView.vue";
+import LineRestrictionPopupView from "@/components/LineRestrictionPopupView.vue";
+import MountainPassesPopupView from "@/components/MountainPassesPopupView.vue";
 import LeftPaneView from "@/components/LeftPaneView.vue";
 import BasemapView from "@/components/BasemapView.vue";
 import CoordinatesView from "@/components/CoordinatesView.vue";
@@ -63,6 +65,7 @@ export default defineComponent({
     ParkRidePopupView, 
     PointRestrictionPopupView, 
     LineRestrictionPopupView, 
+    MountainPassesPopupView,
     LeftPaneView,
     BasemapView,
     CoordinatesView,

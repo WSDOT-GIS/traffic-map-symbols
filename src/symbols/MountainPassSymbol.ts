@@ -12,7 +12,7 @@ const symbol = new CIMSymbol({
                 "enable": true,
                 "anchorPointUnits": "Relative",
                 "dominantSizeAxis3D": "Y",
-                "size": 10,
+                "size": 15,
                 "billboardMode3D": "FaceNearPlane",
                 "frame": {
                   "xmin": 0,

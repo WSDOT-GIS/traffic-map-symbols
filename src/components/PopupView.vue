@@ -134,6 +134,8 @@ export default defineComponent({
     // Convert map coordinates to screen coordinates and calculate the popup position...
     const setScreenXY = () => {
       if (mapX.value < 0 && mapY.value > 0) {
+        console.log(mapX.value)
+        console.log(mapY.value)
         const screenXY = toScreenXY(mapX.value, mapY.value);
         screenX.value = screenXY.x;
         screenY.value = screenXY.y;
