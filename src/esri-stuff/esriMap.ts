@@ -1,6 +1,6 @@
 // import EsriConfig from "@arcgis/core/config";
-import WebMap from "@arcgis/core/WebMap";
-// import Map from "@arcgis/core/Map";
+//import WebMap from "@arcgis/core/WebMap";
+import WebMap from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
 // import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 // import Bookmarks from "@arcgis/core/widgets/Bookmarks";
@@ -30,9 +30,11 @@ export const mapView = new MapView({
     container: "esri-map-view",
     map: webmap,
 });
-mapView.on("click", (() => {
-    mapView.graphics.removeAll()
-}))
+//{ "type": "point", "x": -13874849.374324558, "y": 6091725.406216802, "spatialReference": { "wkid": 4326 } }
+
+// mapView.on("click", (() => {
+//     mapView.graphics.removeAll()
+// }))
 // Zoom buttons are replaced with the custom Vue components.
 mapView.ui.remove("zoom");
 

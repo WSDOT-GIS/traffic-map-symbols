@@ -14,6 +14,7 @@
     "@types/arcgis-js-api": "^4.19.0",
     "core-js": "^3.6.5",
     "vue": "^3.0.0",
+    "vue3-carousel": "^0.1.23",
     "vuex": "^4.0.2"
   },
   "devDependencies": {
