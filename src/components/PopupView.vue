@@ -22,7 +22,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, toRefs, watch } from "vue";
+import { defineComponent, onUpdated, ref, toRefs, watch } from "vue";
 import Graphic from "@arcgis/core/Graphic";
 import Point from "@arcgis/core/geometry/Point";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
@@ -109,6 +109,12 @@ export default defineComponent({
         setScreenXY();
       }
     });
+    // Adjust position after the container DIV is available...
+    onUpdated(() => {
+      console.log("onUpdated");
+      adjustPositionSize();
+    });
+
     const setVisibility = () => {
       if (
         screenX.value < 0 ||
@@ -201,6 +207,7 @@ export default defineComponent({
         "adjustPositionSize(): mapXY = " + mapX.value + " " + mapY.value
       );
       if (!containerRef.value) {
+        console.log("Container is null");
         return;
       }
       const h = containerRef.value.offsetHeight;
