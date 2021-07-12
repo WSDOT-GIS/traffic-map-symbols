@@ -92,7 +92,7 @@ const clusterConfig = new FeatureReductionCluster({
         }, {
             deconflictionStrategy: "none",
             labelExpressionInfo: {
-                expression: "IIF($feature.cluster_count >= 200 && $feature.cluster_count < 500, '200+', '')"
+                expression: "IIF($feature.cluster_count >= 200, Floor($feature.cluster_count, -2) + '+', '')"
             },
             symbol: {
                 type: "text",
@@ -108,26 +108,7 @@ const clusterConfig = new FeatureReductionCluster({
                 yoffset: -2
             },
             labelPlacement: "center-center",
-        }, {
-            deconflictionStrategy: "none",
-            labelExpressionInfo: {
-                expression: "IIF($feature.cluster_count >= 500, '500+', '')"
-            },
-            symbol: {
-                type: "text",
-                color: labelColor,
-                font: {
-                    weight: "bold",
-                    family: "Noto Sans",
-                    size: "13px"
-                },
-                // haloColor: "#0e2433",
-                // haloSize: 1,
-                xoffset: -5,
-                yoffset: -2
-            },
-            labelPlacement: "center-center",
-        }
+        }, 
     ],
 });
 // The symbol property is undocumented, so use with caution.
