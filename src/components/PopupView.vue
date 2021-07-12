@@ -111,7 +111,7 @@ export default defineComponent({
     });
     // Adjust position after the container DIV is available...
     onUpdated(() => {
-      console.log("onUpdated");
+      console.log("onUpdated************");
       adjustPositionSize();
     });
 
@@ -130,7 +130,6 @@ export default defineComponent({
         visible.value = true;
         addHighlight();
       }
-      console.log("setVisibility: " + visible.value);
     };
     // Convert map coordinates to screen coordinates and calculate the popup position...
     const setScreenXY = () => {
@@ -163,7 +162,6 @@ export default defineComponent({
         },
       });
       mapView.graphics.add(gHighlight);
-      console.log("addHighlight");
     };
     // Remove the feature highlight graphic...
     const removeHighlight = () => {
@@ -203,9 +201,6 @@ export default defineComponent({
     };
     // Make sure popup fits inside of Map View...
     const adjustPositionSize = () => {
-      console.log(
-        "adjustPositionSize(): mapXY = " + mapX.value + " " + mapY.value
-      );
       if (!containerRef.value) {
         console.log("Container is null");
         return;
@@ -236,7 +231,7 @@ export default defineComponent({
       screenX_adjusted.value = x >= 0 ? x : -1;
 
       console.log(
-        "Popup top: " +
+        "****Popup top: " +
           screenY_adjusted.value +
           ", left: " +
           screenX_adjusted.value +
