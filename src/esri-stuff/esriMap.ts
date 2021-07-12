@@ -25,9 +25,11 @@ export const mapView = new MapView({
     container: "esri-map-view",
     map: webmap,
 });
-mapView.on("click", (() => {
-    mapView.graphics.removeAll()
-}))
+//{ "type": "point", "x": -13874849.374324558, "y": 6091725.406216802, "spatialReference": { "wkid": 4326 } }
+
+// mapView.on("click", (() => {
+//     mapView.graphics.removeAll()
+// }))
 // Zoom buttons are replaced with the custom Vue components.
 mapView.ui.remove("zoom");
 
