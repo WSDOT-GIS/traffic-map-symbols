@@ -71,7 +71,7 @@ const layer = new GeoJSONLayer({
     title: "Park and Rides",
     renderer: renderer,
     fields: fields,
-    visible: false
+    visible: true
 });
 
 export default layer

@@ -55,9 +55,7 @@ export default defineComponent({
         mapX.value = pt.x;
         mapY.value = pt.y;
         infos.value = parkRideInfos;
-        Object.entries(infos.value).forEach(
-            ([key, value]) => console.log(key, value)
-        );
+ 
     };
     // Setting XY to 0 closes the popup...
     const close = () => {
@@ -78,12 +76,11 @@ export default defineComponent({
       mapView.hitTest(event, opts).then((response) => {
        if (response.results.length) {
             // Show custom popup...
-            console.log( response.results)
             const g = response.results[0].graphic;
             const pt = g.geometry as Point;
             const parkRideId = g.getObjectId();
             getParkRideInfoById(parkRideId).then((results) => {
-                console.log(results)
+                console.log(pt)
                 results ? show(pt, results) : close();
             });
         }

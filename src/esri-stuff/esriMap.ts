@@ -1,21 +1,16 @@
-// import EsriConfig from "@arcgis/core/config";
 import WebMap from "@arcgis/core/WebMap";
-// import Map from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
-// import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
-// import Bookmarks from "@arcgis/core/widgets/Bookmarks";
-// import Expand from "@arcgis/core/widgets/Expand";
 import Point from "@arcgis/core/geometry/Point";
 import { whenTrue } from "@arcgis/core/core/watchUtils";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Layer from "@arcgis/core/layers/Layer";
-
 import TrafficLayer from "@/layers/TrafficLayer";
 import ParkRideLayer from "@/layers/ParkRideLayer";
 import CameraLayer from "@/layers/CameraLayer";
 import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
 import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
-import WeatherStationsLayer from "@/layers/WeatherStationsLayer"
+import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
+import MountainPassLayer from "@/layers/MountainPassesLayer";
 import ExtentInfo from "@/types/ExtentInfo";
 import { convert2EsriExtent } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
@@ -23,7 +18,7 @@ import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 //EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
 
 export const webmap = new WebMap({
-    layers: [TrafficLayer, ParkRideLayer, CameraLayer, PointRestrictionsLayer, LineRestrictionsLayer, WeatherStationsLayer],
+    layers: [TrafficLayer, ParkRideLayer, CameraLayer, PointRestrictionsLayer, LineRestrictionsLayer, WeatherStationsLayer, MountainPassLayer],
 });
 
 export const mapView = new MapView({

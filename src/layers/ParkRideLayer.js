@@ -67,7 +67,7 @@ define(["require", "exports", "tslib", "@arcgis/core/renderers/SimpleRenderer", 
         title: "Park and Rides",
         renderer: renderer,
         fields: fields,
-        visible: false
+        visible: true
     });
     exports.default = layer;
     /*** Helper functions **************/
