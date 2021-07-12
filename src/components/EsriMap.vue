@@ -23,6 +23,9 @@
     @clicked="zoomMetroEventHandler"
   ></ZoomPopupView>
   <CameraPopupView />
+  <ParkRidePopupView/>
+  <PointRestrictionPopupView/>
+  <LineRestrictionPopupView/>
 </template>
 
 <script lang="ts">
@@ -44,6 +47,9 @@ import { adjustCluster } from "@/utils/clusterUtil";
 /* Components */
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
 import CameraPopupView from "@/components/CameraPopupView.vue";
+import ParkRidePopupView from "@/components/ParkAndRidePopupView.vue"
+import PointRestrictionPopupView from "@/components/PointRestrictionPopupView.vue"
+import LineRestrictionPopupView from "@/components/LineRestrictionPopupView.vue"
 import LeftPaneView from "@/components/LeftPaneView.vue";
 import BasemapView from "@/components/BasemapView.vue";
 import CoordinatesView from "@/components/CoordinatesView.vue";
@@ -54,6 +60,9 @@ export default defineComponent({
   components: {
     ZoomPopupView,
     CameraPopupView,
+    ParkRidePopupView, 
+    PointRestrictionPopupView, 
+    LineRestrictionPopupView, 
     LeftPaneView,
     BasemapView,
     CoordinatesView,

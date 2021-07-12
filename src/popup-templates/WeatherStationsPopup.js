@@ -109,7 +109,12 @@ define(["require", "exports"], function (require, exports) {
         var popupDiv = document.createElement("div");
         var attributesDiv = document.createElement("div");
         attributesDiv.setAttribute("id", "attributesDiv");
+        attributesDiv.style.display = "none";
         var attributesTable = document.createElement("table");
+        var attributesTableToggle = document.createElement("button");
+        attributesTableToggle.setAttribute("class", "sectionToggleButton");
+        attributesTableToggle.innerHTML = "Show Attributes";
+        attributesTableToggle.addEventListener("click", toggleStationAttributes);
         for (var i = 0; i < weatherStationsPopup.fieldInfos.length; i++) {
             var value = void 0;
             var label = void 0;
@@ -128,8 +133,30 @@ define(["require", "exports"], function (require, exports) {
                 attributesTable.appendChild(attributeRow);
             }
         }
+        popupDiv.appendChild(attributesTableToggle);
         attributesDiv.appendChild(attributesTable);
         popupDiv.appendChild(attributesDiv);
+        function toggleStationAttributes() {
+            attributesDiv.style.display == "block" ? attributesDiv.style.display = "none" : attributesDiv.style.display = "block";
+            attributesDiv.style.display == "none" ? attributesTableToggle.innerHTML = "Show Attributes" : attributesTableToggle.innerHTML = "Hide Attributes";
+        }
+        /*getWeatherGrid(feature.graphic)
+        function getWeatherGrid(graphic:any){
+            console.log(graphic)
+            fetch(
+                `http://api.weather.gov/points/${graphic.geometry.latitude},${graphic.geometry.longitude}`
+            ).then((results:any)=>{
+                return results.json()
+                }).then((data)=>{
+                    console.log(data)
+                    fetch(`https://api.weather.gov/gridpoints/${data.properties.gridId}/${data.properties.gridX},${data.properties.gridY}/forecast`).then((forecastData)=>{
+                        return forecastData.json()
+                    }).then((forecastDataJson)=>{
+                        console.log(forecastDataJson)
+                        
+                    })
+                })
+            }*/
         return popupDiv;
     }
     exports.default = weatherStationsPopup;
