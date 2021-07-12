@@ -23,8 +23,12 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, toRefs, watch } from "vue";
+import Graphic from "@arcgis/core/Graphic";
+import Point from "@arcgis/core/geometry/Point";
+import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 
 import { mapView, toScreenXY } from "@/esri-stuff/esriMap";
+import HighlightSymbol from "@/symbols/HighlightSymbol";
 
 export default defineComponent({
   props: {
@@ -36,10 +40,11 @@ export default defineComponent({
       type: Number,
       required: true,
     },
-    Width: { // "m (medium) or w (wide)"
+    Width: {
+      // "m (medium) or w (wide)"
       type: String,
-      required: false
-    }
+      required: false,
+    },
   },
   setup(props, context) {
     // The DOM only exists while the visibility is true. Get it in onUpdate().
@@ -51,16 +56,19 @@ export default defineComponent({
     const mapY = toRefs(props).MapY;
     const screenX = ref(-1);
     const screenY = ref(-1);
-    // Adjusted to make sure the popup is shown within the map view.
-    const screenX_adjusted = ref(-1);
-    const screenY_adjusted = ref(-1);
+    // Screen coordinates adjusted to make sure the popup is shown within the map view.
+    const screenX_adjusted = ref(-1000);
+    const screenY_adjusted = ref(-1000);
     const visible = ref(false);
+    let gHighlight: Graphic;
     // Set the width...
     // Default...
     const sizeClass = {
-      m4: true, m6: false,
-      l2: true, l3: false
-    }
+      m4: true,
+      m6: false,
+      l2: true,
+      l3: false,
+    };
     if (props.Width) {
       // Wide...
       if (props.Width === "w") {
@@ -77,25 +85,10 @@ export default defineComponent({
       context.emit("close");
     };
     // If the feature is within the map view, show the popup, otherwise close it.
-    // NOTE: Popup will shown again if the feature comes back in the map view unless parent component sets the MapX and Y to 0.
+    // NOTE: Popup will be shown again if the feature comes back in the map view unless parent component sets the MapX and Y to 0.
     watch([screenX, screenY], () => {
-      if (
-        screenX.value < 0 ||
-        screenX.value > mapView.width ||
-        screenY.value < 0 ||
-        screenY.value > mapView.height
-      ) {
-        visible.value = false;
-      } else {
-        visible.value = true;
-      }
+      setVisibility();
     });
-    // DOM does not exist when onMounted happens.
-    // onUpdated happens if the view is shown or closed, so set the screen coordinate when it is shown.
-    // onUpdated(() => {
-    //   console.log("***Popup.onUpdated");
-    //   adjustPositionSize();
-    // });
     // Adjust popup position when the props change...
     watch([mapX, mapY], () => {
       setScreenXY();
@@ -116,6 +109,23 @@ export default defineComponent({
         setScreenXY();
       }
     });
+    const setVisibility = () => {
+      if (
+        screenX.value < 0 ||
+        screenX.value > mapView.width ||
+        screenY.value < 0 ||
+        screenY.value > mapView.height
+      ) {
+        visible.value = false;
+        screenX_adjusted.value = -1000;
+        screenY_adjusted.value = -1000;
+        removeHighlight();
+      } else {
+        visible.value = true;
+        addHighlight();
+      }
+      console.log("setVisibility: " + visible.value);
+    };
     // Convert map coordinates to screen coordinates and calculate the popup position...
     const setScreenXY = () => {
       if (mapX.value < 0 && mapY.value > 0) {
@@ -123,9 +133,36 @@ export default defineComponent({
         screenX.value = screenXY.x;
         screenY.value = screenXY.y;
         adjustPositionSize();
+        setVisibility();
       } else {
         screenX.value = -1;
         screenY.value = -1;
+      }
+    };
+    // Add feature highlight...
+    const addHighlight = () => {
+      // Make sure there is only one...
+      removeHighlight();
+      // Create a new graphic...
+      const pt = new Point({
+        x: props.MapX,
+        y: props.MapY,
+        spatialReference: SpatialReference.WebMercator,
+      });
+      gHighlight = new Graphic({
+        geometry: pt,
+        symbol: HighlightSymbol,
+        attributes: {
+          type: "popup-highlight",
+        },
+      });
+      mapView.graphics.add(gHighlight);
+      console.log("addHighlight");
+    };
+    // Remove the feature highlight graphic...
+    const removeHighlight = () => {
+      if (gHighlight) {
+        mapView.graphics.remove(gHighlight);
       }
     };
     // Variables used to store the original position while map view is being dragged.
@@ -178,18 +215,18 @@ export default defineComponent({
       } else {
         y = screenY.value;
       }
-      screenY_adjusted.value = y >= 0 ? y : 0;
+      screenY_adjusted.value = y >= 0 ? y : -1;
       // Adjust horizontal position.
       let x: number;
       if (mapView.width < screenX.value) {
         x = mapView.width - w - 10;
       } else if (mapView.width < screenX.value + w) {
         // Show it on the left side of the feature...
-        x = screenX.value - w;
+        x = screenX.value - w - 15; // Offset 15 pixels to the left so the selected feature can be seen clearly
       } else {
-        x = screenX.value;
+        x = screenX.value + 15; // Offset 15 pixels to the right so the selected feature can be seen clearly
       }
-      screenX_adjusted.value = x >= 0 ? x : 0;
+      screenX_adjusted.value = x >= 0 ? x : -1;
 
       console.log(
         "Popup top: " +
@@ -219,7 +256,7 @@ export default defineComponent({
   /* position: absolute;
   margin-top: 0;
   margin-left: 0; */
-  z-index: 99;
+  z-index: 9;
   background-color: #fff;
   /* border: 1px solid #808080;
   padding: 0; */
