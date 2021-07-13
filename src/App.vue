@@ -4,9 +4,6 @@
     <AlertView :alert="alert" />
   </div>
   <div id="map-container" :style="{ height: mapHeight }" class="w3-display-container">
-    <!-- <BasemapView /> -->
-    <!-- <CoordinatesView /> -->
-    <!-- <MyLocationView /> -->
     <EsriMap />
   </div>
   <div id="app-bottom-container" ref="bottomRef">
@@ -119,68 +116,4 @@ hr.horizontal-divider {
 #map-container > * {
   position: absolute;
 }
-
-/* #map-top-left-container {
-  z-index: 1;
-} */
-
-/* #map-top-left-container {
-  position: absolute;
-  margin: 1vh 1vw;
-  left: 0;
-  right: 0;
-  width: 150px;
-  float: left;
-  z-index: 1;
-  background-color: #fff;
-}  */
-/* 
-#layerListWidget {
-  margin: 0;
-  text-align: center;
-  width: 100%;
-}
-
-#savedMapWidget {
-  margin: 0;
-  text-align: center;
-  width: 100%;
-} */
-
-/* #basemap-widget-container {
-  position: absolute;
-  margin-left: 91vw;
-  margin-top: 71vh;
-  left: 0;
-  right: 0;
-  text-align: center;
-  width: 100px;
-  float: left;
-  z-index: 1;
-} */
-
-/* #legendWidget {
-  position: absolute;
-  margin-left: 91vw;
-  margin-top: 3vh;
-  left: 0;
-  right: 0;
-  text-align: center;
-  width: 100px;
-  float: left;
-  z-index: 1;
-}
-
-#locationWidget {
-  position: absolute;
-  left: 0px;
-  bottom: 30px;
-  margin-bottom: 8px;
-  text-align: center;
-  width: 100px;
-  float: left;
-  z-index: 1;
-  height: 50px;
-  width: 50px;
-} */
 </style>

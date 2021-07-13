@@ -24,7 +24,7 @@ define(["require", "exports", "tslib", "@arcgis/core/Basemap", "@arcgis/core/lay
             })
         }, {
             name: "satellite",
-            basemap: Basemap_1.default.fromId("satellite")
+            basemap: Basemap_1.default.fromId("arcgis-imagery")
         }
     ];
     var getBasemapInfo = function (name) {

@@ -5,11 +5,11 @@
     <CoordinatesView />
   </div>
   <div id="map-bottom-right-container" class="w3-display-bottomright">
-    <div class="map-bottom-right-container-row">
-      <div class="map-bottom-right-container-column">
+    <div class="map-bottom-right-container-row flex-row">
+      <div class="map-bottom-right-container-column flex-column">
         <BasemapView />
       </div>
-      <div class="map-bottom-right-container-column">
+      <div class="map-bottom-right-container-column flex-column">
         <MyLocationView />
         <ZoomButtonView />
       </div>
@@ -27,6 +27,7 @@
   <PointRestrictionPopupView/>
   <LineRestrictionPopupView/>
   <MountainPassesPopupView/>
+  <WeatherStationsPopupView/>
   <LeftPaneView />
 </template>
 
@@ -52,6 +53,7 @@ import ParkRidePopupView from "@/components/ParkAndRidePopupView.vue";
 import PointRestrictionPopupView from "@/components/PointRestrictionPopupView.vue";
 import LineRestrictionPopupView from "@/components/LineRestrictionPopupView.vue";
 import MountainPassesPopupView from "@/components/MountainPassesPopupView.vue";
+import WeatherStationsPopupView from "@/components/WeatherStationPopup.vue"
 import LeftPaneView from "@/components/LeftPaneView.vue";
 import BasemapView from "@/components/BasemapView.vue";
 import CoordinatesView from "@/components/CoordinatesView.vue";
@@ -66,6 +68,7 @@ export default defineComponent({
     PointRestrictionPopupView, 
     LineRestrictionPopupView, 
     MountainPassesPopupView,
+    WeatherStationsPopupView,
     LeftPaneView,
     BasemapView,
     CoordinatesView,
@@ -206,22 +209,26 @@ export default defineComponent({
 }
 
 #map-bottom-right-container {
-  width: 100px;
-}
-
-.map-bottom-right-container-row {
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-  margin-bottom: 16px;
+  width: 50%;
+  height:50%;
 }
 
-.map-bottom-right-container-column {
+.map-bottom-right-container-row{
+  display: flex;
+  position:relative;
+  width:100%;
+  justify-content: flex-end;
+  flex-direction: rtl;
+  align-items: flex-end;/* move columns to rightmost end of row */ 
+}
+
+.map-bottom-right-container-column{
   display: flex;
   flex-direction: column;
-  align-items: center;
-  height: 150px;
   justify-content: flex-end;
+  align-items: center;
+  padding: 0px 5px 5px 0px;
 }
 .esri-zoom {
   display: none;

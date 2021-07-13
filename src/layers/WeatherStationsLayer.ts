@@ -1,16 +1,18 @@
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer"
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import {weatherStationSymbol} from "@/symbols/WeatherStationSymbol"
-import weatherStationsPopup from "@/popup-templates/WeatherStationsPopup"
+import WeatherStationInfo from "@/types/WeatherStationsInfo"
+import Graphic from "@arcgis/core/Graphic"
 const weatherStationRenderer = new simpleRenderer({
     symbol: weatherStationSymbol
 })
-const PointRestrictionsLayer = new GeoJSONLayer({
+const WeatherStationsLayer = new GeoJSONLayer({
     id: "weather-stations-layer",
     url: "http://hqtob1webtmdev1/GISData/WeatherStations.json",
     title: "Weather Stations",
     renderer: weatherStationRenderer,
-    popupTemplate: weatherStationsPopup,
+    //popupTemplate: weatherStationsPopup,
     visible: false
 })
-export default PointRestrictionsLayer
+
+export default WeatherStationsLayer

@@ -39,9 +39,8 @@ import PopupView from "./PopupView.vue";
 import ParkRideInfo from "@/types/ParkRideInfo";
 import { mapView } from "@/esri-stuff/esriMap";
 import ParkRideLayer from "@/layers/ParkRideLayer";
-import {getParkRideInfoById} from "@/layers/ParkRideLayer";
 import Point from "@arcgis/core/geometry/Point";
-
+import {getGraphicsInfoById} from "@/utils/getGraphicsInfoByID"
 export default defineComponent({
   components: { PopupView },
   setup() {
@@ -75,14 +74,10 @@ export default defineComponent({
       };
       mapView.hitTest(event, opts).then((response) => {
        if (response.results.length) {
-            // Show custom popup...
-            const g = response.results[0].graphic;
-            const pt = g.geometry as Point;
-            const parkRideId = g.getObjectId();
-            getParkRideInfoById(parkRideId).then((results) => {
-                console.log(pt)
-                results ? show(pt, results) : close();
-            });
+            const pt = response.results[0].graphic.geometry as Point;
+            getGraphicsInfoById(response.results[0].graphic, "OBJECTID", ParkRideLayer).then((results)=>{
+                results ? show(pt, results as ParkRideInfo) : close();
+            })
         }
       });
     });

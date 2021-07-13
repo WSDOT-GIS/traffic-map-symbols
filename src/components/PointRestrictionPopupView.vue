@@ -55,10 +55,9 @@ import { defineComponent, ref } from "vue";
 import PopupView from "./PopupView.vue";
 import { mapView } from "@/esri-stuff/esriMap";
 import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
-import {getPointRestrictionInfoById} from "@/layers/PointRestrictionsLayer";
 import Point from "@arcgis/core/geometry/Point";
 import RestrictionInfo from "@/types/RestrictionInfo";
-
+import {getGraphicsInfoById} from "@/utils/getGraphicsInfoByID"
 export default defineComponent({
   components: { PopupView },
   setup() {
@@ -90,16 +89,12 @@ export default defineComponent({
       const opts = {
         include: [PointRestrictionsLayer],
       };
-      mapView.hitTest(event, opts).then((response) => {
+       mapView.hitTest(event, opts).then((response) => {
        if (response.results.length) {
-            // Show custom popup...
-            const g = response.results[0].graphic;
-            const pt = g.geometry as Point;
-            const pointRestrictionId = g.getObjectId();
-            getPointRestrictionInfoById(pointRestrictionId).then((results) => {
-                console.log(pt)
-                results ? show(pt, results) : close();
-            });
+            const pt = response.results[0].graphic.geometry as Point;
+            getGraphicsInfoById(response.results[0].graphic, "ESRI_OID", PointRestrictionsLayer).then((results)=>{
+                results ? show(pt, results as RestrictionInfo) : close();
+            })
         }
       });
     });

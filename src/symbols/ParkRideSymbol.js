@@ -13,7 +13,7 @@ define(["require", "exports", "tslib", "@arcgis/core/symbols/CIMSymbol"], functi
                         "enable": true,
                         "anchorPointUnits": "Relative",
                         "dominantSizeAxis3D": "Y",
-                        "size": 14,
+                        "size": 15,
                         "billboardMode3D": "FaceNearPlane",
                         "frame": {
                             "xmin": 0,
