@@ -371,11 +371,11 @@ define(["require", "exports", "tslib", "@arcgis/core/symbols/CIMSymbol"], functi
                                             "joinStyle": "Round",
                                             "lineStyle3D": "Strip",
                                             "miterLimit": 10,
-                                            "width": 0,
+                                            "width": 1.5,
                                             "color": [
-                                                0,
-                                                0,
-                                                0,
+                                                255,
+                                                255,
+                                                255,
                                                 255
                                             ]
                                         },
@@ -457,11 +457,11 @@ define(["require", "exports", "tslib", "@arcgis/core/symbols/CIMSymbol"], functi
                                             "joinStyle": "Round",
                                             "lineStyle3D": "Strip",
                                             "miterLimit": 10,
-                                            "width": 0,
+                                            "width": 1.5,
                                             "color": [
-                                                0,
-                                                0,
-                                                0,
+                                                255,
+                                                255,
+                                                255,
                                                 255
                                             ]
                                         },

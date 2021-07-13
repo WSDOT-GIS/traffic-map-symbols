@@ -89,6 +89,7 @@ define(["require", "exports", "tslib", "@arcgis/core/renderers/SimpleRenderer", 
         }
     };
     exports.toggleCluster = toggleCluster;
+    // Query features...
     var outFields = ["CameraID", "CameraTitle", "ImageURL", "WSDOTSRID", "StateRouteMilepost",
         "CompassDirection", "Location", "CameraOwnerName", "CameraOwnerURL",
         "ImageWidth", "ImageHeight"];
@@ -164,6 +165,7 @@ define(["require", "exports", "tslib", "@arcgis/core/renderers/SimpleRenderer", 
         });
     }); };
     exports.getCameraInfosFromCluster = getCameraInfosFromCluster;
+    // Get Info objects...
     var getCameraInfosByIds = function (ids) { return tslib_1.__awaiter(void 0, void 0, void 0, function () {
         var query, response, infos;
         return tslib_1.__generator(this, function (_a) {
@@ -180,6 +182,7 @@ define(["require", "exports", "tslib", "@arcgis/core/renderers/SimpleRenderer", 
             }
         });
     }); };
+    // Convert esri graphic object to a simple custom object since esri object is not compatible with Vue...
     var convert2Info = function (g) {
         var info = {
             id: g.attributes.CameraID,
