@@ -6,7 +6,7 @@ const symbol = new SimpleMarkerSymbol({
     color: [0, 0, 0, 0],
     size: "26px",
     outline: {  // autocasts as new SimpleLineSymbol()
-        color: "red",
+        color: "#00ffff",
         width: 2  // points
     }
 })

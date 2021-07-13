@@ -4,10 +4,10 @@
       Camera{{ infos.length > 1 ? " (" + infos.length + ")" : "" }}
     </template>
     <template v-slot:default>
-      <Carousel :items-to-show="1">
+      <Carousel :items-to-show="1" :wrapAround="true">
         <Slide v-for="eachInfo in infos" :key="eachInfo.id">
           <div class="carousel-item-container">
-            <div class="camera-popup-img-title">{{ eachInfo.title }}</div>
+            <h3 class="camera-popup-img-title">{{ eachInfo.title }}</h3>
             <img
               class="camera-popup-img"
               :src="eachInfo.imageURL"
@@ -48,6 +48,7 @@ import {
 } from "@/layers/CameraLayer";
 
 import Point from "@arcgis/core/geometry/Point";
+import Graphic from "@arcgis/core/Graphic";
 
 export default defineComponent({
   components: { PopupView, Carousel, Slide, Pagination, Navigation },
@@ -62,6 +63,9 @@ export default defineComponent({
       mapX.value = pt.x;
       mapY.value = pt.y;
       infos.value = cameraInfos;
+      // mapView.whenLayerView(CameraLayer).then((layerView) => {
+      //   layerView.highlight(g);
+      // })
     };
     // Setting XY to 0 closes the popup...
     const close = () => {
@@ -90,7 +94,6 @@ export default defineComponent({
               // Try to get camera infos from the cluster...
               getCameraInfosFromCluster(g, mapView, 3).then((results) => {
                 // Show multiple pictures if infos are returned...
-                // infos.value = results ? results : [];
                 results ? show(pt, results) : close();
                 if (!results) {
                   // Zoom-in more...
@@ -109,12 +112,9 @@ export default defineComponent({
               tryZoomToPoint(g.geometry as Point);
             }
           } else {
-            //show(pt.x, pt.y);
             const cameraId = g.getObjectId();
             getCameraInfoById(cameraId).then((response) => {
-              //infos.value = [];
               if (response) {
-                //infos.value.push(response);
                 show(pt, [response]);
               }
             });

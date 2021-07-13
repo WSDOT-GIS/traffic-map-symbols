@@ -45,6 +45,10 @@ export default defineComponent({
       type: String,
       required: false,
     },
+    // LayerIndex: {
+    //   type: Number,
+    //   requred: true
+    // }
   },
   setup(props, context) {
     // The DOM only exists while the visibility is true. Get it in onUpdate().
