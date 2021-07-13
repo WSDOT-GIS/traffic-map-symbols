@@ -376,11 +376,11 @@ export const clusterSymbol = new CIMSymbol({
                                         "joinStyle": "Round",
                                         "lineStyle3D": "Strip",
                                         "miterLimit": 10,
-                                        "width": 0,
+                                        "width": 1.5,
                                         "color": [
-                                            0,
-                                            0,
-                                            0,
+                                            255,
+                                            255,
+                                            255,
                                             255
                                         ]
                                     },
@@ -462,11 +462,11 @@ export const clusterSymbol = new CIMSymbol({
                                         "joinStyle": "Round",
                                         "lineStyle3D": "Strip",
                                         "miterLimit": 10,
-                                        "width": 0,
+                                        "width": 1.5,
                                         "color": [
-                                            0,
-                                            0,
-                                            0,
+                                            255,
+                                            255,
+                                            255,
                                             255
                                         ]
                                     },

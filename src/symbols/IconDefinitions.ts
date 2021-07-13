@@ -1,8 +1,8 @@
 import IconInfo from "@/types/IconInfo"
 /* eslint-disable no-useless-escape */
-const layerListIcons:IconInfo[] = [{
-        title: "Traffic Cameras",
-        paths:`
+const layerListIcons: IconInfo[] = [{
+    title: "Traffic Cameras",
+    paths: `
         <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 24 24" version="1.1" id="svg819" sodipodi:docname="video-24.svg" inkscape:version="0.92.3 (2405546, 2018-03-11)">
             <metadata id="metadata825">
             <rdf:RDF>
@@ -19,10 +19,10 @@ const layerListIcons:IconInfo[] = [{
             <circle style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:4.61772776;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" id="path827" cx="12" cy="12" r="9.5066128"/>
             <path d="M 19.744301,6.9586847 16.201096,9.796105 V 7.7989039 A 1.6821189,1.6821189 0 0 0 14.520658,6.1184655 H 4.438027 A 1.6821189,1.6821189 0 0 0 2.7575886,7.7989039 v 8.4021921 a 1.6821189,1.6821189 0 0 0 1.6804384,1.680439 h 10.082631 a 1.6821189,1.6821189 0 0 0 1.680438,-1.680439 V 14.14676 l 3.540684,2.894555 h 1.500631 V 6.9586847 Z m -4.383424,9.2424113 a 0.84105944,0.84105944 0 0 1 -0.840219,0.840219 H 4.438027 A 0.84105944,0.84105944 0 0 1 3.5978078,16.201096 V 7.7989039 A 0.84105944,0.84105944 0 0 1 4.438027,6.9586847 h 10.082631 a 0.84105944,0.84105944 0 0 1 0.840219,0.8402192 z m 5.041315,0 h -0.360454 l -3.840642,-3.139899 v -2.188771 l 3.838121,-3.0735221 h 0.362975 z" id="path815" inkscape:connector-curvature="0" style="stroke-width:0.8402192"/>
         </svg>`
-    },
-    {
-        title:"Restriction Points",
-        paths: `
+},
+{
+    title: "Restriction Points",
+    paths: `
         <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 24 24" version="1.1" id="svg3116" sodipodi:docname="verticalClearancePoints.svg" inkscape:version="0.92.3 (2405546, 2018-03-11)">
             <metadata id="metadata3122">
             <rdf:RDF>
@@ -39,10 +39,10 @@ const layerListIcons:IconInfo[] = [{
             <path inkscape:connector-curvature="0" style="fill:#ff6600;stroke:#000000;stroke-width:0.78748578;stroke-miterlimit:4;stroke-dasharray:none" d="M 23.50252,5.6221006 A 4.9651643,4.9651643 0 1 0 18.537355,10.587266 4.9701295,4.9701295 0 0 0 23.50252,5.6221006 Z" id="path3112-2"/>
             <path inkscape:connector-curvature="0" style="fill:#008000;stroke:#000000;stroke-width:0.78748578;stroke-miterlimit:4;stroke-dasharray:none" d="M 10.4093,18.562778 A 4.9651643,4.9651643 0 1 0 5.4441346,23.527944 4.9701295,4.9701295 0 0 0 10.4093,18.562778 Z" id="path3112-2-0"/>
         </svg>`
-    },
-    {
-        title: "Restriction Lines",
-        paths: `
+},
+{
+    title: "Restriction Lines",
+    paths: `
         <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 24 24" version="1.1" id="svg3116" sodipodi:docname="verticalClearanceLines.svg" inkscape:version="0.92.3 (2405546, 2018-03-11)">
             <metadata id="metadata3122">
                 <rdf:RDF>
@@ -65,10 +65,10 @@ const layerListIcons:IconInfo[] = [{
                 <path sodipodi:nodetypes="cccc" inkscape:connector-curvature="0" id="rect7159-6-1" d="m 5.733449,8.7565858 7.490908,-4.324878 -4.384532,-7.5942312 7.594232,-4.3845313" style="fill:none;fill-opacity:1;stroke:#ff6600;stroke-width:1.48135662;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
             </g>
         </svg>`
-    },
-    {
-        title:"Weather Stations",
-        paths: `
+},
+{
+    title: "Weather Stations",
+    paths: `
         <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 24 24" version="1.1" id="svg831" sodipodi:docname="weather.svg" inkscape:version="0.92.3 (2405546, 2018-03-11)" inkscape:export-filename="C:\Users\VannosB\source\repos\vuex test\TravelerInformationCoreMap\src\assets\icons\weather.png" inkscape:export-xdpi="400" inkscape:export-ydpi="400">
             <metadata id="metadata837">
             <rdf:RDF>
@@ -86,10 +86,10 @@ const layerListIcons:IconInfo[] = [{
             <path fill="none" d="M0 0h24v24H0z" id="path829"/>
             <path id="path816-8" style="stroke:none;stroke-width:0.35965723" d="m 14.668403,0.8512811 c -0.38638,0 -0.699375,0.3314087 -0.699375,0.7398172 v 1.479734 c 0,0.4084082 0.312995,0.7399171 0.699375,0.7399171 0.38603,0 0.69928,-0.3315089 0.69928,-0.7399171 v -1.479734 c 0,-0.4084085 -0.31325,-0.7398172 -0.69928,-0.7398172 z M 8.734211,3.4515896 c -0.17894,0 -0.357932,0.072216 -0.494476,0.2166757 -0.273088,0.2889193 -0.273088,0.7572634 0,1.0461829 l 0.988858,1.0461823 c 0.136718,0.1446448 0.315448,0.216776 0.494478,0.216776 0.17903,0 0.357666,-0.072131 0.494384,-0.216776 0.273089,-0.2889194 0.273089,-0.7572634 0,-1.0461823 L 9.228593,3.6682653 C 9.092049,3.5238057 8.913153,3.4515896 8.734211,3.4515896 Z m 11.868287,0 c -0.178943,0 -0.357839,0.072216 -0.494383,0.2166757 l -0.988858,1.0461829 c -0.273088,0.2889189 -0.273088,0.7572629 0,1.0461823 0.136369,0.1446448 0.315354,0.216776 0.494382,0.216776 0.179028,0 0.357757,-0.072131 0.494476,-0.216776 l 0.988858,-1.0461823 c 0.27309,-0.2889195 0.27309,-0.7572636 0,-1.0461829 C 20.960428,3.5238057 20.781438,3.4515896 20.602498,3.4515896 Z m -5.934095,1.8388938 c -1.608808,0 -3.110314,0.843793 -4.019793,2.2273505 -0.05875,-0.00183 -0.116795,-0.00782 -0.175883,-0.00782 -2.679836,0 -4.9719003,1.8541194 -5.7033992,4.5072891 -0.2017566,-0.03884 -0.4133129,-0.06799 -0.590593,-0.06799 -2.1210672,0 -3.8462731,1.825586 -3.8462731,4.069243 0,2.243658 1.7252059,4.069245 3.8462731,4.069245 H 16.766714 c 2.120719,0 3.846274,-1.825587 3.846274,-4.069245 0,-1.334725 -0.613271,-2.517775 -1.554218,-3.260235 0.330434,-0.708794 0.504874,-1.487562 0.504874,-2.288842 0,-2.8558938 -2.195828,-5.1790143 -4.895241,-5.1790143 z m 0,1.4797343 c 1.928053,0 3.496587,1.6594626 3.496587,3.6992803 0,0.572659 -0.125884,1.128314 -0.362256,1.634017 -0.330435,-0.09803 -0.676914,-0.154183 -1.03602,-0.154183 -0.177628,0 -0.388865,0.02915 -0.590972,0.06799 C 15.613483,9.978615 14.128841,8.4160167 12.256036,7.7997048 12.89872,7.1512087 13.758226,6.7702205 14.668403,6.7702217 Z m -4.195676,2.2195501 c 2.228064,0 4.103677,1.6758342 4.478168,3.9901482 v 1.188968 c 0,0.408407 0.313344,0.739915 0.699372,0.739915 0.38603,0 0.699279,-0.331508 0.699279,-0.739915 v -0.679525 c 0.164694,-0.03478 0.321359,-0.06029 0.417168,-0.06029 1.349356,0 2.44762,1.161929 2.44762,2.589509 0,1.427578 -1.098264,2.589509 -2.44762,2.589509 H 4.1787348 c -1.3493568,0 -2.4476199,-1.161931 -2.4476199,-2.589509 0,-1.42758 1.0982631,-2.589509 2.4476199,-2.589509 0.096857,0 0.2528248,0.02513 0.4171675,0.0599 v 0.679924 c 0,0.408408 0.3133438,0.739916 0.6993735,0.739916 0.3860301,0 0.6992795,-0.331508 0.6992795,-0.739916 V 12.978127 C 6.369746,10.664922 8.245008,8.989777 10.472727,8.989777 Z M 21.661669,9.729683 c -0.386379,0 -0.699373,0.331407 -0.699373,0.739815 0,0.408408 0.312994,0.739917 0.699373,0.739917 h 1.398655 c 0.38603,0 0.699374,-0.331509 0.699374,-0.739917 0,-0.408408 -0.313344,-0.739815 -0.699374,-0.739815 z" inkscape:connector-curvature="0"/>
         </svg>`
-    },
-    {
-        title: "Park and Rides",
-        paths: `
+},
+{
+    title: "Park and Rides",
+    paths: `
         <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 24 24" version="1.1" id="svg831" sodipodi:docname="ParkAndRide.svg" inkscape:version="0.92.3 (2405546, 2018-03-11)" inkscape:export-filename="C:\Users\VannosB\source\repos\vuex test\TravelerInformationCoreMap\src\assets\icons\weather.png" inkscape:export-xdpi="400" inkscape:export-ydpi="400">
             <metadata id="metadata837">
                 <rdf:RDF>
@@ -131,10 +131,10 @@ const layerListIcons:IconInfo[] = [{
                 <path style="fill:#ffffff" inkscape:connector-curvature="0" d="m 87.726,21.244 c -0.44,-0.475 -1.007,-0.849 -1.702,-1.121 -0.695,-0.27 -1.513,-0.406 -2.449,-0.406 H 76.5 v 15.686 h 3.449 v -5.625 h 3.625 c 0.937,0 1.754,-0.135 2.449,-0.406 0.695,-0.271 1.262,-0.645 1.702,-1.121 0.439,-0.476 0.762,-1.014 0.967,-1.614 0.204,-0.601 0.308,-1.23 0.308,-1.89 0,-0.66 -0.104,-1.289 -0.308,-1.89 -0.205,-0.599 -0.527,-1.137 -0.966,-1.613 z m -2.066,3.505 c 0,0.482 -0.076,0.879 -0.23,1.187 -0.153,0.308 -0.373,0.545 -0.66,0.713 -0.283,0.168 -0.604,0.286 -0.954,0.353 -0.352,0.064 -0.747,0.098 -1.187,0.098 h -2.68 v -4.702 h 2.68 c 0.439,0 0.835,0.03 1.187,0.088 0.351,0.059 0.671,0.177 0.954,0.352 0.287,0.175 0.507,0.417 0.66,0.726 0.154,0.307 0.23,0.702 0.23,1.185 z" id="path4987-3-6"/>
             </g>
         </svg>`
-    },
-    {
-        title: "Mountain Passes",
-        paths: `
+},
+{
+    title: "Mountain Passes",
+    paths: `
             <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 24 24" version="1.1" id="svg819" sodipodi:docname="mountains.svg" inkscape:version="0.92.3 (2405546, 2018-03-11)">
                 <metadata id="metadata825">
                 <rdf:RDF>
@@ -154,6 +154,6 @@ const layerListIcons:IconInfo[] = [{
                 <path fill="none" d="M0 0h24v24H0z" id="path817"/>
                 <path style="stroke-width:0.03859662" d="M 14.097656 2.8769531 C 13.919146 2.8769531 13.756208 2.9753385 13.671875 3.1328125 L 10.636719 8.796875 L 10.431641 9.1796875 L 9.90625 10.160156 L 8.3457031 7.203125 C 8.2829431 7.0843632 8.1742281 6.9982837 8.0488281 6.9628906 C 8.0069881 6.9510796 7.9627757 6.9454285 7.9179688 6.9453125 C 7.9119687 6.9453125 7.9063306 6.9450809 7.9003906 6.9453125 C 7.8954906 6.9454669 7.8896656 6.9469569 7.8847656 6.9472656 C 7.8803656 6.9475744 7.8754937 6.9468434 7.8710938 6.9472656 C 7.8644938 6.9478832 7.8580525 6.9483287 7.8515625 6.9492188 C 7.8457625 6.9499908 7.8397344 6.952125 7.8339844 6.953125 C 7.8291844 6.9539741 7.8251225 6.9540781 7.8203125 6.9550781 C 7.6812875 6.9834851 7.5609275 7.0728767 7.4921875 7.2011719 L 6.4335938 9.1757812 L 4.6542969 12.496094 C 4.6542969 12.496094 4.6523438 12.498047 4.6523438 12.498047 L 2.2226562 17.035156 C 2.1416763 17.186339 2.146295 17.36455 2.234375 17.511719 C 2.322495 17.658888 2.4769135 17.746094 2.6484375 17.746094 L 21.443359 17.746094 C 21.614304 17.746094 21.767238 17.66007 21.855469 17.513672 C 21.943779 17.367275 21.949001 17.188292 21.869141 17.037109 L 19.617188 12.775391 L 19.617188 12.773438 L 19.599609 12.742188 L 14.525391 3.1347656 C 14.441713 2.9764423 14.278659 2.8774934 14.099609 2.8769531 L 14.097656 2.8769531 z M 14.097656 3.5625 L 17.457031 9.9238281 L 16.054688 11.574219 L 13.619141 8.6992188 C 13.528711 8.5924991 13.395694 8.5311109 13.255859 8.5292969 C 13.253659 8.5292583 13.2521 8.5292969 13.25 8.5292969 C 13.11248 8.5292969 12.982407 8.5867475 12.890625 8.6894531 L 11.640625 10.087891 L 11.029297 9.2871094 L 11.117188 9.125 L 14.097656 3.5625 z M 7.9160156 7.6308594 L 11.326172 14.083984 L 10.503906 14.84375 L 9.75 14.095703 C 9.7397093 14.08549 9.7242272 14.088424 9.7128906 14.080078 L 7.8144531 12.175781 C 7.7207431 12.082841 7.5913704 12.031413 7.4589844 12.035156 C 7.3270224 12.039156 7.2011272 12.098732 7.1132812 12.197266 L 6.140625 13.287109 L 5.2753906 12.5625 L 7.9160156 7.6308594 z M 13.248047 9.15625 L 15.685547 12.033203 C 15.776517 12.140618 15.910058 12.203882 16.050781 12.205078 L 16.054688 12.205078 C 16.193905 12.205078 16.32607 12.143856 16.417969 12.039062 C 16.417969 12.039062 16.419922 12.037109 16.419922 12.037109 L 17.748047 10.474609 L 19.089844 13.011719 L 19.105469 13.042969 C 19.10593 13.043842 19.106953 13.044055 19.107422 13.044922 L 21.285156 17.167969 L 13.585938 17.167969 C 13.576837 17.123119 10.232422 10.775391 10.232422 10.775391 L 10.730469 9.8476562 L 11.25 10.53125 C 11.33773 10.646307 11.47069 10.715068 11.615234 10.720703 C 11.759354 10.726703 11.897765 10.666474 11.994141 10.558594 L 13.248047 9.15625 z M 7.4785156 12.65625 L 9.328125 14.511719 C 9.3384191 14.521932 9.3538949 14.518997 9.3652344 14.527344 L 10.160156 15.316406 C 10.254446 15.409926 10.376838 15.457031 10.5 15.457031 C 10.617218 15.457031 10.735223 15.415725 10.828125 15.330078 L 11.605469 14.613281 L 12.955078 17.167969 L 2.8066406 17.167969 L 4.9960938 13.082031 L 5.8398438 13.789062 C 5.9308537 13.865293 6.0409306 13.904297 6.1503906 13.904297 C 6.2831246 13.904297 6.4139306 13.84761 6.5097656 13.740234 L 7.4785156 12.65625 z " id="path835-8"/>
             </svg>`
-    }
+}
 ]
-export {layerListIcons}
+export { layerListIcons }

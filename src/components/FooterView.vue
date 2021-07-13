@@ -18,6 +18,6 @@ export default defineComponent({
 <style scoped>
 footer {
   color: white;
-  background-color: grey;
+  background-color: #005151;
 }
 </style>

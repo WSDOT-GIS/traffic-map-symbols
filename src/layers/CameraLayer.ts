@@ -5,6 +5,8 @@ import Symbol from "@/symbols/CameraSymbol";
 import Graphic from "@arcgis/core/Graphic";
 import MapView from "@arcgis/core/views/MapView";
 import Point from "@arcgis/core/geometry/Point";
+import LayerView from "@arcgis/core/views/layers/GeoJSONLayerView";
+
 // import { clusterSymbol } from "@/symbols/CameraSymbol";
 import { clusterConfig } from "@/utils/clusterUtil";
 import CameraInfo from "@/types/CameraInfo";
@@ -99,6 +101,7 @@ export const toggleCluster = (newScale: number, oldScale: number, maxScale: numb
 
 }
 
+// Query features...
 const outFields = ["CameraID", "CameraTitle", "ImageURL", "WSDOTSRID", "StateRouteMilepost",
     "CompassDirection", "Location", "CameraOwnerName", "CameraOwnerURL",
     "ImageWidth", "ImageHeight"];
@@ -150,7 +153,7 @@ export const getCameraInfosFromCluster = async (clusterGraphic: Graphic, mapView
         return features;
     }
 }
-
+// Get Info objects...
 const getCameraInfosByIds = async (ids: number[]): Promise<CameraInfo[]> => {
     const query = layer.createQuery();
     query.where = "CameraID IN (" + ids.join(",") + ")";
@@ -159,8 +162,7 @@ const getCameraInfosByIds = async (ids: number[]): Promise<CameraInfo[]> => {
     const infos = response.features.map(convert2Info);
     return infos;
 }
-
-
+// Convert esri graphic object to a simple custom object since esri object is not compatible with Vue...
 const convert2Info = (g: Graphic): CameraInfo => {
     const info: CameraInfo = {
         id: g.attributes.CameraID,
