@@ -282,7 +282,7 @@ export default defineComponent({
   width: 70%;
   padding: 3px 0 3px 3px;
   color: #fff;
-  background-color: #808080;
+  background-color: #33957f;
 }
 .popup-content {
   padding: 0 10px 10px 10px;

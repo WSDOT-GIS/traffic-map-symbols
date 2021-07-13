@@ -39,15 +39,15 @@ export default defineComponent({
     // MyLocationView,
   },
   setup() {
-    const headerText = "This is the header";
+    const headerText = "Place holder for the header";
     const alert = ref<Alert>({
       title: "Tsunami!",
       description: "description",
       x: 1,
       y: 1,
     });
-    const adText = "This is advertisement";
-    const footerText = "This is the footer";
+    const adText = "Place holder for the advertisement";
+    const footerText = "Place holder for the footer";
     const topRef = ref<HTMLDivElement>();
     const bottomRef = ref<HTMLDivElement>();
     const mapHeight = ref("500px");
