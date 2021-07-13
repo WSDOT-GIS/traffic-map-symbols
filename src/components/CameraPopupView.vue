@@ -21,15 +21,6 @@
           <pagination v-if="slidesCount > 1" />
         </template>
       </Carousel>
-      <!-- <div v-for="eachInfo in infos" :key="eachInfo.id">
-        <p>{{ eachInfo.title }}</p>
-        <img
-          class="camera-popup-img"
-          :src="eachInfo.imageURL"
-          :alt="eachInfo.id"
-          @load="onImageLoaded"
-        />
-      </div> -->
     </template>
   </PopupView>
 </template>
@@ -48,7 +39,7 @@ import {
 } from "@/layers/CameraLayer";
 
 import Point from "@arcgis/core/geometry/Point";
-import Graphic from "@arcgis/core/Graphic";
+// import Graphic from "@arcgis/core/Graphic";
 
 export default defineComponent({
   components: { PopupView, Carousel, Slide, Pagination, Navigation },
