@@ -3,40 +3,38 @@
     <HeaderView :text="headerText" />
     <AlertView :alert="alert" />
   </div>
-  <div id="map-container" :style="{ height: mapHeight }" class="w3-display-container">
-    <!-- <BasemapView /> -->
-    <!-- <CoordinatesView /> -->
-    <!-- <MyLocationView /> -->
+  <div
+    id="map-container"
+    :style="{ height: mapHeight }"
+    class="w3-display-container"
+  >
     <EsriMap />
   </div>
   <div id="app-bottom-container" ref="bottomRef">
     <AdView :text="adText" />
     <FooterView :text="footerText" />
   </div>
+  <SaveMapFormView />
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
 import EsriMap from "./components/EsriMap.vue";
-// import BasemapView from "./components/BasemapView.vue";
-// import CoordinatesView from "./components/CoordinatesView.vue";
 import HeaderView from "./components/HeaderView.vue";
 import AlertView from "./components/AlertView.vue";
 import AdView from "./components/AdView.vue";
 import FooterView from "./components/FooterView.vue";
 import Alert from "./types/AlertInfo";
-// import MyLocationView from "./components/MyLocationView.vue";
+import SaveMapFormView from "./components/SaveMapFormView.vue";
 export default defineComponent({
   name: "App",
   components: {
     EsriMap,
-    // BasemapView,
-    // CoordinatesView,
     HeaderView,
     AlertView,
     AdView,
     FooterView,
-    // MyLocationView,
+    SaveMapFormView,
   },
   setup() {
     const headerText = "Place holder for the header";
@@ -79,7 +77,6 @@ export default defineComponent({
 </script>
 
 <style>
-
 html,
 body,
 #app {

@@ -4,7 +4,6 @@
     class="w3-left-align"
     :style="{ display: mapFeaturesExpanded }"
   >
-    
     <div id="saved-map-list-title w3-medium">My saved maps</div>
     <ul id="saved-map-list-container" class="w3-ul">
       <li
@@ -33,8 +32,20 @@
         </span>
       </li>
     </ul>
-    
-    <form
+    <WsdotButtonView Caption="Save This Map" @click="showForm()" />
+    <ModalView :Visible="formVisible" OkCaption="Save" />
+
+    <!-- <div id="id01" class="w3-modal">
+    <div class="w3-modal-content">
+      <div class="w3-container">
+        <span onclick="document.getElementById('id01').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+        <p>Some text. Some text. Some text.</p>
+        <p>Some text. Some text. Some text.</p>
+      </div>
+    </div>
+  </div> -->
+
+    <!-- <form
       @submit.prevent="addItem"
       id="save-map-form"
       class="w3-display-container"
@@ -64,18 +75,25 @@
           />
         </svg>
       </button>
-    </form>
+      
+    </form> -->
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import { mapState } from "vuex";
+
 import SavedMapInfo from "@/types/SavedMapInfo";
 import { setCookie, getCookie } from "@/utils/cookieUtil";
 import { cloneProxyTarget } from "@/store";
-import { mapState } from "vuex";
+import WsdotButtonView from "@/components/WsdotButtonView.vue";
+import ModalView from "@/components/ModalView.vue";
+
 export default defineComponent({
+  components: { WsdotButtonView, ModalView },
   setup() {
+    const formVisible = ref(false);
     const cookieText = getCookie("saved-map-list");
     const mapList = ref<SavedMapInfo[]>([]);
     if (cookieText) {
@@ -85,7 +103,11 @@ export default defineComponent({
     mapList.value.forEach((each) => {
       each.selected = false;
     });
-    return { mapList };
+    const showForm = () => {
+      formVisible.value = true;
+      console.log("showForm: " + formVisible.value);
+    };
+    return { mapList, formVisible, showForm };
   },
   data() {
     return {

@@ -37,7 +37,7 @@ export const store = createStore<State>({
             },
             layerList: [],
             userLocation: null,
-            mapFeaturesExpanded: "block"
+            mapFeaturesExpanded: "block",
         }
     },
     getters: {
@@ -54,7 +54,7 @@ export const store = createStore<State>({
             }
         },
         toggleBasemap(state) {
-            const basemapInfo = toggleBasemapInfo(state.basemap);//Look at this with masao
+            const basemapInfo = toggleBasemapInfo(state.basemap);
             state.basemap = basemapInfo.name;
             webmap.basemap = basemapInfo.basemap;
         },
@@ -89,7 +89,7 @@ export const store = createStore<State>({
         },
         setMapFeaturesExpanded(state, payload) {
             state.mapFeaturesExpanded == "block" ? state.mapFeaturesExpanded = "none" : state.mapFeaturesExpanded = "block"
-        }
+        },
     },
 })
 // Clone the target of proxy (i.e. removing the reactivity)
