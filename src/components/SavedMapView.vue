@@ -21,7 +21,10 @@
           {{ item.title }}
         </a>
         <span
-          class="w3-button w3-transparent w3-display-right"
+          class="
+            remove-saved-map-button
+            w3-button w3-transparent w3-display-right
+          "
           @click="removeItem($event, item)"
         >
           &times;
@@ -120,123 +123,15 @@ export default defineComponent({
       removeItem,
     };
   },
-  // data() {
-  //   return {
-  //     newMapTitle: "",
-  //   };
-  // },
-  // computed: {
-  //   ...mapState(["mapFeaturesExpanded"]),
-  // },
-  // validations: {},
-  // methods: {
-  //   selectItem(event: Event, item: SavedMapInfo) {
-  //     // Removing the reactivity so the saved state is not altered by store state changes...
-  //     this.$store.commit("setCurrentExtent", cloneProxyTarget(item.extent));
-  //     this.$store.commit("setLayerList", cloneProxyTarget(item.layers));
-  //     console.log("SavedMapView selectItem setLayerList");
-  //     this.$store.commit("setBasemap", item.basemap);
-  //     this.mapList.forEach((each) => {
-  //       each.selected = false;
-  //     });
-  //     item.selected = true;
-  //   },
-
-  //   addItem(newTitle: string) {
-  //     this.mapList.forEach((each) => {
-  //       each.selected = false;
-  //     });
-  //     if (newTitle && newTitle.trim().length > 0) {
-  //       this.mapList.push({
-  //         title: newTitle.trim(),
-  //         // removing reactivity so the saved state is not tied to the store state...
-  //         extent: cloneProxyTarget(this.$store.state.currentExtent),
-  //         layers: cloneProxyTarget(this.$store.state.layerList),
-  //         basemap: this.$store.state.basemap,
-  //         selected: true,
-  //       });
-  //       const value = JSON.stringify(this.mapList);
-  //       setCookie("saved-map-list", value);
-  //       this.closeForm();
-  //     } else {
-  //       alert("Please enter the title for this map.");
-  //     }
-  //   },
-
-  //   removeItem(event: Event, item: SavedMapInfo) {
-  //     console.log(item.title);
-  //     const idx = this.mapList.findIndex((eachItem) => {
-  //       if (eachItem == item) {
-  //         return true;
-  //       }
-  //     });
-  //     this.mapList.splice(idx, 1);
-  //     const value = JSON.stringify(this.mapList);
-  //     setCookie("saved-map-list", value);
-  //   },
-  // },
 });
 </script>
 
 <style scoped>
-/* #savedMapWidget {
-  background-color: white;
-  text-align: left;
-  width: 100%;
+.remove-saved-map-button {
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
-#saved-map-list-title {
-  display: block;
-  padding: 0 5px;
-  font-size: medium;
-}
-
-.saved-map-item-container {
-  position: relative;
-}
-.saved-map-item {
-  display: inline-block;
-  text-decoration: none;
-  cursor: pointer;
-  font-size: small;
-  margin: 2px 5px;
-}
-
-.saved-map-item:hover {
-  color: red;
-}
-
-.saved-map-item-selected {
-  color: blue;
-}
-
-.saved-map-item-unselected {
-  color: #4a4a4a;
-}
-
-.saved-map-item-remove {
-  position: absolute;
-  right: 10%;
-  top: 30%;
-} */
-/* #save-map-form {
-  position: relative;
-  margin: 5px 5px;
-}
-#save-map-button {
-  display: inline-block;
-  outline: none;
-  border: none;
-  background-color: transparent;
-  cursor: pointer;
-  overflow: hidden;
-  position: absolute;
-}
-
-#new-map-title {
-  display: inline-block;
-  width: 100px;
-  margin-left: 3px;
-} */
 </style>
 
 
