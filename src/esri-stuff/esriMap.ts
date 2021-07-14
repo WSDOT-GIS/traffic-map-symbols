@@ -25,7 +25,11 @@ export const webmap = new WebMap({
 export const mapView = new MapView({
     container: "esri-map-view",
     map: webmap,
+    constraints: {
+        rotationEnabled: false
+    }
 });
+
 //{ "type": "point", "x": -13874849.374324558, "y": 6091725.406216802, "spatialReference": { "wkid": 4326 } }
 
 // mapView.on("click", (() => {
