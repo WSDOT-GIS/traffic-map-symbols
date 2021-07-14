@@ -34,39 +34,6 @@
       @ok-save-map-form="addItem($event)"
       @close-save-map-form="closeForm"
     />
-
-    <!-- <form
-      @submit.prevent="addItem"
-      id="save-map-form"
-      class="w3-display-container"
-    >
-      <input
-        class="w3-input w3-border"
-        title="Input Map Name"
-        type="text"
-        v-model="newMapTitle"
-        id="new-map-title"
-        placeholder="map view title"
-      />
-      <button
-        id="save-map-button"
-        class="w3-button w3-transparent w3-display-right"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 32 32"
-          class="svg-icon"
-          id="save-map-button-icon"
-        >
-          <path
-            d="M16.047.447c-8.615 0-15.6 6.982-15.6 15.6 0 8.615 6.984 15.599 15.6 15.599 8.617 0 15.6-6.984 15.6-15.599 0-8.617-6.982-15.6-15.6-15.6zm0 28.799c-7.279 0-13.199-5.92-13.199-13.199s5.92-13.2 13.199-13.2 13.199 5.921 13.199 13.2-5.92 13.199-13.199 13.199zM18 14V6h-4v8H6v4h8v8h4v-8h8v-4z"
-          />
-        </svg>
-      </button>
-      
-    </form> -->
   </div>
 </template>
 

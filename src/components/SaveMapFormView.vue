@@ -24,7 +24,7 @@
   </ModalView>
 </template>
 <script lang="ts">
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, toRefs, watch } from "vue";
 
 import ModalView from "@/components/ModalView.vue";
 
@@ -43,8 +43,6 @@ export default defineComponent({
       const title = newTitle.value.trim();
       if (title.length > 0) {
         context.emit("ok-save-map-form", title);
-        // Reset...
-        newTitle.value = "";
       } else {
         warningMsg.value = "Please enter the title for this map.";
       }
@@ -55,6 +53,14 @@ export default defineComponent({
     watch(newTitle, (newValue) => {
       if (warningMsg.value.length > 0 && newValue.length > 0) {
         warningMsg.value = "";
+      }
+    });
+    const visible = toRefs(props).Visible;
+    watch(visible, (newValue) => {
+      // Reset warning msg and input box when form is closed, so they won't show next time......
+      if (!newValue) {
+        warningMsg.value = "";
+        newTitle.value = "";
       }
     });
 
