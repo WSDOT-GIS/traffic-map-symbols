@@ -9,7 +9,7 @@
   >
     <template v-slot>
       <input
-        class="w3-input w3-border"
+        class="w3-input w3-border w3-round"
         title="Input Map Name"
         type="text"
         v-model="newTitle"
