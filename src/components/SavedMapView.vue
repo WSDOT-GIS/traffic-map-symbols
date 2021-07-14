@@ -1,9 +1,5 @@
 <template>
-  <div
-    id="savedMapWidget"
-    class="w3-left-align"
-    :style="{ display: mapFeaturesExpanded }"
-  >
+  <div id="savedMapWidget" class="w3-left-align">
     <div id="saved-map-list-title w3-medium">My saved maps</div>
     <ul id="saved-map-list-container" class="w3-ul">
       <li
@@ -32,18 +28,12 @@
         </span>
       </li>
     </ul>
-    <WsdotButtonView Caption="Save This Map" @click="showForm()" />
-    <ModalView :Visible="formVisible" OkCaption="Save" />
-
-    <!-- <div id="id01" class="w3-modal">
-    <div class="w3-modal-content">
-      <div class="w3-container">
-        <span onclick="document.getElementById('id01').style.display='none'" class="w3-button w3-display-topright">&times;</span>
-        <p>Some text. Some text. Some text.</p>
-        <p>Some text. Some text. Some text.</p>
-      </div>
-    </div>
-  </div> -->
+    <WsdotButtonView Caption="Save This Map" @click="showForm" />
+    <SaveMapFormView
+      :Visible="formVisible"
+      @ok-save-map-form="addItem($event)"
+      @close-save-map-form="closeForm"
+    />
 
     <!-- <form
       @submit.prevent="addItem"
@@ -82,18 +72,19 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { mapState } from "vuex";
 
 import SavedMapInfo from "@/types/SavedMapInfo";
 import { setCookie, getCookie } from "@/utils/cookieUtil";
-import { cloneProxyTarget } from "@/store";
+import { cloneProxyTarget, useStore } from "@/store";
 import WsdotButtonView from "@/components/WsdotButtonView.vue";
-import ModalView from "@/components/ModalView.vue";
+import SaveMapFormView from "@/components/SaveMapFormView.vue";
 
 export default defineComponent({
-  components: { WsdotButtonView, ModalView },
+  components: { WsdotButtonView, SaveMapFormView },
   setup() {
+    const store = useStore();
     const formVisible = ref(false);
+    const newMapTitle = ref("");
     const cookieText = getCookie("saved-map-list");
     const mapList = ref<SavedMapInfo[]>([]);
     if (cookieText) {
@@ -107,61 +98,116 @@ export default defineComponent({
       formVisible.value = true;
       console.log("showForm: " + formVisible.value);
     };
-    return { mapList, formVisible, showForm };
-  },
-  data() {
-    return {
-      newMapTitle: "",
+    const closeForm = () => {
+      formVisible.value = false;
     };
-  },
-  computed: {
-    ...mapState(["mapFeaturesExpanded"]),
-  },
-  validations: {},
-  methods: {
-    selectItem(event: Event, item: SavedMapInfo) {
+    const selectItem = (event: Event, item: SavedMapInfo) => {
       // Removing the reactivity so the saved state is not altered by store state changes...
-      this.$store.commit("setCurrentExtent", cloneProxyTarget(item.extent));
-      this.$store.commit("setLayerList", cloneProxyTarget(item.layers));
+      store.commit("setCurrentExtent", cloneProxyTarget(item.extent));
+      store.commit("setLayerList", cloneProxyTarget(item.layers));
       console.log("SavedMapView selectItem setLayerList");
-      this.$store.commit("setBasemap", item.basemap);
-      this.mapList.forEach((each) => {
+      store.commit("setBasemap", item.basemap);
+      mapList.value.forEach((each) => {
         each.selected = false;
       });
       item.selected = true;
-    },
+    };
 
-    addItem() {
-      this.mapList.forEach((each) => {
+    const addItem = (newTitle: string) => {
+      mapList.value.forEach((each) => {
         each.selected = false;
       });
-      if (this.newMapTitle) {
-        this.mapList.push({
-          title: this.newMapTitle,
-          // removing reactivity so the saved state is not tied to the store state...
-          extent: cloneProxyTarget(this.$store.state.currentExtent),
-          layers: cloneProxyTarget(this.$store.state.layerList),
-          basemap: this.$store.state.basemap,
-          selected: true,
-        });
-        const value = JSON.stringify(this.mapList);
-        setCookie("saved-map-list", value);
-        this.newMapTitle = "";
-      }
-    },
+      mapList.value.push({
+        title: newTitle.trim(),
+        // removing reactivity so the saved state is not tied to the store state...
+        extent: cloneProxyTarget(store.state.currentExtent),
+        layers: cloneProxyTarget(store.state.layerList),
+        basemap: store.state.basemap,
+        selected: true,
+      });
+      const value = JSON.stringify(mapList.value);
+      setCookie("saved-map-list", value);
+      closeForm();
+    };
 
-    removeItem(event: Event, item: SavedMapInfo) {
+    const removeItem = (event: Event, item: SavedMapInfo) => {
       console.log(item.title);
-      const idx = this.mapList.findIndex((eachItem) => {
+      const idx = mapList.value.findIndex((eachItem) => {
         if (eachItem == item) {
           return true;
         }
       });
-      this.mapList.splice(idx, 1);
-      const value = JSON.stringify(this.mapList);
+      mapList.value.splice(idx, 1);
+      const value = JSON.stringify(mapList.value);
       setCookie("saved-map-list", value);
-    },
+    };
+
+    return {
+      mapList,
+      formVisible,
+      newMapTitle,
+      showForm,
+      closeForm,
+      selectItem,
+      addItem,
+      removeItem,
+    };
   },
+  // data() {
+  //   return {
+  //     newMapTitle: "",
+  //   };
+  // },
+  // computed: {
+  //   ...mapState(["mapFeaturesExpanded"]),
+  // },
+  // validations: {},
+  // methods: {
+  //   selectItem(event: Event, item: SavedMapInfo) {
+  //     // Removing the reactivity so the saved state is not altered by store state changes...
+  //     this.$store.commit("setCurrentExtent", cloneProxyTarget(item.extent));
+  //     this.$store.commit("setLayerList", cloneProxyTarget(item.layers));
+  //     console.log("SavedMapView selectItem setLayerList");
+  //     this.$store.commit("setBasemap", item.basemap);
+  //     this.mapList.forEach((each) => {
+  //       each.selected = false;
+  //     });
+  //     item.selected = true;
+  //   },
+
+  //   addItem(newTitle: string) {
+  //     this.mapList.forEach((each) => {
+  //       each.selected = false;
+  //     });
+  //     if (newTitle && newTitle.trim().length > 0) {
+  //       this.mapList.push({
+  //         title: newTitle.trim(),
+  //         // removing reactivity so the saved state is not tied to the store state...
+  //         extent: cloneProxyTarget(this.$store.state.currentExtent),
+  //         layers: cloneProxyTarget(this.$store.state.layerList),
+  //         basemap: this.$store.state.basemap,
+  //         selected: true,
+  //       });
+  //       const value = JSON.stringify(this.mapList);
+  //       setCookie("saved-map-list", value);
+  //       this.closeForm();
+  //     } else {
+  //       alert("Please enter the title for this map.");
+  //     }
+  //   },
+
+  //   removeItem(event: Event, item: SavedMapInfo) {
+  //     console.log(item.title);
+  //     const idx = this.mapList.findIndex((eachItem) => {
+  //       if (eachItem == item) {
+  //         return true;
+  //       }
+  //     });
+  //     this.mapList.splice(idx, 1);
+  //     const value = JSON.stringify(this.mapList);
+  //     setCookie("saved-map-list", value);
+  //   },
+  // },
 });
 </script>
 

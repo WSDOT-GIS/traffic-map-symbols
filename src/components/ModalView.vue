@@ -3,19 +3,28 @@
     <div class="w3-modal-content">
       <div class="w3-card">
         <header class="w3-container w3-display-container">
-          Header
+          {{ Title }}
           <span
-            onclick="document.getElementById('id01').style.display='none'"
-            class="w3-button w3-transparent w3-display-right"
+            class="close-button w3-button w3-transparent w3-display-right"
+            @click="onClose"
             >&times;</span
           >
         </header>
-        <div class="w3-container">
-          <p>Some text. Some text. Some text.</p>
-          <p>Some text. Some text. Some text.</p>
+        <div class="w3-panel">
+          <slot></slot>
+          <div
+            class="w3-panel w3-pale-red w3-text-red"
+            v-if="WarningMsg.length > 0"
+          >
+            {{ WarningMsg }}
+          </div>
           <div>
-            <WsdotButtonView :Caption="OkCaption" />
-            <WsdotButtonView Caption="Cancel" :IsWhite="true" />
+            <WsdotButtonView :Caption="OkCaption" @click="onOk" />
+            <WsdotButtonView
+              Caption="Cancel"
+              :IsWhite="true"
+              @click="onClose"
+            />
           </div>
         </div>
       </div>
@@ -29,6 +38,10 @@ import WsdotButtonView from "@/components/WsdotButtonView.vue";
 export default defineComponent({
   components: { WsdotButtonView },
   props: {
+    Title: {
+      type: String,
+      required: true,
+    },
     Visible: {
       type: Boolean,
       required: true,
@@ -37,14 +50,24 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    WarningMsg: {
+      type: String,
+      default: "",
+    },
   },
-  setup(props) {
+  setup(props, context) {
     const visible = toRefs(props).Visible;
     const displayState = ref("none");
     watch(visible, (newValue) => {
       displayState.value = newValue ? "block" : "none";
     });
-    return { displayState };
+    const onClose = () => {
+      context.emit("close-modal");
+    };
+    const onOk = () => {
+      context.emit("ok-modal");
+    };
+    return { displayState, onClose, onOk };
   },
 });
 </script>
@@ -58,5 +81,10 @@ header {
 }
 button {
   float: left;
+}
+.close-button {
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 </style>

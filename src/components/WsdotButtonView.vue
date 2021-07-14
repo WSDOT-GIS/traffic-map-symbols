@@ -20,7 +20,7 @@ export default defineComponent({
     },
     IsWhite: {
       type: Boolean,
-      required: false,
+      default: false
     },
     Width: {
       type: String,

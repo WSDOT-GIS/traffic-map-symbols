@@ -14,7 +14,6 @@
     <AdView :text="adText" />
     <FooterView :text="footerText" />
   </div>
-  <SaveMapFormView />
 </template>
 
 <script lang="ts">
@@ -25,7 +24,6 @@ import AlertView from "./components/AlertView.vue";
 import AdView from "./components/AdView.vue";
 import FooterView from "./components/FooterView.vue";
 import Alert from "./types/AlertInfo";
-import SaveMapFormView from "./components/SaveMapFormView.vue";
 export default defineComponent({
   name: "App",
   components: {
@@ -34,24 +32,24 @@ export default defineComponent({
     AlertView,
     AdView,
     FooterView,
-    SaveMapFormView,
   },
   setup() {
-    const headerText = "Place holder for the header";
+    const headerText = "Placeholder for the header";
     const alert = ref<Alert>({
       title: "Tsunami!",
       description: "description",
       x: 1,
       y: 1,
     });
-    const adText = "Place holder for the advertisement";
-    const footerText = "Place holder for the footer";
+    const adText = "Placeholder for the advertisement";
+    const footerText = "Placeholder for the footer";
     const topRef = ref<HTMLDivElement>();
     const bottomRef = ref<HTMLDivElement>();
     const mapHeight = ref("500px");
     onMounted(() => {
       resizeMapContainer();
     });
+    // Make map fill the all remaining screen...
     const resizeMapContainer = () => {
       console.log("resizeMapContainer");
       if (topRef.value && bottomRef.value) {
