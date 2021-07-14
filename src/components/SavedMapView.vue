@@ -5,16 +5,13 @@
       <li
         v-for="(item, index) in mapList"
         :key="index"
-        class="
-          saved-map-item-container
-          w3-display-container w3-hover-shadow w3-padding-small w3-border-0
-        "
+        class="w3-display-container w3-border-0 w3-padding-small"
       >
         <a
-          class="saved-map-item"
+          class=""
           :class="{
-            'saved-map-item-selected w3-text-blue': item.selected,
-            'saved-map-item-unselected w3-text-dark-grey': !item.selected,
+            'w3-text-blue': item.selected,
+            'w3-text-dark-grey': !item.selected,
           }"
           @click="selectItem($event, item)"
         >
@@ -48,6 +45,8 @@ import { setCookie, getCookie } from "@/utils/cookieUtil";
 import { cloneProxyTarget, useStore } from "@/store";
 import WsdotButtonView from "@/components/WsdotButtonView.vue";
 import SaveMapFormView from "@/components/SaveMapFormView.vue";
+import LayerInfo from "@/types/LayerInfo";
+import { validateBasemapName } from "@/layers/Basemaps";
 
 export default defineComponent({
   components: { WsdotButtonView, SaveMapFormView },
@@ -74,9 +73,13 @@ export default defineComponent({
     const selectItem = (event: Event, item: SavedMapInfo) => {
       // Removing the reactivity so the saved state is not altered by store state changes...
       store.commit("setCurrentExtent", cloneProxyTarget(item.extent));
-      store.commit("setLayerList", cloneProxyTarget(item.layers));
-      console.log("SavedMapView selectItem setLayerList");
-      store.commit("setBasemap", item.basemap);
+      const layerList: LayerInfo[] = cloneProxyTarget(item.layers);
+      if (layerList.length === store.state.layerList.length) {
+        store.commit("setLayerList", cloneProxyTarget(item.layers));
+      }
+      if (validateBasemapName(item.basemap)) {
+        store.commit("setBasemap", item.basemap);
+      }
       mapList.value.forEach((each) => {
         each.selected = false;
       });
@@ -127,6 +130,12 @@ export default defineComponent({
 </script>
 
 <style scoped>
+a {
+  cursor: pointer;
+}
+.saved-map-item {
+  width: 100%;
+}
 .remove-saved-map-button {
   height: 100%;
   display: flex;
