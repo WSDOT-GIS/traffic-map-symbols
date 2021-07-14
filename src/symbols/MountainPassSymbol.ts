@@ -12,7 +12,7 @@ const symbol = new CIMSymbol({
                 "enable": true,
                 "anchorPointUnits": "Relative",
                 "dominantSizeAxis3D": "Y",
-                "size": 15,
+                "size": 20,
                 "billboardMode3D": "FaceNearPlane",
                 "frame": {
                   "xmin": 0,
@@ -232,9 +232,9 @@ const symbol = new CIMSymbol({
                           "type": "CIMSolidFill",
                           "enable": true,
                           "color": [
-                            153,
-                            153,
-                            153,
+                            102,
+                            47,
+                            24,
                             255
                           ]
                         }
@@ -312,9 +312,9 @@ const symbol = new CIMSymbol({
                           "type": "CIMSolidFill",
                           "enable": true,
                           "color": [
-                            179,
-                            179,
-                            179,
+                            158,
+                            102,
+                            62,
                             255
                           ]
                         }

@@ -79,6 +79,9 @@ export default defineComponent({
                 results ? show(pt, results as ParkRideInfo) : close();
             })
         }
+         else {
+          close();
+        }
       });
     });
     return {

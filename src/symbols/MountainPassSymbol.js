@@ -13,7 +13,7 @@ define(["require", "exports", "tslib", "@arcgis/core/symbols/CIMSymbol"], functi
                         "enable": true,
                         "anchorPointUnits": "Relative",
                         "dominantSizeAxis3D": "Y",
-                        "size": 15,
+                        "size": 20,
                         "billboardMode3D": "FaceNearPlane",
                         "frame": {
                             "xmin": 0,
@@ -233,9 +233,9 @@ define(["require", "exports", "tslib", "@arcgis/core/symbols/CIMSymbol"], functi
                                             "type": "CIMSolidFill",
                                             "enable": true,
                                             "color": [
-                                                153,
-                                                153,
-                                                153,
+                                                102,
+                                                47,
+                                                24,
                                                 255
                                             ]
                                         }
@@ -313,9 +313,9 @@ define(["require", "exports", "tslib", "@arcgis/core/symbols/CIMSymbol"], functi
                                             "type": "CIMSolidFill",
                                             "enable": true,
                                             "color": [
-                                                179,
-                                                179,
-                                                179,
+                                                158,
+                                                102,
+                                                62,
                                                 255
                                             ]
                                         }

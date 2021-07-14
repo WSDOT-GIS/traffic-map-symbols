@@ -32,10 +32,9 @@ import { defineComponent, ref } from "vue";
 import PopupView from "./PopupView.vue";
 import { mapView } from "@/esri-stuff/esriMap";
 import MountainPassesLayer from "@/layers/MountainPassesLayer";
-import {getMountainPassesInfoById} from "@/layers/MountainPassesLayer";
 import Point from "@arcgis/core/geometry/Point";
 import MountainPassesInfo from "@/types/MountainPassesInfo";
-
+import {getGraphicsInfoById} from "@/utils/getGraphicsInfoByID"
 export default defineComponent({
   components: { PopupView },
   setup() {
@@ -66,15 +65,17 @@ export default defineComponent({
       const opts = {
         include: [MountainPassesLayer],
       };
-      mapView.hitTest(event, opts).then((response) => {
+       mapView.hitTest(event, opts).then((response) => {
        if (response.results.length) {
-            // Show custom popup...
-            const g = response.results[0].graphic;
-            const pt = g.geometry as Point;
-            const MountainPassId = g.getObjectId();
-            getMountainPassesInfoById(MountainPassId).then((results) => {
-                results ? show(pt, results) : close();
-            });
+            const pt = response.results[0].mapPoint as Point;
+            getGraphicsInfoById(response.results[0].graphic, "MountainPassId", MountainPassesLayer).then((results)=>{
+                console.log(results)
+                console.log(pt)
+                results ? show(pt, results as MountainPassesInfo) : close();
+            })
+        }
+         else {
+          close();
         }
       });
     });

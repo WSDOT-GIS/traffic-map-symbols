@@ -3,6 +3,11 @@
     <template v-slot:title>
       Weather Station{{ infos.length > 1 ? " (" + infos.length + ")" : "" }}
     </template>
+    <template v-slot:subtitle>
+        <label class="popup-subtitle">
+          {{infos["WeatherStationDescription"]}}
+        </label>
+    </template>
     <template v-slot:default>
         <table>
             <tr><td class="popupKey">Id</td><td class="popupValue">{{infos["WeatherStationId"]}}</td></tr>
@@ -79,6 +84,9 @@ export default defineComponent({
             getGraphicsInfoById(response.results[0].graphic, "WeatherStationId", WeatherStationsLayer).then((results)=>{
                 results ? show(pt, results as WeatherStationInfo) : close();
             })
+        }
+         else {
+          close();
         }
       });
     });

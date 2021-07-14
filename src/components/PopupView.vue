@@ -16,6 +16,9 @@
       </div>
       <button class="popup-close-button" @click="close">x</button>
     </div>
+    <div class="popup-subtitle">
+      <slot name="subtitle"></slot>
+    </div>
     <div class="popup-content">
       <slot></slot>
     </div>
@@ -279,7 +282,7 @@ export default defineComponent({
 }
 .popup-title {
   left: 0;
-  width: 70%;
+  width: 50%;
   padding: 3px 0 3px 3px;
   color: #fff;
   background-color: #33957f;
@@ -287,7 +290,10 @@ export default defineComponent({
 .popup-content {
   padding: 0 10px 10px 10px;
 }
-
+.popup-subtitle{
+  font-size: 15px;
+  font-weight: bold;
+}
 .popup-close-button {
   position: absolute;
   top: 0;

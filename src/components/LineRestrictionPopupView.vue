@@ -100,6 +100,9 @@ export default defineComponent({
                 results ? show(pt, results as RestrictionInfo) : close();
             })
         }
+         else {
+          close();
+        }
       });
     });
     return {
