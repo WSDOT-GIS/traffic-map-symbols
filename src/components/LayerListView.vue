@@ -152,7 +152,7 @@ export default defineComponent({
 #layerListWidget {
   background-color: white;
   box-shadow: 1pt solid grey;
-  width: 150px;
+  width: 100%;
 }
 #slowLegendCell {
   background-color: firebrick;
@@ -180,7 +180,7 @@ export default defineComponent({
   width: 95%;
 }
 .mapFeatureTable {
-  width: 150px;
+  width: 100%;
 }
 .trafficLegendTable {
   margin: auto;
@@ -199,6 +199,7 @@ export default defineComponent({
   background-color: white;
   border: none;
   box-shadow: none;
+  font-size: small;
 }
 .mapFeatureCell {
   padding: 2px 2px 2px 0px;

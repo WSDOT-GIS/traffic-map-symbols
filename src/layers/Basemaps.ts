@@ -54,3 +54,10 @@ export const toggleBasemapInfo = (currentName: string): BasemapInfo => {
         return basemaps[0];
     }
 }
+// Make sure the base map name is valid...
+export const validateBasemapName = (name: string): boolean => {
+    const result = basemaps.filter((item) => {
+        return item.name === name;
+    })
+    return result.length > 0;
+}

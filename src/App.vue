@@ -3,7 +3,11 @@
     <HeaderView :text="headerText" />
     <AlertView :alert="alert" />
   </div>
-  <div id="map-container" :style="{ height: mapHeight }" class="w3-display-container">
+  <div
+    id="map-container"
+    :style="{ height: mapHeight }"
+    class="w3-display-container"
+  >
     <EsriMap />
   </div>
   <div id="app-bottom-container" ref="bottomRef">
@@ -15,42 +19,37 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
 import EsriMap from "./components/EsriMap.vue";
-// import BasemapView from "./components/BasemapView.vue";
-// import CoordinatesView from "./components/CoordinatesView.vue";
 import HeaderView from "./components/HeaderView.vue";
 import AlertView from "./components/AlertView.vue";
 import AdView from "./components/AdView.vue";
 import FooterView from "./components/FooterView.vue";
 import Alert from "./types/AlertInfo";
-// import MyLocationView from "./components/MyLocationView.vue";
 export default defineComponent({
   name: "App",
   components: {
     EsriMap,
-    // BasemapView,
-    // CoordinatesView,
     HeaderView,
     AlertView,
     AdView,
     FooterView,
-    // MyLocationView,
   },
   setup() {
-    const headerText = "Place holder for the header";
+    const headerText = "Placeholder for the header";
     const alert = ref<Alert>({
       title: "Tsunami!",
       description: "description",
       x: 1,
       y: 1,
     });
-    const adText = "Place holder for the advertisement";
-    const footerText = "Place holder for the footer";
+    const adText = "Placeholder for the advertisement";
+    const footerText = "Placeholder for the footer";
     const topRef = ref<HTMLDivElement>();
     const bottomRef = ref<HTMLDivElement>();
     const mapHeight = ref("500px");
     onMounted(() => {
       resizeMapContainer();
     });
+    // Make map fill the all remaining screen...
     const resizeMapContainer = () => {
       console.log("resizeMapContainer");
       if (topRef.value && bottomRef.value) {
@@ -76,7 +75,6 @@ export default defineComponent({
 </script>
 
 <style>
-
 html,
 body,
 #app {
