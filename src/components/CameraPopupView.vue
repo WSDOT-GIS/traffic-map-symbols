@@ -7,7 +7,7 @@
       <Carousel :items-to-show="1" :wrapAround="true">
         <Slide v-for="eachInfo in infos" :key="eachInfo.id">
           <div class="carousel-item-container">
-            <h3 class="camera-popup-img-title">{{ eachInfo.title }}</h3>
+            <h4 class="camera-popup-img-title">{{ eachInfo.title }}</h4>
             <img
               class="camera-popup-img"
               :src="eachInfo.imageURL"
@@ -152,6 +152,7 @@ export default defineComponent({
 svg.carousel__icon {
   width: 2em;
   height: 2em;
+  filter: drop-shadow(3px 3px 2px rgb(0 0 0 / 1));
 }
 .carousel__pagination-button {
   width: 10px;
