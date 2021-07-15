@@ -209,9 +209,9 @@ export default defineComponent({
 }
 
 #map-bottom-right-container {
-  display: flex;
-  width: 50%;
-  height:50%;
+  display: inline-flex;
+  margin: 16px
+
 }
 
 .map-bottom-right-container-row{
@@ -228,7 +228,6 @@ export default defineComponent({
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
-  padding: 0px 5px 5px 0px;
 }
 .esri-zoom {
   display: none;
