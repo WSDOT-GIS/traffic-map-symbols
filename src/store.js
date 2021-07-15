@@ -19,7 +19,7 @@ define(["require", "exports", "tslib", "vuex", "@arcgis/core/geometry/Extent", "
                 },
                 layerList: [],
                 userLocation: null,
-                mapFeaturesExpanded: "block"
+                mapFeaturesExpanded: "block",
             };
         },
         getters: {
@@ -36,7 +36,7 @@ define(["require", "exports", "tslib", "vuex", "@arcgis/core/geometry/Extent", "
                 }
             },
             toggleBasemap: function (state) {
-                var basemapInfo = Basemaps_1.toggleBasemapInfo(state.basemap); //Look at this with masao
+                var basemapInfo = Basemaps_1.toggleBasemapInfo(state.basemap);
                 state.basemap = basemapInfo.name;
                 esriMap_1.webmap.basemap = basemapInfo.basemap;
             },
@@ -72,7 +72,7 @@ define(["require", "exports", "tslib", "vuex", "@arcgis/core/geometry/Extent", "
             },
             setMapFeaturesExpanded: function (state, payload) {
                 state.mapFeaturesExpanded == "block" ? state.mapFeaturesExpanded = "none" : state.mapFeaturesExpanded = "block";
-            }
+            },
         },
     });
     // Clone the target of proxy (i.e. removing the reactivity)

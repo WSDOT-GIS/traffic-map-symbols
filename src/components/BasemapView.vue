@@ -1,6 +1,6 @@
 <template>
   <div id="basemap-widget-container">
-    <MapButtonView @click="onClick">
+    <MapButtonView @click="onClick" Height="100px" Width="150px">
       <template v-slot >
         <div class="container">
           <img :src="imgSrc" id="iconImage"/>
@@ -60,8 +60,8 @@ export default defineComponent({
  <style scoped>
 /*Defines the style of the basemap picker*/
 #iconImage{
-  width:165.5px;
-  height:108px
+  width:1250x;
+  height:100px
   }
 #iconLabelWhite{
   color: white;
