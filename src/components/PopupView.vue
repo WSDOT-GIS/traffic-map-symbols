@@ -48,10 +48,6 @@ export default defineComponent({
       type: String,
       required: false,
     },
-    // LayerIndex: {
-    //   type: Number,
-    //   requred: true
-    // }
   },
   setup(props, context) {
     // The DOM only exists while the visibility is true. Get it in onUpdate().
@@ -118,7 +114,7 @@ export default defineComponent({
     });
     // Adjust position after the container DIV is available...
     onUpdated(() => {
-      console.log("onUpdated************");
+      // console.log("***********onUpdated");
       adjustPositionSize();
     });
 
@@ -141,8 +137,8 @@ export default defineComponent({
     // Convert map coordinates to screen coordinates and calculate the popup position...
     const setScreenXY = () => {
       if (mapX.value < 0 && mapY.value > 0) {
-        console.log(mapX.value)
-        console.log(mapY.value)
+        // console.log(mapX.value);
+        // console.log(mapY.value);
         const screenXY = toScreenXY(mapX.value, mapY.value);
         screenX.value = screenXY.x;
         screenY.value = screenXY.y;
@@ -211,14 +207,16 @@ export default defineComponent({
     // Make sure popup fits inside of Map View...
     const adjustPositionSize = () => {
       if (!containerRef.value) {
-        console.log("Container is null");
+        // console.log("Container is null");
         return;
       }
       const h = containerRef.value.offsetHeight;
       const w = containerRef.value.offsetWidth;
-      console.log("h:" + h + ", w:" + w);
       // Adjust vertical position to make sure it fits in the map view.
-      maxHeight.value = mapView.height;
+      if (maxHeight.value !== mapView.height) {
+        // console.log("Set maxHeight = " + mapView.height);
+        maxHeight.value = mapView.height;
+      }
       let y: number;
       if (maxHeight.value < screenY.value + h) {
         const h2 = h > mapView.height ? mapView.height : h;
@@ -226,7 +224,11 @@ export default defineComponent({
       } else {
         y = screenY.value;
       }
-      screenY_adjusted.value = y >= 0 ? y : -1;
+      const newScreenY = y >= 0 ? y : -1;
+      if (screenY_adjusted.value !== newScreenY) {
+        // console.log("Set screenY_adjusted = " + newScreenY);
+        screenY_adjusted.value = newScreenY;
+      }
       // Adjust horizontal position.
       let x: number;
       if (mapView.width < screenX.value) {
@@ -237,16 +239,19 @@ export default defineComponent({
       } else {
         x = screenX.value + 15; // Offset 15 pixels to the right so the selected feature can be seen clearly
       }
-      screenX_adjusted.value = x >= 0 ? x : -1;
-
-      console.log(
-        "****Popup top: " +
-          screenY_adjusted.value +
-          ", left: " +
-          screenX_adjusted.value +
-          ", maxHeight: " +
-          maxHeight.value
-      );
+      const newScreenX = x >= 0 ? x : -1;
+      if (screenX_adjusted.value !== newScreenX) {
+        // console.log("Set screenX_adjusted = " + newScreenX);
+        screenX_adjusted.value = newScreenX;
+      }
+      // console.log(
+      //   "****Popup top: " +
+      //     screenY_adjusted.value +
+      //     ", left: " +
+      //     screenX_adjusted.value +
+      //     ", maxHeight: " +
+      //     maxHeight.value
+      // );
     };
     return {
       containerRef,
@@ -264,14 +269,8 @@ export default defineComponent({
 
 <style scoped>
 .popup-container {
-  /* position: absolute;
-  margin-top: 0;
-  margin-left: 0; */
-  z-index: 9;
+  z-index: 1;
   background-color: #fff;
-  /* border: 1px solid #808080;
-  padding: 0; */
-  /* width: 200px; */
   overflow-y: auto;
 }
 .popup-header {
@@ -290,7 +289,7 @@ export default defineComponent({
 .popup-content {
   padding: 0 10px 10px 10px;
 }
-.popup-subtitle{
+.popup-subtitle {
   font-size: 15px;
   font-weight: bold;
 }

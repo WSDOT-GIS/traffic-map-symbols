@@ -36,5 +36,6 @@ button {
   justify-content: center;
   align-items: center;
   margin: 2px;
+  z-index: 9;
 }
 </style>

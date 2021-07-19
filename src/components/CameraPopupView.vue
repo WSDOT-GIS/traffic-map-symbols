@@ -39,7 +39,6 @@ import {
 } from "@/layers/CameraLayer";
 
 import Point from "@arcgis/core/geometry/Point";
-// import Graphic from "@arcgis/core/Graphic";
 
 export default defineComponent({
   components: { PopupView, Carousel, Slide, Pagination, Navigation },
@@ -54,9 +53,6 @@ export default defineComponent({
       mapX.value = pt.x;
       mapY.value = pt.y;
       infos.value = cameraInfos;
-      // mapView.whenLayerView(CameraLayer).then((layerView) => {
-      //   layerView.highlight(g);
-      // })
     };
     // Setting XY to 0 closes the popup...
     const close = () => {
