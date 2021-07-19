@@ -25,7 +25,7 @@
   </PopupView>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, nextTick, ref } from "vue";
 import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
 
@@ -50,12 +50,26 @@ export default defineComponent({
     const infos = ref<CameraInfo[]>([]);
 
     const show = (pt: Point, cameraInfos: CameraInfo[]) => {
-      mapX.value = pt.x;
-      mapY.value = pt.y;
-      infos.value = cameraInfos;
+      const setVal = () => {
+        mapX.value = pt.x;
+        mapY.value = pt.y;
+        infos.value = cameraInfos;
+      };
+      if (mapX.value !== 0 || mapY.value !== 0 || infos.value.length > 0) {
+        // Clean up the previous data...
+        close();
+        // Wait for the next update. Without doing this, scrolling won't work correctly.
+        nextTick(() => {
+          // console.log("nextTick callback...");
+          setVal();
+        });
+      } else {
+        setVal();
+      }
     };
     // Setting XY to 0 closes the popup...
     const close = () => {
+      console.log("close CameraPopup");
       mapX.value = 0;
       mapY.value = 0;
       infos.value = [];
@@ -86,6 +100,7 @@ export default defineComponent({
                   // Zoom-in more...
                   const zoomResult = tryZoomToPoint(g.geometry as Point);
                   if (!zoomResult) {
+                    // Cannot zoom in any more, so show everything in cluster...
                     getCameraInfosFromCluster(g, mapView).then((results) => {
                       results ? show(pt, results) : close();
                     });
@@ -95,7 +110,7 @@ export default defineComponent({
             } else {
               // Too many in a cluster, so click to zoom-in...
               close();
-              infos.value = [];
+              // infos.value = [];
               tryZoomToPoint(g.geometry as Point);
             }
           } else {
@@ -136,7 +151,8 @@ export default defineComponent({
 }
 </style>
 <style>
-.carousel__prev, .carousel__next {
+.carousel__prev,
+.carousel__next {
   background-color: transparent !important;
 }
 .carousel__prev {
@@ -159,7 +175,7 @@ svg.carousel__icon {
   margin: 5px;
 }
 :root {
-    --carousel-color-primary: #007b5f;
-    --carousel-color-secondary:#97dccc;
+  --carousel-color-primary: #007b5f;
+  --carousel-color-secondary: #97dccc;
 }
 </style>

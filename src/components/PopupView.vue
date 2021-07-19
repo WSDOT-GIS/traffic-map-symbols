@@ -14,7 +14,12 @@
       <div class="popup-title">
         <slot name="title"></slot>
       </div>
-      <button class="popup-close-button" @click="close">x</button>
+      <button
+        class="popup-close-button w3-button w3-padding-small"
+        @click="close"
+      >
+        x
+      </button>
     </div>
     <div class="popup-subtitle">
       <slot name="subtitle"></slot>
