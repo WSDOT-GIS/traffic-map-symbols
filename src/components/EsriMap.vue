@@ -1,7 +1,10 @@
 <template>
   <div id="esri-map-view"></div>
-  
-  <div class="w3-display-bottomleft w3-container">
+
+  <div
+    id="map-bottom-left-container"
+    class="w3-display-bottomleft w3-container"
+  >
     <CoordinatesView />
   </div>
   <div id="map-bottom-right-container" class="w3-display-bottomright">
@@ -23,11 +26,11 @@
     @clicked="zoomMetroEventHandler"
   ></ZoomPopupView>
   <CameraPopupView />
-  <ParkRidePopupView/>
-  <PointRestrictionPopupView/>
-  <LineRestrictionPopupView/>
-  <MountainPassesPopupView/>
-  <WeatherStationsPopupView/>
+  <ParkRidePopupView />
+  <PointRestrictionPopupView />
+  <LineRestrictionPopupView />
+  <MountainPassesPopupView />
+  <WeatherStationsPopupView />
   <LeftPaneView />
 </template>
 
@@ -53,7 +56,7 @@ import ParkRidePopupView from "@/components/ParkAndRidePopupView.vue";
 import PointRestrictionPopupView from "@/components/PointRestrictionPopupView.vue";
 import LineRestrictionPopupView from "@/components/LineRestrictionPopupView.vue";
 import MountainPassesPopupView from "@/components/MountainPassesPopupView.vue";
-import WeatherStationsPopupView from "@/components/WeatherStationPopup.vue"
+import WeatherStationsPopupView from "@/components/WeatherStationPopup.vue";
 import LeftPaneView from "@/components/LeftPaneView.vue";
 import BasemapView from "@/components/BasemapView.vue";
 import CoordinatesView from "@/components/CoordinatesView.vue";
@@ -64,9 +67,9 @@ export default defineComponent({
   components: {
     ZoomPopupView,
     CameraPopupView,
-    ParkRidePopupView, 
-    PointRestrictionPopupView, 
-    LineRestrictionPopupView, 
+    ParkRidePopupView,
+    PointRestrictionPopupView,
+    LineRestrictionPopupView,
     MountainPassesPopupView,
     WeatherStationsPopupView,
     LeftPaneView,
@@ -207,23 +210,21 @@ export default defineComponent({
   height: 100%;
   width: 100%;
 }
-
 #map-bottom-right-container {
   display: inline-flex;
-  margin: 16px
-
+  margin: 16px;
 }
 
-.map-bottom-right-container-row{
+.map-bottom-right-container-row {
   display: flex;
-  position:relative;
-  width:100%;
+  position: relative;
+  width: 100%;
   justify-content: flex-end;
   flex-direction: rtl;
-  align-items: flex-end;/* move columns to rightmost end of row */ 
+  align-items: flex-end; /* move columns to rightmost end of row */
 }
 
-.map-bottom-right-container-column{
+.map-bottom-right-container-column {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
