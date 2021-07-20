@@ -1,4 +1,27 @@
+/* Standard colors
+ * https://wsdotwebhelp.gitbook.io/web-style-guide/design-foundations/color
+ */
 
+:root {
+    --color-primaryBrand100: #007b5f;
+    --color-primaryBrand80: #33957f;
+    --color-primaryBrand60: #66b09f;
+    --color-primaryBrand40: #99cabf;
+    --color-secondaryBrandLight: #97d700;
+    --color-secondaryBrandLightSoft: #ADC86D;
+    --color-secondaryBrandDark: #005151;
+    --color-gray100: #1d252d;
+    --color-gray80: #4a5157;
+    --color-gray60: #777c81;
+    --color-gray40: #a5a8ab;
+    --color-gray20: #d2d3d5;
+    --color-gray10: #e8e9ea;
+    --color-gray5: #f4f4f5;
+    --color-success: #28a745;
+    --color-error: #dc3545;
+    --color-warning: #ffc107;
+    --color-visited: #59315F;
+}
 
 /*Defines the placement of elements on the page*/
 
@@ -28,4 +51,4 @@
 
 .ontop {
     z-index: 9;
-} 
+}

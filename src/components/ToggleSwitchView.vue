@@ -115,7 +115,7 @@ export default defineComponent({
 
 .Toggle[aria-pressed="true"] .Toggle__display,
 .Toggle__input:checked + .Toggle__display {
-  background-color: #33957f;
+  background-color: var(--color-primaryBrand100);
 }
 
 .Toggle[aria-pressed="true"] .Toggle__display::before,

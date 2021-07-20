@@ -20,7 +20,7 @@ export default defineComponent({
     },
     IsWhite: {
       type: Boolean,
-      default: false
+      default: false,
     },
     Width: {
       type: String,
@@ -58,12 +58,12 @@ button {
   margin: 3px;
 }
 .filled-button {
-  background-color: #33957f;
+  background-color: var(--color-primaryBrand100);
   color: #fff;
-  border: 1px solid #33957f;
+  border: 1px solid var(--color-primaryBrand100);
 }
 .not-filled-button {
   background-color: #fff;
-  border: 1px solid #33957f;
+  border: 1px solid var(--color-primaryBrand100);
 }
 </style>
