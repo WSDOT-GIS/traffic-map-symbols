@@ -1,16 +1,10 @@
 <template>
-  <label class="Toggle">
-    <input
-      type="checkbox"
-      name="toggle"
-      class="Toggle__input"
-      @change="onToggle"
-      :checked="Checked"
-      :value="Value"
-    />
-    <span class="Toggle__display" hidden> </span>
-    <slot></slot>
-  </label>
+  <label class='Toggle' for='toggle'>
+      <input type='checkbox' name='toggle' id="toggle" class="Toggle__input" checked />
+      <span class="Toggle__display" hidden>
+      </span>
+      Receive notifications
+    </label>
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
@@ -29,7 +23,7 @@ export default defineComponent({
   setup(props, context) {
     const onToggle = (evt: Event) => {
       const target = evt.currentTarget as HTMLInputElement;
-      console.log("checked: " + target.checked + " value: " + target.value);
+      console.log("checked: " + target.checked +" value: " + target.value);
       context.emit("toggle", { checked: target.checked, value: target.value });
     };
     return { onToggle };
@@ -128,16 +122,6 @@ export default defineComponent({
   opacity: 0.6;
   filter: grayscale(40%);
   cursor: not-allowed;
-}
-
-[dir="rtl"] .Toggle__display::before {
-  left: auto;
-  right: var(--offset);
-}
-
-[dir="rtl"] .Toggle[aria-pressed="true"] + .Toggle__display::before,
-[dir="rtl"] .Toggle__input:checked + .Toggle__display::before {
-  transform: translate(-100%, -50%);
 }
 
 /* .Toggle__icon {

@@ -1,75 +1,66 @@
 <template>
   <div id="layerListWidget" title="Map Features">
-    <div id="mapFeaturesDiv">
-      
-      <table class="mapFeatureTable">
-        <tr>
-          <td class="layerSwitchCell mapFeatureCell">
-            <div class="switch">
-              <input
-                type="checkbox"
-                @change="clickEvent"
-                :checked="layerList[0].visible"
-                :value="layerList[0].index"
-              />
-              <span class="slider round"></span>
-            </div>
-          </td>
-          <td class="layerLabelCell mapFeatureCell">
-            {{ layerList[0].title }}
-          </td>
-        </tr>
-      </table>
-      <table class="trafficLegendTable">
-        <tr class="trafficLegendRow">
-          <td class="trafficLegendCell">
-            <div class="trafficLegendSymbolDiv" id="slowLegendCell">&nbsp;</div>
-          </td>
-          <td class="trafficLegendCell">
-            <div class="trafficLegendSymbolDiv" id="slowMediumLegendCell">
-              &nbsp;
-            </div>
-          </td>
-          <td class="trafficLegendCell">
-            <div class="trafficLegendSymbolDiv" id="mediumFastLegendCell">
-              &nbsp;
-            </div>
-          </td>
-          <td class="trafficLegendCell">
-            <div class="trafficLegendSymbolDiv" id="fastLegendCell">&nbsp;</div>
-          </td>
-        </tr>
-        <tr>
-          <td class="trafficLegendLabelCell">Slow</td>
-          <td class="trafficLegendLabelCell"></td>
-          <td class="trafficLegendLabelCell"></td>
-          <td class="trafficLegendLabelCell">Fast</td>
-        </tr>
-      </table>
-      <table class="mapFeatureTable">
-        <tr v-for="layer in layerList.slice(1)" :key="layer.index">
-          <td class="layerSwitchCell mapFeatureCell">
-            <label class="switch">
-              <input
-                type="checkbox"
-                @change="clickEvent"
-                :checked="layer.visible"
-                :value="layer.index"
-              />
-
-              <span class="slider round"></span>
-            </label>
-          </td>
-          <td>
+    <ul class="w3-ul" style="padding: 1px 0">
+      <li class="w3-border-0" style="padding: 0">
+        <ToggleSwitchView
+          @toggle="clickEvent"
+          :Checked="layerList[0].visible"
+          :Value="layerList[0].index.toString()"
+        >
+          <template v-slot>
+            <span class="listLabel"> {{ layerList[0].title }}</span>
+          </template>
+        </ToggleSwitchView>
+      </li>
+    </ul>
+    <table class="trafficLegendTable">
+      <tr class="trafficLegendRow">
+        <td class="trafficLegendCell">
+          <div class="trafficLegendSymbolDiv" id="slowLegendCell">&nbsp;</div>
+        </td>
+        <td class="trafficLegendCell">
+          <div class="trafficLegendSymbolDiv" id="slowMediumLegendCell">
+            &nbsp;
+          </div>
+        </td>
+        <td class="trafficLegendCell">
+          <div class="trafficLegendSymbolDiv" id="mediumFastLegendCell">
+            &nbsp;
+          </div>
+        </td>
+        <td class="trafficLegendCell">
+          <div class="trafficLegendSymbolDiv" id="fastLegendCell">&nbsp;</div>
+        </td>
+      </tr>
+      <tr>
+        <td class="trafficLegendLabelCell">Slow</td>
+        <td class="trafficLegendLabelCell"></td>
+        <td class="trafficLegendLabelCell"></td>
+        <td class="trafficLegendLabelCell">Fast</td>
+      </tr>
+    </table>
+    <ul class="w3-ul">
+      <li
+        class="w3-border-0"
+        style="padding: 1px 0"
+        v-for="layer in layerList.slice(1)"
+        :key="layer.index"
+      >
+        <ToggleSwitchView
+          @toggle="clickEvent"
+          :Checked="layer.visible"
+          :Value="layer.index.toString()"
+        >
+          <template v-slot>
             <div
               class="mapFeaturesIcon"
               v-html="layerIcons.find((x) => x.title == layer.title)?.paths"
             ></div>
-          </td>
-          <td class="layerLabelCell mapFeatureCell">{{ layer.title }}</td>
-        </tr>
-      </table>
-    </div>
+            <span class="listLabel"> {{ layer.title }}</span>
+          </template>
+        </ToggleSwitchView>
+      </li>
+    </ul>
   </div>
 </template>
 <script lang="ts">
@@ -81,7 +72,7 @@ import { webmap } from "../esri-stuff/esriMap";
 import { layerListIcons } from "@/symbols/IconDefinitions";
 import ToggleSwitchView from "./ToggleSwitchView.vue";
 export default defineComponent({
-  // components: { ToggleSwitchView },
+  components: { ToggleSwitchView },
   setup() {
     //#region populate the layer list
     const store = useStore();
@@ -102,29 +93,29 @@ export default defineComponent({
   },
   methods: {
     //#region toggle layer on and off
-    clickEvent: async (evt: Event) => {
+    clickEvent: async (evt: { checked: boolean; value: string }) => {
       store.state.layerList.map((layer, index) => {
-        if (evt.target) {
-          const target = evt.currentTarget as HTMLInputElement;
-          if (index.toString() == target.value) {
-            layer.visible == true
-              ? (layer.visible = false)
-              : (layer.visible = true);
+        if (evt) {
+          if (index.toString() === evt.value) {
+            layer.visible = evt.checked;
           }
         }
       });
       store.commit("setLayerList", store.state.layerList);
     },
-    
+
     //#endregion
   },
 });
 </script>
 <style scoped>
-#layerListWidget {
+/* #layerListWidget {
   background-color: white;
   box-shadow: 1pt solid grey;
   width: 100%;
+} */
+.listLabel {
+  font-size: small;
 }
 #slowLegendCell {
   background-color: firebrick;
@@ -141,7 +132,7 @@ export default defineComponent({
 .trafficLegendSymbolDiv {
   height: 8px;
 }
-.layerSwitchCell {
+/* .layerSwitchCell {
   align-content: center;
   width: 10px;
 }
@@ -153,7 +144,7 @@ export default defineComponent({
 }
 .mapFeatureTable {
   width: 100%;
-}
+} */
 .trafficLegendTable {
   margin: auto;
   width: 95%;
@@ -173,9 +164,9 @@ export default defineComponent({
   box-shadow: none;
   font-size: small;
 }
-.mapFeatureCell {
+/* .mapFeatureCell {
   padding: 2px 2px 2px 0px;
-}
+}*/
 .mapFeaturesIcon {
   height: 20px;
   width: 20px;

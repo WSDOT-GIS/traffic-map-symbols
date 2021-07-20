@@ -2,11 +2,6 @@
   <div id="savedMapWidget" class="w3-left-align">
     <div id="saved-map-list-title w3-medium">My saved maps</div>
     <ul id="saved-map-list-container" class="w3-ul">
-      <!-- <li
-        v-for="(item, index) in mapList"
-        :key="index"
-        class="w3-display-container w3-border-0 w3-padding-small"
-      > -->
       <li
         v-for="(item, index) in mapList"
         :key="index"
@@ -29,25 +24,6 @@
         >
           &times;
         </button>
-        <!-- <a
-          class=""
-          :class="{
-            'w3-text-blue': item.selected,
-            'w3-text-dark-grey': !item.selected,
-          }"
-          @click="selectItem($event, item)"
-        >
-          {{ item.title }}
-        </a>
-        <span
-          class="
-            remove-saved-map-button
-            w3-button w3-transparent w3-display-right
-          "
-          @click="removeItem($event, item)"
-        >
-          &times;
-        </span> -->
       </li>
     </ul>
     <WsdotButtonView Caption="Save This Map" @click="showForm" />
