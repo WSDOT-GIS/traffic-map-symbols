@@ -1,27 +1,11 @@
 <template>
   <div id="layerListWidget" title="Map Features">
-    <!-- <div :style="{ display: mapFeaturesExpanded }">
-      <div class="w3-display-container">
-      <label class="w3-large">Map Features</label>
-      <svg
-        @click="handleExpandClicked(store)"
-        id="expand"
-        xmlns="http://www.w3.org/2000/svg"
-        width="10"
-        height="10"
-        viewBox="0 0 32 32"
-        class="svg-icon w3-display-right"
-      >
-        <path :d="expandIconPath" />
-      </svg>
-      </div>
-      <hr class="horizontal-divider" />
-    </div> -->
-    <div id="mapFeaturesDiv" :style="{ display: mapFeaturesExpanded }">
+    <div id="mapFeaturesDiv">
+      
       <table class="mapFeatureTable">
         <tr>
           <td class="layerSwitchCell mapFeatureCell">
-            <label class="switch">
+            <div class="switch">
               <input
                 type="checkbox"
                 @change="clickEvent"
@@ -29,7 +13,7 @@
                 :value="layerList[0].index"
               />
               <span class="slider round"></span>
-            </label>
+            </div>
           </td>
           <td class="layerLabelCell mapFeatureCell">
             {{ layerList[0].title }}
@@ -72,6 +56,7 @@
                 :checked="layer.visible"
                 :value="layer.index"
               />
+
               <span class="slider round"></span>
             </label>
           </td>
@@ -92,18 +77,16 @@ import { store, useStore } from "@/store";
 import { defineComponent, ref } from "vue";
 import LayerInfo from "../types/LayerInfo";
 import { webmap } from "../esri-stuff/esriMap";
-import { mapState } from "vuex";
+// import { mapState } from "vuex";
 import { layerListIcons } from "@/symbols/IconDefinitions";
+import ToggleSwitchView from "./ToggleSwitchView.vue";
 export default defineComponent({
+  // components: { ToggleSwitchView },
   setup() {
     //#region populate the layer list
     const store = useStore();
     let layerList = ref<LayerInfo[]>([]);
     const layerIcons = layerListIcons;
-    const expandIconPath = ref<string>(
-      "M1.047 4h5l12 12-12 12h-5l12-12-12-12zm26 12l-12 12h5l12-12-12-12h-5l12 12z"
-    );
-    // const expanded = ref<string>(store.state.mapFeaturesExpanded)
     webmap.layers.map((layer, index) => {
       if (layer.title !== "Metro Areas") {
         layerList.value.push({
@@ -114,11 +97,8 @@ export default defineComponent({
       }
     });
     store.commit("setLayerList", layerList);
-    return { layerList, layerIcons, expandIconPath, store };
+    return { layerList, layerIcons, store };
     //#endregion
-  },
-  computed: {
-    ...mapState(["mapFeaturesExpanded"]),
   },
   methods: {
     //#region toggle layer on and off
@@ -135,15 +115,7 @@ export default defineComponent({
       });
       store.commit("setLayerList", store.state.layerList);
     },
-    handleExpandClicked: function () {
-      console.log(store);
-      store.state.mapFeaturesExpanded == "block"
-        ? (this.expandIconPath =
-            "M31.047 28h-5l-12-12 12-12h5l-12 12 12 12zm-26-12l12-12h-5l-12 12 12 12h5l-12-12z")
-        : (this.expandIconPath =
-            "M1.047 4h5l12 12-12 12h-5l12-12-12-12zm26 12l-12 12h5l12-12-12-12h-5l12 12z");
-      store.commit("setMapFeaturesExpanded");
-    },
+    
     //#endregion
   },
 });
