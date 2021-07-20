@@ -9,7 +9,7 @@
         style="padding: 0"
       >
         <button
-          class="w3-transparent w3-btn w3-padding-small"
+          class="w3-transparent w3-btn"
           :class="{
             'w3-text-blue': item.selected,
             'w3-text-dark-grey': !item.selected,
@@ -19,7 +19,7 @@
           {{ item.title }}
         </button>
         <button
-          class="w3-right w3-transparent w3-button w3-padding-small"
+          class="w3-right w3-transparent w3-button"
           @click="removeItem($event, item)"
         >
           &times;
@@ -130,6 +130,9 @@ export default defineComponent({
 <style scoped>
 a {
   cursor: pointer;
+}
+button {
+  padding: 1px 1em;
 }
 .saved-map-item {
   width: 100%;
