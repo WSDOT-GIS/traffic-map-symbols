@@ -1,5 +1,5 @@
 <template>
-  <header class="w3-container">{{ text }}</header>
+  <div id="wsdot-header" class="w3-container">{{ text }}</div>
 </template>
 
 <script lang="ts">
@@ -16,7 +16,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-header {
+#wsdot-header {
   padding: 5px;
   color: white;
   background-color: var(--color-secondaryBrandDark);

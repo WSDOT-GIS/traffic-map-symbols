@@ -69,8 +69,8 @@ const layerListIcons: IconInfo[] = [{
 {
     title: "Weather Stations",
     paths: `
-        <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 24 24" version="1.1" id="svg831" sodipodi:docname="weather.svg" inkscape:version="0.92.3 (2405546, 2018-03-11)" inkscape:export-filename="C:\Users\VannosB\source\repos\vuex test\TravelerInformationCoreMap\src\assets\icons\weather.png" inkscape:export-xdpi="400" inkscape:export-ydpi="400">
-            <metadata id="metadata837">
+        <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 24 24" version="1.1" id="svg-weather" sodipodi:docname="weather.svg" inkscape:version="0.92.3 (2405546, 2018-03-11)" inkscape:export-filename="C:\Users\VannosB\source\repos\vuex test\TravelerInformationCoreMap\src\assets\icons\weather.png" inkscape:export-xdpi="400" inkscape:export-ydpi="400">
+            <metadata id="metadata-weather">
             <rdf:RDF>
                 <cc:Work rdf:about="">
                 <dc:format>image/svg+xml</dc:format>
@@ -80,7 +80,7 @@ const layerListIcons: IconInfo[] = [{
             </rdf:RDF>
             </metadata>
             <defs id="defs835"/>
-            <sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="1920" inkscape:window-height="986" id="namedview833" showgrid="false" inkscape:zoom="23.246135" inkscape:cx="15.181427" inkscape:cy="12.044999" inkscape:window-x="-11" inkscape:window-y="-11" inkscape:window-maximized="1" inkscape:current-layer="svg831" inkscape:pagecheckerboard="true"/>
+            <sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="1920" inkscape:window-height="986" id="namedview833" showgrid="false" inkscape:zoom="23.246135" inkscape:cx="15.181427" inkscape:cy="12.044999" inkscape:window-x="-11" inkscape:window-y="-11" inkscape:window-maximized="1" inkscape:current-layer="svg-weather" inkscape:pagecheckerboard="true"/>
             <path style="fill:#ffdd55;fill-opacity:1;stroke:none;stroke-width:0.05;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="m 14.669922,6.7714844 c -0.910177,-1.2e-6 -1.769425,0.3808007 -2.41211,1.0292968 1.872805,0.616312 3.35571,2.1780897 3.917969,4.2167968 0.202107,-0.03884 0.414169,-0.06836 0.591797,-0.06836 0.359106,0 0.704721,0.05627 1.035156,0.154297 0.236372,-0.505703 0.363282,-1.060154 0.363282,-1.632813 0,-2.0398177 -1.568041,-3.6992186 -3.496094,-3.6992186 z" id="path4943"/>
             <path style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.05;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="m 10.472656,8.9902344 c -2.2277181,0 -4.1013717,1.6750766 -4.4765622,3.9882816 v 1.191406 c 0,0.408408 -0.3131887,0.740234 -0.6992188,0.740234 -0.3860297,0 -0.6992188,-0.331826 -0.6992188,-0.740234 v -0.679688 c -0.1643426,-0.03477 -0.3211117,-0.06055 -0.4179687,-0.06055 -1.3493568,-1e-6 -2.4472656,1.162263 -2.4472656,2.589843 0,1.427578 1.0979088,2.589844 2.4472656,2.589844 H 16.767578 c 1.349356,0 2.447266,-1.162266 2.447266,-2.589844 0,-1.42758 -1.09791,-2.589843 -2.447266,-2.589843 -0.09581,-1e-6 -0.253275,0.02577 -0.417969,0.06055 v 0.679688 c 0,0.408407 -0.313188,0.740234 -0.699218,0.740234 -0.386028,0 -0.699219,-0.331827 -0.699219,-0.740234 V 12.980469 C 14.576681,10.666155 12.70072,8.9902344 10.472656,8.9902344 Z" id="path4941"/>
             <path fill="none" d="M0 0h24v24H0z" id="path829"/>
@@ -90,8 +90,8 @@ const layerListIcons: IconInfo[] = [{
 {
     title: "Park and Rides",
     paths: `
-        <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 24 24" version="1.1" id="svg831" sodipodi:docname="ParkAndRide.svg" inkscape:version="0.92.3 (2405546, 2018-03-11)" inkscape:export-filename="C:\Users\VannosB\source\repos\vuex test\TravelerInformationCoreMap\src\assets\icons\weather.png" inkscape:export-xdpi="400" inkscape:export-ydpi="400">
-            <metadata id="metadata837">
+        <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 24 24" version="1.1" id="svg-park-rides" sodipodi:docname="ParkAndRide.svg" inkscape:version="0.92.3 (2405546, 2018-03-11)" inkscape:export-filename="C:\Users\VannosB\source\repos\vuex test\TravelerInformationCoreMap\src\assets\icons\weather.png" inkscape:export-xdpi="400" inkscape:export-ydpi="400">
+            <metadata id="metadata-park-rides">
                 <rdf:RDF>
                 <cc:Work rdf:about="">
                     <dc:format>image/svg+xml</dc:format>
@@ -101,7 +101,7 @@ const layerListIcons: IconInfo[] = [{
                 </rdf:RDF>
             </metadata>
             <defs id="defs835"/>
-            <sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="2880" inkscape:window-height="1526" id="namedview833" showgrid="false" inkscape:zoom="32.875" inkscape:cx="21.000563" inkscape:cy="9.1930152" inkscape:window-x="2869" inkscape:window-y="-11" inkscape:window-maximized="1" inkscape:current-layer="svg831" inkscape:pagecheckerboard="true"/>
+            <sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="2880" inkscape:window-height="1526" id="namedview833" showgrid="false" inkscape:zoom="32.875" inkscape:cx="21.000563" inkscape:cy="9.1930152" inkscape:window-x="2869" inkscape:window-y="-11" inkscape:window-maximized="1" inkscape:current-layer="svg-park-rides" inkscape:pagecheckerboard="true"/>
             <path fill="none" d="M0 0h24v24H0z" id="path829"/>
             <g transform="matrix(0.25243218,0,0,0.25243218,-0.61329996,-1.4735851)" id="g7247">
                 <rect y="42.001953" x="80.75" height="43.273472" width="4.8432212" id="rect5671" style="fill:#999999;fill-opacity:1;stroke:none;stroke-width:0.01666667;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
