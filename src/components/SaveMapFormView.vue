@@ -46,7 +46,7 @@ export default defineComponent({
       if (title.length > 0) {
         context.emit("ok-save-map-form", title);
       } else {
-        warningMsg.value = "Please enter the title for this map.";
+        warningMsg.value = "Please enter the name for this map.";
       }
     };
     const onClose = () => {
