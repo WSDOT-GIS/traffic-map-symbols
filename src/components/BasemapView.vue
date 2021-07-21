@@ -1,6 +1,6 @@
 <template>
   <div id="basemap-widget-container">
-    <MapButtonView @click="onClick" Height="100px" Width="150px" AriaLabel="Change basemap">
+    <MapButtonView @click="onClick" Height="100px" Width="150px" AriaLabel="Change Basemap">
       <template v-slot >
         <div class="container">
           <img :src="imgSrc" id="iconImage" alt="" />

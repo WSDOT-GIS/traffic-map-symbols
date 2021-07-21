@@ -3,6 +3,7 @@
     class="w3-button w3-border w3-round w3-card-2"
     :style="{ width: Width, height: Height }"
     :aria-label="AriaLabel"
+    :title="AriaLabel"
   >
     <slot></slot>
   </button>
@@ -22,8 +23,8 @@ export default defineComponent({
     },
     AriaLabel: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
 });
 </script>
