@@ -26,6 +26,7 @@ define(["require", "exports", "tslib", "@arcgis/core/renderers/UniqueValueRender
         url: "http://hqtob1webtmdev1/GISData/PointRestrictions.json",
         title: "Restriction Points",
         renderer: pointRestrictionsRenderer,
+        visible: false,
         fields: [
             new Field_1.default({ name: "state", alias: "State", type: "string" }),
             new Field_1.default({ name: "route_nr", alias: "Route Number", type: "string" }),

@@ -1,10 +1,11 @@
 <template>
   <div id="basemap-widget-container">
-    <MapButtonView @click="onClick" Height="100px" Width="150px" AriaLabel="Change basemap">
+    <MapButtonView @click="onClick" :Height="imgSize"  AriaLabel="Change basemap">
       <template v-slot >
         <div class="container">
-          <img :src="imgSrc" id="iconImage" alt="" />
-          <label class="centered" :id="labelStyle">{{iconTitle}}</label>
+          <img :src="imgSrc" :height="imgSize" alt="" />
+          <label class="centeredTop" :id="labelStyle">{{iconTitle}}</label>
+          <label class="centeredBottom" :id="labelStyle">Basemap</label>
         </div>
       </template>
     </MapButtonView>
@@ -24,18 +25,20 @@ export default defineComponent({
     const tileImage = require("@/assets/icons/tileBasemap.png")
     const satelliteImage = require("@/assets/icons/worldImagery.png")
     const imgSrc = ref<any>(satelliteImage)
-    const iconTitle = ref<string>("Imagery Basemap")
+    const imgSize = ref<number>(100)
+    const iconTitle = ref<string>("Imagery")
     const labelStyle = ref<string>("iconLabelWhite")
-
+    const labelFontSize = ref<number>(12)
+    const windowWidth = ref<number>(window.innerWidth)
     const onClick = () => {
       store.commit("toggleBasemap");
       console.log("Clicked basemap: " + store.state.basemap);
       imgSrc.value == satelliteImage
         ? (imgSrc.value = tileImage)
         : (imgSrc.value = satelliteImage);
-      iconTitle.value == "Imagery Basemap"
-      ? (iconTitle.value = "WSDOT Basemap")
-      : (iconTitle.value = "Imagery Basemap");
+      iconTitle.value == "Imagery"
+      ? (iconTitle.value = "WSDOT")
+      : (iconTitle.value = "Imagery");
       labelStyle.value == "iconLabelWhite"
       ? (labelStyle.value = "iconLabelBlack"):
       (labelStyle.value = "iconLabelWhite");
@@ -46,46 +49,63 @@ export default defineComponent({
       imgSrc,
       iconTitle,
       onClick,
-      labelStyle
+      labelStyle,
+      windowWidth,
+      imgSize,
+      labelFontSize
     };
   },
-  computed: {
-    nextMapTitle() {
-      const store = useStore();
-      return "click for " + store.state.basemap;
-    },
-  },
+  mounted() {
+    if(window.innerWidth <=500){
+      this.imgSize = 50;
+      this.labelFontSize = 6
+    }
+    if(window.innerWidth >=500){
+      this.imgSize= 100
+      this.labelFontSize = 12
+    }
+    window.addEventListener("resize",() => {
+      if(window.innerWidth <=500){
+        this.imgSize = 50;
+        this.labelFontSize = 6
+      }
+      if(window.innerWidth >=500){
+        this.imgSize= 100
+        this.labelFontSize = 12
+      }
+    })
+  }
 });
 </script>
  <style scoped>
 /*Defines the style of the basemap picker*/
 #iconImage{
-  width:1250x;
   height:100px
   }
 #iconLabelWhite{
   color: white;
   text-shadow: 2px 2px 4px #000000;
   position: absolute;
-  bottom: 5%;
-  left: 5%;
 }
 #iconLabelBlack{
   color: black;
   text-shadow: 2px 2px 4px white;
   position: absolute;
-  bottom: 5%;
-  left: 5%;
 }
 .container {
   position: relative;
   text-align: center;
   color: white;
 }
-.centered {
+.centeredTop {
+  position: absolute;
+  bottom: 30px;
+  left: 5px;
+}
+.centeredBottom{
   position: absolute;
   bottom: 5%;
-  left: 5%;
+  left: 5px;
 }
 
 </style>

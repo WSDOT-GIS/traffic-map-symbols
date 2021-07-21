@@ -41,23 +41,58 @@
       </tr>
     </table>
     <ul class="w3-ul">
-      <li
-        class="w3-border-0"
-        style="padding: 1px 0"
-        v-for="layer in layerList.slice(1)"
-        :key="layer.index"
-      >
-        <ToggleSwitchView
-          @toggle="clickEvent"
-          :Checked="layer.visible"
-          :Value="layer.index.toString()"
-        >
+      <li class="w3-border-0" style="padding: 1px 0">
+        <ToggleSwitchView @toggle="clickEvent" :Checked="layerList[1].visible" :Value="[layerList[1].index.toString()]">
           <template v-slot>
             <div
               class="mapFeaturesIcon"
-              v-html="layerIcons.find((x) => x.title == layer.title)?.paths"
+              v-html="layerIcons.find((x) => x.title == layerList[1].title)?.paths"
             ></div>
-            <span class="listLabel"> {{ layer.title }}</span>
+            <span class="listLabel"> {{ layerList[1].title }}</span>
+          </template>
+        </ToggleSwitchView>
+      </li>
+      <li class="w3-border-0" style="padding: 1px 0">
+        <ToggleSwitchView @toggle="clickEvent" :Checked="layerList[2].visible" :Value="[layerList[2].index.toString()]">
+          <template v-slot>
+            <div
+              class="mapFeaturesIcon"
+              v-html="layerIcons.find((x) => x.title == layerList[2].title)?.paths"
+            ></div>
+            <span class="listLabel"> {{ layerList[2].title }}</span>
+          </template>
+        </ToggleSwitchView>
+      </li>
+      <li class="w3-border-0" style="padding: 1px 0">
+        <ToggleSwitchView @toggle="clickEvent" :Checked="layerList[3].visible" :Value="[layerList[3].index.toString(),layerList[4].index.toString()]">
+          <template v-slot>
+            <div
+              class="mapFeaturesIcon"
+              v-html="layerIcons.find((x) => x.title == layerList[3].title)?.paths"
+            ></div>
+            <span class="listLabel">Commercial Vehicle Restrictions</span>
+          </template>
+        </ToggleSwitchView>
+      </li>
+      <li class="w3-border-0" style="padding: 1px 0">
+        <ToggleSwitchView @toggle="clickEvent" :Checked="layerList[5].visible" :Value="[layerList[5].index.toString()]">
+          <template v-slot>
+            <div
+              class="mapFeaturesIcon"
+              v-html="layerIcons.find((x) => x.title == layerList[5].title)?.paths"
+            ></div>
+            <span class="listLabel"> {{ layerList[5].title }}</span>
+          </template>
+        </ToggleSwitchView>
+      </li>
+      <li class="w3-border-0" style="padding: 1px 0">
+        <ToggleSwitchView @toggle="clickEvent" :Checked="layerList[6].visible" :Value="[layerList[6].index.toString()]">
+          <template v-slot>
+            <div
+              class="mapFeaturesIcon"
+              v-html="layerIcons.find((x) => x.title == layerList[6].title)?.paths"
+            ></div>
+            <span class="listLabel"> {{ layerList[6].title }}</span>
           </template>
         </ToggleSwitchView>
       </li>
@@ -89,6 +124,7 @@ export default defineComponent({
       }
     });
     store.commit("setLayerList", layerList);
+    console.log(layerList)
     return { layerList, layerIcons, store };
     //#endregion
   },
@@ -97,8 +133,10 @@ export default defineComponent({
     clickEvent: async (evt: { checked: boolean; value: string }) => {
       store.state.layerList.map((layer, index) => {
         if (evt) {
-          if (index.toString() === evt.value) {
-            layer.visible = evt.checked;
+          for(let i=0;i<evt.value.length;i++){
+            if (index.toString() === evt.value[i]) {
+              layer.visible = evt.checked;
+            }
           }
         }
       });

@@ -1,15 +1,42 @@
 <template>
-  <div title="Cursor Coordinates" class="w3-border w3-round w3-card-2 w3-white w3-panel w3-small">
+  <div v-if="fullScreen==true" title="Cursor Coordinates" class="w3-border w3-round w3-card-2 w3-white w3-panel w3-small">
       Lat: {{ pointerY }}, Long: {{ pointerX }}
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import { mapState } from "vuex";
 
 export default defineComponent({
-  // Using a utility function to make states available in this view.
   computed: mapState(["pointerX", "pointerY"]),
+  setup(){
+    const fullScreen = ref<boolean>(true)
+    return{
+      fullScreen
+    }
+  },
+  mounted() {
+    if(window.innerWidth <=500){
+        this.fullScreen=false
+        console.log(this.fullScreen)
+      }
+      if(window.innerWidth >=500){
+        this.fullScreen=true
+        console.log(this.fullScreen)
+      }
+    window.addEventListener("resize",() => {
+      if(window.innerWidth <=500){
+        this.fullScreen=false
+        console.log(this.fullScreen)
+      }
+      if(window.innerWidth >=500){
+        this.fullScreen=true
+        console.log(this.fullScreen)
+      }
+    })
+  },
+  // Using a utility function to make states available in this view.
+  
 });
 </script>
 
