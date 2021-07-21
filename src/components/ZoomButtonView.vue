@@ -1,11 +1,11 @@
 <template>
   <div id="zoom-button-container">
-    <MapButtonView Height="32px" Width="32px" @click="zoomIn">
+    <MapButtonView Height="32px" Width="32px" @click="zoomIn" AriaLabel="Zoom in">
       <template v-slot>
         <span class="esri-icon-plus"></span>
       </template>
     </MapButtonView>
-    <MapButtonView Height="32px" Width="32px" @click="zoomOut">
+    <MapButtonView Height="32px" Width="32px" @click="zoomOut" AriaLabel="Zoom out">
       <template v-slot>
         <span class="esri-icon-minus"></span>
       </template>

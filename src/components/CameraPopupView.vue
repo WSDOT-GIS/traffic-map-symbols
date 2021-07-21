@@ -14,6 +14,32 @@
               :alt="eachInfo.id"
               @load="onImageLoaded"
             />
+            <table>
+              <tr>
+                <td class="popupKey">ID</td>
+                <td class="popupValue">{{ eachInfo.id }}</td>
+              </tr>
+              <tr>
+                <td class="popupKey">SR</td>
+                <td class="popupValue">{{ eachInfo.srid }}</td>
+              </tr>
+              <tr>
+                <td class="popupKey">Milepost</td>
+                <td class="popupValue">{{ eachInfo.milepost }}</td>
+              </tr>
+              <tr>
+                <td class="popupKey">Direction</td>
+                <td class="popupValue">{{ eachInfo.compassDirection }}</td>
+              </tr>
+              <tr>
+                <td class="popupKey">Owner Name</td>
+                <td class="popupValue">{{ eachInfo.ownerName }}</td>
+              </tr>
+              <tr>
+                <td class="popupKey">Owner URL</td>
+                <td class="popupValue">{{ eachInfo.ownerURL }}</td>
+              </tr>
+            </table>
           </div>
         </Slide>
         <template #addons="{ slidesCount }">
@@ -25,7 +51,7 @@
   </PopupView>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, nextTick, ref } from "vue";
 import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
 
@@ -39,7 +65,6 @@ import {
 } from "@/layers/CameraLayer";
 
 import Point from "@arcgis/core/geometry/Point";
-// import Graphic from "@arcgis/core/Graphic";
 
 export default defineComponent({
   components: { PopupView, Carousel, Slide, Pagination, Navigation },
@@ -51,15 +76,26 @@ export default defineComponent({
     const infos = ref<CameraInfo[]>([]);
 
     const show = (pt: Point, cameraInfos: CameraInfo[]) => {
-      mapX.value = pt.x;
-      mapY.value = pt.y;
-      infos.value = cameraInfos;
-      // mapView.whenLayerView(CameraLayer).then((layerView) => {
-      //   layerView.highlight(g);
-      // })
+      const setVal = () => {
+        mapX.value = pt.x;
+        mapY.value = pt.y;
+        infos.value = cameraInfos;
+      };
+      if (mapX.value !== 0 || mapY.value !== 0 || infos.value.length > 0) {
+        // Clean up the previous data...
+        close();
+        // Wait for the next update. Without doing this, scrolling won't work correctly.
+        nextTick(() => {
+          // console.log("nextTick callback...");
+          setVal();
+        });
+      } else {
+        setVal();
+      }
     };
     // Setting XY to 0 closes the popup...
     const close = () => {
+      // console.log("close CameraPopup");
       mapX.value = 0;
       mapY.value = 0;
       infos.value = [];
@@ -90,6 +126,7 @@ export default defineComponent({
                   // Zoom-in more...
                   const zoomResult = tryZoomToPoint(g.geometry as Point);
                   if (!zoomResult) {
+                    // Cannot zoom in any more, so show everything in cluster...
                     getCameraInfosFromCluster(g, mapView).then((results) => {
                       results ? show(pt, results) : close();
                     });
@@ -99,7 +136,7 @@ export default defineComponent({
             } else {
               // Too many in a cluster, so click to zoom-in...
               close();
-              infos.value = [];
+              // infos.value = [];
               tryZoomToPoint(g.geometry as Point);
             }
           } else {
@@ -140,14 +177,17 @@ export default defineComponent({
 }
 </style>
 <style>
-.carousel__prev, .carousel__next {
+.carousel__prev,
+.carousel__next {
   background-color: transparent !important;
 }
 .carousel__prev {
   left: 5%;
+  top: 30%;
 }
 .carousel__next {
   right: 5%;
+  top: 30%;
 }
 svg.carousel__icon {
   width: 2em;
@@ -163,7 +203,17 @@ svg.carousel__icon {
   margin: 5px;
 }
 :root {
-    --carousel-color-primary: #007b5f;
-    --carousel-color-secondary:#97dccc;
+  --carousel-color-primary: #007b5f;
+  --carousel-color-secondary: #97dccc;
+}
+.popupKey {
+  font-weight: bold;
+  text-align: left;
+  background-color: lightgrey;
+}
+.popupValue {
+  text-align: left;
+  /* word-wrap: break-word; */
+  word-break: break-all;
 }
 </style>

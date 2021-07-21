@@ -19,6 +19,6 @@ export default defineComponent({
 header {
   padding: 5px;
   color: white;
-  background-color: #005151;
+  background-color: var(--color-secondaryBrandDark);
 }
 </style>
