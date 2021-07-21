@@ -8,7 +8,7 @@
         class="w3-border-0"
         style="padding: 0"
       >
-        <button title="Show this map"
+        <button :title="'Show ' + item.title"
           class="w3-transparent w3-btn"
           :class="{
             'w3-text-blue': item.selected,
@@ -18,7 +18,7 @@
         >
           {{ item.title }}
         </button>
-        <button title="Delete this saved map" aria-label="Delete this saved map"
+        <button :title="'Delete ' + item.title" :aria-label="'Delete ' + item.title"
           class="w3-right w3-transparent w3-button"
           @click="removeItem($event, item)"
         >
