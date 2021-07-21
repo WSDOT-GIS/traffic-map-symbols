@@ -19,8 +19,8 @@ export default defineComponent({
 
 <style scoped>
 #ad_container {
-  color: tomato;
-  background-color: teal;
+  color: var(--color-gray100);
+  background-color: var(--color-gray40);
   height: 50px;
 }
 /* p {

@@ -13,7 +13,8 @@
         </ToggleSwitchView>
       </li>
     </ul>
-    <table class="trafficLegendTable">
+    <!-- https://www.emailonacid.com/blog/article/email-development/why-should-i-set-my-table-role-as-presentation/ -->
+    <table class="trafficLegendTable" role="presentation">
       <tr class="trafficLegendRow">
         <td class="trafficLegendCell">
           <div class="trafficLegendSymbolDiv" id="slowLegendCell">&nbsp;</div>

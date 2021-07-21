@@ -79,7 +79,7 @@ export default defineComponent({
   border: 0.1em solid rgb(0 0 0 / 0.2);
   position: relative;
   border-radius: 100vw;
-  background-color: #e7e7e7;
+  background-color: var(--color-gray20);
   transition: 250ms;
 }
 

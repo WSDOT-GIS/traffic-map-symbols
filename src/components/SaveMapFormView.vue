@@ -8,6 +8,7 @@
     @close-modal="onClose"
   >
     <template v-slot>
+      <label>Name:
       <input
         class="w3-input w3-border w3-round"
         title="Input Map Name"
@@ -16,6 +17,7 @@
         id="new-map-title"
         placeholder="Enter a name for this map."
       />
+      </label>
       <p>
         WARNING: Saved Maps are stored as cookies on your computer. All saved
         maps will be deleted when your browser cache is cleared.
