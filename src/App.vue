@@ -1,19 +1,21 @@
 <template>
-  <div id="app-top-container" ref="topRef">
+  <header id="app-top-container" ref="topRef">
     <HeaderView :text="headerText" />
     <AlertView :alert="alert" />
-  </div>
-  <div
-    id="map-container"
-    :style="{ height: mapHeight }"
-    class="w3-display-container"
-  >
-    <EsriMap />
-  </div>
-  <div id="app-bottom-container" ref="bottomRef">
+  </header>
+  <main>
+    <div
+      id="map-container"
+      :style="{ height: mapHeight }"
+      class="w3-display-container"
+    >
+      <EsriMap />
+    </div>
+  </main>
+  <footer id="app-bottom-container" ref="bottomRef">
     <AdView :text="adText" />
     <FooterView :text="footerText" />
-  </div>
+  </footer>
 </template>
 
 <script lang="ts">

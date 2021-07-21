@@ -1,5 +1,5 @@
 <template>
-  <label class="Toggle">
+  <label class="Toggle" :title="Title">
     <input
       type="checkbox"
       name="toggle"
@@ -25,6 +25,10 @@ export default defineComponent({
       type: String,
       required: false,
     },
+    Title: {
+      type: String,
+      required: true,
+    },
   },
   setup(props, context) {
     const onToggle = (evt: Event) => {
@@ -47,17 +51,9 @@ export default defineComponent({
   flex-wrap: wrap;
   align-items: center;
   position: relative;
-  /* margin-bottom: 1em; */
   cursor: pointer;
   gap: 1ch;
 }
-
-/* button.Toggle {
-  border: 0;
-  padding: 0;
-  background-color: transparent;
-  font: inherit;
-} */
 
 .Toggle__input {
   position: absolute;
@@ -139,23 +135,4 @@ export default defineComponent({
 [dir="rtl"] .Toggle__input:checked + .Toggle__display::before {
   transform: translate(-100%, -50%);
 }
-
-/* .Toggle__icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  color: inherit;
-  fill: currentcolor;
-  vertical-align: middle;
-  overflow: hidden;
-}
-
-.Toggle__icon--cross {
-  color: #747474;
-  font-size: 85%;
-}
-
-.Toggle__icon--checkmark {
-  color: #33957f;
-} */
 </style>

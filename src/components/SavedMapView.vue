@@ -8,7 +8,7 @@
         class="w3-border-0"
         style="padding: 0"
       >
-        <button
+        <button :title="'Show ' + item.title"
           class="w3-transparent w3-btn"
           :class="{
             'w3-text-blue': item.selected,
@@ -18,7 +18,7 @@
         >
           {{ item.title }}
         </button>
-        <button
+        <button :title="'Delete ' + item.title" :aria-label="'Delete ' + item.title"
           class="w3-right w3-transparent w3-button"
           @click="removeItem($event, item)"
         >

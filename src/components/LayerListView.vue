@@ -6,6 +6,7 @@
           @toggle="clickEvent"
           :Checked="layerList[0].visible"
           :Value="layerList[0].index.toString()"
+          :Title="'Toggle ' + layerList[0].title"
         >
           <template v-slot>
             <span class="listLabel"> {{ layerList[0].title }}</span>
