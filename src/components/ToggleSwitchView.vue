@@ -1,5 +1,5 @@
 <template>
-  <label class="Toggle">
+  <label class="Toggle" :title="Title">
     <input
       type="checkbox"
       name="toggle"
@@ -25,6 +25,10 @@ export default defineComponent({
       type: String,
       required: false,
     },
+    Title: {
+      type: String,
+      required: true
+    }
   },
   setup(props, context) {
     const onToggle = (evt: Event) => {
@@ -32,6 +36,9 @@ export default defineComponent({
       console.log("checked: " + target.checked + " value: " + target.value);
       context.emit("toggle", { checked: target.checked, value: target.value });
     };
+    const getTitle = () => {
+      const title = props.Title? props.Title:false;
+    }
     return { onToggle };
   },
 });
