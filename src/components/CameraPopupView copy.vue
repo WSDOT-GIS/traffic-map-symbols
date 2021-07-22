@@ -51,61 +51,37 @@
   </PopupView>
 </template>
 <script lang="ts">
-import { defineComponent, nextTick, PropType, ref, toRefs, watch } from "vue";
+import { defineComponent, nextTick, ref } from "vue";
 import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
 
 import PopupView from "./PopupView.vue";
 import CameraInfo from "@/types/CameraInfo";
-import FeaturesetInfo from "@/types/FeaturesetInfo";
-import CameraLayer, { getCameraInfosByIds } from "@/layers/CameraLayer";
+import { mapView, tryZoomToPoint } from "@/esri-stuff/esriMap";
+import CameraLayer from "@/layers/CameraLayer";
+import {
+  getCameraInfosFromCluster,
+  getCameraInfoById,
+} from "@/layers/CameraLayer";
+
+import Point from "@arcgis/core/geometry/Point";
 
 export default defineComponent({
   components: { PopupView, Carousel, Slide, Pagination, Navigation },
-  props: {
-    Info: {
-      type: Object as PropType<FeaturesetInfo>,
-      required: true,
-    },
-    MapX: {
-      type: Number,
-      required: true,
-    },
-    MapY: {
-      type: Number,
-      required: true,
-    },
-  },
-  setup(props, context) {
+  setup() {
     // https://forum.vuejs.org/t/vue3-accessing-child-component-data-values-and-methods/111329/5
     const popupRef = ref<InstanceType<typeof PopupView>>();
-    const propsInfo = toRefs(props).Info;
-    const propsMapX = toRefs(props).MapX;
-    const propsMapY = toRefs(props).MapY;
-    const infos = ref<CameraInfo[]>([]);
     const mapX = ref(0);
     const mapY = ref(0);
+    const infos = ref<CameraInfo[]>([]);
 
-    watch([propsInfo, propsMapX, propsMapY], () => {
-      if (props.Info.layerName === CameraLayer.title) {
-        console.log("Camera Layer Popup!");
-        show();
-      } 
-      else {
-        close();
-      }
-    });
-
-    const show = () => {
+    const show = (pt: Point, cameraInfos: CameraInfo[]) => {
       const setVal = () => {
-        getCameraInfosByIds(props.Info.objectids).then((results) => {
-          infos.value = results;
-          mapX.value = props.MapX;
-          mapY.value = props.MapY;
-        });
+        mapX.value = pt.x;
+        mapY.value = pt.y;
+        infos.value = cameraInfos;
       };
       if (mapX.value !== 0 || mapY.value !== 0 || infos.value.length > 0) {
-        console.log("Clean and set popup value");
         // Clean up the previous data...
         close();
         // Wait for the next update. Without doing this, scrolling won't work correctly.
@@ -114,7 +90,6 @@ export default defineComponent({
           setVal();
         });
       } else {
-        console.log("Set popup value.");
         setVal();
       }
     };
@@ -129,6 +104,53 @@ export default defineComponent({
     const onImageLoaded = () => {
       popupRef.value?.adjustPositionSize();
     };
+    // MapView click event handler...
+    mapView.on("click", (event) => {
+      // Check if pointer is over one of the zoom extents...
+      const opts = {
+        include: [CameraLayer],
+      };
+      mapView.hitTest(event, opts).then((response) => {
+        // check if a feature is returned from the zoom layer...
+        if (response.results.length) {
+          // Show custom popup...
+          const g = response.results[0].graphic;
+          const pt = g.geometry as Point;
+          if (g.isAggregate) {
+            if (g.attributes.cluster_count < 10) {
+              // Try to get camera infos from the cluster...
+              getCameraInfosFromCluster(g, mapView, 3).then((results) => {
+                // Show multiple pictures if infos are returned...
+                results ? show(pt, results) : close();
+                if (!results) {
+                  // Zoom-in more...
+                  const zoomResult = tryZoomToPoint(g.geometry as Point);
+                  if (!zoomResult) {
+                    // Cannot zoom in any more, so show everything in cluster...
+                    getCameraInfosFromCluster(g, mapView).then((results) => {
+                      results ? show(pt, results) : close();
+                    });
+                  }
+                }
+              });
+            } else {
+              // Too many in a cluster, so click to zoom-in...
+              close();
+              tryZoomToPoint(g.geometry as Point);
+            }
+          } else {
+            const cameraId = g.getObjectId();
+            getCameraInfoById(cameraId).then((response) => {
+              if (response) {
+                show(pt, [response]);
+              }
+            });
+          }
+        } else {
+          close();
+        }
+      });
+    });
     return {
       popupRef,
       mapX,

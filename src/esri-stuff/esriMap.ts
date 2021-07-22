@@ -15,7 +15,9 @@ import ExtentInfo from "@/types/ExtentInfo";
 import { convert2EsriExtent } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 import EsriConfig from "@arcgis/core/config"
-// What is this used for?
+import Graphic from "@arcgis/core/Graphic";
+import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
+
 EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
 
 export const webmap = new WebMap({
@@ -30,26 +32,8 @@ export const mapView = new MapView({
     }
 });
 
-//{ "type": "point", "x": -13874849.374324558, "y": 6091725.406216802, "spatialReference": { "wkid": 4326 } }
-
-// mapView.on("click", (() => {
-//     mapView.graphics.removeAll()
-// }))
 // Zoom buttons are replaced with the custom Vue components.
 mapView.ui.remove("zoom");
-
-// const bookmarks = new Bookmarks({
-//     view: mapView,
-//     editingEnabled: true,
-// });
-
-// const bookmarkExpand = new Expand({
-//     view: mapView,
-//     content: bookmarks,
-//     expanded: false,
-// });
-
-// mapView.ui.add(bookmarkExpand, "top-right");
 
 export const init = (container: HTMLDivElement): void => {
     mapView.container = container;
@@ -109,4 +93,44 @@ export const toScreenXY = (mapX: number, mapY: number): { x: number, y: number }
 
 export const getLayer = (id: string): Layer => {
     return webmap.findLayerById(id);
+}
+
+/* 
+NOTE: This function only returns each feature if one of the following coditions is met:
+- maxCount is not set 
+- The number of features is less than the maxCount.
+- All the features are at the identical location.
+*/
+export const getIdsFromCluster = async (clusterGraphic: Graphic, layer: Layer, maxCount?: number): Promise<number[] | undefined> => {
+    const lyr = layer as GeoJSONLayer;
+    if (!lyr) {
+        throw "Invalid layer type was specified.";
+    }
+    const layerView = await mapView.whenLayerView(lyr);
+    const query = layerView.createQuery();
+    // Object ID of the cluster...
+    query.aggregateIds = [clusterGraphic.getObjectId()];
+    query.outFields = [lyr.objectIdField];
+    const result = await layerView.queryFeatures(query);
+    let doReturn = false;
+    if (!maxCount || result.features.length <= maxCount) {
+        doReturn = true;
+    }
+    else {
+        let identical = true;
+        const pt0 = result.features[0].geometry as Point;
+        for (let i = 1; i < result.features.length; i++) {
+            identical = pt0.equals(result.features[i].geometry as Point)
+            if (!identical) { break; }
+        }
+        if (identical) {
+            console.log("All points are located on the same spot!");
+            doReturn = true;
+        }
+        else { console.log("Points are not identical."); }
+    }
+    if (doReturn) {
+        const ids = result.features.map((feature) => { return feature.attributes[lyr.objectIdField]; })
+        return ids;
+    }
 }
