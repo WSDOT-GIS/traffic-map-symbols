@@ -77,7 +77,7 @@ const fields = [
 
 const layer = new GeoJSONLayer({
     id: "traffic-camera-layer",
-    url: "http://hqtob1webtmdev1/GISData/camera.json",
+    url: "http://hqtob1webtmdev1/GISData/Cameras.json",
     title: "Traffic Cameras",
     renderer: renderer,
     featureReduction: clusterConfig,

@@ -11,7 +11,7 @@
     }"
   >
     <div class="popup-header">
-      <div class="popup-title">
+      <div class="popup-title" :style="{ backgroundColor: TitleColor }">
         <slot name="title"></slot>
       </div>
       <button
@@ -52,6 +52,10 @@ export default defineComponent({
       // "m (medium) or w (wide)"
       type: String,
       required: false,
+    },
+    TitleColor: {
+      type: String,
+      required: true,
     },
   },
   setup(props, context) {
@@ -289,7 +293,6 @@ export default defineComponent({
   width: 50%;
   padding: 3px 0 3px 3px;
   color: #fff;
-  background-color: #33957f;
 }
 .popup-content {
   padding: 0 10px 10px 10px;
@@ -304,5 +307,47 @@ export default defineComponent({
   right: 0;
   border-style: none;
   background-color: transparent;
+}
+/* Picture stylings ******/
+.camera-popup-img-title {
+  margin: 5px 0;
+}
+.camera-popup-img {
+  width: 100%;
+  height: auto;
+}
+.carousel-item-container {
+  width: 100%;
+}
+</style>
+<style>
+.carousel__prev,
+.carousel__next {
+  background-color: transparent !important;
+}
+.carousel__prev {
+  left: 5%;
+  top: 30%;
+}
+.carousel__next {
+  right: 5%;
+  top: 30%;
+}
+svg.carousel__icon {
+  width: 2em;
+  height: 2em;
+  filter: drop-shadow(3px 3px 2px rgb(0 0 0 / 1));
+}
+.carousel__pagination-button {
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+}
+.carousel__pagination {
+  margin: 5px;
+}
+:root {
+  --carousel-color-primary: #007b5f;
+  --carousel-color-secondary: #97dccc;
 }
 </style>

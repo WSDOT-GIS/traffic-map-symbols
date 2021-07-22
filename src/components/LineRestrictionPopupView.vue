@@ -1,5 +1,5 @@
 <template>
-  <PopupView :MapX="mapX" :MapY="mapY" ref="popupRef" @close="close">
+  <PopupView :MapX="mapX" :MapY="mapY" TitleColor="--color-camera" ref="popupRef" @close="close">
     <template v-slot:title>
       Vehicle Restriction{{ infos.length > 1 ? " (" + infos.length + ")" : "" }}
     </template>
@@ -57,7 +57,7 @@ import { mapView } from "@/esri-stuff/esriMap";
 import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
 import Point from "@arcgis/core/geometry/Point";
 import RestrictionInfo from "@/types/RestrictionInfo";
-import {getGraphicsInfoById} from "@/utils/getGraphicsInfoByID"
+import {getGraphicsInfoById} from "@/utils/featureInfoUtil"
 export default defineComponent({
   components: { PopupView },
   setup() {
@@ -94,7 +94,7 @@ export default defineComponent({
       mapView.hitTest(event, opts).then((response) => {
        if (response.results.length) {
             const pt = response.results[0].mapPoint as Point;
-            getGraphicsInfoById(response.results[0].graphic, "ESRI_OID", LineRestrictionsLayer).then((results)=>{
+            getGraphicsInfoById(response.results[0].graphic, LineRestrictionsLayer).then((results)=>{
                 console.log(results)
                 console.log(pt)
                 results ? show(pt, results as RestrictionInfo) : close();

@@ -1,5 +1,5 @@
 <template>
-  <PopupView :MapX="mapX" :MapY="mapY" ref="popupRef" @close="close">
+  <PopupView :MapX="mapX" :MapY="mapY" TitleColor="--color-camera" ref="popupRef" @close="close">
     <template v-slot:title>
       Weather Station{{ infos.length > 1 ? " (" + infos.length + ")" : "" }}
     </template>
@@ -45,7 +45,7 @@ import { mapView } from "@/esri-stuff/esriMap";
 import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
 //import {getWeatherStationInfoById} from "@/layers/WeatherStationsLayer";
 import Point from "@arcgis/core/geometry/Point";
-import {getGraphicsInfoById} from "@/utils/getGraphicsInfoByID"
+import {getGraphicsInfoById} from "@/utils/featureInfoUtil"
 import WeatherStationInfo from "@/types/WeatherStationsInfo";
 export default defineComponent({
   components: { PopupView },
@@ -81,7 +81,7 @@ export default defineComponent({
       mapView.hitTest(event, opts).then((response) => {
        if (response.results.length) {
             const pt = response.results[0].graphic.geometry as Point;
-            getGraphicsInfoById(response.results[0].graphic, "WeatherStationId", WeatherStationsLayer).then((results)=>{
+            getGraphicsInfoById(response.results[0].graphic, WeatherStationsLayer).then((results)=>{
                 results ? show(pt, results as WeatherStationInfo) : close();
             })
         }

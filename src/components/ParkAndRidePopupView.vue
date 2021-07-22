@@ -1,96 +1,122 @@
 <template>
-  <PopupView :MapX="mapX" :MapY="mapY" ref="popupRef" @close="close">
-    <template v-slot:title>
-      Park and Ride{{ infos.length > 1 ? " (" + infos.length + ")" : "" }}
-    </template>
+  <PopupView :MapX="mapX" :MapY="mapY" TitleColor="purple" ref="popupRef" @close="close">
+    <template v-slot:title> Park and Ride </template>
     <template v-slot:default>
-        <table>
-            <tr>
-              <td class="popupKey">Address</td><td class="popupValue">{{infos["Address"]}}</td>
-            </tr>
-            <tr>
-              <td class="popupKey">Approximate Number of Spaces</td><td class="popupValue">{{infos["Approx_Numb_Spaces"]}}</td>
-            </tr>
-            <tr>
-              <td class="popupKey">City</td><td class="popupValue">{{infos["CityName"]}}</td>
-            </tr>
-            <tr>
-              <td class="popupKey">County</td><td class="popupValue">{{infos["CountyName"]}}</td>
-            </tr>
-            <tr>
-              <td class="popupKey">Lot Name</td><td class="popupValue">{{infos["Lot_Name"]}}</td>
-            </tr>
-            <tr>
-              <td class="popupKey">Date</td><td class="popupValue">{{Date(infos["PublishDate"])}}</td>
-            </tr>
-            <tr>
-              <td class="popupKey">Location</td><td class="popupValue">{{infos["Street_Location"]}}</td>
-            </tr>
-            <tr>
-              <td class="popupKey">Zip Code</td><td class="popupValue">{{infos["ZipCode"]}}</td>
-            </tr>
-        </table>
+      <table>
+        <tr>
+          <td class="popupKey">Address</td>
+          <td class="popupValue">{{ info?.Address }}</td>
+        </tr>
+        <tr>
+          <td class="popupKey">Approximate Number of Spaces</td>
+          <td class="popupValue">{{ info?.Approx_Numb_Spaces }}</td>
+        </tr>
+        <tr>
+          <td class="popupKey">City</td>
+          <td class="popupValue">{{ info?.CityName }}</td>
+        </tr>
+        <tr>
+          <td class="popupKey">County</td>
+          <td class="popupValue">{{ info?.CountyName }}</td>
+        </tr>
+        <tr>
+          <td class="popupKey">Lot Name</td>
+          <td class="popupValue">{{ info?.Lot_Name }}</td>
+        </tr>
+        <tr>
+          <td class="popupKey">Date</td>
+          <td class="popupValue">
+            {{ info ? new Date(info.PublishDate) : "" }}
+          </td>
+        </tr>
+        <tr>
+          <td class="popupKey">Location</td>
+          <td class="popupValue">{{ info?.Street_Location }}</td>
+        </tr>
+        <tr>
+          <td class="popupKey">Zip Code</td>
+          <td class="popupValue">{{ info?.ZipCode }}</td>
+        </tr>
+      </table>
     </template>
   </PopupView>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, PropType, ref, toRefs, watch } from "vue";
 import PopupView from "./PopupView.vue";
 import ParkRideInfo from "@/types/ParkRideInfo";
-import { mapView } from "@/esri-stuff/esriMap";
 import ParkRideLayer from "@/layers/ParkRideLayer";
-import Point from "@arcgis/core/geometry/Point";
-import {getGraphicsInfoById} from "@/utils/getGraphicsInfoByID"
+import { getFeatureInfoById } from "@/utils/featureInfoUtil";
+import FeaturesetInfo from "@/types/FeaturesetInfo";
 export default defineComponent({
   components: { PopupView },
-  setup() {
+  props: {
+    Info: {
+      type: Object as PropType<FeaturesetInfo>,
+      required: true,
+    },
+    MapX: {
+      type: Number,
+      required: true,
+    },
+    MapY: {
+      type: Number,
+      required: true,
+    },
+  },
+  setup(props) {
     // https://forum.vuejs.org/t/vue3-accessing-child-component-data-values-and-methods/111329/5
     const popupRef = ref<InstanceType<typeof PopupView>>();
+    const propsInfo = toRefs(props).Info;
+    const propsMapX = toRefs(props).MapX;
+    const propsMapY = toRefs(props).MapY;
     const mapX = ref(0);
     const mapY = ref(0);
-    const infos = ref<ParkRideInfo>();
+    const info = ref<ParkRideInfo>();
 
-    const show = (pt: Point, parkRideInfos: ParkRideInfo) => {
-        mapX.value = pt.x;
-        mapY.value = pt.y;
-        infos.value = parkRideInfos;
- 
+    watch([propsInfo, propsMapX, propsMapY], () => {
+      if (props.Info.layerName === ParkRideLayer.title) {
+        show();
+      } else {
+        close();
+      }
+    });
+
+    const show = () => {
+      const setVal = () => {
+        getFeatureInfoById(props.Info.objectids[0], ParkRideLayer).then(
+          (result) => {
+            if (result) {
+              info.value = result as ParkRideInfo;
+              mapX.value = props.MapX;
+              mapY.value = props.MapY;
+            }
+          }
+        );
+      };
+      if (mapX.value !== 0 || mapY.value !== 0 || info.value) {
+        // console.log("Clean and set popup value");
+        // Clean up the previous data...
+        close();
+        setVal();
+      } else {
+        // console.log("Set popup value.");
+        setVal();
+      }
     };
     // Setting XY to 0 closes the popup...
     const close = () => {
       mapX.value = 0;
       mapY.value = 0;
-      infos.value;
+      // info.value = undefined;
     };
 
-    const onImageLoaded = () => {
-      popupRef.value?.adjustPositionSize();
-    };
-    // MapView click event handler...
-    mapView.on("click", (event) => {
-      // Check if pointer is over one of the zoom extents...
-      const opts = {
-        include: [ParkRideLayer],
-      };
-      mapView.hitTest(event, opts).then((response) => {
-       if (response.results.length) {
-            const pt = response.results[0].graphic.geometry as Point;
-            getGraphicsInfoById(response.results[0].graphic, "OBJECTID", ParkRideLayer).then((results)=>{
-                results ? show(pt, results as ParkRideInfo) : close();
-            })
-        }
-         else {
-          close();
-        }
-      });
-    });
     return {
       popupRef,
       mapX,
       mapY,
-      infos,
+      info,
       close,
-      onImageLoaded,
     };
   },
 });
@@ -100,13 +126,12 @@ export default defineComponent({
 .camera-popup-img {
   max-width: 100%;
 }
-.popupKey{
-    font-weight: bold;
-    text-align: left;
-    background-color: lightgrey;
+.popupKey {
+  font-weight: bold;
+  text-align: left;
+  background-color: lightgrey;
 }
-.popupValue{
-    text-align: left;
+.popupValue {
+  text-align: left;
 }
-
 </style>

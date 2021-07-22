@@ -26,7 +26,7 @@
     @clicked="zoomMetroEventHandler"
   ></ZoomPopupView>
   <CameraPopupView :MapX="popupX" :MapY="popupY" :Info="popupInfo" />
-  <ParkRidePopupView />
+  <ParkRidePopupView :MapX="popupX" :MapY="popupY" :Info="popupInfo" />
   <PointRestrictionPopupView />
   <LineRestrictionPopupView />
   <MountainPassesPopupView />

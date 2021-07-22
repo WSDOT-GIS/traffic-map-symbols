@@ -1,5 +1,5 @@
 <template>
-  <PopupView :MapX="mapX" :MapY="mapY" ref="popupRef" @close="close">
+  <PopupView :MapX="mapX" :MapY="mapY" TitleColor="--color-camera" ref="popupRef" @close="close">
     <template v-slot:title>
       Mountain Pass{{ infos.length > 1 ? " (" + infos.length + ")" : "" }}
     </template>
@@ -34,7 +34,7 @@ import { mapView } from "@/esri-stuff/esriMap";
 import MountainPassesLayer from "@/layers/MountainPassesLayer";
 import Point from "@arcgis/core/geometry/Point";
 import MountainPassesInfo from "@/types/MountainPassesInfo";
-import {getGraphicsInfoById} from "@/utils/getGraphicsInfoByID"
+import {getGraphicsInfoById} from "@/utils/featureInfoUtil"
 export default defineComponent({
   components: { PopupView },
   setup() {
@@ -68,7 +68,7 @@ export default defineComponent({
        mapView.hitTest(event, opts).then((response) => {
        if (response.results.length) {
             const pt = response.results[0].mapPoint as Point;
-            getGraphicsInfoById(response.results[0].graphic, "MountainPassId", MountainPassesLayer).then((results)=>{
+            getGraphicsInfoById(response.results[0].graphic, MountainPassesLayer).then((results)=>{
                 console.log(results)
                 console.log(pt)
                 results ? show(pt, results as MountainPassesInfo) : close();

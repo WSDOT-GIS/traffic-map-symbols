@@ -1,5 +1,5 @@
 <template>
-  <PopupView :MapX="mapX" :MapY="mapY" Width="w" ref="popupRef" @close="close">
+  <PopupView :MapX="mapX" :MapY="mapY" Width="w" TitleColor="#33957f" ref="popupRef" @close="close">
     <template v-slot:title>
       Camera{{ infos.length > 1 ? " (" + infos.length + ")" : "" }}
     </template>
@@ -42,9 +42,10 @@
             </table>
           </div>
         </Slide>
-        <template #addons="{ slidesCount }">
+        <template #addons="{ slidesCount, currentSlide }">
           <navigation v-if="slidesCount > 1" />
           <pagination v-if="slidesCount > 1" />
+          <p>{{currentSlide}}</p>
         </template>
       </Carousel>
     </template>
@@ -76,7 +77,7 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props, context) {
+  setup(props) {
     // https://forum.vuejs.org/t/vue3-accessing-child-component-data-values-and-methods/111329/5
     const popupRef = ref<InstanceType<typeof PopupView>>();
     const propsInfo = toRefs(props).Info;
@@ -105,7 +106,7 @@ export default defineComponent({
         });
       };
       if (mapX.value !== 0 || mapY.value !== 0 || infos.value.length > 0) {
-        console.log("Clean and set popup value");
+        // console.log("Clean and set popup value");
         // Clean up the previous data...
         close();
         // Wait for the next update. Without doing this, scrolling won't work correctly.
@@ -114,7 +115,7 @@ export default defineComponent({
           setVal();
         });
       } else {
-        console.log("Set popup value.");
+        // console.log("Set popup value.");
         setVal();
       }
     };
