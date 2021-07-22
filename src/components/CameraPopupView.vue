@@ -1,53 +1,63 @@
 <template>
-  <PopupView :MapX="mapX" :MapY="mapY" Width="w" TitleColor="#33957f" ref="popupRef" @close="close">
+  <PopupView
+    :MapX="mapX"
+    :MapY="mapY"
+    Width="w"
+    TitleColor="#33957f"
+    ref="popupRef"
+    @close="close"
+  >
     <template v-slot:title>
       Camera{{ infos.length > 1 ? " (" + infos.length + ")" : "" }}
     </template>
     <template v-slot:default>
-      <Carousel :items-to-show="1" :wrapAround="true">
+      <h4 class="camera-popup-img-title">{{ infos[currentIdx].title }}</h4>
+      <Carousel
+        :items-to-show="1"
+        :wrapAround="true"
+        @update:modelValue="currentIdx = $event"
+      >
         <Slide v-for="eachInfo in infos" :key="eachInfo.id">
           <div class="carousel-item-container">
-            <h4 class="camera-popup-img-title">{{ eachInfo.title }}</h4>
             <img
               class="camera-popup-img"
               :src="eachInfo.imageURL"
               :alt="eachInfo.id"
               @load="onImageLoaded"
             />
-            <table>
-              <tr>
-                <td class="popupKey">ID</td>
-                <td class="popupValue">{{ eachInfo.id }}</td>
-              </tr>
-              <tr>
-                <td class="popupKey">SR</td>
-                <td class="popupValue">{{ eachInfo.srid }}</td>
-              </tr>
-              <tr>
-                <td class="popupKey">Milepost</td>
-                <td class="popupValue">{{ eachInfo.milepost }}</td>
-              </tr>
-              <tr>
-                <td class="popupKey">Direction</td>
-                <td class="popupValue">{{ eachInfo.compassDirection }}</td>
-              </tr>
-              <tr>
-                <td class="popupKey">Owner Name</td>
-                <td class="popupValue">{{ eachInfo.ownerName }}</td>
-              </tr>
-              <tr>
-                <td class="popupKey">Owner URL</td>
-                <td class="popupValue">{{ eachInfo.ownerURL }}</td>
-              </tr>
-            </table>
           </div>
         </Slide>
-        <template #addons="{ slidesCount, currentSlide }">
+        <template #addons="{ slidesCount }">
           <navigation v-if="slidesCount > 1" />
           <pagination v-if="slidesCount > 1" />
-          <p>{{currentSlide}}</p>
         </template>
       </Carousel>
+      <table>
+        <tr>
+          <td class="popupKey">ID</td>
+          <td class="popupValue">{{ infos[currentIdx].id }}</td>
+        </tr>
+        <tr>
+          <td class="popupKey">SR</td>
+          <td class="popupValue">{{ infos[currentIdx].srid }}</td>
+        </tr>
+        <tr>
+          <td class="popupKey">Milepost</td>
+          <td class="popupValue">{{ infos[currentIdx].milepost }}</td>
+        </tr>
+        <tr>
+          <td class="popupKey">Direction</td>
+          <td class="popupValue">{{ infos[currentIdx].compassDirection }}</td>
+        </tr>
+        <tr>
+          <td class="popupKey">Owner Name</td>
+          <td class="popupValue">{{ infos[currentIdx].ownerName }}</td>
+        </tr>
+        <tr>
+          <td class="popupKey">Owner URL</td>
+          <td class="popupValue">{{ infos[currentIdx].ownerURL }}</td>
+        </tr>
+      </table>
     </template>
   </PopupView>
 </template>
@@ -84,6 +94,7 @@ export default defineComponent({
     const propsMapX = toRefs(props).MapX;
     const propsMapY = toRefs(props).MapY;
     const infos = ref<CameraInfo[]>([]);
+    const currentIdx = ref(0);
     const mapX = ref(0);
     const mapY = ref(0);
 
@@ -91,12 +102,13 @@ export default defineComponent({
       if (props.Info.layerName === CameraLayer.title) {
         console.log("Camera Layer Popup!");
         show();
-      } 
-      else {
+      } else {
         close();
       }
     });
-
+    watch(currentIdx, () => {
+      console.log("Test: " + currentIdx.value);
+    });
     const show = () => {
       const setVal = () => {
         getCameraInfosByIds(props.Info.objectids).then((results) => {
@@ -137,6 +149,7 @@ export default defineComponent({
       infos,
       close,
       onImageLoaded,
+      currentIdx,
     };
   },
 });
@@ -161,11 +174,11 @@ export default defineComponent({
 }
 .carousel__prev {
   left: 5%;
-  top: 30%;
+  top: 40%;
 }
 .carousel__next {
   right: 5%;
-  top: 30%;
+  top: 40%;
 }
 svg.carousel__icon {
   width: 2em;
