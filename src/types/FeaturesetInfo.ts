@@ -1,6 +1,6 @@
 interface FeaturesetInfo {
-    layerName: string;
-    objectids: number[];
+    layerTitle: string;
+    ids: number[];
 }
 
 export default FeaturesetInfo;

@@ -10,9 +10,15 @@
       maxHeight: maxHeight + 'px',
     }"
   >
-    <div class="popup-header">
-      <div class="popup-title" :style="{ backgroundColor: TitleColor }">
-        <slot name="title"></slot>
+    <div class="popup-header w3-left-align">
+      <div
+        class="popup-banner"
+        :style="{
+          backgroundColor: LightThemeColor,
+          borderColor: DarkThemeColor,
+        }"
+      >
+        {{ BannerText }}
       </div>
       <button
         class="popup-close-button w3-button w3-padding-small"
@@ -21,24 +27,57 @@
         x
       </button>
     </div>
-    <div class="popup-subtitle">
-      <slot name="subtitle"></slot>
-    </div>
+    <h4 class="popup-title">
+      {{ Features[currentIdx].attributes[TitleFieldName] }}
+    </h4>
+    <Carousel v-if="PictureFieldName"
+      :items-to-show="1"
+      :wrapAround="true"
+      @update:modelValue="currentIdx = $event"
+      :style="pagenationStyle"
+    >
+      <Slide v-for="eachFeature in Features" :key="eachFeature.id">
+        <div class="carousel-item-container">
+          <img
+            class="popup-img"
+            :src="PictureFieldName?eachFeature.attributes[PictureFieldName]:''"
+            :alt="eachFeature.id"
+            @load="adjustPositionSize"
+          />
+        </div>
+      </Slide>
+      <template #addons="{ slidesCount }">
+        <navigation v-if="slidesCount > 1" />
+        <pagination v-if="slidesCount > 1" />
+      </template>
+    </Carousel>
     <div class="popup-content">
       <slot></slot>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, onUpdated, ref, toRefs, watch } from "vue";
+import {
+  computed,
+  defineComponent,
+  onUpdated,
+  PropType,
+  ref,
+  toRefs,
+  watch,
+} from "vue";
+import "vue3-carousel/dist/carousel.css";
+import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
 import Graphic from "@arcgis/core/Graphic";
 import Point from "@arcgis/core/geometry/Point";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 
 import { mapView, toScreenXY } from "@/esri-stuff/esriMap";
 import HighlightSymbol from "@/symbols/HighlightSymbol";
+import FeatureInfo from "@/types/FeatureInfo";
 
 export default defineComponent({
+  components: { Carousel, Slide, Pagination, Navigation },
   props: {
     MapX: {
       type: Number,
@@ -53,9 +92,29 @@ export default defineComponent({
       type: String,
       required: false,
     },
-    TitleColor: {
+    DarkThemeColor: {
       type: String,
       required: true,
+    },
+    LightThemeColor: {
+      type: String,
+      required: true,
+    },
+    BannerText: {
+      type: String,
+      required: true,
+    },
+    Features: {
+      type: Array as PropType<Array<FeatureInfo>>,
+      required: true,
+    },
+    TitleFieldName: {
+      type: String,
+      required: true,
+    },
+    PictureFieldName: {
+      type: String,
+      required: false,
     },
   },
   setup(props, context) {
@@ -72,6 +131,14 @@ export default defineComponent({
     const screenX_adjusted = ref(-1000);
     const screenY_adjusted = ref(-1000);
     const visible = ref(false);
+    // Index of the currently shown feature.
+    const currentIdx = ref(0);
+    // Reset the index to 0 when the features change...
+    const propFeatures = toRefs(props).Features;
+    watch(propFeatures, () => {
+      currentIdx.value = 0;
+    });
+    // Feature highlight.
     let gHighlight: Graphic;
     // Set the width...
     // Default...
@@ -90,6 +157,12 @@ export default defineComponent({
         sizeClass.l3 = true;
       }
     }
+    const pagenationStyle = computed(() => {
+      return {
+        "--carousel-color-primary": props.DarkThemeColor,
+        "--carousel-color-secondary": props.LightThemeColor,
+      };
+    });
 
     const close = () => {
       // Let the parent handle the close event.
@@ -104,6 +177,9 @@ export default defineComponent({
     // Adjust popup position when the props change...
     watch([mapX, mapY], () => {
       setScreenXY();
+    });
+    watch(currentIdx, () => {
+      context.emit("idxUpdate", currentIdx);
     });
     // Pointer drag event handler...
     mapView.on("drag", (event) => {
@@ -126,7 +202,6 @@ export default defineComponent({
       // console.log("***********onUpdated");
       adjustPositionSize();
     });
-
     const setVisibility = () => {
       if (
         screenX.value < 0 ||
@@ -268,9 +343,11 @@ export default defineComponent({
       screenY_adjusted,
       maxHeight,
       visible,
+      currentIdx,
       sizeClass,
       close,
       adjustPositionSize,
+      pagenationStyle,
     };
   },
 });
@@ -285,21 +362,25 @@ export default defineComponent({
 .popup-header {
   position: relative;
   margin: 5px 0;
-  height: auto;
   width: 100%;
 }
-.popup-title {
+.popup-banner {
   left: 0;
-  width: 50%;
-  padding: 3px 0 3px 3px;
-  color: #fff;
+  display: inline-block;
+  width: auto;
+  padding: 5px 10px;
+  color: #000;
+  text-align: left;
+  border-style: solid;
+  border-width: 2px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+.popup-title {
+  margin: 5px 0;
 }
 .popup-content {
   padding: 0 10px 10px 10px;
-}
-.popup-subtitle {
-  font-size: 15px;
-  font-weight: bold;
 }
 .popup-close-button {
   position: absolute;
@@ -309,10 +390,8 @@ export default defineComponent({
   background-color: transparent;
 }
 /* Picture stylings ******/
-.camera-popup-img-title {
-  margin: 5px 0;
-}
-.camera-popup-img {
+
+.popup-img {
   width: 100%;
   height: auto;
 }
@@ -345,9 +424,5 @@ svg.carousel__icon {
 }
 .carousel__pagination {
   margin: 5px;
-}
-:root {
-  --carousel-color-primary: #007b5f;
-  --carousel-color-secondary: #97dccc;
 }
 </style>

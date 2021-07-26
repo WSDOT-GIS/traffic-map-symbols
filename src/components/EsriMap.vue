@@ -25,12 +25,12 @@
     :Label="zoomPopupLabel"
     @clicked="zoomMetroEventHandler"
   ></ZoomPopupView>
-  <CameraPopupView :MapX="popupX" :MapY="popupY" :Info="popupInfo" />
-  <ParkRidePopupView :MapX="popupX" :MapY="popupY" :Info="popupInfo" />
+  <CameraPopupView :MapX="popupX" :MapY="popupY" :Featureset="popupInfo" />
+  <!-- <ParkRidePopupView :MapX="popupX" :MapY="popupY" :Info="popupInfo" />
   <PointRestrictionPopupView />
   <LineRestrictionPopupView />
   <MountainPassesPopupView />
-  <WeatherStationsPopupView />
+  <WeatherStationsPopupView /> -->
   <LeftPaneView />
 </template>
 
@@ -64,11 +64,11 @@ import MountainPassLayer from "@/layers/MountainPassesLayer";
 /* Components */
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
 import CameraPopupView from "@/components/CameraPopupView.vue";
-import ParkRidePopupView from "@/components/ParkAndRidePopupView.vue";
-import PointRestrictionPopupView from "@/components/PointRestrictionPopupView.vue";
-import LineRestrictionPopupView from "@/components/LineRestrictionPopupView.vue";
-import MountainPassesPopupView from "@/components/MountainPassesPopupView.vue";
-import WeatherStationsPopupView from "@/components/WeatherStationPopup.vue";
+// import ParkRidePopupView from "@/components/ParkAndRidePopupView.vue";
+// import PointRestrictionPopupView from "@/components/PointRestrictionPopupView.vue";
+// import LineRestrictionPopupView from "@/components/LineRestrictionPopupView.vue";
+// import MountainPassesPopupView from "@/components/MountainPassesPopupView.vue";
+// import WeatherStationsPopupView from "@/components/WeatherStationPopup.vue";
 import LeftPaneView from "@/components/LeftPaneView.vue";
 import BasemapView from "@/components/BasemapView.vue";
 import CoordinatesView from "@/components/CoordinatesView.vue";
@@ -79,11 +79,11 @@ export default defineComponent({
   components: {
     ZoomPopupView,
     CameraPopupView,
-    ParkRidePopupView,
-    PointRestrictionPopupView,
-    LineRestrictionPopupView,
-    MountainPassesPopupView,
-    WeatherStationsPopupView,
+    // ParkRidePopupView,
+    // PointRestrictionPopupView,
+    // LineRestrictionPopupView,
+    // MountainPassesPopupView,
+    // WeatherStationsPopupView,
     LeftPaneView,
     BasemapView,
     CoordinatesView,
@@ -118,15 +118,15 @@ export default defineComponent({
     // Feature Popup...
     const popupX = ref(0);
     const popupY = ref(0);
-    const popupInfo = ref<FeaturesetInfo>({ layerName: "", objectids: [] });
+    const popupInfo = ref<FeaturesetInfo>({ layerTitle: "", ids: [] });
     //
-    const showPopup = (layerName: string, ids: number[], pt: Point) => {
-      popupInfo.value = { layerName: layerName, objectids: ids };
+    const showPopup = (layerTitle: string, ids: number[], pt: Point) => {
+      popupInfo.value = { layerTitle: layerTitle, ids: ids };
       popupX.value = pt.x;
       popupY.value = pt.y;
     };
     const closePopup = () => {
-      popupInfo.value = { layerName: "", objectids: [] };
+      popupInfo.value = { layerTitle: "", ids: [] };
       popupX.value = 0;
       popupY.value = 0;
     };

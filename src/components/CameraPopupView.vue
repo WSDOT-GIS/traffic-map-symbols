@@ -3,78 +3,71 @@
     :MapX="mapX"
     :MapY="mapY"
     Width="w"
-    TitleColor="#33957f"
-    ref="popupRef"
+    LightThemeColor="#cce5df"
+    DarkThemeColor="#007b5f"
+    :BannerText="
+      'Camera' + (features.length > 1 ? ' (' + features.length + ')' : '')
+    "
+    :Features="features"
+    TitleFieldName="CameraTitle"
+    PictureFieldName="ImageURL"
     @close="close"
+    @idxUpdate="currentIdx = $event"
   >
-    <template v-slot:title>
-      Camera{{ infos.length > 1 ? " (" + infos.length + ")" : "" }}
-    </template>
     <template v-slot:default>
-      <h4 class="camera-popup-img-title">{{ infos[currentIdx].title }}</h4>
-      <Carousel
-        :items-to-show="1"
-        :wrapAround="true"
-        @update:modelValue="currentIdx = $event"
-      >
-        <Slide v-for="eachInfo in infos" :key="eachInfo.id">
-          <div class="carousel-item-container">
-            <img
-              class="camera-popup-img"
-              :src="eachInfo.imageURL"
-              :alt="eachInfo.id"
-              @load="onImageLoaded"
-            />
-          </div>
-        </Slide>
-        <template #addons="{ slidesCount }">
-          <navigation v-if="slidesCount > 1" />
-          <pagination v-if="slidesCount > 1" />
-        </template>
-      </Carousel>
       <table>
         <tr>
           <td class="popupKey">ID</td>
-          <td class="popupValue">{{ infos[currentIdx].id }}</td>
+          <td class="popupValue">{{ features[currentIdx].id }}</td>
         </tr>
         <tr>
           <td class="popupKey">SR</td>
-          <td class="popupValue">{{ infos[currentIdx].srid }}</td>
+          <td class="popupValue">
+            {{ features[currentIdx].attributes["WSDOTSRID"] }}
+          </td>
         </tr>
         <tr>
           <td class="popupKey">Milepost</td>
-          <td class="popupValue">{{ infos[currentIdx].milepost }}</td>
+          <td class="popupValue">
+            {{ features[currentIdx].attributes["StateRouteMilepost"] }}
+          </td>
         </tr>
         <tr>
           <td class="popupKey">Direction</td>
-          <td class="popupValue">{{ infos[currentIdx].compassDirection }}</td>
+          <td class="popupValue">
+            {{ features[currentIdx].attributes["CompassDirection"] }}
+          </td>
         </tr>
         <tr>
           <td class="popupKey">Owner Name</td>
-          <td class="popupValue">{{ infos[currentIdx].ownerName }}</td>
+          <td class="popupValue">
+            {{ features[currentIdx].attributes["CameraOwnerName"] }}
+          </td>
         </tr>
         <tr>
           <td class="popupKey">Owner URL</td>
-          <td class="popupValue">{{ infos[currentIdx].ownerURL }}</td>
+          <td class="popupValue">
+            {{ features[currentIdx].attributes["CameraOwnerURL"] }}
+          </td>
         </tr>
       </table>
     </template>
   </PopupView>
 </template>
 <script lang="ts">
-import { defineComponent, nextTick, PropType, ref, toRefs, watch } from "vue";
+import { defineComponent, nextTick, PropType, ref, watch } from "vue";
 import "vue3-carousel/dist/carousel.css";
-import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
 
 import PopupView from "./PopupView.vue";
-import CameraInfo from "@/types/CameraInfo";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
-import CameraLayer, { getCameraInfosByIds } from "@/layers/CameraLayer";
+import { getFeatureInfosByIds } from "@/utils/featureInfoUtil";
+import CameraLayer from "@/layers/CameraLayer";
+import FeatureInfo from "@/types/FeatureInfo";
 
 export default defineComponent({
-  components: { PopupView, Carousel, Slide, Pagination, Navigation },
+  components: { PopupView },
   props: {
-    Info: {
+    Featureset: {
       type: Object as PropType<FeaturesetInfo>,
       required: true,
     },
@@ -88,36 +81,30 @@ export default defineComponent({
     },
   },
   setup(props) {
-    // https://forum.vuejs.org/t/vue3-accessing-child-component-data-values-and-methods/111329/5
-    const popupRef = ref<InstanceType<typeof PopupView>>();
-    const propsInfo = toRefs(props).Info;
-    const propsMapX = toRefs(props).MapX;
-    const propsMapY = toRefs(props).MapY;
-    const infos = ref<CameraInfo[]>([]);
+    const features = ref<FeatureInfo[]>([]);
     const currentIdx = ref(0);
     const mapX = ref(0);
     const mapY = ref(0);
 
-    watch([propsInfo, propsMapX, propsMapY], () => {
-      if (props.Info.layerName === CameraLayer.title) {
+    watch(props, () => {
+      if (props.Featureset.layerTitle === CameraLayer.title) {
         console.log("Camera Layer Popup!");
         show();
       } else {
         close();
       }
     });
-    watch(currentIdx, () => {
-      console.log("Test: " + currentIdx.value);
-    });
     const show = () => {
       const setVal = () => {
-        getCameraInfosByIds(props.Info.objectids).then((results) => {
-          infos.value = results;
-          mapX.value = props.MapX;
-          mapY.value = props.MapY;
-        });
+        getFeatureInfosByIds(props.Featureset.ids, CameraLayer).then(
+          (results) => {
+            features.value = results;
+            mapX.value = props.MapX;
+            mapY.value = props.MapY;
+          }
+        );
       };
-      if (mapX.value !== 0 || mapY.value !== 0 || infos.value.length > 0) {
+      if (mapX.value !== 0 || mapY.value !== 0 || features.value.length > 0) {
         // console.log("Clean and set popup value");
         // Clean up the previous data...
         close();
@@ -136,19 +123,14 @@ export default defineComponent({
       // console.log("close CameraPopup");
       mapX.value = 0;
       mapY.value = 0;
-      infos.value = [];
+      features.value = [];
     };
 
-    const onImageLoaded = () => {
-      popupRef.value?.adjustPositionSize();
-    };
     return {
-      popupRef,
       mapX,
       mapY,
-      infos,
+      features,
       close,
-      onImageLoaded,
       currentIdx,
     };
   },
@@ -193,10 +175,10 @@ svg.carousel__icon {
 .carousel__pagination {
   margin: 5px;
 }
-:root {
+/* :root {
   --carousel-color-primary: #007b5f;
   --carousel-color-secondary: #97dccc;
-}
+} */
 .popupKey {
   font-weight: bold;
   text-align: left;
