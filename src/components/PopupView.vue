@@ -196,9 +196,9 @@ export default defineComponent({
       context.emit("idxUpdate", currentIdx);
     });
     // Pointer drag event handler...
-    mapView.on("drag", (event) => {
-      onMapViewDrag(event);
-    });
+    // mapView.on("drag", (event) => {
+    //   onMapViewDrag(event);
+    // });
     // MapView resize event...
     mapView.on("resize", () => {
       if (mapX.value < 0 && mapY.value > 0) {
@@ -210,6 +210,18 @@ export default defineComponent({
       if (mapX.value < 0 && mapY.value > 0) {
         setScreenXY();
       }
+    });
+    mapView.watch("center", (newValue, oldValue) => {
+      if (!props.Features || !oldValue) {
+        return;
+      }
+      const newCenter = mapView.toScreen(newValue);
+      const oldCenter = mapView.toScreen(oldValue);
+      const diffX = oldCenter.x - newCenter.x;
+      const diffY = oldCenter.y - newCenter.y;
+      screenX.value += diffX;
+      screenY.value += diffY;
+      adjustPositionSize();
     });
     //
     const onImgLoad = () => {
@@ -279,39 +291,40 @@ export default defineComponent({
     //     mapView.graphics.remove(gHighlight);
     //   }
     // };
+
     // Variables used to store the original position while map view is being dragged.
-    let orgScreenX = 0;
-    let orgScreenY = 0;
-    // MapView drag event handler
-    const onMapViewDrag = (event: {
-      button: number;
-      action: string;
-      x: number;
-      y: number;
-      origin: { x: number; y: number };
-    }) => {
-      if (event.button === 0) {
-        // Update popup position...
-        if (mapX.value < 0 && mapY.value > 0) {
-          if (event.action === "start") {
-            orgScreenX = screenX.value;
-            orgScreenY = screenY.value;
-          }
-          const diffX = event.x - event.origin.x;
-          const diffY = event.y - event.origin.y;
-          screenX.value = orgScreenX + diffX;
-          screenY.value = orgScreenY + diffY;
-          if (event.action === "end") {
-            orgScreenX = 0;
-            orgScreenY = 0;
-          }
-          console.log(
-            "Map drag, screen X: " + screenX.value + ", Y: " + screenY.value
-          );
-          adjustPositionSize();
-        }
-      }
-    };
+    // let orgScreenX = 0;
+    // let orgScreenY = 0;
+    // // MapView drag event handler
+    // const onMapViewDrag = (event: {
+    //   button: number;
+    //   action: string;
+    //   x: number;
+    //   y: number;
+    //   origin: { x: number; y: number };
+    // }) => {
+    //   if (event.button === 0) {
+    //     // Update popup position...
+    //     if (mapX.value < 0 && mapY.value > 0) {
+    //       if (event.action === "start") {
+    //         orgScreenX = screenX.value;
+    //         orgScreenY = screenY.value;
+    //       }
+    //       const diffX = event.x - event.origin.x;
+    //       const diffY = event.y - event.origin.y;
+    //       screenX.value = orgScreenX + diffX;
+    //       screenY.value = orgScreenY + diffY;
+    //       if (event.action === "end") {
+    //         orgScreenX = 0;
+    //         orgScreenY = 0;
+    //       }
+    //       console.log(
+    //         "Map drag, screen X: " + screenX.value + ", Y: " + screenY.value
+    //       );
+    //       adjustPositionSize();
+    //     }
+    //   }
+    // };
     //
     let prevScreenX = 0;
     let prevScreenY = 0;
@@ -367,11 +380,12 @@ export default defineComponent({
         if (newLeft < 0 || newLeft + w > mapView.width) {
           shiftX = newLeft < 0 ? newLeft : newLeft + w - mapView.width;
         }
-        setPosition(newTop - shiftY, newLeft - shiftX);
+        //setPosition(newTop - shiftY, newLeft - shiftX);
+        setPosition(newTop, newLeft);
         if (shiftY !== 0 || shiftX !== 0) {
           panMap(shiftX, shiftY);
-          screenX.value -= shiftX;
-          screenY.value -= shiftY;
+          // screenX.value -= shiftX;
+          // screenY.value -= shiftY;
         }
       }
     };

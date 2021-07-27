@@ -4,6 +4,10 @@ import Point from "@arcgis/core/geometry/Point";
 import { whenTrue } from "@arcgis/core/core/watchUtils";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Layer from "@arcgis/core/layers/Layer";
+import EsriConfig from "@arcgis/core/config"
+import Graphic from "@arcgis/core/Graphic";
+import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
+
 import TrafficLayer from "@/layers/TrafficLayer";
 import ParkRideLayer from "@/layers/ParkRideLayer";
 import CameraLayer from "@/layers/CameraLayer";
@@ -14,9 +18,7 @@ import MountainPassLayer from "@/layers/MountainPassesLayer";
 import ExtentInfo from "@/types/ExtentInfo";
 import { convert2EsriExtent } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
-import EsriConfig from "@arcgis/core/config"
-import Graphic from "@arcgis/core/Graphic";
-import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
+
 
 EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
 
@@ -91,7 +93,7 @@ export const toScreenXY = (mapX: number, mapY: number): { x: number, y: number }
     return { x: screenPt.x, y: screenPt.y };
 }
 
-export const panMap = (shiftX: number, shiftY: number) => {
+export const panMap = async (shiftX: number, shiftY: number):Promise<any> => {
     console.log("Shift X: " + shiftX + ", Y: " + shiftY);
     const screenCenter = mapView.toScreen(mapView.center);
     console.log(
@@ -101,7 +103,11 @@ export const panMap = (shiftX: number, shiftY: number) => {
         x: screenCenter.x + shiftX,
         y: screenCenter.y + shiftY,
     });
-    mapView.center = mapCenter;
+    //mapView.center = mapCenter;
+    await mapView.goTo(mapCenter, {
+        duration: 300,
+        easing: "ease-in"
+    });
     console.log("Map center X: " + mapCenter.x + ", Y: " + mapCenter.y);
 }
 
