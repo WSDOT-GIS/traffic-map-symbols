@@ -111,6 +111,7 @@ hr.horizontal-divider {
   position: relative;
   width: 100%;
   height: 80%;
+  overflow: hidden;
 }
 
 #map-container > * {

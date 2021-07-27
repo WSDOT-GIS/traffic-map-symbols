@@ -15,7 +15,12 @@
     @idxUpdate="currentIdx = $event"
   >
     <template v-slot:default>
-      <table>
+      <div>
+        <b>Camera Direction: </b
+        >{{ features[currentIdx].attributes["CompassDirection"] }}
+      </div>
+      <div><b>Refresh Rate: </b>Data is not available</div>
+      <!-- <table>
         <tr>
           <td class="popupKey">ID</td>
           <td class="popupValue">{{ features[currentIdx].id }}</td>
@@ -50,7 +55,7 @@
             {{ features[currentIdx].attributes["CameraOwnerURL"] }}
           </td>
         </tr>
-      </table>
+      </table> -->
     </template>
   </PopupView>
 </template>
@@ -137,56 +142,3 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-.camera-popup-img-title {
-  margin: 5px 0;
-}
-.camera-popup-img {
-  width: 100%;
-  height: auto;
-}
-.carousel-item-container {
-  width: 100%;
-}
-</style>
-<style>
-.carousel__prev,
-.carousel__next {
-  background-color: transparent !important;
-}
-.carousel__prev {
-  left: 5%;
-  top: 40%;
-}
-.carousel__next {
-  right: 5%;
-  top: 40%;
-}
-svg.carousel__icon {
-  width: 2em;
-  height: 2em;
-  filter: drop-shadow(3px 3px 2px rgb(0 0 0 / 1));
-}
-.carousel__pagination-button {
-  width: 10px;
-  height: 10px;
-  border-radius: 10px;
-}
-.carousel__pagination {
-  margin: 5px;
-}
-/* :root {
-  --carousel-color-primary: #007b5f;
-  --carousel-color-secondary: #97dccc;
-} */
-.popupKey {
-  font-weight: bold;
-  text-align: left;
-  background-color: lightgrey;
-}
-.popupValue {
-  text-align: left;
-  /* word-wrap: break-word; */
-  word-break: break-all;
-}
-</style>

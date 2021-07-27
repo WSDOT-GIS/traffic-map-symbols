@@ -27,10 +27,11 @@
         x
       </button>
     </div>
-    <h4 class="popup-title">
+    <h4 class="popup-title w3-container">
       {{ Features[currentIdx].attributes[TitleFieldName] }}
     </h4>
-    <Carousel v-if="PictureFieldName"
+    <Carousel
+      v-if="PictureFieldName"
       :items-to-show="1"
       :wrapAround="true"
       @update:modelValue="currentIdx = $event"
@@ -40,7 +41,9 @@
         <div class="carousel-item-container">
           <img
             class="popup-img"
-            :src="PictureFieldName?eachFeature.attributes[PictureFieldName]:''"
+            :src="
+              PictureFieldName ? eachFeature.attributes[PictureFieldName] : ''
+            "
             :alt="eachFeature.id"
             @load="adjustPositionSize"
           />
@@ -51,7 +54,7 @@
         <pagination v-if="slidesCount > 1" />
       </template>
     </Carousel>
-    <div class="popup-content">
+    <div class="popup-content w3-container">
       <slot></slot>
     </div>
   </div>
@@ -288,7 +291,7 @@ export default defineComponent({
         }
       }
     };
-    // Make sure popup fits inside of Map View...
+    // Position popup on top of the feature...
     const adjustPositionSize = () => {
       if (!containerRef.value) {
         // console.log("Container is null");
@@ -296,47 +299,68 @@ export default defineComponent({
       }
       const h = containerRef.value.offsetHeight;
       const w = containerRef.value.offsetWidth;
-      // Adjust vertical position to make sure it fits in the map view.
-      if (maxHeight.value !== mapView.height) {
-        // console.log("Set maxHeight = " + mapView.height);
-        maxHeight.value = mapView.height;
-      }
-      let y: number;
-      if (maxHeight.value < screenY.value + h) {
-        const h2 = h > mapView.height ? mapView.height : h;
-        y = mapView.height - h2;
-      } else {
-        y = screenY.value;
-      }
-      const newScreenY = y >= 0 ? y : -1;
+      // Adjust vertical position...
+      const newScreenY = screenY.value - h - 30;
       if (screenY_adjusted.value !== newScreenY) {
-        // console.log("Set screenY_adjusted = " + newScreenY);
         screenY_adjusted.value = newScreenY;
+        console.log("Set screenY_adjusted = " + newScreenY);
       }
       // Adjust horizontal position.
-      let x: number;
-      if (mapView.width < screenX.value) {
-        x = mapView.width - w - 10;
-      } else if (mapView.width < screenX.value + w) {
-        // Show it on the left side of the feature...
-        x = screenX.value - w - 15; // Offset 15 pixels to the left so the selected feature can be seen clearly
-      } else {
-        x = screenX.value + 15; // Offset 15 pixels to the right so the selected feature can be seen clearly
-      }
-      const newScreenX = x >= 0 ? x : -1;
+      const newScreenX = screenX.value - w / 2 - 15;
       if (screenX_adjusted.value !== newScreenX) {
-        // console.log("Set screenX_adjusted = " + newScreenX);
         screenX_adjusted.value = newScreenX;
+        console.log("Set screenX_adjusted = " + newScreenX);
       }
-      // console.log(
-      //   "****Popup top: " +
-      //     screenY_adjusted.value +
-      //     ", left: " +
-      //     screenX_adjusted.value +
-      //     ", maxHeight: " +
-      //     maxHeight.value
-      // );
     };
+    // Make sure popup fits inside of Map View...
+    // const adjustPositionSize1 = () => {
+    //   if (!containerRef.value) {
+    //     // console.log("Container is null");
+    //     return;
+    //   }
+    //   const h = containerRef.value.offsetHeight;
+    //   const w = containerRef.value.offsetWidth;
+    //   // Adjust vertical position to make sure it fits in the map view.
+    //   if (maxHeight.value !== mapView.height) {
+    //     // console.log("Set maxHeight = " + mapView.height);
+    //     maxHeight.value = mapView.height;
+    //   }
+    //   let y: number;
+    //   if (maxHeight.value < screenY.value + h) {
+    //     const h2 = h > mapView.height ? mapView.height : h;
+    //     y = mapView.height - h2;
+    //   } else {
+    //     y = screenY.value;
+    //   }
+    //   const newScreenY = y >= 0 ? y : -1;
+    //   if (screenY_adjusted.value !== newScreenY) {
+    //     // console.log("Set screenY_adjusted = " + newScreenY);
+    //     screenY_adjusted.value = newScreenY;
+    //   }
+    //   // Adjust horizontal position.
+    //   let x: number;
+    //   if (mapView.width < screenX.value) {
+    //     x = mapView.width - w - 10;
+    //   } else if (mapView.width < screenX.value + w) {
+    //     // Show it on the left side of the feature...
+    //     x = screenX.value - w - 15; // Offset 15 pixels to the left so the selected feature can be seen clearly
+    //   } else {
+    //     x = screenX.value + 15; // Offset 15 pixels to the right so the selected feature can be seen clearly
+    //   }
+    //   const newScreenX = x >= 0 ? x : -1;
+    //   if (screenX_adjusted.value !== newScreenX) {
+    //     // console.log("Set screenX_adjusted = " + newScreenX);
+    //     screenX_adjusted.value = newScreenX;
+    //   }
+    //   // console.log(
+    //   //   "****Popup top: " +
+    //   //     screenY_adjusted.value +
+    //   //     ", left: " +
+    //   //     screenX_adjusted.value +
+    //   //     ", maxHeight: " +
+    //   //     maxHeight.value
+    //   // );
+    // };
     return {
       containerRef,
       screenX_adjusted,
@@ -357,11 +381,32 @@ export default defineComponent({
 .popup-container {
   z-index: 1;
   background-color: #fff;
-  overflow-y: auto;
+  /* overflow-y: auto; */
+  position: relative;
 }
+
+.popup-container::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  margin-left: -0.5em;
+  bottom: -2em;
+  left: 50%;
+  box-sizing: border-box;
+
+  border: 1em solid black;
+  border-color: transparent transparent #fff #fff;
+
+  transform-origin: 0 0;
+  transform: rotate(-45deg);
+
+  box-shadow: -3px 3px 3px 0 rgba(0, 0, 0, 0.2);
+}
+
 .popup-header {
   position: relative;
-  margin: 5px 0;
+  margin: 8px 0;
   width: 100%;
 }
 .popup-banner {
@@ -378,9 +423,11 @@ export default defineComponent({
 }
 .popup-title {
   margin: 5px 0;
+  text-align: left;
 }
 .popup-content {
-  padding: 0 10px 10px 10px;
+  text-align: left;
+  margin-bottom: 8px;
 }
 .popup-close-button {
   position: absolute;
@@ -389,6 +436,7 @@ export default defineComponent({
   border-style: none;
   background-color: transparent;
 }
+
 /* Picture stylings ******/
 
 .popup-img {
@@ -424,5 +472,6 @@ svg.carousel__icon {
 }
 .carousel__pagination {
   margin: 5px;
+  padding-left: 0;
 }
 </style>
