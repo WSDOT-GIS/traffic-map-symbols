@@ -69,12 +69,12 @@ import {
 } from "vue";
 import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
-import Graphic from "@arcgis/core/Graphic";
-import Point from "@arcgis/core/geometry/Point";
-import SpatialReference from "@arcgis/core/geometry/SpatialReference";
+// import Graphic from "@arcgis/core/Graphic";
+// import Point from "@arcgis/core/geometry/Point";
+// import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 
 import { mapView, toScreenXY, panMap } from "@/esri-stuff/esriMap";
-import HighlightSymbol from "@/symbols/HighlightSymbol";
+// import HighlightSymbol from "@/symbols/HighlightSymbol";
 import FeatureInfo from "@/types/FeatureInfo";
 
 export default defineComponent({
@@ -153,7 +153,7 @@ export default defineComponent({
       isFirstAdjustment = true;
     });
     // Feature highlight.
-    let gHighlight: Graphic;
+    // let gHighlight: Graphic;
     // Set the width...
     // Default...
     const sizeClass = {
@@ -255,30 +255,30 @@ export default defineComponent({
       }
     };
     // Add feature highlight...
-    const addHighlight = () => {
-      // Make sure there is only one...
-      removeHighlight();
-      // Create a new graphic...
-      const pt = new Point({
-        x: props.MapX,
-        y: props.MapY,
-        spatialReference: SpatialReference.WebMercator,
-      });
-      gHighlight = new Graphic({
-        geometry: pt,
-        symbol: HighlightSymbol,
-        attributes: {
-          type: "popup-highlight",
-        },
-      });
-      mapView.graphics.add(gHighlight);
-    };
+    // const addHighlight = () => {
+    //   // Make sure there is only one...
+    //   removeHighlight();
+    //   // Create a new graphic...
+    //   const pt = new Point({
+    //     x: props.MapX,
+    //     y: props.MapY,
+    //     spatialReference: SpatialReference.WebMercator,
+    //   });
+    //   gHighlight = new Graphic({
+    //     geometry: pt,
+    //     symbol: HighlightSymbol,
+    //     attributes: {
+    //       type: "popup-highlight",
+    //     },
+    //   });
+    //   mapView.graphics.add(gHighlight);
+    // };
     // Remove the feature highlight graphic...
-    const removeHighlight = () => {
-      if (gHighlight) {
-        mapView.graphics.remove(gHighlight);
-      }
-    };
+    // const removeHighlight = () => {
+    //   if (gHighlight) {
+    //     mapView.graphics.remove(gHighlight);
+    //   }
+    // };
     // Variables used to store the original position while map view is being dragged.
     let orgScreenX = 0;
     let orgScreenY = 0;
@@ -465,7 +465,7 @@ export default defineComponent({
 
 <style scoped>
 .popup-container {
-  z-index: 1;
+  z-index: 10;
   background-color: #fff;
   /* overflow-y: auto; */
   position: relative;
@@ -540,11 +540,11 @@ export default defineComponent({
 }
 .carousel__prev {
   left: 5%;
-  top: 30%;
+  top: 40%;
 }
 .carousel__next {
   right: 5%;
-  top: 30%;
+  top: 40%;
 }
 svg.carousel__icon {
   width: 2em;
