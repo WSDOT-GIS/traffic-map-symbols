@@ -306,7 +306,7 @@ export default defineComponent({
         console.log("Set screenY_adjusted = " + newScreenY);
       }
       // Adjust horizontal position.
-      const newScreenX = screenX.value - w / 2 - 15;
+      const newScreenX = screenX.value - w / 2;
       if (screenX_adjusted.value !== newScreenX) {
         screenX_adjusted.value = newScreenX;
         console.log("Set screenX_adjusted = " + newScreenX);
@@ -390,7 +390,7 @@ export default defineComponent({
   position: absolute;
   width: 0;
   height: 0;
-  margin-left: -0.5em;
+  margin-left: -1.41em;
   bottom: -2em;
   left: 50%;
   box-sizing: border-box;
