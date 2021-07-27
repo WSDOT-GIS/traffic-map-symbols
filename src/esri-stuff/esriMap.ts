@@ -91,6 +91,20 @@ export const toScreenXY = (mapX: number, mapY: number): { x: number, y: number }
     return { x: screenPt.x, y: screenPt.y };
 }
 
+export const panMap = (shiftX: number, shiftY: number) => {
+    console.log("Shift X: " + shiftX + ", Y: " + shiftY);
+    const screenCenter = mapView.toScreen(mapView.center);
+    console.log(
+        "Screen Center X: " + screenCenter.x + ", Y: " + screenCenter.y
+    );
+    const mapCenter = mapView.toMap({
+        x: screenCenter.x + shiftX,
+        y: screenCenter.y + shiftY,
+    });
+    mapView.center = mapCenter;
+    console.log("Map center X: " + mapCenter.x + ", Y: " + mapCenter.y);
+}
+
 export const getLayer = (id: string): Layer => {
     return webmap.findLayerById(id);
 }

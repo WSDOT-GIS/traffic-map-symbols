@@ -10,7 +10,7 @@
     "
     :Features="features"
     TitleFieldName="CameraTitle"
-    PictureFieldName="ImageURL"
+    ImageFieldName="ImageURL"
     @close="close"
     @idxUpdate="currentIdx = $event"
   >
