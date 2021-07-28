@@ -18,7 +18,10 @@
           borderColor: DarkThemeColor,
         }"
       >
-        {{ BannerText }}
+        <div class="popup-banner-icon">
+          <slot name="icon"></slot>
+        </div>
+        <span class="popup-banner-text"> {{ BannerText }}</span>
       </div>
       <button
         class="popup-close-button w3-button w3-padding-small"
@@ -521,6 +524,16 @@ export default defineComponent({
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
 }
+.popup-banner-icon {
+  vertical-align: middle;
+  display: inline-block;
+  height: 24px;
+  width: 24px;
+}
+.popup-banner-text {
+  padding: 0 5px;
+  vertical-align: middle;
+}
 .popup-title {
   margin: 5px 0;
   text-align: left;
@@ -538,7 +551,6 @@ export default defineComponent({
 }
 
 /* Picture stylings ******/
-
 .popup-img {
   width: 100%;
   height: auto;
