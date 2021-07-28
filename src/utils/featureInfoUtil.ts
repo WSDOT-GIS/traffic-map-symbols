@@ -1,21 +1,21 @@
 import Graphic from "@arcgis/core/Graphic";
 /* Info types */
 import FeatureInfo from "@/types/FeatureInfo";
-import WeatherStationInfo from "@/types/WeatherStationsInfo";
+// import WeatherStationInfo from "@/types/WeatherStationsInfo";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
-import MountainPassesInfo from "@/types/MountainPassesInfo";
-import RestrictionInfo from "@/types/RestrictionInfo";
-import ParkRideInfo from "@/types/ParkRideInfo";
-import CameraInfo from "@/types/CameraInfo";
+// import MountainPassesInfo from "@/types/MountainPassesInfo";
+// import RestrictionInfo from "@/types/RestrictionInfo";
+// import ParkRideInfo from "@/types/ParkRideInfo";
+// import CameraInfo from "@/types/CameraInfo";
 /* Layers */
-import ParkRideLayer from "@/layers/ParkRideLayer";
-import CameraLayer from "@/layers/CameraLayer";
-import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
-import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
-import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
-import MountainPassLayer from "@/layers/MountainPassesLayer";
+// import ParkRideLayer from "@/layers/ParkRideLayer";
+// import CameraLayer from "@/layers/CameraLayer";
+// import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
+// import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
+// import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
+// import MountainPassLayer from "@/layers/MountainPassesLayer";
 
-export const getGraphicsInfoById = async (graphic: Graphic, layer: GeoJSONLayer) => {
+export const getGraphicsInfoById = async (graphic: Graphic, layer: GeoJSONLayer): Promise<FeatureInfo | undefined> => {
     const query = layer.createQuery();
     const idName = layer.objectIdField;
     const theid = graphic.getObjectId()
@@ -29,7 +29,7 @@ export const getGraphicsInfoById = async (graphic: Graphic, layer: GeoJSONLayer)
     }
 }
 
-export const getFeatureInfoById = async (id: number, layer: GeoJSONLayer) => {
+export const getFeatureInfoById = async (id: number, layer: GeoJSONLayer): Promise<FeatureInfo | undefined> => {
     const query = layer.createQuery();
     const idName = layer.objectIdField;
     query.where = `${idName} = ${id}`;
@@ -37,11 +37,7 @@ export const getFeatureInfoById = async (id: number, layer: GeoJSONLayer) => {
     const response = await layer.queryFeatures(query);
     const g = response.features[0];
     if (g) {
-        const info: FeatureInfo = {
-            layerTitle: layer.title,
-            id: id,
-            attributes: g.attributes
-        }
+        const info = convert2Info(g);
         return info;
     }
 }

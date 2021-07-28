@@ -25,10 +25,22 @@
     :Label="zoomPopupLabel"
     @clicked="zoomMetroEventHandler"
   ></ZoomPopupView>
-  <CameraPopupView :MapX="popupX" :MapY="popupY" :Featureset="popupInfo" />
-  <!-- <ParkRidePopupView :MapX="popupX" :MapY="popupY" :Info="popupInfo" />
-  <PointRestrictionPopupView />
-  <LineRestrictionPopupView />
+  <CameraPopupView
+    :MapX="popupX"
+    :MapY="popupY"
+    :Featureset="popupFeatureset"
+  />
+  <ParkRidePopupView
+    :MapX="popupX"
+    :MapY="popupY"
+    :Featureset="popupFeatureset"
+  />
+  <LineRestrictionPopupView
+    :MapX="popupX"
+    :MapY="popupY"
+    :Featureset="popupFeatureset"
+  />
+  <!--<PointRestrictionPopupView />
   <MountainPassesPopupView />
   <WeatherStationsPopupView /> -->
   <LeftPaneView />
@@ -63,12 +75,12 @@ import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
 import MountainPassLayer from "@/layers/MountainPassesLayer";
 /* Components */
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
-import CameraPopupView from "@/components/CameraPopupView.vue";
-// import ParkRidePopupView from "@/components/ParkAndRidePopupView.vue";
-// import PointRestrictionPopupView from "@/components/PointRestrictionPopupView.vue";
-// import LineRestrictionPopupView from "@/components/LineRestrictionPopupView.vue";
-// import MountainPassesPopupView from "@/components/MountainPassesPopupView.vue";
-// import WeatherStationsPopupView from "@/components/WeatherStationPopup.vue";
+import CameraPopupView from "@/popups/CameraPopupView.vue";
+import ParkRidePopupView from "@/popups/ParkAndRidePopupView.vue";
+// import PointRestrictionPopupView from "@/popups/PointRestrictionPopupView.vue";
+import LineRestrictionPopupView from "@/popups/LineRestrictionPopupView.vue";
+// import MountainPassesPopupView from "@/popups/MountainPassesPopupView.vue";
+// import WeatherStationsPopupView from "@/popups/WeatherStationPopup.vue";
 import LeftPaneView from "@/components/LeftPaneView.vue";
 import BasemapView from "@/components/BasemapView.vue";
 import CoordinatesView from "@/components/CoordinatesView.vue";
@@ -79,9 +91,9 @@ export default defineComponent({
   components: {
     ZoomPopupView,
     CameraPopupView,
-    // ParkRidePopupView,
+    ParkRidePopupView,
     // PointRestrictionPopupView,
-    // LineRestrictionPopupView,
+    LineRestrictionPopupView,
     // MountainPassesPopupView,
     // WeatherStationsPopupView,
     LeftPaneView,
@@ -118,15 +130,15 @@ export default defineComponent({
     // Feature Popup...
     const popupX = ref(0);
     const popupY = ref(0);
-    const popupInfo = ref<FeaturesetInfo>({ layerTitle: "", ids: [] });
+    const popupFeatureset = ref<FeaturesetInfo>({ layerTitle: "", ids: [] });
     //
     const showPopup = (layerTitle: string, ids: number[], pt: Point) => {
-      popupInfo.value = { layerTitle: layerTitle, ids: ids };
+      popupFeatureset.value = { layerTitle: layerTitle, ids: ids };
       popupX.value = pt.x;
       popupY.value = pt.y;
     };
     const closePopup = () => {
-      popupInfo.value = { layerTitle: "", ids: [] };
+      popupFeatureset.value = { layerTitle: "", ids: [] };
       popupX.value = 0;
       popupY.value = 0;
     };
@@ -220,14 +232,14 @@ export default defineComponent({
             const resultsByLayer: {
               info: LayerInfo;
               layer: Layer;
-              results: Graphic[];
+              results: { graphic: Graphic; mapPoint: Point }[];
             }[] = [];
             response.results.forEach((eachResult) => {
               const arrayFound = resultsByLayer.find(
                 (eachArray) => eachArray.layer === eachResult.graphic.layer
               );
               if (arrayFound) {
-                arrayFound.results.push(eachResult.graphic);
+                arrayFound.results.push(eachResult);
               } else {
                 const layerInfo = store.state.layerList.find(
                   (layerInfo) =>
@@ -237,7 +249,7 @@ export default defineComponent({
                   resultsByLayer.push({
                     info: layerInfo,
                     layer: eachResult.graphic.layer,
-                    results: [eachResult.graphic],
+                    results: [eachResult],
                   });
                 }
               }
@@ -252,8 +264,8 @@ export default defineComponent({
               (eachResultSet) => eachResultSet.info.index === minIdx
             );
             if (results2Show) {
-              const g = results2Show.results[0];
-              const pt = g.geometry as Point;
+              const g = results2Show.results[0].graphic;
+              const pt = results2Show.results[0].mapPoint;
               // Deal with cluster...
               if (g.isAggregate) {
                 if (g.attributes.cluster_count < 10) {
@@ -327,7 +339,7 @@ export default defineComponent({
       zoomMetroEventHandler,
       popupX,
       popupY,
-      popupInfo,
+      popupFeatureset,
       closePopup,
     };
   },
