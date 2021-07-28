@@ -226,7 +226,7 @@ export default defineComponent({
       screenY.value += diffY;
       adjustPositionSize();
     });
-    //
+    // Image load happens later and change the size of the popup, so need to make adjustment after that...
     const onImgLoad = () => {
       console.log("=== onImgLoad");
       numImgLoaded = numImgLoaded + 1;
@@ -533,6 +533,7 @@ export default defineComponent({
 .popup-banner-text {
   padding: 0 5px;
   vertical-align: middle;
+  font-weight: 700;
 }
 .popup-title {
   margin: 5px 0;
