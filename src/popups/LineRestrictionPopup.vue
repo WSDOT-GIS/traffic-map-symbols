@@ -46,19 +46,26 @@
       </svg>
     </template>
     <template v-slot:default>
-      <PopupRow Label="Travel delay" Text="???" />
-      <PopupRow :Feature="feature" FieldName="restriction_comment" />
+      <PopupRow Label="Travel delay" :TextOptions="{text:'???'}" />
+      <PopupRow
+        Label=""
+        :TextOptions="{ feature: feature, fieldName: 'restriction_comment' }"
+      />
       <PopupRow
         Label="Date effective"
-        :Feature="feature"
-        FieldName="date_effective"
-        :IsDate="true"
+        :TextOptions="{
+          feature: feature,
+          fieldName: 'date_effective',
+          isDate: true,
+        }"
       />
       <PopupRow
         Label="Last updated"
-        :Feature="feature"
-        FieldName="RecordUpdateDate"
-        :IsDate="true"
+        :TextOptions="{
+          feature: feature,
+          fieldName: 'RecordUpdateDate',
+          isDate: true,
+        }"
       />
     </template>
   </PopupBase>

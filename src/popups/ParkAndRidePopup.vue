@@ -36,22 +36,28 @@
     <template v-slot:default>
       <PopupRow
         Label="Street location"
-        :Feature="feature"
-        FieldName="Street_Location"
+        :TextOptions="{ feature: feature, fieldName: 'Street_Location' }"
       />
-      <PopupRow Label="Address" :Feature="feature" FieldName="Address" />
-      <PopupRow Label="County" :Feature="feature" FieldName="CountyName" />
+      <PopupRow
+        Label="Address"
+        :TextOptions="{ feature: feature, fieldName: 'Address' }"
+      />
+      <PopupRow
+        Label="County"
+        :TextOptions="{ feature: feature, fieldName: 'CountyName' }"
+      />
       <PopupRow
         Label="Approx. number of spaces"
-        :Feature="feature"
-        FieldName="Approx_Numb_Spaces"
+        :TextOptions="{ feature: feature, fieldName: 'Approx_Numb_Spaces' }"
       />
-      <PopupRow Label="Transit organization" Text="???" />
+      <PopupRow Label="Transit organization" :TextOptions="{ text: '???' }" />
       <PopupRow
         Label="Last updated"
-        :Feature="feature"
-        FieldName="PublishDate"
-        :IsDate="true"
+        :TextOptions="{
+          feature: feature,
+          fieldName: 'PublishDate',
+          isDate: true,
+        }"
       />
     </template>
   </PopupBase>

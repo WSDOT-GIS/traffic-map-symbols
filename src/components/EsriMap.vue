@@ -37,8 +37,16 @@
     :MapY="popupY"
     :Featureset="popupFeatureset"
   />
-  <!--<MountainPassesPopup />
-  <WeatherStationsPopup /> -->
+  <MountainPassPopup
+    :MapX="popupX"
+    :MapY="popupY"
+    :Featureset="popupFeatureset"
+  />
+  <WeatherStationsPopup
+    :MapX="popupX"
+    :MapY="popupY"
+    :Featureset="popupFeatureset"
+  />
   <LeftPaneView />
 </template>
 
@@ -75,8 +83,8 @@ import CameraPopup from "@/popups/CameraPopup.vue";
 import ParkRidePopup from "@/popups/ParkAndRidePopup.vue";
 import PointRestrictionPopup from "@/popups/PointRestrictionPopup.vue";
 import LineRestrictionPopup from "@/popups/LineRestrictionPopup.vue";
-// import MountainPassesPopup from "@/popups/MountainPassesPopupView.vue";
-// import WeatherStationsPopup from "@/popups/WeatherStationPopup.vue";
+import MountainPassPopup from "@/popups/MountainPassPopup.vue";
+import WeatherStationsPopup from "@/popups/WeatherStationPopup.vue";
 import LeftPaneView from "@/components/LeftPaneView.vue";
 import BasemapView from "@/components/BasemapView.vue";
 import CoordinatesView from "@/components/CoordinatesView.vue";
@@ -90,8 +98,8 @@ export default defineComponent({
     ParkRidePopup,
     PointRestrictionPopup,
     LineRestrictionPopup,
-    // MountainPassesPopup,
-    // WeatherStationsPopup,
+    MountainPassPopup,
+    WeatherStationsPopup,
     LeftPaneView,
     BasemapView,
     CoordinatesView,

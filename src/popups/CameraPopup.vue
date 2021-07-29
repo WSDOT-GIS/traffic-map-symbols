@@ -41,8 +41,9 @@
       </svg>
     </template>
     <template v-slot:default>
-      <PopupRow Label="Camera Direction" :TextData="{text: direction}" />
-      <PopupRow Label="Refresh Rate" :TextData="{text: '???'}" />
+      <PopupRow Label="Camera Direction" :TextOptions="{ text: direction }" />
+      <PopupRow Label="Refresh Rate" :TextOptions="{ text: '???' }" />
+      <!-- <PopupRow Label="ID" :TextOptions="{feature:features[currentIdx], fieldName:'CameraID'}"/> -->
     </template>
   </PopupBase>
 </template>
@@ -83,22 +84,13 @@ export default defineComponent({
     const onIdxUpdate = (event: number) => {
       console.log("Idx update caught..." + JSON.stringify(event));
       setDirection(event);
+      currentIdx.value = event;
     };
-    // watch(currentIdx, () => {
-    //   if (currentIdx.value >= 0) {
-    //     setDirection();
-    //   }
-    // });
-
-    // const direction = computed(() => {
-    //   return getDirection();
-    // })
 
     const setDirection = (idx: number) => {
       let dir = "";
       if (features.value.length > 0) {
-        let val =
-          features.value[idx].attributes["CompassDirection"];
+        let val = features.value[idx].attributes["CompassDirection"] as string;
         if (val) {
           dir = val === "B" ? "Unknown" : val;
         }
@@ -125,8 +117,6 @@ export default defineComponent({
             setDirection(0);
           }
         );
-        // currentIdx.value = 0;
-        // direction.value = getDirection();
       };
       if (mapX.value !== 0 || mapY.value !== 0 || features.value.length > 0) {
         // console.log("Clean and set popup value");
@@ -148,7 +138,7 @@ export default defineComponent({
       mapX.value = 0;
       mapY.value = 0;
       features.value = [];
-      currentIdx.value = -1;
+      currentIdx.value = 0;
     };
 
     return {

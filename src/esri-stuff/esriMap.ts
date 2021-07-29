@@ -76,7 +76,9 @@ export const tryZoomToPointAsync = async (point: Point, numLevels?: number): Pro
     }, {
         duration: 300,
         easing: "ease-in"
-    })
+    }).catch((error) => {
+        console.error("tryZoomToPointAsync failed: " + error);
+    });
     if (mapView.zoom === orgLevel) {
         console.log("Cannot zoom in any more.");
         isSuccess = false;
@@ -106,7 +108,7 @@ export const toScreenXY = (mapX: number, mapY: number): { x: number, y: number }
     return { x: screenPt.x, y: screenPt.y };
 }
 
-export const panMap = async (shiftX: number, shiftY: number): Promise<any> => {
+export const panMap = async (shiftX: number, shiftY: number): Promise<string> => {
     console.log("Shift X: " + shiftX + ", Y: " + shiftY);
     const screenCenter = mapView.toScreen(mapView.center);
     console.log(
@@ -120,8 +122,13 @@ export const panMap = async (shiftX: number, shiftY: number): Promise<any> => {
     await mapView.goTo(mapCenter, {
         duration: 300,
         easing: "ease-in"
+    }).catch((error) => {
+        const err = "panMap failed: " + error;
+        console.error(err);
+        return err;
     });
     console.log("Map center X: " + mapCenter.x + ", Y: " + mapCenter.y);
+    return "success";
 }
 
 export const getLayer = (id: string): Layer => {

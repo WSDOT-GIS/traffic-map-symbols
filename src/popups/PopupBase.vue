@@ -215,7 +215,7 @@ export default defineComponent({
       }
     });
     mapView.watch("center", (newValue, oldValue) => {
-      if (!props.Features || !oldValue) {
+      if (props.Features.length === 0 || !oldValue) {
         return;
       }
       const newCenter = mapView.toScreen(newValue);
@@ -344,6 +344,10 @@ export default defineComponent({
         // console.log("Not everything is loaded yet.");
         return;
       }
+      if (!props.Features || props.Features.length === 0 || !props.Features[0]) {
+        console.log("Nothing to show...");
+        return;
+      }
       const h = containerRef.value.offsetHeight;
       const w = containerRef.value.offsetWidth;
       if (
@@ -361,7 +365,7 @@ export default defineComponent({
         prevWidth = w;
         prevHeight = h;
       }
-      // console.log("*** Adjust ***");
+      console.log("*** Adjust ***" + JSON.stringify(props.Features));//props.Features[0].layerTitle);
       // New vertical position...
       let newTop = screenY.value - h - 30;
       // New horizontal position.
@@ -383,12 +387,9 @@ export default defineComponent({
         if (newLeft < 0 || newLeft + w > mapView.width) {
           shiftX = newLeft < 0 ? newLeft : newLeft + w - mapView.width;
         }
-        //setPosition(newTop - shiftY, newLeft - shiftX);
         setPosition(newTop, newLeft);
         if (shiftY !== 0 || shiftX !== 0) {
           panMap(shiftX, shiftY);
-          // screenX.value -= shiftX;
-          // screenY.value -= shiftY;
         }
       }
     };

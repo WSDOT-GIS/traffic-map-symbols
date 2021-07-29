@@ -6,7 +6,7 @@ interface FeatureInfo {
      * Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'Object'.
      * No index signature with a parameter of type 'string' was found on type 'Object'.
      */
-    attributes: { [key: string]: string | undefined };
+    attributes: { [key: string]: string | number | undefined };
 }
 
 export default FeatureInfo;
