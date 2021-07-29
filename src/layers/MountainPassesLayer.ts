@@ -8,7 +8,7 @@ const mountainPassRenderer = new simpleRenderer({
 })
 const MountainPassesLayer = new GeoJSONLayer({
     id: "mountain-passes-layer",
-    url: "http://hqtob1webtmdev1/GISData/MountainPasses.json",
+    url: "MountainPasses.json",
     title: "Mountain Passes",
     renderer: mountainPassRenderer,
     visible: false

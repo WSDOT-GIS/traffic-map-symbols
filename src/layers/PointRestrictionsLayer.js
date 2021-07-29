@@ -23,7 +23,7 @@ define(["require", "exports", "tslib", "@arcgis/core/renderers/UniqueValueRender
     });
     var PointRestrictionsLayer = new GeoJSONLayer_1.default({
         id: "point-restrictions-layer",
-        url: "http://hqtob1webtmdev1/GISData/PointRestrictions.json",
+        url: "https://data.wsdot.wa.gov/travelcenter/ PointRestrictions.json",
         title: "Restriction Points",
         renderer: pointRestrictionsRenderer,
     });

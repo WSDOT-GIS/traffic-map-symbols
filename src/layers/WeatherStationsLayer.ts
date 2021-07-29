@@ -7,7 +7,7 @@ const weatherStationRenderer = new simpleRenderer({
 })
 const PointRestrictionsLayer = new GeoJSONLayer({
     id: "weather-stations-layer",
-    url: "http://hqtob1webtmdev1/GISData/WeatherStations.json",
+    url: "https://data.wsdot.wa.gov/travelcenter/WeatherStations.json",
     title: "Weather Stations",
     renderer: weatherStationRenderer,
     popupTemplate: weatherStationsPopup,

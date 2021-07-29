@@ -22,7 +22,7 @@ define(["require", "exports", "tslib", "../symbols/LineRestrictionsSymbol", "@ar
     })*/
     var LineRestrictionsLayer = new GeoJSONLayer_1.default({
         id: "line-restrictions-layer",
-        url: "http://hqtob1webtmdev1/GISData/LineRestrictions.json",
+        url: "https://data.wsdot.wa.gov/travelcenter/ LineRestrictions.json",
         title: "Restriction Lines",
         renderer: lineRestrictionsRenderer,
         visible: false

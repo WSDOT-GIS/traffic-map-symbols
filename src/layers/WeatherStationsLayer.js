@@ -9,7 +9,7 @@ define(["require", "exports", "tslib", "@arcgis/core/layers/GeoJSONLayer", "@arc
     });
     var PointRestrictionsLayer = new GeoJSONLayer_1.default({
         id: "weather-stations-layer",
-        url: "http://hqtob1webtmdev1/GISData/WeatherStations.json",
+        url: "https://data.wsdot.wa.gov/travelcenter/ WeatherStations.json",
         title: "Weather Stations",
         renderer: weatherStationRenderer,
         popupTemplate: WeatherStationsPopup_1.default,

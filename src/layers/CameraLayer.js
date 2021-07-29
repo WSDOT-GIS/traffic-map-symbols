@@ -67,7 +67,7 @@ define(["require", "exports", "tslib", "@arcgis/core/renderers/SimpleRenderer", 
     ];
     var layer = new GeoJSONLayer_1.default({
         id: "traffic-camera-layer",
-        url: "http://hqtob1webtmdev1/GISData/camera.json",
+        url: "https://data.wsdot.wa.gov/travelcenter/ camera.json",
         title: "Traffic Cameras",
         renderer: renderer,
         featureReduction: clusterUtil_1.clusterConfig,

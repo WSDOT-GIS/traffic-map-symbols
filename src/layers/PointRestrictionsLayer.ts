@@ -23,7 +23,7 @@ const pointRestrictionsRenderer2 = new SimpleRenderer({
 })
 const PointRestrictionsLayer = new GeoJSONLayer({
     id: "point-restrictions-layer",
-    url: "http://hqtob1webtmdev1/GISData/PointRestrictions.json",
+    url: "https://data.wsdot.wa.gov/travelcenter/PointRestrictions.json",
     title: "Restriction Points",
     renderer: pointRestrictionsRenderer,
     //popupTemplate: restrictionsPopup,

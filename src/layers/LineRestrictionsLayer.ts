@@ -23,7 +23,7 @@ const lineRestrictionsRenderer = new UniqueValueRenderer({
 })*/
 const LineRestrictionsLayer = new GeoJSONLayer({
     id: "line-restrictions-layer",
-    url: "http://hqtob1webtmdev1/GISData/LineRestrictions.json",
+    url: "https://data.wsdot.wa.gov/travelcenter/LineRestrictions.json",
     title: "Restriction Lines",
     renderer: lineRestrictionsRenderer,
     visible: false
