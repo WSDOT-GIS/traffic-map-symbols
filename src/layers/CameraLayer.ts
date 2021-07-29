@@ -76,7 +76,7 @@ const fields = [
 
 const layer = new GeoJSONLayer({
     id: "traffic-camera-layer",
-    url: "https://data.wsdot.wa.gov/travelcenter/camera.json",
+    url: "https://data.wsdot.wa.gov/travelcenter/cameras.json",
     title: "Traffic Cameras",
     renderer: renderer,
     featureReduction: clusterConfig,
