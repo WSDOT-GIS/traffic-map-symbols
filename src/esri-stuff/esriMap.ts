@@ -56,14 +56,27 @@ export const tryZoomToPoint = (point: Point, numLevels?: number): boolean => {
     mapView.center = point;
     const orgLevel = mapView.zoom;
     mapView.zoom = mapView.zoom += numLevels;
+    if (mapView.zoom === orgLevel) {
+        console.log("Cannot zoom in any more.");
+        isSuccess = false;
+    }
+    return isSuccess;
+}
+
+export const tryZoomToPointAsync = async (point: Point, numLevels?: number): Promise<boolean> => {
+    let isSuccess = true;
+    if (!numLevels) {
+        numLevels = 1;
+    }
+    const orgLevel = mapView.zoom;
     // Tried goTo() as well, but it is a bit jumpy...
-    // esriMap.mapView.goTo({
-    //   target: cameraGraphic,
-    //   zoom: esriMap.mapView.zoom += 1
-    // }, {
-    //   duration: 1000,
-    //   easing: "ease-out"
-    // });
+    await mapView.goTo({
+        target: point,
+        zoom: mapView.zoom += 1
+    }, {
+        duration: 300,
+        easing: "ease-in"
+    })
     if (mapView.zoom === orgLevel) {
         console.log("Cannot zoom in any more.");
         isSuccess = false;
@@ -93,7 +106,7 @@ export const toScreenXY = (mapX: number, mapY: number): { x: number, y: number }
     return { x: screenPt.x, y: screenPt.y };
 }
 
-export const panMap = async (shiftX: number, shiftY: number):Promise<any> => {
+export const panMap = async (shiftX: number, shiftY: number): Promise<any> => {
     console.log("Shift X: " + shiftX + ", Y: " + shiftY);
     const screenCenter = mapView.toScreen(mapView.center);
     console.log(

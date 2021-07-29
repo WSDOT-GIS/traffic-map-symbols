@@ -1,5 +1,5 @@
 <template>
-  <PopupView
+  <PopupBase
     :MapX="mapX"
     :MapY="mapY"
     Width="w"
@@ -12,7 +12,7 @@
     TitleFieldName="CameraTitle"
     ImageFieldName="ImageURL"
     @close="close"
-    @idxUpdate="currentIdx = $event"
+    @idxUpdate="onIdxUpdate"
   >
     <template v-slot:icon>
       <svg
@@ -41,69 +41,24 @@
       </svg>
     </template>
     <template v-slot:default>
-      <div>
-        <span class="popup-key">Camera Direction: </span>
-        <span class="popup-value">{{
-          features[currentIdx].attributes["CompassDirection"] === "B"
-            ? "Unknown"
-            : features[currentIdx].attributes["CompassDirection"]
-        }}</span>
-      </div>
-      <div>
-        <span class="popup-key">Refresh Rate: </span>
-        <span class="popup-value">Data is not available</span>
-      </div>
-      <!-- <table>
-        <tr>
-          <td class="popupKey">ID</td>
-          <td class="popupValue">{{ features[currentIdx].id }}</td>
-        </tr>
-        <tr>
-          <td class="popupKey">SR</td>
-          <td class="popupValue">
-            {{ features[currentIdx].attributes["WSDOTSRID"] }}
-          </td>
-        </tr>
-        <tr>
-          <td class="popupKey">Milepost</td>
-          <td class="popupValue">
-            {{ features[currentIdx].attributes["StateRouteMilepost"] }}
-          </td>
-        </tr>
-        <tr>
-          <td class="popupKey">Direction</td>
-          <td class="popupValue">
-            {{ features[currentIdx].attributes["CompassDirection"] }}
-          </td>
-        </tr>
-        <tr>
-          <td class="popupKey">Owner Name</td>
-          <td class="popupValue">
-            {{ features[currentIdx].attributes["CameraOwnerName"] }}
-          </td>
-        </tr>
-        <tr>
-          <td class="popupKey">Owner URL</td>
-          <td class="popupValue">
-            {{ features[currentIdx].attributes["CameraOwnerURL"] }}
-          </td>
-        </tr>
-      </table> -->
+      <PopupRow Label="Camera Direction" :TextData="{text: direction}" />
+      <PopupRow Label="Refresh Rate" :TextData="{text: '???'}" />
     </template>
-  </PopupView>
+  </PopupBase>
 </template>
 <script lang="ts">
 import { defineComponent, nextTick, PropType, ref, watch } from "vue";
 import "vue3-carousel/dist/carousel.css";
 
-import PopupView from "./PopupBase.vue";
+import PopupBase from "./PopupBase.vue";
+import PopupRow from "./PopupRow.vue";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import { getFeatureInfosByIds } from "@/utils/featureInfoUtil";
-import CameraLayer from "@/layers/CameraLayer";
+import FeatureLayer from "@/layers/CameraLayer";
 import FeatureInfo from "@/types/FeatureInfo";
 
 export default defineComponent({
-  components: { PopupView },
+  components: { PopupBase, PopupRow },
   props: {
     Featureset: {
       type: Object as PropType<FeaturesetInfo>,
@@ -123,9 +78,37 @@ export default defineComponent({
     const currentIdx = ref(0);
     const mapX = ref(0);
     const mapY = ref(0);
+    const direction = ref<string>("");
+
+    const onIdxUpdate = (event: number) => {
+      console.log("Idx update caught..." + JSON.stringify(event));
+      setDirection(event);
+    };
+    // watch(currentIdx, () => {
+    //   if (currentIdx.value >= 0) {
+    //     setDirection();
+    //   }
+    // });
+
+    // const direction = computed(() => {
+    //   return getDirection();
+    // })
+
+    const setDirection = (idx: number) => {
+      let dir = "";
+      if (features.value.length > 0) {
+        let val =
+          features.value[idx].attributes["CompassDirection"];
+        if (val) {
+          dir = val === "B" ? "Unknown" : val;
+        }
+      }
+      direction.value = dir;
+      console.log("Camera direction = " + direction.value);
+    };
 
     watch(props, () => {
-      if (props.Featureset.layerTitle === CameraLayer.title) {
+      if (props.Featureset.layerTitle === FeatureLayer.title) {
         console.log("Camera Layer Popup!");
         show();
       } else {
@@ -134,13 +117,16 @@ export default defineComponent({
     });
     const show = () => {
       const setVal = () => {
-        getFeatureInfosByIds(props.Featureset.ids, CameraLayer).then(
+        getFeatureInfosByIds(props.Featureset.ids, FeatureLayer).then(
           (results) => {
             features.value = results;
             mapX.value = props.MapX;
             mapY.value = props.MapY;
+            setDirection(0);
           }
         );
+        // currentIdx.value = 0;
+        // direction.value = getDirection();
       };
       if (mapX.value !== 0 || mapY.value !== 0 || features.value.length > 0) {
         // console.log("Clean and set popup value");
@@ -162,6 +148,7 @@ export default defineComponent({
       mapX.value = 0;
       mapY.value = 0;
       features.value = [];
+      currentIdx.value = -1;
     };
 
     return {
@@ -170,17 +157,10 @@ export default defineComponent({
       features,
       close,
       currentIdx,
+      direction,
+      onIdxUpdate,
     };
   },
 });
 </script>
-<style scoped>
-.popup-key {
-  font-weight: bold;
-  text-align: left;
-}
-.popup-value {
-  text-align: left;
-}
-</style>
 

@@ -25,24 +25,20 @@
     :Label="zoomPopupLabel"
     @clicked="zoomMetroEventHandler"
   ></ZoomPopupView>
-  <CameraPopupView
+  <CameraPopup :MapX="popupX" :MapY="popupY" :Featureset="popupFeatureset" />
+  <ParkRidePopup :MapX="popupX" :MapY="popupY" :Featureset="popupFeatureset" />
+  <LineRestrictionPopup
     :MapX="popupX"
     :MapY="popupY"
     :Featureset="popupFeatureset"
   />
-  <ParkRidePopupView
+  <PointRestrictionPopup
     :MapX="popupX"
     :MapY="popupY"
     :Featureset="popupFeatureset"
   />
-  <LineRestrictionPopupView
-    :MapX="popupX"
-    :MapY="popupY"
-    :Featureset="popupFeatureset"
-  />
-  <!--<PointRestrictionPopupView />
-  <MountainPassesPopupView />
-  <WeatherStationsPopupView /> -->
+  <!--<MountainPassesPopup />
+  <WeatherStationsPopup /> -->
   <LeftPaneView />
 </template>
 
@@ -75,12 +71,12 @@ import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
 import MountainPassLayer from "@/layers/MountainPassesLayer";
 /* Components */
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
-import CameraPopupView from "@/popups/CameraPopupView.vue";
-import ParkRidePopupView from "@/popups/ParkAndRidePopupView.vue";
-// import PointRestrictionPopupView from "@/popups/PointRestrictionPopupView.vue";
-import LineRestrictionPopupView from "@/popups/LineRestrictionPopupView.vue";
-// import MountainPassesPopupView from "@/popups/MountainPassesPopupView.vue";
-// import WeatherStationsPopupView from "@/popups/WeatherStationPopup.vue";
+import CameraPopup from "@/popups/CameraPopup.vue";
+import ParkRidePopup from "@/popups/ParkAndRidePopup.vue";
+import PointRestrictionPopup from "@/popups/PointRestrictionPopup.vue";
+import LineRestrictionPopup from "@/popups/LineRestrictionPopup.vue";
+// import MountainPassesPopup from "@/popups/MountainPassesPopupView.vue";
+// import WeatherStationsPopup from "@/popups/WeatherStationPopup.vue";
 import LeftPaneView from "@/components/LeftPaneView.vue";
 import BasemapView from "@/components/BasemapView.vue";
 import CoordinatesView from "@/components/CoordinatesView.vue";
@@ -90,12 +86,12 @@ import ZoomButtonView from "@/components/ZoomButtonView.vue";
 export default defineComponent({
   components: {
     ZoomPopupView,
-    CameraPopupView,
-    ParkRidePopupView,
-    // PointRestrictionPopupView,
-    LineRestrictionPopupView,
-    // MountainPassesPopupView,
-    // WeatherStationsPopupView,
+    CameraPopup,
+    ParkRidePopup,
+    PointRestrictionPopup,
+    LineRestrictionPopup,
+    // MountainPassesPopup,
+    // WeatherStationsPopup,
     LeftPaneView,
     BasemapView,
     CoordinatesView,
@@ -269,33 +265,51 @@ export default defineComponent({
               // Deal with cluster...
               if (g.isAggregate) {
                 if (g.attributes.cluster_count < 10) {
-                  // Try to get camera infos from the cluster...
+                  // Try to get features from the cluster...
                   esriMap
                     .getIdsFromCluster(g, results2Show.layer, 3)
                     .then((results) => {
-                      // Show multiple pictures if infos are returned...
-                      results
-                        ? showPopup(results2Show.layer.title, results, pt)
-                        : closePopup();
-                      if (!results) {
+                      // Show multiple features if infos are returned...
+                      if (results) {
+                        showPopup(results2Show.layer.title, results, pt);
+                      } else {
+                        closePopup();
                         // Zoom-in more...
-                        const zoomResult = esriMap.tryZoomToPoint(
-                          g.geometry as Point
-                        );
-                        if (!zoomResult) {
-                          // Cannot zoom in any more, so show everything in cluster...
-                          esriMap
-                            .getIdsFromCluster(g, results2Show.layer)
-                            .then((results) => {
-                              results
-                                ? showPopup(
-                                    results2Show.layer.title,
-                                    results,
-                                    pt
-                                  )
-                                : closePopup();
-                            });
-                        }
+                        esriMap
+                          .tryZoomToPointAsync(g.geometry as Point)
+                          .then((zoomResult) => {
+                            if (!zoomResult) {
+                              // Cannot zoom in any more, so show everything in cluster...
+                              esriMap
+                                .getIdsFromCluster(g, results2Show.layer)
+                                .then((results) => {
+                                  results
+                                    ? showPopup(
+                                        results2Show.layer.title,
+                                        results,
+                                        pt
+                                      )
+                                    : closePopup();
+                                });
+                            }
+                          });
+                        // const zoomResult = esriMap.tryZoomToPoint(
+                        //   g.geometry as Point
+                        // );
+                        // if (!zoomResult) {
+                        //   // Cannot zoom in any more, so show everything in cluster...
+                        //   esriMap
+                        //     .getIdsFromCluster(g, results2Show.layer)
+                        //     .then((results) => {
+                        //       results
+                        //         ? showPopup(
+                        //             results2Show.layer.title,
+                        //             results,
+                        //             pt
+                        //           )
+                        //         : closePopup();
+                        //     });
+                        // }
                       }
                     });
                 } else {

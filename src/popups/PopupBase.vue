@@ -31,7 +31,7 @@
       </button>
     </div>
     <h4 class="popup-title w3-container">
-      {{ Features[currentIdx].attributes[TitleFieldName] }}
+      {{ Features[currentIdx]?.attributes[TitleFieldName] }}
     </h4>
     <Carousel
       v-if="ImageFieldName"
@@ -196,7 +196,7 @@ export default defineComponent({
       setScreenXY();
     });
     watch(currentIdx, () => {
-      context.emit("idxUpdate", currentIdx);
+      context.emit("idxUpdate", currentIdx.value);
     });
     // Pointer drag event handler...
     // mapView.on("drag", (event) => {
@@ -228,13 +228,13 @@ export default defineComponent({
     });
     // Image load happens later and change the size of the popup, so need to make adjustment after that...
     const onImgLoad = () => {
-      console.log("=== onImgLoad");
+      // console.log("=== onImgLoad");
       numImgLoaded = numImgLoaded + 1;
       adjustPositionSize();
     };
     // Adjust position after the container DIV is available...
     onUpdated(() => {
-      console.log("--- onUpdated");
+      // console.log("--- onUpdated");
       wasUpdatedOnce = true;
       adjustPositionSize();
     });
@@ -341,7 +341,7 @@ export default defineComponent({
       }
       // Wait for everything to load, then adjust.
       if (!isLoadComplete()) {
-        console.log("Not everything is loaded yet.");
+        // console.log("Not everything is loaded yet.");
         return;
       }
       const h = containerRef.value.offsetHeight;
@@ -353,7 +353,7 @@ export default defineComponent({
         Math.abs(prevHeight - h) <= 1
       ) {
         // Sometimes the width changes slightly for some reason, do not respond to those...
-        console.log("No need to adjust.");
+        // console.log("No need to adjust.");
         return;
       } else {
         prevScreenX = screenX.value;
@@ -361,7 +361,7 @@ export default defineComponent({
         prevWidth = w;
         prevHeight = h;
       }
-      console.log("*** Adjust ***");
+      // console.log("*** Adjust ***");
       // New vertical position...
       let newTop = screenY.value - h - 30;
       // New horizontal position.
@@ -399,19 +399,19 @@ export default defineComponent({
       } else {
         isComplete = wasUpdatedOnce;
       }
-      console.log("isLoadComplete: " + isComplete);
+      // console.log("isLoadComplete: " + isComplete);
       return isComplete;
     };
     const setPosition = (top: number, left: number) => {
       // Adjust vertical position...
       if (popupTop.value !== top) {
         popupTop.value = top;
-        console.log("Set popup Top = " + top);
+        // console.log("Set popup Top = " + top);
       }
       // Adjust horizontal position.
       if (popupLeft.value !== left) {
         popupLeft.value = left;
-        console.log("Set popup Left = " + left);
+        // console.log("Set popup Left = " + left);
       }
     };
     // Make sure popup fits inside of Map View...

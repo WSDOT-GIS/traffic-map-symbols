@@ -6,47 +6,52 @@
 </template>
 <script lang="ts">
 import FeatureInfo from "@/types/FeatureInfo";
-import { computed, defineComponent, PropType } from "vue";
+import { defineComponent, PropType, ref, toRefs, watch } from "vue";
 
 export default defineComponent({
   props: {
     Label: {
       type: String,
-      required: false,
+      required: true,
     },
-    Text: {
-      type: String,
-      required: false,
-    },
-    Feature: {
-      type: Object as PropType<FeatureInfo>,
-      required: false,
-    },
-    FieldName: {
-      type: String,
-      required: false,
-    },
-    IsDate: {
-      type: Boolean,
-      required: false,
+    TextData: {
+      type: Object as PropType<{
+        text: string; // set text to display the exact text
+        feature: FeatureInfo; // set feature and fieldName properties to display attribute
+        fieldName: string;
+        isDate: boolean; // set isDate in addition to feature and fieldName to convert value to date string
+      }>,
+      required: true,
     },
   },
   setup(props) {
-    const text = computed(() => {
+    const propText = toRefs(props).TextData;
+    console.log("propText" + JSON.stringify(propText));
+    const text = ref("");
+
+    watch(propText, () => {
+      console.log("Popup row update...");
+      text.value = getText();
+    });
+
+    const getText = () => {
       let text = "";
-      if (props.Text) {
-        text = props.Text;
-      } else if (props.Feature && props.FieldName) {
-        let value = props.Feature.attributes[props.FieldName];
-        if (value && props.IsDate) {
+      if (props.TextData.text) {
+        text = props.TextData.text;
+      } else if (props.TextData.feature && props.TextData.fieldName) {
+        console.log("PopupRow...");
+        let value = props.TextData.feature.attributes[props.TextData.fieldName];
+        if (value && props.TextData.isDate) {
           const date = new Date(value);
-          text = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+          text = `${
+            date.getMonth() + 1
+          }/${date.getDate()}/${date.getFullYear()}`;
         } else {
           text = value ? value : "";
         }
       }
       return text;
-    });
+    };
 
     return {
       text,
