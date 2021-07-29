@@ -80,7 +80,6 @@ export default defineComponent({
 html,
 body,
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -89,6 +88,10 @@ body,
   margin: 0;
   width: 100%;
   height: 100%;
+  /** Got these from internal website */
+  line-height: 1.6;
+  font-family: "Lato", sans-serif;
+  font-weight: 400;
 }
 hr.horizontal-divider {
   border-top: 1px solid #bbb;
@@ -111,6 +114,7 @@ hr.horizontal-divider {
   position: relative;
   width: 100%;
   height: 80%;
+  overflow: hidden;
 }
 
 #map-container > * {

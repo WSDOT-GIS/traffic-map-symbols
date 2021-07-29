@@ -10,6 +10,7 @@ import LayerView from "@arcgis/core/views/layers/GeoJSONLayerView";
 // import { clusterSymbol } from "@/symbols/CameraSymbol";
 import { clusterConfig } from "@/utils/clusterUtil";
 import CameraInfo from "@/types/CameraInfo";
+import FeatureInfo from "@/types/FeaturesetInfo";
 
 
 // const clusterConfig = generateClusterConfig("Cameras", "camera", "#fff", clusterSymbol);
@@ -76,7 +77,7 @@ const fields = [
 
 const layer = new GeoJSONLayer({
     id: "traffic-camera-layer",
-    url: "http://hqtob1webtmdev1/GISData/cameras.json",
+    url: "http://hqtob1webtmdev1/GISData/Cameras.json",
     title: "Traffic Cameras",
     renderer: renderer,
     featureReduction: clusterConfig,
@@ -154,7 +155,7 @@ export const getCameraInfosFromCluster = async (clusterGraphic: Graphic, mapView
     }
 }
 // Get Info objects...
-const getCameraInfosByIds = async (ids: number[]): Promise<CameraInfo[]> => {
+export const getCameraInfosByIds = async (ids: number[]): Promise<CameraInfo[]> => {
     const query = layer.createQuery();
     query.where = "CameraID IN (" + ids.join(",") + ")";
     query.outFields = outFields;
