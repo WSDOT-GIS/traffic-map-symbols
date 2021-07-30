@@ -4,7 +4,7 @@
     :MapY="mapY"
     LightThemeColor="#fff3cd"
     DarkThemeColor="#FFC107"
-    BannerText="Vehicle Restriction"
+    BannerText="Truck Restriction"
     :Features="[feature]"
     TitleFieldName="location_description"
     @close="close"
@@ -46,7 +46,7 @@
       </svg>
     </template>
     <template v-slot:default>
-      <PopupRow Label="Travel delay" :TextOptions="{text:'???'}" />
+      <PopupRow Label="Travel delay" :TextOptions="{ text: '???' }" />
       <PopupRow
         Label=""
         :TextOptions="{ feature: feature, fieldName: 'restriction_comment' }"
