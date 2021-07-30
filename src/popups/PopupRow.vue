@@ -6,7 +6,7 @@
 </template>
 <script lang="ts">
 import FeatureInfo from "@/types/FeatureInfo";
-import { defineComponent, PropType, ref, toRefs, watch } from "vue";
+import { defineComponent, onUpdated, PropType, ref, toRefs, watch } from "vue";
 
 export default defineComponent({
   props: {
@@ -27,7 +27,7 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  setup(props, context) {
     const propText = toRefs(props).TextOptions;
     const text = ref("");
 
@@ -50,7 +50,9 @@ export default defineComponent({
               date.getMonth() + 1
             }/${date.getDate()}/${date.getFullYear()}`;
             if (props.TextOptions.isTime) {
-              text += ` ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+              text += ` ${formatTimePart(date.getHours())}:${formatTimePart(
+                date.getMinutes()
+              )}`;
             }
           } else {
             text = value.toString();
@@ -61,6 +63,16 @@ export default defineComponent({
       }
       return text;
     };
+
+    const formatTimePart = (part: number) => {
+      return ("0" + part).slice(-2);
+    };
+
+    onUpdated(() => {
+      if (text.value.length > 0) {
+        context.emit("updated");
+      }
+    });
 
     return {
       text,

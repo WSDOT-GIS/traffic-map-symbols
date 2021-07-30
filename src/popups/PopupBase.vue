@@ -64,6 +64,8 @@
 import {
   computed,
   defineComponent,
+  nextTick,
+  onMounted,
   onUpdated,
   PropType,
   ref,
@@ -72,9 +74,6 @@ import {
 } from "vue";
 import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
-// import Graphic from "@arcgis/core/Graphic";
-// import Point from "@arcgis/core/geometry/Point";
-// import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 
 import { mapView, toScreenXY, panMap } from "@/esri-stuff/esriMap";
 // import HighlightSymbol from "@/symbols/HighlightSymbol";
@@ -138,7 +137,7 @@ export default defineComponent({
     //
     let numImgLoaded = 0;
     let wasUpdatedOnce = false;
-    let isFirstAdjustment = true;
+    let doPanMap = true;
     // Index of the currently shown feature.
     const currentIdx = ref(0);
     // Reset variables when the features change...
@@ -153,7 +152,7 @@ export default defineComponent({
       popupTop.value = -1000;
       numImgLoaded = 0;
       wasUpdatedOnce = false;
-      isFirstAdjustment = true;
+      doPanMap = true;
     });
     // Feature highlight.
     // let gHighlight: Graphic;
@@ -269,65 +268,6 @@ export default defineComponent({
         screenY.value = -1;
       }
     };
-    // Add feature highlight...
-    // const addHighlight = () => {
-    //   // Make sure there is only one...
-    //   removeHighlight();
-    //   // Create a new graphic...
-    //   const pt = new Point({
-    //     x: props.MapX,
-    //     y: props.MapY,
-    //     spatialReference: SpatialReference.WebMercator,
-    //   });
-    //   gHighlight = new Graphic({
-    //     geometry: pt,
-    //     symbol: HighlightSymbol,
-    //     attributes: {
-    //       type: "popup-highlight",
-    //     },
-    //   });
-    //   mapView.graphics.add(gHighlight);
-    // };
-    // Remove the feature highlight graphic...
-    // const removeHighlight = () => {
-    //   if (gHighlight) {
-    //     mapView.graphics.remove(gHighlight);
-    //   }
-    // };
-
-    // Variables used to store the original position while map view is being dragged.
-    // let orgScreenX = 0;
-    // let orgScreenY = 0;
-    // // MapView drag event handler
-    // const onMapViewDrag = (event: {
-    //   button: number;
-    //   action: string;
-    //   x: number;
-    //   y: number;
-    //   origin: { x: number; y: number };
-    // }) => {
-    //   if (event.button === 0) {
-    //     // Update popup position...
-    //     if (mapX.value < 0 && mapY.value > 0) {
-    //       if (event.action === "start") {
-    //         orgScreenX = screenX.value;
-    //         orgScreenY = screenY.value;
-    //       }
-    //       const diffX = event.x - event.origin.x;
-    //       const diffY = event.y - event.origin.y;
-    //       screenX.value = orgScreenX + diffX;
-    //       screenY.value = orgScreenY + diffY;
-    //       if (event.action === "end") {
-    //         orgScreenX = 0;
-    //         orgScreenY = 0;
-    //       }
-    //       console.log(
-    //         "Map drag, screen X: " + screenX.value + ", Y: " + screenY.value
-    //       );
-    //       adjustPositionSize();
-    //     }
-    //   }
-    // };
     //
     let prevScreenX = 0;
     let prevScreenY = 0;
@@ -344,8 +284,12 @@ export default defineComponent({
         // console.log("Not everything is loaded yet.");
         return;
       }
-      if (!props.Features || props.Features.length === 0 || !props.Features[0]) {
-        console.log("Nothing to show...");
+      if (
+        !props.Features ||
+        props.Features.length === 0 ||
+        !props.Features[0]
+      ) {
+        // console.log("Nothing to show...");
         return;
       }
       const h = containerRef.value.offsetHeight;
@@ -365,31 +309,46 @@ export default defineComponent({
         prevWidth = w;
         prevHeight = h;
       }
-      console.log("*** Adjust ***" + JSON.stringify(props.Features));//props.Features[0].layerTitle);
+      console.log("*** Adjust ***"); // + JSON.stringify(props.Features)); //props.Features[0].layerTitle);
       // New vertical position...
       let newTop = screenY.value - h - 30;
       // New horizontal position.
       let newLeft = screenX.value - w / 2;
       // If this is not the initial load, then move popup along with map.
-      if (!isFirstAdjustment) {
+      if (!doPanMap) {
         setPosition(newTop, newLeft);
       } else {
-        isFirstAdjustment = false;
+        doPanMap = false;
         /**
          * Pan map so the popup is displayed within the map view.
          * Only do this on the initial popup load.
          *  */
         let shiftY = 0;
         let shiftX = 0;
-        if (newTop < 0 || newTop > mapView.height) {
-          shiftY = newTop < 0 ? newTop : newTop - mapView.height;
+        if (newTop < 0) {
+          shiftY = -1 * newTop;
         }
         if (newLeft < 0 || newLeft + w > mapView.width) {
-          shiftX = newLeft < 0 ? newLeft : newLeft + w - mapView.width;
+          shiftX = newLeft < 0 ? -1 * newLeft : mapView.width - newLeft - w;
         }
         setPosition(newTop, newLeft);
-        if (shiftY !== 0 || shiftX !== 0) {
-          panMap(shiftX, shiftY);
+        //console.log("shift x: " + shiftX + ", y:" + shiftY);
+        if (shiftY <= -1 || shiftY >= 1 || shiftX <= -1 || shiftX >= 1) {
+          //console.log("++++++ pan start");
+          panMap(shiftX, shiftY).then(() => {
+            // If there is no image, there is no load events to know if everything is loaded or not.
+            // Not everything is rendered when the first time this runs, so do it again after timeout.
+            // TODO: Find better way to know when everything is loaded.
+            if (!props.ImageFieldName) {
+              doPanMap = true;
+              setTimeout(() => {
+                //console.log("+++++ after timeout");
+                prevHeight = 0;
+                prevWidth = 0;
+                adjustPositionSize();
+              }, 100);
+            }
+          });
         }
       }
     };
@@ -415,55 +374,7 @@ export default defineComponent({
         // console.log("Set popup Left = " + left);
       }
     };
-    // Make sure popup fits inside of Map View...
-    // const adjustPositionSize1 = () => {
-    //   if (!containerRef.value) {
-    //     // console.log("Container is null");
-    //     return;
-    //   }
-    //   const h = containerRef.value.offsetHeight;
-    //   const w = containerRef.value.offsetWidth;
-    //   // Adjust vertical position to make sure it fits in the map view.
-    //   if (maxHeight.value !== mapView.height) {
-    //     // console.log("Set maxHeight = " + mapView.height);
-    //     maxHeight.value = mapView.height;
-    //   }
-    //   let y: number;
-    //   if (maxHeight.value < screenY.value + h) {
-    //     const h2 = h > mapView.height ? mapView.height : h;
-    //     y = mapView.height - h2;
-    //   } else {
-    //     y = screenY.value;
-    //   }
-    //   const newScreenY = y >= 0 ? y : -1;
-    //   if (popupTop.value !== newScreenY) {
-    //     // console.log("Set popupTop = " + newScreenY);
-    //     popupTop.value = newScreenY;
-    //   }
-    //   // Adjust horizontal position.
-    //   let x: number;
-    //   if (mapView.width < screenX.value) {
-    //     x = mapView.width - w - 10;
-    //   } else if (mapView.width < screenX.value + w) {
-    //     // Show it on the left side of the feature...
-    //     x = screenX.value - w - 15; // Offset 15 pixels to the left so the selected feature can be seen clearly
-    //   } else {
-    //     x = screenX.value + 15; // Offset 15 pixels to the right so the selected feature can be seen clearly
-    //   }
-    //   const newScreenX = x >= 0 ? x : -1;
-    //   if (popupLeft.value !== newScreenX) {
-    //     // console.log("Set popupLeft = " + newScreenX);
-    //     popupLeft.value = newScreenX;
-    //   }
-    //   // console.log(
-    //   //   "****Popup top: " +
-    //   //     popupTop.value +
-    //   //     ", left: " +
-    //   //     popupLeft.value +
-    //   //     ", maxHeight: " +
-    //   //     maxHeight.value
-    //   // );
-    // };
+
     return {
       containerRef,
       popupLeft,
@@ -479,6 +390,114 @@ export default defineComponent({
     };
   },
 });
+// Add feature highlight...
+// const addHighlight = () => {
+//   // Make sure there is only one...
+//   removeHighlight();
+//   // Create a new graphic...
+//   const pt = new Point({
+//     x: props.MapX,
+//     y: props.MapY,
+//     spatialReference: SpatialReference.WebMercator,
+//   });
+//   gHighlight = new Graphic({
+//     geometry: pt,
+//     symbol: HighlightSymbol,
+//     attributes: {
+//       type: "popup-highlight",
+//     },
+//   });
+//   mapView.graphics.add(gHighlight);
+// };
+// Remove the feature highlight graphic...
+// const removeHighlight = () => {
+//   if (gHighlight) {
+//     mapView.graphics.remove(gHighlight);
+//   }
+// };
+
+// Variables used to store the original position while map view is being dragged.
+// let orgScreenX = 0;
+// let orgScreenY = 0;
+// // MapView drag event handler
+// const onMapViewDrag = (event: {
+//   button: number;
+//   action: string;
+//   x: number;
+//   y: number;
+//   origin: { x: number; y: number };
+// }) => {
+//   if (event.button === 0) {
+//     // Update popup position...
+//     if (mapX.value < 0 && mapY.value > 0) {
+//       if (event.action === "start") {
+//         orgScreenX = screenX.value;
+//         orgScreenY = screenY.value;
+//       }
+//       const diffX = event.x - event.origin.x;
+//       const diffY = event.y - event.origin.y;
+//       screenX.value = orgScreenX + diffX;
+//       screenY.value = orgScreenY + diffY;
+//       if (event.action === "end") {
+//         orgScreenX = 0;
+//         orgScreenY = 0;
+//       }
+//       console.log(
+//         "Map drag, screen X: " + screenX.value + ", Y: " + screenY.value
+//       );
+//       adjustPositionSize();
+//     }
+//   }
+// };
+// Make sure popup fits inside of Map View...
+// const adjustPositionSize1 = () => {
+//   if (!containerRef.value) {
+//     // console.log("Container is null");
+//     return;
+//   }
+//   const h = containerRef.value.offsetHeight;
+//   const w = containerRef.value.offsetWidth;
+//   // Adjust vertical position to make sure it fits in the map view.
+//   if (maxHeight.value !== mapView.height) {
+//     // console.log("Set maxHeight = " + mapView.height);
+//     maxHeight.value = mapView.height;
+//   }
+//   let y: number;
+//   if (maxHeight.value < screenY.value + h) {
+//     const h2 = h > mapView.height ? mapView.height : h;
+//     y = mapView.height - h2;
+//   } else {
+//     y = screenY.value;
+//   }
+//   const newScreenY = y >= 0 ? y : -1;
+//   if (popupTop.value !== newScreenY) {
+//     // console.log("Set popupTop = " + newScreenY);
+//     popupTop.value = newScreenY;
+//   }
+//   // Adjust horizontal position.
+//   let x: number;
+//   if (mapView.width < screenX.value) {
+//     x = mapView.width - w - 10;
+//   } else if (mapView.width < screenX.value + w) {
+//     // Show it on the left side of the feature...
+//     x = screenX.value - w - 15; // Offset 15 pixels to the left so the selected feature can be seen clearly
+//   } else {
+//     x = screenX.value + 15; // Offset 15 pixels to the right so the selected feature can be seen clearly
+//   }
+//   const newScreenX = x >= 0 ? x : -1;
+//   if (popupLeft.value !== newScreenX) {
+//     // console.log("Set popupLeft = " + newScreenX);
+//     popupLeft.value = newScreenX;
+//   }
+//   // console.log(
+//   //   "****Popup top: " +
+//   //     popupTop.value +
+//   //     ", left: " +
+//   //     popupLeft.value +
+//   //     ", maxHeight: " +
+//   //     maxHeight.value
+//   // );
+// };
 </script>
 
 <style scoped>

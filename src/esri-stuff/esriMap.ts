@@ -109,14 +109,14 @@ export const toScreenXY = (mapX: number, mapY: number): { x: number, y: number }
 }
 
 export const panMap = async (shiftX: number, shiftY: number): Promise<string> => {
-    console.log("Shift X: " + shiftX + ", Y: " + shiftY);
+    console.log("panMap X: " + shiftX + ", Y: " + shiftY);
     const screenCenter = mapView.toScreen(mapView.center);
     console.log(
         "Screen Center X: " + screenCenter.x + ", Y: " + screenCenter.y
     );
     const mapCenter = mapView.toMap({
-        x: screenCenter.x + shiftX,
-        y: screenCenter.y + shiftY,
+        x: screenCenter.x - shiftX,
+        y: screenCenter.y - shiftY,
     });
     //mapView.center = mapCenter;
     await mapView.goTo(mapCenter, {

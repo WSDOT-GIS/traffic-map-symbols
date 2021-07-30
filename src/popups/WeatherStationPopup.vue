@@ -69,7 +69,6 @@
           text: coordinateText,
         }"
       />
-
       <PopupRow Label="Surface temp" :TextOptions="{ text: surfTempText }" />
       <PopupRow Label="Air temp" :TextOptions="{ text: airTempText }" />
       <PopupRow
@@ -119,7 +118,7 @@
   </PopupBase>
 </template>
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, watch } from "vue";
+import { computed, defineComponent, nextTick, PropType, ref, watch } from "vue";
 import PopupBase from "./PopupBase.vue";
 import PopupRow from "./PopupRow.vue";
 import FeatureLayer from "@/layers/WeatherStationsLayer";
@@ -171,7 +170,10 @@ export default defineComponent({
       if (mapX.value !== 0 || mapY.value !== 0 || feature.value) {
         // Clean up the previous data...
         close();
-        setVal();
+        nextTick(() => {
+          setVal();
+        });
+        //setVal();
       } else {
         setVal();
       }
@@ -261,6 +263,9 @@ export default defineComponent({
           text += " / ";
         }
         text += `${num2}${unit2}`;
+      }
+      if (text.length === 0) {
+        text = naText;
       }
       return text;
     };
