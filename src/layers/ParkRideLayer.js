@@ -70,4 +70,5 @@ define(["require", "exports", "tslib", "@arcgis/core/renderers/SimpleRenderer", 
     });
     exports.default = layer;
 });
+export default layer;
 //# sourceMappingURL=ParkRideLayer.js.map

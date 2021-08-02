@@ -37,7 +37,6 @@ export default defineComponent({
       "not-filled-button": false,
     };
     if (props.IsWhite) {
-      console.log("isWhite");
       btnClass["filled-button"] = false;
       btnClass["not-filled-button"] = true;
     }

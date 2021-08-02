@@ -22,7 +22,8 @@ interface WeatherStationInfo {
     PrecipitationAccumulated: string,
     WeatherIconDisplayName: string,
     WeatherIconFileName: string,
-    Condition: string
+    Condition: string,
+    NWSZoneId: string
 }
 
 export default WeatherStationInfo;

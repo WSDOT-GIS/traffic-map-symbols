@@ -1,90 +1,106 @@
-define(["require", "exports", "tslib", "vuex", "@arcgis/core/geometry/Extent", "./esri-stuff/esriMap", "./layers/Basemaps", "./utils/extentUtil"], function (require, exports, tslib_1, vuex_1, Extent_1, esriMap_1, Basemaps_1, extentUtil_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.useStore = exports.cloneProxyTarget = exports.store = exports.key = void 0;
-    Extent_1 = tslib_1.__importDefault(Extent_1);
-    // define injection key...
-    exports.key = Symbol();
-    exports.store = vuex_1.createStore({
-        state: function () {
-            return {
+import { createStore, useStore as baseUseStore } from "vuex";
+import Extent from "@arcgis/core/geometry/Extent";
+import { webmap, mapView } from "./esri-stuff/esriMap";
+import { getBasemapInfo, toggleBasemapInfo } from "./layers/Basemaps";
+import { convert2EsriExtent, convert2ExtentInfo } from "./utils/extentUtil";
+// define injection key...
+export const key = Symbol();
+export const store = createStore({
+    state() {
+        return {
+            basemap: "",
+            pointerX: 0,
+            pointerY: 0,
+            currentExtent: {
+                xmin: 0,
+                xmax: 0,
+                ymin: 0,
+                ymax: 0
+            },
+            layerList: [],
+            userLocation: null,
+            mapFeaturesExpanded: "block",
+            appConfig: {
                 basemap: "",
-                pointerX: 0,
-                pointerY: 0,
-                currentExtent: {
-                    xmin: 0,
-                    xmax: 0,
-                    ymin: 0,
-                    ymax: 0
-                },
-                layerList: [],
-                userLocation: null,
-                mapFeaturesExpanded: "block",
-            };
+                cameras: "",
+                lineRestrictions: "",
+                mountainPasses: "",
+                parkAndRides: "",
+                pointRestrictions: "",
+                traffic: "",
+                weatherStations: "",
+                apiKey: "",
+                forecastSummaryAPI: "",
+                forecastExtendedAPI: ""
+            }
+        };
+    },
+    getters: {
+        completeLayerList: state => {
+            return state.layerList;
         },
-        getters: {
-            completeLayerList: function (state) {
-                return state.layerList;
-            },
-        },
-        mutations: {
-            setBasemap: function (state, payload) {
-                if (state.basemap != payload || !state.basemap) {
-                    var basemapInfo = Basemaps_1.getBasemapInfo(payload);
-                    state.basemap = basemapInfo.name;
-                    esriMap_1.webmap.basemap = basemapInfo.basemap;
-                }
-            },
-            toggleBasemap: function (state) {
-                var basemapInfo = Basemaps_1.toggleBasemapInfo(state.basemap);
+        completeAppConfig: state => {
+            return state.appConfig;
+        }
+    },
+    mutations: {
+        setBasemap(state, payload) {
+            if (state.basemap != payload || !state.basemap) {
+                const basemapInfo = getBasemapInfo(payload);
                 state.basemap = basemapInfo.name;
-                esriMap_1.webmap.basemap = basemapInfo.basemap;
-            },
-            setPointerX: function (state, payload) {
-                state.pointerX = payload.toFixed(6);
-            },
-            setPointerY: function (state, payload) {
-                state.pointerY = payload.toFixed(6);
-            },
-            setUserLocation: function (state, payload) {
-                state.userLocation = payload;
-            },
-            setLayerList: function (state, payload) {
-                state.layerList = payload;
-                esriMap_1.webmap.layers.map(function (layer, index) {
-                    if (layer.title && state.layerList[index] && layer.title == state.layerList[index].title) {
-                        layer.visible = state.layerList[index].visible;
-                    }
-                });
-            },
-            setCurrentExtent: function (state, payload) {
-                if (payload instanceof Extent_1.default) {
-                    // If the payload is ESRI extent, then update the state only.
-                    var extentInfo = extentUtil_1.convert2ExtentInfo(payload);
-                    state.currentExtent = extentInfo;
-                }
-                else {
-                    // If the payload is ExtentInfo, actually zoom the map. Once the map extent 
-                    // is changed, ESRI extent will be sent to this again and set the state.
-                    var extent = extentUtil_1.convert2EsriExtent(payload);
-                    esriMap_1.mapView.extent = extent;
-                }
-            },
-            setMapFeaturesExpanded: function (state, payload) {
-                state.mapFeaturesExpanded == "block" ? state.mapFeaturesExpanded = "none" : state.mapFeaturesExpanded = "block";
-            },
+                webmap.basemap = basemapInfo.basemap;
+            }
         },
-    });
-    // Clone the target of proxy (i.e. removing the reactivity)
-    var cloneProxyTarget = function (proxy) {
-        var copy = JSON.parse(JSON.stringify(proxy));
-        return copy;
-    };
-    exports.cloneProxyTarget = cloneProxyTarget;
-    // define custom useStore that supply key so do not have to do this in each component...
-    var useStore = function () {
-        return vuex_1.useStore(exports.key);
-    };
-    exports.useStore = useStore;
+        toggleBasemap(state) {
+            const basemapInfo = toggleBasemapInfo(state.basemap);
+            state.basemap = basemapInfo.name;
+            webmap.basemap = basemapInfo.basemap;
+        },
+        setPointerX(state, payload) {
+            state.pointerX = payload.toFixed(6);
+        },
+        setPointerY(state, payload) {
+            state.pointerY = payload.toFixed(6);
+        },
+        setUserLocation(state, payload) {
+            state.userLocation = payload;
+        },
+        setLayerList(state, payload) {
+            state.layerList = payload;
+            webmap.layers.map((layer, index) => {
+                if (layer.title && state.layerList[index] && layer.title == state.layerList[index].title) {
+                    layer.visible = state.layerList[index].visible;
+                }
+            });
+        },
+        setAppConfig(state, payload) {
+            state.appConfig = payload;
+        },
+        setCurrentExtent(state, payload) {
+            if (payload instanceof Extent) {
+                // If the payload is ESRI extent, then update the state only.
+                const extentInfo = convert2ExtentInfo(payload);
+                state.currentExtent = extentInfo;
+            }
+            else {
+                // If the payload is ExtentInfo, actually zoom the map. Once the map extent 
+                // is changed, ESRI extent will be sent to this again and set the state.
+                const extent = convert2EsriExtent(payload);
+                mapView.extent = extent;
+            }
+        },
+        setMapFeaturesExpanded(state, payload) {
+            state.mapFeaturesExpanded == "block" ? state.mapFeaturesExpanded = "none" : state.mapFeaturesExpanded = "block";
+        },
+    },
 });
+// Clone the target of proxy (i.e. removing the reactivity)
+export const cloneProxyTarget = (proxy) => {
+    const copy = JSON.parse(JSON.stringify(proxy));
+    return copy;
+};
+// define custom useStore that supply key so do not have to do this in each component...
+export const useStore = () => {
+    return baseUseStore(key);
+};
 //# sourceMappingURL=store.js.map

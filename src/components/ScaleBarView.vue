@@ -19,7 +19,6 @@ export default defineComponent({
     const ruler = ref<HTMLDivElement>()
     const line = ref<HTMLDivElement>()
     onMounted(()=>{
-      console.log("mounted")
       const scaleBar = new ScaleBar({
         view:mapView,
         container:ruler.value,

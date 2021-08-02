@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ES5",
-    "module": "amd",
+    "target": "es2017",
+    "module": "esnext",
     "strict": true,
     "jsx": "preserve",
     "importHelpers": true,

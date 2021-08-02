@@ -25,14 +25,13 @@ export default defineComponent({
     const tileImage = require("@/assets/icons/tileBasemap.png")
     const satelliteImage = require("@/assets/icons/worldImagery.png")
     const imgSrc = ref<any>(satelliteImage)
-    const imgSize = ref<number>(100)
+    const imgSize = ref<string>("100")
     const iconTitle = ref<string>("Imagery")
     const labelStyle = ref<string>("iconLabelWhite")
     const labelFontSize = ref<number>(12)
     const windowWidth = ref<number>(window.innerWidth)
     const onClick = () => {
       store.commit("toggleBasemap");
-      console.log("Clicked basemap: " + store.state.basemap);
       imgSrc.value == satelliteImage
         ? (imgSrc.value = tileImage)
         : (imgSrc.value = satelliteImage);
@@ -57,20 +56,20 @@ export default defineComponent({
   },
   mounted() {
     if(window.innerWidth <=500){
-      this.imgSize = 50;
+      this.imgSize = "50";
       this.labelFontSize = 6
     }
     if(window.innerWidth >=500){
-      this.imgSize= 100
+      this.imgSize= "100"
       this.labelFontSize = 12
     }
     window.addEventListener("resize",() => {
       if(window.innerWidth <=500){
-        this.imgSize = 50;
+        this.imgSize = "50";
         this.labelFontSize = 6
       }
       if(window.innerWidth >=500){
-        this.imgSize= 100
+        this.imgSize= "100"
         this.labelFontSize = 12
       }
     })

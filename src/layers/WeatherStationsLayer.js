@@ -16,4 +16,13 @@ define(["require", "exports", "tslib", "@arcgis/core/layers/GeoJSONLayer", "@arc
     });
     exports.default = WeatherStationsLayer;
 });
+const WeatherStationsLayer = new GeoJSONLayer({
+    id: "weather-stations-layer",
+    url: "http://hqtob1webtmdev1/GISData/WeatherStations.json",
+    title: "Weather Stations",
+    renderer: weatherStationRenderer,
+    //popupTemplate: weatherStationsPopup,
+    visible: false
+});
+export default WeatherStationsLayer;
 //# sourceMappingURL=WeatherStationsLayer.js.map

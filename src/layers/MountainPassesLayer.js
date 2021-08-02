@@ -16,4 +16,15 @@ define(["require", "exports", "tslib", "@arcgis/core/layers/GeoJSONLayer", "@arc
     });
     exports.default = MountainPassesLayer;
 });
+const mountainPassRenderer = new simpleRenderer({
+    symbol: mountainPassSymbol
+});
+const MountainPassesLayer = new GeoJSONLayer({
+    id: "mountain-passes-layer",
+    url: "http://hqtob1webtmdev1/GISData/MountainPasses.json",
+    title: "Mountain Passes",
+    renderer: mountainPassRenderer,
+    visible: false
+});
+export default MountainPassesLayer;
 //# sourceMappingURL=MountainPassesLayer.js.map

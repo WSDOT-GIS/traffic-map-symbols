@@ -18,20 +18,16 @@ export default defineComponent({
   mounted() {
     if(window.innerWidth <=500){
         this.fullScreen=false
-        console.log(this.fullScreen)
       }
       if(window.innerWidth >=500){
         this.fullScreen=true
-        console.log(this.fullScreen)
       }
     window.addEventListener("resize",() => {
       if(window.innerWidth <=500){
         this.fullScreen=false
-        console.log(this.fullScreen)
       }
       if(window.innerWidth >=500){
         this.fullScreen=true
-        console.log(this.fullScreen)
       }
     })
   },

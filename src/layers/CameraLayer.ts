@@ -6,7 +6,9 @@ import Graphic from "@arcgis/core/Graphic";
 import MapView from "@arcgis/core/views/MapView";
 import Point from "@arcgis/core/geometry/Point";
 import LayerView from "@arcgis/core/views/layers/GeoJSONLayerView";
-
+import {store} from "@/store"
+console.log("cameras.ts")
+console.log(store)
 // import { clusterSymbol } from "@/symbols/CameraSymbol";
 import { clusterConfig } from "@/utils/clusterUtil";
 import CameraInfo from "@/types/CameraInfo";
