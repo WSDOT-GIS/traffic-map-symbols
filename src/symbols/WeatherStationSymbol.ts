@@ -1,14 +1,28 @@
 
-import IconInfo from "@/types/IconInfo"
-import {layerListIcons} from "@/symbols/IconDefinitions"
+// import IconInfo from "@/types/IconInfo"
+import { layerListIcons } from "@/symbols/IconDefinitions"
 import CIMSymbol from "@arcgis/core/symbols/CIMSymbol"
 
 const weatherStationSymbol = new CIMSymbol({
-    data:{
-        type:"CIMSymbolReference",
-        symbol:{
-          "type": "CIMPointSymbol",
-          "symbolLayers": [
+  data: {
+    type: "CIMSymbolReference",
+    symbol: {
+      "type": "CIMPointSymbol",
+      "symbolLayers": [
+        {
+          "type": "CIMVectorMarker",
+          "enable": true,
+          "anchorPointUnits": "Relative",
+          "dominantSizeAxis3D": "Y",
+          "size": 15,
+          "billboardMode3D": "FaceNearPlane",
+          "frame": {
+            "xmin": 0,
+            "ymin": 0,
+            "xmax": 24,
+            "ymax": 24
+          },
+          "markerGraphics": [
             {
               "type": "CIMVectorMarker",
               "enable": true,
@@ -989,11 +1003,60 @@ const weatherStationSymbol = new CIMSymbol({
                       ]
                     ]
                   ]
-                }
+                ]
+              },
+              "symbol": {
+                "type": "CIMPolygonSymbol",
+                "symbolLayers": [
+                  {
+                    "type": "CIMSolidFill",
+                    "enable": true,
+                    "color": [
+                      0,
+                      0,
+                      0,
+                      255
+                    ]
+                  }
+                ]
               }
             }
-          ]
+          ],
+          "scaleSymbolsProportionally": true,
+          "respectFrame": true,
+          "clippingPath": {
+            "type": "CIMClippingPath",
+            "clippingType": "Intersect",
+            "path": {
+              "rings": [
+                [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    24,
+                    0
+                  ],
+                  [
+                    24,
+                    24
+                  ],
+                  [
+                    0,
+                    24
+                  ],
+                  [
+                    0,
+                    0
+                  ]
+                ]
+              ]
+            }
+          }
         }
+      ]
     }
+  }
 })
-export {weatherStationSymbol}
+export { weatherStationSymbol }
