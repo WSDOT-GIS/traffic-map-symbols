@@ -1,8 +1,8 @@
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer"
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import mountainPassSymbol from "@/symbols/MountainPassSymbol"
-import MountainPassesInfo from "@/types/MountainPassesInfo";
-import Graphic from "@arcgis/core/Graphic";
+// import MountainPassesInfo from "@/types/MountainPassesInfo";
+// import Graphic from "@arcgis/core/Graphic";
 const mountainPassRenderer = new simpleRenderer({
     symbol: mountainPassSymbol
 })

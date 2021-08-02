@@ -55,11 +55,12 @@
         <pagination v-if="slidesCount > 1" />
       </template>
     </Carousel>
-    <div class="popup-content w3-container">
-      
-    </div>
-    <div class="popup-content w3-container">
-      <slot></slot>
+    <div
+      v-for="eachConfig in ContentConfig"
+      :key="eachConfig.label"
+      class="popup-content w3-container"
+    >
+      <PopupRow :Config="eachConfig" :Feature="Features[currentIdx]" />
     </div>
   </div>
 </template>
@@ -67,6 +68,7 @@
 import {
   computed,
   defineComponent,
+  nextTick,
   onUpdated,
   PropType,
   ref,
@@ -79,10 +81,11 @@ import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
 import { mapView, toScreenXY, panMap } from "@/esri-stuff/esriMap";
 // import HighlightSymbol from "@/symbols/HighlightSymbol";
 import FeatureInfo from "@/types/FeatureInfo";
-import PopupRowConfig from "@/types/PopupContentConfig";
+import PopupRowConfig from "@/types/PopupRowConfig";
+import PopupRow from "./PopupRow.vue";
 
 export default defineComponent({
-  components: { Carousel, Slide, Pagination, Navigation },
+  components: { Carousel, Slide, Pagination, Navigation, PopupRow },
   props: {
     MapX: {
       type: Number,
@@ -203,10 +206,6 @@ export default defineComponent({
     watch(currentIdx, () => {
       context.emit("idxUpdate", currentIdx.value);
     });
-    // Pointer drag event handler...
-    // mapView.on("drag", (event) => {
-    //   onMapViewDrag(event);
-    // });
     // MapView resize event...
     mapView.on("resize", () => {
       if (mapX.value < 0 && mapY.value > 0) {
@@ -233,13 +232,11 @@ export default defineComponent({
     });
     // Image load happens later and change the size of the popup, so need to make adjustment after that...
     const onImgLoad = () => {
-      // console.log("=== onImgLoad");
       numImgLoaded = numImgLoaded + 1;
       adjustPositionSize();
     };
     // Adjust position after the container DIV is available...
     onUpdated(() => {
-      // console.log("--- onUpdated");
       wasUpdatedOnce = true;
       adjustPositionSize();
     });
@@ -262,8 +259,6 @@ export default defineComponent({
     // Convert map coordinates to screen coordinates and calculate the popup position...
     const setScreenXY = () => {
       if (mapX.value < 0 && mapY.value > 0) {
-        // console.log(mapX.value);
-        // console.log(mapY.value);
         const screenXY = toScreenXY(mapX.value, mapY.value);
         screenX.value = screenXY.x;
         screenY.value = screenXY.y;
@@ -287,7 +282,7 @@ export default defineComponent({
       }
       // Wait for everything to load, then adjust.
       if (!isLoadComplete()) {
-        // console.log("Not everything is loaded yet.");
+        // Not everything is loaded yet.
         return;
       }
       if (
@@ -295,7 +290,7 @@ export default defineComponent({
         props.Features.length === 0 ||
         !props.Features[0]
       ) {
-        // console.log("Nothing to show...");
+        // "Nothing to show...
         return;
       }
       const h = containerRef.value.offsetHeight;
@@ -307,7 +302,6 @@ export default defineComponent({
         Math.abs(prevHeight - h) <= 1
       ) {
         // Sometimes the width changes slightly for some reason, do not respond to those...
-        // console.log("No need to adjust.");
         return;
       } else {
         prevScreenX = screenX.value;
@@ -315,7 +309,7 @@ export default defineComponent({
         prevWidth = w;
         prevHeight = h;
       }
-      console.log("*** Adjust ***"); // + JSON.stringify(props.Features)); //props.Features[0].layerTitle);
+      //console.log("*** Adjust ***"); // + JSON.stringify(props.Features)); //props.Features[0].layerTitle);
       // New vertical position...
       let newTop = screenY.value - h - 30;
       // New horizontal position.
@@ -325,37 +319,29 @@ export default defineComponent({
         setPosition(newTop, newLeft);
       } else {
         doPanMap = false;
-        /**
-         * Pan map so the popup is displayed within the map view.
-         * Only do this on the initial popup load.
-         *  */
-        let shiftY = 0;
-        let shiftX = 0;
-        if (newTop < 0) {
-          shiftY = -1 * newTop;
-        }
-        if (newLeft < 0 || newLeft + w > mapView.width) {
-          shiftX = newLeft < 0 ? -1 * newLeft : mapView.width - newLeft - w;
-        }
-        setPosition(newTop, newLeft);
-        //console.log("shift x: " + shiftX + ", y:" + shiftY);
-        if (shiftY <= -1 || shiftY >= 1 || shiftX <= -1 || shiftX >= 1) {
-          //console.log("++++++ pan start");
-          panMap(shiftX, shiftY).then(() => {
-            // If there is no image, there is no load events to know if everything is loaded or not.
-            // Not everything is rendered when the first time this runs, so do it again after timeout.
-            // TODO: Find better way to know when everything is loaded.
-            if (!props.ImageFieldName) {
-              doPanMap = true;
-              setTimeout(() => {
-                //console.log("+++++ after timeout");
-                prevHeight = 0;
-                prevWidth = 0;
-                adjustPositionSize();
-              }, 100);
-            }
-          });
-        }
+        nextTick(() => {
+          // New vertical position...
+          newTop = screenY.value - h - 30;
+          // New horizontal position.
+          newLeft = screenX.value - w / 2;
+
+          /**
+           * Pan map so the popup is displayed within the map view.
+           * Only do this on the initial popup load.
+           *  */
+          let shiftY = 0;
+          let shiftX = 0;
+          if (newTop < 0) {
+            shiftY = -1 * newTop;
+          }
+          if (newLeft < 0 || newLeft + w > mapView.width) {
+            shiftX = newLeft < 0 ? -1 * newLeft : mapView.width - newLeft - w;
+          }
+          setPosition(newTop, newLeft);
+          if (shiftY <= -1 || shiftY >= 1 || shiftX <= -1 || shiftX >= 1) {
+            panMap(shiftX, shiftY);
+          }
+        });
       }
     };
     const isLoadComplete = () => {
@@ -365,19 +351,16 @@ export default defineComponent({
       } else {
         isComplete = wasUpdatedOnce;
       }
-      // console.log("isLoadComplete: " + isComplete);
       return isComplete;
     };
     const setPosition = (top: number, left: number) => {
       // Adjust vertical position...
       if (popupTop.value !== top) {
         popupTop.value = top;
-        // console.log("Set popup Top = " + top);
       }
       // Adjust horizontal position.
       if (popupLeft.value !== left) {
         popupLeft.value = left;
-        // console.log("Set popup Left = " + left);
       }
     };
 
@@ -421,96 +404,12 @@ export default defineComponent({
 //     mapView.graphics.remove(gHighlight);
 //   }
 // };
-
-// Variables used to store the original position while map view is being dragged.
-// let orgScreenX = 0;
-// let orgScreenY = 0;
-// // MapView drag event handler
-// const onMapViewDrag = (event: {
-//   button: number;
-//   action: string;
-//   x: number;
-//   y: number;
-//   origin: { x: number; y: number };
-// }) => {
-//   if (event.button === 0) {
-//     // Update popup position...
-//     if (mapX.value < 0 && mapY.value > 0) {
-//       if (event.action === "start") {
-//         orgScreenX = screenX.value;
-//         orgScreenY = screenY.value;
-//       }
-//       const diffX = event.x - event.origin.x;
-//       const diffY = event.y - event.origin.y;
-//       screenX.value = orgScreenX + diffX;
-//       screenY.value = orgScreenY + diffY;
-//       if (event.action === "end") {
-//         orgScreenX = 0;
-//         orgScreenY = 0;
-//       }
-//       console.log(
-//         "Map drag, screen X: " + screenX.value + ", Y: " + screenY.value
-//       );
-//       adjustPositionSize();
-//     }
-//   }
-// };
-// Make sure popup fits inside of Map View...
-// const adjustPositionSize1 = () => {
-//   if (!containerRef.value) {
-//     // console.log("Container is null");
-//     return;
-//   }
-//   const h = containerRef.value.offsetHeight;
-//   const w = containerRef.value.offsetWidth;
-//   // Adjust vertical position to make sure it fits in the map view.
-//   if (maxHeight.value !== mapView.height) {
-//     // console.log("Set maxHeight = " + mapView.height);
-//     maxHeight.value = mapView.height;
-//   }
-//   let y: number;
-//   if (maxHeight.value < screenY.value + h) {
-//     const h2 = h > mapView.height ? mapView.height : h;
-//     y = mapView.height - h2;
-//   } else {
-//     y = screenY.value;
-//   }
-//   const newScreenY = y >= 0 ? y : -1;
-//   if (popupTop.value !== newScreenY) {
-//     // console.log("Set popupTop = " + newScreenY);
-//     popupTop.value = newScreenY;
-//   }
-//   // Adjust horizontal position.
-//   let x: number;
-//   if (mapView.width < screenX.value) {
-//     x = mapView.width - w - 10;
-//   } else if (mapView.width < screenX.value + w) {
-//     // Show it on the left side of the feature...
-//     x = screenX.value - w - 15; // Offset 15 pixels to the left so the selected feature can be seen clearly
-//   } else {
-//     x = screenX.value + 15; // Offset 15 pixels to the right so the selected feature can be seen clearly
-//   }
-//   const newScreenX = x >= 0 ? x : -1;
-//   if (popupLeft.value !== newScreenX) {
-//     // console.log("Set popupLeft = " + newScreenX);
-//     popupLeft.value = newScreenX;
-//   }
-//   // console.log(
-//   //   "****Popup top: " +
-//   //     popupTop.value +
-//   //     ", left: " +
-//   //     popupLeft.value +
-//   //     ", maxHeight: " +
-//   //     maxHeight.value
-//   // );
-// };
 </script>
 
 <style scoped>
 .popup-container {
   z-index: 10;
   background-color: #fff;
-  /* overflow-y: auto; */
   position: relative;
 }
 
