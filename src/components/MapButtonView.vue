@@ -2,6 +2,8 @@
   <button
     class="w3-button w3-border w3-round w3-card-2"
     :style="{ width: Width, height: Height }"
+    :aria-label="AriaLabel"
+    :title="AriaLabel"
   >
     <slot></slot>
   </button>
@@ -16,6 +18,10 @@ export default defineComponent({
       required: true,
     },
     Width: {
+      type: String,
+      required: true,
+    },
+    AriaLabel: {
       type: String,
       required: true,
     },
@@ -36,5 +42,6 @@ button {
   justify-content: center;
   align-items: center;
   margin: 2px;
+  z-index: 9;
 }
 </style>

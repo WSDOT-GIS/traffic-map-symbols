@@ -1,7 +1,7 @@
 define(["require", "exports", "tslib", "@arcgis/core/Basemap", "@arcgis/core/layers/TileLayer"], function (require, exports, tslib_1, Basemap_1, TileLayer_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.toggleBasemapInfo = exports.getBasemapInfo = exports.getDefaultBasemapInfo = void 0;
+    exports.validateBasemapName = exports.toggleBasemapInfo = exports.getBasemapInfo = exports.getDefaultBasemapInfo = void 0;
     Basemap_1 = tslib_1.__importDefault(Basemap_1);
     TileLayer_1 = tslib_1.__importDefault(TileLayer_1);
     var getDefaultBasemapInfo = function () { return basemaps[0]; };
@@ -24,7 +24,7 @@ define(["require", "exports", "tslib", "@arcgis/core/Basemap", "@arcgis/core/lay
             })
         }, {
             name: "satellite",
-            basemap: Basemap_1.default.fromId("satellite")
+            basemap: Basemap_1.default.fromId("arcgis-imagery")
         }
     ];
     var getBasemapInfo = function (name) {
@@ -56,5 +56,13 @@ define(["require", "exports", "tslib", "@arcgis/core/Basemap", "@arcgis/core/lay
         }
     };
     exports.toggleBasemapInfo = toggleBasemapInfo;
+    // Make sure the base map name is valid...
+    var validateBasemapName = function (name) {
+        var result = basemaps.filter(function (item) {
+            return item.name === name;
+        });
+        return result.length > 0;
+    };
+    exports.validateBasemapName = validateBasemapName;
 });
 //# sourceMappingURL=Basemaps.js.map

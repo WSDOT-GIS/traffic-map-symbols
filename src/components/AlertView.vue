@@ -20,6 +20,6 @@ export default defineComponent({
 
 <style scoped>
 #alert_container {
-  background-color: orange;
+  background-color: var(--color-warning);
 }
 </style>

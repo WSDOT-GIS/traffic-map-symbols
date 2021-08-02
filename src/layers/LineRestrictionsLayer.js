@@ -1,9 +1,9 @@
-define(["require", "exports", "tslib", "../symbols/LineRestrictionsSymbol", "@arcgis/core/layers/GeoJSONLayer", "@arcgis/core/renderers/UniqueValueRenderer"], function (require, exports, tslib_1, LineRestrictionsSymbol_1, GeoJSONLayer_1, UniqueValueRenderer_1) {
+define(["require", "exports", "tslib", "../symbols/LineRestrictionsSymbol", "@arcgis/core/layers/GeoJSONLayer", "@arcgis/core/renderers/UniqueValueRenderer", "@arcgis/core/layers/support/Field"], function (require, exports, tslib_1, LineRestrictionsSymbol_1, GeoJSONLayer_1, UniqueValueRenderer_1, Field_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.getLineRestrictionInfoById = void 0;
     GeoJSONLayer_1 = tslib_1.__importDefault(GeoJSONLayer_1);
     UniqueValueRenderer_1 = tslib_1.__importDefault(UniqueValueRenderer_1);
+    Field_1 = tslib_1.__importDefault(Field_1);
     var lineRestrictionsRenderer = new UniqueValueRenderer_1.default({
         field: "TType",
         uniqueValueInfos: [{
@@ -25,77 +25,50 @@ define(["require", "exports", "tslib", "../symbols/LineRestrictionsSymbol", "@ar
         url: "https://data.wsdot.wa.gov/travelcenter/ LineRestrictions.json",
         title: "Restriction Lines",
         renderer: lineRestrictionsRenderer,
-        visible: false
+        visible: false,
+        fields: [
+            new Field_1.default({ name: "state", alias: "State", type: "string" }),
+            new Field_1.default({ name: "route_nr", alias: "Route Number", type: "string" }),
+            new Field_1.default({ name: "seq_nr", alias: "Sequence Number", type: "integer" }),
+            new Field_1.default({ name: "direction", alias: "Direction", type: "string" }),
+            new Field_1.default({ name: "cardinal_direction", alias: "Cardinal Direction", type: "string" }),
+            new Field_1.default({ name: "restriction_start_mp", alias: "Restriction Start Milepost", type: "double" }),
+            new Field_1.default({ name: "restriction_end_mp", alias: "Restriction End Milepost", type: "double" }),
+            new Field_1.default({ name: "restriction_comment", alias: "Restriction Comment", type: "string" }),
+            new Field_1.default({ name: "location_name", alias: "Location Name", type: "string" }),
+            new Field_1.default({ name: "location_description", alias: "Location Desctription", type: "string" }),
+            new Field_1.default({ name: "date_posted", alias: "Date Posted", type: "date" }),
+            new Field_1.default({ name: "date_effective", alias: "Date Effective", type: "date" }),
+            new Field_1.default({ name: "date_expires", alias: "Date Expires", type: "date" }),
+            new Field_1.default({ name: "restriction_width", alias: "Restriction Width", type: "integer" }),
+            new Field_1.default({ name: "restriction_height", alias: "Restriction Height", type: "integer" }),
+            new Field_1.default({ name: "restriction_length", alias: "Restriction Length", type: "integer" }),
+            new Field_1.default({ name: "restriction_weight", alias: "Restriction Weight", type: "integer" }),
+            new Field_1.default({ name: "road_veh_type", alias: "Road Vehicle Type", type: "string" }),
+            new Field_1.default({ name: "commercial_veh_yn", alias: "Commercial Vehicle Type", type: "string" }),
+            new Field_1.default({ name: "detour_available_yn", alias: "Detour Available", type: "string" }),
+            new Field_1.default({ name: "permanent_restriction_yn", alias: "Permanent Restriction", type: "string" }),
+            new Field_1.default({ name: "exceptions_allowed_yn", alias: "Exceptions Allowed", type: "string" }),
+            new Field_1.default({ name: "warning_yn", alias: "Warning", type: "string" }),
+            new Field_1.default({ name: "bridge_nr", alias: "Bridge Number", type: "string" }),
+            new Field_1.default({ name: "max_gvw", alias: "Max Gross Weight", type: "double" }),
+            new Field_1.default({ name: "bridge_type", alias: "Bridge Type", type: "string" }),
+            new Field_1.default({ name: "bridge_name", alias: "Bridge Name", type: "string" }),
+            new Field_1.default({ name: "bl_max_axle", alias: "BL Max Axle", type: "string" }),
+            new Field_1.default({ name: "cl8_max_axle", alias: "CL8 Max Axle", type: "integer" }),
+            new Field_1.default({ name: "sa_max_axle", alias: "SA Max Axle", type: "integer" }),
+            new Field_1.default({ name: "td_max_axle", alias: "TD Max Axle", type: "integer" }),
+            new Field_1.default({ name: "TType", alias: "Type", type: "string" }),
+            new Field_1.default({ name: "PostedRestrictionFlag", alias: "Posted Restriction Flag", type: "integer" }),
+            new Field_1.default({ name: "RecordUpdateDate", alias: "Record Update Date", type: "date" }),
+            new Field_1.default({ name: "RelatedRouteType", alias: "Related Route Type", type: "string" }),
+            new Field_1.default({ name: "RelatedRouteQualifier", alias: "Related Route Qualifier", type: "string" }),
+            new Field_1.default({ name: "AheadBackIndicator", alias: "Ahead Back Indicator", type: "string" }),
+            new Field_1.default({ name: "ESRI_OID", alias: "OID", type: "integer" }),
+        ]
         //popupTemplate: restrictionsPopup,
         // featureReduction: clusterConfig
     });
-    var getLineRestrictionInfoById = function (id) { return tslib_1.__awaiter(void 0, void 0, void 0, function () {
-        var query, response, g, info;
-        return tslib_1.__generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    console.log(id);
-                    query = LineRestrictionsLayer.createQuery();
-                    query.where = "ESRI_OID = " + id;
-                    query.outFields = ["*"];
-                    return [4 /*yield*/, LineRestrictionsLayer.queryFeatures(query)];
-                case 1:
-                    response = _a.sent();
-                    g = response.features[0];
-                    if (g) {
-                        info = convert2Info(g);
-                        console.log(info);
-                        return [2 /*return*/, info];
-                    }
-                    return [2 /*return*/];
-            }
-        });
-    }); };
-    exports.getLineRestrictionInfoById = getLineRestrictionInfoById;
-    var convert2Info = function (g) {
-        var info = {
-            UniqueId: g.attributes.UniqueId,
-            state: g.attributes.state,
-            route_nr: g.attributes.route_nr,
-            seq_nr: g.attributes.seq_nr,
-            direction: g.attributes.direction,
-            cardinal_direction: g.attributes.cardinal_direction,
-            restriction_start_mp: g.attributes.restriction_start_mp,
-            restriction_end_mp: g.attributes.restriction_end_mp,
-            restriction_comment: g.attributes.restriction_comment,
-            location_name: g.attributes.location_name,
-            location_description: g.attributes.location_description,
-            date_posted: g.attributes.date_posted,
-            date_effective: g.attributes.date_effective,
-            date_expires: g.attributes.date_expires,
-            restriction_width: g.attributes.restriction_width,
-            restriction_height: g.attributes.restriction_height,
-            restriction_length: g.attributes.restriction_length,
-            restriction_weight: g.attributes.restriction_weight,
-            road_veh_type: g.attributes.road_veh_type,
-            commercial_veh_yn: g.attributes.commercial_veh_yn,
-            detour_available_yn: g.attributes.detour_available_yn,
-            permanent_restriction_yn: g.attributes.permanent_restriction_yn,
-            exceptions_allowed_yn: g.attributes.exceptions_allowed_yn,
-            warning_yn: g.attributes.warning_yn,
-            bridge_nr: g.attributes.bridge_nr,
-            max_gvw: g.attributes.max_gvw,
-            bridge_type: g.attributes.bridge_type,
-            bridge_name: g.attributes.bridge_name,
-            bl_max_axle: g.attributes.bl_max_axle,
-            cl8_max_axle: g.attributes.cl8_max_axle,
-            sa_max_axle: g.attributes.sa_max_axle,
-            td_max_axle: g.attributes.td_max_axle,
-            TType: g.attributes.TType,
-            PostedRestrictionFlag: g.attributes.PostedRestrictionFlag,
-            RecordUpdateDate: g.attributes.RecordUpdateDate,
-            RelatedRouteType: g.attributes.RelatedRouteType,
-            RelatedRouteQualifier: g.attributes.RelatedRouteQualifier,
-            AheadBackIndicator: g.attributes.AheadBackIndicator,
-            ESRI_OID: g.attributes.ESRI_OID
-        };
-        return info;
-    };
     exports.default = LineRestrictionsLayer;
 });
 //# sourceMappingURL=LineRestrictionsLayer.js.map

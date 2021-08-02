@@ -1,10 +1,7 @@
 import { roadRestrictionLine, bridgeRestrictionLine } from "../symbols/LineRestrictionsSymbol"
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
-import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
-import restrictionsPopup from "@/popup-templates/RestrictionsPopup"
-import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer"
-import RestrictionInfo from "@/types/RestrictionInfo";
-import Graphic from "@arcgis/core/Graphic";
+import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
+import Field from "@arcgis/core/layers/support/Field";
 const lineRestrictionsRenderer = new UniqueValueRenderer({
     field: "TType",
     uniqueValueInfos: [{
@@ -26,70 +23,49 @@ const LineRestrictionsLayer = new GeoJSONLayer({
     url: "https://data.wsdot.wa.gov/travelcenter/LineRestrictions.json",
     title: "Restriction Lines",
     renderer: lineRestrictionsRenderer,
-    visible: false
+    visible: false,
+    fields:[
+        new Field({ name: "state", alias: "State",  type: "string"}),
+        new Field({ name: "route_nr", alias: "Route Number",  type: "string"}),
+        new Field({ name: "seq_nr", alias: "Sequence Number",  type: "integer"}),
+        new Field({ name: "direction", alias: "Direction",  type: "string"}),
+        new Field({ name: "cardinal_direction", alias: "Cardinal Direction",  type: "string"}),
+        new Field({ name: "restriction_start_mp", alias: "Restriction Start Milepost",  type: "double"}),
+        new Field({ name: "restriction_end_mp", alias: "Restriction End Milepost",  type: "double"}),
+        new Field({ name: "restriction_comment", alias: "Restriction Comment",  type: "string"}),
+        new Field({ name: "location_name", alias: "Location Name",  type: "string"}),
+        new Field({ name: "location_description", alias: "Location Desctription",  type: "string"}),
+        new Field({ name: "date_posted", alias: "Date Posted",  type: "date"}),
+        new Field({ name: "date_effective", alias: "Date Effective",  type: "date"}),
+        new Field({ name: "date_expires", alias: "Date Expires",  type: "date"}),
+        new Field({ name: "restriction_width", alias: "Restriction Width",  type: "integer"}),
+        new Field({ name: "restriction_height", alias: "Restriction Height",  type: "integer"}),
+        new Field({ name: "restriction_length", alias: "Restriction Length",  type: "integer"}),
+        new Field({ name: "restriction_weight", alias: "Restriction Weight",  type: "integer"}),
+        new Field({ name: "road_veh_type", alias: "Road Vehicle Type",  type: "string"}),
+        new Field({ name: "commercial_veh_yn", alias: "Commercial Vehicle Type",  type: "string"}),
+        new Field({ name: "detour_available_yn", alias: "Detour Available",  type: "string"}),
+        new Field({ name: "permanent_restriction_yn", alias: "Permanent Restriction",  type: "string"}),
+        new Field({ name: "exceptions_allowed_yn", alias: "Exceptions Allowed",  type: "string"}),
+        new Field({ name: "warning_yn", alias: "Warning",  type: "string"}),
+        new Field({ name: "bridge_nr", alias: "Bridge Number",  type: "string"}),
+        new Field({ name: "max_gvw", alias: "Max Gross Weight",  type: "double"}),
+        new Field({ name: "bridge_type", alias: "Bridge Type",  type: "string"}),
+        new Field({ name: "bridge_name", alias: "Bridge Name",  type: "string"}),
+        new Field({ name: "bl_max_axle", alias: "BL Max Axle",  type: "string"}),
+        new Field({ name: "cl8_max_axle", alias: "CL8 Max Axle",  type: "integer"}),
+        new Field({ name: "sa_max_axle", alias: "SA Max Axle",  type: "integer"}),
+        new Field({ name: "td_max_axle", alias: "TD Max Axle",  type: "integer"}),
+        new Field({ name: "TType", alias: "Type",  type: "string"}),
+        new Field({ name: "PostedRestrictionFlag", alias: "Posted Restriction Flag",  type: "integer"}),
+        new Field({ name: "RecordUpdateDate", alias: "Record Update Date",  type: "date"}),
+        new Field({ name: "RelatedRouteType", alias: "Related Route Type",  type: "string"}),
+        new Field({ name: "RelatedRouteQualifier", alias: "Related Route Qualifier",  type: "string"}),
+        new Field({ name: "AheadBackIndicator", alias: "Ahead Back Indicator",  type: "string"}),
+        new Field({ name: "ESRI_OID", alias: "OID",  type: "integer"}),
+    ]
     //popupTemplate: restrictionsPopup,
     // featureReduction: clusterConfig
 });
 
-export const getLineRestrictionInfoById = async (id: number) => {
-    console.log(id)
-    const query = LineRestrictionsLayer.createQuery();
-    query.where = "ESRI_OID = " + id;
-    query.outFields = ["*"];
-    const response = await LineRestrictionsLayer.queryFeatures(query);
-    const g = response.features[0];
-    if (g) {
-        const info = convert2Info(g);
-        console.log(info)
-        return info;
-
-    }
-}
-
-const convert2Info = (g: Graphic): RestrictionInfo => {
-    const info: RestrictionInfo = {
-        UniqueId: g.attributes.UniqueId,
-        state: g.attributes.state,
-        route_nr: g.attributes.route_nr,
-        seq_nr: g.attributes.seq_nr,
-        direction: g.attributes.direction,
-        cardinal_direction: g.attributes.cardinal_direction,
-        restriction_start_mp: g.attributes.restriction_start_mp,
-        restriction_end_mp: g.attributes.restriction_end_mp,
-        restriction_comment: g.attributes.restriction_comment,
-        location_name: g.attributes.location_name,
-        location_description: g.attributes.location_description,
-        date_posted: g.attributes.date_posted,
-        date_effective: g.attributes.date_effective,
-        date_expires: g.attributes.date_expires,
-        restriction_width: g.attributes.restriction_width,
-        restriction_height: g.attributes.restriction_height,
-        restriction_length: g.attributes.restriction_length,
-        restriction_weight: g.attributes.restriction_weight,
-        road_veh_type: g.attributes.road_veh_type,
-        commercial_veh_yn: g.attributes.commercial_veh_yn,
-        detour_available_yn: g.attributes.detour_available_yn,
-        permanent_restriction_yn: g.attributes.permanent_restriction_yn,
-        exceptions_allowed_yn: g.attributes.exceptions_allowed_yn,
-        warning_yn: g.attributes.warning_yn,
-        bridge_nr: g.attributes.bridge_nr,
-        max_gvw: g.attributes.max_gvw,
-        bridge_type: g.attributes.bridge_type,
-        bridge_name: g.attributes.bridge_name,
-        bl_max_axle: g.attributes.bl_max_axle,
-        cl8_max_axle: g.attributes.cl8_max_axle,
-        sa_max_axle: g.attributes.sa_max_axle,
-        td_max_axle: g.attributes.td_max_axle,
-        TType: g.attributes.TType,
-        PostedRestrictionFlag: g.attributes.PostedRestrictionFlag,
-        RecordUpdateDate: g.attributes.RecordUpdateDate,
-        RelatedRouteType: g.attributes.RelatedRouteType,
-        RelatedRouteQualifier: g.attributes.RelatedRouteQualifier,
-        AheadBackIndicator: g.attributes.AheadBackIndicator,
-        ESRI_OID: g.attributes.ESRI_OID
-    };
-
-    return info;
-}
-    
 export default LineRestrictionsLayer

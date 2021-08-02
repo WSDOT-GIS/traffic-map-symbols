@@ -1,6 +1,6 @@
 <template>
   <div id="locationWidget">
-    <MapButtonView Height="32px" Width="32px">
+    <MapButtonView Height="32px" Width="32px" AriaLabel="Show my location">
       <template v-slot>
         <div title="My Location">
           <svg

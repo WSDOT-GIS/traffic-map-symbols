@@ -1,5 +1,5 @@
 <template>
-  <footer class="w3-container">{{ text }}</footer>
+  <div id="wsdot-footer" class="w3-container">{{ text }}</div>
 </template>
 
 <script lang="ts">
@@ -16,8 +16,8 @@ export default defineComponent({
 </script>
 
 <style scoped>
-footer {
+#wsdot-footer {
   color: white;
-  background-color: #005151;
+  background-color: var(--color-secondaryBrandDark);
 }
 </style>

@@ -1,4 +1,4 @@
-define(["require", "exports", "tslib", "@arcgis/core/WebMap", "@arcgis/core/views/MapView", "@arcgis/core/geometry/Point", "@arcgis/core/core/watchUtils", "@arcgis/core/geometry/SpatialReference", "@/layers/TrafficLayer", "@/layers/ParkRideLayer", "@/layers/CameraLayer", "@/layers/PointRestrictionsLayer", "@/layers/LineRestrictionsLayer", "@/layers/WeatherStationsLayer", "@/layers/MountainPassesLayer", "@/utils/extentUtil", "@/layers/ZoomExtentLayer"], function (require, exports, tslib_1, WebMap_1, MapView_1, Point_1, watchUtils_1, SpatialReference_1, TrafficLayer_1, ParkRideLayer_1, CameraLayer_1, PointRestrictionsLayer_1, LineRestrictionsLayer_1, WeatherStationsLayer_1, MountainPassesLayer_1, extentUtil_1, ZoomExtentLayer_1) {
+define(["require", "exports", "tslib", "@arcgis/core/WebMap", "@arcgis/core/views/MapView", "@arcgis/core/geometry/Point", "@arcgis/core/core/watchUtils", "@arcgis/core/geometry/SpatialReference", "@/layers/TrafficLayer", "@/layers/ParkRideLayer", "@/layers/CameraLayer", "@/layers/PointRestrictionsLayer", "@/layers/LineRestrictionsLayer", "@/layers/WeatherStationsLayer", "@/layers/MountainPassesLayer", "@/utils/extentUtil", "@/layers/ZoomExtentLayer", "@arcgis/core/config"], function (require, exports, tslib_1, WebMap_1, MapView_1, Point_1, watchUtils_1, SpatialReference_1, TrafficLayer_1, ParkRideLayer_1, CameraLayer_1, PointRestrictionsLayer_1, LineRestrictionsLayer_1, WeatherStationsLayer_1, MountainPassesLayer_1, extentUtil_1, ZoomExtentLayer_1, config_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.getLayer = exports.toScreenXY = exports.zoomOnClick = exports.tryZoomToPoint = exports.init = exports.mapView = exports.webmap = void 0;
@@ -14,14 +14,18 @@ define(["require", "exports", "tslib", "@arcgis/core/WebMap", "@arcgis/core/view
     WeatherStationsLayer_1 = tslib_1.__importDefault(WeatherStationsLayer_1);
     MountainPassesLayer_1 = tslib_1.__importDefault(MountainPassesLayer_1);
     ZoomExtentLayer_1 = tslib_1.__importDefault(ZoomExtentLayer_1);
+    config_1 = tslib_1.__importDefault(config_1);
     // What is this used for?
-    //EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
+    config_1.default.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
     exports.webmap = new WebMap_1.default({
         layers: [TrafficLayer_1.default, ParkRideLayer_1.default, CameraLayer_1.default, PointRestrictionsLayer_1.default, LineRestrictionsLayer_1.default, WeatherStationsLayer_1.default, MountainPassesLayer_1.default],
     });
     exports.mapView = new MapView_1.default({
         container: "esri-map-view",
         map: exports.webmap,
+        constraints: {
+        //rotationEnabled: false
+        }
     });
     //{ "type": "point", "x": -13874849.374324558, "y": 6091725.406216802, "spatialReference": { "wkid": 4326 } }
     // mapView.on("click", (() => {

@@ -1,0 +1,11 @@
+{    
+    "basemap":"https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/TravelCenterBasemapTileTest/MapServer",
+    "cameras": "http://hqtob1webtmdev1/GISData/camera.json",
+    "lineRestrictions": "http://hqtob1webtmdev1/GISData/LineRestrictions.json",
+    "mountainPasses": "http://hqtob1webtmdev1/GISData/MountainPasses.json",
+    "parkAndRides": "http://hqtob1webtmdev1/GISData/ParkAndRides.json",
+    "pointRestrictions": "http://hqtob1webtmdev1/GISData/PointRestrictions.json",
+    "traffic": "https://utility.arcgis.com/usrsvcs/appservices/ETCCPckiFqxQyUce/rest/services/World/Traffic/MapServer",
+    "weatherStations":"http://hqtob1webtmdev1/GISData/WeatherStations.json",
+    "apiKey":"AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73"
+}

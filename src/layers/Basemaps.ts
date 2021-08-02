@@ -8,7 +8,7 @@ export const getDefaultBasemapInfo = () => { return basemaps[0]; }
 const urlBasemap =
     //"https://data.wsdot.wa.gov/arcgis/rest/services/Shared/WebBaseMapWebMercator/MapServer";
     "https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/TravelCenterBasemapTileTest/MapServer"
-
+    
 // Array of basemaps. The first one is the default.
 const basemaps: BasemapInfo[] = [
     {
@@ -24,7 +24,7 @@ const basemaps: BasemapInfo[] = [
         })
     }, {
         name: "satellite",
-        basemap: Basemap.fromId("satellite")
+        basemap: Basemap.fromId("arcgis-imagery")
     }]
 
 export const getBasemapInfo = (name: string): BasemapInfo => {
@@ -53,4 +53,11 @@ export const toggleBasemapInfo = (currentName: string): BasemapInfo => {
     else {
         return basemaps[0];
     }
+}
+// Make sure the base map name is valid...
+export const validateBasemapName = (name: string): boolean => {
+    const result = basemaps.filter((item) => {
+        return item.name === name;
+    })
+    return result.length > 0;
 }

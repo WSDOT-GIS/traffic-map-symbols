@@ -7,7 +7,7 @@ define(["require", "exports", "tslib", "@arcgis/core/symbols/SimpleMarkerSymbol"
         color: [0, 0, 0, 0],
         size: "26px",
         outline: {
-            color: "red",
+            color: "#00ffff",
             width: 2 // points
         }
     });
