@@ -7,6 +7,24 @@
     BannerText="Truck Restriction"
     :Features="[feature]"
     TitleFieldName="location_description"
+    :ContentConfig="[
+      { label: 'Travel delay', value: { text: '???' } },
+      { label: '', value: { fieldName: 'restriction_comment' } },
+      {
+        label: 'Date effective',
+        value: {
+          fieldName: 'date_effective',
+          isDate: true,
+        },
+      },
+      {
+        label: 'Last updated',
+        value: {
+          fieldName: 'RecordUpdateDate',
+          isDate: true,
+        },
+      },
+    ]"
     @close="close"
   >
     <template v-slot:icon>
@@ -46,7 +64,7 @@
       </svg>
     </template>
     <template v-slot:default>
-      <PopupRow Label="Travel delay" :TextOptions="{text:'???'}" />
+      <PopupRow Label="Travel delay" :TextOptions="{ text: '???' }" />
       <PopupRow
         Label=""
         :TextOptions="{ feature: feature, fieldName: 'restriction_comment' }"

@@ -56,6 +56,9 @@
       </template>
     </Carousel>
     <div class="popup-content w3-container">
+      
+    </div>
+    <div class="popup-content w3-container">
       <slot></slot>
     </div>
   </div>
@@ -76,6 +79,7 @@ import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
 import { mapView, toScreenXY, panMap } from "@/esri-stuff/esriMap";
 // import HighlightSymbol from "@/symbols/HighlightSymbol";
 import FeatureInfo from "@/types/FeatureInfo";
+import PopupRowConfig from "@/types/PopupContentConfig";
 
 export default defineComponent({
   components: { Carousel, Slide, Pagination, Navigation },
@@ -116,6 +120,10 @@ export default defineComponent({
     ImageFieldName: {
       type: String,
       required: false,
+    },
+    ContentConfig: {
+      type: Array as PropType<Array<PopupRowConfig>>,
+      required: true,
     },
   },
   setup(props, context) {
