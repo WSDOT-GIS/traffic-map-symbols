@@ -25,12 +25,28 @@
     :Label="zoomPopupLabel"
     @clicked="zoomMetroEventHandler"
   ></ZoomPopupView>
-  <CameraPopupView />
-  <ParkRidePopupView />
-  <PointRestrictionPopupView />
-  <LineRestrictionPopupView />
-  <MountainPassesPopupView />
-  <WeatherStationsPopupView />
+  <CameraPopup :MapX="popupX" :MapY="popupY" :Featureset="popupFeatureset" />
+  <ParkRidePopup :MapX="popupX" :MapY="popupY" :Featureset="popupFeatureset" />
+  <LineRestrictionPopup
+    :MapX="popupX"
+    :MapY="popupY"
+    :Featureset="popupFeatureset"
+  />
+  <PointRestrictionPopup
+    :MapX="popupX"
+    :MapY="popupY"
+    :Featureset="popupFeatureset"
+  />
+  <MountainPassPopup
+    :MapX="popupX"
+    :MapY="popupY"
+    :Featureset="popupFeatureset"
+  />
+  <WeatherStationsPopup
+    :MapX="popupX"
+    :MapY="popupY"
+    :Featureset="popupFeatureset"
+  />
   <LeftPaneView />
 </template>
 
@@ -40,6 +56,10 @@ import { useStore } from "@/store";
 import { project } from "@arcgis/core/geometry/projection";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import { Geometry } from "@arcgis/core/geometry";
+import Graphic from "@arcgis/core/Graphic";
+import Layer from "@arcgis/core/layers/Layer";
+import Point from "@arcgis/core/geometry/Point";
+
 import { zoomOnClick } from "@/esri-stuff/esriMap";
 import { getExtentFromUrl, getBasemapFromUrl } from "@/utils/urlParamUtil";
 import ZoomExtentLayer, {
@@ -48,15 +68,23 @@ import ZoomExtentLayer, {
 import ExtentInfo from "@/types/ExtentInfo";
 import { setLayerFromUrl } from "@/utils/urlParamUtil";
 import { adjustCluster } from "@/utils/clusterUtil";
-// import { toggleCluster } from "@/layers/CameraLayer";
+import LayerInfo from "@/types/LayerInfo";
+import FeaturesetInfo from "@/types/FeaturesetInfo";
+/* Layers for popup */
+import ParkRideLayer from "@/layers/ParkRideLayer";
+import CameraLayer from "@/layers/CameraLayer";
+import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
+import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
+import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
+import MountainPassLayer from "@/layers/MountainPassesLayer";
 /* Components */
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
-import CameraPopupView from "@/components/CameraPopupView.vue";
-import ParkRidePopupView from "@/components/ParkAndRidePopupView.vue";
-import PointRestrictionPopupView from "@/components/PointRestrictionPopupView.vue";
-import LineRestrictionPopupView from "@/components/LineRestrictionPopupView.vue";
-import MountainPassesPopupView from "@/components/MountainPassesPopupView.vue";
-import WeatherStationsPopupView from "@/components/WeatherStationPopup.vue";
+import CameraPopup from "@/popups/CameraPopup.vue";
+import ParkRidePopup from "@/popups/ParkAndRidePopup.vue";
+import PointRestrictionPopup from "@/popups/PointRestrictionPopup.vue";
+import LineRestrictionPopup from "@/popups/LineRestrictionPopup.vue";
+import MountainPassPopup from "@/popups/MountainPassPopup.vue";
+import WeatherStationsPopup from "@/popups/WeatherStationPopup.vue";
 import LeftPaneView from "@/components/LeftPaneView.vue";
 import BasemapView from "@/components/BasemapView.vue";
 import CoordinatesView from "@/components/CoordinatesView.vue";
@@ -66,12 +94,12 @@ import ZoomButtonView from "@/components/ZoomButtonView.vue";
 export default defineComponent({
   components: {
     ZoomPopupView,
-    CameraPopupView,
-    ParkRidePopupView,
-    PointRestrictionPopupView,
-    LineRestrictionPopupView,
-    MountainPassesPopupView,
-    WeatherStationsPopupView,
+    CameraPopup,
+    ParkRidePopup,
+    PointRestrictionPopup,
+    LineRestrictionPopup,
+    MountainPassPopup,
+    WeatherStationsPopup,
     LeftPaneView,
     BasemapView,
     CoordinatesView,
@@ -103,6 +131,21 @@ export default defineComponent({
       zoomPopupVisible.value = false;
       mapDiv.style.cursor = "auto";
     };
+    // Feature Popup...
+    const popupX = ref(0);
+    const popupY = ref(0);
+    const popupFeatureset = ref<FeaturesetInfo>({ layerTitle: "", ids: [] });
+    //
+    const showPopup = (layerTitle: string, ids: number[], pt: Point) => {
+      popupFeatureset.value = { layerTitle: layerTitle, ids: ids };
+      popupX.value = pt.x;
+      popupY.value = pt.y;
+    };
+    const closePopup = () => {
+      popupFeatureset.value = { layerTitle: "", ids: [] };
+      popupX.value = 0;
+      popupY.value = 0;
+    };
 
     onMounted(async () => {
       const esriMap = await import("../esri-stuff/esriMap");
@@ -126,7 +169,7 @@ export default defineComponent({
       // Set basemap based on URL query parameter...
       const basemapInfo = getBasemapFromUrl();
       store.commit("setBasemap", basemapInfo.name);
-      // Pointer move event handler...
+      // Pointer move event handler for showing metro zoom popups...
       esriMap.mapView.on("pointer-move", (event) => {
         // Update current poitner x/y in the store...
         let pt = esriMap.mapView.toMap({ x: event.x, y: event.y });
@@ -174,6 +217,125 @@ export default defineComponent({
           }
         });
       });
+
+      // MapView click event handler for showing popups...
+      esriMap.mapView.on("click", (event) => {
+        // Check if feature is clicked on...
+        const opts = {
+          include: [
+            ParkRideLayer,
+            CameraLayer,
+            PointRestrictionsLayer,
+            LineRestrictionsLayer,
+            WeatherStationsLayer,
+            MountainPassLayer,
+          ],
+        };
+        esriMap.mapView.hitTest(event, opts).then((response) => {
+          if (response.results.length) {
+            const resultsByLayer: {
+              info: LayerInfo;
+              layer: Layer;
+              results: { graphic: Graphic; mapPoint: Point }[];
+            }[] = [];
+            response.results.forEach((eachResult) => {
+              const arrayFound = resultsByLayer.find(
+                (eachArray) => eachArray.layer === eachResult.graphic.layer
+              );
+              if (arrayFound) {
+                arrayFound.results.push(eachResult);
+              } else {
+                const layerInfo = store.state.layerList.find(
+                  (layerInfo) =>
+                    layerInfo.title === eachResult.graphic.layer.title
+                );
+                if (layerInfo) {
+                  resultsByLayer.push({
+                    info: layerInfo,
+                    layer: eachResult.graphic.layer,
+                    results: [eachResult],
+                  });
+                }
+              }
+            });
+            let minIdx = 999;
+            resultsByLayer.forEach((eachResultSet) => {
+              if (eachResultSet.info.index < minIdx) {
+                minIdx = eachResultSet.info.index;
+              }
+            });
+            const results2Show = resultsByLayer.find(
+              (eachResultSet) => eachResultSet.info.index === minIdx
+            );
+            if (results2Show) {
+              const g = results2Show.results[0].graphic;
+              const pt = results2Show.results[0].mapPoint;
+              // Deal with cluster...
+              if (g.isAggregate) {
+                if (g.attributes.cluster_count < 10) {
+                  // Try to get features from the cluster...
+                  esriMap
+                    .getIdsFromCluster(g, results2Show.layer, 3)
+                    .then((results) => {
+                      // Show multiple features if infos are returned...
+                      if (results) {
+                        showPopup(results2Show.layer.title, results, pt);
+                      } else {
+                        closePopup();
+                        // Zoom-in more...
+                        esriMap
+                          .tryZoomToPointAsync(g.geometry as Point)
+                          .then((zoomResult) => {
+                            if (!zoomResult) {
+                              // Cannot zoom in any more, so show everything in cluster...
+                              esriMap
+                                .getIdsFromCluster(g, results2Show.layer)
+                                .then((results) => {
+                                  results
+                                    ? showPopup(
+                                        results2Show.layer.title,
+                                        results,
+                                        pt
+                                      )
+                                    : closePopup();
+                                });
+                            }
+                          });
+                        // const zoomResult = esriMap.tryZoomToPoint(
+                        //   g.geometry as Point
+                        // );
+                        // if (!zoomResult) {
+                        //   // Cannot zoom in any more, so show everything in cluster...
+                        //   esriMap
+                        //     .getIdsFromCluster(g, results2Show.layer)
+                        //     .then((results) => {
+                        //       results
+                        //         ? showPopup(
+                        //             results2Show.layer.title,
+                        //             results,
+                        //             pt
+                        //           )
+                        //         : closePopup();
+                        //     });
+                        // }
+                      }
+                    });
+                } else {
+                  // Too many in a cluster, so click to zoom-in...
+                  closePopup();
+                  esriMap.tryZoomToPoint(g.geometry as Point);
+                }
+              } else {
+                const id = g.getObjectId();
+                showPopup(results2Show.layer.title, [id], pt);
+              }
+            }
+          } else {
+            //No feature exist...
+            closePopup();
+          }
+        });
+      });
       // Watch extent change...
       esriMap.mapView.watch("extent", (newValue, oldValue) => {
         // Keep track of map extent in the state store...
@@ -197,6 +359,10 @@ export default defineComponent({
       zoomPopupY,
       zoomPopupLabel,
       zoomMetroEventHandler,
+      popupX,
+      popupY,
+      popupFeatureset,
+      closePopup,
     };
   },
 });

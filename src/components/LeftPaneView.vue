@@ -77,7 +77,7 @@ export default defineComponent({
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 10;
+
 }
 #map-top-left-container-closed {
   position: absolute;
