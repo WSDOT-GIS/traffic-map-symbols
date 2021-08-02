@@ -64,8 +64,6 @@
 import {
   computed,
   defineComponent,
-  nextTick,
-  onMounted,
   onUpdated,
   PropType,
   ref,
