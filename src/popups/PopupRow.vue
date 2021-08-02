@@ -24,13 +24,13 @@ export default defineComponent({
   },
   setup(props) {
     const getLabel = () => {
-      console.log("getLabel...");
+      if (!props.Feature) {
+        return;
+      }
       let label = "";
       if (typeof props.Config.label === "string") {
-        console.log("label is string");
         label = props.Config.label;
       } else {
-        console.log("label is function");
         const func = props.Config.label as (f: FeatureInfo) => string;
         label = func(props.Feature);
       }
@@ -43,11 +43,13 @@ export default defineComponent({
     };
 
     const getText = () => {
-      console.log("getText...");
+      if (!props.Feature) {
+        return;
+      }
       let text = "";
       if (props.Config.value.text) {
         text = props.Config.value.text;
-      } else if (props.Feature && props.Config.value.fieldName) {
+      } else if (props.Config.value.fieldName) {
         let value = props.Feature.attributes[props.Config.value.fieldName];
         if (value) {
           if (props.Config.value.isDate) {

@@ -2,8 +2,8 @@
   <div
     ref="containerRef"
     class="popup-container w3-card w3-col"
+    v-if="Features.length > 0 && Features[0]"
     :class="sizeClass"
-    v-if="visible"
     :style="{
       marginTop: popupTop + 'px',
       marginLeft: popupLeft + 'px',
@@ -27,7 +27,7 @@
         class="popup-close-button w3-button w3-padding-small"
         @click="close"
       >
-        x
+        &times;
       </button>
     </div>
     <h4 class="popup-title w3-container">
@@ -142,7 +142,7 @@ export default defineComponent({
     // Popup location.
     const popupLeft = ref(-1000);
     const popupTop = ref(-1000);
-    const visible = ref(false);
+    //const visible = ref(false);
     //
     let numImgLoaded = 0;
     let wasUpdatedOnce = false;
@@ -196,9 +196,9 @@ export default defineComponent({
     };
     // If the feature is within the map view, show the popup, otherwise close it.
     // NOTE: Popup will be shown again if the feature comes back in the map view unless parent component sets the MapX and Y to 0.
-    watch([screenX, screenY], () => {
-      setVisibility();
-    });
+    // watch([screenX, screenY], () => {
+    //   setVisibility();
+    // });
     // Adjust popup position when the props change...
     watch([mapX, mapY], () => {
       setScreenXY();
@@ -240,22 +240,22 @@ export default defineComponent({
       wasUpdatedOnce = true;
       adjustPositionSize();
     });
-    const setVisibility = () => {
-      if (
-        screenX.value < 0 ||
-        screenX.value > mapView.width ||
-        screenY.value < 0 ||
-        screenY.value > mapView.height
-      ) {
-        visible.value = false;
-        popupLeft.value = -1000;
-        popupTop.value = -1000;
-        //removeHighlight();
-      } else {
-        visible.value = true;
-        //addHighlight();
-      }
-    };
+    // const setVisibility = () => {
+    //   if (
+    //     screenX.value < 0 ||
+    //     screenX.value > mapView.width ||
+    //     screenY.value < 0 ||
+    //     screenY.value > mapView.height
+    //   ) {
+    //     visible.value = false;
+    //     popupLeft.value = -1000;
+    //     popupTop.value = -1000;
+    //     //removeHighlight();
+    //   } else {
+    //     visible.value = true;
+    //     //addHighlight();
+    //   }
+    // };
     // Convert map coordinates to screen coordinates and calculate the popup position...
     const setScreenXY = () => {
       if (mapX.value < 0 && mapY.value > 0) {
@@ -263,7 +263,7 @@ export default defineComponent({
         screenX.value = screenXY.x;
         screenY.value = screenXY.y;
         adjustPositionSize();
-        setVisibility();
+        //setVisibility();
       } else {
         screenX.value = -1;
         screenY.value = -1;
@@ -369,7 +369,7 @@ export default defineComponent({
       popupLeft,
       popupTop,
       maxHeight,
-      visible,
+      // visible,
       currentIdx,
       sizeClass,
       close,
