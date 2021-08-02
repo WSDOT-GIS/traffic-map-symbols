@@ -47,7 +47,8 @@ const convert2Info = (g: Graphic) => {
                 PrecipitationAccumulated: g.attributes.PrecipitationAccumulated,
                 WeatherIconDisplayName: g.attributes.WeatherIconDisplayName,
                 WeatherIconFileName: g.attributes.WeatherIconFileName,
-                Condition: g.attributes.Condition
+                Condition: g.attributes.Condition,
+                NWSZoneId: g.attributes.NWSZoneId
             };
             break;
         case "Restriction Points":

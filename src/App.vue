@@ -26,6 +26,8 @@ import AlertView from "./components/AlertView.vue";
 import AdView from "./components/AdView.vue";
 import FooterView from "./components/FooterView.vue";
 import Alert from "./types/AlertInfo";
+import AppConfig from "./types/appConfig";
+import { useStore } from "@/store";
 export default defineComponent({
   name: "App",
   components: {
@@ -48,12 +50,12 @@ export default defineComponent({
     const topRef = ref<HTMLDivElement>();
     const bottomRef = ref<HTMLDivElement>();
     const mapHeight = ref("500px");
+    const store = useStore()
     onMounted(() => {
       resizeMapContainer();
     });
     // Make map fill the all remaining screen...
     const resizeMapContainer = () => {
-      console.log("resizeMapContainer");
       if (topRef.value && bottomRef.value) {
         const h =
           window.innerHeight -
@@ -71,8 +73,9 @@ export default defineComponent({
       mapHeight,
       topRef,
       bottomRef,
+      store
     };
-  },
+  }
 });
 </script>
 

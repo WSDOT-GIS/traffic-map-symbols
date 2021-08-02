@@ -69,8 +69,6 @@ export default defineComponent({
        if (response.results.length) {
             const pt = response.results[0].mapPoint as Point;
             getGraphicsInfoById(response.results[0].graphic, "MountainPassId", MountainPassesLayer).then((results)=>{
-                console.log(results)
-                console.log(pt)
                 results ? show(pt, results as MountainPassesInfo) : close();
             })
         }

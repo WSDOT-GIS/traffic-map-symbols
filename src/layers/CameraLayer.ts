@@ -6,7 +6,9 @@ import Graphic from "@arcgis/core/Graphic";
 import MapView from "@arcgis/core/views/MapView";
 import Point from "@arcgis/core/geometry/Point";
 import LayerView from "@arcgis/core/views/layers/GeoJSONLayerView";
-
+import {store} from "@/store"
+console.log("cameras.ts")
+console.log(store)
 // import { clusterSymbol } from "@/symbols/CameraSymbol";
 import { clusterConfig } from "@/utils/clusterUtil";
 import CameraInfo from "@/types/CameraInfo";
@@ -76,7 +78,7 @@ const fields = [
 
 const layer = new GeoJSONLayer({
     id: "traffic-camera-layer",
-    url: "http://hqtob1webtmdev1/GISData/camera.json",
+    url: "http://hqtob1webtmdev1/GISData/cameras.json",
     title: "Traffic Cameras",
     renderer: renderer,
     featureReduction: clusterConfig,

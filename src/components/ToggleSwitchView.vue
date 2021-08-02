@@ -1,5 +1,6 @@
 <template>
   <label class="Toggle" :title="Title">
+    <slot></slot>
     <input
       type="checkbox"
       name="toggle"
@@ -9,7 +10,7 @@
       :value="Value"
     />
     <span class="Toggle__display" hidden> </span>
-    <slot></slot>
+    
   </label>
 </template>
 <script lang="ts">
@@ -22,7 +23,7 @@ export default defineComponent({
       required: true,
     },
     Value: {
-      type: String,
+      type: String || Array,
       required: false,
     },
     Title: {
@@ -49,7 +50,8 @@ export default defineComponent({
 .Toggle {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  justify-content: space-between;
+  align-items:center;
   position: relative;
   cursor: pointer;
   gap: 1ch;
@@ -60,6 +62,7 @@ export default defineComponent({
   opacity: 0;
   width: 100%;
   height: 100%;
+  right: 0px;
 }
 
 .Toggle__display {

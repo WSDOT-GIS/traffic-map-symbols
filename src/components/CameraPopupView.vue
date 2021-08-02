@@ -86,7 +86,6 @@ export default defineComponent({
         close();
         // Wait for the next update. Without doing this, scrolling won't work correctly.
         nextTick(() => {
-          // console.log("nextTick callback...");
           setVal();
         });
       } else {
@@ -95,7 +94,6 @@ export default defineComponent({
     };
     // Setting XY to 0 closes the popup...
     const close = () => {
-      // console.log("close CameraPopup");
       mapX.value = 0;
       mapY.value = 0;
       infos.value = [];

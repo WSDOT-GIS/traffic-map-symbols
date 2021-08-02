@@ -47,6 +47,7 @@ import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
 import Point from "@arcgis/core/geometry/Point";
 import {getGraphicsInfoById} from "@/utils/getGraphicsInfoByID"
 import WeatherStationInfo from "@/types/WeatherStationsInfo";
+import {getForecastSummary} from "@/utils/weatherForecastRequests"
 export default defineComponent({
   components: { PopupView },
   setup() {
@@ -57,6 +58,7 @@ export default defineComponent({
     const infos = ref<WeatherStationInfo>();
 
     const show = (pt: Point, WeatherStationInfos: WeatherStationInfo) => {
+      
         mapX.value = pt.x;
         mapY.value = pt.y;
         infos.value = WeatherStationInfos;
@@ -81,8 +83,13 @@ export default defineComponent({
       mapView.hitTest(event, opts).then((response) => {
        if (response.results.length) {
             const pt = response.results[0].graphic.geometry as Point;
-            getGraphicsInfoById(response.results[0].graphic, "WeatherStationId", WeatherStationsLayer).then((results)=>{
-                results ? show(pt, results as WeatherStationInfo) : close();
+            getGraphicsInfoById(response.results[0].graphic, "WeatherStationId", WeatherStationsLayer).then(async(graphicsInfo)=>{
+                console.log(graphicsInfo)
+                const wsInfo = graphicsInfo as WeatherStationInfo
+                await getForecastSummary(wsInfo["NWSZoneId"]).then((forecastInfo)=>{
+                  console.log(forecastInfo)
+                  graphicsInfo ? show(pt, graphicsInfo as WeatherStationInfo) : close();
+                })
             })
         }
          else {

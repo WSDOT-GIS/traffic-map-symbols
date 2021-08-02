@@ -142,8 +142,6 @@ export default defineComponent({
     // Convert map coordinates to screen coordinates and calculate the popup position...
     const setScreenXY = () => {
       if (mapX.value < 0 && mapY.value > 0) {
-        // console.log(mapX.value);
-        // console.log(mapY.value);
         const screenXY = toScreenXY(mapX.value, mapY.value);
         screenX.value = screenXY.x;
         screenY.value = screenXY.y;
@@ -212,14 +210,12 @@ export default defineComponent({
     // Make sure popup fits inside of Map View...
     const adjustPositionSize = () => {
       if (!containerRef.value) {
-        // console.log("Container is null");
         return;
       }
       const h = containerRef.value.offsetHeight;
       const w = containerRef.value.offsetWidth;
       // Adjust vertical position to make sure it fits in the map view.
       if (maxHeight.value !== mapView.height) {
-        // console.log("Set maxHeight = " + mapView.height);
         maxHeight.value = mapView.height;
       }
       let y: number;

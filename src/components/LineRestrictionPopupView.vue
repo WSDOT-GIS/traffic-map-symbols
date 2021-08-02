@@ -71,9 +71,6 @@ export default defineComponent({
         mapX.value = pt.x;
         mapY.value = pt.y;
         infos.value = RestrictionInfos;
-        //Object.entries(infos.value).forEach(
-           // ([key, value]) => console.log(key, value)
-       // );
     };
     // Setting XY to 0 closes the popup...
     const close = () => {
@@ -95,8 +92,6 @@ export default defineComponent({
        if (response.results.length) {
             const pt = response.results[0].mapPoint as Point;
             getGraphicsInfoById(response.results[0].graphic, "ESRI_OID", LineRestrictionsLayer).then((results)=>{
-                console.log(results)
-                console.log(pt)
                 results ? show(pt, results as RestrictionInfo) : close();
             })
         }
