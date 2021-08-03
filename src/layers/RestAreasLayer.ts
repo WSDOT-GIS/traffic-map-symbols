@@ -1,9 +1,8 @@
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer"
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import symbol from "@/symbols/RestAreasSymbol"
-import WeatherStationInfo from "@/types/WeatherStationsInfo"
-import Graphic from "@arcgis/core/Graphic"
-import { getExtentFromUrl } from "@/utils/urlParamUtil"
+// import WeatherStationInfo from "@/types/WeatherStationsInfo"
+// import Graphic from "@arcgis/core/Graphic"
 const restAreasRenderer = new simpleRenderer({
     symbol: symbol
 })

@@ -19,7 +19,7 @@ export default defineComponent({
     },
     Width: {
       type: String,
-      required: true,
+      required: false,
     },
     AriaLabel: {
       type: String,

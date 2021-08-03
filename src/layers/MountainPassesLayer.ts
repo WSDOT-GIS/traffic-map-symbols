@@ -1,15 +1,8 @@
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer"
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import mountainPassSymbol from "@/symbols/MountainPassSymbol"
-import MountainPassesInfo from "@/types/MountainPassesInfo";
-import Graphic from "@arcgis/core/Graphic";
-import esriRequest from "@arcgis/core/request";
-fetch(`${window.location.href}/appconfig.json`)
-    .then(response => response.json())
-    .then(data => {
-        const appConfig = data
-        console.log(appConfig)
-    })
+// import MountainPassesInfo from "@/types/MountainPassesInfo";
+// import Graphic from "@arcgis/core/Graphic";
 const mountainPassRenderer = new simpleRenderer({
     symbol: mountainPassSymbol
 })

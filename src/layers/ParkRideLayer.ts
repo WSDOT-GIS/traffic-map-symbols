@@ -1,10 +1,10 @@
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
-import Graphic from "@arcgis/core/Graphic";
+// import Graphic from "@arcgis/core/Graphic";
 import Symbol from "@/symbols/ParkRideSymbol";
-import { mapView } from "@/esri-stuff/esriMap";
+// import { mapView } from "@/esri-stuff/esriMap";
 import Field from "@arcgis/core/layers/support/Field";
-import ParkRideInfo from "@/types/ParkRideInfo";
+// import ParkRideInfo from "@/types/ParkRideInfo";
 //import { generateClusterConfig } from "@/utils/layerUtil";
 
 //const clusterConfig = generateClusterConfig("Park & Rides", "park & ride", "#065535");

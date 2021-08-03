@@ -7,6 +7,57 @@
     BannerText="Weather Station"
     :Features="[feature]"
     TitleFieldName="WeatherStationDescription"
+    :ContentConfig="[
+      {
+        label: 'Location',
+        value: {
+          custom: getCoord,
+        },
+      },
+      { label: 'Surface temp', value: { custom: getSurfTemp } },
+      { label: 'Air temp', value: { custom: getAirTemp } },
+      {
+        label: '24hr high/low',
+        value: { custom: getHighLowTemp },
+      },
+      {
+        label: 'Pressure',
+        value: { custom: getPressure },
+      },
+      { label: 'Elevation', value: { custom: getElev } },
+      {
+        label: 'Humidity',
+        value: { custom: getHumidity },
+      },
+      {
+        label: 'Dew point',
+        value: { custom: getDewPoint },
+      },
+      {
+        label: 'Visibility',
+        value: { custom: getVisibility },
+      },
+      {
+        label: 'Wind speed',
+        value: {
+          custom: getWindSpeed,
+        },
+      },
+      {
+        label: 'Wind dir.',
+        value: {
+          fieldName: 'CardinalCompassDirection',
+        },
+      },
+      {
+        label: 'Last updated',
+        value: {
+          fieldName: 'WeatherReportDateTime',
+          isDate: true,
+          isTime: true,
+        },
+      },
+    ]"
     @close="close"
   >
     <template v-slot:icon>
@@ -62,72 +113,18 @@
         />
       </svg>
     </template>
-    <template v-slot:default>
-      <PopupRow
-        Label="Location"
-        :TextOptions="{
-          text: coordinateText,
-        }"
-      />
-      <PopupRow Label="Surface temp" :TextOptions="{ text: surfTempText }" />
-      <PopupRow Label="Air temp" :TextOptions="{ text: airTempText }" />
-      <PopupRow
-        Label="24hr high/low"
-        :TextOptions="{ text: highLowTempText }"
-      />
-      <PopupRow
-        Label="Pressure"
-        :TextOptions="{ text: formatNum('BarometricPressure', 'in') }"
-      />
-      <PopupRow Label="Elevation" :TextOptions="{ text: elevationText }" />
-      <PopupRow
-        Label="Humidity"
-        :TextOptions="{ text: formatNum('RelativeHumidity', '%') }"
-      />
-      <PopupRow
-        Label="Dew point"
-        :TextOptions="{ text: formatNum('DewPoint', '°F') }"
-      />
-      <PopupRow
-        Label="Visibility"
-        :TextOptions="{ text: formatNum('Visibility', 'Mile') }"
-      />
-      <PopupRow
-        Label="Wind speed"
-        :TextOptions="{
-          text: formatNum('WindSpeed', 'mph'),
-        }"
-      />
-      <PopupRow
-        Label="Wind dir."
-        :TextOptions="{
-          feature: feature,
-          fieldName: 'CardinalCompassDirection',
-        }"
-      />
-      <PopupRow
-        Label="Last updated"
-        :TextOptions="{
-          feature: feature,
-          fieldName: 'WeatherReportDateTime',
-          isDate: true,
-          isTime: true,
-        }"
-      />
-    </template>
   </PopupBase>
 </template>
 <script lang="ts">
-import { computed, defineComponent, nextTick, PropType, ref, watch } from "vue";
+import { defineComponent, nextTick, PropType, ref, watch } from "vue";
 import PopupBase from "./PopupBase.vue";
-import PopupRow from "./PopupRow.vue";
 import FeatureLayer from "@/layers/WeatherStationsLayer";
 import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import FeatureInfo from "@/types/FeatureInfo";
 
 export default defineComponent({
-  components: { PopupBase, PopupRow },
+  components: { PopupBase },
   props: {
     Featureset: {
       type: Object as PropType<FeaturesetInfo>,
@@ -173,7 +170,6 @@ export default defineComponent({
         nextTick(() => {
           setVal();
         });
-        //setVal();
       } else {
         setVal();
       }
@@ -187,62 +183,82 @@ export default defineComponent({
 
     const naText = "N/A";
 
-    const coordinateText = computed(() => {
+    const getCoord = (feature: FeatureInfo) => {
       let text = naText;
-      if (feature.value) {
-        const lat = feature.value.attributes["Latitude"] as number;
-        const lon = feature.value.attributes["Longitude"] as number;
+      if (feature) {
+        const lat = feature.attributes["Latitude"] as number;
+        const lon = feature.attributes["Longitude"] as number;
         text = `${lon.toFixed(2)}, ${lat.toFixed(2)}`;
       }
       return text;
-    });
+    };
 
-    const elevationText = computed(() => {
+    const getElev = (feature: FeatureInfo) => {
       let text = naText;
-      if (feature.value) {
-        const ft = Number(feature.value.attributes["ElevationFeet"]);
-        const meter = Number(feature.value.attributes["ElevationMeters"]);
+      if (feature) {
+        const ft = Number(feature.attributes["ElevationFeet"]);
+        const meter = Number(feature.attributes["ElevationMeters"]);
         text = combineNums(ft, meter, "ft", "m");
       }
       return text;
-    });
+    };
 
-    const surfTempText = computed(() => {
+    const getSurfTemp = (feature: FeatureInfo) => {
       let text = naText;
-      if (feature.value) {
-        const f = Number(feature.value.attributes["SurfaceTemperature"]);
+      if (feature) {
+        const f = Number(feature.attributes["SurfaceTemperature"]);
         if (f && !isNaN(f)) {
           const c = Math.round(((f - 32) * 5) / 9);
           text = combineNums(f, c, "°F", "°C");
         }
       }
       return text;
-    });
+    };
 
-    const airTempText = computed(() => {
+    const getAirTemp = (feature: FeatureInfo) => {
       let text = naText;
-      if (feature.value) {
-        const f = Number(feature.value.attributes["TemperatureFarhenheit"]);
-        const c = Number(feature.value.attributes["TemperatureCelcius"]);
+      if (feature) {
+        const f = Number(feature.attributes["TemperatureFarhenheit"]);
+        const c = Number(feature.attributes["TemperatureCelcius"]);
         text = combineNums(f, c, "°F", "°C");
       }
       return text;
-    });
+    };
 
-    const highLowTempText = computed(() => {
+    const getHighLowTemp = (feature: FeatureInfo) => {
       let text = naText;
-      if (feature.value) {
-        const high = Number(feature.value.attributes["MaxTemperature"]);
-        const low = Number(feature.value.attributes["MinTemperature"]);
+      if (feature) {
+        const high = Number(feature.attributes["MaxTemperature"]);
+        const low = Number(feature.attributes["MinTemperature"]);
         text = combineNums(high, low, "°F", "°F");
       }
       return text;
-    });
+    };
 
-    const formatNum = (fieldName: string, unit: string) => {
+    const getPressure = (feature: FeatureInfo) => {
+      return formatNum(feature, "BarometricPressure", "in");
+    };
+    const getHumidity = (feature: FeatureInfo) => {
+      return formatNum(feature, "RelativeHumidity", "%");
+    };
+    const getDewPoint = (feature: FeatureInfo) => {
+      return formatNum(feature, "DewPoint", "°F");
+    };
+    const getVisibility = (feature: FeatureInfo) => {
+      return formatNum(feature, "Visibility", "Mile");
+    };
+    const getWindSpeed = (feature: FeatureInfo) => {
+      return formatNum(feature, "WindSpeed", "mph");
+    };
+
+    const formatNum = (
+      feature: FeatureInfo,
+      fieldName: string,
+      unit: string
+    ) => {
       let text = naText;
-      if (feature.value) {
-        const num = Number(feature.value.attributes[fieldName]);
+      if (feature) {
+        const num = Number(feature.attributes[fieldName]);
         text = isNaN(num) ? naText : num + " " + unit;
       }
       return text;
@@ -275,12 +291,16 @@ export default defineComponent({
       mapY,
       feature,
       close,
-      coordinateText,
-      elevationText,
-      surfTempText,
-      airTempText,
-      highLowTempText,
-      formatNum,
+      getCoord,
+      getElev,
+      getSurfTemp,
+      getAirTemp,
+      getHighLowTemp,
+      getPressure,
+      getHumidity,
+      getDewPoint,
+      getVisibility,
+      getWindSpeed,
     };
   },
 });

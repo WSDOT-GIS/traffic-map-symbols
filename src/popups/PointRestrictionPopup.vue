@@ -7,6 +7,24 @@
     BannerText="Truck Restriction"
     :Features="[feature]"
     TitleFieldName="location_description"
+    :ContentConfig="[
+      { label: 'Travel delay', value: { text: '???' } },
+      { label: '', value: { fieldName: 'restriction_comment' } },
+      {
+        label: 'Date effective',
+        value: {
+          fieldName: 'date_effective',
+          isDate: true,
+        },
+      },
+      {
+        label: 'Last updated',
+        value: {
+          fieldName: 'RecordUpdateDate',
+          isDate: true,
+        },
+      },
+    ]"
     @close="close"
   >
     <template v-slot:icon>
@@ -45,42 +63,19 @@
         />
       </svg>
     </template>
-    <template v-slot:default>
-      <PopupRow Label="Travel delay" :TextOptions="{text:'???'}" />
-      <PopupRow
-        Label=""
-        :TextOptions="{ feature: feature, fieldName: 'restriction_comment' }"
-      />
-      <PopupRow
-        Label="Date effective"
-        :TextOptions="{
-          feature: feature,
-          fieldName: 'date_effective',
-          isDate: true,
-        }"
-      />
-      <PopupRow
-        Label="Last updated"
-        :TextOptions="{
-          feature: feature,
-          fieldName: 'RecordUpdateDate',
-          isDate: true,
-        }"
-      />
-    </template>
   </PopupBase>
 </template>
 <script lang="ts">
 import { defineComponent, PropType, ref, watch } from "vue";
 import PopupBase from "./PopupBase.vue";
-import PopupRow from "./PopupRow.vue";
+
 import FeatureLayer from "@/layers/PointRestrictionsLayer";
 import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import FeatureInfo from "@/types/FeatureInfo";
 
 export default defineComponent({
-  components: { PopupBase, PopupRow },
+  components: { PopupBase },
   props: {
     Featureset: {
       type: Object as PropType<FeaturesetInfo>,

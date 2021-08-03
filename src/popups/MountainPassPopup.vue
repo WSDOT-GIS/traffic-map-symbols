@@ -7,6 +7,57 @@
     BannerText="Mountain Pass"
     :Features="[feature]"
     TitleFieldName="PassName"
+    :ContentConfig="[
+      {
+        label: 'Temperature',
+        value: {
+          custom: getTemp,
+        },
+      },
+      {
+        label: 'Elevation',
+        value: {
+          custom: getElev,
+        },
+      },
+      {
+        label: getDirection1Label,
+        value: {
+          fieldName: 'PublicMessage1',
+        },
+      },
+      {
+        label: getDirection2Label,
+        value: {
+          fieldName: 'PublicMessage2',
+        },
+      },
+      {
+        label: 'Conditions',
+        value: {
+          fieldName: 'RoadCondition',
+        },
+      },
+      {
+        label: 'Weather',
+        value: {
+          fieldName: 'Weather',
+        },
+      },
+      {
+        label: 'Visibility',
+        value: {
+          text: '???',
+        },
+      },
+      {
+        label: 'Last updated',
+        value: {
+          fieldName: 'DisplayDate',
+          isDate: true,
+        },
+      },
+    ]"
     @close="close"
   >
     <template v-slot:icon>
@@ -53,75 +104,19 @@
         />
       </svg>
     </template>
-    <template v-slot:default>
-      <PopupRow
-        Label="Temperature"
-        :TextOptions="{
-          text: temperature,
-        }"
-      />
-      <PopupRow
-        Label="Elevation"
-        :TextOptions="{
-          text: elevation,
-        }"
-      />
-      <PopupRow
-        :Label="'Restrictions ' + feature?.attributes['TravelDirection1']"
-        :TextOptions="{
-          feature: feature,
-          fieldName: 'PublicMessage1',
-        }"
-      />
-      <PopupRow
-        :Label="'Restrictions ' + feature?.attributes['TravelDirection2']"
-        :TextOptions="{
-          feature: feature,
-          fieldName: 'PublicMessage2',
-        }"
-      />
-      <PopupRow
-        Label="Conditions"
-        :TextOptions="{
-          feature: feature,
-          fieldName: 'RoadCondition',
-        }"
-      />
-      <PopupRow
-        Label="Weather"
-        :TextOptions="{
-          feature: feature,
-          fieldName: 'Weather',
-        }"
-      />
-      <PopupRow
-        Label="Visibility"
-        :TextOptions="{
-          text: '???',
-        }"
-      />
-      <PopupRow
-        Label="Last updated"
-        :TextOptions="{
-          feature: feature,
-          fieldName: 'DisplayDate',
-          isDate: true,
-        }"
-      />
-    </template>
   </PopupBase>
 </template>
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, watch } from "vue";
+import { defineComponent, PropType, ref, watch } from "vue";
 import PopupBase from "./PopupBase.vue";
-import PopupRow from "./PopupRow.vue";
+// import PopupRow from "./PopupRow.vue";
 import FeatureLayer from "@/layers/MountainPassesLayer";
 import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import FeatureInfo from "@/types/FeatureInfo";
 
 export default defineComponent({
-  components: { PopupBase, PopupRow },
+  components: { PopupBase },
   props: {
     Featureset: {
       type: Object as PropType<FeaturesetInfo>,
@@ -176,33 +171,46 @@ export default defineComponent({
       feature.value = undefined;
     };
 
-    const temperature = computed(() => {
-      const num = feature.value?.attributes["Temperature"];
-      const unit = feature.value?.attributes["TemperatureUnit"];
+    const getTemp = (feature: FeatureInfo): string => {
+      console.log(JSON.stringify("feature: " + feature));
+      const num = feature.attributes["Temperature"];
+      const unit = feature.attributes["TemperatureUnit"];
       let text = "";
       if (num) {
         text = `${num} ${unit ? unit : ""}`;
       }
+      console.log("Temp: " + text);
       return text;
-    });
+    };
 
-    const elevation = computed(() => {
-      const num = feature.value?.attributes["Elevation"];
-      const unit = feature.value?.attributes["ElevationUnit"];
+    const getElev = (feature: FeatureInfo) => {
+      const num = feature.attributes["Elevation"];
+      const unit = feature.attributes["ElevationUnit"];
       let text = "";
       if (num) {
         text = `${num} ${unit ? unit : ""}`;
       }
       return text;
-    });
+    };
+
+    const getDirection1Label = (feature: FeatureInfo) => {
+      console.log("getDirection1Label");
+      return "Restrictions " + feature.attributes["TravelDirection1"];
+    };
+
+    const getDirection2Label = (feature: FeatureInfo) => {
+      return "Restrictions " + feature.attributes["TravelDirection2"];
+    };
 
     return {
       mapX,
       mapY,
       feature,
       close,
-      temperature,
-      elevation,
+      getTemp,
+      getElev,
+      getDirection1Label,
+      getDirection2Label,
     };
   },
 });
