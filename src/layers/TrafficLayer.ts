@@ -1,6 +1,7 @@
 import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 
 // Proxy created in the Developer portal for the traffic service.
+// Using ERJ's configured proxy service.  Rate limit set to 100000/s to prevent 429 errors. 
 const urlTraffic =
     "https://utility.arcgis.com/usrsvcs/appservices/G9CkczziK8rxtWpL/rest/services/World/Traffic/MapServer";
 
