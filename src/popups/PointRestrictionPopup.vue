@@ -4,7 +4,7 @@
     :MapY="mapY"
     LightThemeColor="#fff3cd"
     DarkThemeColor="#FFC107"
-    BannerText="Truck Restriction"
+    BannerText="Road Restriction"
     :Features="[feature]"
     TitleFieldName="location_description"
     :ContentConfig="[
