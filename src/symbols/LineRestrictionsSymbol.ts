@@ -2,12 +2,12 @@ import SimpleLineSymbol from "@arcgis/core/symbols/SimpleLineSymbol";
 
 const roadRestrictionLine = new SimpleLineSymbol({
     style: "solid",
-    color:  "green",
+    color: "green",
     width: "5px",
 })
 const bridgeRestrictionLine = new SimpleLineSymbol({
     style: "solid",
-    color:  "orange",
+    color: "orange",
     width: "5px",
 })
-export {roadRestrictionLine, bridgeRestrictionLine}
+export { roadRestrictionLine, bridgeRestrictionLine }

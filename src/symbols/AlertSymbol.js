@@ -662,6 +662,7 @@ const symbol = new CIMSymbol({
                         }
                     ],
                     "scaleSymbolsProportionally": true,
+                    "offsetY": 7.5,
                     "respectFrame": true,
                     "clippingPath": {
                         "type": "CIMClippingPath",

@@ -2,9 +2,9 @@ import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import Field from "@arcgis/core/layers/support/Field";
 import Symbol from "@/symbols/CameraSymbol";
-import Graphic from "@arcgis/core/Graphic";
-import MapView from "@arcgis/core/views/MapView";
-import Point from "@arcgis/core/geometry/Point";
+// import Graphic from "@arcgis/core/Graphic";
+// import MapView from "@arcgis/core/views/MapView";
+// import Point from "@arcgis/core/geometry/Point";
 // import LayerView from "@arcgis/core/views/layers/GeoJSONLayerView";
 
 // import { clusterSymbol } from "@/symbols/CameraSymbol";
@@ -88,7 +88,7 @@ export default layer
 
 /*** Helper functions **************/
 // Watch scale change...
-export const toggleCluster = (newScale: number, oldScale: number, maxScale: number) => {
+export const toggleCluster = (newScale: number, oldScale: number, maxScale: number): void => {
     console.log("toggleCluster scale: " + newScale);
     // Turn off clustering at max scale...
     if (newScale > maxScale && oldScale < maxScale) {

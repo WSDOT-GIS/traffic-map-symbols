@@ -14,9 +14,9 @@ const symbol = new CIMSymbol({
                     "billboardMode3D": "FaceNearPlane",
                     "frame": {
                         "xmin": 0,
-                        "ymin": 0,
+                        "ymin": 12,
                         "xmax": 18,
-                        "ymax": 24
+                        "ymax": 48
                     },
                     "markerGraphics": [
                         {
@@ -1446,6 +1446,7 @@ const symbol = new CIMSymbol({
                         }
                     ],
                     "scaleSymbolsProportionally": true,
+                    "offsetY": 7.5,
                     "respectFrame": true,
                     "clippingPath": {
                         "type": "CIMClippingPath",

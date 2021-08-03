@@ -108,7 +108,7 @@ const clusterConfig = new FeatureReductionCluster({
                 yoffset: -2
             },
             labelPlacement: "center-center",
-        }, 
+        },
     ],
 });
 // The symbol property is undocumented, so use with caution.
@@ -118,7 +118,7 @@ clusterConfig.set("symbol", clusterSymbol);
 export { clusterConfig }
 
 // Watch scale change...
-export const adjustCluster = (newScale: number, oldScale: number) => {
+export const adjustCluster = (newScale: number, oldScale: number): void => {
     // Reduce cluster radius at max scale...
     if (newScale > maxScale && oldScale < maxScale) {
         clusterConfig.clusterRadius = defaultRadius;

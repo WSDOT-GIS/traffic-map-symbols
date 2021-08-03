@@ -1,7 +1,7 @@
 import Basemap from "@arcgis/core/Basemap";
 import TileLayer from "@arcgis/core/layers/TileLayer";
 import BasemapInfo from "@/types/BasemapInfo";
-export const getDefaultBasemapInfo = () => { return basemaps[0]}
+export const getDefaultBasemapInfo = (): BasemapInfo => { return basemaps[0] }
 const urlBasemap =
     //"https://data.wsdot.wa.gov/arcgis/rest/services/Shared/WebBaseMapWebMercator/MapServer";
     "https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/TravelCenterBasemapTileTest/MapServer"

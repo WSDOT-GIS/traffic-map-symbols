@@ -16,9 +16,9 @@ const pointRestrictionsRenderer = new UniqueValueRenderer({
         symbol: bridgeRestrictionPoint
     }]
 })
-const pointRestrictionsRenderer2 = new SimpleRenderer({
-    symbol: Symbol
-})
+// const pointRestrictionsRenderer2 = new SimpleRenderer({
+//     symbol: Symbol
+// })
 const PointRestrictionsLayer = new GeoJSONLayer({
     id: "point-restrictions-layer",
     url: "http://hqtob1webtmdev1/GISData/PointRestrictions.json",
