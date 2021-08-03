@@ -47,6 +47,8 @@
     :MapY="popupY"
     :Featureset="popupFeatureset"
   />
+  <RoadAlertPopup :MapX="popupX" :MapY="popupY" :Featureset="popupFeatureset" />
+
   <LeftPaneView />
 </template>
 
@@ -77,7 +79,8 @@ import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
 import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
 import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
 import MountainPassLayer from "@/layers/MountainPassesLayer";
-/* Components */
+import RoadAlertLayer from "@/layers/RoadAlertLayer";
+/* Popups */
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
 import CameraPopup from "@/popups/CameraPopup.vue";
 import ParkRidePopup from "@/popups/ParkAndRidePopup.vue";
@@ -85,6 +88,8 @@ import PointRestrictionPopup from "@/popups/PointRestrictionPopup.vue";
 import LineRestrictionPopup from "@/popups/LineRestrictionPopup.vue";
 import MountainPassPopup from "@/popups/MountainPassPopup.vue";
 import WeatherStationsPopup from "@/popups/WeatherStationPopup.vue";
+import RoadAlertPopup from "@/popups/RoadAlertPopup.vue";
+/* Components */
 import LeftPaneView from "@/components/LeftPaneView.vue";
 import BasemapView from "@/components/BasemapView.vue";
 import CoordinatesView from "@/components/CoordinatesView.vue";
@@ -100,6 +105,7 @@ export default defineComponent({
     LineRestrictionPopup,
     MountainPassPopup,
     WeatherStationsPopup,
+    RoadAlertPopup,
     LeftPaneView,
     BasemapView,
     CoordinatesView,
@@ -229,6 +235,7 @@ export default defineComponent({
             LineRestrictionsLayer,
             WeatherStationsLayer,
             MountainPassLayer,
+            RoadAlertLayer,
           ],
         };
         esriMap.mapView.hitTest(event, opts).then((response) => {

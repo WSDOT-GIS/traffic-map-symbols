@@ -5,16 +5,19 @@
     Width="w"
     LightThemeColor="#cce5df"
     DarkThemeColor="#007b5f"
-    :BannerText="
-      'Camera' + (features.length > 1 ? ' (' + features.length + ')' : '')
-    "
     :Features="features"
-    TitleFieldName="CameraTitle"
-    ImageFieldName="ImageURL"
-    :ContentConfig="[
-      { label: 'Camera Direction', value: { custom: getDirection } },
-      { label: 'Refresh Rate', value: { text: '???' } },
-    ]"
+    :Config="{
+      bannerText: {
+        text:
+          'Camera' + (features.length > 1 ? ' (' + features.length + ')' : ''),
+      },
+      title: { fieldName: 'CameraTitle' },
+      imageFieldName: 'ImageURL',
+      content: [
+        { label: 'Camera Direction', value: { custom: getDirection } },
+        { label: 'Refresh Rate', value: { text: '???' } },
+      ],
+    }"
     @close="close"
   >
     <template v-slot:icon>

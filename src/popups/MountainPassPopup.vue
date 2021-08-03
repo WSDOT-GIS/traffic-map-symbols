@@ -4,60 +4,62 @@
     :MapY="mapY"
     LightThemeColor="#e0efec"
     DarkThemeColor="#66B09F"
-    BannerText="Mountain Pass"
     :Features="[feature]"
-    TitleFieldName="PassName"
-    :ContentConfig="[
-      {
-        label: 'Temperature',
-        value: {
-          custom: getTemp,
+    :Config="{
+      bannerText: { text: 'Mountain Pass' },
+      title: { fieldName: 'PassName' },
+      content: [
+        {
+          label: 'Temperature',
+          value: {
+            custom: getTemp,
+          },
         },
-      },
-      {
-        label: 'Elevation',
-        value: {
-          custom: getElev,
+        {
+          label: 'Elevation',
+          value: {
+            custom: getElev,
+          },
         },
-      },
-      {
-        label: getDirection1Label,
-        value: {
-          fieldName: 'PublicMessage1',
+        {
+          label: getDirection1Label,
+          value: {
+            fieldName: 'PublicMessage1',
+          },
         },
-      },
-      {
-        label: getDirection2Label,
-        value: {
-          fieldName: 'PublicMessage2',
+        {
+          label: getDirection2Label,
+          value: {
+            fieldName: 'PublicMessage2',
+          },
         },
-      },
-      {
-        label: 'Conditions',
-        value: {
-          fieldName: 'RoadCondition',
+        {
+          label: 'Conditions',
+          value: {
+            fieldName: 'RoadCondition',
+          },
         },
-      },
-      {
-        label: 'Weather',
-        value: {
-          fieldName: 'Weather',
+        {
+          label: 'Weather',
+          value: {
+            fieldName: 'Weather',
+          },
         },
-      },
-      {
-        label: 'Visibility',
-        value: {
-          text: '???',
+        {
+          label: 'Visibility',
+          value: {
+            text: '???',
+          },
         },
-      },
-      {
-        label: 'Last updated',
-        value: {
-          fieldName: 'DisplayDate',
-          isDate: true,
+        {
+          label: 'Last updated',
+          value: {
+            fieldName: 'DisplayDate',
+            isDate: true,
+          },
         },
-      },
-    ]"
+      ],
+    }"
     @close="close"
   >
     <template v-slot:icon>

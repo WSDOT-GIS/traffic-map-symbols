@@ -21,7 +21,7 @@
         <div class="popup-banner-icon">
           <slot name="icon"></slot>
         </div>
-        <span class="popup-banner-text"> {{ BannerText }}</span>
+        <span class="popup-banner-text"> {{ getBannerText() }}</span>
       </div>
       <button
         class="popup-close-button w3-button w3-padding-small"
@@ -31,10 +31,10 @@
       </button>
     </div>
     <h4 class="popup-title w3-container">
-      {{ Features[currentIdx]?.attributes[TitleFieldName] }}
+      {{ getTitle() }}
     </h4>
     <Carousel
-      v-if="ImageFieldName"
+      v-if="Config.imageFieldName"
       :items-to-show="1"
       :wrapAround="true"
       @update:modelValue="currentIdx = $event"
@@ -44,9 +44,13 @@
         <div class="carousel-item-container">
           <img
             class="popup-img"
-            :src="ImageFieldName ? eachFeature.attributes[ImageFieldName] : ''"
+            :src="
+              Config.imageFieldName
+                ? eachFeature.attributes[Config.imageFieldName]
+                : ''
+            "
             :alt="eachFeature.id"
-            @load="onImgLoad"
+            @load="onImgLoad()"
           />
         </div>
       </Slide>
@@ -56,7 +60,7 @@
       </template>
     </Carousel>
     <div
-      v-for="eachConfig in ContentConfig"
+      v-for="eachConfig in Config?.content"
       :key="eachConfig.label"
       class="popup-content w3-container"
     >
@@ -81,7 +85,7 @@ import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
 import { mapView, toScreenXY, panMap } from "@/esri-stuff/esriMap";
 // import HighlightSymbol from "@/symbols/HighlightSymbol";
 import FeatureInfo from "@/types/FeatureInfo";
-import PopupRowConfig from "@/types/PopupRowConfig";
+import PopupConfig from "@/types/PopupConfig";
 import PopupRow from "./PopupRow.vue";
 
 export default defineComponent({
@@ -108,24 +112,12 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    BannerText: {
-      type: String,
-      required: true,
-    },
     Features: {
       type: Array as PropType<Array<FeatureInfo>>,
       required: true,
     },
-    TitleFieldName: {
-      type: String,
-      required: true,
-    },
-    ImageFieldName: {
-      type: String,
-      required: false,
-    },
-    ContentConfig: {
-      type: Array as PropType<Array<PopupRowConfig>>,
+    Config: {
+      type: Object as PropType<PopupConfig>,
       required: true,
     },
   },
@@ -232,6 +224,7 @@ export default defineComponent({
     });
     // Image load happens later and change the size of the popup, so need to make adjustment after that...
     const onImgLoad = () => {
+      console.log("******** onImgLoad **************");
       numImgLoaded = numImgLoaded + 1;
       adjustPositionSize();
     };
@@ -324,7 +317,6 @@ export default defineComponent({
           newTop = screenY.value - h - 30;
           // New horizontal position.
           newLeft = screenX.value - w / 2;
-
           /**
            * Pan map so the popup is displayed within the map view.
            * Only do this on the initial popup load.
@@ -346,7 +338,7 @@ export default defineComponent({
     };
     const isLoadComplete = () => {
       let isComplete: boolean;
-      if (props.ImageFieldName) {
+      if (props.Config.imageFieldName) {
         isComplete = numImgLoaded >= props.Features.length;
       } else {
         isComplete = wasUpdatedOnce;
@@ -363,7 +355,58 @@ export default defineComponent({
         popupLeft.value = left;
       }
     };
-
+    const getBannerText = () => {
+      if (
+        !props.Features ||
+        props.Features.length === 0 ||
+        !props.Features[currentIdx.value]
+      ) {
+        // "Nothing to show...
+        return;
+      }
+      let text = "";
+      if (props.Config?.bannerText.text) {
+        text = props.Config?.bannerText.text;
+      } else if (props.Config?.bannerText.fieldName) {
+        text = props.Features[currentIdx.value].attributes[
+          props.Config.bannerText.fieldName
+        ] as string;
+      } else if (props.Config?.bannerText.custom) {
+        const func = props.Config.bannerText.custom as (
+          f: FeatureInfo
+        ) => string;
+        text = func(props.Features[currentIdx.value]);
+      }
+      if (!text) {
+        text = "";
+      }
+      return text;
+    };
+    const getTitle = () => {
+      if (
+        !props.Features ||
+        props.Features.length === 0 ||
+        !props.Features[currentIdx.value]
+      ) {
+        // "Nothing to show...
+        return;
+      }
+      let text = "";
+      if (props.Config?.title.text) {
+        text = props.Config?.title.text;
+      } else if (props.Config?.title.fieldName) {
+        text = props.Features[currentIdx.value].attributes[
+          props.Config.title.fieldName
+        ] as string;
+      } else if (props.Config?.title.custom) {
+        const func = props.Config.title.custom as (f: FeatureInfo) => string;
+        text = func(props.Features[currentIdx.value]);
+      }
+      if (!text) {
+        text = "";
+      }
+      return text;
+    };
     return {
       containerRef,
       popupLeft,
@@ -376,6 +419,8 @@ export default defineComponent({
       adjustPositionSize,
       pagenationStyle,
       onImgLoad,
+      getBannerText,
+      getTitle,
     };
   },
 });
