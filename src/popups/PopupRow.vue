@@ -2,8 +2,6 @@
   <div>
     <span class="popup-key">{{ getLabel() }}</span>
     <span class="popup-value">{{ getText() }}</span>
-    <!-- <span class="popup-key">{{ Label ? Label + ": " : "" }}</span>
-    <span class="popup-value">{{ text }}</span> -->
   </div>
 </template>
 <script lang="ts">

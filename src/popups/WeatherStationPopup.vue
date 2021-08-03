@@ -4,60 +4,62 @@
     :MapY="mapY"
     LightThemeColor="#ccdcdc"
     DarkThemeColor="#005151"
-    BannerText="Weather Station"
     :Features="[feature]"
-    TitleFieldName="WeatherStationDescription"
-    :ContentConfig="[
-      {
-        label: 'Location',
-        value: {
-          custom: getCoord,
+    :Config="{
+      bannerText: { text: 'Weather Station' },
+      title: { fieldName: 'WeatherStationDescription' },
+      content: [
+        {
+          label: 'Location',
+          value: {
+            custom: getCoord,
+          },
         },
-      },
-      { label: 'Surface temp', value: { custom: getSurfTemp } },
-      { label: 'Air temp', value: { custom: getAirTemp } },
-      {
-        label: '24hr high/low',
-        value: { custom: getHighLowTemp },
-      },
-      {
-        label: 'Pressure',
-        value: { custom: getPressure },
-      },
-      { label: 'Elevation', value: { custom: getElev } },
-      {
-        label: 'Humidity',
-        value: { custom: getHumidity },
-      },
-      {
-        label: 'Dew point',
-        value: { custom: getDewPoint },
-      },
-      {
-        label: 'Visibility',
-        value: { custom: getVisibility },
-      },
-      {
-        label: 'Wind speed',
-        value: {
-          custom: getWindSpeed,
+        { label: 'Surface temp', value: { custom: getSurfTemp } },
+        { label: 'Air temp', value: { custom: getAirTemp } },
+        {
+          label: '24hr high/low',
+          value: { custom: getHighLowTemp },
         },
-      },
-      {
-        label: 'Wind dir.',
-        value: {
-          fieldName: 'CardinalCompassDirection',
+        {
+          label: 'Pressure',
+          value: { custom: getPressure },
         },
-      },
-      {
-        label: 'Last updated',
-        value: {
-          fieldName: 'WeatherReportDateTime',
-          isDate: true,
-          isTime: true,
+        { label: 'Elevation', value: { custom: getElev } },
+        {
+          label: 'Humidity',
+          value: { custom: getHumidity },
         },
-      },
-    ]"
+        {
+          label: 'Dew point',
+          value: { custom: getDewPoint },
+        },
+        {
+          label: 'Visibility',
+          value: { custom: getVisibility },
+        },
+        {
+          label: 'Wind speed',
+          value: {
+            custom: getWindSpeed,
+          },
+        },
+        {
+          label: 'Wind dir.',
+          value: {
+            fieldName: 'CardinalCompassDirection',
+          },
+        },
+        {
+          label: 'Last updated',
+          value: {
+            fieldName: 'WeatherReportDateTime',
+            isDate: true,
+            isTime: true,
+          },
+        },
+      ],
+    }"
     @close="close"
   >
     <template v-slot:icon>
