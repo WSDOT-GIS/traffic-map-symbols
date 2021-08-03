@@ -21,7 +21,10 @@
         <div class="popup-banner-icon">
           <slot name="icon"></slot>
         </div>
-        <span class="popup-banner-text"> {{ BannerText }}</span>
+        <span class="popup-banner-text"> {{ getBannerText() }}</span>
+      </div>
+      <div v-if="Config.badgeText" class="popup-badge">
+        {{ getBannerText2() }}
       </div>
       <button
         class="popup-close-button w3-button w3-padding-small"
@@ -31,10 +34,10 @@
       </button>
     </div>
     <h4 class="popup-title w3-container">
-      {{ Features[currentIdx]?.attributes[TitleFieldName] }}
+      {{ getTitle() }}
     </h4>
     <Carousel
-      v-if="ImageFieldName"
+      v-if="Config.imageFieldName"
       :items-to-show="1"
       :wrapAround="true"
       @update:modelValue="currentIdx = $event"
@@ -44,9 +47,13 @@
         <div class="carousel-item-container">
           <img
             class="popup-img"
-            :src="ImageFieldName ? eachFeature.attributes[ImageFieldName] : ''"
+            :src="
+              Config.imageFieldName
+                ? eachFeature.attributes[Config.imageFieldName]
+                : ''
+            "
             :alt="eachFeature.id"
-            @load="onImgLoad"
+            @load="onImgLoad()"
           />
         </div>
       </Slide>
@@ -56,7 +63,7 @@
       </template>
     </Carousel>
     <div
-      v-for="eachConfig in ContentConfig"
+      v-for="eachConfig in Config.content"
       :key="eachConfig.label"
       class="popup-content w3-container"
     >
@@ -81,7 +88,7 @@ import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
 import { mapView, toScreenXY, panMap } from "@/esri-stuff/esriMap";
 // import HighlightSymbol from "@/symbols/HighlightSymbol";
 import FeatureInfo from "@/types/FeatureInfo";
-import PopupRowConfig from "@/types/PopupRowConfig";
+import PopupConfig from "@/types/PopupConfig";
 import PopupRow from "./PopupRow.vue";
 
 export default defineComponent({
@@ -108,24 +115,12 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    BannerText: {
-      type: String,
-      required: true,
-    },
     Features: {
       type: Array as PropType<Array<FeatureInfo>>,
       required: true,
     },
-    TitleFieldName: {
-      type: String,
-      required: true,
-    },
-    ImageFieldName: {
-      type: String,
-      required: false,
-    },
-    ContentConfig: {
-      type: Array as PropType<Array<PopupRowConfig>>,
+    Config: {
+      type: Object as PropType<PopupConfig>,
       required: true,
     },
   },
@@ -142,7 +137,6 @@ export default defineComponent({
     // Popup location.
     const popupLeft = ref(-1000);
     const popupTop = ref(-1000);
-    //const visible = ref(false);
     //
     let numImgLoaded = 0;
     let wasUpdatedOnce = false;
@@ -194,11 +188,6 @@ export default defineComponent({
       // Parent should set the MapX/Y to 0 otherwise the popup will be shown again.
       context.emit("close");
     };
-    // If the feature is within the map view, show the popup, otherwise close it.
-    // NOTE: Popup will be shown again if the feature comes back in the map view unless parent component sets the MapX and Y to 0.
-    // watch([screenX, screenY], () => {
-    //   setVisibility();
-    // });
     // Adjust popup position when the props change...
     watch([mapX, mapY], () => {
       setScreenXY();
@@ -218,6 +207,7 @@ export default defineComponent({
         setScreenXY();
       }
     });
+    // Watch map moving...
     mapView.watch("center", (newValue, oldValue) => {
       if (props.Features.length === 0 || !oldValue) {
         return;
@@ -240,22 +230,6 @@ export default defineComponent({
       wasUpdatedOnce = true;
       adjustPositionSize();
     });
-    // const setVisibility = () => {
-    //   if (
-    //     screenX.value < 0 ||
-    //     screenX.value > mapView.width ||
-    //     screenY.value < 0 ||
-    //     screenY.value > mapView.height
-    //   ) {
-    //     visible.value = false;
-    //     popupLeft.value = -1000;
-    //     popupTop.value = -1000;
-    //     //removeHighlight();
-    //   } else {
-    //     visible.value = true;
-    //     //addHighlight();
-    //   }
-    // };
     // Convert map coordinates to screen coordinates and calculate the popup position...
     const setScreenXY = () => {
       if (mapX.value < 0 && mapY.value > 0) {
@@ -263,7 +237,6 @@ export default defineComponent({
         screenX.value = screenXY.x;
         screenY.value = screenXY.y;
         adjustPositionSize();
-        //setVisibility();
       } else {
         screenX.value = -1;
         screenY.value = -1;
@@ -324,7 +297,6 @@ export default defineComponent({
           newTop = screenY.value - h - 30;
           // New horizontal position.
           newLeft = screenX.value - w / 2;
-
           /**
            * Pan map so the popup is displayed within the map view.
            * Only do this on the initial popup load.
@@ -346,7 +318,7 @@ export default defineComponent({
     };
     const isLoadComplete = () => {
       let isComplete: boolean;
-      if (props.ImageFieldName) {
+      if (props.Config.imageFieldName) {
         isComplete = numImgLoaded >= props.Features.length;
       } else {
         isComplete = wasUpdatedOnce;
@@ -363,47 +335,105 @@ export default defineComponent({
         popupLeft.value = left;
       }
     };
-
+    const getBannerText = () => {
+      if (
+        !props.Features ||
+        props.Features.length === 0 ||
+        !props.Features[currentIdx.value]
+      ) {
+        // "Nothing to show...
+        return;
+      }
+      let text = "";
+      if (props.Config.bannerText.text) {
+        text = props.Config.bannerText.text;
+      } else if (props.Config.bannerText.fieldName) {
+        text = props.Features[currentIdx.value].attributes[
+          props.Config.bannerText.fieldName
+        ] as string;
+      } else if (props.Config.bannerText.custom) {
+        const func = props.Config.bannerText.custom as (
+          f: FeatureInfo
+        ) => string;
+        text = func(props.Features[currentIdx.value]);
+      }
+      if (!text) {
+        text = "";
+      }
+      return text;
+    };
+    const getTitle = () => {
+      if (
+        !props.Features ||
+        props.Features.length === 0 ||
+        !props.Features[currentIdx.value]
+      ) {
+        // "Nothing to show...
+        return;
+      }
+      let text = "";
+      if (props.Config.title.text) {
+        text = props.Config.title.text;
+      } else if (props.Config.title.fieldName) {
+        text = props.Features[currentIdx.value].attributes[
+          props.Config.title.fieldName
+        ] as string;
+      } else if (props.Config.title.custom) {
+        const func = props.Config.title.custom as (f: FeatureInfo) => string;
+        text = func(props.Features[currentIdx.value]);
+      }
+      if (!text) {
+        text = "";
+      }
+      return text;
+    };
+    const getBannerText2 = () => {
+      if (
+        !props.Features ||
+        props.Features.length === 0 ||
+        !props.Features[currentIdx.value]
+      ) {
+        // "Nothing to show...
+        return;
+      }
+      if (!props.Config.badgeText) {
+        return;
+      }
+      let text = "";
+      if (props.Config.badgeText.text) {
+        text = props.Config.badgeText.text;
+      } else if (props.Config.badgeText.fieldName) {
+        text = props.Features[currentIdx.value].attributes[
+          props.Config.badgeText.fieldName
+        ] as string;
+      } else if (props.Config.badgeText.custom) {
+        const func = props.Config.badgeText.custom as (
+          f: FeatureInfo
+        ) => string;
+        text = func(props.Features[currentIdx.value]);
+      }
+      if (!text) {
+        text = "";
+      }
+      return text;
+    };
     return {
       containerRef,
       popupLeft,
       popupTop,
       maxHeight,
-      // visible,
       currentIdx,
       sizeClass,
       close,
       adjustPositionSize,
       pagenationStyle,
       onImgLoad,
+      getBannerText,
+      getBannerText2,
+      getTitle,
     };
   },
 });
-// Add feature highlight...
-// const addHighlight = () => {
-//   // Make sure there is only one...
-//   removeHighlight();
-//   // Create a new graphic...
-//   const pt = new Point({
-//     x: props.MapX,
-//     y: props.MapY,
-//     spatialReference: SpatialReference.WebMercator,
-//   });
-//   gHighlight = new Graphic({
-//     geometry: pt,
-//     symbol: HighlightSymbol,
-//     attributes: {
-//       type: "popup-highlight",
-//     },
-//   });
-//   mapView.graphics.add(gHighlight);
-// };
-// Remove the feature highlight graphic...
-// const removeHighlight = () => {
-//   if (gHighlight) {
-//     mapView.graphics.remove(gHighlight);
-//   }
-// };
 </script>
 
 <style scoped>
@@ -460,6 +490,18 @@ export default defineComponent({
   vertical-align: middle;
   font-weight: 700;
 }
+.popup-badge {
+  display: inline-block;
+  font-weight: 700;
+  font-size: small;
+  padding: 3px;
+  border-radius: 5px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #ffc107;
+  background-color: #fffaec;
+  margin-left: 1em;
+}
 .popup-title {
   margin: 5px 0;
   text-align: left;
@@ -474,6 +516,7 @@ export default defineComponent({
   right: 0;
   border-style: none;
   background-color: transparent;
+  font-size: 1.5em;
 }
 
 /* Picture stylings ******/

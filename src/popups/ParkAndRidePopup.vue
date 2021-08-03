@@ -4,35 +4,37 @@
     :MapY="mapY"
     LightThemeColor="#eaf7cc"
     DarkThemeColor="#97D700"
-    BannerText="Park and Ride"
     :Features="[feature]"
-    TitleFieldName="Lot_Name"
-    :ContentConfig="[
-      {
-        label: 'Street location',
-        value: { fieldName: 'Street_Location' },
-      },
-      {
-        label: 'Address',
-        value: { fieldName: 'Address' },
-      },
-      {
-        label: 'County',
-        value: { fieldName: 'CountyName' },
-      },
-      {
-        label: 'Approx. number of spaces',
-        value: { fieldName: 'Approx_Numb_Spaces' },
-      },
-      { label: 'Transit organization', value: { text: '???' } },
-      {
-        label: 'Last updated',
-        value: {
-          fieldName: 'PublishDate',
-          isDate: true,
+    :Config="{
+      bannerText: { text: 'Park and Ride' },
+      title: { fieldName: 'Lot_Name' },
+      content: [
+        {
+          label: 'Street location',
+          value: { fieldName: 'Street_Location' },
         },
-      },
-    ]"
+        {
+          label: 'Address',
+          value: { fieldName: 'Address' },
+        },
+        {
+          label: 'County',
+          value: { fieldName: 'CountyName' },
+        },
+        {
+          label: 'Approx. number of spaces',
+          value: { fieldName: 'Approx_Numb_Spaces' },
+        },
+        { label: 'Transit organization', value: { text: '???' } },
+        {
+          label: 'Last updated',
+          value: {
+            fieldName: 'PublishDate',
+            isDate: true,
+          },
+        },
+      ],
+    }"
     @close="close"
   >
     <template v-slot:icon >

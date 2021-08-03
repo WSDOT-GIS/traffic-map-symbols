@@ -4,27 +4,29 @@
     :MapY="mapY"
     LightThemeColor="#fff3cd"
     DarkThemeColor="#FFC107"
-    BannerText="Road Restriction"
     :Features="[feature]"
-    TitleFieldName="location_description"
-    :ContentConfig="[
-      { label: 'Travel delay', value: { text: '???' } },
-      { label: '', value: { fieldName: 'restriction_comment' } },
-      {
-        label: 'Date effective',
-        value: {
-          fieldName: 'date_effective',
-          isDate: true,
+    :Config="{
+      bannerText: { text: 'Truck Restriction' },
+      title: { fieldName: 'location_description' },
+      content: [
+        { label: 'Travel delay', value: { text: '???' } },
+        { label: '', value: { fieldName: 'restriction_comment' } },
+        {
+          label: 'Date effective',
+          value: {
+            fieldName: 'date_effective',
+            isDate: true,
+          },
         },
-      },
-      {
-        label: 'Last updated',
-        value: {
-          fieldName: 'RecordUpdateDate',
-          isDate: true,
+        {
+          label: 'Last updated',
+          value: {
+            fieldName: 'RecordUpdateDate',
+            isDate: true,
+          },
         },
-      },
-    ]"
+      ],
+    }"
     @close="close"
   >
     <template v-slot:icon >

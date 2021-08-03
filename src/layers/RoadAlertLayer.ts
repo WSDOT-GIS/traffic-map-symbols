@@ -7,9 +7,8 @@ const roadAlertsRenderer = new simpleRenderer({
 const RoadAlertsLayer = new GeoJSONLayer({
     id: "road-alerts-layer",
     url: "https://data.wsdot.wa.gov/travelcenter/RoadAlerts.json",
-    title: "Road Alerts",
+    title: "Travel Alerts",
     renderer: roadAlertsRenderer,
-    //popupTemplate: weatherStationsPopup,
     visible: false
 })
 

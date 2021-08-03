@@ -7,9 +7,8 @@ const roadAlertsRenderer = new simpleRenderer({
 const RoadAlertsLayer = new GeoJSONLayer({
     id: "road-alerts-layer",
     url: "http://hqtob1webtmdev1/GISData/RoadAlerts.json",
-    title: "Road Alerts",
+    title: "Travel Alerts",
     renderer: roadAlertsRenderer,
-    //popupTemplate: weatherStationsPopup,
     visible: false
 });
 export default RoadAlertsLayer;
