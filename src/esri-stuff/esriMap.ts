@@ -30,7 +30,7 @@ export const mapView = new MapView({
     container: "esri-map-view",
     map: webmap,
     constraints: {
-        //rotationEnabled: false
+        rotationEnabled: false // Disables map rotation
     }
 });
 
