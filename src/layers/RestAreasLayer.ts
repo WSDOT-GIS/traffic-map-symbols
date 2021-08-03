@@ -9,7 +9,7 @@ const restAreasRenderer = new simpleRenderer({
 const RestAreasLayer = ()=>{
     const layer = new GeoJSONLayer({
         id: "rest-areas-layer",
-        url: "http://hqtob1webtmdev1/GISData/RestAreas.json",
+        url: "https://data.wsdot.wa.gov/travelcenter/RestAreas.json",
         title: "Rest Areas",
         renderer: restAreasRenderer,
         //popupTemplate: weatherStationsPopup,
