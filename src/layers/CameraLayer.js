@@ -68,7 +68,7 @@ const fields = [
 ];
 const layer = new GeoJSONLayer({
     id: "traffic-camera-layer",
-    url: "http://hqtob1webtmdev1/GISData/cameras.json",
+    url: "http://hqtob1webtmdev1/GISData/Cameras.json",
     title: "Traffic Cameras",
     renderer: renderer,
     featureReduction: clusterConfig,
@@ -144,7 +144,7 @@ export const getCameraInfosFromCluster = async (clusterGraphic, mapView, maxCoun
     }
 };
 // Get Info objects...
-const getCameraInfosByIds = async (ids) => {
+export const getCameraInfosByIds = async (ids) => {
     const query = layer.createQuery();
     query.where = "CameraID IN (" + ids.join(",") + ")";
     query.outFields = outFields;
