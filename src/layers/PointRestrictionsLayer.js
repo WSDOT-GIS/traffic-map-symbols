@@ -1,8 +1,6 @@
 import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
 import { roadRestrictionPoint, bridgeRestrictionPoint } from "../symbols/PointRestrictionsSymbol";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
-import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
-import Symbol from "@/symbols/ParkRideSymbol";
 import Field from "@arcgis/core/layers/support/Field";
 const pointRestrictionsRenderer = new UniqueValueRenderer({
     field: "TType",
@@ -16,9 +14,9 @@ const pointRestrictionsRenderer = new UniqueValueRenderer({
             symbol: bridgeRestrictionPoint
         }]
 });
-const pointRestrictionsRenderer2 = new SimpleRenderer({
-    symbol: Symbol
-});
+// const pointRestrictionsRenderer2 = new SimpleRenderer({
+//     symbol: Symbol
+// })
 const PointRestrictionsLayer = new GeoJSONLayer({
     id: "point-restrictions-layer",
     url: "http://hqtob1webtmdev1/GISData/PointRestrictions.json",

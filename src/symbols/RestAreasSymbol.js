@@ -1,3 +1,5 @@
+// import PictureMarkerSymbol from "@arcgis/core/symbols/PictureMarkerSymbol";
+// import {layerListIcons} from "@/symbols/IconDefinitions"
 import CIMSymbol from "@arcgis/core/symbols/CIMSymbol";
 const symbol = new CIMSymbol({
     data: {
@@ -912,7 +914,6 @@ const symbol = new CIMSymbol({
                         }
                     ],
                     "scaleSymbolsProportionally": true,
-                    "offsetY": 7.5,
                     "respectFrame": true,
                     "clippingPath": {
                         "type": "CIMClippingPath",
