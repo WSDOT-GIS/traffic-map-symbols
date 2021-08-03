@@ -1,3 +1,5 @@
+// import PictureMarkerSymbol from "@arcgis/core/symbols/PictureMarkerSymbol";
+// import {layerListIcons} from "@/symbols/IconDefinitions"
 import CIMSymbol from "@arcgis/core/symbols/CIMSymbol";
 const symbol = new CIMSymbol({
     data: {
@@ -10,7 +12,7 @@ const symbol = new CIMSymbol({
                     "enable": true,
                     "anchorPointUnits": "Relative",
                     "dominantSizeAxis3D": "Y",
-                    "size": 15,
+                    "size": 19,
                     "billboardMode3D": "FaceNearPlane",
                     "frame": {
                         "xmin": 0,
@@ -1446,7 +1448,7 @@ const symbol = new CIMSymbol({
                         }
                     ],
                     "scaleSymbolsProportionally": true,
-                    "offsetY": 7.5,
+                    "offsetY": 9.5,
                     "respectFrame": true,
                     "clippingPath": {
                         "type": "CIMClippingPath",

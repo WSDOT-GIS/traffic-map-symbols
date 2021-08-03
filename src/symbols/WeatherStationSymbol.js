@@ -1,3 +1,5 @@
+// import IconInfo from "@/types/IconInfo"
+// import { layerListIcons } from "@/symbols/IconDefinitions"
 import CIMSymbol from "@arcgis/core/symbols/CIMSymbol";
 const weatherStationSymbol = new CIMSymbol({
     data: {
@@ -10,7 +12,7 @@ const weatherStationSymbol = new CIMSymbol({
                     "enable": true,
                     "anchorPointUnits": "Relative",
                     "dominantSizeAxis3D": "Y",
-                    "size": 15,
+                    "size": 19,
                     "billboardMode3D": "FaceNearPlane",
                     "frame": {
                         "xmin": 0,
@@ -955,7 +957,6 @@ const weatherStationSymbol = new CIMSymbol({
                         }
                     ],
                     "scaleSymbolsProportionally": true,
-                    "offsetY": 7.5,
                     "respectFrame": true,
                     "clippingPath": {
                         "type": "CIMClippingPath",
@@ -986,7 +987,8 @@ const weatherStationSymbol = new CIMSymbol({
                                 ]
                             ]
                         }
-                    }
+                    },
+                    "offsetY": 9.5
                 }
             ]
         }
