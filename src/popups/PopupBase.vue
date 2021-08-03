@@ -23,6 +23,9 @@
         </div>
         <span class="popup-banner-text"> {{ getBannerText() }}</span>
       </div>
+      <div v-if="Config.badgeText" class="popup-badge">
+        {{ getBannerText2() }}
+      </div>
       <button
         class="popup-close-button w3-button w3-padding-small"
         @click="close"
@@ -384,6 +387,36 @@ export default defineComponent({
       }
       return text;
     };
+    const getBannerText2 = () => {
+      if (
+        !props.Features ||
+        props.Features.length === 0 ||
+        !props.Features[currentIdx.value]
+      ) {
+        // "Nothing to show...
+        return;
+      }
+      if (!props.Config.badgeText) {
+        return;
+      }
+      let text = "";
+      if (props.Config.badgeText.text) {
+        text = props.Config.badgeText.text;
+      } else if (props.Config.badgeText.fieldName) {
+        text = props.Features[currentIdx.value].attributes[
+          props.Config.badgeText.fieldName
+        ] as string;
+      } else if (props.Config.badgeText.custom) {
+        const func = props.Config.badgeText.custom as (
+          f: FeatureInfo
+        ) => string;
+        text = func(props.Features[currentIdx.value]);
+      }
+      if (!text) {
+        text = "";
+      }
+      return text;
+    };
     return {
       containerRef,
       popupLeft,
@@ -396,35 +429,11 @@ export default defineComponent({
       pagenationStyle,
       onImgLoad,
       getBannerText,
+      getBannerText2,
       getTitle,
     };
   },
 });
-// Add feature highlight...
-// const addHighlight = () => {
-//   // Make sure there is only one...
-//   removeHighlight();
-//   // Create a new graphic...
-//   const pt = new Point({
-//     x: props.MapX,
-//     y: props.MapY,
-//     spatialReference: SpatialReference.WebMercator,
-//   });
-//   gHighlight = new Graphic({
-//     geometry: pt,
-//     symbol: HighlightSymbol,
-//     attributes: {
-//       type: "popup-highlight",
-//     },
-//   });
-//   mapView.graphics.add(gHighlight);
-// };
-// Remove the feature highlight graphic...
-// const removeHighlight = () => {
-//   if (gHighlight) {
-//     mapView.graphics.remove(gHighlight);
-//   }
-// };
 </script>
 
 <style scoped>
@@ -480,6 +489,18 @@ export default defineComponent({
   padding: 0 5px;
   vertical-align: middle;
   font-weight: 700;
+}
+.popup-badge {
+  display: inline-block;
+  font-weight: 700;
+  font-size: small;
+  padding: 3px;
+  border-radius: 5px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #ffc107;
+  background-color: #fffaec;
+  margin-left: 1em;
 }
 .popup-title {
   margin: 5px 0;

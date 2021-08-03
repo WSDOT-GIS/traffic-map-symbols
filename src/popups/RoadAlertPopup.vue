@@ -2,13 +2,12 @@
   <PopupBase
     :MapX="mapX"
     :MapY="mapY"
-    LightThemeColor="#fff3cd"
-    DarkThemeColor="#FFC107"
-    :BannerText="feature?.attributes['EventCategoryDescription']"
+    LightThemeColor="#ffe1d0"
+    DarkThemeColor="#ff8842"
     :Features="[feature]"
-    TitleFieldName="location_description"
     :Config="{
       bannerText: { fieldName: 'EventCategoryDescription' },
+      badgeText: { fieldName: 'EventPriorityDescription' },
       title: { custom: getTitle },
       content: [
         { label: 'Travel delay', value: { text: '???' } },
