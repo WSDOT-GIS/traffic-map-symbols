@@ -47,6 +47,11 @@
     :MapY="popupY"
     :Featureset="popupFeatureset"
   />
+  <RestAreaPopup
+    :MapX="popupX"
+    :MapY="popupY"
+    :Featureset="popupFeatureset"
+  />
   <LeftPaneView />
 </template>
 
@@ -85,12 +90,13 @@ import PointRestrictionPopup from "@/popups/PointRestrictionPopup.vue";
 import LineRestrictionPopup from "@/popups/LineRestrictionPopup.vue";
 import MountainPassPopup from "@/popups/MountainPassPopup.vue";
 import WeatherStationsPopup from "@/popups/WeatherStationPopup.vue";
+import RestAreaPopup from "@/popups/RestAreaPopup.vue"
 import LeftPaneView from "@/components/LeftPaneView.vue";
 import BasemapView from "@/components/BasemapView.vue";
 import CoordinatesView from "@/components/CoordinatesView.vue";
 import MyLocationView from "@/components/MyLocationView.vue";
 import ZoomButtonView from "@/components/ZoomButtonView.vue";
-
+import RestAreasLayer from "@/layers/RestAreasLayer"
 export default defineComponent({
   components: {
     ZoomPopupView,
@@ -100,6 +106,7 @@ export default defineComponent({
     LineRestrictionPopup,
     MountainPassPopup,
     WeatherStationsPopup,
+    RestAreaPopup,
     LeftPaneView,
     BasemapView,
     CoordinatesView,
@@ -182,6 +189,7 @@ export default defineComponent({
         esriMap.mapView.hitTest(event, opts).then((response) => {
           // check if a feature is returned from the zoom layer...
           if (response.results.length) {
+            console.log(response)
             // Show custom popup...
             zoomPopupX.value = event.x;
             zoomPopupY.value = event.y;
@@ -229,32 +237,40 @@ export default defineComponent({
             LineRestrictionsLayer,
             WeatherStationsLayer,
             MountainPassLayer,
+            RestAreasLayer
           ],
         };
         esriMap.mapView.hitTest(event, opts).then((response) => {
+          console.log(response.results)
           if (response.results.length) {
             const resultsByLayer: {
               info: LayerInfo;
               layer: Layer;
               results: { graphic: Graphic; mapPoint: Point }[];
             }[] = [];
+            console.log(resultsByLayer)
             response.results.forEach((eachResult) => {
               const arrayFound = resultsByLayer.find(
                 (eachArray) => eachArray.layer === eachResult.graphic.layer
               );
               if (arrayFound) {
                 arrayFound.results.push(eachResult);
-              } else {
+              } 
+              else {
+                console.log(store.state.layerList)
+                console.log(eachResult.graphic.layer.title)
                 const layerInfo = store.state.layerList.find(
                   (layerInfo) =>
                     layerInfo.title === eachResult.graphic.layer.title
                 );
+                console.log(layerInfo)
                 if (layerInfo) {
                   resultsByLayer.push({
                     info: layerInfo,
                     layer: eachResult.graphic.layer,
                     results: [eachResult],
                   });
+                  console.log(resultsByLayer)
                 }
               }
             });

@@ -6,11 +6,11 @@ import mountainPassSymbol from "@/symbols/MountainPassSymbol"
 const mountainPassRenderer = new simpleRenderer({
     symbol: mountainPassSymbol
 })
-const MountainPassesLayer = new GeoJSONLayer({
+const FeatureLayer = new GeoJSONLayer({
     id: "mountain-passes-layer",
     url: "https://data.wsdot.wa.gov/travelcenter/MountainPasses.json",
     title: "Mountain Passes",
     renderer: mountainPassRenderer,
     visible: false
 })
- export default MountainPassesLayer
+ export default FeatureLayer
