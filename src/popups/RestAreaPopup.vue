@@ -2,26 +2,16 @@
   <PopupBase
     :MapX="mapX"
     :MapY="mapY"
-    LightThemeColor="#fff3cd"
-    DarkThemeColor="#FFC107"
-    BannerText="Truck Restriction"
+    LightThemeColor="#d8e8eb"
+    DarkThemeColor="#63a4ad"
+    BannerText="Rest Area"
     :Features="[feature]"
-    TitleFieldName="location_description"
+    TitleFieldName="PassName"
     :ContentConfig="[
-      { label: 'Travel delay', value: { text: '???' } },
-      { label: '', value: { fieldName: 'restriction_comment' } },
       {
-        label: 'Date effective',
+        label: 'Title',
         value: {
-          fieldName: 'date_effective',
-          isDate: true,
-        },
-      },
-      {
-        label: 'Last updated',
-        value: {
-          fieldName: 'RecordUpdateDate',
-          isDate: true,
+          fieldName: 'title',
         },
       },
     ]"
@@ -37,8 +27,7 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, watch } from "vue";
 import PopupBase from "./PopupBase.vue";
-
-import FeatureLayer from "@/layers/PointRestrictionsLayer";
+import FeatureLayer from "@/layers/RestAreasLayer";
 import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import FeatureInfo from "@/types/FeatureInfo";
@@ -98,6 +87,8 @@ export default defineComponent({
       mapY.value = 0;
       feature.value = undefined;
     };
+
+    
 
     return {
       mapX,

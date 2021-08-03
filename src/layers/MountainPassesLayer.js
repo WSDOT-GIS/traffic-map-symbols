@@ -6,12 +6,12 @@ import mountainPassSymbol from "@/symbols/MountainPassSymbol";
 const mountainPassRenderer = new simpleRenderer({
     symbol: mountainPassSymbol
 });
-const MountainPassesLayer = new GeoJSONLayer({
+const FeatureLayer = new GeoJSONLayer({
     id: "mountain-passes-layer",
     url: "http://hqtob1webtmdev1/GISData/MountainPasses.json",
     title: "Mountain Passes",
     renderer: mountainPassRenderer,
     visible: false
 });
-export default MountainPassesLayer;
+export default FeatureLayer;
 //# sourceMappingURL=MountainPassesLayer.js.map
