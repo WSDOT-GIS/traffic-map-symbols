@@ -4,23 +4,27 @@
     :MapY="mapY"
     LightThemeColor="#d8e8eb"
     DarkThemeColor="#63a4ad"
-    BannerText="Rest Area"
     :Features="[feature]"
-    TitleFieldName="PassName"
-    :ContentConfig="[
-      {
-        label: 'Title',
-        value: {
-          fieldName: 'title',
+    :Config="{
+      bannerText: { text: 'Rest Area' },
+      title: { fieldName: 'PassName' },
+      content: [
+        {
+          label: 'Name',
+          value: {
+            fieldName: 'title',
+          },
         },
-      },
-    ]"
+      ],
+    }"
     @close="close"
   >
-    <template v-slot:icon >
-      <div v-html="layerIcons.find((x) => x.title == feature.layerTitle)?.paths" width="24"
-        height="24">
-      </div >
+    <template v-slot:icon>
+      <div
+        v-html="layerIcons.find((x) => x.title == feature?.layerTitle)?.paths"
+        width="24"
+        height="24"
+      ></div>
     </template>
   </PopupBase>
 </template>
@@ -87,8 +91,6 @@ export default defineComponent({
       mapY.value = 0;
       feature.value = undefined;
     };
-
-    
 
     return {
       mapX,
