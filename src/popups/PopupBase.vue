@@ -60,7 +60,7 @@
       </template>
     </Carousel>
     <div
-      v-for="eachConfig in Config?.content"
+      v-for="eachConfig in Config.content"
       :key="eachConfig.label"
       class="popup-content w3-container"
     >
@@ -134,7 +134,6 @@ export default defineComponent({
     // Popup location.
     const popupLeft = ref(-1000);
     const popupTop = ref(-1000);
-    //const visible = ref(false);
     //
     let numImgLoaded = 0;
     let wasUpdatedOnce = false;
@@ -186,11 +185,6 @@ export default defineComponent({
       // Parent should set the MapX/Y to 0 otherwise the popup will be shown again.
       context.emit("close");
     };
-    // If the feature is within the map view, show the popup, otherwise close it.
-    // NOTE: Popup will be shown again if the feature comes back in the map view unless parent component sets the MapX and Y to 0.
-    // watch([screenX, screenY], () => {
-    //   setVisibility();
-    // });
     // Adjust popup position when the props change...
     watch([mapX, mapY], () => {
       setScreenXY();
@@ -210,6 +204,7 @@ export default defineComponent({
         setScreenXY();
       }
     });
+    // Watch map moving...
     mapView.watch("center", (newValue, oldValue) => {
       if (props.Features.length === 0 || !oldValue) {
         return;
@@ -224,7 +219,6 @@ export default defineComponent({
     });
     // Image load happens later and change the size of the popup, so need to make adjustment after that...
     const onImgLoad = () => {
-      console.log("******** onImgLoad **************");
       numImgLoaded = numImgLoaded + 1;
       adjustPositionSize();
     };
@@ -233,22 +227,6 @@ export default defineComponent({
       wasUpdatedOnce = true;
       adjustPositionSize();
     });
-    // const setVisibility = () => {
-    //   if (
-    //     screenX.value < 0 ||
-    //     screenX.value > mapView.width ||
-    //     screenY.value < 0 ||
-    //     screenY.value > mapView.height
-    //   ) {
-    //     visible.value = false;
-    //     popupLeft.value = -1000;
-    //     popupTop.value = -1000;
-    //     //removeHighlight();
-    //   } else {
-    //     visible.value = true;
-    //     //addHighlight();
-    //   }
-    // };
     // Convert map coordinates to screen coordinates and calculate the popup position...
     const setScreenXY = () => {
       if (mapX.value < 0 && mapY.value > 0) {
@@ -256,7 +234,6 @@ export default defineComponent({
         screenX.value = screenXY.x;
         screenY.value = screenXY.y;
         adjustPositionSize();
-        //setVisibility();
       } else {
         screenX.value = -1;
         screenY.value = -1;
@@ -365,13 +342,13 @@ export default defineComponent({
         return;
       }
       let text = "";
-      if (props.Config?.bannerText.text) {
-        text = props.Config?.bannerText.text;
-      } else if (props.Config?.bannerText.fieldName) {
+      if (props.Config.bannerText.text) {
+        text = props.Config.bannerText.text;
+      } else if (props.Config.bannerText.fieldName) {
         text = props.Features[currentIdx.value].attributes[
           props.Config.bannerText.fieldName
         ] as string;
-      } else if (props.Config?.bannerText.custom) {
+      } else if (props.Config.bannerText.custom) {
         const func = props.Config.bannerText.custom as (
           f: FeatureInfo
         ) => string;
@@ -392,13 +369,13 @@ export default defineComponent({
         return;
       }
       let text = "";
-      if (props.Config?.title.text) {
-        text = props.Config?.title.text;
-      } else if (props.Config?.title.fieldName) {
+      if (props.Config.title.text) {
+        text = props.Config.title.text;
+      } else if (props.Config.title.fieldName) {
         text = props.Features[currentIdx.value].attributes[
           props.Config.title.fieldName
         ] as string;
-      } else if (props.Config?.title.custom) {
+      } else if (props.Config.title.custom) {
         const func = props.Config.title.custom as (f: FeatureInfo) => string;
         text = func(props.Features[currentIdx.value]);
       }
@@ -412,7 +389,6 @@ export default defineComponent({
       popupLeft,
       popupTop,
       maxHeight,
-      // visible,
       currentIdx,
       sizeClass,
       close,
@@ -519,6 +495,7 @@ export default defineComponent({
   right: 0;
   border-style: none;
   background-color: transparent;
+  font-size: 1.5em;
 }
 
 /* Picture stylings ******/
