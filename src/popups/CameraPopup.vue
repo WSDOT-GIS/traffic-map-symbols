@@ -11,8 +11,11 @@
     :Features="features"
     TitleFieldName="CameraTitle"
     ImageFieldName="ImageURL"
+    :ContentConfig="[
+      { label: 'Camera Direction', value: { custom: getDirection } },
+      { label: 'Refresh Rate', value: { text: '???' } },
+    ]"
     @close="close"
-    @idxUpdate="onIdxUpdate"
   >
     <template v-slot:icon>
       <svg
@@ -40,11 +43,6 @@
         />
       </svg>
     </template>
-    <template v-slot:default>
-      <PopupRow Label="Camera Direction" :TextOptions="{ text: direction }" />
-      <PopupRow Label="Refresh Rate" :TextOptions="{ text: '???' }" />
-      <!-- <PopupRow Label="ID" :TextOptions="{feature:features[currentIdx], fieldName:'CameraID'}"/> -->
-    </template>
   </PopupBase>
 </template>
 <script lang="ts">
@@ -52,14 +50,13 @@ import { defineComponent, nextTick, PropType, ref, watch } from "vue";
 import "vue3-carousel/dist/carousel.css";
 
 import PopupBase from "./PopupBase.vue";
-import PopupRow from "./PopupRow.vue";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import { getFeatureInfosByIds } from "@/utils/featureInfoUtil";
 import FeatureLayer from "@/layers/CameraLayer";
 import FeatureInfo from "@/types/FeatureInfo";
 
 export default defineComponent({
-  components: { PopupBase, PopupRow },
+  components: { PopupBase },
   props: {
     Featureset: {
       type: Object as PropType<FeaturesetInfo>,
@@ -76,27 +73,18 @@ export default defineComponent({
   },
   setup(props) {
     const features = ref<FeatureInfo[]>([]);
-    const currentIdx = ref(0);
     const mapX = ref(0);
     const mapY = ref(0);
-    const direction = ref<string>("");
 
-    const onIdxUpdate = (event: number) => {
-      console.log("Idx update caught..." + JSON.stringify(event));
-      setDirection(event);
-      currentIdx.value = event;
-    };
-
-    const setDirection = (idx: number) => {
+    const getDirection = (feature: FeatureInfo) => {
       let dir = "";
       if (features.value.length > 0) {
-        let val = features.value[idx].attributes["CompassDirection"] as string;
+        let val = feature.attributes["CompassDirection"] as string;
         if (val) {
-          dir = val === "B" ? "Unknown" : val;
+          dir = val === "B" ? "N/A" : val;
         }
       }
-      direction.value = dir;
-      console.log("Camera direction = " + direction.value);
+      return dir;
     };
 
     watch(props, () => {
@@ -114,31 +102,25 @@ export default defineComponent({
             features.value = results;
             mapX.value = props.MapX;
             mapY.value = props.MapY;
-            setDirection(0);
           }
         );
       };
       if (mapX.value !== 0 || mapY.value !== 0 || features.value.length > 0) {
-        // console.log("Clean and set popup value");
         // Clean up the previous data...
         close();
         // Wait for the next update. Without doing this, scrolling won't work correctly.
         nextTick(() => {
-          // console.log("nextTick callback...");
           setVal();
         });
       } else {
-        // console.log("Set popup value.");
         setVal();
       }
     };
     // Setting XY to 0 closes the popup...
     const close = () => {
-      // console.log("close CameraPopup");
       mapX.value = 0;
       mapY.value = 0;
       features.value = [];
-      currentIdx.value = 0;
     };
 
     return {
@@ -146,9 +128,7 @@ export default defineComponent({
       mapY,
       features,
       close,
-      currentIdx,
-      direction,
-      onIdxUpdate,
+      getDirection,
     };
   },
 });

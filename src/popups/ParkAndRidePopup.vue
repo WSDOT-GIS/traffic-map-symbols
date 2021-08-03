@@ -7,6 +7,32 @@
     BannerText="Park and Ride"
     :Features="[feature]"
     TitleFieldName="Lot_Name"
+    :ContentConfig="[
+      {
+        label: 'Street location',
+        value: { fieldName: 'Street_Location' },
+      },
+      {
+        label: 'Address',
+        value: { fieldName: 'Address' },
+      },
+      {
+        label: 'County',
+        value: { fieldName: 'CountyName' },
+      },
+      {
+        label: 'Approx. number of spaces',
+        value: { fieldName: 'Approx_Numb_Spaces' },
+      },
+      { label: 'Transit organization', value: { text: '???' } },
+      {
+        label: 'Last updated',
+        value: {
+          fieldName: 'PublishDate',
+          isDate: true,
+        },
+      },
+    ]"
     @close="close"
   >
     <template v-slot:icon>
@@ -33,46 +59,18 @@
         />
       </svg>
     </template>
-    <template v-slot:default>
-      <PopupRow
-        Label="Street location"
-        :TextOptions="{ feature: feature, fieldName: 'Street_Location' }"
-      />
-      <PopupRow
-        Label="Address"
-        :TextOptions="{ feature: feature, fieldName: 'Address' }"
-      />
-      <PopupRow
-        Label="County"
-        :TextOptions="{ feature: feature, fieldName: 'CountyName' }"
-      />
-      <PopupRow
-        Label="Approx. number of spaces"
-        :TextOptions="{ feature: feature, fieldName: 'Approx_Numb_Spaces' }"
-      />
-      <PopupRow Label="Transit organization" :TextOptions="{ text: '???' }" />
-      <PopupRow
-        Label="Last updated"
-        :TextOptions="{
-          feature: feature,
-          fieldName: 'PublishDate',
-          isDate: true,
-        }"
-      />
-    </template>
   </PopupBase>
 </template>
 <script lang="ts">
 import { defineComponent, PropType, ref, watch } from "vue";
 import PopupBase from "./PopupBase.vue";
-import PopupRow from "./PopupRow.vue";
 import FeatureLayer from "@/layers/ParkRideLayer";
 import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import FeatureInfo from "@/types/FeatureInfo";
 
 export default defineComponent({
-  components: { PopupBase, PopupRow },
+  components: { PopupBase },
   props: {
     Featureset: {
       type: Object as PropType<FeaturesetInfo>,
