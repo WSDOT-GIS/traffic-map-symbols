@@ -83,10 +83,8 @@
         <ToggleSwitchView
           @toggle="clickEvent"
           :Checked="layerList[3].visible"
-          :Value="
-            layerList[3].index.toString() + ',' + layerList[4].index.toString()
-          "
-          Title="Toggle Truck Restrictions"
+          :Value="layerList[3].index.toString() + ',' + layerList[4].index.toString()"
+          Title="Toggle Road Restrictions"
         >
           <template v-slot>
             <div
@@ -96,7 +94,7 @@
               "
             ></div>
             <span class="listLabel" id="CommercialVehicleLabel"
-              >Truck Restrictions</span
+              >Road Restrictions</span
             >
           </template>
         </ToggleSwitchView>
