@@ -23,8 +23,8 @@
         </div>
         <span class="popup-banner-text"> {{ getBannerText() }}</span>
       </div>
-      <div v-if="Config.badgeText" class="popup-badge">
-        {{ getBannerText2() }}
+      <div v-if="badgeText.length > 0" class="popup-badge">
+        {{ badgeText }}
       </div>
       <button
         class="popup-close-button w3-button w3-padding-small"
@@ -143,10 +143,12 @@ export default defineComponent({
     let doPanMap = true;
     // Index of the currently shown feature.
     const currentIdx = ref(0);
+    const badgeText = ref("");
     // Reset variables when the features change...
     const propFeatures = toRefs(props).Features;
     watch(propFeatures, () => {
       currentIdx.value = 0;
+      setBadgeText();
       prevScreenX = -1000;
       prevScreenY = -1000;
       prevHeight = 0;
@@ -194,6 +196,7 @@ export default defineComponent({
     });
     watch(currentIdx, () => {
       context.emit("idxUpdate", currentIdx.value);
+      setBadgeText();
     });
     // MapView resize event...
     mapView.on("resize", () => {
@@ -388,16 +391,15 @@ export default defineComponent({
       }
       return text;
     };
-    const getBannerText2 = () => {
+    const setBadgeText = () => {
       if (
         !props.Features ||
         props.Features.length === 0 ||
-        !props.Features[currentIdx.value]
+        !props.Features[currentIdx.value] ||
+        !props.Config.badgeText
       ) {
         // "Nothing to show...
-        return;
-      }
-      if (!props.Config.badgeText) {
+        badgeText.value = "";
         return;
       }
       let text = "";
@@ -416,7 +418,7 @@ export default defineComponent({
       if (!text) {
         text = "";
       }
-      return text;
+      badgeText.value = text;
     };
     return {
       containerRef,
@@ -430,7 +432,7 @@ export default defineComponent({
       pagenationStyle,
       onImgLoad,
       getBannerText,
-      getBannerText2,
+      badgeText,
       getTitle,
     };
   },
