@@ -285,9 +285,6 @@ export default defineComponent({
               (eachResultSet) => eachResultSet.info.index === minIdx
             );
             if (results2Show) {
-              console.log(
-                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-              );
               const g = results2Show.results[0].graphic;
               const pt = results2Show.results[0].mapPoint;
               // Deal with cluster...

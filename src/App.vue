@@ -38,9 +38,9 @@ export default defineComponent({
     FooterView,
   },
   setup() {
-    const headerText = "Placeholder for the header";
+    const headerText = "DRAFT - Not for production use.";
     const alert = ref<Alert>({
-      title: "Tsunami!",
+      title: "Using test data (not live).",
       description: "description",
       x: 1,
       y: 1,
@@ -50,7 +50,7 @@ export default defineComponent({
     const topRef = ref<HTMLDivElement>();
     const bottomRef = ref<HTMLDivElement>();
     const mapHeight = ref("500px");
-    const store = useStore()
+    const store = useStore();
     onMounted(() => {
       resizeMapContainer();
     });
@@ -73,9 +73,9 @@ export default defineComponent({
       mapHeight,
       topRef,
       bottomRef,
-      store
+      store,
     };
-  }
+  },
 });
 </script>
 

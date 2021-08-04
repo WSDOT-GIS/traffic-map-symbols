@@ -62,12 +62,12 @@ export default defineComponent({
     const mapX = ref(0);
     const mapY = ref(0);
     const layerIcons = layerListIcons;
-    const getDirection = (feature: FeatureInfo) => {
-      let dir = "";
+    const getDirection = (feature: FeatureInfo):string|undefined => {
+      let dir:string|undefined;
       if (features.value.length > 0) {
         let val = feature.attributes["CompassDirection"] as string;
         if (val) {
-          dir = val === "B" ? "N/A" : val;
+          dir = val === "B" ? undefined : val;
         }
       }
       return dir;

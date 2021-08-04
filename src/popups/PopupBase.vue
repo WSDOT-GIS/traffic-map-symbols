@@ -501,7 +501,7 @@ export default defineComponent({
   border-style: solid;
   border-color: #ffc107;
   background-color: #fffaec;
-  margin-left: 1em;
+  margin: 3px 1em 0 1em;
 }
 .popup-title {
   margin: 5px 0;
