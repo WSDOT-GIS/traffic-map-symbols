@@ -38,9 +38,9 @@ export default defineComponent({
     FooterView,
   },
   setup() {
-    const headerText = "DRAFT - Not for production use.";
+    const headerText = "DRAFT – Information on this page is for visual demonstration and should not be used for travel related decisions – DRAFT";
     const alert = ref<Alert>({
-      title: "Using test data (not live).",
+      title: "Tsunami!",
       description: "description",
       x: 1,
       y: 1,
