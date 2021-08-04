@@ -41,6 +41,7 @@ const symbol = new CIMSymbol({
             "xmax": 18,
             "ymax": 24
           },
+          "offsetY": 9.5,
           "markerGraphics": [
             {
               "type": "CIMMarkerGraphic",
@@ -1123,7 +1124,7 @@ const symbol = new CIMSymbol({
                 ]
               ]
             }
-          }
+          },
         }
       ]
     }
