@@ -62,10 +62,12 @@
     }"
     @close="close"
   >
-    <template v-slot:icon >
-      <div v-html="layerIcons.find((x) => x.title == feature.layerTitle)?.paths" width="24"
-        height="24">
-      </div >
+    <template v-slot:icon>
+      <div
+        v-html="layerIcons.find((x) => x.title == feature.layerTitle)?.paths"
+        width="24"
+        height="24"
+      ></div>
     </template>
   </PopupBase>
 </template>
@@ -135,14 +137,14 @@ export default defineComponent({
     };
 
     const getTemp = (feature: FeatureInfo): string => {
-      console.log(JSON.stringify("feature: " + feature));
+      //console.log(JSON.stringify("feature: " + feature));
       const num = feature.attributes["Temperature"];
       const unit = feature.attributes["TemperatureUnit"];
       let text = "";
       if (num) {
         text = `${num} ${unit ? unit : ""}`;
       }
-      console.log("Temp: " + text);
+      //console.log("Temp: " + text);
       return text;
     };
 
@@ -157,7 +159,7 @@ export default defineComponent({
     };
 
     const getDirection1Label = (feature: FeatureInfo) => {
-      console.log("getDirection1Label");
+      //console.log("getDirection1Label");
       return "Restrictions " + feature.attributes["TravelDirection1"];
     };
 

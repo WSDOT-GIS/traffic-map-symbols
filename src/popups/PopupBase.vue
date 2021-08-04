@@ -203,9 +203,10 @@ export default defineComponent({
     });
     // Watch scale change...
     mapView.watch("scale", () => {
-      if (mapX.value < 0 && mapY.value > 0) {
-        setScreenXY();
-      }
+      // if (mapX.value < 0 && mapY.value > 0) {
+      //   setScreenXY();
+      // }
+      close();
     });
     // Watch map moving...
     mapView.watch("center", (newValue, oldValue) => {
@@ -282,7 +283,7 @@ export default defineComponent({
         prevWidth = w;
         prevHeight = h;
       }
-      //console.log("*** Adjust ***"); // + JSON.stringify(props.Features)); //props.Features[0].layerTitle);
+      ////console.log("*** Adjust ***"); // + JSON.stringify(props.Features)); //props.Features[0].layerTitle);
       // New vertical position...
       let newTop = screenY.value - h - 30;
       // New horizontal position.

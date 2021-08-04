@@ -8,7 +8,8 @@
         class="w3-border-0"
         style="padding: 0"
       >
-        <button :title="'Show ' + item.title"
+        <button
+          :title="'Show ' + item.title"
           class="w3-transparent w3-btn"
           :class="{
             'w3-text-blue': item.selected,
@@ -18,7 +19,9 @@
         >
           {{ item.title }}
         </button>
-        <button :title="'Delete ' + item.title" :aria-label="'Delete ' + item.title"
+        <button
+          :title="'Delete ' + item.title"
+          :aria-label="'Delete ' + item.title"
           class="w3-right w3-transparent w3-button"
           @click="removeItem($event, item)"
         >
@@ -63,7 +66,7 @@ export default defineComponent({
     });
     const showForm = () => {
       formVisible.value = true;
-      console.log("showForm: " + formVisible.value);
+      //console.log("showForm: " + formVisible.value);
     };
     const closeForm = () => {
       formVisible.value = false;
@@ -102,7 +105,7 @@ export default defineComponent({
     };
 
     const removeItem = (event: Event, item: SavedMapInfo) => {
-      console.log(item.title);
+      //console.log(item.title);
       const idx = mapList.value.findIndex((eachItem) => {
         if (eachItem == item) {
           return true;

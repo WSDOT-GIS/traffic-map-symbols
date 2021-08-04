@@ -20,10 +20,14 @@
     }"
     @close="close"
   >
-    <template v-slot:icon >
-      <div v-html="layerIcons.find((x) => x.title == features[0].layerTitle)?.paths" width="24"
-        height="24">
-      </div >
+    <template v-slot:icon>
+      <div
+        v-html="
+          layerIcons.find((x) => x.title == features[0].layerTitle)?.paths
+        "
+        width="24"
+        height="24"
+      ></div>
     </template>
   </PopupBase>
 </template>
@@ -71,7 +75,7 @@ export default defineComponent({
 
     watch(props, () => {
       if (props.Featureset.layerTitle === FeatureLayer.title) {
-        console.log("Camera Layer Popup!");
+        //console.log("Camera Layer Popup!");
         show();
       } else {
         close();

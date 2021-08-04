@@ -191,7 +191,7 @@ export default defineComponent({
         esriMap.mapView.hitTest(event, opts).then((response) => {
           // check if a feature is returned from the zoom layer...
           if (response.results.length) {
-            //console.log(response);
+            ////console.log(response);
             // Show custom popup...
             zoomPopupX.value = event.x;
             zoomPopupY.value = event.y;
@@ -243,14 +243,14 @@ export default defineComponent({
           ],
         };
         esriMap.mapView.hitTest(event, opts).then((response) => {
-          console.log(response.results);
+          //console.log(response.results);
           if (response.results.length) {
             const resultsByLayer: {
               info: LayerInfo;
               layer: Layer;
               results: { graphic: Graphic; mapPoint: Point }[];
             }[] = [];
-            console.log(resultsByLayer);
+            //console.log(resultsByLayer);
             response.results.forEach((eachResult) => {
               const arrayFound = resultsByLayer.find(
                 (eachArray) => eachArray.layer === eachResult.graphic.layer
@@ -258,20 +258,20 @@ export default defineComponent({
               if (arrayFound) {
                 arrayFound.results.push(eachResult);
               } else {
-                console.log(store.state.layerList);
-                console.log(eachResult.graphic.layer.title);
+                //console.log(store.state.layerList);
+                //console.log(eachResult.graphic.layer.title);
                 const layerInfo = store.state.layerList.find(
                   (layerInfo) =>
                     layerInfo.title === eachResult.graphic.layer.title
                 );
-                console.log(layerInfo);
+                //console.log(layerInfo);
                 if (layerInfo) {
                   resultsByLayer.push({
                     info: layerInfo,
                     layer: eachResult.graphic.layer,
                     results: [eachResult],
                   });
-                  console.log(resultsByLayer);
+                  //console.log(resultsByLayer);
                 }
               }
             });
@@ -285,6 +285,9 @@ export default defineComponent({
               (eachResultSet) => eachResultSet.info.index === minIdx
             );
             if (results2Show) {
+              console.log(
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              );
               const g = results2Show.results[0].graphic;
               const pt = results2Show.results[0].mapPoint;
               // Deal with cluster...
@@ -300,30 +303,28 @@ export default defineComponent({
                       } else {
                         closePopup();
                         // Zoom-in more...
-                        esriMap
-                          .tryZoomToPointAsync(g.geometry as Point)
-                          .then((zoomResult) => {
-                            if (!zoomResult) {
-                              // Cannot zoom in any more, so show everything in cluster...
-                              esriMap
-                                .getIdsFromCluster(g, results2Show.layer)
-                                .then((results) => {
-                                  results
-                                    ? showPopup(
-                                        results2Show.layer.title,
-                                        results,
-                                        pt
-                                      )
-                                    : closePopup();
-                                });
-                            }
-                          });
+                        esriMap.tryZoomToPointAsync(pt).then((zoomResult) => {
+                          if (!zoomResult) {
+                            // Cannot zoom in any more, so show everything in cluster...
+                            esriMap
+                              .getIdsFromCluster(g, results2Show.layer)
+                              .then((results) => {
+                                results
+                                  ? showPopup(
+                                      results2Show.layer.title,
+                                      results,
+                                      pt
+                                    )
+                                  : closePopup();
+                              });
+                          }
+                        });
                       }
                     });
                 } else {
                   // Too many in a cluster, so click to zoom-in...
                   closePopup();
-                  esriMap.tryZoomToPoint(g.geometry as Point);
+                  esriMap.tryZoomToPoint(pt);
                 }
               } else {
                 const id = g.getObjectId();

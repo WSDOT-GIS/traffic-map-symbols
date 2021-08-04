@@ -89,15 +89,15 @@ export default layer
 /*** Helper functions **************/
 // Watch scale change...
 export const toggleCluster = (newScale: number, oldScale: number, maxScale: number): void => {
-    console.log("toggleCluster scale: " + newScale);
+    //console.log("toggleCluster scale: " + newScale);
     // Turn off clustering at max scale...
     if (newScale > maxScale && oldScale < maxScale) {
         layer.featureReduction = clusterConfig;
-        console.log("Turn on cluster: " + clusterConfig.clusterRadius + " scale: " + oldScale + " > " + newScale);
+        //console.log("Turn on cluster: " + clusterConfig.clusterRadius + " scale: " + oldScale + " > " + newScale);
     }
     else if (newScale < maxScale && oldScale > maxScale) {
         layer.set("featureReduction", undefined);
-        console.log("Turn off cluster: " + clusterConfig.clusterRadius + " scale: " + oldScale + " > " + newScale);
+        //console.log("Turn off cluster: " + clusterConfig.clusterRadius + " scale: " + oldScale + " > " + newScale);
     }
 
 }
@@ -143,10 +143,10 @@ NOTE: This function only returns each feature if one of the following coditions 
 //             if (!identical) { break; }
 //         }
 //         if (identical) {
-//             console.log("All points are located on the same spot!");
+//             //console.log("All points are located on the same spot!");
 //             doReturn = true;
 //         }
-//         else { console.log("Points are not identical."); }
+//         else { //console.log("Points are not identical."); }
 //     }
 //     if (doReturn) {
 //         const ids = result.features.map((feature) => { return feature.attributes.CameraID; })

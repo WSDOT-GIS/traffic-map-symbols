@@ -22,7 +22,7 @@ import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 
 EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
 export const webmap = new WebMap({
-    layers: [TrafficLayer, ParkRideLayer,  CameraLayer, PointRestrictionsLayer, LineRestrictionsLayer, RoadAlertsLayer, RestAreasLayer, WeatherStationsLayer, MountainPassLayer],
+    layers: [TrafficLayer, ParkRideLayer, CameraLayer, PointRestrictionsLayer, LineRestrictionsLayer, RoadAlertsLayer, RestAreasLayer, WeatherStationsLayer, MountainPassLayer],
 });
 
 export const mapView = new MapView({
@@ -56,7 +56,7 @@ export const tryZoomToPoint = (point: Point, numLevels?: number): boolean => {
     const orgLevel = mapView.zoom;
     mapView.zoom = mapView.zoom += numLevels;
     if (mapView.zoom === orgLevel) {
-        console.log("Cannot zoom in any more.");
+        //console.log("Cannot zoom in any more.");
         isSuccess = false;
     }
     return isSuccess;
@@ -79,7 +79,7 @@ export const tryZoomToPointAsync = async (point: Point, numLevels?: number): Pro
         console.error("tryZoomToPointAsync failed: " + error);
     });
     if (mapView.zoom === orgLevel) {
-        console.log("Cannot zoom in any more.");
+        //console.log("Cannot zoom in any more.");
         isSuccess = false;
     }
     return isSuccess;
@@ -108,11 +108,11 @@ export const toScreenXY = (mapX: number, mapY: number): { x: number, y: number }
 }
 
 export const panMap = async (shiftX: number, shiftY: number): Promise<string> => {
-    console.log("panMap X: " + shiftX + ", Y: " + shiftY);
+    //console.log("panMap X: " + shiftX + ", Y: " + shiftY);
     const screenCenter = mapView.toScreen(mapView.center);
-    console.log(
-        "Screen Center X: " + screenCenter.x + ", Y: " + screenCenter.y
-    );
+    //console.log(
+    //     "Screen Center X: " + screenCenter.x + ", Y: " + screenCenter.y
+    // );
     const mapCenter = mapView.toMap({
         x: screenCenter.x - shiftX,
         y: screenCenter.y - shiftY,
@@ -126,7 +126,7 @@ export const panMap = async (shiftX: number, shiftY: number): Promise<string> =>
         console.error(err);
         return err;
     });
-    console.log("Map center X: " + mapCenter.x + ", Y: " + mapCenter.y);
+    //console.log("Map center X: " + mapCenter.x + ", Y: " + mapCenter.y);
     return "success";
 }
 
@@ -163,10 +163,10 @@ export const getIdsFromCluster = async (clusterGraphic: Graphic, layer: Layer, m
             if (!identical) { break; }
         }
         if (identical) {
-            console.log("All points are located on the same spot!");
+            //console.log("All points are located on the same spot!");
             doReturn = true;
         }
-        else { console.log("Points are not identical."); }
+        //else { //console.log("Points are not identical."); }
     }
     if (doReturn) {
         const ids = result.features.map((feature) => { return feature.attributes[lyr.objectIdField]; })
