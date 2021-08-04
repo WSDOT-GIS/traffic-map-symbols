@@ -7,6 +7,7 @@
     :Features="[feature]"
     :Config="{
       bannerText: { text: 'Truck Restriction' },
+      badgeText: { custom: getBadgeText },
       title: { fieldName: 'location_description' },
       content: [
         { label: 'Travel delay', value: { text: '???' } },
@@ -131,11 +132,26 @@ export default defineComponent({
       feature.value = undefined;
     };
 
+    const getBadgeText = (feature: FeatureInfo): string => {
+      const ttype = feature.attributes["TType"];
+      let text = "";
+      switch (ttype) {
+        case "R":
+          text = "Road";
+          break;
+        case "B":
+          text = "Bridge";
+          break;
+      }
+      return text;
+    };
+
     return {
       mapX,
       mapY,
       feature,
       close,
+      getBadgeText,
     };
   },
 });
