@@ -19,7 +19,8 @@ const symbol = new CIMSymbol({
                 "enable": true,
                 "anchorPointUnits": "Relative",
                 "dominantSizeAxis3D": "Y",
-                "size": 19,
+                "size": 24,
+                "offsetY": 12,//Half of symbol height
                 "billboardMode3D": "FaceNearPlane",
                 "frame": {
                   "xmin": 0,
@@ -785,7 +786,7 @@ const symbol = new CIMSymbol({
                   }
                 ],
                 "scaleSymbolsProportionally": true,
-                "offsetY": 9.5,//Half of symbol height
+                
                 "respectFrame": true,
                 "clippingPath": {
                   "type": "CIMClippingPath",
