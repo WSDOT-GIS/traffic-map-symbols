@@ -19,12 +19,7 @@
     <table class="trafficLegendTable" role="presentation">
       <tr class="trafficLegendRow">
         <td class="trafficLegendCell">
-          <div class="trafficLegendSymbolDiv" id="slowLegendCell">&nbsp;</div>
-        </td>
-        <td class="trafficLegendCell">
-          <div class="trafficLegendSymbolDiv" id="slowMediumLegendCell">
-            &nbsp;
-          </div>
+          <div class="trafficLegendSymbolDiv" id="fastLegendCell">&nbsp;</div>
         </td>
         <td class="trafficLegendCell">
           <div class="trafficLegendSymbolDiv" id="mediumFastLegendCell">
@@ -32,14 +27,19 @@
           </div>
         </td>
         <td class="trafficLegendCell">
-          <div class="trafficLegendSymbolDiv" id="fastLegendCell">&nbsp;</div>
+          <div class="trafficLegendSymbolDiv" id="slowMediumLegendCell">
+            &nbsp;
+          </div>
+        </td>
+        <td class="trafficLegendCell">
+          <div class="trafficLegendSymbolDiv" id="slowLegendCell">&nbsp;</div>
         </td>
       </tr>
       <tr>
+        <td class="trafficLegendLabelCell">Clear</td>
+        <td class="trafficLegendLabelCell">Moving</td>
         <td class="trafficLegendLabelCell">Slow</td>
-        <td class="trafficLegendLabelCell"></td>
-        <td class="trafficLegendLabelCell"></td>
-        <td class="trafficLegendLabelCell">Fast</td>
+        <td class="trafficLegendLabelCell">Stop &#38; Go</td>
       </tr>
     </table>
     <ul class="w3-ul">
@@ -260,19 +260,23 @@ export default defineComponent({
   text-align: left;
 }
 #slowLegendCell {
-  background-color: firebrick;
+  background-color: #c80000;
 }
 #slowMediumLegendCell {
-  background-color: orange;
+  background-color: #ffaa00;
 }
 #mediumFastLegendCell {
-  background-color: yellow;
+  background-color: #ffff00;
 }
 #fastLegendCell {
-  background-color: limegreen;
+  background-color: #00d700;
 }
 .trafficLegendSymbolDiv {
-  height: 8px;
+  height: 10px;
+  margin: 1px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: var(--color-gray20);
 }
 .mapFeaturesLI {
   margin-bottom: 5px;
@@ -280,7 +284,11 @@ export default defineComponent({
 .trafficLegendTable {
   margin: auto;
   width: 95%;
-  border-collapse: collapse;
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: var(--color-gray40);
+  margin-bottom: 5px;
 }
 .trafficLegendCell {
   width: 25%;
