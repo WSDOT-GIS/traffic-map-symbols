@@ -64,7 +64,7 @@
   >
     <template v-slot:icon>
       <div
-        v-html="layerIcons.find((x) => x.title == feature.layerTitle)?.paths"
+        v-html="layerIcons.find((x) => x.title == feature?.layerTitle)?.paths"
         width="24"
         height="24"
       ></div>
