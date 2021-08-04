@@ -1,27 +1,32 @@
-import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
-import { roadRestrictionPoint, bridgeRestrictionPoint } from "../symbols/PointRestrictionsSymbol";
+// import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer"
+// import { roadRestrictionPoint, bridgeRestrictionPoint } from "../symbols/PointRestrictionsSymbol"
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import Field from "@arcgis/core/layers/support/Field";
-const pointRestrictionsRenderer = new UniqueValueRenderer({
-    field: "TType",
-    uniqueValueInfos: [{
-            // All features with value of "North" will be blue
-            value: "R",
-            symbol: roadRestrictionPoint
-        }, {
-            // All features with value of "East" will be green
-            value: "B",
-            symbol: bridgeRestrictionPoint
-        }]
+import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
+import symbol from "@/symbols/PointRestrictionsSymbol";
+const renderer = new simpleRenderer({
+    symbol: symbol
 });
+// const pointRestrictionsRenderer = new UniqueValueRenderer({
+//     field: "TType",
+//     uniqueValueInfos: [{
+//         // All features with value of "North" will be blue
+//         value: "R",
+//         symbol: roadRestrictionPoint
+//     }, {
+//         // All features with value of "East" will be green
+//         value: "B",
+//         symbol: bridgeRestrictionPoint
+//     }]
+// })
 // const pointRestrictionsRenderer2 = new SimpleRenderer({
 //     symbol: Symbol
 // })
 const PointRestrictionsLayer = new GeoJSONLayer({
     id: "point-restrictions-layer",
-    url: "http://hqtob1webtmdev1/GISData/PointRestrictions.json",
+    url: "https://data.wsdot.wa.gov/travelcenter/PointRestrictions.json",
     title: "Restriction Points",
-    renderer: pointRestrictionsRenderer,
+    renderer: renderer,
     visible: false,
     fields: [
         new Field({ name: "state", alias: "State", type: "string" }),

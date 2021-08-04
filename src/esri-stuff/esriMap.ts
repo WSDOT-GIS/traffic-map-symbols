@@ -22,7 +22,7 @@ import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 
 EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
 export const webmap = new WebMap({
-    layers: [TrafficLayer, ParkRideLayer, CameraLayer, PointRestrictionsLayer, LineRestrictionsLayer, RoadAlertsLayer, RestAreasLayer, WeatherStationsLayer, MountainPassLayer],
+    layers: [TrafficLayer, MountainPassLayer, WeatherStationsLayer, RestAreasLayer, RoadAlertsLayer, LineRestrictionsLayer, PointRestrictionsLayer, CameraLayer, ParkRideLayer],
 });
 
 export const mapView = new MapView({

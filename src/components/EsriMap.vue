@@ -275,14 +275,14 @@ export default defineComponent({
                 }
               }
             });
-            let minIdx = 999;
+            let maxIdx = 0;
             resultsByLayer.forEach((eachResultSet) => {
-              if (eachResultSet.info.index < minIdx) {
-                minIdx = eachResultSet.info.index;
+              if (eachResultSet.info.index > maxIdx) {
+                maxIdx = eachResultSet.info.index;
               }
             });
             const results2Show = resultsByLayer.find(
-              (eachResultSet) => eachResultSet.info.index === minIdx
+              (eachResultSet) => eachResultSet.info.index === maxIdx
             );
             if (results2Show) {
               const g = results2Show.results[0].graphic;
