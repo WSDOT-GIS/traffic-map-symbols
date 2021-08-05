@@ -9,8 +9,8 @@
           :Title="'Toggle ' + layerList[0].title"
         >
           <template v-slot>
-            <div class="mapFeaturesIcon"></div>
-            <span class="listLabel">Traffic Flow</span>
+            <!-- <div class="mapFeaturesIcon"></div> -->
+            <span>Traffic Flow</span>
           </template>
         </ToggleSwitchView>
       </li>
@@ -253,6 +253,9 @@ export default defineComponent({
 });
 </script>
 <style scoped>
+.listLabel-trafficFlow {
+  font-size: small;
+}
 .listLabel {
   position: absolute;
   font-size: small;
