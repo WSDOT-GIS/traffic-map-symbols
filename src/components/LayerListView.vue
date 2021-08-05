@@ -1,5 +1,5 @@
 <template>
-  <div id="layerListWidget" title="Map Features">
+  <div id="layerListWidget" title="Map Features" v-if="layerList.length > 0">
     <ul class="w3-ul" style="padding: 1px 0">
       <li class="w3-border-0 mapFeaturesLI" style="padding: 0">
         <ToggleSwitchView
@@ -206,9 +206,9 @@
 </template>
 <script lang="ts">
 import { store, useStore } from "@/store";
-import { defineComponent, ref } from "vue";
-import LayerInfo from "../types/LayerInfo";
-import { webmap } from "../esri-stuff/esriMap";
+import { defineComponent } from "vue";
+// import LayerInfo from "../types/LayerInfo";
+// import { webmap } from "../esri-stuff/esriMap";
 // import { mapState } from "vuex";
 import { layerListIcons } from "@/symbols/IconDefinitions";
 import ToggleSwitchView from "./ToggleSwitchView.vue";
@@ -217,20 +217,25 @@ export default defineComponent({
   setup() {
     //#region populate the layer list
     const store = useStore();
-    let layerList = ref<LayerInfo[]>([]);
+    // let layerList = ref<LayerInfo[]>([]);
     const layerIcons = layerListIcons;
-    webmap.layers.map((layer, index) => {
-      if (layer.title !== "Metro Areas") {
-        layerList.value.push({
-          index: index,
-          title: layer.title,
-          visible: layer.visible,
-        });
-      }
-    });
-    store.commit("setLayerList", layerList);
-    return { layerList, layerIcons, store };
+    // webmap.layers.map((layer, index) => {
+    //   if (layer.title !== "Metro Areas") {
+    //     layerList.value.push({
+    //       index: index,
+    //       title: layer.title,
+    //       visible: layer.visible,
+    //     });
+    //   }
+    // });
+    // store.commit("setLayerList", layerList);
+    return { /*layerList,*/ layerIcons, store };
     //#endregion
+  },
+  computed: {
+    layerList() {
+      return store.state.layerList;
+    },
   },
   methods: {
     //#region toggle layer on and off
