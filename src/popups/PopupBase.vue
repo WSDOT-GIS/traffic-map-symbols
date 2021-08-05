@@ -54,6 +54,7 @@
             "
             :alt="eachFeature.id"
             @load="onImgLoad()"
+            @error="$event.target.src = require('@/assets/no-image.png')"
           />
         </div>
       </Slide>
@@ -84,6 +85,7 @@ import {
 } from "vue";
 import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
+require("@/assets/no-image.png");
 
 import { mapView, toScreenXY, panMap } from "@/esri-stuff/esriMap";
 // import HighlightSymbol from "@/symbols/HighlightSymbol";
@@ -253,6 +255,12 @@ export default defineComponent({
     let prevHeight = 0;
     // Position popup on top of the feature...
     const adjustPositionSize = () => {
+      // console.log(
+      //   "Feature count: " +
+      //     props.Features.length +
+      //     ", " +
+      //     JSON.stringify(props.Features[0])
+      // );
       if (!containerRef.value) {
         // Container is null. It is not visible yet.
         return;
@@ -286,7 +294,7 @@ export default defineComponent({
         prevWidth = w;
         prevHeight = h;
       }
-      ////console.log("*** Adjust ***"); // + JSON.stringify(props.Features)); //props.Features[0].layerTitle);
+      // console.log("*** Adjust ***"); // + JSON.stringify(props.Features)); //props.Features[0].layerTitle);
       // New vertical position...
       let newTop = screenY.value - h - 30;
       // New horizontal position.
@@ -420,6 +428,7 @@ export default defineComponent({
       }
       badgeText.value = text;
     };
+
     return {
       containerRef,
       popupLeft,

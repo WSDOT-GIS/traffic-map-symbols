@@ -300,29 +300,28 @@ export default defineComponent({
                       } else {
                         closePopup();
                         // Zoom-in more...
-                        esriMap.tryZoomToPointAsync(pt).then((zoomResult) => {
-                          if (!zoomResult) {
-                            // Cannot zoom in any more, so show everything in cluster...
-                            esriMap
-                              .getIdsFromCluster(g, results2Show.layer)
-                              .then((results) => {
-                                results
-                                  ? showPopup(
-                                      results2Show.layer.title,
-                                      results,
-                                      pt
-                                    )
-                                  : closePopup();
-                              });
-                          }
-                        });
+                        // esriMap.tryZoomToPointAsync(pt).then((zoomResult) => {
+                        //   if (!zoomResult) {
+                        //     // Cannot zoom in any more, so show everything in cluster...
+                        //     esriMap
+                        //       .getIdsFromCluster(g, results2Show.layer)
+                        //       .then((results) => {
+                        //         results
+                        //           ? showPopup(
+                        //               results2Show.layer.title,
+                        //               results,
+                        //               pt
+                        //             )
+                        //           : closePopup();
+                        //       });
+                        //   }
+                        // });
                       }
                     });
-                } 
-                else {
+                } else {
                   // Too many in a cluster, so click to zoom-in...
                   closePopup();
-                  esriMap.tryZoomToPoint(pt);
+                  // esriMap.tryZoomToPoint(pt);
                 }
               } else {
                 const id = g.getObjectId();

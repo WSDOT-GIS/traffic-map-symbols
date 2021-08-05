@@ -62,8 +62,8 @@ export default defineComponent({
     const mapX = ref(0);
     const mapY = ref(0);
     const layerIcons = layerListIcons;
-    const getDirection = (feature: FeatureInfo):string|undefined => {
-      let dir:string|undefined;
+    const getDirection = (feature: FeatureInfo): string | undefined => {
+      let dir: string | undefined;
       if (features.value.length > 0) {
         let val = feature.attributes["CompassDirection"] as string;
         if (val) {
@@ -75,7 +75,6 @@ export default defineComponent({
 
     watch(props, () => {
       if (props.Featureset.layerTitle === FeatureLayer.title) {
-        //console.log("Camera Layer Popup!");
         show();
       } else {
         close();
@@ -85,9 +84,11 @@ export default defineComponent({
       const setVal = () => {
         getFeatureInfosByIds(props.Featureset.ids, FeatureLayer).then(
           (results) => {
+            // console.log(JSON.stringify(results));
             features.value = results;
             mapX.value = props.MapX;
             mapY.value = props.MapY;
+            // console.log(mapX.value + ", " + mapY.value);
           }
         );
       };

@@ -50,7 +50,7 @@ export default defineComponent({
       if (!props.Feature) {
         return;
       }
-      console.log("getText()");
+      // console.log("getText()");
       let text = "";
       if (props.Config.value.text) {
         text = props.Config.value.text;
@@ -85,6 +85,7 @@ export default defineComponent({
       } else {
         visible.value = true;
       }
+      // console.log("...text: " + text);
       return text;
     };
 
