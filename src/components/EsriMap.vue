@@ -75,7 +75,7 @@ import LayerInfo from "@/types/LayerInfo";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 /* Layers for popup */
 import ParkRideLayer from "@/layers/ParkRideLayer";
-import CameraLayer from "@/layers/CameraLayer";
+import CameraLayer, { toggleCluster } from "@/layers/CameraLayer";
 import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
 import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
 import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
@@ -347,7 +347,7 @@ export default defineComponent({
       esriMap.mapView.watch("scale", (newValue, oldValue) => {
         if (oldValue > 0) {
           adjustCluster(newValue, oldValue);
-          //toggleCluster(newValue, oldValue, 19000);
+          toggleCluster(newValue, oldValue, 19000);
         }
       });
     });
