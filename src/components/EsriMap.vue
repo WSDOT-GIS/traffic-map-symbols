@@ -58,10 +58,11 @@ import { defineComponent, onMounted, ref, reactive } from "vue";
 import { useStore } from "@/store";
 import { project } from "@arcgis/core/geometry/projection";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
-import { Geometry } from "@arcgis/core/geometry";
+import { Geometry, Polygon } from "@arcgis/core/geometry";
 import Graphic from "@arcgis/core/Graphic";
 import Layer from "@arcgis/core/layers/Layer";
 import Point from "@arcgis/core/geometry/Point";
+import { geodesicBuffer } from "@arcgis/core/geometry/geometryEngine";
 
 import { zoomOnClick } from "@/esri-stuff/esriMap";
 import { getExtentFromUrl, getBasemapFromUrl } from "@/utils/urlParamUtil";
@@ -287,6 +288,24 @@ export default defineComponent({
             if (results2Show) {
               const g = results2Show.results[0].graphic;
               const pt = results2Show.results[0].mapPoint;
+              if (
+                g.layer.title === CameraLayer.title &&
+                esriMap.mapView.scale < 19000
+              ) {
+                const query = CameraLayer.createQuery();
+                query.geometry = geodesicBuffer(
+                  g.geometry,
+                  50,
+                  "meters"
+                ) as Polygon;
+                CameraLayer.queryFeatures(query).then((results) => {
+                  const ids = results.features.map((eachFeature) => {
+                    return eachFeature.getObjectId();
+                  });
+                  console.log(ids);
+                  showPopup(g.layer.title, ids, pt);
+                });
+              }
               // Deal with cluster...
               if (g.isAggregate) {
                 if (g.attributes.cluster_count < 10) {
