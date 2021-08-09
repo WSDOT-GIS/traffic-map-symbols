@@ -87,8 +87,12 @@ import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
 require("@/assets/no-image.png");
 
-import { mapView, toScreenXY, panMap } from "@/esri-stuff/esriMap";
-// import HighlightSymbol from "@/symbols/HighlightSymbol";
+import {
+  mapView,
+  toScreenXY,
+  panMap,
+  highlightFeature,
+} from "@/esri-stuff/esriMap";
 import FeatureInfo from "@/types/FeatureInfo";
 import PopupConfig from "@/types/PopupConfig";
 import PopupRow from "./PopupRow.vue";
@@ -96,13 +100,14 @@ import PopupRow from "./PopupRow.vue";
 export default defineComponent({
   components: { Carousel, Slide, Pagination, Navigation, PopupRow },
   props: {
+    // MapX & Y are only required to supersede the feature x/y.
     MapX: {
       type: Number,
-      required: true,
+      required: false,
     },
     MapY: {
       type: Number,
-      required: true,
+      required: false,
     },
     Width: {
       // "m (medium) or w (wide)"
@@ -132,8 +137,8 @@ export default defineComponent({
     const maxHeight = ref(1000);
     // Using toRefs to preserve the reactivity.
     // If you do "ref(props.MapX)" the value at the time the setup was run is set without reactivity.
-    const mapX = toRefs(props).MapX;
-    const mapY = toRefs(props).MapY;
+    const mapX = ref(0); //toRefs(props).MapX;
+    const mapY = ref(0); //toRefs(props).MapY;
     const screenX = ref(-1);
     const screenY = ref(-1);
     // Popup location.
@@ -151,6 +156,8 @@ export default defineComponent({
     watch(propFeatures, () => {
       currentIdx.value = 0;
       setBadgeText();
+      highlightMap();
+      setMapXY();
       prevScreenX = -1000;
       prevScreenY = -1000;
       prevHeight = 0;
@@ -189,7 +196,7 @@ export default defineComponent({
 
     const close = () => {
       // Let the parent handle the close event.
-      // Parent should set the MapX/Y to 0 otherwise the popup will be shown again.
+      // Parent should empty the feature array to close the popup.
       context.emit("close");
     };
     // Adjust popup position when the props change...
@@ -199,6 +206,8 @@ export default defineComponent({
     watch(currentIdx, () => {
       context.emit("idxUpdate", currentIdx.value);
       setBadgeText();
+      highlightMap();
+      setMapXY();
     });
     // MapView resize event...
     mapView.on("resize", () => {
@@ -294,7 +303,7 @@ export default defineComponent({
         prevWidth = w;
         prevHeight = h;
       }
-      // console.log("*** Adjust ***"); // + JSON.stringify(props.Features)); //props.Features[0].layerTitle);
+      // console.log("*** Adjust ***"); // + JSON.stringify(props.Features)); //props.Features[0].layerId);
       // New vertical position...
       let newTop = screenY.value - h - 30;
       // New horizontal position.
@@ -427,6 +436,27 @@ export default defineComponent({
         text = "";
       }
       badgeText.value = text;
+    };
+    const highlightMap = () => {
+      const feature = props.Features[currentIdx.value];
+      if (feature) {
+        if (
+          !props.Config.clusterMaxScale ||
+          mapView.scale < props.Config.clusterMaxScale
+        ) {
+          highlightFeature(feature);
+        }
+      }
+    };
+    /** If MapX and Y are provided, those values supersede the feature x/y.
+     * Otherwise the feature x/y is used to determine the location of the popup.
+     */
+    const setMapXY = () => {
+      const feature = props.Features[currentIdx.value];
+      if (feature) {
+        mapX.value = props.MapX ? props.MapX : feature.mapPoint.x;
+        mapY.value = props.MapY ? props.MapY : feature.mapPoint.y;
+      }
     };
 
     return {

@@ -2,7 +2,7 @@ import FeatureReductionCluster from "@arcgis/core/layers/support/FeatureReductio
 
 import clusterSymbol from "@/symbols/CameraClusterSymbol";
 
-const maxScale = 19000;
+export const clusterMaxScale = 19000;
 const defaultRadius = 60;
 
 const labelColor = "#005151";//"#fff";
@@ -120,14 +120,16 @@ export { clusterConfig }
 // Watch scale change...
 export const adjustCluster = (newScale: number, oldScale: number): void => {
     // Reduce cluster radius at max scale...
-    if (newScale > maxScale && oldScale < maxScale) {
+    if (newScale > clusterMaxScale && oldScale < clusterMaxScale) {
         clusterConfig.clusterRadius = defaultRadius;
     }
-    else if (newScale < maxScale && oldScale > maxScale) {
+    else if (newScale < clusterMaxScale && oldScale > clusterMaxScale) {
         clusterConfig.clusterRadius = 10;
     }
 
 }
+
+
 
 
 

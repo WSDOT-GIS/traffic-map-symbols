@@ -37,10 +37,12 @@
     }"
     @close="close"
   >
-    <template v-slot:icon >
-      <div v-html="layerIcons.find((x) => x.title == feature.layerTitle)?.paths" width="24"
-        height="24">
-      </div >
+    <template v-slot:icon>
+      <div
+        v-html="layerIcons.find((x) => x.id === feature?.layerId)?.paths"
+        width="24"
+        height="24"
+      ></div>
     </template>
   </PopupBase>
 </template>
@@ -74,7 +76,7 @@ export default defineComponent({
     const mapY = ref(0);
     const layerIcons = layerListIcons;
     watch(props, () => {
-      if (props.Featureset.layerTitle === FeatureLayer.title) {
+      if (props.Featureset.layerId === FeatureLayer.id) {
         show();
       } else {
         close();

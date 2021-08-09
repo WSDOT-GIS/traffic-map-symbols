@@ -58,11 +58,10 @@ import { defineComponent, onMounted, ref, reactive } from "vue";
 import { useStore } from "@/store";
 import { project } from "@arcgis/core/geometry/projection";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
-import { Geometry, Polygon } from "@arcgis/core/geometry";
+import { Geometry } from "@arcgis/core/geometry";
 import Graphic from "@arcgis/core/Graphic";
 import Layer from "@arcgis/core/layers/Layer";
 import Point from "@arcgis/core/geometry/Point";
-import { geodesicBuffer } from "@arcgis/core/geometry/geometryEngine";
 
 import { zoomOnClick } from "@/esri-stuff/esriMap";
 import { getExtentFromUrl, getBasemapFromUrl } from "@/utils/urlParamUtil";
@@ -71,7 +70,7 @@ import ZoomExtentLayer, {
 } from "@/layers/ZoomExtentLayer";
 import ExtentInfo from "@/types/ExtentInfo";
 import { setLayerFromUrl } from "@/utils/urlParamUtil";
-import { adjustCluster } from "@/utils/clusterUtil";
+import { clusterMaxScale } from "@/utils/clusterUtil";
 import LayerInfo from "@/types/LayerInfo";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 /* Layers for popup */
@@ -99,6 +98,7 @@ import CoordinatesView from "@/components/CoordinatesView.vue";
 import MyLocationView from "@/components/MyLocationView.vue";
 import ZoomButtonView from "@/components/ZoomButtonView.vue";
 import RestAreasLayer from "@/layers/RestAreasLayer";
+import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 export default defineComponent({
   components: {
     ZoomPopupView,
@@ -142,19 +142,24 @@ export default defineComponent({
       mapDiv.style.cursor = "auto";
     };
     // Feature Popup...
-    const popupX = ref(0);
-    const popupY = ref(0);
-    const popupFeatureset = ref<FeaturesetInfo>({ layerTitle: "", ids: [] });
+    const popupX = ref<number | undefined>(0);
+    const popupY = ref<number | undefined>(0);
+    const popupFeatureset = ref<FeaturesetInfo>({ layerId: "", ids: [] });
     //
-    const showPopup = (layerTitle: string, ids: number[], pt: Point) => {
-      popupFeatureset.value = { layerTitle: layerTitle, ids: ids };
-      popupX.value = pt.x;
-      popupY.value = pt.y;
+    const showPopup = (layerId: string, ids: number[], pt?: Point) => {
+      popupFeatureset.value = { layerId: layerId, ids: ids };
+      if (pt) {
+        popupX.value = pt.x;
+        popupY.value = pt.y;
+      } else {
+        popupX.value = undefined;
+        popupY.value = undefined;
+      }
     };
     const closePopup = () => {
-      popupFeatureset.value = { layerTitle: "", ids: [] };
-      popupX.value = 0;
-      popupY.value = 0;
+      popupFeatureset.value = { layerId: "", ids: [] };
+      popupX.value = undefined;
+      popupY.value = undefined;
     };
 
     onMounted(async () => {
@@ -162,9 +167,10 @@ export default defineComponent({
       mapDiv = document.getElementById("esri-map-view") as HTMLDivElement;
       esriMap.init(mapDiv);
       //#region register layer list to state
-      let layerList: { index: number; title: string; visible: boolean }[] = [];
+      let layerList: LayerInfo[] = [];
       esriMap.mapView.map.layers.map((layer, index) => {
         layerList.push({
+          id: layer.id,
           index: index,
           title: layer.title,
           visible: layer.visible,
@@ -229,7 +235,7 @@ export default defineComponent({
         });
       });
       // MapView click event handler for showing popups...
-      esriMap.mapView.on("click", (event) => {
+      esriMap.mapView.on("click", (clickEvent) => {
         // Check if feature is clicked on...
         const opts = {
           include: [
@@ -243,7 +249,7 @@ export default defineComponent({
             RoadAlertLayer,
           ],
         };
-        esriMap.mapView.hitTest(event, opts).then((response) => {
+        esriMap.mapView.hitTest(clickEvent, opts).then((response) => {
           //console.log(response.results);
           if (response.results.length) {
             const resultsByLayer: {
@@ -262,8 +268,7 @@ export default defineComponent({
                 //console.log(store.state.layerList);
                 //console.log(eachResult.graphic.layer.title);
                 const layerInfo = store.state.layerList.find(
-                  (layerInfo) =>
-                    layerInfo.title === eachResult.graphic.layer.title
+                  (layerInfo) => layerInfo.id === eachResult.graphic.layer.id
                 );
                 //console.log(layerInfo);
                 if (layerInfo) {
@@ -287,27 +292,32 @@ export default defineComponent({
             );
             if (results2Show) {
               const g = results2Show.results[0].graphic;
-              const pt = results2Show.results[0].mapPoint;
+              // let pt: Point;
+              // if (g.geometry.type === "point") {
+              //   pt = g.geometry as Point;
+              // } else {
+              //   pt = results2Show.results[0].mapPoint;
+              // }
+              const layer = g.layer as GeoJSONLayer;
               if (
-                g.layer.title === CameraLayer.title &&
-                esriMap.mapView.scale < 19000
+                layer.featureReduction &&
+                esriMap.mapView.scale < clusterMaxScale
               ) {
                 const query = CameraLayer.createQuery();
-                query.geometry = geodesicBuffer(
-                  g.geometry,
-                  50,
-                  "meters"
-                ) as Polygon;
-                CameraLayer.queryFeatures(query).then((results) => {
+                query.geometry = esriMap.bufferByPixels(
+                  10,
+                  undefined,
+                  g.geometry as Point
+                );
+                layer.queryFeatures(query).then((results) => {
                   const ids = results.features.map((eachFeature) => {
                     return eachFeature.getObjectId();
                   });
-                  console.log(ids);
-                  showPopup(g.layer.title, ids, pt);
+                  showPopup(g.layer.id, ids);
                 });
               }
               // Deal with cluster...
-              if (g.isAggregate) {
+              else if (g.isAggregate) {
                 if (g.attributes.cluster_count < 10) {
                   // Try to get features from the cluster...
                   esriMap
@@ -315,7 +325,11 @@ export default defineComponent({
                     .then((results) => {
                       // Show multiple features if infos are returned...
                       if (results) {
-                        showPopup(results2Show.layer.title, results, pt);
+                        showPopup(
+                          results2Show.layer.id,
+                          results,
+                          g.geometry as Point
+                        );
                       } else {
                         closePopup();
                         // Zoom-in more...
@@ -343,8 +357,9 @@ export default defineComponent({
                   // esriMap.tryZoomToPoint(pt);
                 }
               } else {
+                // Not aggregate...
                 const id = g.getObjectId();
-                showPopup(results2Show.layer.title, [id], pt);
+                showPopup(results2Show.layer.title, [id]);
               }
             }
           } else {
@@ -365,8 +380,8 @@ export default defineComponent({
       //
       esriMap.mapView.watch("scale", (newValue, oldValue) => {
         if (oldValue > 0) {
-          adjustCluster(newValue, oldValue);
-          toggleCluster(newValue, oldValue, 19000);
+          //adjustCluster(newValue, oldValue);
+          toggleCluster(newValue, oldValue);
         }
       });
     });

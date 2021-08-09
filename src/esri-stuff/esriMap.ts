@@ -1,12 +1,15 @@
 import WebMap from "@arcgis/core/WebMap";
 import MapView from "@arcgis/core/views/MapView";
 import Point from "@arcgis/core/geometry/Point";
+import Polygon from "@arcgis/core/geometry/Polygon";
+import { geodesicBuffer } from "@arcgis/core/geometry/geometryEngine";
 import { whenTrue } from "@arcgis/core/core/watchUtils";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Layer from "@arcgis/core/layers/Layer";
 import EsriConfig from "@arcgis/core/config"
 import Graphic from "@arcgis/core/Graphic";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
+
 import TrafficLayer from "@/layers/TrafficLayer";
 import ParkRideLayer from "@/layers/ParkRideLayer";
 import CameraLayer from "@/layers/CameraLayer";
@@ -19,6 +22,7 @@ import MountainPassLayer from "@/layers/MountainPassesLayer";
 import ExtentInfo from "@/types/ExtentInfo";
 import { convert2EsriExtent } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
+import FeatureInfo from "@/types/FeatureInfo";
 
 EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
 export const webmap = new WebMap({
@@ -172,4 +176,46 @@ export const getIdsFromCluster = async (clusterGraphic: Graphic, layer: Layer, m
         const ids = result.features.map((feature) => { return feature.attributes[lyr.objectIdField]; })
         return ids;
     }
+}
+
+export const bufferByPixels = (distancePixel: number, screenPoint?: { x: number, y: number }, mapPoint?: Point): Polygon => {
+    if (!screenPoint && mapPoint) {
+        screenPoint = mapView.toScreen(mapPoint);
+    }
+    if (!mapPoint && screenPoint) {
+        mapPoint = mapView.toMap(screenPoint);
+    }
+    if (screenPoint && mapPoint) {
+        const ptShift = mapView.toMap({ x: screenPoint.x + distancePixel, y: screenPoint.y });
+        const mapDist = Math.abs(ptShift.x - mapPoint.x);
+        console.log("Map distance: " + mapDist);
+
+        const outBuff = geodesicBuffer(
+            mapPoint,
+            mapDist,
+            "meters"
+        ) as Polygon;
+        return outBuff;
+    }
+    else {
+        throw "Need to specify either screen or map point.";
+    }
+
+}
+
+let highlight: __esri.Handle;
+export const highlightFeature = (featureInfo: FeatureInfo): void => {
+    const layer = getLayer(featureInfo.layerId) as GeoJSONLayer;
+    mapView.whenLayerView(layer).then((layerView) => {
+        const query = layer.createQuery();
+        query.where = `${layer.objectIdField} = ${featureInfo.id}`;
+        // query.where = `${idName} IN ( ${ids.join(",")})`;
+        layer.queryFeatures(query).then((result) => {
+            if (highlight) {
+                highlight.remove();
+            }
+            highlight = layerView.highlight(result.features);
+        })
+
+    })
 }

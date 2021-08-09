@@ -84,7 +84,7 @@ export default defineComponent({
     const mapY = ref(0);
 
     watch(props, () => {
-      if (props.Featureset.layerTitle === FeatureLayer.title) {
+      if (props.Featureset.layerId === FeatureLayer.id) {
         show();
       } else {
         close();

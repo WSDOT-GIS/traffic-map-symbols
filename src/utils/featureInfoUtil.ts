@@ -1,19 +1,8 @@
 import Graphic from "@arcgis/core/Graphic";
-/* Info types */
 import FeatureInfo from "@/types/FeatureInfo";
-// import WeatherStationInfo from "@/types/WeatherStationsInfo";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
-// import MountainPassesInfo from "@/types/MountainPassesInfo";
-// import RestrictionInfo from "@/types/RestrictionInfo";
-// import ParkRideInfo from "@/types/ParkRideInfo";
-// import CameraInfo from "@/types/CameraInfo";
-/* Layers */
-// import ParkRideLayer from "@/layers/ParkRideLayer";
-// import CameraLayer from "@/layers/CameraLayer";
-// import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
-// import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
-// import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
-// import MountainPassLayer from "@/layers/MountainPassesLayer";
+import Point from "@arcgis/core/geometry/Point";
+import Polygon from "@arcgis/core/geometry/Polygon";
 
 export const getGraphicsInfoById = async (graphic: Graphic, layer: GeoJSONLayer): Promise<FeatureInfo | undefined> => {
     const query = layer.createQuery();
@@ -52,13 +41,31 @@ export const getFeatureInfosByIds = async (ids: number[], layer: GeoJSONLayer): 
     return infos;
 }
 
-
-
 const convert2Info = (g: Graphic) => {
+    let mapPoint: { x: number; y: number; };
+    // Get the mid/center point...
+    switch (g.geometry.type) {
+        case "point": {
+            const pt = g.geometry as Point;
+            mapPoint = { x: pt.x, y: pt.y };
+            break;
+        }
+        case "polygon": {
+            const polygon = g.geometry as Polygon;
+            mapPoint = { x: polygon.centroid.x, y: polygon.centroid.y };
+            break;
+        }
+        default: {
+            const ext = g.geometry.extent;
+            mapPoint = { x: ext.center.x, y: ext.center.y };
+            break;
+        }
+    }
     const info: FeatureInfo = {
-        layerTitle: g.layer.title,
+        layerId: g.layer.id,
         attributes: g.attributes,
-        id: g.getObjectId()
+        id: g.getObjectId(),
+        mapPoint: mapPoint,
     }
     return info;
     // let info: unknown

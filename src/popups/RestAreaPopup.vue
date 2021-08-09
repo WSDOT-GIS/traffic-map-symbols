@@ -21,7 +21,7 @@
   >
     <template v-slot:icon>
       <div
-        v-html="layerIcons.find((x) => x.title == feature?.layerTitle)?.paths"
+        v-html="layerIcons.find((x) => x.id == feature?.layerId)?.paths"
         width="24"
         height="24"
       ></div>
@@ -58,7 +58,7 @@ export default defineComponent({
     const mapY = ref(0);
     const layerIcons = layerListIcons;
     watch(props, () => {
-      if (props.Featureset.layerTitle === FeatureLayer.title) {
+      if (props.Featureset.layerId === FeatureLayer.id) {
         show();
       } else {
         close();

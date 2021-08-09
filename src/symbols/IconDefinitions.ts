@@ -1,7 +1,7 @@
 import IconInfo from "@/types/IconInfo"
 /* eslint-disable no-useless-escape */
 const layerListIcons: IconInfo[] = [{
-    title: "Traffic Cameras",
+    id: "traffic-camera-layer",
     paths: `
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
     <path d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12Z" fill="#007B5F"/>
@@ -10,7 +10,7 @@ const layerListIcons: IconInfo[] = [{
     </svg>`
 },
 {
-    title: "Restriction Points",
+    id: "point-restrictions-layer",
     paths: `
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
     <path d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12Z" fill="#FFC107"/>
@@ -22,7 +22,7 @@ const layerListIcons: IconInfo[] = [{
     </svg>`
 },
 {
-    title: "Restriction Lines",
+    id: "line-restrictions-layer",
     paths: `
         <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 24 24" version="1.1" id="svg3116" sodipodi:docname="verticalClearanceLines.svg" inkscape:version="0.92.3 (2405546, 2018-03-11)">
             <metadata id="metadata3122">
@@ -48,7 +48,7 @@ const layerListIcons: IconInfo[] = [{
         </svg>`
 },
 {
-    title: "Weather Stations",
+    id: "weather-stations-layer",
     paths: `
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
     <path d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12Z" fill="#005151"/>
@@ -61,7 +61,7 @@ const layerListIcons: IconInfo[] = [{
     </svg>`
 },
 {
-    title: "Park and Rides",
+    id: "park-ride-layer",
     paths: `
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
     <path d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12Z" fill="#97D700"/>
@@ -70,7 +70,7 @@ const layerListIcons: IconInfo[] = [{
     </svg>`
 },
 {
-    title: "Mountain Passes",
+    id: "mountain-passes-layer",
     paths: `
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
     <path d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12Z" fill="#66B09F"/>
@@ -82,7 +82,7 @@ const layerListIcons: IconInfo[] = [{
     </svg>`
 },
 {
-    title: "Rest Areas",
+    id: "rest-areas-layer",
     paths: `
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
 <path d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12Z" fill="#00AEC7"/>
@@ -101,7 +101,7 @@ const layerListIcons: IconInfo[] = [{
     `
 },
 {
-    title: "Travel Alerts",
+    id: "road-alerts-layer",
     paths:
         `
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">

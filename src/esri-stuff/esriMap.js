@@ -1,6 +1,7 @@
 import WebMap from "@arcgis/core/WebMap";
 import MapView from "@arcgis/core/views/MapView";
 import Point from "@arcgis/core/geometry/Point";
+import { geodesicBuffer } from "@arcgis/core/geometry/geometryEngine";
 import { whenTrue } from "@arcgis/core/core/watchUtils";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import EsriConfig from "@arcgis/core/config";
@@ -159,5 +160,15 @@ export const getIdsFromCluster = async (clusterGraphic, layer, maxCount) => {
         const ids = result.features.map((feature) => { return feature.attributes[lyr.objectIdField]; });
         return ids;
     }
+};
+export const bufferByPixels = (screenX, screenY, distancePixel, mapPoint) => {
+    if (!mapPoint) {
+        mapPoint = mapView.toMap({ x: screenX, y: screenY });
+    }
+    const ptShift = mapView.toMap({ x: screenX + distancePixel, y: screenY });
+    const mapDist = Math.abs(ptShift.x - mapPoint.x);
+    console.log("Map distance: " + mapDist);
+    const outBuff = geodesicBuffer(mapPoint, mapDist, "meters");
+    return outBuff;
 };
 //# sourceMappingURL=esriMap.js.map

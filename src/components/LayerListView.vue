@@ -55,7 +55,7 @@
               class="mapFeaturesIcon"
               v-html="
                 layerIcons.find(
-                  (x) => x.title == layerList[layerList.length - 1].title
+                  (x) => x.id == layerList[layerList.length - 1].id
                 )?.paths
               "
             ></div>
@@ -77,7 +77,7 @@
               class="mapFeaturesIcon"
               v-html="
                 layerIcons.find(
-                  (x) => x.title == layerList[layerList.length - 2].title
+                  (x) => x.id == layerList[layerList.length - 2].id
                 )?.paths
               "
             ></div>
@@ -103,7 +103,7 @@
               class="mapFeaturesIcon"
               v-html="
                 layerIcons.find(
-                  (x) => x.title == layerList[layerList.length - 3].title
+                  (x) => x.id == layerList[layerList.length - 3].id
                 )?.paths
               "
             ></div>
@@ -125,7 +125,7 @@
               class="mapFeaturesIcon"
               v-html="
                 layerIcons.find(
-                  (x) => x.title == layerList[layerList.length - 5].title
+                  (x) => x.id == layerList[layerList.length - 5].id
                 )?.paths
               "
             ></div>
@@ -147,7 +147,7 @@
               class="mapFeaturesIcon"
               v-html="
                 layerIcons.find(
-                  (x) => x.title == layerList[layerList.length - 6].title
+                  (x) => x.id == layerList[layerList.length - 6].id
                 )?.paths
               "
             ></div>
@@ -169,7 +169,7 @@
               class="mapFeaturesIcon"
               v-html="
                 layerIcons.find(
-                  (x) => x.title == layerList[layerList.length - 7].title
+                  (x) => x.id == layerList[layerList.length - 7].id
                 )?.paths
               "
             ></div>
@@ -191,7 +191,7 @@
               class="mapFeaturesIcon"
               v-html="
                 layerIcons.find(
-                  (x) => x.title == layerList[layerList.length - 8].title
+                  (x) => x.id == layerList[layerList.length - 8].id
                 )?.paths
               "
             ></div>
@@ -207,30 +207,14 @@
 <script lang="ts">
 import { store, useStore } from "@/store";
 import { defineComponent } from "vue";
-// import LayerInfo from "../types/LayerInfo";
-// import { webmap } from "../esri-stuff/esriMap";
-// import { mapState } from "vuex";
 import { layerListIcons } from "@/symbols/IconDefinitions";
 import ToggleSwitchView from "./ToggleSwitchView.vue";
 export default defineComponent({
   components: { ToggleSwitchView },
   setup() {
-    //#region populate the layer list
     const store = useStore();
-    // let layerList = ref<LayerInfo[]>([]);
     const layerIcons = layerListIcons;
-    // webmap.layers.map((layer, index) => {
-    //   if (layer.title !== "Metro Areas") {
-    //     layerList.value.push({
-    //       index: index,
-    //       title: layer.title,
-    //       visible: layer.visible,
-    //     });
-    //   }
-    // });
-    // store.commit("setLayerList", layerList);
-    return { /*layerList,*/ layerIcons, store };
-    //#endregion
+    return { layerIcons, store };
   },
   computed: {
     layerList() {

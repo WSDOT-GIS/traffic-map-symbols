@@ -17,14 +17,13 @@
         { label: 'Camera Direction', value: { custom: getDirection } },
         { label: 'Refresh Rate', value: { text: '???' } },
       ],
+      clusterMaxScale: clusterMaxScale,
     }"
     @close="close"
   >
     <template v-slot:icon>
       <div
-        v-html="
-          layerIcons.find((x) => x.title == features[0].layerTitle)?.paths
-        "
+        v-html="layerIcons.find((x) => x.id == features[0].layerId)?.paths"
         width="24"
         height="24"
       ></div>
@@ -41,6 +40,8 @@ import { getFeatureInfosByIds } from "@/utils/featureInfoUtil";
 import FeatureLayer from "@/layers/CameraLayer";
 import FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
+import { clusterMaxScale } from "@/utils/clusterUtil";
+
 export default defineComponent({
   components: { PopupBase },
   props: {
@@ -50,17 +51,17 @@ export default defineComponent({
     },
     MapX: {
       type: Number,
-      required: true,
+      required: false,
     },
     MapY: {
       type: Number,
-      required: true,
+      required: false,
     },
   },
   setup(props) {
     const features = ref<FeatureInfo[]>([]);
-    const mapX = ref(0);
-    const mapY = ref(0);
+    const mapX = ref<number | undefined>(0);
+    const mapY = ref<number | undefined>(0);
     const layerIcons = layerListIcons;
     const getDirection = (feature: FeatureInfo): string | undefined => {
       let dir: string | undefined;
@@ -74,7 +75,7 @@ export default defineComponent({
     };
 
     watch(props, () => {
-      if (props.Featureset.layerTitle === FeatureLayer.title) {
+      if (props.Featureset.layerId === FeatureLayer.id) {
         show();
       } else {
         close();
@@ -103,10 +104,10 @@ export default defineComponent({
         setVal();
       }
     };
-    // Setting XY to 0 closes the popup...
+    // Emptying the feature array closes the popup...
     const close = () => {
-      mapX.value = 0;
-      mapY.value = 0;
+      mapX.value = undefined;
+      mapY.value = undefined;
       features.value = [];
     };
 
@@ -117,6 +118,7 @@ export default defineComponent({
       layerIcons,
       close,
       getDirection,
+      clusterMaxScale,
     };
   },
 });
