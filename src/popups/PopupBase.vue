@@ -97,13 +97,14 @@ import {
 import FeatureInfo from "@/types/FeatureInfo";
 import PopupConfig from "@/types/PopupConfig";
 import PopupRow from "./PopupRow.vue";
+import XY from "@/types/XY";
 
 export default defineComponent({
   components: { Carousel, Slide, Pagination, Navigation, PopupRow },
   props: {
     // MapX & Y are only required to supersede the feature x/y.
     MapXY: {
-      type: Object as PropType<{ x: number; y: number }>,
+      type: Object as PropType<XY>,
       required: false,
     },
     Width: {
@@ -132,8 +133,6 @@ export default defineComponent({
     // The DOM only exists while the visibility is true. Get it in onUpdate().
     const containerRef = ref<HTMLDivElement>();
     const maxHeight = ref(1000);
-    // Using toRefs to preserve the reactivity.
-    // If you do "ref(props.MapX)" the value at the time the setup was run is set without reactivity.
     const mapX = ref(0); //toRefs(props).MapX;
     const mapY = ref(0); //toRefs(props).MapY;
     const screenX = ref(-1);
@@ -154,6 +153,8 @@ export default defineComponent({
       currentIdx.value = 0;
       setBadgeText();
       highlightMap();
+      mapX.value = 0;
+      mapY.value = 0;
       setMapXY();
       prevScreenX = -1000;
       prevScreenY = -1000;
@@ -195,7 +196,6 @@ export default defineComponent({
       // Let the parent handle the close event.
       // Parent should empty the feature array to close the popup.
       context.emit("close");
-      removeHighlight();
     };
     // Adjust popup position when the props change...
     watch([mapX, mapY], () => {
@@ -262,12 +262,6 @@ export default defineComponent({
     let prevHeight = 0;
     // Position popup on top of the feature...
     const adjustPositionSize = () => {
-      // console.log(
-      //   "Feature count: " +
-      //     props.Features.length +
-      //     ", " +
-      //     JSON.stringify(props.Features[0])
-      // );
       if (!containerRef.value) {
         // Container is null. It is not visible yet.
         return;
@@ -448,6 +442,8 @@ export default defineComponent({
         if (!props.MapXY) {
           highlightFeature(feature);
         }
+      } else {
+        removeHighlight();
       }
     };
     /** If MapX and Y are provided, those values supersede the feature x/y.
@@ -458,7 +454,7 @@ export default defineComponent({
       if (feature) {
         mapX.value = props.MapXY ? props.MapXY.x : feature.mapPoint.x;
         mapY.value = props.MapXY ? props.MapXY.y : feature.mapPoint.y;
-        //console.log(mapX.value + ", " + mapY.value);
+        // console.log(mapX.value + ", " + mapY.value);
       }
     };
 

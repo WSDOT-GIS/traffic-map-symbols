@@ -25,7 +25,7 @@
     :Label="zoomPopupLabel"
     @clicked="zoomMetroEventHandler"
   ></ZoomPopupView>
-  <CameraPopup :MapX="popupX" :MapY="popupY" :Featureset="popupFeatureset" />
+  <CameraPopup :MapXY="popupXY" :Featureset="popupFeatureset" />
   <ParkRidePopup :Featureset="popupFeatureset" />
   <LineRestrictionPopup :Featureset="popupFeatureset" />
   <PointRestrictionPopup :Featureset="popupFeatureset" />
@@ -57,6 +57,7 @@ import { setLayerFromUrl } from "@/utils/urlParamUtil";
 import { clusterMaxScale } from "@/utils/clusterUtil";
 import LayerInfo from "@/types/LayerInfo";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
+import XY from "@/types/XY";
 /* Layers for popup */
 import ParkRideLayer from "@/layers/ParkRideLayer";
 import CameraLayer, { toggleCluster } from "@/layers/CameraLayer";
@@ -126,24 +127,20 @@ export default defineComponent({
       mapDiv.style.cursor = "auto";
     };
     // Feature Popup...
-    const popupX = ref<number | undefined>(0);
-    const popupY = ref<number | undefined>(0);
+    const popupXY = ref<XY | undefined>();
     const popupFeatureset = ref<FeaturesetInfo>({ layerId: "", ids: [] });
     //
     const showPopup = (layerId: string, ids: number[], pt?: Point) => {
       popupFeatureset.value = { layerId: layerId, ids: ids };
       if (pt) {
-        popupX.value = pt.x;
-        popupY.value = pt.y;
+        popupXY.value = { x: pt.x, y: pt.y };
       } else {
-        popupX.value = undefined;
-        popupY.value = undefined;
+        popupXY.value = undefined;
       }
     };
     const closePopup = () => {
       popupFeatureset.value = { layerId: "", ids: [] };
-      popupX.value = undefined;
-      popupY.value = undefined;
+      popupXY.value = undefined;
     };
 
     onMounted(async () => {
@@ -364,8 +361,7 @@ export default defineComponent({
       zoomPopupY,
       zoomPopupLabel,
       zoomMetroEventHandler,
-      popupX,
-      popupY,
+      popupXY,
       popupFeatureset,
       closePopup,
     };

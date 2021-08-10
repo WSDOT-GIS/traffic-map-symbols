@@ -1,7 +1,6 @@
 <template>
   <PopupBase
-    :MapX="mapX"
-    :MapY="mapY"
+    :MapXY="mapXY"
     Width="w"
     LightThemeColor="#cce5df"
     DarkThemeColor="#007b5f"
@@ -39,6 +38,7 @@ import { getFeatureInfosByIds } from "@/utils/featureInfoUtil";
 import FeatureLayer from "@/layers/CameraLayer";
 import FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
+import XY from "@/types/XY";
 
 export default defineComponent({
   components: { PopupBase },
@@ -48,19 +48,14 @@ export default defineComponent({
       required: true,
     },
     // Supply Map X/Y for the clustered features.
-    MapX: {
-      type: Number,
-      required: false,
-    },
-    MapY: {
-      type: Number,
+    MapXY: {
+      type: Object as PropType<XY>,
       required: false,
     },
   },
   setup(props) {
     const features = ref<FeatureInfo[]>([]);
-    const mapX = ref<number | undefined>(0);
-    const mapY = ref<number | undefined>(0);
+    const mapXY = ref<XY | undefined>();
     const layerIcons = layerListIcons;
     const getDirection = (feature: FeatureInfo): string | undefined => {
       let dir: string | undefined;
@@ -86,13 +81,12 @@ export default defineComponent({
           (results) => {
             // console.log(JSON.stringify(results));
             features.value = results;
-            mapX.value = props.MapX;
-            mapY.value = props.MapY;
+            mapXY.value = props.MapXY;
             // console.log(mapX.value + ", " + mapY.value);
           }
         );
       };
-      if (mapX.value !== 0 || mapY.value !== 0 || features.value.length > 0) {
+      if (features.value.length > 0) {
         // Clean up the previous data...
         close();
         // Wait for the next update. Without doing this, scrolling won't work correctly.
@@ -105,14 +99,12 @@ export default defineComponent({
     };
     // Emptying the feature array closes the popup...
     const close = () => {
-      mapX.value = undefined;
-      mapY.value = undefined;
+      mapXY.value = undefined;
       features.value = [];
     };
 
     return {
-      mapX,
-      mapY,
+      mapXY,
       features,
       layerIcons,
       close,

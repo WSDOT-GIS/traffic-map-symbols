@@ -72,7 +72,6 @@ export const tryZoomToPointAsync = async (point: Point, numLevels?: number): Pro
         numLevels = 1;
     }
     const orgLevel = mapView.zoom;
-    // Tried goTo() as well, but it is a bit jumpy...
     await mapView.goTo({
         target: point,
         zoom: mapView.zoom += 1
@@ -114,14 +113,10 @@ export const toScreenXY = (mapX: number, mapY: number): { x: number, y: number }
 export const panMap = async (shiftX: number, shiftY: number): Promise<string> => {
     //console.log("panMap X: " + shiftX + ", Y: " + shiftY);
     const screenCenter = mapView.toScreen(mapView.center);
-    //console.log(
-    //     "Screen Center X: " + screenCenter.x + ", Y: " + screenCenter.y
-    // );
     const mapCenter = mapView.toMap({
         x: screenCenter.x - shiftX,
         y: screenCenter.y - shiftY,
     });
-    //mapView.center = mapCenter;
     await mapView.goTo(mapCenter, {
         duration: 300,
         easing: "ease-in"
@@ -130,7 +125,6 @@ export const panMap = async (shiftX: number, shiftY: number): Promise<string> =>
         console.error(err);
         return err;
     });
-    //console.log("Map center X: " + mapCenter.x + ", Y: " + mapCenter.y);
     return "success";
 }
 
@@ -188,8 +182,7 @@ export const bufferByPixels = (distancePixel: number, screenPoint?: { x: number,
     if (screenPoint && mapPoint) {
         const ptShift = mapView.toMap({ x: screenPoint.x + distancePixel, y: screenPoint.y });
         const mapDist = Math.abs(ptShift.x - mapPoint.x);
-        console.log("Map distance: " + mapDist);
-
+        // console.log("Map distance: " + mapDist);
         const outBuff = geodesicBuffer(
             mapPoint,
             mapDist,
