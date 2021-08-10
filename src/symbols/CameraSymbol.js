@@ -1,11 +1,15 @@
-import CIMSymbol from "@arcgis/core/symbols/CIMSymbol";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.clusterSymbol = void 0;
+const tslib_1 = require("tslib");
+const CIMSymbol_1 = tslib_1.__importDefault(require("@arcgis/core/symbols/CIMSymbol"));
 // import SimpleMarkerSymbol from "@arcgis/core/symbols/SimpleMarkerSymbol";
 // const symbol = new SimpleMarkerSymbol({
 //     size: "12px",
 //     color: "black",
 //     path: "M0 5a2 2 0 0 1 2-2h7.5a2 2 0 0 1 1.983 1.738l3.11-1.382A1 1 0 0 1 16 4.269v7.462a1 1 0 0 1-1.406.913l-3.111-1.382A2 2 0 0 1 9.5 13H2a2 2 0 0 1-2-2V5z"
 // });
-const symbol = new CIMSymbol({
+const symbol = new CIMSymbol_1.default({
     data: {
         "type": "CIMSymbolReference",
         "symbol": {
@@ -819,7 +823,7 @@ const symbol = new CIMSymbol({
         }
     }
 });
-export const clusterSymbol = new CIMSymbol({
+exports.clusterSymbol = new CIMSymbol_1.default({
     data: {
         "type": "CIMSymbolReference",
         "symbol": {
@@ -1059,5 +1063,5 @@ export const clusterSymbol = new CIMSymbol({
         }
     }
 });
-export default symbol;
+exports.default = symbol;
 //# sourceMappingURL=CameraSymbol.js.map

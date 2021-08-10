@@ -1,3 +1,6 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.layerListIcons = void 0;
 /* eslint-disable no-useless-escape */
 const layerListIcons = [{
         title: "Traffic Cameras",
@@ -111,5 +114,5 @@ const layerListIcons = [{
     `
     }
 ];
-export { layerListIcons };
+exports.layerListIcons = layerListIcons;
 //# sourceMappingURL=IconDefinitions.js.map

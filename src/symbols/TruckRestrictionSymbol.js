@@ -1,5 +1,8 @@
-import CIMSymbol from "@arcgis/core/symbols/CIMSymbol";
-const symbol = new CIMSymbol({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = require("tslib");
+const CIMSymbol_1 = tslib_1.__importDefault(require("@arcgis/core/symbols/CIMSymbol"));
+const symbol = new CIMSymbol_1.default({
     data: {
         type: "CIMSymbolReference",
         symbol: {
@@ -511,5 +514,5 @@ const symbol = new CIMSymbol({
         }
     }
 });
-export default symbol;
+exports.default = symbol;
 //# sourceMappingURL=TruckRestrictionSymbol.js.map

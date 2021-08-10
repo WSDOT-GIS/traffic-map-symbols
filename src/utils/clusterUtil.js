@@ -1,9 +1,13 @@
-import FeatureReductionCluster from "@arcgis/core/layers/support/FeatureReductionCluster";
-import { clusterSymbol } from "@/symbols/CameraSymbol";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.adjustCluster = exports.clusterConfig = void 0;
+const tslib_1 = require("tslib");
+const FeatureReductionCluster_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/FeatureReductionCluster"));
+const CameraSymbol_1 = require("@/symbols/CameraSymbol");
 const maxScale = 19000;
 const defaultRadius = 60;
 const labelColor = "#fff";
-const clusterConfig = new FeatureReductionCluster({
+const clusterConfig = new FeatureReductionCluster_1.default({
     clusterRadius: defaultRadius,
     clusterMinSize: 12,
     clusterMaxSize: 25,
@@ -108,12 +112,12 @@ const clusterConfig = new FeatureReductionCluster({
         },
     ],
 });
+exports.clusterConfig = clusterConfig;
 // The symbol property is undocumented, so use with caution.
 // https://community.esri.com/t5/arcgis-api-for-javascript-ideas/arcgis-javascript-4-cluster-renderer/idc-p/1059638#M48
-clusterConfig.set("symbol", clusterSymbol);
-export { clusterConfig };
+clusterConfig.set("symbol", CameraSymbol_1.clusterSymbol);
 // Watch scale change...
-export const adjustCluster = (newScale, oldScale) => {
+const adjustCluster = (newScale, oldScale) => {
     // Reduce cluster radius at max scale...
     if (newScale > maxScale && oldScale < maxScale) {
         clusterConfig.clusterRadius = defaultRadius;
@@ -122,4 +126,5 @@ export const adjustCluster = (newScale, oldScale) => {
         clusterConfig.clusterRadius = 10;
     }
 };
+exports.adjustCluster = adjustCluster;
 //# sourceMappingURL=clusterUtil.js.map

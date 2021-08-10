@@ -97,6 +97,8 @@ import CoordinatesView from "@/components/CoordinatesView.vue";
 import MyLocationView from "@/components/MyLocationView.vue";
 import ZoomButtonView from "@/components/ZoomButtonView.vue";
 import RestAreasLayer from "@/layers/RestAreasLayer"
+import { inject } from 'vue'
+
 export default defineComponent({
   components: {
     ZoomPopupView,
@@ -114,6 +116,7 @@ export default defineComponent({
     ZoomButtonView,
   },
   setup() {
+
     const store = useStore();
     // Zoom popup...
     const zoomPopupVisible = ref(false);
@@ -153,7 +156,6 @@ export default defineComponent({
       popupX.value = 0;
       popupY.value = 0;
     };
-
     onMounted(async () => {
       const esriMap = await import("../esri-stuff/esriMap");
       mapDiv = document.getElementById("esri-map-view") as HTMLDivElement;
@@ -257,7 +259,7 @@ export default defineComponent({
                 arrayFound.results.push(eachResult);
               } 
               else {
-                console.log(store.state.layerList)
+                
                 console.log(eachResult.graphic.layer.title)
                 const layerInfo = store.state.layerList.find(
                   (layerInfo) =>

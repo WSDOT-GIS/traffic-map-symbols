@@ -1,12 +1,15 @@
-import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
-import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
-import { weatherStationSymbol } from "@/symbols/WeatherStationSymbol";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = require("tslib");
+const GeoJSONLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/GeoJSONLayer"));
+const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
+const WeatherStationSymbol_1 = require("@/symbols/WeatherStationSymbol");
 // import WeatherStationInfo from "@/types/WeatherStationsInfo"
 // import Graphic from "@arcgis/core/Graphic"
-const weatherStationRenderer = new simpleRenderer({
-    symbol: weatherStationSymbol
+const weatherStationRenderer = new SimpleRenderer_1.default({
+    symbol: WeatherStationSymbol_1.weatherStationSymbol
 });
-const WeatherStationsLayer = new GeoJSONLayer({
+const WeatherStationsLayer = new GeoJSONLayer_1.default({
     id: "weather-stations-layer",
     url: "http://hqtob1webtmdev1/GISData/WeatherStations.json",
     title: "Weather Stations",
@@ -14,5 +17,5 @@ const WeatherStationsLayer = new GeoJSONLayer({
     //popupTemplate: weatherStationsPopup,
     visible: false
 });
-export default WeatherStationsLayer;
+exports.default = WeatherStationsLayer;
 //# sourceMappingURL=WeatherStationsLayer.js.map

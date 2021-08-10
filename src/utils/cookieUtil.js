@@ -1,5 +1,8 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteCookie = exports.checkCookie = exports.getCookie = exports.setCookie = void 0;
 const maxDays = 30;
-export const setCookie = (name, val) => {
+const setCookie = (name, val) => {
     const date = new Date();
     const value = val;
     // Set it expire in days
@@ -7,7 +10,8 @@ export const setCookie = (name, val) => {
     // Set it
     document.cookie = name + "=" + value + "; expires=" + date.toUTCString() + "; path=/";
 };
-export const getCookie = (name) => {
+exports.setCookie = setCookie;
+const getCookie = (name) => {
     const value = "; " + document.cookie;
     const parts = value.split("; " + name + "=");
     let cookieValue = "";
@@ -22,17 +26,20 @@ export const getCookie = (name) => {
     }
     return cookieValue;
 };
-export const checkCookie = (name) => {
-    if (getCookie(name))
+exports.getCookie = getCookie;
+const checkCookie = (name) => {
+    if (exports.getCookie(name))
         return true;
     else
         return false;
 };
-export const deleteCookie = (name) => {
+exports.checkCookie = checkCookie;
+const deleteCookie = (name) => {
     const date = new Date();
     // Set it expire in -1 days
     date.setTime(date.getTime() + (-1 * 24 * 60 * 60 * 1000));
     // Set it
     document.cookie = name + "=; expires=" + date.toUTCString() + "; path=/";
 };
+exports.deleteCookie = deleteCookie;
 //# sourceMappingURL=cookieUtil.js.map

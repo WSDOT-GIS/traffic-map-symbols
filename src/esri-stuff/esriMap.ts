@@ -19,12 +19,12 @@ import MountainPassLayer from "@/layers/MountainPassesLayer";
 import ExtentInfo from "@/types/ExtentInfo";
 import { convert2EsriExtent } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
-
 EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
+console.log(globalThis.map)
+
 export const webmap = new WebMap({
     layers: [TrafficLayer, ParkRideLayer,  CameraLayer, PointRestrictionsLayer, LineRestrictionsLayer, RoadAlertsLayer, RestAreasLayer, WeatherStationsLayer, MountainPassLayer],
 });
-
 export const mapView = new MapView({
     container: "esri-map-view",
     map: webmap,
@@ -32,10 +32,8 @@ export const mapView = new MapView({
         rotationEnabled: false // Disables map rotation
     }
 });
-
 // Zoom buttons are replaced with the custom Vue components.
 mapView.ui.remove("zoom");
-
 export const init = (container: HTMLDivElement): void => {
     mapView.container = container;
     mapView.when()

@@ -1,10 +1,13 @@
-import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
-import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
-import symbol from "@/symbols/AlertSymbol";
-const roadAlertsRenderer = new simpleRenderer({
-    symbol: symbol
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = require("tslib");
+const GeoJSONLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/GeoJSONLayer"));
+const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
+const AlertSymbol_1 = tslib_1.__importDefault(require("@/symbols/AlertSymbol"));
+const roadAlertsRenderer = new SimpleRenderer_1.default({
+    symbol: AlertSymbol_1.default
 });
-const RoadAlertsLayer = new GeoJSONLayer({
+const RoadAlertsLayer = new GeoJSONLayer_1.default({
     id: "road-alerts-layer",
     url: "http://hqtob1webtmdev1/GISData/RoadAlerts.json",
     title: "Road Alerts",
@@ -12,5 +15,5 @@ const RoadAlertsLayer = new GeoJSONLayer({
     //popupTemplate: weatherStationsPopup,
     visible: false
 });
-export default RoadAlertsLayer;
+exports.default = RoadAlertsLayer;
 //# sourceMappingURL=RoadAlertLayer.js.map
