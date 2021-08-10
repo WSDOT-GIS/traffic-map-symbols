@@ -10,7 +10,6 @@
       :value="Value"
     />
     <span class="Toggle__display" hidden> </span>
-    
   </label>
 </template>
 <script lang="ts">
@@ -34,7 +33,7 @@ export default defineComponent({
   setup(props, context) {
     const onToggle = (evt: Event) => {
       const target = evt.currentTarget as HTMLInputElement;
-      console.log("checked: " + target.checked + " value: " + target.value);
+      //console.log("checked: " + target.checked + " value: " + target.value);
       context.emit("toggle", { checked: target.checked, value: target.value });
     };
     return { onToggle };
@@ -51,7 +50,7 @@ export default defineComponent({
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items:center;
+  align-items: center;
   position: relative;
   cursor: pointer;
   gap: 1ch;

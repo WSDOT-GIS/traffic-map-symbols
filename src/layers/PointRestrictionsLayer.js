@@ -1,30 +1,35 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
-const UniqueValueRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/UniqueValueRenderer"));
-const PointRestrictionsSymbol_1 = require("../symbols/PointRestrictionsSymbol");
+// import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer"
+// import { roadRestrictionPoint, bridgeRestrictionPoint } from "../symbols/PointRestrictionsSymbol"
 const GeoJSONLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/GeoJSONLayer"));
 const Field_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/Field"));
-const pointRestrictionsRenderer = new UniqueValueRenderer_1.default({
-    field: "TType",
-    uniqueValueInfos: [{
-            // All features with value of "North" will be blue
-            value: "R",
-            symbol: PointRestrictionsSymbol_1.roadRestrictionPoint
-        }, {
-            // All features with value of "East" will be green
-            value: "B",
-            symbol: PointRestrictionsSymbol_1.bridgeRestrictionPoint
-        }]
+const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
+const PointRestrictionsSymbol_1 = tslib_1.__importDefault(require("@/symbols/PointRestrictionsSymbol"));
+const renderer = new SimpleRenderer_1.default({
+    symbol: PointRestrictionsSymbol_1.default
 });
+// const pointRestrictionsRenderer = new UniqueValueRenderer({
+//     field: "TType",
+//     uniqueValueInfos: [{
+//         // All features with value of "North" will be blue
+//         value: "R",
+//         symbol: roadRestrictionPoint
+//     }, {
+//         // All features with value of "East" will be green
+//         value: "B",
+//         symbol: bridgeRestrictionPoint
+//     }]
+// })
 // const pointRestrictionsRenderer2 = new SimpleRenderer({
 //     symbol: Symbol
 // })
 const PointRestrictionsLayer = new GeoJSONLayer_1.default({
     id: "point-restrictions-layer",
-    url: "http://hqtob1webtmdev1/GISData/PointRestrictions.json",
+    url: "https://data.wsdot.wa.gov/travelcenter/PointRestrictions.json",
     title: "Restriction Points",
-    renderer: pointRestrictionsRenderer,
+    renderer: renderer,
     visible: false,
     fields: [
         new Field_1.default({ name: "state", alias: "State", type: "string" }),

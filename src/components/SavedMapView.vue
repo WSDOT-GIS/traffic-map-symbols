@@ -1,15 +1,16 @@
 <template>
   <div id="savedMapWidget" class="w3-left-align">
     <div id="saved-map-list-title w3-medium">My saved maps</div>
-    <ul id="saved-map-list-container" class="w3-ul">
+    <ul id="saved-map-list-container" class="w3-ul" ref="listContainerRef">
       <li
         v-for="(item, index) in mapList"
         :key="index"
         class="w3-border-0"
         style="padding: 0"
       >
-        <button :title="'Show ' + item.title"
-          class="w3-transparent w3-btn"
+        <button
+          :title="'Show ' + item.title"
+          class="saved-map-title w3-btn w3-transparent"
           :class="{
             'w3-text-blue': item.selected,
             'w3-text-dark-grey': !item.selected,
@@ -18,8 +19,10 @@
         >
           {{ item.title }}
         </button>
-        <button :title="'Delete ' + item.title" :aria-label="'Delete ' + item.title"
-          class="w3-right w3-transparent w3-button"
+        <button
+          :title="'Delete ' + item.title"
+          :aria-label="'Delete ' + item.title"
+          class="w3-right w3-button w3-transparent"
           @click="removeItem($event, item)"
         >
           &times;
@@ -45,6 +48,7 @@ import WsdotButtonView from "@/components/WsdotButtonView.vue";
 import SaveMapFormView from "@/components/SaveMapFormView.vue";
 import LayerInfo from "@/types/LayerInfo";
 import { validateBasemapName } from "@/layers/Basemaps";
+//import { mapView } from "@/esri-stuff/esriMap";
 
 export default defineComponent({
   components: { WsdotButtonView, SaveMapFormView },
@@ -63,7 +67,7 @@ export default defineComponent({
     });
     const showForm = () => {
       formVisible.value = true;
-      console.log("showForm: " + formVisible.value);
+      //console.log("showForm: " + formVisible.value);
     };
     const closeForm = () => {
       formVisible.value = false;
@@ -102,7 +106,7 @@ export default defineComponent({
     };
 
     const removeItem = (event: Event, item: SavedMapInfo) => {
-      console.log(item.title);
+      //console.log(item.title);
       const idx = mapList.value.findIndex((eachItem) => {
         if (eachItem == item) {
           return true;
@@ -112,6 +116,9 @@ export default defineComponent({
       const value = JSON.stringify(mapList.value);
       setCookie("saved-map-list", value);
     };
+
+    // MapView resize event...
+    //mapView.on("resize", () => {});
 
     return {
       mapList,
@@ -136,6 +143,9 @@ button {
 }
 .saved-map-item {
   width: 100%;
+}
+.saved-map-title {
+ 
 }
 .remove-saved-map-button {
   height: 100%;

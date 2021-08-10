@@ -1,7 +1,7 @@
 import IconInfo from "@/types/IconInfo"
 /* eslint-disable no-useless-escape */
 const layerListIcons: IconInfo[] = [{
-    title: "Traffic Cameras",
+    id: "traffic-camera-layer",
     paths: `
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
     <path d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12Z" fill="#007B5F"/>
@@ -10,7 +10,7 @@ const layerListIcons: IconInfo[] = [{
     </svg>`
 },
 {
-    title: "Restriction Points",
+    id: "point-restrictions-layer",
     paths: `
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
     <path d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12Z" fill="#FFC107"/>
@@ -22,7 +22,7 @@ const layerListIcons: IconInfo[] = [{
     </svg>`
 },
 {
-    title: "Restriction Lines",
+    id: "line-restrictions-layer",
     paths: `
         <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 24 24" version="1.1" id="svg3116" sodipodi:docname="verticalClearanceLines.svg" inkscape:version="0.92.3 (2405546, 2018-03-11)">
             <metadata id="metadata3122">
@@ -48,7 +48,7 @@ const layerListIcons: IconInfo[] = [{
         </svg>`
 },
 {
-    title: "Weather Stations",
+    id: "weather-stations-layer",
     paths: `
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
     <path d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12Z" fill="#005151"/>
@@ -61,7 +61,7 @@ const layerListIcons: IconInfo[] = [{
     </svg>`
 },
 {
-    title: "Park and Rides",
+    id: "park-ride-layer",
     paths: `
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
     <path d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12Z" fill="#97D700"/>
@@ -70,7 +70,7 @@ const layerListIcons: IconInfo[] = [{
     </svg>`
 },
 {
-    title: "Mountain Passes",
+    id: "mountain-passes-layer",
     paths: `
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
     <path d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12Z" fill="#66B09F"/>
@@ -82,8 +82,8 @@ const layerListIcons: IconInfo[] = [{
     </svg>`
 },
 {
-    title: "Rest Areas",
-    paths:`
+    id: "rest-areas-layer",
+    paths: `
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
 <path d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12Z" fill="#00AEC7"/>
 <path d="M22.4167 12.1967C22.4167 17.8594 17.7565 22.4563 12 22.4563C6.24354 22.4563 1.58334 17.8594 1.58334 12.1967C1.58334 6.53392 6.24354 1.93703 12 1.93703C17.7565 1.93703 22.4167 6.53392 22.4167 12.1967Z" fill="#00AEC7" stroke="white" stroke-width="0.5"/>
@@ -101,9 +101,9 @@ const layerListIcons: IconInfo[] = [{
     `
 },
 {
-    title:"Road Alerts",
+    id: "road-alerts-layer",
     paths:
-    `
+        `
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
     <path d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12Z" fill="#FF6A13"/>
     <path d="M22.4167 11.8316C22.4167 17.4986 17.7563 22.0986 12 22.0986C6.2437 22.0986 1.58334 17.4986 1.58334 11.8316C1.58334 6.16464 6.2437 1.56464 12 1.56464C17.7563 1.56464 22.4167 6.16464 22.4167 11.8316Z" fill="#FF6A13" stroke="white" stroke-width="0.5"/>

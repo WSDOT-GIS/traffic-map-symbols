@@ -2,17 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getFeatureInfosByIds = exports.getFeatureInfoById = exports.getGraphicsInfoById = void 0;
 const tslib_1 = require("tslib");
-// import MountainPassesInfo from "@/types/MountainPassesInfo";
-// import RestrictionInfo from "@/types/RestrictionInfo";
-// import ParkRideInfo from "@/types/ParkRideInfo";
-// import CameraInfo from "@/types/CameraInfo";
-/* Layers */
-// import ParkRideLayer from "@/layers/ParkRideLayer";
-// import CameraLayer from "@/layers/CameraLayer";
-// import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
-// import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
-// import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
-// import MountainPassLayer from "@/layers/MountainPassesLayer";
+const projection_1 = require("@arcgis/core/geometry/projection");
+const SpatialReference_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/SpatialReference"));
 const getGraphicsInfoById = (graphic, layer) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     const query = layer.createQuery();
     const idName = layer.objectIdField;
@@ -51,10 +42,31 @@ const getFeatureInfosByIds = (ids, layer) => tslib_1.__awaiter(void 0, void 0, v
 });
 exports.getFeatureInfosByIds = getFeatureInfosByIds;
 const convert2Info = (g) => {
+    let mapPoint;
+    // Get the mid/center point...
+    switch (g.geometry.type) {
+        case "point": {
+            mapPoint = g.geometry;
+            break;
+        }
+        case "polygon": {
+            const polygon = g.geometry;
+            mapPoint = polygon.centroid;
+            break;
+        }
+        default: {
+            const ext = g.geometry.extent;
+            mapPoint = ext.center;
+            break;
+        }
+    }
+    // Project to the map coordinate. Without doing this lat/long get passed.
+    const projPt = projection_1.project(mapPoint, SpatialReference_1.default.WebMercator);
     const info = {
-        layerTitle: g.layer.title,
+        layerId: g.layer.id,
         attributes: g.attributes,
-        id: g.getObjectId()
+        id: g.getObjectId(),
+        mapPoint: { x: projPt.x, y: projPt.y },
     };
     return info;
     // let info: unknown

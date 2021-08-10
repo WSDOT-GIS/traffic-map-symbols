@@ -78,7 +78,7 @@ const graphics = [
 ]
 
 const layer = new FeatureLayer({
-    id: "zoom-areas",
+    id: "zoom-areas-layer",
     title: "Metro Areas",
     fields: [
         new Field({

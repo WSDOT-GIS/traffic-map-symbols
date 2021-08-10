@@ -65,7 +65,7 @@ const fields = [
 ];
 const layer = new GeoJSONLayer_1.default({
     id: "park-ride-layer",
-    url: "http://hqtob1webtmdev1/GISData/ParkAndRides.json",
+    url: "https://data.wsdot.wa.gov/travelcenter/ParkAndRides.json",
     title: "Park and Rides",
     renderer: renderer,
     fields: fields,

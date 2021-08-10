@@ -9,11 +9,10 @@ const roadAlertsRenderer = new SimpleRenderer_1.default({
 });
 const RoadAlertsLayer = new GeoJSONLayer_1.default({
     id: "road-alerts-layer",
-    url: "http://hqtob1webtmdev1/GISData/RoadAlerts.json",
-    title: "Road Alerts",
+    url: "https://data.wsdot.wa.gov/travelcenter/RoadAlerts.json",
+    title: "Travel Alerts",
     renderer: roadAlertsRenderer,
-    //popupTemplate: weatherStationsPopup,
-    visible: false
+    visible: true
 });
 exports.default = RoadAlertsLayer;
 //# sourceMappingURL=RoadAlertLayer.js.map

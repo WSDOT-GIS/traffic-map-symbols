@@ -1,5 +1,5 @@
 interface IconInfo {
-    title: string;
+    id: string;
     paths: string;
 }
 export default IconInfo;

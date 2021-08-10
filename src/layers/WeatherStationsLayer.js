@@ -11,7 +11,7 @@ const weatherStationRenderer = new SimpleRenderer_1.default({
 });
 const WeatherStationsLayer = new GeoJSONLayer_1.default({
     id: "weather-stations-layer",
-    url: "http://hqtob1webtmdev1/GISData/WeatherStations.json",
+    url: "https://data.wsdot.wa.gov/travelcenter/WeatherStations.json",
     title: "Weather Stations",
     renderer: weatherStationRenderer,
     //popupTemplate: weatherStationsPopup,

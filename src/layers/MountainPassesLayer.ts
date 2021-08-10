@@ -8,7 +8,7 @@ const mountainPassRenderer = new simpleRenderer({
 })
 const FeatureLayer = new GeoJSONLayer({
     id: "mountain-passes-layer",
-    url: "http://hqtob1webtmdev1/GISData/MountainPasses.json",
+    url: "https://data.wsdot.wa.gov/travelcenter/MountainPasses.json",
     title: "Mountain Passes",
     renderer: mountainPassRenderer,
     visible: false

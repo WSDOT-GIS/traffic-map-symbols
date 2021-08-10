@@ -1,30 +1,31 @@
 <template>
   <PopupBase
-    :MapX="mapX"
-    :MapY="mapY"
     LightThemeColor="#fff3cd"
     DarkThemeColor="#FFC107"
-    BannerText="Road Restriction"
     :Features="[feature]"
-    TitleFieldName="location_description"
-    :ContentConfig="[
-      { label: 'Travel delay', value: { text: '???' } },
-      { label: '', value: { fieldName: 'restriction_comment' } },
-      {
-        label: 'Date effective',
-        value: {
-          fieldName: 'date_effective',
-          isDate: true,
+    :Config="{
+      bannerText: { text: 'Truck Restriction' },
+      badgeText: { custom: getBadgeText },
+      title: { fieldName: 'location_description' },
+      content: [
+        { label: 'Travel delay', value: { text: '???' } },
+        { label: '', value: { fieldName: 'restriction_comment' } },
+        {
+          label: 'Date effective',
+          value: {
+            fieldName: 'date_effective',
+            isDate: true,
+          },
         },
-      },
-      {
-        label: 'Last updated',
-        value: {
-          fieldName: 'RecordUpdateDate',
-          isDate: true,
+        {
+          label: 'Last updated',
+          value: {
+            fieldName: 'RecordUpdateDate',
+            isDate: true,
+          },
         },
-      },
-    ]"
+      ],
+    }"
     @close="close"
   >
     <template v-slot:icon>
@@ -80,22 +81,22 @@ export default defineComponent({
       type: Object as PropType<FeaturesetInfo>,
       required: true,
     },
-    MapX: {
-      type: Number,
-      required: true,
-    },
-    MapY: {
-      type: Number,
-      required: true,
-    },
+    // MapX: {
+    //   type: Number,
+    //   required: true,
+    // },
+    // MapY: {
+    //   type: Number,
+    //   required: true,
+    // },
   },
   setup(props) {
     const feature = ref<FeatureInfo>();
-    const mapX = ref(0);
-    const mapY = ref(0);
+    // const mapX = ref(0);
+    // const mapY = ref(0);
 
     watch(props, () => {
-      if (props.Featureset.layerTitle === FeatureLayer.title) {
+      if (props.Featureset.layerId === FeatureLayer.id) {
         show();
       } else {
         close();
@@ -108,13 +109,14 @@ export default defineComponent({
           (result) => {
             if (result) {
               feature.value = result;
-              mapX.value = props.MapX;
-              mapY.value = props.MapY;
+              // mapX.value = props.MapX;
+              // mapY.value = props.MapY;
             }
           }
         );
       };
-      if (mapX.value !== 0 || mapY.value !== 0 || feature.value) {
+      if (feature.value) {
+      // if (mapX.value !== 0 || mapY.value !== 0 || feature.value) {
         // Clean up the previous data...
         close();
         setVal();
@@ -124,16 +126,31 @@ export default defineComponent({
     };
     // Setting XY to 0 closes the popup...
     const close = () => {
-      mapX.value = 0;
-      mapY.value = 0;
+      // mapX.value = 0;
+      // mapY.value = 0;
       feature.value = undefined;
     };
 
+    const getBadgeText = (feature: FeatureInfo): string => {
+      const ttype = feature.attributes["TType"];
+      let text = "";
+      switch (ttype) {
+        case "R":
+          text = "Road";
+          break;
+        case "B":
+          text = "Bridge";
+          break;
+      }
+      return text;
+    };
+
     return {
-      mapX,
-      mapY,
+      // mapX,
+      // mapY,
       feature,
       close,
+      getBadgeText,
     };
   },
 });

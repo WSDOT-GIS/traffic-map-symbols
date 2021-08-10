@@ -1,16 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.adjustCluster = exports.clusterConfig = void 0;
+exports.adjustCluster = exports.clusterConfig = exports.clusterMaxScale = void 0;
 const tslib_1 = require("tslib");
 const FeatureReductionCluster_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/FeatureReductionCluster"));
-const CameraSymbol_1 = require("@/symbols/CameraSymbol");
-const maxScale = 19000;
+const CameraClusterSymbol_1 = tslib_1.__importDefault(require("@/symbols/CameraClusterSymbol"));
+exports.clusterMaxScale = 19000;
 const defaultRadius = 60;
-const labelColor = "#fff";
+const labelColor = "#005151"; //"#fff";
 const clusterConfig = new FeatureReductionCluster_1.default({
     clusterRadius: defaultRadius,
-    clusterMinSize: 12,
-    clusterMaxSize: 25,
+    clusterMinSize: 20,
+    clusterMaxSize: 36,
     labelingInfo: [
         {
             deconflictionStrategy: "none",
@@ -27,8 +27,8 @@ const clusterConfig = new FeatureReductionCluster_1.default({
                 },
                 // haloColor: "#45b6fe",
                 // haloSize: 0
-                xoffset: -3,
-                yoffset: -1
+                xoffset: 0,
+                yoffset: 0
             },
             labelPlacement: "center-center",
         },
@@ -47,8 +47,8 @@ const clusterConfig = new FeatureReductionCluster_1.default({
                 },
                 // haloColor: "#3792cd",
                 // haloSize: 1
-                xoffset: -3,
-                yoffset: -1
+                xoffset: 0,
+                yoffset: 0
             },
             labelPlacement: "center-center",
         },
@@ -67,8 +67,8 @@ const clusterConfig = new FeatureReductionCluster_1.default({
                 },
                 // haloColor: "#296d98",
                 // haloSize: 1
-                xoffset: -3,
-                yoffset: -1
+                xoffset: 0,
+                yoffset: 0
             },
             labelPlacement: "center-center",
         }, {
@@ -86,8 +86,8 @@ const clusterConfig = new FeatureReductionCluster_1.default({
                 },
                 // haloColor: "#1c4966",
                 // haloSize: 1
-                xoffset: -3,
-                yoffset: -2
+                xoffset: 0,
+                yoffset: 0
             },
             labelPlacement: "center-center",
         }, {
@@ -105,8 +105,8 @@ const clusterConfig = new FeatureReductionCluster_1.default({
                 },
                 // haloColor: "#0e2433",
                 // haloSize: 1,
-                xoffset: -5,
-                yoffset: -2
+                xoffset: 0,
+                yoffset: 0
             },
             labelPlacement: "center-center",
         },
@@ -115,14 +115,14 @@ const clusterConfig = new FeatureReductionCluster_1.default({
 exports.clusterConfig = clusterConfig;
 // The symbol property is undocumented, so use with caution.
 // https://community.esri.com/t5/arcgis-api-for-javascript-ideas/arcgis-javascript-4-cluster-renderer/idc-p/1059638#M48
-clusterConfig.set("symbol", CameraSymbol_1.clusterSymbol);
+clusterConfig.set("symbol", CameraClusterSymbol_1.default);
 // Watch scale change...
 const adjustCluster = (newScale, oldScale) => {
     // Reduce cluster radius at max scale...
-    if (newScale > maxScale && oldScale < maxScale) {
+    if (newScale > exports.clusterMaxScale && oldScale < exports.clusterMaxScale) {
         clusterConfig.clusterRadius = defaultRadius;
     }
-    else if (newScale < maxScale && oldScale > maxScale) {
+    else if (newScale < exports.clusterMaxScale && oldScale > exports.clusterMaxScale) {
         clusterConfig.clusterRadius = 10;
     }
 };

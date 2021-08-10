@@ -1,15 +1,15 @@
 import FeatureReductionCluster from "@arcgis/core/layers/support/FeatureReductionCluster";
 
-import { clusterSymbol } from "@/symbols/CameraSymbol";
+import clusterSymbol from "@/symbols/CameraClusterSymbol";
 
-const maxScale = 19000;
+export const clusterMaxScale = 19000;
 const defaultRadius = 60;
 
-const labelColor = "#fff";
+const labelColor = "#005151";//"#fff";
 const clusterConfig = new FeatureReductionCluster({
     clusterRadius: defaultRadius,
-    clusterMinSize: 12,
-    clusterMaxSize: 25,
+    clusterMinSize: 20,
+    clusterMaxSize: 36,
     labelingInfo: [
         {
             deconflictionStrategy: "none",
@@ -26,8 +26,8 @@ const clusterConfig = new FeatureReductionCluster({
                 },
                 // haloColor: "#45b6fe",
                 // haloSize: 0
-                xoffset: -3,
-                yoffset: -1
+                xoffset: 0,
+                yoffset: 0
             },
             labelPlacement: "center-center",
         },
@@ -46,8 +46,8 @@ const clusterConfig = new FeatureReductionCluster({
                 },
                 // haloColor: "#3792cd",
                 // haloSize: 1
-                xoffset: -3,
-                yoffset: -1
+                xoffset: 0,
+                yoffset: 0
             },
             labelPlacement: "center-center",
         },
@@ -66,8 +66,8 @@ const clusterConfig = new FeatureReductionCluster({
                 },
                 // haloColor: "#296d98",
                 // haloSize: 1
-                xoffset: -3,
-                yoffset: -1
+                xoffset: 0,
+                yoffset: 0
             },
             labelPlacement: "center-center",
         }, {
@@ -85,8 +85,8 @@ const clusterConfig = new FeatureReductionCluster({
                 },
                 // haloColor: "#1c4966",
                 // haloSize: 1
-                xoffset: -3,
-                yoffset: -2
+                xoffset: 0,
+                yoffset: 0
             },
             labelPlacement: "center-center",
         }, {
@@ -104,8 +104,8 @@ const clusterConfig = new FeatureReductionCluster({
                 },
                 // haloColor: "#0e2433",
                 // haloSize: 1,
-                xoffset: -5,
-                yoffset: -2
+                xoffset: 0,
+                yoffset: 0
             },
             labelPlacement: "center-center",
         },
@@ -120,14 +120,16 @@ export { clusterConfig }
 // Watch scale change...
 export const adjustCluster = (newScale: number, oldScale: number): void => {
     // Reduce cluster radius at max scale...
-    if (newScale > maxScale && oldScale < maxScale) {
+    if (newScale > clusterMaxScale && oldScale < clusterMaxScale) {
         clusterConfig.clusterRadius = defaultRadius;
     }
-    else if (newScale < maxScale && oldScale > maxScale) {
+    else if (newScale < clusterMaxScale && oldScale > clusterMaxScale) {
         clusterConfig.clusterRadius = 10;
     }
 
 }
+
+
 
 
 

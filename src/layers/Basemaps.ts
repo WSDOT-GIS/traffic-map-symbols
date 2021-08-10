@@ -1,10 +1,12 @@
 import Basemap from "@arcgis/core/Basemap";
 import TileLayer from "@arcgis/core/layers/TileLayer";
 import BasemapInfo from "@/types/BasemapInfo";
+
 export const getDefaultBasemapInfo = (): BasemapInfo => { return basemaps[0] }
 const urlBasemap =
     //"https://data.wsdot.wa.gov/arcgis/rest/services/Shared/WebBaseMapWebMercator/MapServer";
-    "https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/TravelCenterBasemapTileTest/MapServer"
+    //"https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/TravelCenterBasemapTileTest/MapServer"
+    "https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/Travel_Center_Basemap_Dev/MapServer"
 
 // Array of basemaps. The first one is the default.
 const basemaps: BasemapInfo[] = [

@@ -1,69 +1,71 @@
 <template>
   <PopupBase
-    :MapX="mapX"
-    :MapY="mapY"
     LightThemeColor="#ccdcdc"
     DarkThemeColor="#005151"
-    BannerText="Weather Station"
     :Features="[feature]"
-    TitleFieldName="WeatherStationDescription"
-    :ContentConfig="[
-      {
-        label: 'Location',
-        value: {
-          custom: getCoord,
+    :Config="{
+      bannerText: { text: 'Weather Station' },
+      title: { fieldName: 'WeatherStationDescription' },
+      content: [
+        {
+          label: 'Location',
+          value: {
+            custom: getCoord,
+          },
         },
-      },
-      { label: 'Surface temp', value: { custom: getSurfTemp } },
-      { label: 'Air temp', value: { custom: getAirTemp } },
-      {
-        label: '24hr high/low',
-        value: { custom: getHighLowTemp },
-      },
-      {
-        label: 'Pressure',
-        value: { custom: getPressure },
-      },
-      { label: 'Elevation', value: { custom: getElev } },
-      {
-        label: 'Humidity',
-        value: { custom: getHumidity },
-      },
-      {
-        label: 'Dew point',
-        value: { custom: getDewPoint },
-      },
-      {
-        label: 'Visibility',
-        value: { custom: getVisibility },
-      },
-      {
-        label: 'Wind speed',
-        value: {
-          custom: getWindSpeed,
+        { label: 'Surface temp', value: { custom: getSurfTemp } },
+        { label: 'Air temp', value: { custom: getAirTemp } },
+        {
+          label: '24hr high/low',
+          value: { custom: getHighLowTemp },
         },
-      },
-      {
-        label: 'Wind dir.',
-        value: {
-          fieldName: 'CardinalCompassDirection',
+        {
+          label: 'Pressure',
+          value: { custom: getPressure },
         },
-      },
-      {
-        label: 'Last updated',
-        value: {
-          fieldName: 'WeatherReportDateTime',
-          isDate: true,
-          isTime: true,
+        { label: 'Elevation', value: { custom: getElev } },
+        {
+          label: 'Humidity',
+          value: { custom: getHumidity },
         },
-      },
-    ]"
+        {
+          label: 'Dew point',
+          value: { custom: getDewPoint },
+        },
+        {
+          label: 'Visibility',
+          value: { custom: getVisibility },
+        },
+        {
+          label: 'Wind speed',
+          value: {
+            custom: getWindSpeed,
+          },
+        },
+        {
+          label: 'Wind dir.',
+          value: {
+            fieldName: 'CardinalCompassDirection',
+          },
+        },
+        {
+          label: 'Last updated',
+          value: {
+            fieldName: 'WeatherReportDateTime',
+            isDate: true,
+            isTime: true,
+          },
+        },
+      ],
+    }"
     @close="close"
   >
     <template v-slot:icon>
-      <div v-html="layerIcons.find((x) => x.title == feature.layerTitle)?.paths" width="24"
-        height="24">
-      </div >
+      <div
+        v-html="layerIcons.find((x) => x.id == feature?.layerId)?.paths"
+        width="24"
+        height="24"
+      ></div>
     </template>
   </PopupBase>
 </template>
@@ -82,22 +84,22 @@ export default defineComponent({
       type: Object as PropType<FeaturesetInfo>,
       required: true,
     },
-    MapX: {
-      type: Number,
-      required: true,
-    },
-    MapY: {
-      type: Number,
-      required: true,
-    },
+    // MapX: {
+    //   type: Number,
+    //   required: true,
+    // },
+    // MapY: {
+    //   type: Number,
+    //   required: true,
+    // },
   },
   setup(props) {
     const feature = ref<FeatureInfo>();
-    const mapX = ref(0);
-    const mapY = ref(0);
+    // const mapX = ref(0);
+    // const mapY = ref(0);
     const layerIcons = layerListIcons;
     watch(props, () => {
-      if (props.Featureset.layerTitle === FeatureLayer.title) {
+      if (props.Featureset.layerId === FeatureLayer.id) {
         show();
       } else {
         close();
@@ -110,13 +112,13 @@ export default defineComponent({
           (result) => {
             if (result) {
               feature.value = result;
-              mapX.value = props.MapX;
-              mapY.value = props.MapY;
+              // mapX.value = props.MapX;
+              // mapY.value = props.MapY;
             }
           }
         );
       };
-      if (mapX.value !== 0 || mapY.value !== 0 || feature.value) {
+      if (feature.value) {
         // Clean up the previous data...
         close();
         nextTick(() => {
@@ -128,8 +130,8 @@ export default defineComponent({
     };
     // Setting XY to 0 closes the popup...
     const close = () => {
-      mapX.value = 0;
-      mapY.value = 0;
+      // mapX.value = 0;
+      // mapY.value = 0;
       feature.value = undefined;
     };
 
@@ -239,8 +241,8 @@ export default defineComponent({
     };
 
     return {
-      mapX,
-      mapY,
+      // mapX,
+      // mapY,
       feature,
       layerIcons,
       close,

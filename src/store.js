@@ -72,7 +72,7 @@ exports.store = vuex_1.createStore({
         setLayerList(state, payload) {
             state.layerList = payload;
             esriMap_1.webmap.layers.map((layer, index) => {
-                if (layer.title && state.layerList[index] && layer.title == state.layerList[index].title) {
+                if (layer.id && state.layerList[index] && layer.id === state.layerList[index].id) {
                     layer.visible = state.layerList[index].visible;
                 }
             });
@@ -93,7 +93,7 @@ exports.store = vuex_1.createStore({
                 esriMap_1.mapView.extent = extent;
             }
         },
-        setMapFeaturesExpanded(state, payload) {
+        setMapFeaturesExpanded(state) {
             state.mapFeaturesExpanded == "block" ? state.mapFeaturesExpanded = "none" : state.mapFeaturesExpanded = "block";
         },
     },

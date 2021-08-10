@@ -15,7 +15,12 @@ const symbol = new CIMSymbol_1.default({
                     "enable": true,
                     "anchorPointUnits": "Relative",
                     "dominantSizeAxis3D": "Y",
-                    "size": 19,
+                    "size": 24,
+                    "offsetY": 12,
+                    "anchorPoint": {
+                        "x": 0,
+                        "y": .11
+                    },
                     "billboardMode3D": "FaceNearPlane",
                     "frame": {
                         "xmin": 0,
@@ -948,11 +953,6 @@ const symbol = new CIMSymbol_1.default({
                             ]
                         }
                     },
-                    "offsetY": 9.5,
-                    "anchorPoint": {
-                        "x": 0,
-                        "y": .11
-                    }
                 }
             ]
         }

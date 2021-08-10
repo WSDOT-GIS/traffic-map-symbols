@@ -1,12 +1,15 @@
 import WebMap from "@arcgis/core/WebMap";
 import MapView from "@arcgis/core/views/MapView";
 import Point from "@arcgis/core/geometry/Point";
+import Polygon from "@arcgis/core/geometry/Polygon";
+import { geodesicBuffer } from "@arcgis/core/geometry/geometryEngine";
 import { whenTrue } from "@arcgis/core/core/watchUtils";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Layer from "@arcgis/core/layers/Layer";
 import EsriConfig from "@arcgis/core/config"
 import Graphic from "@arcgis/core/Graphic";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
+
 import TrafficLayer from "@/layers/TrafficLayer";
 import ParkRideLayer from "@/layers/ParkRideLayer";
 import CameraLayer from "@/layers/CameraLayer";
@@ -19,11 +22,13 @@ import MountainPassLayer from "@/layers/MountainPassesLayer";
 import ExtentInfo from "@/types/ExtentInfo";
 import { convert2EsriExtent } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
+import FeatureInfo from "@/types/FeatureInfo";
+
 EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
 console.log(globalThis.map)
 
 export const webmap = new WebMap({
-    layers: [TrafficLayer, ParkRideLayer,  CameraLayer, PointRestrictionsLayer, LineRestrictionsLayer, RoadAlertsLayer, RestAreasLayer, WeatherStationsLayer, MountainPassLayer],
+    layers: [TrafficLayer, RestAreasLayer, ParkRideLayer, WeatherStationsLayer, MountainPassLayer, LineRestrictionsLayer, PointRestrictionsLayer, CameraLayer, RoadAlertsLayer],
 });
 export const mapView = new MapView({
     container: "esri-map-view",
@@ -54,7 +59,7 @@ export const tryZoomToPoint = (point: Point, numLevels?: number): boolean => {
     const orgLevel = mapView.zoom;
     mapView.zoom = mapView.zoom += numLevels;
     if (mapView.zoom === orgLevel) {
-        console.log("Cannot zoom in any more.");
+        //console.log("Cannot zoom in any more.");
         isSuccess = false;
     }
     return isSuccess;
@@ -66,7 +71,6 @@ export const tryZoomToPointAsync = async (point: Point, numLevels?: number): Pro
         numLevels = 1;
     }
     const orgLevel = mapView.zoom;
-    // Tried goTo() as well, but it is a bit jumpy...
     await mapView.goTo({
         target: point,
         zoom: mapView.zoom += 1
@@ -77,7 +81,7 @@ export const tryZoomToPointAsync = async (point: Point, numLevels?: number): Pro
         console.error("tryZoomToPointAsync failed: " + error);
     });
     if (mapView.zoom === orgLevel) {
-        console.log("Cannot zoom in any more.");
+        //console.log("Cannot zoom in any more.");
         isSuccess = false;
     }
     return isSuccess;
@@ -106,16 +110,12 @@ export const toScreenXY = (mapX: number, mapY: number): { x: number, y: number }
 }
 
 export const panMap = async (shiftX: number, shiftY: number): Promise<string> => {
-    console.log("panMap X: " + shiftX + ", Y: " + shiftY);
+    //console.log("panMap X: " + shiftX + ", Y: " + shiftY);
     const screenCenter = mapView.toScreen(mapView.center);
-    console.log(
-        "Screen Center X: " + screenCenter.x + ", Y: " + screenCenter.y
-    );
     const mapCenter = mapView.toMap({
         x: screenCenter.x - shiftX,
         y: screenCenter.y - shiftY,
     });
-    //mapView.center = mapCenter;
     await mapView.goTo(mapCenter, {
         duration: 300,
         easing: "ease-in"
@@ -124,7 +124,6 @@ export const panMap = async (shiftX: number, shiftY: number): Promise<string> =>
         console.error(err);
         return err;
     });
-    console.log("Map center X: " + mapCenter.x + ", Y: " + mapCenter.y);
     return "success";
 }
 
@@ -161,13 +160,60 @@ export const getIdsFromCluster = async (clusterGraphic: Graphic, layer: Layer, m
             if (!identical) { break; }
         }
         if (identical) {
-            console.log("All points are located on the same spot!");
+            //console.log("All points are located on the same spot!");
             doReturn = true;
         }
-        else { console.log("Points are not identical."); }
+        //else { //console.log("Points are not identical."); }
     }
     if (doReturn) {
         const ids = result.features.map((feature) => { return feature.attributes[lyr.objectIdField]; })
         return ids;
+    }
+}
+
+export const bufferByPixels = (distancePixel: number, screenPoint?: { x: number, y: number }, mapPoint?: Point): Polygon => {
+    if (!screenPoint && mapPoint) {
+        screenPoint = mapView.toScreen(mapPoint);
+    }
+    if (!mapPoint && screenPoint) {
+        mapPoint = mapView.toMap(screenPoint);
+    }
+    if (screenPoint && mapPoint) {
+        const ptShift = mapView.toMap({ x: screenPoint.x + distancePixel, y: screenPoint.y });
+        const mapDist = Math.abs(ptShift.x - mapPoint.x);
+        // console.log("Map distance: " + mapDist);
+        const outBuff = geodesicBuffer(
+            mapPoint,
+            mapDist,
+            "meters"
+        ) as Polygon;
+        return outBuff;
+    }
+    else {
+        throw "Need to specify either screen or map point.";
+    }
+
+}
+
+let highlight: __esri.Handle;
+export const highlightFeature = (featureInfo: FeatureInfo): void => {
+    const layer = getLayer(featureInfo.layerId) as GeoJSONLayer;
+    mapView.whenLayerView(layer).then((layerView) => {
+        const query = layer.createQuery();
+        query.where = `${layer.objectIdField} = ${featureInfo.id}`;
+        // query.where = `${idName} IN ( ${ids.join(",")})`;
+        layer.queryFeatures(query).then((result) => {
+            if (highlight) {
+                highlight.remove();
+            }
+            highlight = layerView.highlight(result.features);
+        })
+
+    })
+}
+
+export const removeHighlight = (): void => {
+    if (highlight) {
+        highlight.remove();
     }
 }

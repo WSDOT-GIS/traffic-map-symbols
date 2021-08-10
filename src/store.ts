@@ -13,7 +13,7 @@ export interface State {
     basemap: string;
     pointerX: number;
     pointerY: number;
-    layerList: LayerInfo[];//{ index: number, title: string, visible: boolean }[],
+    layerList: LayerInfo[];
     currentExtent: ExtentInfo;
     userLocation: number[] | null;
     mapFeaturesExpanded: string;
@@ -39,18 +39,18 @@ export const store = createStore<State>({
             layerList: [],
             userLocation: null,
             mapFeaturesExpanded: "block",
-            appConfig:{//initialize appConfig as empty
+            appConfig: {//initialize appConfig as empty
                 basemap: "",
                 cameras: "",
                 lineRestrictions: "",
                 mountainPasses: "",
                 parkAndRides: "",
-                pointRestrictions:"",
-                traffic:"",
-                weatherStations:"",
+                pointRestrictions: "",
+                traffic: "",
+                weatherStations: "",
                 apiKey: "",
-                forecastSummaryAPI:"",
-                forecastExtendedAPI:""
+                forecastSummaryAPI: "",
+                forecastExtendedAPI: ""
             }
         }
     },
@@ -58,7 +58,7 @@ export const store = createStore<State>({
         completeLayerList: state => {
             return state.layerList
         },
-        completeAppConfig: state =>{
+        completeAppConfig: state => {
             return state.appConfig
         }
     },
@@ -87,12 +87,12 @@ export const store = createStore<State>({
         setLayerList(state, payload) {
             state.layerList = payload;
             webmap.layers.map((layer, index) => {
-                if (layer.title && state.layerList[index] && layer.title == state.layerList[index].title) {
+                if (layer.id && state.layerList[index] && layer.id === state.layerList[index].id) {
                     layer.visible = state.layerList[index].visible
                 }
             })
         },
-        setAppConfig(state, payload){
+        setAppConfig(state, payload) {
             state.appConfig = payload
         },
         setCurrentExtent(state, payload) {
@@ -107,7 +107,7 @@ export const store = createStore<State>({
                 mapView.extent = extent;
             }
         },
-        setMapFeaturesExpanded(state, payload) {
+        setMapFeaturesExpanded(state) {
             state.mapFeaturesExpanded == "block" ? state.mapFeaturesExpanded = "none" : state.mapFeaturesExpanded = "block"
         },
     },

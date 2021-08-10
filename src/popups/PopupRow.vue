@@ -1,15 +1,13 @@
 <template>
-  <div>
+  <div v-if="visible">
     <span class="popup-key">{{ getLabel() }}</span>
     <span class="popup-value">{{ getText() }}</span>
-    <!-- <span class="popup-key">{{ Label ? Label + ": " : "" }}</span>
-    <span class="popup-value">{{ text }}</span> -->
   </div>
 </template>
 <script lang="ts">
 import FeatureInfo from "@/types/FeatureInfo";
 import PopupRowConfig from "@/types/PopupRowConfig";
-import { defineComponent, PropType } from "vue";
+import { defineComponent, PropType, ref, watch } from "vue";
 
 export default defineComponent({
   props: {
@@ -23,6 +21,12 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const visible = ref(true);
+
+    watch(props, () => {
+      getText();
+    });
+
     const getLabel = () => {
       if (!props.Feature) {
         return;
@@ -46,6 +50,7 @@ export default defineComponent({
       if (!props.Feature) {
         return;
       }
+      // console.log("getText()");
       let text = "";
       if (props.Config.value.text) {
         text = props.Config.value.text;
@@ -69,9 +74,18 @@ export default defineComponent({
       } else if (props.Config.value.custom) {
         text = props.Config.value.custom(props.Feature);
       }
+      // Do not show when data is not available...
       if (!text) {
-        text = "N/A";
+        //text = "N/A";
+        visible.value = false;
       }
+      // Temporary hide...
+      else if (text === "???") {
+        visible.value = false;
+      } else {
+        visible.value = true;
+      }
+      // console.log("...text: " + text);
       return text;
     };
 
@@ -80,6 +94,7 @@ export default defineComponent({
     };
 
     return {
+      visible,
       getLabel,
       getText,
     };
