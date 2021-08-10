@@ -33,12 +33,12 @@
         &times;
       </button> -->
     </div>
-     <button
-        class="popup-close-button w3-button w3-padding-small"
-        @click="close"
-      >
-        &times;
-      </button>
+    <button
+      class="popup-close-button w3-button w3-padding-small"
+      @click="close"
+    >
+      &times;
+    </button>
     <h4 class="popup-title w3-container">
       {{ getTitle() }}
     </h4>
@@ -176,17 +176,11 @@ export default defineComponent({
     // let gHighlight: Graphic;
     // Set the width...
     // Default...
-    // const sizeClass = {
-    //   m4: true,
-    //   m6: false,
-    //   l2: true,
-    //   l3: false,
-    // };
     const sizeClass = {
-      m4: false,
-      m6: true,
-      l2: false,
-      l3: true,
+      m4: true,
+      m6: false,
+      l2: true,
+      l3: false,
     };
     if (props.Width) {
       // Wide...
