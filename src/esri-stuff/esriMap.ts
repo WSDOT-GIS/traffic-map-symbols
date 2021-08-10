@@ -9,7 +9,7 @@ import Layer from "@arcgis/core/layers/Layer";
 import EsriConfig from "@arcgis/core/config"
 import Graphic from "@arcgis/core/Graphic";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
-
+// Layers
 import TrafficLayer from "@/layers/TrafficLayer";
 import ParkRideLayer from "@/layers/ParkRideLayer";
 import CameraLayer from "@/layers/CameraLayer";
@@ -19,8 +19,9 @@ import RoadAlertsLayer from "@/layers/RoadAlertLayer";
 import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
 import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
 import MountainPassLayer from "@/layers/MountainPassesLayer";
+//
 import ExtentInfo from "@/types/ExtentInfo";
-import { convert2EsriExtent } from "@/utils/extentUtil";
+import { convert2EsriExtent, getEsriExtent } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 import FeatureInfo from "@/types/FeatureInfo";
 
@@ -32,6 +33,7 @@ export const webmap = new WebMap({
 export const mapView = new MapView({
     container: "esri-map-view",
     map: webmap,
+    extent: getEsriExtent("full"),
     constraints: {
         rotationEnabled: false // Disables map rotation
     }
@@ -195,7 +197,7 @@ export const bufferByPixels = (distancePixel: number, screenPoint?: { x: number,
     }
 
 }
-
+/** Highlight feature */
 let highlight: __esri.Handle;
 export const highlightFeature = (featureInfo: FeatureInfo): void => {
     const layer = getLayer(featureInfo.layerId) as GeoJSONLayer;

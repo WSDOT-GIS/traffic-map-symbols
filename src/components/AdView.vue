@@ -24,6 +24,11 @@ export default defineComponent({
   height: 90px;
   width: 730px;
 }
+@media screen and (max-width: 730px) {
+  #ad_container {
+    width: 100%;
+  }
+}
 p {
   margin: 0;
   padding: 5px;

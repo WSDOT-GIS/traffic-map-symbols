@@ -26,13 +26,19 @@
       <div v-if="badgeText.length > 0" class="popup-badge">
         {{ badgeText }}
       </div>
-      <button
+      <!-- <button
+        class="popup-close-button w3-button w3-padding-small"
+        @click="close"
+      >
+        &times;
+      </button> -->
+    </div>
+     <button
         class="popup-close-button w3-button w3-padding-small"
         @click="close"
       >
         &times;
       </button>
-    </div>
     <h4 class="popup-title w3-container">
       {{ getTitle() }}
     </h4>
@@ -170,11 +176,17 @@ export default defineComponent({
     // let gHighlight: Graphic;
     // Set the width...
     // Default...
+    // const sizeClass = {
+    //   m4: true,
+    //   m6: false,
+    //   l2: true,
+    //   l3: false,
+    // };
     const sizeClass = {
-      m4: true,
-      m6: false,
-      l2: true,
-      l3: false,
+      m4: false,
+      m6: true,
+      l2: false,
+      l3: true,
     };
     if (props.Width) {
       // Wide...
@@ -506,6 +518,7 @@ export default defineComponent({
 .popup-header {
   position: relative;
   margin: 8px 0;
+  padding-right: 10px;
   width: 100%;
 }
 .popup-banner {
@@ -558,6 +571,7 @@ export default defineComponent({
   border-style: none;
   background-color: transparent;
   font-size: 1.5em;
+  vertical-align: top;
 }
 
 /* Picture stylings ******/

@@ -20,6 +20,6 @@ export default defineComponent({
   padding: 5px;
   color: white;
   background-color: var(--color-primaryBrand100);
-  height: 60px;
+  min-height: 60px;
 }
 </style>
