@@ -9,7 +9,7 @@ const RoadAlertsLayer = new GeoJSONLayer({
     url: "https://data.wsdot.wa.gov/travelcenter/RoadAlerts.json",
     title: "Travel Alerts",
     renderer: roadAlertsRenderer,
-    visible: false
+    visible: true
 })
 
 export default RoadAlertsLayer

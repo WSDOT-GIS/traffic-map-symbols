@@ -26,7 +26,7 @@ import FeatureInfo from "@/types/FeatureInfo";
 
 EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
 export const webmap = new WebMap({
-    layers: [TrafficLayer, MountainPassLayer, WeatherStationsLayer, RestAreasLayer, RoadAlertsLayer, LineRestrictionsLayer, PointRestrictionsLayer, CameraLayer, ParkRideLayer],
+    layers: [TrafficLayer, RestAreasLayer, ParkRideLayer, WeatherStationsLayer, MountainPassLayer, LineRestrictionsLayer, PointRestrictionsLayer, CameraLayer, RoadAlertsLayer],
 });
 
 export const mapView = new MapView({

@@ -19,6 +19,7 @@ export default defineComponent({
 #wsdot-header {
   padding: 5px;
   color: white;
-  background-color: var(--color-secondaryBrandDark);
+  background-color: var(--color-primaryBrand100);
+  height: 60px;
 }
 </style>

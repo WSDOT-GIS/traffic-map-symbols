@@ -1,7 +1,7 @@
 <template>
   <div id="savedMapWidget" class="w3-left-align">
     <div id="saved-map-list-title w3-medium">My saved maps</div>
-    <ul id="saved-map-list-container" class="w3-ul">
+    <ul id="saved-map-list-container" class="w3-ul" ref="listContainerRef">
       <li
         v-for="(item, index) in mapList"
         :key="index"
@@ -10,7 +10,7 @@
       >
         <button
           :title="'Show ' + item.title"
-          class="w3-transparent w3-btn"
+          class="saved-map-title w3-btn w3-transparent"
           :class="{
             'w3-text-blue': item.selected,
             'w3-text-dark-grey': !item.selected,
@@ -22,7 +22,7 @@
         <button
           :title="'Delete ' + item.title"
           :aria-label="'Delete ' + item.title"
-          class="w3-right w3-transparent w3-button"
+          class="w3-right w3-button w3-transparent"
           @click="removeItem($event, item)"
         >
           &times;
@@ -48,6 +48,7 @@ import WsdotButtonView from "@/components/WsdotButtonView.vue";
 import SaveMapFormView from "@/components/SaveMapFormView.vue";
 import LayerInfo from "@/types/LayerInfo";
 import { validateBasemapName } from "@/layers/Basemaps";
+//import { mapView } from "@/esri-stuff/esriMap";
 
 export default defineComponent({
   components: { WsdotButtonView, SaveMapFormView },
@@ -116,6 +117,9 @@ export default defineComponent({
       setCookie("saved-map-list", value);
     };
 
+    // MapView resize event...
+    //mapView.on("resize", () => {});
+
     return {
       mapList,
       formVisible,
@@ -139,6 +143,9 @@ button {
 }
 .saved-map-item {
   width: 100%;
+}
+.saved-map-title {
+ 
 }
 .remove-saved-map-button {
   height: 100%;

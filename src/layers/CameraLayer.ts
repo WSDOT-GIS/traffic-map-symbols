@@ -71,7 +71,8 @@ const layer = new GeoJSONLayer({
     title: "Traffic Cameras",
     renderer: renderer,
     featureReduction: clusterConfig,
-    fields: fields
+    fields: fields,
+    visible: false
 });
 
 export default layer
