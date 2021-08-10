@@ -17,7 +17,6 @@
         { label: 'Camera Direction', value: { custom: getDirection } },
         { label: 'Refresh Rate', value: { text: '???' } },
       ],
-      clusterMaxScale: clusterMaxScale,
     }"
     @close="close"
   >
@@ -40,7 +39,6 @@ import { getFeatureInfosByIds } from "@/utils/featureInfoUtil";
 import FeatureLayer from "@/layers/CameraLayer";
 import FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
-import { clusterMaxScale } from "@/utils/clusterUtil";
 
 export default defineComponent({
   components: { PopupBase },
@@ -49,6 +47,7 @@ export default defineComponent({
       type: Object as PropType<FeaturesetInfo>,
       required: true,
     },
+    // Supply Map X/Y for the clustered features.
     MapX: {
       type: Number,
       required: false,
@@ -118,7 +117,6 @@ export default defineComponent({
       layerIcons,
       close,
       getDirection,
-      clusterMaxScale,
     };
   },
 });

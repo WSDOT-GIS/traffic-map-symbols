@@ -26,29 +26,13 @@
     @clicked="zoomMetroEventHandler"
   ></ZoomPopupView>
   <CameraPopup :MapX="popupX" :MapY="popupY" :Featureset="popupFeatureset" />
-  <ParkRidePopup :MapX="popupX" :MapY="popupY" :Featureset="popupFeatureset" />
-  <LineRestrictionPopup
-    :MapX="popupX"
-    :MapY="popupY"
-    :Featureset="popupFeatureset"
-  />
-  <PointRestrictionPopup
-    :MapX="popupX"
-    :MapY="popupY"
-    :Featureset="popupFeatureset"
-  />
-  <MountainPassPopup
-    :MapX="popupX"
-    :MapY="popupY"
-    :Featureset="popupFeatureset"
-  />
-  <WeatherStationsPopup
-    :MapX="popupX"
-    :MapY="popupY"
-    :Featureset="popupFeatureset"
-  />
-  <RestAreaPopup :MapX="popupX" :MapY="popupY" :Featureset="popupFeatureset" />
-  <RoadAlertPopup :MapX="popupX" :MapY="popupY" :Featureset="popupFeatureset" />
+  <ParkRidePopup :Featureset="popupFeatureset" />
+  <LineRestrictionPopup :Featureset="popupFeatureset" />
+  <PointRestrictionPopup :Featureset="popupFeatureset" />
+  <MountainPassPopup :Featureset="popupFeatureset" />
+  <WeatherStationsPopup :Featureset="popupFeatureset" />
+  <RestAreaPopup :Featureset="popupFeatureset" />
+  <RoadAlertPopup :Featureset="popupFeatureset" />
 
   <LeftPaneView />
 </template>
@@ -198,7 +182,6 @@ export default defineComponent({
         esriMap.mapView.hitTest(event, opts).then((response) => {
           // check if a feature is returned from the zoom layer...
           if (response.results.length) {
-            ////console.log(response);
             // Show custom popup...
             zoomPopupX.value = event.x;
             zoomPopupY.value = event.y;
@@ -250,14 +233,12 @@ export default defineComponent({
           ],
         };
         esriMap.mapView.hitTest(clickEvent, opts).then((response) => {
-          //console.log(response.results);
           if (response.results.length) {
             const resultsByLayer: {
               info: LayerInfo;
               layer: Layer;
               results: { graphic: Graphic; mapPoint: Point }[];
             }[] = [];
-            //console.log(resultsByLayer);
             response.results.forEach((eachResult) => {
               const arrayFound = resultsByLayer.find(
                 (eachArray) => eachArray.layer === eachResult.graphic.layer
@@ -265,19 +246,15 @@ export default defineComponent({
               if (arrayFound) {
                 arrayFound.results.push(eachResult);
               } else {
-                //console.log(store.state.layerList);
-                //console.log(eachResult.graphic.layer.title);
                 const layerInfo = store.state.layerList.find(
                   (layerInfo) => layerInfo.id === eachResult.graphic.layer.id
                 );
-                //console.log(layerInfo);
                 if (layerInfo) {
                   resultsByLayer.push({
                     info: layerInfo,
                     layer: eachResult.graphic.layer,
                     results: [eachResult],
                   });
-                  //console.log(resultsByLayer);
                 }
               }
             });
@@ -292,18 +269,14 @@ export default defineComponent({
             );
             if (results2Show) {
               const g = results2Show.results[0].graphic;
-              // let pt: Point;
-              // if (g.geometry.type === "point") {
-              //   pt = g.geometry as Point;
-              // } else {
-              //   pt = results2Show.results[0].mapPoint;
-              // }
               const layer = g.layer as GeoJSONLayer;
               if (
-                layer.featureReduction &&
+                !layer.featureReduction &&
                 esriMap.mapView.scale < clusterMaxScale
               ) {
+                // If max scale, and features are still overlapping, then show multiple features...
                 const query = CameraLayer.createQuery();
+                // Select all features within the set pixels...
                 query.geometry = esriMap.bufferByPixels(
                   10,
                   undefined,
@@ -359,7 +332,7 @@ export default defineComponent({
               } else {
                 // Not aggregate...
                 const id = g.getObjectId();
-                showPopup(results2Show.layer.title, [id]);
+                showPopup(results2Show.layer.id, [id]);
               }
             }
           } else {

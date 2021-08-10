@@ -1,7 +1,5 @@
 <template>
   <PopupBase
-    :MapX="mapX"
-    :MapY="mapY"
     LightThemeColor="#e0efec"
     DarkThemeColor="#66B09F"
     :Features="[feature]"
@@ -87,19 +85,19 @@ export default defineComponent({
       type: Object as PropType<FeaturesetInfo>,
       required: true,
     },
-    MapX: {
-      type: Number,
-      required: true,
-    },
-    MapY: {
-      type: Number,
-      required: true,
-    },
+    // MapX: {
+    //   type: Number,
+    //   required: true,
+    // },
+    // MapY: {
+    //   type: Number,
+    //   required: true,
+    // },
   },
   setup(props) {
     const feature = ref<FeatureInfo>();
-    const mapX = ref(0);
-    const mapY = ref(0);
+    // const mapX = ref(0);
+    // const mapY = ref(0);
     const layerIcons = layerListIcons;
     watch(props, () => {
       if (props.Featureset.layerId === FeatureLayer.id) {
@@ -115,13 +113,13 @@ export default defineComponent({
           (result) => {
             if (result) {
               feature.value = result;
-              mapX.value = props.MapX;
-              mapY.value = props.MapY;
+              // mapX.value = props.MapX;
+              // mapY.value = props.MapY;
             }
           }
         );
       };
-      if (mapX.value !== 0 || mapY.value !== 0 || feature.value) {
+      if (feature.value) {
         // Clean up the previous data...
         close();
         setVal();
@@ -131,8 +129,8 @@ export default defineComponent({
     };
     // Setting XY to 0 closes the popup...
     const close = () => {
-      mapX.value = 0;
-      mapY.value = 0;
+      // mapX.value = 0;
+      // mapY.value = 0;
       feature.value = undefined;
     };
 
@@ -168,8 +166,8 @@ export default defineComponent({
     };
 
     return {
-      mapX,
-      mapY,
+      // mapX,
+      // mapY,
       feature,
       layerIcons,
       close,

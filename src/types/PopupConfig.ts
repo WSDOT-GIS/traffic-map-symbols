@@ -21,7 +21,6 @@ interface PopupConfig {
     };
     imageFieldName?: string;
     content: PopupRowConfig[];
-    clusterMaxScale?: number;
 };
 
 export default PopupConfig;

@@ -92,6 +92,7 @@ import {
   toScreenXY,
   panMap,
   highlightFeature,
+  removeHighlight,
 } from "@/esri-stuff/esriMap";
 import FeatureInfo from "@/types/FeatureInfo";
 import PopupConfig from "@/types/PopupConfig";
@@ -101,12 +102,8 @@ export default defineComponent({
   components: { Carousel, Slide, Pagination, Navigation, PopupRow },
   props: {
     // MapX & Y are only required to supersede the feature x/y.
-    MapX: {
-      type: Number,
-      required: false,
-    },
-    MapY: {
-      type: Number,
+    MapXY: {
+      type: Object as PropType<{ x: number; y: number }>,
       required: false,
     },
     Width: {
@@ -198,6 +195,7 @@ export default defineComponent({
       // Let the parent handle the close event.
       // Parent should empty the feature array to close the popup.
       context.emit("close");
+      removeHighlight();
     };
     // Adjust popup position when the props change...
     watch([mapX, mapY], () => {
@@ -304,20 +302,27 @@ export default defineComponent({
         prevHeight = h;
       }
       // console.log("*** Adjust ***"); // + JSON.stringify(props.Features)); //props.Features[0].layerId);
-      // New vertical position...
-      let newTop = screenY.value - h - 30;
-      // New horizontal position.
-      let newLeft = screenX.value - w / 2;
       // If this is not the initial load, then move popup along with map.
       if (!doPanMap) {
+        // New vertical position...
+        let newTop = screenY.value - h - 30;
+        // Raise the popup a bit so it is not covering the icon completely.
+        if (!props.MapXY) {
+          newTop -= 15;
+        }
+        // New horizontal position.
+        const newLeft = screenX.value - w / 2;
         setPosition(newTop, newLeft);
       } else {
         doPanMap = false;
         nextTick(() => {
           // New vertical position...
-          newTop = screenY.value - h - 30;
+          let newTop = screenY.value - h - 30;
+          if (!props.MapXY) {
+            newTop -= 15;
+          }
           // New horizontal position.
-          newLeft = screenX.value - w / 2;
+          const newLeft = screenX.value - w / 2;
           /**
            * Pan map so the popup is displayed within the map view.
            * Only do this on the initial popup load.
@@ -440,10 +445,7 @@ export default defineComponent({
     const highlightMap = () => {
       const feature = props.Features[currentIdx.value];
       if (feature) {
-        if (
-          !props.Config.clusterMaxScale ||
-          mapView.scale < props.Config.clusterMaxScale
-        ) {
+        if (!props.MapXY) {
           highlightFeature(feature);
         }
       }
@@ -454,8 +456,9 @@ export default defineComponent({
     const setMapXY = () => {
       const feature = props.Features[currentIdx.value];
       if (feature) {
-        mapX.value = props.MapX ? props.MapX : feature.mapPoint.x;
-        mapY.value = props.MapY ? props.MapY : feature.mapPoint.y;
+        mapX.value = props.MapXY ? props.MapXY.x : feature.mapPoint.x;
+        mapY.value = props.MapXY ? props.MapXY.y : feature.mapPoint.y;
+        //console.log(mapX.value + ", " + mapY.value);
       }
     };
 

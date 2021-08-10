@@ -161,14 +161,42 @@ export const getIdsFromCluster = async (clusterGraphic, layer, maxCount) => {
         return ids;
     }
 };
-export const bufferByPixels = (screenX, screenY, distancePixel, mapPoint) => {
-    if (!mapPoint) {
-        mapPoint = mapView.toMap({ x: screenX, y: screenY });
+export const bufferByPixels = (distancePixel, screenPoint, mapPoint) => {
+    if (!screenPoint && mapPoint) {
+        screenPoint = mapView.toScreen(mapPoint);
     }
-    const ptShift = mapView.toMap({ x: screenX + distancePixel, y: screenY });
-    const mapDist = Math.abs(ptShift.x - mapPoint.x);
-    console.log("Map distance: " + mapDist);
-    const outBuff = geodesicBuffer(mapPoint, mapDist, "meters");
-    return outBuff;
+    if (!mapPoint && screenPoint) {
+        mapPoint = mapView.toMap(screenPoint);
+    }
+    if (screenPoint && mapPoint) {
+        const ptShift = mapView.toMap({ x: screenPoint.x + distancePixel, y: screenPoint.y });
+        const mapDist = Math.abs(ptShift.x - mapPoint.x);
+        console.log("Map distance: " + mapDist);
+        const outBuff = geodesicBuffer(mapPoint, mapDist, "meters");
+        return outBuff;
+    }
+    else {
+        throw "Need to specify either screen or map point.";
+    }
+};
+let highlight;
+export const highlightFeature = (featureInfo) => {
+    const layer = getLayer(featureInfo.layerId);
+    mapView.whenLayerView(layer).then((layerView) => {
+        const query = layer.createQuery();
+        query.where = `${layer.objectIdField} = ${featureInfo.id}`;
+        // query.where = `${idName} IN ( ${ids.join(",")})`;
+        layer.queryFeatures(query).then((result) => {
+            if (highlight) {
+                highlight.remove();
+            }
+            highlight = layerView.highlight(result.features);
+        });
+    });
+};
+export const removeHighlight = () => {
+    if (highlight) {
+        highlight.remove();
+    }
 };
 //# sourceMappingURL=esriMap.js.map

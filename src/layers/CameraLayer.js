@@ -2,7 +2,7 @@ import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import Field from "@arcgis/core/layers/support/Field";
 import Symbol from "@/symbols/CameraSymbol";
-import { clusterConfig } from "@/utils/clusterUtil";
+import { clusterConfig, clusterMaxScale } from "@/utils/clusterUtil";
 const renderer = new SimpleRenderer({ symbol: Symbol });
 const fields = [
     new Field({
@@ -72,14 +72,14 @@ const layer = new GeoJSONLayer({
 export default layer;
 /*** Helper functions **************/
 // Watch scale change...
-export const toggleCluster = (newScale, oldScale, maxScale) => {
+export const toggleCluster = (newScale, oldScale) => {
     //console.log("toggleCluster scale: " + newScale);
     // Turn off clustering at max scale...
-    if (newScale > maxScale && oldScale < maxScale) {
+    if (newScale > clusterMaxScale && oldScale < clusterMaxScale) {
         layer.featureReduction = clusterConfig;
         //console.log("Turn on cluster: " + clusterConfig.clusterRadius + " scale: " + oldScale + " > " + newScale);
     }
-    else if (newScale < maxScale && oldScale > maxScale) {
+    else if (newScale < clusterMaxScale && oldScale > clusterMaxScale) {
         layer.set("featureReduction", undefined);
         //console.log("Turn off cluster: " + clusterConfig.clusterRadius + " scale: " + oldScale + " > " + newScale);
     }

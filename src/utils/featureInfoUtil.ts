@@ -3,6 +3,8 @@ import FeatureInfo from "@/types/FeatureInfo";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import Point from "@arcgis/core/geometry/Point";
 import Polygon from "@arcgis/core/geometry/Polygon";
+import { project } from "@arcgis/core/geometry/projection";
+import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 
 export const getGraphicsInfoById = async (graphic: Graphic, layer: GeoJSONLayer): Promise<FeatureInfo | undefined> => {
     const query = layer.createQuery();
@@ -42,30 +44,35 @@ export const getFeatureInfosByIds = async (ids: number[], layer: GeoJSONLayer): 
 }
 
 const convert2Info = (g: Graphic) => {
-    let mapPoint: { x: number; y: number; };
+    let mapPoint: Point;
     // Get the mid/center point...
     switch (g.geometry.type) {
         case "point": {
-            const pt = g.geometry as Point;
-            mapPoint = { x: pt.x, y: pt.y };
+            mapPoint = g.geometry as Point;
             break;
         }
         case "polygon": {
             const polygon = g.geometry as Polygon;
-            mapPoint = { x: polygon.centroid.x, y: polygon.centroid.y };
+            mapPoint = polygon.centroid;
             break;
         }
         default: {
             const ext = g.geometry.extent;
-            mapPoint = { x: ext.center.x, y: ext.center.y };
+            mapPoint = ext.center;
             break;
         }
     }
+    // Project to the map coordinate. Without doing this lat/long get passed.
+    const projPt = project(
+        mapPoint,
+        SpatialReference.WebMercator
+    ) as Point;
+
     const info: FeatureInfo = {
         layerId: g.layer.id,
         attributes: g.attributes,
         id: g.getObjectId(),
-        mapPoint: mapPoint,
+        mapPoint: { x: projPt.x, y: projPt.y },
     }
     return info;
     // let info: unknown

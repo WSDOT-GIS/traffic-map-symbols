@@ -68,7 +68,7 @@ export const store = createStore({
         setLayerList(state, payload) {
             state.layerList = payload;
             webmap.layers.map((layer, index) => {
-                if (layer.title && state.layerList[index] && layer.title == state.layerList[index].title) {
+                if (layer.id && state.layerList[index] && layer.id === state.layerList[index].id) {
                     layer.visible = state.layerList[index].visible;
                 }
             });
@@ -89,7 +89,7 @@ export const store = createStore({
                 mapView.extent = extent;
             }
         },
-        setMapFeaturesExpanded(state, payload) {
+        setMapFeaturesExpanded(state) {
             state.mapFeaturesExpanded == "block" ? state.mapFeaturesExpanded = "none" : state.mapFeaturesExpanded = "block";
         },
     },
