@@ -354,6 +354,13 @@ export default defineComponent({
           toggleCluster(newValue, oldValue);
         }
       });
+      // Watch map view size...
+      esriMap.mapView.on("resize", (event) => {
+        store.commit("setMapSize", {
+          width: event.width,
+          height: event.height,
+        });
+      });
     });
     return {
       zoomPopupVisible,
