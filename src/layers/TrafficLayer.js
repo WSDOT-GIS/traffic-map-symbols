@@ -4,6 +4,7 @@ import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 const urlTraffic = "https://utility.arcgis.com/usrsvcs/appservices/G9CkczziK8rxtWpL/rest/services/World/Traffic/MapServer";
 // https://developers.arcgis.com/rest/network/api-reference/traffic-service.htm
 const layer = new MapImageLayer({
+    id: "traffic-flow-layer",
     url: urlTraffic,
     sublayers: [
         { id: 6, visible: true, title: "Live Traffic Flow" }, // live traffic
