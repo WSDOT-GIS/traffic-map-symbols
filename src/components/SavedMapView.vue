@@ -78,7 +78,6 @@ export default defineComponent({
     });
     // Set the width of the item title button so the remove button won't wrap.
     const resizeItemTitle = () => {
-      console.log("resizeItemTitle... ");
       if (itemContainerRef.value && closeButtonRef.value) {
         const w =
           itemContainerRef.value.offsetWidth -
