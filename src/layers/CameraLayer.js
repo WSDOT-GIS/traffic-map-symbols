@@ -61,20 +61,35 @@ const fields = [
         type: "integer"
     }),
 ];
-const layer = new GeoJSONLayer({
-    id: "traffic-camera-layer",
-    url: "https://data.wsdot.wa.gov/travelcenter/Cameras.json",
-    title: "Traffic Cameras",
-    renderer: renderer,
-    featureReduction: clusterConfig,
-    fields: fields,
-    visible: false
-});
+let layer;
+export const initLayer = (url) => {
+    layer = new GeoJSONLayer({
+        id: "traffic-camera-layer",
+        url: url,
+        title: "Traffic Cameras",
+        renderer: renderer,
+        featureReduction: clusterConfig,
+        fields: fields,
+        visible: false
+    });
+    return layer;
+};
+// const layer = new GeoJSONLayer({
+//     id: "traffic-camera-layer",
+//     url: "https://data.wsdot.wa.gov/travelcenter/Cameras.json",
+//     title: "Traffic Cameras",
+//     renderer: renderer,
+//     featureReduction: clusterConfig,
+//     fields: fields,
+//     visible: false
+// });
 export default layer;
 /*** Helper functions **************/
 // Watch scale change...
 export const toggleCluster = (newScale, oldScale) => {
-    //console.log("toggleCluster scale: " + newScale);
+    if (!layer) {
+        return;
+    }
     // Turn off clustering at max scale...
     if (newScale > clusterMaxScale && oldScale < clusterMaxScale) {
         layer.featureReduction = clusterConfig;

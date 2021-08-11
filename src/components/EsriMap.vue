@@ -224,7 +224,16 @@ export default defineComponent({
       // MapView click event handler for showing popups...
       esriMap.mapView.on("click", (clickEvent) => {
         // Check if feature is clicked on...
-        if (RoadAlertsLayer === undefined) {
+        if (
+          !ParkRideLayer ||
+          !CameraLayer ||
+          !PointRestrictionsLayer ||
+          !LineRestrictionsLayer ||
+          !WeatherStationsLayer ||
+          !MountainPassLayer ||
+          !RestAreasLayer ||
+          !RoadAlertsLayer
+        ) {
           return;
         }
         const opts = {
@@ -237,7 +246,7 @@ export default defineComponent({
             MountainPassLayer,
             RestAreasLayer,
             RoadAlertsLayer,
-          ],
+          ] as GeoJSONLayer[],
         };
         esriMap.mapView.hitTest(clickEvent, opts).then((response) => {
           if (response.results.length) {
@@ -278,6 +287,7 @@ export default defineComponent({
               const g = results2Show.results[0].graphic;
               const layer = g.layer as GeoJSONLayer;
               if (
+                CameraLayer &&
                 !layer.featureReduction &&
                 esriMap.mapView.scale < clusterMaxScale
               ) {

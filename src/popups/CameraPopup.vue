@@ -69,10 +69,7 @@ export default defineComponent({
     };
 
     watch(props, () => {
-      if (!FeatureLayer) {
-        return;
-      }
-      if (props.Featureset.layerId === FeatureLayer.id) {
+      if (FeatureLayer && props.Featureset.layerId === FeatureLayer.id) {
         show();
       } else {
         close();

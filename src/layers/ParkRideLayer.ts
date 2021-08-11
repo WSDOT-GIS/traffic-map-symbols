@@ -1,13 +1,7 @@
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
-// import Graphic from "@arcgis/core/Graphic";
 import Symbol from "@/symbols/ParkRideSymbol";
-// import { mapView } from "@/esri-stuff/esriMap";
 import Field from "@arcgis/core/layers/support/Field";
-// import ParkRideInfo from "@/types/ParkRideInfo";
-//import { generateClusterConfig } from "@/utils/layerUtil";
-
-//const clusterConfig = generateClusterConfig("Park & Rides", "park & ride", "#065535");
 
 const renderer = new SimpleRenderer({ symbol: Symbol });
 
@@ -64,13 +58,27 @@ const fields = [
     })
 ]
 
-const layer = new GeoJSONLayer({
-    id: "park-ride-layer",
-    url: "https://data.wsdot.wa.gov/travelcenter/ParkAndRides.json",
-    title: "Park and Rides",
-    renderer: renderer,
-    fields: fields,
-    visible: false
-});
+let layer: GeoJSONLayer | undefined;
+
+export const initLayer = (url: string): GeoJSONLayer => {
+    layer = new GeoJSONLayer({
+        id: "park-ride-layer",
+        url: url,
+        title: "Park and Rides",
+        renderer: renderer,
+        fields: fields,
+        visible: false
+    });
+    return layer;
+}
+
+// const layer = new GeoJSONLayer({
+//     id: "park-ride-layer",
+//     url: "https://data.wsdot.wa.gov/travelcenter/ParkAndRides.json",
+//     title: "Park and Rides",
+//     renderer: renderer,
+//     fields: fields,
+//     visible: false
+// });
 
 export default layer

@@ -67,7 +67,7 @@ const fields = [
 
 let layer: GeoJSONLayer | undefined;
 
-export const initLayer = (url: string) => {
+export const initLayer = (url: string): GeoJSONLayer => {
     layer = new GeoJSONLayer({
         id: "traffic-camera-layer",
         url: url,

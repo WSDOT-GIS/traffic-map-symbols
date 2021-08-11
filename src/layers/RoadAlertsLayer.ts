@@ -7,7 +7,7 @@ const roadAlertsRenderer = new simpleRenderer({
 
 let layer: GeoJSONLayer | undefined;
 
-export const initLayer = (url: string) => {
+export const initLayer = (url: string): GeoJSONLayer => {
     layer = new GeoJSONLayer({
         id: "road-alerts-layer",
         url: url,
