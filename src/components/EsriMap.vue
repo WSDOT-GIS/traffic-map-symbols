@@ -47,7 +47,7 @@ import Graphic from "@arcgis/core/Graphic";
 import Layer from "@arcgis/core/layers/Layer";
 import Point from "@arcgis/core/geometry/Point";
 
-import { zoomOnClick } from "@/esri-stuff/esriMap";
+import { mapView, zoomOnClick } from "@/esri-stuff/esriMap";
 import { getExtentFromUrl, getBasemapFromUrl } from "@/utils/urlParamUtil";
 import ZoomExtentLayer, {
   getFeatureById as getZoomFeatureById,
@@ -166,6 +166,11 @@ export default defineComponent({
       // Set basemap based on URL query parameter...
       const basemapInfo = getBasemapFromUrl();
       store.commit("setBasemap", basemapInfo.name);
+      // Set the initial map size...
+      store.commit("setMapSize", {
+        width: mapView.width,
+        height: mapView.height,
+      });
       // Pointer move event handler for showing metro zoom popups...
       esriMap.mapView.on(["pointer-move", "hold"], (event) => {
         // Update current poitner x/y in the store...
@@ -356,6 +361,7 @@ export default defineComponent({
       });
       // Watch map view size...
       esriMap.mapView.on("resize", (event) => {
+        //console.log("resize");
         store.commit("setMapSize", {
           width: event.width,
           height: event.height,

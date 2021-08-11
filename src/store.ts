@@ -85,6 +85,7 @@ export const store = createStore<State>({
             state.pointerY = payload.toFixed(6);
         },
         setMapSize(state, payload) {
+            //console.log("setMapSize: " + JSON.stringify(payload))
             state.mapSize = payload;
         },
         setUserLocation(state, payload) {
