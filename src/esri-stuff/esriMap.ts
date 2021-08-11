@@ -12,10 +12,10 @@ import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 // Layers
 import TrafficLayer from "@/layers/TrafficLayer";
 import ParkRideLayer from "@/layers/ParkRideLayer";
-import CameraLayer from "@/layers/CameraLayer";
+import CameraLayer, { initLayer as initCameraLayer } from "@/layers/CameraLayer";
 import RestAreasLayer from "@/layers/RestAreasLayer";
 import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
-import RoadAlertsLayer from "@/layers/RoadAlertLayer";
+import RoadAlertsLayer, { initLayer as initRoadAlertsLayer } from "@/layers/RoadAlertsLayer";
 import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
 import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
 import MountainPassLayer from "@/layers/MountainPassesLayer";
@@ -26,8 +26,10 @@ import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 import FeatureInfo from "@/types/FeatureInfo";
 
 EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
+
+
 export const webmap = new WebMap({
-    layers: [TrafficLayer, RestAreasLayer, ParkRideLayer, WeatherStationsLayer, MountainPassLayer, LineRestrictionsLayer, PointRestrictionsLayer, CameraLayer, RoadAlertsLayer],
+    //layers: [TrafficLayer, RestAreasLayer, ParkRideLayer, WeatherStationsLayer, MountainPassLayer, LineRestrictionsLayer, PointRestrictionsLayer, CameraLayer, RoadAlertsLayer],
 });
 
 export const mapView = new MapView({
@@ -52,6 +54,25 @@ export const init = (container: HTMLDivElement): void => {
             console.warn("Failed to initialize map. Error: ", error);
         });
 };
+
+export const loadOperationalLayers = async () => {
+    const fetchResponse = await fetch("/appconfig.json");
+    const config = await fetchResponse.json();
+    const roadAlertsLyr = initRoadAlertsLayer(config.roadAlerts)
+    const cameraLyr = initCameraLayer(config.cameras)
+    webmap.addMany([TrafficLayer, cameraLyr, roadAlertsLyr]);
+}
+
+// export const layersAreReady = (): boolean => {
+//     return (ParkRideLayer &&
+//         CameraLayer ! &&
+//         PointRestrictionsLayer &&
+//         LineRestrictionsLayer &&
+//         WeatherStationsLayer &&
+//         MountainPassLayer &&
+//         RestAreasLayer &&
+//         RoadAlertsLayer !== undefined)
+// }
 
 export const tryZoomToPoint = (point: Point, numLevels?: number): boolean => {
     let isSuccess = true;

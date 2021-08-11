@@ -55,7 +55,7 @@
 import { defineComponent, PropType, ref, watch } from "vue";
 import PopupBase from "./PopupBase.vue";
 
-import FeatureLayer from "@/layers/RoadAlertLayer";
+import layer from "@/layers/RoadAlertsLayer";
 import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import FeatureInfo from "@/types/FeatureInfo";
@@ -82,7 +82,7 @@ export default defineComponent({
     // const mapY = ref(0);
 
     watch(props, () => {
-      if (props.Featureset.layerId === FeatureLayer.id) {
+      if (layer && props.Featureset.layerId === layer.id) {
         show();
       } else {
         close();
@@ -91,7 +91,10 @@ export default defineComponent({
 
     const show = () => {
       const setVal = () => {
-        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer).then(
+        if (!layer) {
+          return;
+        }
+        getFeatureInfoById(props.Featureset.ids[0], layer).then(
           (result) => {
             if (result) {
               feature.value = result;

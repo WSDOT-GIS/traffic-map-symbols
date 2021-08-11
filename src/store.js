@@ -11,6 +11,7 @@ export const store = createStore({
             basemap: "",
             pointerX: 0,
             pointerY: 0,
+            mapSize: { width: 0, height: 0 },
             currentExtent: {
                 xmin: 0,
                 xmax: 0,
@@ -61,6 +62,10 @@ export const store = createStore({
         },
         setPointerY(state, payload) {
             state.pointerY = payload.toFixed(6);
+        },
+        setMapSize(state, payload) {
+            //console.log("setMapSize: " + JSON.stringify(payload))
+            state.mapSize = payload;
         },
         setUserLocation(state, payload) {
             state.userLocation = payload;

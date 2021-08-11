@@ -65,7 +65,7 @@ import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
 import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
 import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
 import MountainPassLayer from "@/layers/MountainPassesLayer";
-import RoadAlertLayer from "@/layers/RoadAlertLayer";
+import RoadAlertsLayer from "@/layers/RoadAlertsLayer";
 /* Popups */
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
 import CameraPopup from "@/popups/CameraPopup.vue";
@@ -148,6 +148,7 @@ export default defineComponent({
       mapDiv = document.getElementById("esri-map-view") as HTMLDivElement;
       esriMap.init(mapDiv);
       //#region register layer list to state
+      await esriMap.loadOperationalLayers();
       let layerList: LayerInfo[] = [];
       esriMap.mapView.map.layers.map((layer, index) => {
         layerList.push({
@@ -219,9 +220,13 @@ export default defineComponent({
           }
         });
       });
+
       // MapView click event handler for showing popups...
       esriMap.mapView.on("click", (clickEvent) => {
         // Check if feature is clicked on...
+        if (RoadAlertsLayer === undefined) {
+          return;
+        }
         const opts = {
           include: [
             ParkRideLayer,
@@ -231,7 +236,7 @@ export default defineComponent({
             WeatherStationsLayer,
             MountainPassLayer,
             RestAreasLayer,
-            RoadAlertLayer,
+            RoadAlertsLayer,
           ],
         };
         esriMap.mapView.hitTest(clickEvent, opts).then((response) => {

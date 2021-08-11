@@ -5,24 +5,26 @@ import { geodesicBuffer } from "@arcgis/core/geometry/geometryEngine";
 import { whenTrue } from "@arcgis/core/core/watchUtils";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import EsriConfig from "@arcgis/core/config";
+// Layers
 import TrafficLayer from "@/layers/TrafficLayer";
 import ParkRideLayer from "@/layers/ParkRideLayer";
 import CameraLayer from "@/layers/CameraLayer";
 import RestAreasLayer from "@/layers/RestAreasLayer";
 import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
-import RoadAlertsLayer from "@/layers/RoadAlertLayer";
+import RoadAlertsLayer, { initLayer as initRoadAlertsLayer } from "@/layers/RoadAlertsLayer";
 import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
 import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
 import MountainPassLayer from "@/layers/MountainPassesLayer";
-import { convert2EsriExtent } from "@/utils/extentUtil";
+import { convert2EsriExtent, getEsriExtent } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
 export const webmap = new WebMap({
-    layers: [TrafficLayer, MountainPassLayer, WeatherStationsLayer, RestAreasLayer, RoadAlertsLayer, LineRestrictionsLayer, PointRestrictionsLayer, CameraLayer, ParkRideLayer],
+//layers: [TrafficLayer, RestAreasLayer, ParkRideLayer, WeatherStationsLayer, MountainPassLayer, LineRestrictionsLayer, PointRestrictionsLayer, CameraLayer, RoadAlertsLayer],
 });
 export const mapView = new MapView({
     container: "esri-map-view",
     map: webmap,
+    extent: getEsriExtent("full"),
     constraints: {
         rotationEnabled: false // Disables map rotation
     }
@@ -38,6 +40,28 @@ export const init = (container) => {
         .catch(error => {
         console.warn("Failed to initialize map. Error: ", error);
     });
+};
+// fetch("/appconfig.json").then((fetchResponse) => {
+//     fetchResponse.json().then((config) => {
+//         const roadAlertsLyr = initRoadAlertsLayer(config.roadAlerts)
+//         webmap.addMany([roadAlertsLyr]);
+//     })
+// })
+export const loadOperationalLayers = async () => {
+    const fetchResponse = await fetch("/appconfig.json");
+    const config = await fetchResponse.json();
+    const roadAlertsLyr = initRoadAlertsLayer(config.roadAlerts);
+    webmap.addMany([TrafficLayer, roadAlertsLyr]);
+};
+export const layersAreReady = () => {
+    return (ParkRideLayer &&
+        CameraLayer &&
+        PointRestrictionsLayer &&
+        LineRestrictionsLayer &&
+        WeatherStationsLayer &&
+        MountainPassLayer &&
+        RestAreasLayer &&
+        RoadAlertsLayer !== undefined);
 };
 export const tryZoomToPoint = (point, numLevels) => {
     let isSuccess = true;
@@ -173,6 +197,7 @@ export const bufferByPixels = (distancePixel, screenPoint, mapPoint) => {
         throw "Need to specify either screen or map point.";
     }
 };
+/** Highlight feature */
 let highlight;
 export const highlightFeature = (featureInfo) => {
     const layer = getLayer(featureInfo.layerId);
