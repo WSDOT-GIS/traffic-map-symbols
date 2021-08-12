@@ -4,6 +4,7 @@ import Point from "@arcgis/core/geometry/Point";
 import { geodesicBuffer } from "@arcgis/core/geometry/geometryEngine";
 import { whenTrue } from "@arcgis/core/core/watchUtils";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
+import EsriConfig from "@arcgis/core/config";
 // Layers
 import { initLayer as initTrafficLayer } from "@/layers/TrafficLayer";
 import { initLayer as initParkRideLayer } from "@/layers/ParkRideLayer";
@@ -45,7 +46,7 @@ export const init = (container) => {
 // Get config and get apiKey and URL, then initialize layers and add to map...
 export const loadOperationalLayers = async () => {
     const config = await getConfig();
-    //EsriConfig.apiKey = config.apiKey;
+    EsriConfig.apiKey = config.apiKey;
     const trafficLyr = initTrafficLayer(config.traffic);
     const restAreasLyr = initRestAreaLayer(config.restAreas);
     const parkRideLyr = initParkRideLayer(config.parkAndRides);

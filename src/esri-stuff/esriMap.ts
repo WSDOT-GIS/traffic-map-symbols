@@ -57,7 +57,7 @@ export const init = (container: HTMLDivElement): void => {
 // Get config and get apiKey and URL, then initialize layers and add to map...
 export const loadOperationalLayers = async (): Promise<void> => {
     const config = await getConfig();
-    //EsriConfig.apiKey = config.apiKey;
+    EsriConfig.apiKey = config.apiKey;
     const trafficLyr = initTrafficLayer(config.traffic);
     const restAreasLyr = initRestAreaLayer(config.restAreas);
     const parkRideLyr = initParkRideLayer(config.parkAndRides);
