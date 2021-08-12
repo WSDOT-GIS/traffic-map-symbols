@@ -47,7 +47,7 @@ import Graphic from "@arcgis/core/Graphic";
 import Layer from "@arcgis/core/layers/Layer";
 import Point from "@arcgis/core/geometry/Point";
 
-import { zoomOnClick } from "@/esri-stuff/esriMap";
+import { mapView, zoomOnClick } from "@/esri-stuff/esriMap";
 import { getExtentFromUrl, getBasemapFromUrl } from "@/utils/urlParamUtil";
 import ZoomExtentLayer, {
   getFeatureById as getZoomFeatureById,
@@ -65,7 +65,7 @@ import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
 import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
 import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
 import MountainPassLayer from "@/layers/MountainPassesLayer";
-import RoadAlertLayer from "@/layers/RoadAlertLayer";
+import RoadAlertsLayer from "@/layers/RoadAlertLayers";
 import TravelTimeLayer from "@/layers/TravelTimeLayer"
 import RestAreasLayer from "@/layers/RestAreasLayer";
 /* Popups */
@@ -134,7 +134,7 @@ export default defineComponent({
     // Feature Popup...
     const popupXY = ref<XY | undefined>();
     const popupFeatureset = ref<FeaturesetInfo>({ layerId: "", ids: [] });
-    //
+    // Set popup props...
     const showPopup = (layerId: string, ids: number[], pt?: Point) => {
       popupFeatureset.value = { layerId: layerId, ids: ids };
       if (pt) {
@@ -151,7 +151,8 @@ export default defineComponent({
       const esriMap = await import("../esri-stuff/esriMap");
       mapDiv = document.getElementById("esri-map-view") as HTMLDivElement;
       esriMap.init(mapDiv);
-      //#region register layer list to state
+      // Read config, then load layers...
+      await esriMap.loadOperationalLayers();
       let layerList: LayerInfo[] = [];
       esriMap.mapView.map.layers.map((layer, index) => {
         layerList.push({
@@ -164,12 +165,16 @@ export default defineComponent({
       // Set layer visibility based on URL query...
       setLayerFromUrl(layerList);
       store.commit("setLayerList", layerList);
-      //#endregion
       // Add quick zoom boxes around metro areas...
       esriMap.webmap.add(ZoomExtentLayer);
       // Set basemap based on URL query parameter...
       const basemapInfo = getBasemapFromUrl();
       store.commit("setBasemap", basemapInfo.name);
+      // Set the initial map size in the state store...
+      store.commit("setMapSize", {
+        width: mapView.width,
+        height: mapView.height,
+      });
       // Pointer move event handler for showing metro zoom popups...
       esriMap.mapView.on(["pointer-move", "hold"], (event) => {
         // Update current poitner x/y in the store...
@@ -218,6 +223,7 @@ export default defineComponent({
           }
         });
       });
+
       // MapView click event handler for showing popups...
       esriMap.mapView.on("click", (clickEvent) => {
         // Check if feature is clicked on...
@@ -282,7 +288,7 @@ export default defineComponent({
                 esriMap.mapView.scale < clusterMaxScale
               ) {
                 // If max scale, and features are still overlapping, then show multiple features...
-                const query = CameraLayer.createQuery();
+                const query = CameraLayer().createQuery();
                 // Select all features within the set pixels...
                 query.geometry = esriMap.bufferByPixels(
                   10,
@@ -363,6 +369,14 @@ export default defineComponent({
           //adjustCluster(newValue, oldValue);
           toggleCluster(newValue, oldValue);
         }
+      });
+      // Watch map view size...
+      esriMap.mapView.on("resize", (event) => {
+        //console.log("resize");
+        store.commit("setMapSize", {
+          width: event.width,
+          height: event.height,
+        });
       });
     });
     return {

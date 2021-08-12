@@ -4,27 +4,36 @@ import symbol from "@/symbols/RestAreasSymbol"
 
 const restAreasRenderer = new simpleRenderer({
     symbol: symbol
-})
-/*const FeatureLayer = ()=>{
-    const layer = new GeoJSONLayer({
+});
+
+let layer: GeoJSONLayer | undefined;
+
+export const initLayer = (url: string): GeoJSONLayer => {
+    layer = new GeoJSONLayer({
         id: "rest-areas-layer",
-        url: "https://data.wsdot.wa.gov/travelcenter/RestAreas.json",
+        url: url,
         title: "Rest Areas",
         renderer: restAreasRenderer,
-        //popupTemplate: weatherStationsPopup,
         visible: false
-    })
-    return layer
-}*/
+    });
+    return layer;
+}
 
-const FeatureLayer = new GeoJSONLayer({
-    id: "rest-areas-layer",
-    url: "https://data.wsdot.wa.gov/travelcenter/RestAreas.json",
-    //url: await getURL(),
-    title: "Rest Areas",
-    renderer: restAreasRenderer,
-    visible: false
-})
+const getLayer = (): GeoJSONLayer => {
+    if (!layer) {
+        throw "Layer is not ready yet!";
+    }
+    return layer;
+}
+
+// const FeatureLayer = new GeoJSONLayer({
+//     id: "rest-areas-layer",
+//     url: "https://data.wsdot.wa.gov/travelcenter/RestAreas.json",
+//     //url: await getURL(),
+//     title: "Rest Areas",
+//     renderer: restAreasRenderer,
+//     visible: false
+// });
 
 
-export default FeatureLayer
+export default getLayer

@@ -7,13 +7,15 @@ import ExtentInfo from "./types/ExtentInfo";
 import { convert2EsriExtent, convert2ExtentInfo } from "./utils/extentUtil";
 import LayerInfo from "./types/LayerInfo";
 import AppConfig from "./types/appConfig";
+
 // Reference - https://next.vuex.vuejs.org/guide/typescript-support.html#typing-usestore-composition-function
 // define typings for the store state...
 export interface State {
     basemap: string;
     pointerX: number;
     pointerY: number;
-    layerList: LayerInfo[];//{ index: number, title: string, visible: boolean }[],
+    mapSize: { width: number; height: number };
+    layerList: LayerInfo[];
     currentExtent: ExtentInfo;
     userLocation: number[] | null;
     mapFeaturesExpanded: string;
@@ -30,6 +32,7 @@ export const store = createStore<State>({
             basemap: "",
             pointerX: 0,
             pointerY: 0,
+            mapSize: { width: 0, height: 0 },
             currentExtent: {
                 xmin: 0,
                 xmax: 0,
@@ -80,6 +83,10 @@ export const store = createStore<State>({
         },
         setPointerY(state, payload) {
             state.pointerY = payload.toFixed(6);
+        },
+        setMapSize(state, payload) {
+            //console.log("setMapSize: " + JSON.stringify(payload))
+            state.mapSize = payload;
         },
         setUserLocation(state, payload) {
             state.userLocation = payload;

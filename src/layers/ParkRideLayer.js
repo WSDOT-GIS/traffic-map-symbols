@@ -1,15 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.initLayer = void 0;
 const tslib_1 = require("tslib");
 const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
 const GeoJSONLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/GeoJSONLayer"));
-// import Graphic from "@arcgis/core/Graphic";
 const ParkRideSymbol_1 = tslib_1.__importDefault(require("@/symbols/ParkRideSymbol"));
-// import { mapView } from "@/esri-stuff/esriMap";
 const Field_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/Field"));
-// import ParkRideInfo from "@/types/ParkRideInfo";
-//import { generateClusterConfig } from "@/utils/layerUtil";
-//const clusterConfig = generateClusterConfig("Park & Rides", "park & ride", "#065535");
 const renderer = new SimpleRenderer_1.default({ symbol: ParkRideSymbol_1.default });
 const fields = [
     new Field_1.default({
@@ -63,13 +59,32 @@ const fields = [
         type: "string"
     })
 ];
-const layer = new GeoJSONLayer_1.default({
-    id: "park-ride-layer",
-    url: "https://data.wsdot.wa.gov/travelcenter/ParkAndRides.json",
-    title: "Park and Rides",
-    renderer: renderer,
-    fields: fields,
-    visible: false
-});
-exports.default = layer;
+let layer;
+const initLayer = (url) => {
+    layer = new GeoJSONLayer_1.default({
+        id: "park-ride-layer",
+        url: url,
+        title: "Park and Rides",
+        renderer: renderer,
+        fields: fields,
+        visible: false
+    });
+    return layer;
+};
+exports.initLayer = initLayer;
+const getLayer = () => {
+    if (!layer) {
+        throw "ParkRideLayer is not ready yet!";
+    }
+    return layer;
+};
+// const layer = new GeoJSONLayer({
+//     id: "park-ride-layer",
+//     url: "https://data.wsdot.wa.gov/travelcenter/ParkAndRides.json",
+//     title: "Park and Rides",
+//     renderer: renderer,
+//     fields: fields,
+//     visible: false
+// });
+exports.default = getLayer;
 //# sourceMappingURL=ParkRideLayer.js.map

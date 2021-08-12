@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeHighlight = exports.highlightFeature = exports.bufferByPixels = exports.getIdsFromCluster = exports.getLayer = exports.panMap = exports.toScreenXY = exports.zoomOnClick = exports.tryZoomToPointAsync = exports.tryZoomToPoint = exports.init = exports.mapView = exports.webmap = void 0;
+exports.removeHighlight = exports.highlightFeature = exports.bufferByPixels = exports.getIdsFromCluster = exports.getLayer = exports.panMap = exports.toScreenXY = exports.zoomOnClick = exports.tryZoomToPointAsync = exports.tryZoomToPoint = exports.loadOperationalLayers = exports.init = exports.mapView = exports.webmap = void 0;
 const tslib_1 = require("tslib");
 const WebMap_1 = tslib_1.__importDefault(require("@arcgis/core/WebMap"));
 const MapView_1 = tslib_1.__importDefault(require("@arcgis/core/views/MapView"));
@@ -9,26 +9,27 @@ const geometryEngine_1 = require("@arcgis/core/geometry/geometryEngine");
 const watchUtils_1 = require("@arcgis/core/core/watchUtils");
 const SpatialReference_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/SpatialReference"));
 const config_1 = tslib_1.__importDefault(require("@arcgis/core/config"));
-const TrafficLayer_1 = tslib_1.__importDefault(require("@/layers/TrafficLayer"));
-const ParkRideLayer_1 = tslib_1.__importDefault(require("@/layers/ParkRideLayer"));
-const CameraLayer_1 = tslib_1.__importDefault(require("@/layers/CameraLayer"));
-const RestAreasLayer_1 = tslib_1.__importDefault(require("@/layers/RestAreasLayer"));
-const PointRestrictionsLayer_1 = tslib_1.__importDefault(require("@/layers/PointRestrictionsLayer"));
-const RoadAlertLayer_1 = tslib_1.__importDefault(require("@/layers/RoadAlertLayer"));
-const LineRestrictionsLayer_1 = tslib_1.__importDefault(require("@/layers/LineRestrictionsLayer"));
-const WeatherStationsLayer_1 = tslib_1.__importDefault(require("@/layers/WeatherStationsLayer"));
-const MountainPassesLayer_1 = tslib_1.__importDefault(require("@/layers/MountainPassesLayer"));
-const TravelTimeLayer_1 = tslib_1.__importDefault(require("@/layers/TravelTimeLayer"));
+// Layers
+const TrafficLayer_1 = require("@/layers/TrafficLayer");
+const ParkRideLayer_1 = require("@/layers/ParkRideLayer");
+const CameraLayer_1 = require("@/layers/CameraLayer");
+const RestAreasLayer_1 = require("@/layers/RestAreasLayer");
+const PointRestrictionsLayer_1 = require("@/layers/PointRestrictionsLayer");
+const RoadAlertsLayer_1 = require("@/layers/RoadAlertsLayer");
+const LineRestrictionsLayer_1 = require("@/layers/LineRestrictionsLayer");
+const WeatherStationsLayer_1 = require("@/layers/WeatherStationsLayer");
+const MountainPassesLayer_1 = require("@/layers/MountainPassesLayer");
 const extentUtil_1 = require("@/utils/extentUtil");
 const ZoomExtentLayer_1 = tslib_1.__importDefault(require("@/layers/ZoomExtentLayer"));
-config_1.default.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
-console.log(globalThis.map);
+// EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
+// Initialize empty map, and load layers after the config is fetched...
 exports.webmap = new WebMap_1.default({
-    layers: [TrafficLayer_1.default, RestAreasLayer_1.default, ParkRideLayer_1.default, WeatherStationsLayer_1.default, MountainPassesLayer_1.default, LineRestrictionsLayer_1.default, PointRestrictionsLayer_1.default, CameraLayer_1.default, RoadAlertLayer_1.default, TravelTimeLayer_1.default],
+//layers: [TrafficLayer, RestAreasLayer, ParkRideLayer, WeatherStationsLayer, MountainPassLayer, LineRestrictionsLayer, PointRestrictionsLayer, CameraLayer, RoadAlertsLayer],
 });
 exports.mapView = new MapView_1.default({
     container: "esri-map-view",
     map: exports.webmap,
+    extent: extentUtil_1.getEsriExtent("full"),
     constraints: {
         rotationEnabled: false // Disables map rotation
     }
@@ -46,6 +47,24 @@ const init = (container) => {
     });
 };
 exports.init = init;
+// Featch config JSON and get apiKey and URL, then initialize layers and add to map...
+const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+    const fetchResponse = yield fetch("/appconfig.json");
+    const config = yield fetchResponse.json();
+    config_1.default.apiKey = config.apiKey;
+    const trafficLyr = TrafficLayer_1.initLayer(config.traffic);
+    const restAreasLyr = RestAreasLayer_1.initLayer(config.restAreas);
+    const parkRideLyr = ParkRideLayer_1.initLayer(config.parkAndRides);
+    const weatherLyr = WeatherStationsLayer_1.initLayer(config.weatherStations);
+    const mtLyr = MountainPassesLayer_1.initLayer(config.mountainPasses);
+    const lineRestrictionLyr = LineRestrictionsLayer_1.initLayer(config.lineRestrictions);
+    const pointRestrictionLyr = PointRestrictionsLayer_1.initLayer(config.pointRestrictions);
+    const cameraLyr = CameraLayer_1.initLayer(config.cameras);
+    const roadAlertsLyr = RoadAlertsLayer_1.initLayer(config.roadAlerts);
+    exports.webmap.addMany([trafficLyr, restAreasLyr, parkRideLyr, weatherLyr, mtLyr, lineRestrictionLyr,
+        pointRestrictionLyr, cameraLyr, roadAlertsLyr]);
+});
+exports.loadOperationalLayers = loadOperationalLayers;
 const tryZoomToPoint = (point, numLevels) => {
     let isSuccess = true;
     if (!numLevels) {
@@ -188,6 +207,7 @@ const bufferByPixels = (distancePixel, screenPoint, mapPoint) => {
     }
 };
 exports.bufferByPixels = bufferByPixels;
+/** Highlight feature */
 let highlight;
 const highlightFeature = (featureInfo) => {
     const layer = exports.getLayer(featureInfo.layerId);

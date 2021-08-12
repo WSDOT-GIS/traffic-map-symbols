@@ -9,31 +9,31 @@ import Layer from "@arcgis/core/layers/Layer";
 import EsriConfig from "@arcgis/core/config"
 import Graphic from "@arcgis/core/Graphic";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
-
-import TrafficLayer from "@/layers/TrafficLayer";
-import ParkRideLayer from "@/layers/ParkRideLayer";
-import CameraLayer from "@/layers/CameraLayer";
-import RestAreasLayer from "@/layers/RestAreasLayer";
-import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
-import RoadAlertsLayer from "@/layers/RoadAlertLayer";
-import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
-import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
-import MountainPassLayer from "@/layers/MountainPassesLayer";
-import TravelTimesLayer from "@/layers/TravelTimeLayer"
+// Layers
+import { initLayer as initTrafficLayer } from "@/layers/TrafficLayer";
+import { initLayer as initParkRideLayer } from "@/layers/ParkRideLayer";
+import { initLayer as initCameraLayer } from "@/layers/CameraLayer";
+import { initLayer as initRestAreaLayer } from "@/layers/RestAreasLayer";
+import { initLayer as initPointRestrictionsLayer } from "@/layers/PointRestrictionsLayer";
+import { initLayer as initRoadAlertsLayer } from "@/layers/RoadAlertsLayer";
+import { initLayer as initLineRestrictionsLayer } from "@/layers/LineRestrictionsLayer";
+import { initLayer as initWeatherLayer } from "@/layers/WeatherStationsLayer";
+import { initLayer as initMountainLayer } from "@/layers/MountainPassesLayer";
+//
 import ExtentInfo from "@/types/ExtentInfo";
-import { convert2EsriExtent } from "@/utils/extentUtil";
+import { convert2EsriExtent, getEsriExtent } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 import FeatureInfo from "@/types/FeatureInfo";
 
-EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
-console.log(globalThis.map)
-
+// EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
+// Initialize empty map, and load layers after the config is fetched...
 export const webmap = new WebMap({
-    layers: [TrafficLayer, RestAreasLayer, ParkRideLayer, WeatherStationsLayer, MountainPassLayer, LineRestrictionsLayer, PointRestrictionsLayer, CameraLayer, RoadAlertsLayer, TravelTimesLayer],
+    //layers: [TrafficLayer, RestAreasLayer, ParkRideLayer, WeatherStationsLayer, MountainPassLayer, LineRestrictionsLayer, PointRestrictionsLayer, CameraLayer, RoadAlertsLayer],
 });
 export const mapView = new MapView({
     container: "esri-map-view",
     map: webmap,
+    extent: getEsriExtent("full"),
     constraints: {
         rotationEnabled: false // Disables map rotation
     }
@@ -50,6 +50,24 @@ export const init = (container: HTMLDivElement): void => {
             console.warn("Failed to initialize map. Error: ", error);
         });
 };
+// Featch config JSON and get apiKey and URL, then initialize layers and add to map...
+export const loadOperationalLayers = async (): Promise<void> => {
+    const fetchResponse = await fetch("/appconfig.json");
+    const config = await fetchResponse.json();
+    EsriConfig.apiKey = config.apiKey;
+    const trafficLyr = initTrafficLayer(config.traffic);
+    const restAreasLyr = initRestAreaLayer(config.restAreas);
+    const parkRideLyr = initParkRideLayer(config.parkAndRides);
+    const weatherLyr = initWeatherLayer(config.weatherStations);
+    const mtLyr = initMountainLayer(config.mountainPasses);
+    const lineRestrictionLyr = initLineRestrictionsLayer(config.lineRestrictions);
+    const pointRestrictionLyr = initPointRestrictionsLayer(config.pointRestrictions);
+    const cameraLyr = initCameraLayer(config.cameras)
+    const roadAlertsLyr = initRoadAlertsLayer(config.roadAlerts)
+
+    webmap.addMany([trafficLyr, restAreasLyr, parkRideLyr, weatherLyr, mtLyr, lineRestrictionLyr,
+        pointRestrictionLyr, cameraLyr, roadAlertsLyr]);
+}
 
 export const tryZoomToPoint = (point: Point, numLevels?: number): boolean => {
     let isSuccess = true;
@@ -195,7 +213,7 @@ export const bufferByPixels = (distancePixel: number, screenPoint?: { x: number,
     }
 
 }
-
+/** Highlight feature */
 let highlight: __esri.Handle;
 export const highlightFeature = (featureInfo: FeatureInfo): void => {
     const layer = getLayer(featureInfo.layerId) as GeoJSONLayer;

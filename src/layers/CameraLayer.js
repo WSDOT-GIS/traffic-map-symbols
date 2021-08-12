@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.toggleCluster = void 0;
+exports.toggleCluster = exports.initLayer = void 0;
 const tslib_1 = require("tslib");
 const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
 const GeoJSONLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/GeoJSONLayer"));
@@ -65,20 +65,42 @@ const fields = [
         type: "integer"
     }),
 ];
-const layer = new GeoJSONLayer_1.default({
-    id: "traffic-camera-layer",
-    url: "https://data.wsdot.wa.gov/travelcenter/Cameras.json",
-    title: "Traffic Cameras",
-    renderer: renderer,
-    featureReduction: clusterUtil_1.clusterConfig,
-    fields: fields,
-    visible: false
-});
-exports.default = layer;
+let layer;
+const initLayer = (url) => {
+    layer = new GeoJSONLayer_1.default({
+        id: "traffic-camera-layer",
+        url: url,
+        title: "Traffic Cameras",
+        renderer: renderer,
+        featureReduction: clusterUtil_1.clusterConfig,
+        fields: fields,
+        visible: false
+    });
+    return layer;
+};
+exports.initLayer = initLayer;
+const getLayer = () => {
+    if (!layer) {
+        throw "CameraLayer is not ready yet!";
+    }
+    return layer;
+};
+// const layer = new GeoJSONLayer({
+//     id: "traffic-camera-layer",
+//     url: "https://data.wsdot.wa.gov/travelcenter/Cameras.json",
+//     title: "Traffic Cameras",
+//     renderer: renderer,
+//     featureReduction: clusterConfig,
+//     fields: fields,
+//     visible: false
+// });
+exports.default = getLayer;
 /*** Helper functions **************/
 // Watch scale change...
 const toggleCluster = (newScale, oldScale) => {
-    //console.log("toggleCluster scale: " + newScale);
+    if (!layer) {
+        return;
+    }
     // Turn off clustering at max scale...
     if (newScale > clusterUtil_1.clusterMaxScale && oldScale < clusterUtil_1.clusterMaxScale) {
         layer.featureReduction = clusterUtil_1.clusterConfig;

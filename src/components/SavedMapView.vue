@@ -1,12 +1,13 @@
 <template>
   <div id="savedMapWidget" class="w3-left-align">
     <div id="saved-map-list-title w3-medium">My saved maps</div>
-    <ul id="saved-map-list-container" class="w3-ul" ref="listContainerRef">
+    <ul id="saved-map-list-container" class="w3-ul">
       <li
         v-for="(item, index) in mapList"
         :key="index"
         class="w3-border-0"
         style="padding: 0"
+        ref="itemContainerRef"
       >
         <button
           :title="'Show ' + item.title"
@@ -15,6 +16,7 @@
             'w3-text-blue': item.selected,
             'w3-text-dark-grey': !item.selected,
           }"
+          :style="{ width: itemTitleWidth }"
           @click="selectItem($event, item)"
         >
           {{ item.title }}
@@ -24,6 +26,7 @@
           :aria-label="'Delete ' + item.title"
           class="w3-right w3-button w3-transparent"
           @click="removeItem($event, item)"
+          ref="closeButtonRef"
         >
           &times;
         </button>
@@ -39,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref, watch } from "vue";
 
 import SavedMapInfo from "@/types/SavedMapInfo";
 import { setCookie, getCookie } from "@/utils/cookieUtil";
@@ -54,6 +57,9 @@ export default defineComponent({
   components: { WsdotButtonView, SaveMapFormView },
   setup() {
     const store = useStore();
+    const itemContainerRef = ref<HTMLElement>();
+    const closeButtonRef = ref<HTMLElement>();
+    const itemTitleWidth = ref("0");
     const formVisible = ref(false);
     const newMapTitle = ref("");
     const cookieText = getCookie("saved-map-list");
@@ -65,9 +71,24 @@ export default defineComponent({
     mapList.value.forEach((each) => {
       each.selected = false;
     });
+    // Resize the list content...
+    const mapSize = computed(() => store.state.mapSize);
+    watch(mapSize, () => {
+      resizeItemTitle();
+    });
+    // Set the width of the item title button so the remove button won't wrap.
+    const resizeItemTitle = () => {
+      if (itemContainerRef.value && closeButtonRef.value) {
+        const w =
+          itemContainerRef.value.offsetWidth -
+          closeButtonRef.value.offsetWidth -
+          3; // Without this the close button will still wrap. 1 works too, but made it 3 to make sure.
+        itemTitleWidth.value = w + "px";
+      }
+    };
+    resizeItemTitle();
     const showForm = () => {
       formVisible.value = true;
-      //console.log("showForm: " + formVisible.value);
     };
     const closeForm = () => {
       formVisible.value = false;
@@ -117,13 +138,13 @@ export default defineComponent({
       setCookie("saved-map-list", value);
     };
 
-    // MapView resize event...
-    //mapView.on("resize", () => {});
-
     return {
       mapList,
       formVisible,
       newMapTitle,
+      itemContainerRef,
+      closeButtonRef,
+      itemTitleWidth,
       showForm,
       closeForm,
       selectItem,
@@ -145,7 +166,7 @@ button {
   width: 100%;
 }
 .saved-map-title {
- 
+  text-align: left;
 }
 .remove-saved-map-button {
   height: 100%;
