@@ -57,6 +57,13 @@ export const initLayer = (url: string): GeoJSONLayer => {
     return layer;
 }
 
+const getLayer = (): GeoJSONLayer => {
+    if (!layer) {
+        throw "MountainPassLayer is not ready yet!";
+    }
+    return layer;
+}
+
 // const FeatureLayer = new GeoJSONLayer({
 //     id: "mountain-passes-layer",
 //     url: "https://data.wsdot.wa.gov/travelcenter/MountainPasses.json",
@@ -65,4 +72,4 @@ export const initLayer = (url: string): GeoJSONLayer => {
 //     visible: false
 // })
 
-export default layer
+export default getLayer

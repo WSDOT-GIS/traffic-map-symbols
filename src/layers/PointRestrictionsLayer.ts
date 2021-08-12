@@ -62,6 +62,13 @@ export const initLayer = (url: string): GeoJSONLayer => {
     return layer;
 }
 
+const getLayer = (): GeoJSONLayer => {
+    if (!layer) {
+        throw "PointRestrictionLayer is not ready yet!";
+    }
+    return layer;
+}
+
 // const PointRestrictionsLayer = new GeoJSONLayer({
 //     id: "point-restrictions-layer",
 //     url: "https://data.wsdot.wa.gov/travelcenter/PointRestrictions.json",
@@ -71,4 +78,4 @@ export const initLayer = (url: string): GeoJSONLayer => {
 //     fields: fields
 
 // });
-export default layer
+export default getLayer

@@ -69,7 +69,7 @@ export default defineComponent({
     };
 
     watch(props, () => {
-      if (FeatureLayer && props.Featureset.layerId === FeatureLayer.id) {
+      if (props.Featureset.layerId === FeatureLayer().id) {
         show();
       } else {
         close();
@@ -77,10 +77,7 @@ export default defineComponent({
     });
     const show = () => {
       const setVal = () => {
-        if (!FeatureLayer) {
-          return;
-        }
-        getFeatureInfosByIds(props.Featureset.ids, FeatureLayer).then(
+        getFeatureInfosByIds(props.Featureset.ids, FeatureLayer()).then(
           (results) => {
             // console.log(JSON.stringify(results));
             features.value = results;

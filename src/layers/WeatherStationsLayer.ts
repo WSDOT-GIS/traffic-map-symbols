@@ -19,6 +19,13 @@ export const initLayer = (url: string): GeoJSONLayer => {
     return layer;
 }
 
+const getLayer = (): GeoJSONLayer => {
+    if (!layer) {
+        throw "WeatherStationsLayer is not ready yet!";
+    }
+    return layer;
+}
+
 // const WeatherStationsLayer = new GeoJSONLayer({
 //     id: "weather-stations-layer",
 //     url: "https://data.wsdot.wa.gov/travelcenter/WeatherStations.json",
@@ -27,4 +34,4 @@ export const initLayer = (url: string): GeoJSONLayer => {
 //     visible: false
 // })
 
-export default layer
+export default getLayer

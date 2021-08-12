@@ -72,6 +72,13 @@ export const initLayer = (url: string): GeoJSONLayer => {
     return layer;
 }
 
+const getLayer = (): GeoJSONLayer => {
+    if (!layer) {
+        throw "LineRestrictionLayer is not ready yet!";
+    }
+    return layer;
+}
+
 // const LineRestrictionsLayer = new GeoJSONLayer({
 //     id: "line-restrictions-layer",
 //     url: "https://data.wsdot.wa.gov/travelcenter/LineRestrictions.json",
@@ -81,4 +88,4 @@ export const initLayer = (url: string): GeoJSONLayer => {
 //     fields: fields
 // });
 
-export default layer
+export default getLayer

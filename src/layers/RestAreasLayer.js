@@ -9,11 +9,16 @@ export const initLayer = (url) => {
     layer = new GeoJSONLayer({
         id: "rest-areas-layer",
         url: url,
-        //url: await getURL(),
         title: "Rest Areas",
         renderer: restAreasRenderer,
         visible: false
     });
+    return layer;
+};
+const getLayer = () => {
+    if (!layer) {
+        throw "Layer is not ready yet!";
+    }
     return layer;
 };
 // const FeatureLayer = new GeoJSONLayer({
@@ -24,5 +29,5 @@ export const initLayer = (url) => {
 //     renderer: restAreasRenderer,
 //     visible: false
 // });
-export default layer;
+export default getLayer;
 //# sourceMappingURL=RestAreasLayer.js.map

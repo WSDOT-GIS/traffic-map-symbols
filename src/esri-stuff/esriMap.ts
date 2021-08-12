@@ -10,7 +10,7 @@ import EsriConfig from "@arcgis/core/config"
 import Graphic from "@arcgis/core/Graphic";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 // Layers
-import TrafficLayer from "@/layers/TrafficLayer";
+import { initLayer as initTrafficLayer } from "@/layers/TrafficLayer";
 import { initLayer as initParkRideLayer } from "@/layers/ParkRideLayer";
 import { initLayer as initCameraLayer } from "@/layers/CameraLayer";
 import { initLayer as initRestAreaLayer } from "@/layers/RestAreasLayer";
@@ -25,9 +25,8 @@ import { convert2EsriExtent, getEsriExtent } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 import FeatureInfo from "@/types/FeatureInfo";
 
-EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
-
-
+// EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
+// Initialize empty map, and load layers after the config is fetched...
 export const webmap = new WebMap({
     //layers: [TrafficLayer, RestAreasLayer, ParkRideLayer, WeatherStationsLayer, MountainPassLayer, LineRestrictionsLayer, PointRestrictionsLayer, CameraLayer, RoadAlertsLayer],
 });
@@ -58,6 +57,8 @@ export const init = (container: HTMLDivElement): void => {
 export const loadOperationalLayers = async (): Promise<void> => {
     const fetchResponse = await fetch("/appconfig.json");
     const config = await fetchResponse.json();
+    EsriConfig.apiKey = config.apiKey;
+    const trafficLyr = initTrafficLayer(config.traffic);
     const restAreasLyr = initRestAreaLayer(config.restAreas);
     const parkRideLyr = initParkRideLayer(config.parkAndRides);
     const weatherLyr = initWeatherLayer(config.weatherStations);
@@ -67,7 +68,8 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const cameraLyr = initCameraLayer(config.cameras)
     const roadAlertsLyr = initRoadAlertsLayer(config.roadAlerts)
 
-    webmap.addMany([TrafficLayer, restAreasLyr, parkRideLyr, weatherLyr, mtLyr, lineRestrictionLyr, pointRestrictionLyr, cameraLyr, roadAlertsLyr]);
+    webmap.addMany([trafficLyr, restAreasLyr, parkRideLyr, weatherLyr, mtLyr, lineRestrictionLyr,
+        pointRestrictionLyr, cameraLyr, roadAlertsLyr]);
 }
 
 export const tryZoomToPoint = (point: Point, numLevels?: number): boolean => {

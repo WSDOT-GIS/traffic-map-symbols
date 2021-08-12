@@ -67,6 +67,12 @@ export const initLayer = (url) => {
     });
     return layer;
 };
+const getLayer = () => {
+    if (!layer) {
+        throw "ParkRideLayer is not ready yet!";
+    }
+    return layer;
+};
 // const layer = new GeoJSONLayer({
 //     id: "park-ride-layer",
 //     url: "https://data.wsdot.wa.gov/travelcenter/ParkAndRides.json",
@@ -75,5 +81,5 @@ export const initLayer = (url) => {
 //     fields: fields,
 //     visible: false
 // });
-export default layer;
+export default getLayer;
 //# sourceMappingURL=ParkRideLayer.js.map

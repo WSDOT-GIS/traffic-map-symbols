@@ -72,6 +72,13 @@ export const initLayer = (url: string): GeoJSONLayer => {
     return layer;
 }
 
+const getLayer = (): GeoJSONLayer => {
+    if (!layer) {
+        throw "ParkRideLayer is not ready yet!";
+    }
+    return layer;
+}
+
 // const layer = new GeoJSONLayer({
 //     id: "park-ride-layer",
 //     url: "https://data.wsdot.wa.gov/travelcenter/ParkAndRides.json",
@@ -81,4 +88,4 @@ export const initLayer = (url: string): GeoJSONLayer => {
 //     visible: false
 // });
 
-export default layer
+export default getLayer

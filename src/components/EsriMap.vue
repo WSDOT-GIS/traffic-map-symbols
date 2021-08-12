@@ -224,28 +224,16 @@ export default defineComponent({
       // MapView click event handler for showing popups...
       esriMap.mapView.on("click", (clickEvent) => {
         // Check if feature is clicked on...
-        if (
-          !ParkRideLayer ||
-          !CameraLayer ||
-          !PointRestrictionsLayer ||
-          !LineRestrictionsLayer ||
-          !WeatherStationsLayer ||
-          !MountainPassLayer ||
-          !RestAreasLayer ||
-          !RoadAlertsLayer
-        ) {
-          return;
-        }
         const opts = {
           include: [
-            ParkRideLayer,
-            CameraLayer,
-            PointRestrictionsLayer,
-            LineRestrictionsLayer,
-            WeatherStationsLayer,
-            MountainPassLayer,
-            RestAreasLayer,
-            RoadAlertsLayer,
+            ParkRideLayer(),
+            CameraLayer(),
+            PointRestrictionsLayer(),
+            LineRestrictionsLayer(),
+            WeatherStationsLayer(),
+            MountainPassLayer(),
+            RestAreasLayer(),
+            RoadAlertsLayer(),
           ] as GeoJSONLayer[],
         };
         esriMap.mapView.hitTest(clickEvent, opts).then((response) => {
@@ -287,12 +275,11 @@ export default defineComponent({
               const g = results2Show.results[0].graphic;
               const layer = g.layer as GeoJSONLayer;
               if (
-                CameraLayer &&
                 !layer.featureReduction &&
                 esriMap.mapView.scale < clusterMaxScale
               ) {
                 // If max scale, and features are still overlapping, then show multiple features...
-                const query = CameraLayer.createQuery();
+                const query = CameraLayer().createQuery();
                 // Select all features within the set pixels...
                 query.geometry = esriMap.bufferByPixels(
                   10,

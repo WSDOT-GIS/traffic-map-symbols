@@ -51,6 +51,12 @@ export const initLayer = (url) => {
     });
     return layer;
 };
+const getLayer = () => {
+    if (!layer) {
+        throw "MountainPassLayer is not ready yet!";
+    }
+    return layer;
+};
 // const FeatureLayer = new GeoJSONLayer({
 //     id: "mountain-passes-layer",
 //     url: "https://data.wsdot.wa.gov/travelcenter/MountainPasses.json",
@@ -58,5 +64,5 @@ export const initLayer = (url) => {
 //     renderer: mountainPassRenderer,
 //     visible: false
 // })
-export default layer;
+export default getLayer;
 //# sourceMappingURL=MountainPassesLayer.js.map

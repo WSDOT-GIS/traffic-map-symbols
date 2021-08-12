@@ -12,11 +12,17 @@ export const initLayer = (url: string): GeoJSONLayer => {
     layer = new GeoJSONLayer({
         id: "rest-areas-layer",
         url: url,
-        //url: await getURL(),
         title: "Rest Areas",
         renderer: restAreasRenderer,
         visible: false
     });
+    return layer;
+}
+
+const getLayer = (): GeoJSONLayer => {
+    if (!layer) {
+        throw "Layer is not ready yet!";
+    }
     return layer;
 }
 
@@ -30,4 +36,4 @@ export const initLayer = (url: string): GeoJSONLayer => {
 // });
 
 
-export default layer
+export default getLayer

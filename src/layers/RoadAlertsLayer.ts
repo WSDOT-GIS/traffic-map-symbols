@@ -18,6 +18,13 @@ export const initLayer = (url: string): GeoJSONLayer => {
     return layer;
 }
 
+const getLayer = (): GeoJSONLayer => {
+    if (!layer) {
+        throw "RoadAlertsLayer is not ready yet!"
+    }
+    return layer;
+}
+
 // const RoadAlertsLayer = new GeoJSONLayer({
 //     id: "road-alerts-layer",
 //     url: "https://data.wsdot.wa.gov/travelcenter/RoadAlerts.json",
@@ -27,4 +34,4 @@ export const initLayer = (url: string): GeoJSONLayer => {
 // })
 
 // export default RoadAlertsLayer
-export default layer;
+export default getLayer;
