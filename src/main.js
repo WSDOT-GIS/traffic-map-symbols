@@ -8,6 +8,7 @@ import "./assets/toggleSlider.css";
 import "./assets/flexGridView.css";
 import { store, key } from "./store";
 import { getConfig } from "./utils/appConfigUtil";
+// Load config before app starts...
 getConfig().then(() => {
     // adding store as a plugin while creating an app...
     createApp(App).use(store, key).mount('#app');
