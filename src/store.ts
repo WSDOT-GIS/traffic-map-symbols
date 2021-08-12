@@ -17,11 +17,24 @@ export interface State {
     layerList: LayerInfo[];
     currentExtent: ExtentInfo;
     userLocation: number[] | null;
-    // mapFeaturesExpanded: string;
+    isMobile: boolean;
 }
 
 // define injection key...
 export const key: InjectionKey<Store<State>> = Symbol()
+
+const isMobile = (): boolean => {
+    if (navigator.userAgent.match(/Android/i)
+        || navigator.userAgent.match(/webOS/i)
+        || navigator.userAgent.match(/iPhone/i)
+        || navigator.userAgent.match(/iPad/i)
+        || navigator.userAgent.match(/iPod/i)
+        || navigator.userAgent.match(/BlackBerry/i)
+        || navigator.userAgent.match(/Windows Phone/i)) {
+        return true;
+    }
+    else { return false; }
+}
 
 export const store = createStore<State>({
     state() {
@@ -38,7 +51,7 @@ export const store = createStore<State>({
             },
             layerList: [],
             userLocation: null,
-            // mapFeaturesExpanded: "block",
+            isMobile: isMobile(),
         }
     },
     getters: {
@@ -92,9 +105,6 @@ export const store = createStore<State>({
                 mapView.extent = extent;
             }
         },
-        // setMapFeaturesExpanded(state) {
-        //     state.mapFeaturesExpanded == "block" ? state.mapFeaturesExpanded = "none" : state.mapFeaturesExpanded = "block"
-        // },
     },
 })
 // Clone the target of proxy (i.e. removing the reactivity)

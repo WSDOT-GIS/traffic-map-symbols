@@ -70,7 +70,7 @@ export default defineComponent({
       maxHeight.value = size.height;
     });
     // If it is on small device, close it by default.
-    const isOpen = ref(window.innerWidth > 400);
+    const isOpen = ref(!store.state.isMobile);
 
     const toggleDisplay = () => {
       isOpen.value = !isOpen.value;
@@ -85,7 +85,7 @@ export default defineComponent({
   position: absolute;
   top: 0;
   left: 0;
-  width: 250px;
+  width: 300px;
   overflow-y: auto;
 }
 @media screen and (max-width: 601px) {

@@ -46,6 +46,7 @@ import {
   computed,
   defineComponent,
   nextTick,
+  onMounted,
   onUpdated,
   ref,
   watch,
@@ -79,10 +80,23 @@ export default defineComponent({
     });
     // Resize the list after the component is loaded or updated...
     onUpdated(() => {
+      //console.log("******onUpdated");
       if (mapList.value.length > 0) {
         nextTick(() => {
           resizeItemTitle();
         });
+      }
+    });
+    onMounted(() => {
+      // On the mobile, onUpdated is not triggered initially since the left pane is closed by default.
+      // On the big screen, onMounted seems to happen too early and it does not size correctly, so do not handle this.
+      if (store.state.isMobile) {
+        //console.log("******onMounted");
+        if (mapList.value.length > 0) {
+          nextTick(() => {
+            resizeItemTitle();
+          });
+        }
       }
     });
     // Resize the list content when the screen size changes...
