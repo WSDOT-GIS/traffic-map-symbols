@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
+import { computed, defineComponent, nextTick, ref, watch } from "vue";
 
 import SavedMapInfo from "@/types/SavedMapInfo";
 import { setCookie, getCookie } from "@/utils/cookieUtil";
@@ -124,6 +124,9 @@ export default defineComponent({
       const value = JSON.stringify(mapList.value);
       setCookie("saved-map-list", value);
       closeForm();
+      nextTick(() => {
+        resizeItemTitle();
+      });
     };
 
     const removeItem = (event: Event, item: SavedMapInfo) => {
