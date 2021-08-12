@@ -5,9 +5,8 @@
   </header>
   <main>
     <div
-
       id="map-container"
-      :style="{ height: mapHeight}"
+      :style="{ height: mapHeight }"
       class="w3-display-container"
     >
       <EsriMap />
@@ -45,13 +44,13 @@ export default defineComponent({
   setup() {
     const headerText =
       "DRAFT – Information on this page is for visual demonstration and should not be used for travel related decisions – DRAFT";
-    const alerts = ref<AlertInfo[]>([]);
-    // const tsunami: AlertInfo = {
-    //   title: "Tsunami!",
-    //   description: "description",
-    //   x: 1,
-    //   y: 1,
-    // };
+    const tempAlert: AlertInfo = {
+      title: "Pleaceholder for the alert message.",
+      description: "description",
+      x: 1,
+      y: 1,
+    };
+    const alerts = ref<AlertInfo[]>([tempAlert]);
     const adText = "Placeholder for the advertisement";
     const footerText = "Placeholder for the footer";
     const topRef = ref<HTMLDivElement>();
