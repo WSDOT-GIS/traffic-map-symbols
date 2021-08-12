@@ -3,7 +3,6 @@
     ref="containerRef"
     class="popup-container w3-card w3-col"
     v-if="Features.length > 0 && Features[0]"
-    :class="sizeClass"
     :style="{
       marginTop: popupTop + 'px',
       marginLeft: popupLeft + 'px',
@@ -26,12 +25,6 @@
       <div v-if="badgeText.length > 0" class="popup-badge">
         {{ badgeText }}
       </div>
-      <!-- <button
-        class="popup-close-button w3-button w3-padding-small"
-        @click="close"
-      >
-        &times;
-      </button> -->
     </div>
     <button
       class="popup-close-button w3-button w3-padding-small"
@@ -176,21 +169,21 @@ export default defineComponent({
     // let gHighlight: Graphic;
     // Set the width...
     // Default...
-    const sizeClass = {
-      m4: true,
-      m6: false,
-      l2: true,
-      l3: false,
-    };
-    if (props.Width) {
-      // Wide...
-      if (props.Width === "w") {
-        sizeClass.m4 = false;
-        sizeClass.m6 = true;
-        sizeClass.l2 = false;
-        sizeClass.l3 = true;
-      }
-    }
+    // const sizeClass = {
+    //   m4: true,
+    //   m6: false,
+    //   l2: true,
+    //   l3: false,
+    // };
+    // if (props.Width) {
+    //   // Wide...
+    //   if (props.Width === "w") {
+    //     sizeClass.m4 = false;
+    //     sizeClass.m6 = true;
+    //     sizeClass.l2 = false;
+    //     sizeClass.l3 = true;
+    //   }
+    // }
     const pagenationStyle = computed(() => {
       return {
         "--carousel-color-primary": props.DarkThemeColor,
@@ -470,7 +463,7 @@ export default defineComponent({
       popupTop,
       maxHeight,
       currentIdx,
-      sizeClass,
+      // sizeClass,
       close,
       adjustPositionSize,
       pagenationStyle,
@@ -488,6 +481,13 @@ export default defineComponent({
   z-index: 10;
   background-color: #fff;
   position: relative;
+  width: 400px;
+}
+
+@media screen and (max-width: 601px) {
+  .popup-container {
+    width: 100%;
+  }
 }
 
 .popup-container::after {

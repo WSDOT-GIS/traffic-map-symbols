@@ -3,7 +3,7 @@
     <div
       id="map-top-left-container"
       v-if="isOpen"
-      class="w3-container w3-padding-small w3-card w3-white w3-col m4 l2"
+      class="w3-container w3-padding-small w3-card w3-white w3-col"
     >
       <div class="w3-display-container w3-padding-small w3-border-0">
         <label class="w3-large">Map Features</label>
@@ -77,8 +77,14 @@ export default defineComponent({
   position: absolute;
   top: 0;
   left: 0;
-
+  width: 250px;
 }
+@media screen and (max-width: 601px) {
+  #map-top-left-container {
+    width: 100%;
+  }
+}
+
 #map-top-left-container-closed {
   position: absolute;
   top: 0;
