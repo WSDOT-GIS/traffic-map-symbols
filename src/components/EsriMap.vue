@@ -162,6 +162,7 @@ export default defineComponent({
           visible: layer.visible,
         });
       });
+      console.log(layerList)
       // Set layer visibility based on URL query...
       setLayerFromUrl(layerList);
       store.commit("setLayerList", layerList);
@@ -229,18 +230,18 @@ export default defineComponent({
         // Check if feature is clicked on...
         const opts = {
           include: [
-            ParkRideLayer,
-            CameraLayer,
-            PointRestrictionsLayer,
-            LineRestrictionsLayer,
-            WeatherStationsLayer,
-            MountainPassLayer,
-            RestAreasLayer,
-            RoadAlertsLayer,
-            TravelTimeLayer
+            ParkRideLayer(),
+            CameraLayer(),
+            PointRestrictionsLayer(),
+            LineRestrictionsLayer(),
+            WeatherStationsLayer(),
+            MountainPassLayer(),
+            RestAreasLayer(),
+            RoadAlertsLayer(),
+            TravelTimeLayer()
           ],
         };
-        esriMap.mapView.hitTest(clickEvent, opts).then((response) => {
+        esriMap.mapView.hitTest(clickEvent,opts).then((response) => {
           console.log("clicked")
           if (response.results.length) {
             console.log(response.results)

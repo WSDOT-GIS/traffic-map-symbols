@@ -19,6 +19,7 @@ import { initLayer as initRoadAlertsLayer } from "@/layers/RoadAlertsLayer";
 import { initLayer as initLineRestrictionsLayer } from "@/layers/LineRestrictionsLayer";
 import { initLayer as initWeatherLayer } from "@/layers/WeatherStationsLayer";
 import { initLayer as initMountainLayer } from "@/layers/MountainPassesLayer";
+import { initLayer as initTravelTimesLayer} from "@/layers/TravelTimeLayer"
 //
 import ExtentInfo from "@/types/ExtentInfo";
 import { convert2EsriExtent, getEsriExtent } from "@/utils/extentUtil";
@@ -64,9 +65,9 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const pointRestrictionLyr = initPointRestrictionsLayer(config.pointRestrictions);
     const cameraLyr = initCameraLayer(config.cameras)
     const roadAlertsLyr = initRoadAlertsLayer(config.roadAlerts)
-
+    const travelTimesLyr = initTravelTimesLayer(config.travelTimes)
     webmap.addMany([trafficLyr, restAreasLyr, parkRideLyr, weatherLyr, mtLyr, lineRestrictionLyr,
-        pointRestrictionLyr, cameraLyr, roadAlertsLyr]);
+        pointRestrictionLyr, cameraLyr, roadAlertsLyr,travelTimesLyr]);
 }
 
 export const tryZoomToPoint = (point: Point, numLevels?: number): boolean => {

@@ -128,7 +128,7 @@ export default defineComponent({
     // const mapY = ref(0);
 
     watch(props, () => {
-      if (props.Featureset.layerId === FeatureLayer.id) {
+      if (props.Featureset.layerId === FeatureLayer().id) {
         show();
       } else {
         close();
@@ -137,7 +137,7 @@ export default defineComponent({
 
     const show = () => {
       const setVal = () => {
-        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer).then(
+        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(
           (result) => {
             if (result) {
               console.log(result)

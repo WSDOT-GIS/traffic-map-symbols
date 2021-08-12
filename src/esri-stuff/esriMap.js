@@ -19,6 +19,7 @@ const RoadAlertsLayer_1 = require("@/layers/RoadAlertsLayer");
 const LineRestrictionsLayer_1 = require("@/layers/LineRestrictionsLayer");
 const WeatherStationsLayer_1 = require("@/layers/WeatherStationsLayer");
 const MountainPassesLayer_1 = require("@/layers/MountainPassesLayer");
+const TravelTimeLayer_1 = require("@/layers/TravelTimeLayer");
 const extentUtil_1 = require("@/utils/extentUtil");
 const ZoomExtentLayer_1 = tslib_1.__importDefault(require("@/layers/ZoomExtentLayer"));
 // EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
@@ -61,8 +62,9 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     const pointRestrictionLyr = PointRestrictionsLayer_1.initLayer(config.pointRestrictions);
     const cameraLyr = CameraLayer_1.initLayer(config.cameras);
     const roadAlertsLyr = RoadAlertsLayer_1.initLayer(config.roadAlerts);
+    const travelTimesLyr = TravelTimeLayer_1.initLayer(config.travelTimes);
     exports.webmap.addMany([trafficLyr, restAreasLyr, parkRideLyr, weatherLyr, mtLyr, lineRestrictionLyr,
-        pointRestrictionLyr, cameraLyr, roadAlertsLyr]);
+        pointRestrictionLyr, cameraLyr, roadAlertsLyr, travelTimesLyr]);
 });
 exports.loadOperationalLayers = loadOperationalLayers;
 const tryZoomToPoint = (point, numLevels) => {
