@@ -85,7 +85,7 @@ export default defineComponent({
   position: absolute;
   top: 0;
   left: 0;
-  width: 250px;
+  width: 300px;
   overflow-y: auto;
 }
 @media screen and (max-width: 601px) {

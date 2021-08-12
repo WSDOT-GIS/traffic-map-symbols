@@ -490,7 +490,7 @@ export default defineComponent({
   width: 400px;
 }
 
-@media screen and (max-width: 601px) {
+@media screen and (max-width: 401px) {
   .popup-container {
     width: 100%;
   }
