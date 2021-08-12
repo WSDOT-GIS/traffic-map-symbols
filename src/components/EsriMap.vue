@@ -1,6 +1,6 @@
 <template>
   <div id="esri-map-view"></div>
-
+  
   <div
     id="map-bottom-left-container"
     class="w3-display-bottomleft w3-container"
@@ -106,7 +106,7 @@ export default defineComponent({
     ZoomButtonView,
   },
   setup() {
-
+    const selectedCursor = ref("")
     const store = useStore();
     // Zoom popup...
     const zoomPopupVisible = ref(false);
@@ -162,7 +162,18 @@ export default defineComponent({
           visible: layer.visible,
         });
       });
-      console.log(layerList)
+      const featureLayerOpts = {
+          include: [
+            ParkRideLayer(),
+            CameraLayer(),
+            PointRestrictionsLayer(),
+            LineRestrictionsLayer(),
+            WeatherStationsLayer(),
+            MountainPassLayer(),
+            RestAreasLayer(),
+            RoadAlertsLayer(),
+            TravelTimeLayer()]
+        };
       // Set layer visibility based on URL query...
       setLayerFromUrl(layerList);
       store.commit("setLayerList", layerList);
@@ -186,7 +197,18 @@ export default defineComponent({
         const opts = {
           include: [ZoomExtentLayer],
         };
+         
+        // pointer move event handler to respond to layer marker hit...
+        esriMap.mapView.hitTest(event, featureLayerOpts).then((response) => {
+          if(response.results.length>0){
+            mapDiv.style.cursor = "pointer";
+          }
+          else{
+            mapDiv.style.cursor = "auto";
+          }
+        })
         esriMap.mapView.hitTest(event, opts).then((response) => {
+          
           // check if a feature is returned from the zoom layer...
           if (response.results.length) {
             // Show custom popup...
@@ -216,7 +238,7 @@ export default defineComponent({
           } else {
             // Resume normal map operation...
             zoomPopupVisible.value = false;
-            mapDiv.style.cursor = "auto";
+            //mapDiv.style.cursor = "auto";
             if (zoomEventIsOn) {
               mapDiv.removeEventListener("click", zoomMetroEventHandler);
               zoomEventIsOn = false;
@@ -228,20 +250,7 @@ export default defineComponent({
       // MapView click event handler for showing popups...
       esriMap.mapView.on("click", (clickEvent) => {
         // Check if feature is clicked on...
-        const opts = {
-          include: [
-            ParkRideLayer(),
-            CameraLayer(),
-            PointRestrictionsLayer(),
-            LineRestrictionsLayer(),
-            WeatherStationsLayer(),
-            MountainPassLayer(),
-            RestAreasLayer(),
-            RoadAlertsLayer(),
-            TravelTimeLayer()
-          ],
-        };
-        esriMap.mapView.hitTest(clickEvent,opts).then((response) => {
+        esriMap.mapView.hitTest(clickEvent,featureLayerOpts).then((response) => {
           console.log("clicked")
           if (response.results.length) {
             console.log(response.results)
@@ -389,6 +398,7 @@ export default defineComponent({
       popupXY,
       popupFeatureset,
       closePopup,
+      selectedCursor
     };
   },
 });
