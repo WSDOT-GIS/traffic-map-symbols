@@ -87,19 +87,19 @@ const layerListIcons = [{
         id: "rest-areas-layer",
         paths: `
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-<path d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12Z" fill="#00AEC7"/>
-<path d="M22.4167 12.1967C22.4167 17.8594 17.7565 22.4563 12 22.4563C6.24354 22.4563 1.58334 17.8594 1.58334 12.1967C1.58334 6.53392 6.24354 1.93703 12 1.93703C17.7565 1.93703 22.4167 6.53392 22.4167 12.1967Z" fill="#00AEC7" stroke="white" stroke-width="0.5"/>
-<g clip-path="url(#clip0)">
-<path d="M15.1715 10.7252H8.77155C8.41599 10.7252 8.14577 10.445 8.14577 10.1087L7.90399 5.91883C7.90399 5.56851 8.18844 5.30227 8.52977 5.30227H15.3991C15.7547 5.30227 16.0249 5.58253 16.0249 5.91883L15.7973 10.0947C15.7973 10.445 15.5271 10.7252 15.1715 10.7252Z" fill="white"/>
-<path d="M14.375 18.4603C14.3608 18.7967 14.0906 19.0629 13.7635 19.0629H10.1653C9.83816 19.0629 9.58216 18.7967 9.55371 18.4603C9.55371 18.4463 9.55371 18.4183 9.55371 18.3903L9.83816 16.1202C10.4497 16.5126 11.1893 16.7368 11.9715 16.7368C12.7679 16.7368 13.5075 16.4985 14.1333 16.1062L14.375 18.4043C14.375 18.4183 14.375 18.4463 14.375 18.4603Z" fill="white"/>
-<path d="M11.9715 11.2157C9.80976 11.2157 8.04621 11.7062 8.01776 12.3227C8.03198 13.682 8.75732 14.8731 9.83821 15.5457C10.4498 15.938 11.1893 16.1622 11.9715 16.1622C12.768 16.1622 13.5075 15.924 14.1333 15.5317C15.2 14.845 15.9111 13.668 15.9253 12.3227C15.8969 11.7062 14.1333 11.2157 11.9715 11.2157ZM11.9715 12.8972C10.4071 12.8972 9.14132 12.645 9.14132 12.3367C9.14132 12.0285 10.4071 11.7762 11.9715 11.7762C13.536 11.7762 14.8018 12.0285 14.8018 12.3367C14.8018 12.645 13.536 12.8972 11.9715 12.8972Z" fill="white"/>
-</g>
-<defs>
-<clipPath id="clip0">
-<rect width="14.2222" height="14.0129" fill="white" transform="translate(4.88889 5.19022)"/>
-</clipPath>
-</defs>
-</svg>
+    <path d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12Z" fill="#00AEC7"/>
+    <path d="M22.4167 12.1967C22.4167 17.8594 17.7565 22.4563 12 22.4563C6.24354 22.4563 1.58334 17.8594 1.58334 12.1967C1.58334 6.53392 6.24354 1.93703 12 1.93703C17.7565 1.93703 22.4167 6.53392 22.4167 12.1967Z" fill="#00AEC7" stroke="white" stroke-width="0.5"/>
+    <g clip-path="url(#clip0)">
+    <path d="M15.1715 10.7252H8.77155C8.41599 10.7252 8.14577 10.445 8.14577 10.1087L7.90399 5.91883C7.90399 5.56851 8.18844 5.30227 8.52977 5.30227H15.3991C15.7547 5.30227 16.0249 5.58253 16.0249 5.91883L15.7973 10.0947C15.7973 10.445 15.5271 10.7252 15.1715 10.7252Z" fill="white"/>
+    <path d="M14.375 18.4603C14.3608 18.7967 14.0906 19.0629 13.7635 19.0629H10.1653C9.83816 19.0629 9.58216 18.7967 9.55371 18.4603C9.55371 18.4463 9.55371 18.4183 9.55371 18.3903L9.83816 16.1202C10.4497 16.5126 11.1893 16.7368 11.9715 16.7368C12.7679 16.7368 13.5075 16.4985 14.1333 16.1062L14.375 18.4043C14.375 18.4183 14.375 18.4463 14.375 18.4603Z" fill="white"/>
+    <path d="M11.9715 11.2157C9.80976 11.2157 8.04621 11.7062 8.01776 12.3227C8.03198 13.682 8.75732 14.8731 9.83821 15.5457C10.4498 15.938 11.1893 16.1622 11.9715 16.1622C12.768 16.1622 13.5075 15.924 14.1333 15.5317C15.2 14.845 15.9111 13.668 15.9253 12.3227C15.8969 11.7062 14.1333 11.2157 11.9715 11.2157ZM11.9715 12.8972C10.4071 12.8972 9.14132 12.645 9.14132 12.3367C9.14132 12.0285 10.4071 11.7762 11.9715 11.7762C13.536 11.7762 14.8018 12.0285 14.8018 12.3367C14.8018 12.645 13.536 12.8972 11.9715 12.8972Z" fill="white"/>
+    </g>
+    <defs>
+    <clipPath id="clip0">
+    <rect width="14.2222" height="14.0129" fill="white" transform="translate(4.88889 5.19022)"/>
+    </clipPath>
+    </defs>
+    </svg>
     `
     },
     {
@@ -110,6 +110,32 @@ const layerListIcons = [{
     <path d="M22.4167 11.8316C22.4167 17.4986 17.7563 22.0986 12 22.0986C6.2437 22.0986 1.58334 17.4986 1.58334 11.8316C1.58334 6.16464 6.2437 1.56464 12 1.56464C17.7563 1.56464 22.4167 6.16464 22.4167 11.8316Z" fill="#FF6A13" stroke="white" stroke-width="0.5"/>
     <path d="M11.5747 14.3438H12.3109C12.8632 14.3438 13.3109 13.8961 13.3109 13.3438V5.99536C13.3109 5.44308 12.8632 4.99536 12.3109 4.99536H11.5747C11.0225 4.99536 10.5747 5.44308 10.5747 5.99536V13.3438C10.5747 13.8961 11.0225 14.3438 11.5747 14.3438Z" fill="white"/>
     <path d="M10.8144 16.9406C10.6581 17.1602 10.5747 17.4184 10.5747 17.6825C10.5755 18.0365 10.7256 18.3758 10.9921 18.6261C11.2587 18.8764 11.62 19.0173 11.997 19.018C12.2782 19.018 12.5532 18.9397 12.7871 18.7929C13.021 18.6462 13.2033 18.4376 13.3109 18.1936C13.4186 17.9496 13.4467 17.681 13.3919 17.422C13.337 17.1629 13.2015 16.925 13.0026 16.7382C12.8037 16.5514 12.5503 16.4242 12.2744 16.3727C11.9985 16.3212 11.7126 16.3476 11.4527 16.4487C11.1928 16.5498 10.9707 16.7209 10.8144 16.9406Z" fill="white"/>
+    </svg>
+    `
+    },
+    {
+        id: "travel-times-layer",
+        paths: `
+    <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="24" height="24" viewBox="0 0 24 24" fill="none" version="1.1" id="svg5197" sodipodi:docname="TravelTime icon.svg" inkscape:version="0.92.3 (2405546, 2018-03-11)">
+        <metadata id="metadata5203">
+            <rdf:RDF>
+            <cc:Work rdf:about="">
+                <dc:format>image/svg+xml</dc:format>
+                <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+                <dc:title/>
+            </cc:Work>
+            </rdf:RDF>
+        </metadata>
+        <defs id="defs5201"/>
+        <sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="1920" inkscape:window-height="986" id="namedview5199" showgrid="false" inkscape:zoom="9.8333333" inkscape:cx="21.492768" inkscape:cy="-0.48021901" inkscape:window-x="-11" inkscape:window-y="-11" inkscape:window-maximized="1" inkscape:current-layer="svg5197"/>
+        <path d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12Z" fill="#FF6A13" id="path5189" style="fill:#b665d9;fill-opacity:1"/>
+        <path d="M22.4167 11.8316C22.4167 17.4986 17.7563 22.0986 12 22.0986C6.2437 22.0986 1.58334 17.4986 1.58334 11.8316C1.58334 6.16464 6.2437 1.56464 12 1.56464C17.7563 1.56464 22.4167 6.16464 22.4167 11.8316Z" fill="#FF6A13" stroke="white" stroke-width="0.5" id="path5191" style="fill:#b665d9;fill-opacity:1"/>
+        <g id="g6351" transform="matrix(1.3509368,0,0,1.3509368,-34.710357,9.6493231)">
+            <circle r="6.0453591" cy="1.6271186" cx="34.576271" id="path5140" style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:1.52900004;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
+            <circle r="0.32520244" cy="1.6271186" cx="34.576271" id="path5161" style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:1.09734523;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
+            <path inkscape:connector-curvature="0" id="path5169" d="m 34.576271,1.5333686 v -4.53125" style="fill:none;stroke:#ffffff;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
+            <path inkscape:connector-curvature="0" id="path5171" d="m 34.701271,1.8771186 2.171875,2.171875" style="fill:none;stroke:#ffffff;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
+        </g>
     </svg>
     `
     }

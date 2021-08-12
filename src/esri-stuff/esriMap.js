@@ -18,12 +18,13 @@ const RoadAlertLayer_1 = tslib_1.__importDefault(require("@/layers/RoadAlertLaye
 const LineRestrictionsLayer_1 = tslib_1.__importDefault(require("@/layers/LineRestrictionsLayer"));
 const WeatherStationsLayer_1 = tslib_1.__importDefault(require("@/layers/WeatherStationsLayer"));
 const MountainPassesLayer_1 = tslib_1.__importDefault(require("@/layers/MountainPassesLayer"));
+const TravelTimeLayer_1 = tslib_1.__importDefault(require("@/layers/TravelTimeLayer"));
 const extentUtil_1 = require("@/utils/extentUtil");
 const ZoomExtentLayer_1 = tslib_1.__importDefault(require("@/layers/ZoomExtentLayer"));
 config_1.default.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
 console.log(globalThis.map);
 exports.webmap = new WebMap_1.default({
-    layers: [TrafficLayer_1.default, RestAreasLayer_1.default, ParkRideLayer_1.default, WeatherStationsLayer_1.default, MountainPassesLayer_1.default, LineRestrictionsLayer_1.default, PointRestrictionsLayer_1.default, CameraLayer_1.default, RoadAlertLayer_1.default],
+    layers: [TrafficLayer_1.default, RestAreasLayer_1.default, ParkRideLayer_1.default, WeatherStationsLayer_1.default, MountainPassesLayer_1.default, LineRestrictionsLayer_1.default, PointRestrictionsLayer_1.default, CameraLayer_1.default, RoadAlertLayer_1.default, TravelTimeLayer_1.default],
 });
 exports.mapView = new MapView_1.default({
     container: "esri-map-view",

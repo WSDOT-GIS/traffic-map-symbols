@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visible">
+  <div v-if="visible" >
     <span class="popup-key">{{ getLabel() }}</span>
     <span class="popup-value">{{ getText() }}</span>
   </div>

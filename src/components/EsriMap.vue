@@ -33,7 +33,7 @@
   <WeatherStationsPopup :Featureset="popupFeatureset" />
   <RestAreaPopup :Featureset="popupFeatureset" />
   <RoadAlertPopup :Featureset="popupFeatureset" />
-
+  <TravelTimesPopup :Featureset="popupFeatureset" />
   <LeftPaneView />
 </template>
 
@@ -66,6 +66,8 @@ import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
 import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
 import MountainPassLayer from "@/layers/MountainPassesLayer";
 import RoadAlertLayer from "@/layers/RoadAlertLayer";
+import TravelTimeLayer from "@/layers/TravelTimeLayer"
+import RestAreasLayer from "@/layers/RestAreasLayer";
 /* Popups */
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
 import CameraPopup from "@/popups/CameraPopup.vue";
@@ -76,14 +78,15 @@ import MountainPassPopup from "@/popups/MountainPassPopup.vue";
 import WeatherStationsPopup from "@/popups/WeatherStationPopup.vue";
 import RestAreaPopup from "@/popups/RestAreaPopup.vue";
 import RoadAlertPopup from "@/popups/RoadAlertPopup.vue";
+import TravelTimesPopup from "@/popups/TravelTimesPopup.vue"
 /* Components */
 import LeftPaneView from "@/components/LeftPaneView.vue";
 import BasemapView from "@/components/BasemapView.vue";
 import CoordinatesView from "@/components/CoordinatesView.vue";
 import MyLocationView from "@/components/MyLocationView.vue";
 import ZoomButtonView from "@/components/ZoomButtonView.vue";
-import RestAreasLayer from "@/layers/RestAreasLayer";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
+
 export default defineComponent({
   components: {
     ZoomPopupView,
@@ -95,6 +98,7 @@ export default defineComponent({
     WeatherStationsPopup,
     RestAreaPopup,
     RoadAlertPopup,
+    TravelTimesPopup,
     LeftPaneView,
     BasemapView,
     CoordinatesView,
@@ -227,15 +231,19 @@ export default defineComponent({
             MountainPassLayer,
             RestAreasLayer,
             RoadAlertLayer,
+            TravelTimeLayer
           ],
         };
         esriMap.mapView.hitTest(clickEvent, opts).then((response) => {
+          console.log("clicked")
           if (response.results.length) {
+            console.log(response.results)
             const resultsByLayer: {
               info: LayerInfo;
               layer: Layer;
               results: { graphic: Graphic; mapPoint: Point }[];
             }[] = [];
+            console.log(resultsByLayer)
             response.results.forEach((eachResult) => {
               const arrayFound = resultsByLayer.find(
                 (eachArray) => eachArray.layer === eachResult.graphic.layer
@@ -246,6 +254,7 @@ export default defineComponent({
                 const layerInfo = store.state.layerList.find(
                   (layerInfo) => layerInfo.id === eachResult.graphic.layer.id
                 );
+                console.log(layerInfo)
                 if (layerInfo) {
                   resultsByLayer.push({
                     info: layerInfo,
@@ -265,6 +274,7 @@ export default defineComponent({
               (eachResultSet) => eachResultSet.info.index === maxIdx
             );
             if (results2Show) {
+              console.log(results2Show)
               const g = results2Show.results[0].graphic;
               const layer = g.layer as GeoJSONLayer;
               if (
