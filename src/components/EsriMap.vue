@@ -65,7 +65,7 @@ import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
 import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
 import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
 import MountainPassLayer from "@/layers/MountainPassesLayer";
-import RoadAlertsLayer from "@/layers/RoadAlertLayers";
+import RoadAlertsLayer from "@/layers/RoadAlertsLayer";
 import TravelTimeLayer from "@/layers/TravelTimeLayer"
 import RestAreasLayer from "@/layers/RestAreasLayer";
 /* Popups */
@@ -236,7 +236,7 @@ export default defineComponent({
             WeatherStationsLayer,
             MountainPassLayer,
             RestAreasLayer,
-            RoadAlertLayer,
+            RoadAlertsLayer,
             TravelTimeLayer
           ],
         };
