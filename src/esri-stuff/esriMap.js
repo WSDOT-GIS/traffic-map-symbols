@@ -17,6 +17,7 @@ import { initLayer as initWeatherLayer } from "@/layers/WeatherStationsLayer";
 import { initLayer as initMountainLayer } from "@/layers/MountainPassesLayer";
 import { convert2EsriExtent, getEsriExtent } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
+import { getConfig } from "@/utils/appConfigUtil";
 // EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
 // Initialize empty map, and load layers after the config is fetched...
 export const webmap = new WebMap({
@@ -43,8 +44,7 @@ export const init = (container) => {
     });
 };
 export const loadOperationalLayers = async () => {
-    const fetchResponse = await fetch("/appconfig.json");
-    const config = await fetchResponse.json();
+    const config = await getConfig();
     EsriConfig.apiKey = config.apiKey;
     const trafficLyr = initTrafficLayer(config.traffic);
     const restAreasLyr = initRestAreaLayer(config.restAreas);
