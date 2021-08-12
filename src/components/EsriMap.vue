@@ -129,7 +129,7 @@ export default defineComponent({
     // Feature Popup...
     const popupXY = ref<XY | undefined>();
     const popupFeatureset = ref<FeaturesetInfo>({ layerId: "", ids: [] });
-    //
+    // Set popup props...
     const showPopup = (layerId: string, ids: number[], pt?: Point) => {
       popupFeatureset.value = { layerId: layerId, ids: ids };
       if (pt) {
@@ -161,13 +161,12 @@ export default defineComponent({
       // Set layer visibility based on URL query...
       setLayerFromUrl(layerList);
       store.commit("setLayerList", layerList);
-      //#endregion
       // Add quick zoom boxes around metro areas...
       esriMap.webmap.add(ZoomExtentLayer);
       // Set basemap based on URL query parameter...
       const basemapInfo = getBasemapFromUrl();
       store.commit("setBasemap", basemapInfo.name);
-      // Set the initial map size...
+      // Set the initial map size in the state store...
       store.commit("setMapSize", {
         width: mapView.width,
         height: mapView.height,
