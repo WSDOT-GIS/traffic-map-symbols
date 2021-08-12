@@ -5,8 +5,9 @@
   </header>
   <main>
     <div
+
       id="map-container"
-      :style="{ height: mapHeight }"
+      :style="{ height: mapHeight}"
       class="w3-display-container"
     >
       <EsriMap />
@@ -57,7 +58,6 @@ export default defineComponent({
     const bottomRef = ref<HTMLDivElement>();
     const adRef = ref<HTMLDivElement>();
     const footerRef = ref<HTMLDivElement>();
-
     const mapHeight = ref("500px");
     const store = useStore();
     onMounted(() => {
