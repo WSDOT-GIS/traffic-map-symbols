@@ -6,7 +6,6 @@ import { getBasemapInfo, toggleBasemapInfo } from "./layers/Basemaps";
 import ExtentInfo from "./types/ExtentInfo";
 import { convert2EsriExtent, convert2ExtentInfo } from "./utils/extentUtil";
 import LayerInfo from "./types/LayerInfo";
-import AppConfig from "./types/appConfig";
 
 // Reference - https://next.vuex.vuejs.org/guide/typescript-support.html#typing-usestore-composition-function
 // define typings for the store state...
@@ -19,12 +18,10 @@ export interface State {
     currentExtent: ExtentInfo;
     userLocation: number[] | null;
     mapFeaturesExpanded: string;
-    appConfig: AppConfig
 }
 
 // define injection key...
 export const key: InjectionKey<Store<State>> = Symbol()
-
 
 export const store = createStore<State>({
     state() {
@@ -42,28 +39,12 @@ export const store = createStore<State>({
             layerList: [],
             userLocation: null,
             mapFeaturesExpanded: "block",
-            appConfig:{//initialize appConfig as empty
-                basemap: "",
-                cameras: "",
-                lineRestrictions: "",
-                mountainPasses: "",
-                parkAndRides: "",
-                pointRestrictions:"",
-                traffic:"",
-                weatherStations:"",
-                apiKey: "",
-                forecastSummaryAPI:"",
-                forecastExtendedAPI:""
-            }
         }
     },
     getters: {
         completeLayerList: state => {
             return state.layerList
         },
-        completeAppConfig: state =>{
-            return state.appConfig
-        }
     },
     mutations: {
         setBasemap(state, payload) {
@@ -98,9 +79,6 @@ export const store = createStore<State>({
                     layer.visible = state.layerList[index].visible
                 }
             })
-        },
-        setAppConfig(state, payload){
-            state.appConfig = payload
         },
         setCurrentExtent(state, payload) {
             if (payload instanceof Extent) {

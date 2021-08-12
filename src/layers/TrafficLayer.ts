@@ -1,8 +1,8 @@
 import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 
-let layer: MapImageLayer|undefined;
+let layer: MapImageLayer | undefined;
 
-export const initLayer = (url:string) => {
+export const initLayer = (url: string): MapImageLayer => {
     layer = new MapImageLayer({
         id: "traffic-flow-layer",
         url: url,

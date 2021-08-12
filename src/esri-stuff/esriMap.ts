@@ -25,9 +25,10 @@ import ExtentInfo from "@/types/ExtentInfo";
 import { convert2EsriExtent, getEsriExtent } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 import FeatureInfo from "@/types/FeatureInfo";
+import { getConfig } from "@/utils/appConfigUtil";
 
 // EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
-// Initialize empty map, and load layers after the config is fetched...
+// Initialize empty map, and load layers later...
 export const webmap = new WebMap({
     //layers: [TrafficLayer, RestAreasLayer, ParkRideLayer, WeatherStationsLayer, MountainPassLayer, LineRestrictionsLayer, PointRestrictionsLayer, CameraLayer, RoadAlertsLayer],
 });
@@ -45,16 +46,15 @@ export const init = (container: HTMLDivElement): void => {
     mapView.container = container;
     mapView.when()
         .then(x => {
-            console.log("Map is ready. " + typeof (x));
+            console.log("Map is ready.");
         })
         .catch(error => {
             console.warn("Failed to initialize map. Error: ", error);
         });
 };
-// Featch config JSON and get apiKey and URL, then initialize layers and add to map...
+// Get config and get apiKey and URL, then initialize layers and add to map...
 export const loadOperationalLayers = async (): Promise<void> => {
-    const fetchResponse = await fetch("/appconfig.json");
-    const config = await fetchResponse.json();
+    const config = await getConfig();
     EsriConfig.apiKey = config.apiKey;
     const trafficLyr = initTrafficLayer(config.traffic);
     const restAreasLyr = initRestAreaLayer(config.restAreas);

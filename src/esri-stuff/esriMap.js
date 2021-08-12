@@ -22,8 +22,9 @@ const MountainPassesLayer_1 = require("@/layers/MountainPassesLayer");
 const TravelTimeLayer_1 = require("@/layers/TravelTimeLayer");
 const extentUtil_1 = require("@/utils/extentUtil");
 const ZoomExtentLayer_1 = tslib_1.__importDefault(require("@/layers/ZoomExtentLayer"));
+const appConfigUtil_1 = require("@/utils/appConfigUtil");
 // EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
-// Initialize empty map, and load layers after the config is fetched...
+// Initialize empty map, and load layers later...
 exports.webmap = new WebMap_1.default({
 //layers: [TrafficLayer, RestAreasLayer, ParkRideLayer, WeatherStationsLayer, MountainPassLayer, LineRestrictionsLayer, PointRestrictionsLayer, CameraLayer, RoadAlertsLayer],
 });
@@ -41,17 +42,16 @@ const init = (container) => {
     exports.mapView.container = container;
     exports.mapView.when()
         .then(x => {
-        console.log("Map is ready. " + typeof (x));
+        console.log("Map is ready.");
     })
         .catch(error => {
         console.warn("Failed to initialize map. Error: ", error);
     });
 };
 exports.init = init;
-// Featch config JSON and get apiKey and URL, then initialize layers and add to map...
+// Get config and get apiKey and URL, then initialize layers and add to map...
 const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    const fetchResponse = yield fetch("/appconfig.json");
-    const config = yield fetchResponse.json();
+    const config = yield appConfigUtil_1.getConfig();
     config_1.default.apiKey = config.apiKey;
     const trafficLyr = TrafficLayer_1.initLayer(config.traffic);
     const restAreasLyr = RestAreasLayer_1.initLayer(config.restAreas);

@@ -10,6 +10,10 @@ require("./assets/main.css");
 require("./assets/toggleSlider.css");
 require("./assets/flexGridView.css");
 const store_1 = require("./store");
-// adding store as a plugin while creating an app...
-vue_1.createApp(App_vue_1.default).use(store_1.store, store_1.key).mount('#app');
+const appConfigUtil_1 = require("./utils/appConfigUtil");
+// Load config before app starts...
+appConfigUtil_1.getConfig().then(() => {
+    // adding store as a plugin while creating an app...
+    vue_1.createApp(App_vue_1.default).use(store_1.store, store_1.key).mount('#app');
+});
 //# sourceMappingURL=main.js.map
