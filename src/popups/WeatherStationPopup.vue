@@ -2,6 +2,7 @@
   <PopupBase
     LightThemeColor="#ccdcdc"
     DarkThemeColor="#005151"
+    :WeatherForecast="[getWeatherForecast]"
     :Features="[feature]"
     :Config="{
       bannerText: { text: 'Weather Station' },
@@ -77,6 +78,7 @@ import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
+import WeatherForecastInfo from "@/types/WeatherForecastInfo";
 export default defineComponent({
   components: { PopupBase },
   props: {
@@ -189,8 +191,19 @@ export default defineComponent({
       return formatNum(feature, "Visibility", "Mile");
     };
     const getWindSpeed = (feature: FeatureInfo) => {
+      console.log(feature)
       return formatNum(feature, "WindSpeed", "mph");
     };
+    const getWeatherForecast = (feature: FeatureInfo)=>{
+      console.log(feature)
+      return {
+        "nwsZoneId": "string",
+        "forecastNumber": 2, // Object ID. Can be used as v-for key.
+        "weatherIconFileName": "string",
+        "weatherDescription": "string",
+        "periodText": "string"
+      } as WeatherForecastInfo
+    }
 
     const formatNum = (
       feature: FeatureInfo,
@@ -226,7 +239,7 @@ export default defineComponent({
       }
       return text;
     };
-
+    
     return {
       feature,
       layerIcons,
@@ -241,6 +254,7 @@ export default defineComponent({
       getDewPoint,
       getVisibility,
       getWindSpeed,
+      getWeatherForecast
     };
   },
 });

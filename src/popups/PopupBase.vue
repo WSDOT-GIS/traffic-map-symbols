@@ -36,6 +36,9 @@
       <h4 class="popup-title w3-container">
         {{ getTitle() }}
       </h4>
+      <WeatherForecast v-if="WeatherForecast">
+        
+      </WeatherForecast>
       <Carousel
         v-if="Config.imageFieldName"
         :items-to-show="1"
@@ -86,6 +89,7 @@ import {
 } from "vue";
 import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
+import WeatherForecast from "@/components/WeatherForecast.vue"
 import { useStore } from "@/store";
 import {
   mapView,
@@ -98,9 +102,9 @@ import FeatureInfo from "@/types/FeatureInfo";
 import PopupConfig from "@/types/PopupConfig";
 import PopupRow from "./PopupRow.vue";
 import XY from "@/types/XY";
-
+import WeatherForecastInfo from "@/types/WeatherForecastInfo"
 export default defineComponent({
-  components: { Carousel, Slide, Pagination, Navigation, PopupRow },
+  components: { Carousel, Slide, Pagination, Navigation, PopupRow, WeatherForecast },
   props: {
     // MapX & Y are only required to supersede the feature x/y.
     MapXY: {
@@ -128,9 +132,14 @@ export default defineComponent({
       type: Object as PropType<PopupConfig>,
       required: true,
     },
+    WeatherForecast:{
+      type: Object as PropType<Array<WeatherForecastInfo>>,
+      required: false,
+    }
   },
   setup(props, context) {
     // The DOM only exists while the visibility is true. Get it in onUpdate().
+    console.log(props.WeatherForecast)
     const containerRef = ref<HTMLDivElement>();
     const store = useStore();
     const mapSize = computed(() => store.state.mapSize);
@@ -469,7 +478,6 @@ export default defineComponent({
       popupTop,
       maxHeight,
       currentIdx,
-      // sizeClass,
       close,
       adjustPositionSize,
       pagenationStyle,

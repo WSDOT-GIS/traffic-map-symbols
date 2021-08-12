@@ -24,7 +24,6 @@ exports.store = vuex_1.createStore({
             },
             layerList: [],
             userLocation: null,
-            // mapFeaturesExpanded: "block",
         };
     },
     getters: {
@@ -79,9 +78,6 @@ exports.store = vuex_1.createStore({
                 esriMap_1.mapView.extent = extent;
             }
         },
-        // setMapFeaturesExpanded(state) {
-        //     state.mapFeaturesExpanded == "block" ? state.mapFeaturesExpanded = "none" : state.mapFeaturesExpanded = "block"
-        // },
     },
 });
 // Clone the target of proxy (i.e. removing the reactivity)
