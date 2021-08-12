@@ -147,7 +147,7 @@ export default defineComponent({
       const esriMap = await import("../esri-stuff/esriMap");
       mapDiv = document.getElementById("esri-map-view") as HTMLDivElement;
       esriMap.init(mapDiv);
-      //#region register layer list to state
+      // Read config, then load layers...
       await esriMap.loadOperationalLayers();
       let layerList: LayerInfo[] = [];
       esriMap.mapView.map.layers.map((layer, index) => {
@@ -234,7 +234,7 @@ export default defineComponent({
             MountainPassLayer(),
             RestAreasLayer(),
             RoadAlertsLayer(),
-          ] as GeoJSONLayer[],
+          ],
         };
         esriMap.mapView.hitTest(clickEvent, opts).then((response) => {
           if (response.results.length) {

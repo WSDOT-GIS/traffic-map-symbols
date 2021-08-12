@@ -53,7 +53,7 @@ export const init = (container: HTMLDivElement): void => {
             console.warn("Failed to initialize map. Error: ", error);
         });
 };
-
+// Featch config JSON and get apiKey and URL, then initialize layers and add to map...
 export const loadOperationalLayers = async (): Promise<void> => {
     const fetchResponse = await fetch("/appconfig.json");
     const config = await fetchResponse.json();
