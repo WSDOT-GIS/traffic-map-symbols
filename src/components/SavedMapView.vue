@@ -42,7 +42,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, nextTick, ref, watch } from "vue";
+import {
+  computed,
+  defineComponent,
+  nextTick,
+  onUpdated,
+  ref,
+  watch,
+} from "vue";
 
 import SavedMapInfo from "@/types/SavedMapInfo";
 import { setCookie, getCookie } from "@/utils/cookieUtil";
@@ -70,7 +77,15 @@ export default defineComponent({
     mapList.value.forEach((each) => {
       each.selected = false;
     });
-    // Resize the list content...
+    // Resize the list after the component is loaded or updated...
+    onUpdated(() => {
+      if (mapList.value.length > 0) {
+        nextTick(() => {
+          resizeItemTitle();
+        });
+      }
+    });
+    // Resize the list content when the screen size changes...
     const mapSize = computed(() => store.state.mapSize);
     watch(mapSize, () => {
       resizeItemTitle();
@@ -123,9 +138,6 @@ export default defineComponent({
       const value = JSON.stringify(mapList.value);
       setCookie("saved-map-list", value);
       closeForm();
-      nextTick(() => {
-        resizeItemTitle();
-      });
     };
 
     const removeItem = (event: Event, item: SavedMapInfo) => {
