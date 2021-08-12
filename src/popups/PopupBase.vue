@@ -86,7 +86,6 @@ import {
 } from "vue";
 import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
-require("@/assets/no-image.png");
 import { useStore } from "@/store";
 import {
   mapView,

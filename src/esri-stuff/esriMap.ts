@@ -19,7 +19,7 @@ import { initLayer as initRoadAlertsLayer } from "@/layers/RoadAlertsLayer";
 import { initLayer as initLineRestrictionsLayer } from "@/layers/LineRestrictionsLayer";
 import { initLayer as initWeatherLayer } from "@/layers/WeatherStationsLayer";
 import { initLayer as initMountainLayer } from "@/layers/MountainPassesLayer";
-import { initLayer as initTravelTimesLayer} from "@/layers/TravelTimeLayer"
+import { initLayer as initTravelTimesLayer } from "@/layers/TravelTimeLayer"
 //
 import ExtentInfo from "@/types/ExtentInfo";
 import { convert2EsriExtent, getEsriExtent } from "@/utils/extentUtil";
@@ -45,7 +45,7 @@ mapView.ui.remove("zoom");
 export const init = (container: HTMLDivElement): void => {
     mapView.container = container;
     mapView.when()
-        .then(x => {
+        .then(() => {
             console.log("Map is ready.");
         })
         .catch(error => {
@@ -56,7 +56,7 @@ export const init = (container: HTMLDivElement): void => {
 export const loadOperationalLayers = async (): Promise<void> => {
     const config = await getConfig();
     EsriConfig.apiKey = config.apiKey;
-    console.log(config)
+    //console.log(config)
     const trafficLyr = initTrafficLayer(config.traffic);
     const restAreasLyr = initRestAreaLayer(config.restAreas);
     const parkRideLyr = initParkRideLayer(config.parkAndRides);
@@ -68,7 +68,7 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const roadAlertsLyr = initRoadAlertsLayer(config.roadAlerts)
     const travelTimesLyr = initTravelTimesLayer(config.travelTimes)
     webmap.addMany([trafficLyr, restAreasLyr, parkRideLyr, weatherLyr, mtLyr, lineRestrictionLyr,
-        pointRestrictionLyr, cameraLyr, roadAlertsLyr,travelTimesLyr]);
+        pointRestrictionLyr, cameraLyr, roadAlertsLyr, travelTimesLyr]);
 }
 
 export const tryZoomToPoint = (point: Point, numLevels?: number): boolean => {

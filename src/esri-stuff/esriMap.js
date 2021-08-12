@@ -41,7 +41,7 @@ exports.mapView.ui.remove("zoom");
 const init = (container) => {
     exports.mapView.container = container;
     exports.mapView.when()
-        .then(x => {
+        .then(() => {
         console.log("Map is ready.");
     })
         .catch(error => {
@@ -53,7 +53,7 @@ exports.init = init;
 const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     const config = yield appConfigUtil_1.getConfig();
     config_1.default.apiKey = config.apiKey;
-    console.log(config);
+    //console.log(config)
     const trafficLyr = TrafficLayer_1.initLayer(config.traffic);
     const restAreasLyr = RestAreasLayer_1.initLayer(config.restAreas);
     const parkRideLyr = ParkRideLayer_1.initLayer(config.parkAndRides);
