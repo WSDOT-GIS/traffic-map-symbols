@@ -4,7 +4,6 @@ import Point from "@arcgis/core/geometry/Point";
 import { geodesicBuffer } from "@arcgis/core/geometry/geometryEngine";
 import { whenTrue } from "@arcgis/core/core/watchUtils";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
-import EsriConfig from "@arcgis/core/config";
 // Layers
 import { initLayer as initTrafficLayer } from "@/layers/TrafficLayer";
 import { initLayer as initParkRideLayer } from "@/layers/ParkRideLayer";
@@ -19,7 +18,7 @@ import { convert2EsriExtent, getEsriExtent } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 import { getConfig } from "@/utils/appConfigUtil";
 // EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
-// Initialize empty map, and load layers after the config is fetched...
+// Initialize empty map, and load layers later...
 export const webmap = new WebMap({
 //layers: [TrafficLayer, RestAreasLayer, ParkRideLayer, WeatherStationsLayer, MountainPassLayer, LineRestrictionsLayer, PointRestrictionsLayer, CameraLayer, RoadAlertsLayer],
 });
@@ -37,15 +36,16 @@ export const init = (container) => {
     mapView.container = container;
     mapView.when()
         .then(x => {
-        console.log("Map is ready. " + typeof (x));
+        console.log("Map is ready.");
     })
         .catch(error => {
         console.warn("Failed to initialize map. Error: ", error);
     });
 };
+// Get config and get apiKey and URL, then initialize layers and add to map...
 export const loadOperationalLayers = async () => {
     const config = await getConfig();
-    EsriConfig.apiKey = config.apiKey;
+    //EsriConfig.apiKey = config.apiKey;
     const trafficLyr = initTrafficLayer(config.traffic);
     const restAreasLyr = initRestAreaLayer(config.restAreas);
     const parkRideLyr = initParkRideLayer(config.parkAndRides);
