@@ -51,7 +51,6 @@ import WsdotButtonView from "@/components/WsdotButtonView.vue";
 import SaveMapFormView from "@/components/SaveMapFormView.vue";
 import LayerInfo from "@/types/LayerInfo";
 import { validateBasemapName } from "@/layers/Basemaps";
-//import { mapView } from "@/esri-stuff/esriMap";
 
 export default defineComponent({
   components: { WsdotButtonView, SaveMapFormView },

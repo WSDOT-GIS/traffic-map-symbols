@@ -6,68 +6,70 @@
     :style="{
       marginTop: popupTop + 'px',
       marginLeft: popupLeft + 'px',
-      maxHeight: maxHeight + 'px',
     }"
   >
-    <div class="popup-header w3-left-align">
-      <div
-        class="popup-banner"
-        :style="{
-          backgroundColor: LightThemeColor,
-          borderColor: DarkThemeColor,
-        }"
+    <!-- container without the pointer -->
+    <div :style="{ maxHeight: maxHeight + 'px' }" class="popup-inner-container">
+      <div class="popup-header w3-left-align">
+        <div
+          class="popup-banner"
+          :style="{
+            backgroundColor: LightThemeColor,
+            borderColor: DarkThemeColor,
+          }"
+        >
+          <div class="popup-banner-icon">
+            <slot name="icon"></slot>
+          </div>
+          <span class="popup-banner-text"> {{ getBannerText() }}</span>
+        </div>
+        <div v-if="badgeText.length > 0" class="popup-badge">
+          {{ badgeText }}
+        </div>
+      </div>
+      <button
+        class="popup-close-button w3-button w3-padding-small"
+        @click="close"
       >
-        <div class="popup-banner-icon">
-          <slot name="icon"></slot>
-        </div>
-        <span class="popup-banner-text"> {{ getBannerText() }}</span>
+        &times;
+      </button>
+      <h4 class="popup-title w3-container">
+        {{ getTitle() }}
+      </h4>
+      <Carousel
+        v-if="Config.imageFieldName"
+        :items-to-show="1"
+        :wrapAround="true"
+        @update:modelValue="currentIdx = $event"
+        :style="pagenationStyle"
+      >
+        <Slide v-for="eachFeature in Features" :key="eachFeature.id">
+          <div class="carousel-item-container">
+            <img
+              class="popup-img"
+              :src="
+                Config.imageFieldName
+                  ? eachFeature.attributes[Config.imageFieldName]
+                  : ''
+              "
+              :alt="eachFeature.id"
+              @load="onImgLoad()"
+              @error="$event.target.src = require('@/assets/no-image.png')"
+            />
+          </div>
+        </Slide>
+        <template #addons="{ slidesCount }">
+          <navigation v-if="slidesCount > 1" />
+          <pagination v-if="slidesCount > 1" />
+        </template>
+      </Carousel>
+      <div
+        v-for="eachConfig in Config.content"
+        :key="eachConfig.label"
+        class="popup-content w3-container"
+      >
+        <PopupRow :Config="eachConfig" :Feature="Features[currentIdx]" />
       </div>
-      <div v-if="badgeText.length > 0" class="popup-badge">
-        {{ badgeText }}
-      </div>
-    </div>
-    <button
-      class="popup-close-button w3-button w3-padding-small"
-      @click="close"
-    >
-      &times;
-    </button>
-    <h4 class="popup-title w3-container">
-      {{ getTitle() }}
-    </h4>
-    <Carousel
-      v-if="Config.imageFieldName"
-      :items-to-show="1"
-      :wrapAround="true"
-      @update:modelValue="currentIdx = $event"
-      :style="pagenationStyle"
-    >
-      <Slide v-for="eachFeature in Features" :key="eachFeature.id">
-        <div class="carousel-item-container">
-          <img
-            class="popup-img"
-            :src="
-              Config.imageFieldName
-                ? eachFeature.attributes[Config.imageFieldName]
-                : ''
-            "
-            :alt="eachFeature.id"
-            @load="onImgLoad()"
-            @error="$event.target.src = require('@/assets/no-image.png')"
-          />
-        </div>
-      </Slide>
-      <template #addons="{ slidesCount }">
-        <navigation v-if="slidesCount > 1" />
-        <pagination v-if="slidesCount > 1" />
-      </template>
-    </Carousel>
-    <div
-      v-for="eachConfig in Config.content"
-      :key="eachConfig.label"
-      class="popup-content w3-container"
-    >
-      <PopupRow :Config="eachConfig" :Feature="Features[currentIdx]" />
     </div>
   </div>
 </template>
@@ -85,7 +87,7 @@ import {
 import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
 require("@/assets/no-image.png");
-
+import { useStore } from "@/store";
 import {
   mapView,
   toScreenXY,
@@ -131,7 +133,12 @@ export default defineComponent({
   setup(props, context) {
     // The DOM only exists while the visibility is true. Get it in onUpdate().
     const containerRef = ref<HTMLDivElement>();
-    const maxHeight = ref(1000);
+    const store = useStore();
+    const mapSize = computed(() => store.state.mapSize);
+    const maxHeight = ref(mapSize.value.height);
+    watch(mapSize, (size) => {
+      maxHeight.value = size.height;
+    });
     const mapX = ref(0); //toRefs(props).MapX;
     const mapY = ref(0); //toRefs(props).MapY;
     const screenX = ref(-1);
@@ -507,6 +514,10 @@ export default defineComponent({
   transform: rotate(-45deg);
 
   box-shadow: -3px 3px 3px 0 rgba(0, 0, 0, 0.2);
+}
+
+.popup-inner-container {
+  overflow-y: auto;
 }
 
 .popup-header {
