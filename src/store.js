@@ -9,6 +9,20 @@ const Basemaps_1 = require("./layers/Basemaps");
 const extentUtil_1 = require("./utils/extentUtil");
 // define injection key...
 exports.key = Symbol();
+const isMobile = () => {
+    if (navigator.userAgent.match(/Android/i)
+        || navigator.userAgent.match(/webOS/i)
+        || navigator.userAgent.match(/iPhone/i)
+        || navigator.userAgent.match(/iPad/i)
+        || navigator.userAgent.match(/iPod/i)
+        || navigator.userAgent.match(/BlackBerry/i)
+        || navigator.userAgent.match(/Windows Phone/i)) {
+        return true;
+    }
+    else {
+        return false;
+    }
+};
 exports.store = vuex_1.createStore({
     state() {
         return {
@@ -24,7 +38,7 @@ exports.store = vuex_1.createStore({
             },
             layerList: [],
             userLocation: null,
-            // mapFeaturesExpanded: "block",
+            isMobile: isMobile(),
         };
     },
     getters: {
@@ -79,9 +93,6 @@ exports.store = vuex_1.createStore({
                 esriMap_1.mapView.extent = extent;
             }
         },
-        // setMapFeaturesExpanded(state) {
-        //     state.mapFeaturesExpanded == "block" ? state.mapFeaturesExpanded = "none" : state.mapFeaturesExpanded = "block"
-        // },
     },
 });
 // Clone the target of proxy (i.e. removing the reactivity)

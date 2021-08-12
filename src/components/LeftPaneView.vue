@@ -70,7 +70,7 @@ export default defineComponent({
       maxHeight.value = size.height;
     });
     // If it is on small device, close it by default.
-    const isOpen = ref(window.innerWidth > 400);
+    const isOpen = ref(!store.state.isMobile);
 
     const toggleDisplay = () => {
       isOpen.value = !isOpen.value;
