@@ -21,28 +21,12 @@ export const store = createStore({
             layerList: [],
             userLocation: null,
             mapFeaturesExpanded: "block",
-            appConfig: {
-                basemap: "",
-                cameras: "",
-                lineRestrictions: "",
-                mountainPasses: "",
-                parkAndRides: "",
-                pointRestrictions: "",
-                traffic: "",
-                weatherStations: "",
-                apiKey: "",
-                forecastSummaryAPI: "",
-                forecastExtendedAPI: ""
-            }
         };
     },
     getters: {
         completeLayerList: state => {
             return state.layerList;
         },
-        completeAppConfig: state => {
-            return state.appConfig;
-        }
     },
     mutations: {
         setBasemap(state, payload) {
@@ -77,9 +61,6 @@ export const store = createStore({
                     layer.visible = state.layerList[index].visible;
                 }
             });
-        },
-        setAppConfig(state, payload) {
-            state.appConfig = payload;
         },
         setCurrentExtent(state, payload) {
             if (payload instanceof Extent) {

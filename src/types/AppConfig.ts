@@ -5,11 +5,13 @@ interface AppConfig {
     mountainPasses: string;
     parkAndRides: string;
     pointRestrictions: string;
+    restAreas: string;
+    roadAlerts: string;
     traffic: string;
     weatherStations: string;
     apiKey: string;
-    forecastSummaryAPI:string;
-    forecastExtendedAPI:string
+    forecastSummaryAPI: string;
+    forecastExtendedAPI: string
 }
 
 export default AppConfig;
