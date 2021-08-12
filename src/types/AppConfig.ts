@@ -11,7 +11,8 @@ interface AppConfig {
     weatherStations: string;
     apiKey: string;
     forecastSummaryAPI: string;
-    forecastExtendedAPI: string
+    forecastExtendedAPI: string,
+    travelTimes: string
 }
 
 export default AppConfig;
