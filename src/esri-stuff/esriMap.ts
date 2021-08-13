@@ -71,14 +71,15 @@ export const loadOperationalLayers = async (): Promise<void> => {
     webmap.addMany([trafficLyr, restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertsLyr]);
     // set refresh interval for GeoJSON...
-    setInterval(() => {
-        reloadLayer("road-alerts-layer");
-        reloadLayer("line-restrictions-layer");
-        reloadLayer("mountain-passes-layer");
-        reloadLayer("point-restrictions-layer");
-        reloadLayer("travel-times-layer");
-        reloadLayer("weather-stations-layer");
-    }, 300000);
+    // TODO: enable after reloadLayer is working correctly..
+    // setInterval(() => {
+    //     reloadLayer("road-alerts-layer");
+    //     reloadLayer("line-restrictions-layer");
+    //     reloadLayer("mountain-passes-layer");
+    //     reloadLayer("point-restrictions-layer");
+    //     reloadLayer("travel-times-layer");
+    //     reloadLayer("weather-stations-layer");
+    // }, 300000);
 
 }
 
