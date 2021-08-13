@@ -92,6 +92,9 @@ const reloadLayer = (id: string): void => {
     });
     console.log("Removing " + id)
     webmap.remove(lyr);
+    // TODO: reinitialize the layer...
+
+    // Add it back...
     console.log("Adding " + id)
     webmap.add(lyr, idx);
 }
