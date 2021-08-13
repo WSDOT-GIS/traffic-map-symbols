@@ -13,6 +13,7 @@ const initLayer = (url) => {
             // { id: 2, visible: false }, // incidents overview: critical and major incidents
             // { id: 4, visible: true }, // incidents detail: critical, major, minor as well as low impact incidents
         ],
+        refreshInterval: 5,
     });
     return layer;
 };

@@ -59,15 +59,37 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     const parkRideLyr = ParkRideLayer_1.initLayer(config.parkAndRides);
     const weatherLyr = WeatherStationsLayer_1.initLayer(config.weatherStations);
     const mtLyr = MountainPassesLayer_1.initLayer(config.mountainPasses);
+    const travelTimesLyr = TravelTimeLayer_1.initLayer(config.travelTimes);
     const lineRestrictionLyr = LineRestrictionsLayer_1.initLayer(config.lineRestrictions);
     const pointRestrictionLyr = PointRestrictionsLayer_1.initLayer(config.pointRestrictions);
     const cameraLyr = CameraLayer_1.initLayer(config.cameras);
     const roadAlertsLyr = RoadAlertsLayer_1.initLayer(config.roadAlerts);
-    const travelTimesLyr = TravelTimeLayer_1.initLayer(config.travelTimes);
-    exports.webmap.addMany([trafficLyr, restAreasLyr, parkRideLyr, weatherLyr, mtLyr, lineRestrictionLyr,
-        pointRestrictionLyr, cameraLyr, roadAlertsLyr, travelTimesLyr]);
+    exports.webmap.addMany([trafficLyr, restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
+        pointRestrictionLyr, cameraLyr, roadAlertsLyr]);
+    // set refresh interval for GeoJSON...
+    setInterval(() => {
+        reloadLayer("road-alerts-layer");
+        reloadLayer("line-restrictions-layer");
+        reloadLayer("mountain-passes-layer");
+        reloadLayer("point-restrictions-layer");
+        reloadLayer("travel-times-layer");
+        reloadLayer("weather-stations-layer");
+    }, 300000);
 });
 exports.loadOperationalLayers = loadOperationalLayers;
+const reloadLayer = (id) => {
+    const lyr = exports.getLayer(id);
+    if (lyr.type in ["feature", "map-image"]) {
+        throw "This layer supports refreshInterval, so use that intead.";
+    }
+    const idx = exports.webmap.layers.findIndex((each) => {
+        return each.id === id;
+    });
+    console.log("Removing " + id);
+    exports.webmap.remove(lyr);
+    console.log("Adding " + id);
+    exports.webmap.add(lyr, idx);
+};
 const tryZoomToPoint = (point, numLevels) => {
     let isSuccess = true;
     if (!numLevels) {
