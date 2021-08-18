@@ -63,14 +63,42 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const parkRideLyr = initParkRideLayer(config.parkAndRides);
     const weatherLyr = initWeatherLayer(config.weatherStations);
     const mtLyr = initMountainLayer(config.mountainPasses);
+    const travelTimesLyr = initTravelTimesLayer(config.travelTimes)
     const lineRestrictionLyr = initLineRestrictionsLayer(config.lineRestrictions);
     const pointRestrictionLyr = initPointRestrictionsLayer(config.pointRestrictions);
     const cameraLyr = initCameraLayer(config.cameras)
     const roadAlertsLyr = initRoadAlertsLayer(config.roadAlerts)
-    const travelTimesLyr = initTravelTimesLayer(config.travelTimes)
-    console.log(trafficLyr)
-    webmap.addMany([trafficLyr, restAreasLyr, parkRideLyr, weatherLyr, mtLyr, lineRestrictionLyr,
-        pointRestrictionLyr, cameraLyr, roadAlertsLyr, travelTimesLyr]);
+
+    webmap.addMany([trafficLyr, restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
+        pointRestrictionLyr, cameraLyr, roadAlertsLyr]);
+    // set refresh interval for GeoJSON...
+    // TODO: enable after reloadLayer is working correctly..
+    // setInterval(() => {
+    //     reloadLayer("road-alerts-layer");
+    //     reloadLayer("line-restrictions-layer");
+    //     reloadLayer("mountain-passes-layer");
+    //     reloadLayer("point-restrictions-layer");
+    //     reloadLayer("travel-times-layer");
+    //     reloadLayer("weather-stations-layer");
+    // }, 300000);
+
+}
+
+const reloadLayer = (id: string): void => {
+    const lyr = getLayer(id);
+    if (lyr.type in ["feature", "map-image"]) {
+        throw "This layer supports refreshInterval, so use that intead.";
+    }
+    const idx = webmap.layers.findIndex((each) => {
+        return each.id === id;
+    });
+    console.log("Removing " + id)
+    webmap.remove(lyr);
+    // TODO: reinitialize the layer...
+
+    // Add it back...
+    console.log("Adding " + id)
+    webmap.add(lyr, idx);
 }
 
 export const tryZoomToPoint = (point: Point, numLevels?: number): boolean => {
