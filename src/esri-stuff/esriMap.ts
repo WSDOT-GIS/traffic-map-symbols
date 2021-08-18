@@ -26,6 +26,7 @@ import { convert2EsriExtent, getEsriExtent } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 import FeatureInfo from "@/types/FeatureInfo";
 import { getConfig } from "@/utils/appConfigUtil";
+import { store } from "@/store";
 
 // EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
 // Initialize empty map, and load layers later...
@@ -67,6 +68,7 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const cameraLyr = initCameraLayer(config.cameras)
     const roadAlertsLyr = initRoadAlertsLayer(config.roadAlerts)
     const travelTimesLyr = initTravelTimesLayer(config.travelTimes)
+    console.log(trafficLyr)
     webmap.addMany([trafficLyr, restAreasLyr, parkRideLyr, weatherLyr, mtLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertsLyr, travelTimesLyr]);
 }

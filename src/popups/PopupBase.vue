@@ -36,9 +36,36 @@
       <h4 class="popup-title w3-container">
         {{ getTitle() }}
       </h4>
-      <WeatherForecast v-if="WeatherForecast">
-        
-      </WeatherForecast>
+      <div v-if="propWeatherForecast">
+        <table>
+          <tr id="weatherPeriodText">
+            <td v-for="eachFeature in propWeatherForecast.forecasts" :key="eachFeature.forecastNumber">
+              {{eachFeature.periodText}}
+            </td>
+          </tr>
+          <tr id="weatherForecastIcons" >
+            <td class="weatherForecastIcon" v-for="eachFeature in propWeatherForecast.forecasts" :key="eachFeature.forecastNumber">
+              <img :src="'https://images.wsdot.wa.gov/traffic/weaicons/'+eachFeature.weatherIconFileName"/>
+            </td>
+          </tr>
+          <tr id="weatherForecastDescription">
+            <td v-for="eachFeature in propWeatherForecast.forecasts" :key="eachFeature.forecastNumber">
+              {{eachFeature.weatherDescription}}
+            </td>
+          </tr>
+        </table>
+        <table>
+          <tr>
+            <td>
+              <label>Forecast created </label>
+            </td>
+            <td>
+              {{propWeatherForecast.forecastDateTime}}
+            </td>
+          </tr>
+        </table>
+        <a target="_blank" :href="'https://www.wsdot.com/traffic/forecast/Default.aspx?zone='+propWeatherForecast.nwsZoneId.replace(/\s/g, '')">View Extended Forecast</a>
+      </div>
       <Carousel
         v-if="Config.imageFieldName"
         :items-to-show="1"
@@ -89,7 +116,6 @@ import {
 } from "vue";
 import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
-import WeatherForecast from "@/components/WeatherForecast.vue"
 import { useStore } from "@/store";
 import {
   mapView,
@@ -102,9 +128,9 @@ import FeatureInfo from "@/types/FeatureInfo";
 import PopupConfig from "@/types/PopupConfig";
 import PopupRow from "./PopupRow.vue";
 import XY from "@/types/XY";
-import WeatherForecastInfo from "@/types/WeatherForecastInfo"
+import ForecastListInfo from "@/types/ForecastListInfo"
 export default defineComponent({
-  components: { Carousel, Slide, Pagination, Navigation, PopupRow, WeatherForecast },
+  components: { Carousel, Slide, Pagination, Navigation, PopupRow },
   props: {
     // MapX & Y are only required to supersede the feature x/y.
     MapXY: {
@@ -133,13 +159,16 @@ export default defineComponent({
       required: true,
     },
     WeatherForecast:{
-      type: Object as PropType<Array<WeatherForecastInfo>>,
+      type: Object as PropType<ForecastListInfo>,
       required: false,
     }
   },
   setup(props, context) {
     // The DOM only exists while the visibility is true. Get it in onUpdate().
-    console.log(props.WeatherForecast)
+    const propWeatherForecast = toRefs(props).WeatherForecast
+    watch(propWeatherForecast,()=>{
+      console.log(propWeatherForecast.value)
+    })
     const containerRef = ref<HTMLDivElement>();
     const store = useStore();
     const mapSize = computed(() => store.state.mapSize);
@@ -485,6 +514,7 @@ export default defineComponent({
       getBannerText,
       badgeText,
       getTitle,
+      propWeatherForecast
     };
   },
 });
@@ -621,5 +651,11 @@ svg.carousel__icon {
 .carousel__pagination {
   margin: 5px;
   padding-left: 0;
+}
+#weatherForecastIcons #weatherForecastDescription {
+  font-size: 5pt;
+}
+.weatherForecastIcon{
+  font-size: 10pt;
 }
 </style>

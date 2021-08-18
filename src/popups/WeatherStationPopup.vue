@@ -2,7 +2,7 @@
   <PopupBase
     LightThemeColor="#ccdcdc"
     DarkThemeColor="#005151"
-    :WeatherForecast="[getWeatherForecast]"
+    :WeatherForecast="forecastList"
     :Features="[feature]"
     :Config="{
       bannerText: { text: 'Weather Station' },
@@ -78,7 +78,8 @@ import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
-import WeatherForecastInfo from "@/types/WeatherForecastInfo";
+import { getConfig } from "@/utils/appConfigUtil";
+import ForecastListInfo from "@/types/ForecastListInfo"
 export default defineComponent({
   components: { PopupBase },
   props: {
@@ -90,9 +91,10 @@ export default defineComponent({
   setup(props) {
     const feature = ref<FeatureInfo>();
     const layerIcons = layerListIcons;
-
+    const forecastList=ref<ForecastListInfo>()
     watch(props, () => {
-      if (props.Featureset.layerId === FeatureLayer().id) {
+      if (props.Featureset.layerId === FeatureLayer().id) {//if clicked feature belongs to WeatherStations layer
+        getWeatherForecast();
         show();
       } else {
         close();
@@ -101,7 +103,7 @@ export default defineComponent({
 
     const show = () => {
       const setVal = () => {
-        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(
+        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(//query feature layer for feature
           (result) => {
             if (result) {
               feature.value = result;
@@ -123,7 +125,36 @@ export default defineComponent({
     const close = () => {
       feature.value = undefined;
     };
-
+    const getWeatherForecast = async()=>{
+      getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(//query feature layer for feature
+          async (response) => {
+            if (response) {
+              const featureNWSZoneId = response?.attributes?.NWSZoneId?.toString().replace(/\s/g, "")
+              const config = await getConfig();
+              fetch(config.forecastExtendedAPI+featureNWSZoneId).then((result)=>{
+                result.json().then((response)=>{
+                  forecastList.value={
+                    nwsZoneId:response.nwsZoneId,
+                    forecastDateTime:response.forecastDateTime,
+                    forecastExpirationDateTime:response.forecastExpirationDateTime,
+                    nwsZoneRegionName:response.nwsZoneRegionName,
+                    forecasts:response.forecastData
+                  }
+                })
+              })
+            }
+          }
+        );
+     /* return {
+        "nwsZoneId": "string",
+        "forecastNumber": 2, // Object ID. Can be used as v-for key.
+        "weatherIconFileName": "string",
+        "weatherDescription": "string",
+        "periodText": "string"
+      } as WeatherForecastInfo*/
+      return "test"
+      
+    }
     const naText = "N/A";
 
     const getCoord = (feature: FeatureInfo) => {
@@ -191,19 +222,8 @@ export default defineComponent({
       return formatNum(feature, "Visibility", "Mile");
     };
     const getWindSpeed = (feature: FeatureInfo) => {
-      console.log(feature)
       return formatNum(feature, "WindSpeed", "mph");
     };
-    const getWeatherForecast = (feature: FeatureInfo)=>{
-      console.log(feature)
-      return {
-        "nwsZoneId": "string",
-        "forecastNumber": 2, // Object ID. Can be used as v-for key.
-        "weatherIconFileName": "string",
-        "weatherDescription": "string",
-        "periodText": "string"
-      } as WeatherForecastInfo
-    }
 
     const formatNum = (
       feature: FeatureInfo,
@@ -254,7 +274,7 @@ export default defineComponent({
       getDewPoint,
       getVisibility,
       getWindSpeed,
-      getWeatherForecast
+      forecastList
     };
   },
 });

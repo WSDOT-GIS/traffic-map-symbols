@@ -5,6 +5,7 @@ import Point from "@arcgis/core/geometry/Point";
 import Polygon from "@arcgis/core/geometry/Polygon";
 import { project } from "@arcgis/core/geometry/projection";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
+import { layerFilter16 } from "@esri/calcite-ui-icons";
 
 export const getGraphicsInfoById = async (graphic: Graphic, layer: GeoJSONLayer): Promise<FeatureInfo | undefined> => {
     const query = layer.createQuery();

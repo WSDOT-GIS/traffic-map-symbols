@@ -15,7 +15,8 @@ const initLayer = (url) => {
         url: url,
         title: "Travel Times",
         renderer: travelTimesRenderer,
-        visible: false
+        visible: false,
+        objectIdField: "AverageTime"
     });
     return layer;
 };

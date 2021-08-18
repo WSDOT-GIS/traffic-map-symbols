@@ -253,13 +253,11 @@ export default defineComponent({
         esriMap.mapView.hitTest(clickEvent,featureLayerOpts).then((response) => {
           console.log("clicked")
           if (response.results.length) {
-            console.log(response.results)
             const resultsByLayer: {
               info: LayerInfo;
               layer: Layer;
               results: { graphic: Graphic; mapPoint: Point }[];
             }[] = [];
-            console.log(resultsByLayer)
             response.results.forEach((eachResult) => {
               const arrayFound = resultsByLayer.find(
                 (eachArray) => eachArray.layer === eachResult.graphic.layer
@@ -270,7 +268,6 @@ export default defineComponent({
                 const layerInfo = store.state.layerList.find(
                   (layerInfo) => layerInfo.id === eachResult.graphic.layer.id
                 );
-                console.log(layerInfo)
                 if (layerInfo) {
                   resultsByLayer.push({
                     info: layerInfo,
@@ -290,7 +287,6 @@ export default defineComponent({
               (eachResultSet) => eachResultSet.info.index === maxIdx
             );
             if (results2Show) {
-              console.log(results2Show)
               const g = results2Show.results[0].graphic;
               const layer = g.layer as GeoJSONLayer;
               if (

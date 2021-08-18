@@ -64,6 +64,7 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     const cameraLyr = CameraLayer_1.initLayer(config.cameras);
     const roadAlertsLyr = RoadAlertsLayer_1.initLayer(config.roadAlerts);
     const travelTimesLyr = TravelTimeLayer_1.initLayer(config.travelTimes);
+    console.log(trafficLyr);
     exports.webmap.addMany([trafficLyr, restAreasLyr, parkRideLyr, weatherLyr, mtLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertsLyr, travelTimesLyr]);
 });

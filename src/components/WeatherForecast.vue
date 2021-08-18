@@ -2,8 +2,7 @@
     <div>
         <table>
             <tr>
-                <td>Weather</td>
-                <td>Forecast</td>
+                {{visible}}
             </tr>
         </table>
     </div>
@@ -20,12 +19,13 @@ import {
   toRefs,
   watch,
 } from "vue";
-import WeatherForecastInfo from "@/types/WeatherForecastInfo"
+//import {WeatherForecastInfo,Forecast} from "@/types/WeatherForecastInfo"
 export default defineComponent({
-    props:{
-        WeatherForecastData:{
-            type: Object as PropType<Array<WeatherForecastInfo>>
-        }
+    setup(props) {
+        const propData = toRefs(props)
+        console.log(propData)
+        watch(propData,()=>{console.log(propData)})
+        return {}
     }
 })
 </script>
