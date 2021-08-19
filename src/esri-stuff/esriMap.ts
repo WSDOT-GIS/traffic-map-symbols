@@ -1,51 +1,105 @@
 import WebMap from "@arcgis/core/WebMap";
 import MapView from "@arcgis/core/views/MapView";
 import Point from "@arcgis/core/geometry/Point";
+import Polygon from "@arcgis/core/geometry/Polygon";
+import { geodesicBuffer } from "@arcgis/core/geometry/geometryEngine";
 import { whenTrue } from "@arcgis/core/core/watchUtils";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Layer from "@arcgis/core/layers/Layer";
 import EsriConfig from "@arcgis/core/config"
 import Graphic from "@arcgis/core/Graphic";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
-import TrafficLayer from "@/layers/TrafficLayer";
-import ParkRideLayer from "@/layers/ParkRideLayer";
-import CameraLayer from "@/layers/CameraLayer";
-import RestAreasLayer from "@/layers/RestAreasLayer";
-import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
-import RoadAlertsLayer from "@/layers/RoadAlertLayer";
-import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
-import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
-import MountainPassLayer from "@/layers/MountainPassesLayer";
+// Layers
+import { initLayer as initTrafficLayer } from "@/layers/TrafficLayer";
+import { initLayer as initParkRideLayer } from "@/layers/ParkRideLayer";
+import { initLayer as initCameraLayer } from "@/layers/CameraLayer";
+import { initLayer as initRestAreaLayer } from "@/layers/RestAreasLayer";
+import { initLayer as initPointRestrictionsLayer } from "@/layers/PointRestrictionsLayer";
+import { initLayer as initRoadAlertsLayer } from "@/layers/RoadAlertsLayer";
+import { initLayer as initLineRestrictionsLayer } from "@/layers/LineRestrictionsLayer";
+import { initLayer as initWeatherLayer } from "@/layers/WeatherStationsLayer";
+import { initLayer as initMountainLayer } from "@/layers/MountainPassesLayer";
+import { initLayer as initTravelTimesLayer } from "@/layers/TravelTimeLayer"
+//
 import ExtentInfo from "@/types/ExtentInfo";
-import { convert2EsriExtent } from "@/utils/extentUtil";
+import { convert2EsriExtent, getEsriExtent } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
+import FeatureInfo from "@/types/FeatureInfo";
+import { getConfig } from "@/utils/appConfigUtil";
+import { store } from "@/store";
 
-EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
+// EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
+// Initialize empty map, and load layers later...
 export const webmap = new WebMap({
-    layers: [TrafficLayer, ParkRideLayer,  CameraLayer, PointRestrictionsLayer, LineRestrictionsLayer, RoadAlertsLayer, RestAreasLayer, WeatherStationsLayer, MountainPassLayer],
+    //layers: [TrafficLayer, RestAreasLayer, ParkRideLayer, WeatherStationsLayer, MountainPassLayer, LineRestrictionsLayer, PointRestrictionsLayer, CameraLayer, RoadAlertsLayer],
 });
-
 export const mapView = new MapView({
     container: "esri-map-view",
     map: webmap,
+    extent: getEsriExtent("full"),
     constraints: {
         rotationEnabled: false // Disables map rotation
     }
 });
-
 // Zoom buttons are replaced with the custom Vue components.
 mapView.ui.remove("zoom");
-
 export const init = (container: HTMLDivElement): void => {
     mapView.container = container;
     mapView.when()
-        .then(x => {
-            console.log("Map is ready. " + typeof (x));
+        .then(() => {
+            console.log("Map is ready.");
         })
         .catch(error => {
             console.warn("Failed to initialize map. Error: ", error);
         });
 };
+// Get config and get apiKey and URL, then initialize layers and add to map...
+export const loadOperationalLayers = async (): Promise<void> => {
+    const config = await getConfig();
+    EsriConfig.apiKey = config.apiKey;
+    //console.log(config)
+    const trafficLyr = initTrafficLayer(config.traffic);
+    const restAreasLyr = initRestAreaLayer(config.restAreas);
+    const parkRideLyr = initParkRideLayer(config.parkAndRides);
+    const weatherLyr = initWeatherLayer(config.weatherStations);
+    const mtLyr = initMountainLayer(config.mountainPasses);
+    const travelTimesLyr = initTravelTimesLayer(config.travelTimes)
+    const lineRestrictionLyr = initLineRestrictionsLayer(config.lineRestrictions);
+    const pointRestrictionLyr = initPointRestrictionsLayer(config.pointRestrictions);
+    const cameraLyr = initCameraLayer(config.cameras)
+    const roadAlertsLyr = initRoadAlertsLayer(config.roadAlerts)
+
+    webmap.addMany([trafficLyr, restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
+        pointRestrictionLyr, cameraLyr, roadAlertsLyr]);
+    // set refresh interval for GeoJSON...
+    // TODO: enable after reloadLayer is working correctly..
+    // setInterval(() => {
+    //     reloadLayer("road-alerts-layer");
+    //     reloadLayer("line-restrictions-layer");
+    //     reloadLayer("mountain-passes-layer");
+    //     reloadLayer("point-restrictions-layer");
+    //     reloadLayer("travel-times-layer");
+    //     reloadLayer("weather-stations-layer");
+    // }, 300000);
+
+}
+
+const reloadLayer = (id: string): void => {
+    const lyr = getLayer(id);
+    if (lyr.type in ["feature", "map-image"]) {
+        throw "This layer supports refreshInterval, so use that intead.";
+    }
+    const idx = webmap.layers.findIndex((each) => {
+        return each.id === id;
+    });
+    console.log("Removing " + id)
+    webmap.remove(lyr);
+    // TODO: reinitialize the layer...
+
+    // Add it back...
+    console.log("Adding " + id)
+    webmap.add(lyr, idx);
+}
 
 export const tryZoomToPoint = (point: Point, numLevels?: number): boolean => {
     let isSuccess = true;
@@ -56,7 +110,7 @@ export const tryZoomToPoint = (point: Point, numLevels?: number): boolean => {
     const orgLevel = mapView.zoom;
     mapView.zoom = mapView.zoom += numLevels;
     if (mapView.zoom === orgLevel) {
-        console.log("Cannot zoom in any more.");
+        //console.log("Cannot zoom in any more.");
         isSuccess = false;
     }
     return isSuccess;
@@ -68,7 +122,6 @@ export const tryZoomToPointAsync = async (point: Point, numLevels?: number): Pro
         numLevels = 1;
     }
     const orgLevel = mapView.zoom;
-    // Tried goTo() as well, but it is a bit jumpy...
     await mapView.goTo({
         target: point,
         zoom: mapView.zoom += 1
@@ -79,7 +132,7 @@ export const tryZoomToPointAsync = async (point: Point, numLevels?: number): Pro
         console.error("tryZoomToPointAsync failed: " + error);
     });
     if (mapView.zoom === orgLevel) {
-        console.log("Cannot zoom in any more.");
+        //console.log("Cannot zoom in any more.");
         isSuccess = false;
     }
     return isSuccess;
@@ -108,16 +161,12 @@ export const toScreenXY = (mapX: number, mapY: number): { x: number, y: number }
 }
 
 export const panMap = async (shiftX: number, shiftY: number): Promise<string> => {
-    console.log("panMap X: " + shiftX + ", Y: " + shiftY);
+    //console.log("panMap X: " + shiftX + ", Y: " + shiftY);
     const screenCenter = mapView.toScreen(mapView.center);
-    console.log(
-        "Screen Center X: " + screenCenter.x + ", Y: " + screenCenter.y
-    );
     const mapCenter = mapView.toMap({
         x: screenCenter.x - shiftX,
         y: screenCenter.y - shiftY,
     });
-    //mapView.center = mapCenter;
     await mapView.goTo(mapCenter, {
         duration: 300,
         easing: "ease-in"
@@ -126,7 +175,6 @@ export const panMap = async (shiftX: number, shiftY: number): Promise<string> =>
         console.error(err);
         return err;
     });
-    console.log("Map center X: " + mapCenter.x + ", Y: " + mapCenter.y);
     return "success";
 }
 
@@ -163,13 +211,60 @@ export const getIdsFromCluster = async (clusterGraphic: Graphic, layer: Layer, m
             if (!identical) { break; }
         }
         if (identical) {
-            console.log("All points are located on the same spot!");
+            //console.log("All points are located on the same spot!");
             doReturn = true;
         }
-        else { console.log("Points are not identical."); }
+        //else { //console.log("Points are not identical."); }
     }
     if (doReturn) {
         const ids = result.features.map((feature) => { return feature.attributes[lyr.objectIdField]; })
         return ids;
+    }
+}
+
+export const bufferByPixels = (distancePixel: number, screenPoint?: { x: number, y: number }, mapPoint?: Point): Polygon => {
+    if (!screenPoint && mapPoint) {
+        screenPoint = mapView.toScreen(mapPoint);
+    }
+    if (!mapPoint && screenPoint) {
+        mapPoint = mapView.toMap(screenPoint);
+    }
+    if (screenPoint && mapPoint) {
+        const ptShift = mapView.toMap({ x: screenPoint.x + distancePixel, y: screenPoint.y });
+        const mapDist = Math.abs(ptShift.x - mapPoint.x);
+        // console.log("Map distance: " + mapDist);
+        const outBuff = geodesicBuffer(
+            mapPoint,
+            mapDist,
+            "meters"
+        ) as Polygon;
+        return outBuff;
+    }
+    else {
+        throw "Need to specify either screen or map point.";
+    }
+
+}
+/** Highlight feature */
+let highlight: __esri.Handle;
+export const highlightFeature = (featureInfo: FeatureInfo): void => {
+    const layer = getLayer(featureInfo.layerId) as GeoJSONLayer;
+    mapView.whenLayerView(layer).then((layerView) => {
+        const query = layer.createQuery();
+        query.where = `${layer.objectIdField} = ${featureInfo.id}`;
+        // query.where = `${idName} IN ( ${ids.join(",")})`;
+        layer.queryFeatures(query).then((result) => {
+            if (highlight) {
+                highlight.remove();
+            }
+            highlight = layerView.highlight(result.features);
+        })
+
+    })
+}
+
+export const removeHighlight = (): void => {
+    if (highlight) {
+        highlight.remove();
     }
 }

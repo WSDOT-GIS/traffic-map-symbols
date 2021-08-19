@@ -1,8 +1,9 @@
 interface LayerInfo {
+    id: string;
     index: number;
     title: string;
     visible: boolean;
-    url?: string
+    url?: string;
 }
 
 export default LayerInfo;

@@ -1,9 +1,8 @@
 <template>
   <PopupBase
-    :MapX="mapX"
-    :MapY="mapY"
     LightThemeColor="#ccdcdc"
     DarkThemeColor="#005151"
+    :WeatherForecast="forecastList"
     :Features="[feature]"
     :Config="{
       bannerText: { text: 'Weather Station' },
@@ -63,9 +62,11 @@
     @close="close"
   >
     <template v-slot:icon>
-      <div v-html="layerIcons.find((x) => x.title == feature.layerTitle)?.paths" width="24"
-        height="24">
-      </div >
+      <div
+        v-html="layerIcons.find((x) => x.id == feature?.layerId)?.paths"
+        width="24"
+        height="24"
+      ></div>
     </template>
   </PopupBase>
 </template>
@@ -77,6 +78,8 @@ import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
+import { getConfig } from "@/utils/appConfigUtil";
+import ForecastListInfo from "@/types/ForecastListInfo"
 export default defineComponent({
   components: { PopupBase },
   props: {
@@ -84,22 +87,14 @@ export default defineComponent({
       type: Object as PropType<FeaturesetInfo>,
       required: true,
     },
-    MapX: {
-      type: Number,
-      required: true,
-    },
-    MapY: {
-      type: Number,
-      required: true,
-    },
   },
   setup(props) {
     const feature = ref<FeatureInfo>();
-    const mapX = ref(0);
-    const mapY = ref(0);
     const layerIcons = layerListIcons;
+    const forecastList=ref<ForecastListInfo>()
     watch(props, () => {
-      if (props.Featureset.layerTitle === FeatureLayer.title) {
+      if (props.Featureset.layerId === FeatureLayer().id) {//if clicked feature belongs to WeatherStations layer
+        getWeatherForecast();
         show();
       } else {
         close();
@@ -108,17 +103,15 @@ export default defineComponent({
 
     const show = () => {
       const setVal = () => {
-        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer).then(
+        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(//query feature layer for feature
           (result) => {
             if (result) {
               feature.value = result;
-              mapX.value = props.MapX;
-              mapY.value = props.MapY;
             }
           }
         );
       };
-      if (mapX.value !== 0 || mapY.value !== 0 || feature.value) {
+      if (feature.value) {
         // Clean up the previous data...
         close();
         nextTick(() => {
@@ -128,13 +121,40 @@ export default defineComponent({
         setVal();
       }
     };
-    // Setting XY to 0 closes the popup...
+    // Setting features to undefined closes the popup...
     const close = () => {
-      mapX.value = 0;
-      mapY.value = 0;
       feature.value = undefined;
     };
-
+    const getWeatherForecast = async()=>{
+      getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(//query feature layer for feature
+          async (response) => {
+            if (response) {
+              const featureNWSZoneId = response?.attributes?.NWSZoneId?.toString().replace(/\s/g, "")
+              const config = await getConfig();
+              fetch(config.forecastExtendedAPI+featureNWSZoneId).then((result)=>{
+                result.json().then((response)=>{
+                  forecastList.value={
+                    nwsZoneId:response.nwsZoneId,
+                    forecastDateTime:response.forecastDateTime,
+                    forecastExpirationDateTime:response.forecastExpirationDateTime,
+                    nwsZoneRegionName:response.nwsZoneRegionName,
+                    forecasts:response.forecastData
+                  }
+                })
+              })
+            }
+          }
+        );
+     /* return {
+        "nwsZoneId": "string",
+        "forecastNumber": 2, // Object ID. Can be used as v-for key.
+        "weatherIconFileName": "string",
+        "weatherDescription": "string",
+        "periodText": "string"
+      } as WeatherForecastInfo*/
+      return "test"
+      
+    }
     const naText = "N/A";
 
     const getCoord = (feature: FeatureInfo) => {
@@ -239,10 +259,8 @@ export default defineComponent({
       }
       return text;
     };
-
+    
     return {
-      mapX,
-      mapY,
       feature,
       layerIcons,
       close,
@@ -256,6 +274,7 @@ export default defineComponent({
       getDewPoint,
       getVisibility,
       getWindSpeed,
+      forecastList
     };
   },
 });

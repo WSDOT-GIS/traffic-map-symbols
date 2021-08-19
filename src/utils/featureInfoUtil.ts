@@ -1,19 +1,11 @@
 import Graphic from "@arcgis/core/Graphic";
-/* Info types */
 import FeatureInfo from "@/types/FeatureInfo";
-// import WeatherStationInfo from "@/types/WeatherStationsInfo";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
-// import MountainPassesInfo from "@/types/MountainPassesInfo";
-// import RestrictionInfo from "@/types/RestrictionInfo";
-// import ParkRideInfo from "@/types/ParkRideInfo";
-// import CameraInfo from "@/types/CameraInfo";
-/* Layers */
-// import ParkRideLayer from "@/layers/ParkRideLayer";
-// import CameraLayer from "@/layers/CameraLayer";
-// import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
-// import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
-// import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
-// import MountainPassLayer from "@/layers/MountainPassesLayer";
+import Point from "@arcgis/core/geometry/Point";
+import Polygon from "@arcgis/core/geometry/Polygon";
+import { project } from "@arcgis/core/geometry/projection";
+import SpatialReference from "@arcgis/core/geometry/SpatialReference";
+import { layerFilter16 } from "@esri/calcite-ui-icons";
 
 export const getGraphicsInfoById = async (graphic: Graphic, layer: GeoJSONLayer): Promise<FeatureInfo | undefined> => {
     const query = layer.createQuery();
@@ -52,13 +44,36 @@ export const getFeatureInfosByIds = async (ids: number[], layer: GeoJSONLayer): 
     return infos;
 }
 
-
-
 const convert2Info = (g: Graphic) => {
+    let mapPoint: Point;
+    // Get the mid/center point...
+    switch (g.geometry.type) {
+        case "point": {
+            mapPoint = g.geometry as Point;
+            break;
+        }
+        case "polygon": {
+            const polygon = g.geometry as Polygon;
+            mapPoint = polygon.centroid;
+            break;
+        }
+        default: {
+            const ext = g.geometry.extent;
+            mapPoint = ext.center;
+            break;
+        }
+    }
+    // Project to the map coordinate. Without doing this lat/long get passed.
+    const projPt = project(
+        mapPoint,
+        SpatialReference.WebMercator
+    ) as Point;
+
     const info: FeatureInfo = {
-        layerTitle: g.layer.title,
+        layerId: g.layer.id,
         attributes: g.attributes,
-        id: g.getObjectId()
+        id: g.getObjectId(),
+        mapPoint: { x: projPt.x, y: projPt.y },
     }
     return info;
     // let info: unknown

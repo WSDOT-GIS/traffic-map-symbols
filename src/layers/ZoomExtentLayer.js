@@ -1,11 +1,15 @@
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
-import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol";
-import SpatialReference from "@arcgis/core/geometry/SpatialReference";
-import Field from "@arcgis/core/layers/support/Field";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getFeatureById = void 0;
+const tslib_1 = require("tslib");
+const FeatureLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/FeatureLayer"));
+const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
+const SimpleFillSymbol_1 = tslib_1.__importDefault(require("@arcgis/core/symbols/SimpleFillSymbol"));
+const SpatialReference_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/SpatialReference"));
+const Field_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/Field"));
 // Create a symbol for rendering the graphic
-const renderer = new SimpleRenderer({
-    symbol: new SimpleFillSymbol({
+const renderer = new SimpleRenderer_1.default({
+    symbol: new SimpleFillSymbol_1.default({
         style: "none",
         outline: {
             width: 2,
@@ -72,21 +76,21 @@ const graphics = [
         }
     },
 ];
-const layer = new FeatureLayer({
-    id: "zoom-areas",
+const layer = new FeatureLayer_1.default({
+    id: "zoom-areas-layer",
     title: "Metro Areas",
     fields: [
-        new Field({
+        new Field_1.default({
             name: "ObjectID",
             alias: "ObjectID",
             type: "oid"
         }),
-        new Field({
+        new Field_1.default({
             name: "Label",
             type: "string",
             alias: "Label"
         }),
-        new Field({
+        new Field_1.default({
             name: "Note",
             type: "string",
             alias: "Note"
@@ -94,17 +98,18 @@ const layer = new FeatureLayer({
     ],
     objectIdField: "ObjectID",
     geometryType: "polygon",
-    spatialReference: SpatialReference.WebMercator,
+    spatialReference: SpatialReference_1.default.WebMercator,
     renderer: renderer,
     source: graphics,
     maxScale: 300000
 });
-export default layer;
-export const getFeatureById = async (id) => {
+exports.default = layer;
+const getFeatureById = (id) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     const query = layer.createQuery();
     query.where = "ObjectID =" + id;
     query.outFields = ["ObjectID", "Label", "Note"];
-    const response = await layer.queryFeatures(query);
+    const response = yield layer.queryFeatures(query);
     return response.features[0];
-};
+});
+exports.getFeatureById = getFeatureById;
 //# sourceMappingURL=ZoomExtentLayer.js.map

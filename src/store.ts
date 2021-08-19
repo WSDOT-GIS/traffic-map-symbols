@@ -6,23 +6,35 @@ import { getBasemapInfo, toggleBasemapInfo } from "./layers/Basemaps";
 import ExtentInfo from "./types/ExtentInfo";
 import { convert2EsriExtent, convert2ExtentInfo } from "./utils/extentUtil";
 import LayerInfo from "./types/LayerInfo";
-import AppConfig from "./types/appConfig";
+
 // Reference - https://next.vuex.vuejs.org/guide/typescript-support.html#typing-usestore-composition-function
 // define typings for the store state...
 export interface State {
     basemap: string;
     pointerX: number;
     pointerY: number;
-    layerList: LayerInfo[];//{ index: number, title: string, visible: boolean }[],
+    mapSize: { width: number; height: number };
+    layerList: LayerInfo[];
     currentExtent: ExtentInfo;
     userLocation: number[] | null;
-    mapFeaturesExpanded: string;
-    appConfig: AppConfig
+    isMobile: boolean;
 }
 
 // define injection key...
 export const key: InjectionKey<Store<State>> = Symbol()
 
+const isMobile = (): boolean => {
+    if (navigator.userAgent.match(/Android/i)
+        || navigator.userAgent.match(/webOS/i)
+        || navigator.userAgent.match(/iPhone/i)
+        || navigator.userAgent.match(/iPad/i)
+        || navigator.userAgent.match(/iPod/i)
+        || navigator.userAgent.match(/BlackBerry/i)
+        || navigator.userAgent.match(/Windows Phone/i)) {
+        return true;
+    }
+    else { return false; }
+}
 
 export const store = createStore<State>({
     state() {
@@ -30,6 +42,7 @@ export const store = createStore<State>({
             basemap: "",
             pointerX: 0,
             pointerY: 0,
+            mapSize: { width: 0, height: 0 },
             currentExtent: {
                 xmin: 0,
                 xmax: 0,
@@ -38,29 +51,13 @@ export const store = createStore<State>({
             },
             layerList: [],
             userLocation: null,
-            mapFeaturesExpanded: "block",
-            appConfig:{//initialize appConfig as empty
-                basemap: "",
-                cameras: "",
-                lineRestrictions: "",
-                mountainPasses: "",
-                parkAndRides: "",
-                pointRestrictions:"",
-                traffic:"",
-                weatherStations:"",
-                apiKey: "",
-                forecastSummaryAPI:"",
-                forecastExtendedAPI:""
-            }
+            isMobile: isMobile(),
         }
     },
     getters: {
         completeLayerList: state => {
             return state.layerList
         },
-        completeAppConfig: state =>{
-            return state.appConfig
-        }
     },
     mutations: {
         setBasemap(state, payload) {
@@ -81,6 +78,10 @@ export const store = createStore<State>({
         setPointerY(state, payload) {
             state.pointerY = payload.toFixed(6);
         },
+        setMapSize(state, payload) {
+            //console.log("setMapSize: " + JSON.stringify(payload))
+            state.mapSize = payload;
+        },
         setUserLocation(state, payload) {
             state.userLocation = payload;
         },
@@ -91,9 +92,6 @@ export const store = createStore<State>({
                     layer.visible = state.layerList[index].visible
                 }
             })
-        },
-        setAppConfig(state, payload){
-            state.appConfig = payload
         },
         setCurrentExtent(state, payload) {
             if (payload instanceof Extent) {
@@ -107,14 +105,12 @@ export const store = createStore<State>({
                 mapView.extent = extent;
             }
         },
-        setMapFeaturesExpanded(state, payload) {
-            state.mapFeaturesExpanded == "block" ? state.mapFeaturesExpanded = "none" : state.mapFeaturesExpanded = "block"
-        },
     },
 })
 // Clone the target of proxy (i.e. removing the reactivity)
-export const cloneProxyTarget = (proxy: any): any => {
+export const cloneProxyTarget = <T>(proxy: T): T => {
     const copy = JSON.parse(JSON.stringify(proxy));
+    //console.log(JSON.stringify(proxy) + "\n" + JSON.stringify(copy));
     return copy;
 }
 

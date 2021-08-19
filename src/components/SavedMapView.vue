@@ -7,20 +7,26 @@
         :key="index"
         class="w3-border-0"
         style="padding: 0"
+        ref="itemContainerRef"
       >
-        <button :title="'Show ' + item.title"
-          class="w3-transparent w3-btn"
+        <button
+          :title="'Show ' + item.title"
+          class="saved-map-title w3-btn w3-transparent"
           :class="{
             'w3-text-blue': item.selected,
             'w3-text-dark-grey': !item.selected,
           }"
+          :style="{ width: itemTitleWidth }"
           @click="selectItem($event, item)"
         >
           {{ item.title }}
         </button>
-        <button :title="'Delete ' + item.title" :aria-label="'Delete ' + item.title"
-          class="w3-right w3-transparent w3-button"
+        <button
+          :title="'Delete ' + item.title"
+          :aria-label="'Delete ' + item.title"
+          class="w3-right w3-button w3-transparent"
           @click="removeItem($event, item)"
+          ref="closeButtonRef"
         >
           &times;
         </button>
@@ -36,7 +42,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import {
+  computed,
+  defineComponent,
+  nextTick,
+  onMounted,
+  onUpdated,
+  ref,
+  watch,
+} from "vue";
 
 import SavedMapInfo from "@/types/SavedMapInfo";
 import { setCookie, getCookie } from "@/utils/cookieUtil";
@@ -50,6 +64,9 @@ export default defineComponent({
   components: { WsdotButtonView, SaveMapFormView },
   setup() {
     const store = useStore();
+    const itemContainerRef = ref<HTMLElement>();
+    const closeButtonRef = ref<HTMLElement>();
+    const itemTitleWidth = ref("0");
     const formVisible = ref(false);
     const newMapTitle = ref("");
     const cookieText = getCookie("saved-map-list");
@@ -61,9 +78,45 @@ export default defineComponent({
     mapList.value.forEach((each) => {
       each.selected = false;
     });
+    // Resize the list after the component is loaded or updated...
+    onUpdated(() => {
+      //console.log("******onUpdated");
+      if (mapList.value.length > 0) {
+        nextTick(() => {
+          resizeItemTitle();
+        });
+      }
+    });
+    onMounted(() => {
+      // On the mobile, onUpdated is not triggered initially since the left pane is closed by default.
+      // On the big screen, onMounted seems to happen too early and it does not size correctly, so do not handle this.
+      if (store.state.isMobile) {
+        //console.log("******onMounted");
+        if (mapList.value.length > 0) {
+          nextTick(() => {
+            resizeItemTitle();
+          });
+        }
+      }
+    });
+    // Resize the list content when the screen size changes...
+    const mapSize = computed(() => store.state.mapSize);
+    watch(mapSize, () => {
+      resizeItemTitle();
+    });
+    // Set the width of the item title button so the remove button won't wrap.
+    const resizeItemTitle = () => {
+      if (itemContainerRef.value && closeButtonRef.value) {
+        const w =
+          itemContainerRef.value.offsetWidth -
+          closeButtonRef.value.offsetWidth -
+          3; // Without this the close button will still wrap. 1 works too, but made it 3 to make sure.
+        itemTitleWidth.value = w + "px";
+      }
+    };
+    resizeItemTitle();
     const showForm = () => {
       formVisible.value = true;
-      console.log("showForm: " + formVisible.value);
     };
     const closeForm = () => {
       formVisible.value = false;
@@ -102,7 +155,7 @@ export default defineComponent({
     };
 
     const removeItem = (event: Event, item: SavedMapInfo) => {
-      console.log(item.title);
+      //console.log(item.title);
       const idx = mapList.value.findIndex((eachItem) => {
         if (eachItem == item) {
           return true;
@@ -117,6 +170,9 @@ export default defineComponent({
       mapList,
       formVisible,
       newMapTitle,
+      itemContainerRef,
+      closeButtonRef,
+      itemTitleWidth,
       showForm,
       closeForm,
       selectItem,
@@ -136,6 +192,9 @@ button {
 }
 .saved-map-item {
   width: 100%;
+}
+.saved-map-title {
+  text-align: left;
 }
 .remove-saved-map-button {
   height: 100%;

@@ -3,7 +3,8 @@
     <div
       id="map-top-left-container"
       v-if="isOpen"
-      class="w3-container w3-padding-small w3-card w3-white w3-col m4 l2"
+      class="w3-container w3-padding-small w3-card w3-white w3-col"
+      :style="{ maxHeight: maxHeight + 'px' }"
     >
       <div class="w3-display-container w3-padding-small w3-border-0">
         <label class="w3-large">Map Features</label>
@@ -54,20 +55,27 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref, watch } from "vue";
+import { useStore } from "@/store";
 import LayerListView from "./LayerListView.vue";
 import SavedMapView from "./SavedMapView.vue";
 
 export default defineComponent({
   components: { LayerListView, SavedMapView },
   setup() {
+    const store = useStore();
+    const mapSize = computed(() => store.state.mapSize);
+    const maxHeight = ref(mapSize.value.height);
+    watch(mapSize, (size) => {
+      maxHeight.value = size.height;
+    });
     // If it is on small device, close it by default.
-    const isOpen = ref(window.innerWidth > 400);
+    const isOpen = ref(!store.state.isMobile);
 
     const toggleDisplay = () => {
       isOpen.value = !isOpen.value;
     };
-    return { isOpen, toggleDisplay };
+    return { isOpen, maxHeight, toggleDisplay };
   },
 });
 </script>
@@ -77,8 +85,15 @@ export default defineComponent({
   position: absolute;
   top: 0;
   left: 0;
-
+  width: 300px;
+  overflow-y: auto;
 }
+@media screen and (max-width: 601px) {
+  #map-top-left-container {
+    width: 100%;
+  }
+}
+
 #map-top-left-container-closed {
   position: absolute;
   top: 0;

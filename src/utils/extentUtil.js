@@ -1,5 +1,9 @@
-import Extent from "@arcgis/core/geometry/Extent";
-import SpatialReference from "@arcgis/core/geometry/SpatialReference";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.convert2ExtentInfo = exports.convert2EsriExtent = exports.getEsriExtent = exports.getExtentInfo = void 0;
+const tslib_1 = require("tslib");
+const Extent_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/Extent"));
+const SpatialReference_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/SpatialReference"));
 const defaultExtents = [
     {
         id: "full",
@@ -10,25 +14,28 @@ const defaultExtents = [
         ymax: 6316025.98739708,
     },
 ];
-export const getExtentInfo = (id) => {
+const getExtentInfo = (id) => {
     const result = defaultExtents.filter(x => x.id == id);
     return result[0];
 };
-export const getEsriExtent = (name) => {
-    const info = getExtentInfo(name);
-    return convert2EsriExtent(info);
+exports.getExtentInfo = getExtentInfo;
+const getEsriExtent = (name) => {
+    const info = exports.getExtentInfo(name);
+    return exports.convert2EsriExtent(info);
 };
-export const convert2EsriExtent = (extentInfo) => {
-    const extent = new Extent({
+exports.getEsriExtent = getEsriExtent;
+const convert2EsriExtent = (extentInfo) => {
+    const extent = new Extent_1.default({
         xmin: extentInfo.xmin,
         xmax: extentInfo.xmax,
         ymin: extentInfo.ymin,
         ymax: extentInfo.ymax,
-        spatialReference: SpatialReference.WebMercator
+        spatialReference: SpatialReference_1.default.WebMercator
     });
     return extent;
 };
-export const convert2ExtentInfo = (extent) => {
+exports.convert2EsriExtent = convert2EsriExtent;
+const convert2ExtentInfo = (extent) => {
     const info = {
         xmin: extent.xmin,
         xmax: extent.xmax,
@@ -37,4 +44,5 @@ export const convert2ExtentInfo = (extent) => {
     };
     return info;
 };
+exports.convert2ExtentInfo = convert2ExtentInfo;
 //# sourceMappingURL=extentUtil.js.map

@@ -1,16 +1,16 @@
 <template>
-  <div id="layerListWidget" title="Map Features">
+  <div id="layerListWidget" title="Map Features" v-if="layerList.length > 0">
     <ul class="w3-ul" style="padding: 1px 0">
       <li class="w3-border-0 mapFeaturesLI" style="padding: 0">
         <ToggleSwitchView
           @toggle="clickEvent"
-          :Checked="layerList[0].visible"
-          :Value="layerList[0].index.toString()"
-          :Title="'Toggle ' + layerList[0].title"
+          :Checked="layerList[layerList.length - 10].visible"
+          :Value="layerList[layerList.length - 10].index.toString()"
+          :Title="'Toggle ' + layerList[layerList.length - 10].title"
         >
           <template v-slot>
-            <div class="mapFeaturesIcon"></div>
-            <span class="listLabel">Traffic Flow</span>
+            <!-- <div class="mapFeaturesIcon"></div> -->
+            <span>Traffic Flow</span>
           </template>
         </ToggleSwitchView>
       </li>
@@ -19,12 +19,7 @@
     <table class="trafficLegendTable" role="presentation">
       <tr class="trafficLegendRow">
         <td class="trafficLegendCell">
-          <div class="trafficLegendSymbolDiv" id="slowLegendCell">&nbsp;</div>
-        </td>
-        <td class="trafficLegendCell">
-          <div class="trafficLegendSymbolDiv" id="slowMediumLegendCell">
-            &nbsp;
-          </div>
+          <div class="trafficLegendSymbolDiv" id="fastLegendCell">&nbsp;</div>
         </td>
         <td class="trafficLegendCell">
           <div class="trafficLegendSymbolDiv" id="mediumFastLegendCell">
@@ -32,59 +27,75 @@
           </div>
         </td>
         <td class="trafficLegendCell">
-          <div class="trafficLegendSymbolDiv" id="fastLegendCell">&nbsp;</div>
+          <div class="trafficLegendSymbolDiv" id="slowMediumLegendCell">
+            &nbsp;
+          </div>
+        </td>
+        <td class="trafficLegendCell">
+          <div class="trafficLegendSymbolDiv" id="slowLegendCell">&nbsp;</div>
         </td>
       </tr>
       <tr>
+        <td class="trafficLegendLabelCell">Clear</td>
+        <td class="trafficLegendLabelCell">Moving</td>
         <td class="trafficLegendLabelCell">Slow</td>
-        <td class="trafficLegendLabelCell"></td>
-        <td class="trafficLegendLabelCell"></td>
-        <td class="trafficLegendLabelCell">Fast</td>
+        <td class="trafficLegendLabelCell">Stop &#38; Go</td>
       </tr>
     </table>
     <ul class="w3-ul">
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
         <ToggleSwitchView
           @toggle="clickEvent"
-          :Checked="layerList[1].visible"
-          :Value="layerList[1].index.toString()"
-          :Title="'Toggle ' + layerList[1].title"
+          :Checked="layerList[layerList.length - 1].visible"
+          :Value="layerList[layerList.length - 1].index.toString()"
+          :Title="'Toggle ' + layerList[layerList.length - 1].title"
         >
           <template v-slot>
             <div
               class="mapFeaturesIcon"
               v-html="
-                layerIcons.find((x) => x.title == layerList[1].title)?.paths
+                layerIcons.find(
+                  (x) => x.id == layerList[layerList.length - 1].id
+                )?.paths
               "
             ></div>
-            <span class="listLabel"> {{ layerList[1].title }}</span>
+            <span class="listLabel">
+              {{ layerList[layerList.length - 1].title }}</span
+            >
           </template>
         </ToggleSwitchView>
       </li>
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
         <ToggleSwitchView
           @toggle="clickEvent"
-          :Checked="layerList[2].visible"
-          :Value="layerList[2].index.toString()"
-          :Title="'Toggle ' + layerList[2].title"
+          :Checked="layerList[layerList.length - 2].visible"
+          :Value="layerList[layerList.length - 2].index.toString()"
+          :Title="'Toggle ' + layerList[layerList.length - 2].title"
         >
           <template v-slot>
             <div
               class="mapFeaturesIcon"
               v-html="
-                layerIcons.find((x) => x.title == layerList[2].title)?.paths
+                layerIcons.find(
+                  (x) => x.id == layerList[layerList.length - 2].id
+                )?.paths
               "
             ></div>
-            <span class="listLabel"> {{ layerList[2].title }}</span>
+            <span class="listLabel">
+              {{ layerList[layerList.length - 2].title }}</span
+            >
           </template>
         </ToggleSwitchView>
       </li>
+
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
         <ToggleSwitchView
           @toggle="clickEvent"
-          :Checked="layerList[3].visible"
+          :Checked="layerList[layerList.length - 3].visible"
           :Value="
-            layerList[3].index.toString() + ',' + layerList[4].index.toString()
+            layerList[layerList.length - 3].index.toString() +
+            ',' +
+            layerList[layerList.length - 4].index.toString()
           "
           Title="Toggle Truck Restrictions"
         >
@@ -92,7 +103,9 @@
             <div
               class="mapFeaturesIcon"
               v-html="
-                layerIcons.find((x) => x.title == layerList[3].title)?.paths
+                layerIcons.find(
+                  (x) => x.id == layerList[layerList.length - 3].id
+                )?.paths
               "
             ></div>
             <span class="listLabel" id="CommercialVehicleLabel"
@@ -104,72 +117,110 @@
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
         <ToggleSwitchView
           @toggle="clickEvent"
-          :Checked="layerList[5].visible"
-          :Value="layerList[5].index.toString()"
-          :Title="'Toggle ' + layerList[5].title"
+          :Checked="layerList[layerList.length - 5].visible"
+          :Value="layerList[layerList.length - 5].index.toString()"
+          :Title="'Toggle ' + layerList[layerList.length - 5].title"
         >
           <template v-slot>
             <div
               class="mapFeaturesIcon"
               v-html="
-                layerIcons.find((x) => x.title == layerList[5].title)?.paths
+                layerIcons.find(
+                  (x) => x.id == layerList[layerList.length - 5].id
+                )?.paths
               "
             ></div>
-            <span class="listLabel"> {{ layerList[5].title }}</span>
+            <span class="listLabel">
+              {{ layerList[layerList.length - 5].title }}</span
+            >
           </template>
         </ToggleSwitchView>
       </li>
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
         <ToggleSwitchView
           @toggle="clickEvent"
-          :Checked="layerList[6].visible"
-          :Value="layerList[6].index.toString()"
-          :Title="'Toggle ' + layerList[6].title"
+          :Checked="layerList[layerList.length - 6].visible"
+          :Value="layerList[layerList.length - 6].index.toString()"
+          :Title="'Toggle ' + layerList[layerList.length - 6].title"
         >
           <template v-slot>
             <div
               class="mapFeaturesIcon"
               v-html="
-                layerIcons.find((x) => x.title == layerList[6].title)?.paths
+                layerIcons.find(
+                  (x) => x.id == layerList[layerList.length - 6].id
+                )?.paths
               "
             ></div>
-            <span class="listLabel"> {{ layerList[6].title }}</span>
+            <span class="listLabel">
+              {{ layerList[layerList.length - 6].title }}</span
+            >
           </template>
         </ToggleSwitchView>
       </li>
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
         <ToggleSwitchView
           @toggle="clickEvent"
-          :Checked="layerList[7].visible"
-          :Value="layerList[7].index.toString()"
-          :Title="'Toggle ' + layerList[7].title"
+          :Checked="layerList[layerList.length - 7].visible"
+          :Value="layerList[layerList.length - 7].index.toString()"
+          :Title="'Toggle ' + layerList[layerList.length - 7].title"
         >
           <template v-slot>
             <div
               class="mapFeaturesIcon"
               v-html="
-                layerIcons.find((x) => x.title == layerList[7].title)?.paths
+                layerIcons.find(
+                  (x) => x.id == layerList[layerList.length - 7].id
+                )?.paths
               "
             ></div>
-            <span class="listLabel"> {{ layerList[7].title }}</span>
+            <span class="listLabel">
+              {{ layerList[layerList.length - 7].title }}</span
+            >
           </template>
         </ToggleSwitchView>
       </li>
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
         <ToggleSwitchView
           @toggle="clickEvent"
-          :Checked="layerList[8].visible"
-          :Value="layerList[8].index.toString()"
-          :Title="'Toggle ' + layerList[8].title"
+          :Checked="layerList[layerList.length - 8].visible"
+          :Value="layerList[layerList.length - 8].index.toString()"
+          :Title="'Toggle ' + layerList[layerList.length - 8].title"
         >
           <template v-slot>
             <div
               class="mapFeaturesIcon"
               v-html="
-                layerIcons.find((x) => x.title == layerList[8].title)?.paths
+                layerIcons.find(
+                  (x) => x.id == layerList[layerList.length - 8].id
+                )?.paths
               "
             ></div>
-            <span class="listLabel"> {{ layerList[8].title }}</span>
+            <span class="listLabel">
+              {{ layerList[layerList.length - 8].title }}</span
+            >
+          </template>
+        </ToggleSwitchView>
+      </li>
+      <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
+        <ToggleSwitchView
+          @toggle="clickEvent"
+          :Checked="layerList[layerList.length - 9].visible"
+          :Value="layerList[layerList.length - 9].index.toString()"
+          :Title="'Toggle ' + layerList[layerList.length - 9].title"
+        >
+          <template v-slot>
+            <div
+              class="mapFeaturesIcon"
+              v-html="
+                layerIcons.find(
+                  (x) => x.id == layerList[layerList.length - 9].id
+                )?.paths
+              "
+            ></div>
+            <span class="listLabel">
+              {{ layerList[layerList.length - 9].title }}</span
+            >
           </template>
         </ToggleSwitchView>
       </li>
@@ -178,31 +229,20 @@
 </template>
 <script lang="ts">
 import { store, useStore } from "@/store";
-import { defineComponent, ref } from "vue";
-import LayerInfo from "../types/LayerInfo";
-import { webmap } from "../esri-stuff/esriMap";
-// import { mapState } from "vuex";
+import { defineComponent } from "vue";
 import { layerListIcons } from "@/symbols/IconDefinitions";
 import ToggleSwitchView from "./ToggleSwitchView.vue";
 export default defineComponent({
   components: { ToggleSwitchView },
   setup() {
-    //#region populate the layer list
     const store = useStore();
-    let layerList = ref<LayerInfo[]>([]);
     const layerIcons = layerListIcons;
-    webmap.layers.map((layer, index) => {
-      if (layer.title !== "Metro Areas") {
-        layerList.value.push({
-          index: index,
-          title: layer.title,
-          visible: layer.visible,
-        });
-      }
-    });
-    store.commit("setLayerList", layerList);
-    return { layerList, layerIcons, store };
-    //#endregion
+    return { layerIcons, store };
+  },
+  computed: {
+    layerList() {
+      return store.state.layerList;
+    },
   },
   methods: {
     //#region toggle layer on and off
@@ -225,6 +265,9 @@ export default defineComponent({
 });
 </script>
 <style scoped>
+.listLabel-trafficFlow {
+  font-size: small;
+}
 .listLabel {
   position: absolute;
   font-size: small;
@@ -232,19 +275,23 @@ export default defineComponent({
   text-align: left;
 }
 #slowLegendCell {
-  background-color: firebrick;
+  background-color: #c80000;
 }
 #slowMediumLegendCell {
-  background-color: orange;
+  background-color: #ffaa00;
 }
 #mediumFastLegendCell {
-  background-color: yellow;
+  background-color: #ffff00;
 }
 #fastLegendCell {
-  background-color: limegreen;
+  background-color: #00d700;
 }
 .trafficLegendSymbolDiv {
-  height: 8px;
+  height: 10px;
+  margin: 1px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: var(--color-gray20);
 }
 .mapFeaturesLI {
   margin-bottom: 5px;
@@ -252,7 +299,11 @@ export default defineComponent({
 .trafficLegendTable {
   margin: auto;
   width: 95%;
-  border-collapse: collapse;
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: var(--color-gray40);
+  margin-bottom: 5px;
 }
 .trafficLegendCell {
   width: 25%;

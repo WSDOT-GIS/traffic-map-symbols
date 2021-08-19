@@ -18,6 +18,7 @@ export default defineComponent({
 <style scoped>
 #wsdot-footer {
   color: white;
-  background-color: var(--color-secondaryBrandDark);
+  background-color: var(--color-primaryBrand100);
+  height: 200px;
 }
 </style>

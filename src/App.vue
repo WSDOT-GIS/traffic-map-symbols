@@ -1,7 +1,7 @@
 <template>
   <header id="app-top-container" ref="topRef">
     <HeaderView :text="headerText" />
-    <AlertView :alert="alert" />
+    <AlertView :Alerts="alerts" />
   </header>
   <main>
     <div
@@ -13,8 +13,12 @@
     </div>
   </main>
   <footer id="app-bottom-container" ref="bottomRef">
-    <AdView :text="adText" />
-    <FooterView :text="footerText" />
+    <div ref="adRef">
+      <AdView :text="adText" />
+    </div>
+    <div id="footer-wrapper" ref="footerRef">
+      <FooterView :text="footerText" />
+    </div>
   </footer>
 </template>
 
@@ -25,8 +29,8 @@ import HeaderView from "./components/HeaderView.vue";
 import AlertView from "./components/AlertView.vue";
 import AdView from "./components/AdView.vue";
 import FooterView from "./components/FooterView.vue";
-import Alert from "./types/AlertInfo";
-import AppConfig from "./types/appConfig";
+import AlertInfo from "./types/AlertInfo";
+// import AppConfig from "./types/appConfig";
 import { useStore } from "@/store";
 export default defineComponent({
   name: "App",
@@ -38,44 +42,64 @@ export default defineComponent({
     FooterView,
   },
   setup() {
-    const headerText = "Placeholder for the header";
-    const alert = ref<Alert>({
-      title: "Tsunami!",
+    const headerText =
+      "DRAFT – Information on this page is for visual demonstration and should not be used for travel related decisions – DRAFT";
+    const tempAlert: AlertInfo = {
+      title: "Pleaceholder for the alert message.",
       description: "description",
       x: 1,
       y: 1,
-    });
+    };
+    const alerts = ref<AlertInfo[]>([tempAlert]);
     const adText = "Placeholder for the advertisement";
     const footerText = "Placeholder for the footer";
     const topRef = ref<HTMLDivElement>();
     const bottomRef = ref<HTMLDivElement>();
+    const adRef = ref<HTMLDivElement>();
+    const footerRef = ref<HTMLDivElement>();
     const mapHeight = ref("500px");
-    const store = useStore()
+    const store = useStore();
     onMounted(() => {
       resizeMapContainer();
     });
     // Make map fill the all remaining screen...
     const resizeMapContainer = () => {
-      if (topRef.value && bottomRef.value) {
+      // if (topRef.value && bottomRef.value) {
+      //   const h =
+      //   window.innerHeight -
+      //   topRef.value.offsetHeight -
+      //   bottomRef.value.offsetHeight;
+      //   mapHeight.value = h + "px";
+      // }
+      if (topRef.value && adRef.value) {
         const h =
           window.innerHeight -
           topRef.value.offsetHeight -
-          bottomRef.value.offsetHeight;
+          adRef.value.offsetHeight;
         mapHeight.value = h + "px";
       }
+      // if (topRef.value && footerRef.value) {
+      //   const h =
+      //     window.innerHeight -
+      //     topRef.value.offsetHeight -
+      //     footerRef.value.offsetHeight;
+      //   mapHeight.value = h + "px";
+      // }
     };
     window.addEventListener("resize", resizeMapContainer);
     return {
       headerText,
-      alert,
+      alerts,
       adText,
       footerText,
       mapHeight,
       topRef,
       bottomRef,
-      store
+      adRef,
+      footerRef,
+      store,
     };
-  }
+  },
 });
 </script>
 
@@ -122,5 +146,8 @@ hr.horizontal-divider {
 
 #map-container > * {
   position: absolute;
+}
+#app-bottom-container {
+  background-color: var(--color-gray20);
 }
 </style>

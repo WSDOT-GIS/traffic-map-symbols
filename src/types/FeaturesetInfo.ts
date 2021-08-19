@@ -1,5 +1,5 @@
 interface FeaturesetInfo {
-    layerTitle: string;
+    layerId: string;
     ids: number[];
 }
 

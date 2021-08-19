@@ -1,16 +1,22 @@
-import Basemap from "@arcgis/core/Basemap";
-import TileLayer from "@arcgis/core/layers/TileLayer";
-export const getDefaultBasemapInfo = () => { return basemaps[0]; };
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.validateBasemapName = exports.toggleBasemapInfo = exports.getBasemapInfo = exports.getDefaultBasemapInfo = void 0;
+const tslib_1 = require("tslib");
+const Basemap_1 = tslib_1.__importDefault(require("@arcgis/core/Basemap"));
+const TileLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/TileLayer"));
+const getDefaultBasemapInfo = () => { return basemaps[0]; };
+exports.getDefaultBasemapInfo = getDefaultBasemapInfo;
 const urlBasemap = 
 //"https://data.wsdot.wa.gov/arcgis/rest/services/Shared/WebBaseMapWebMercator/MapServer";
-"https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/TravelCenterBasemapTileTest/MapServer";
+//"https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/TravelCenterBasemapTileTest/MapServer"
+"https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/Travel_Center_Basemap_Dev/MapServer";
 // Array of basemaps. The first one is the default.
 const basemaps = [
     {
         name: "wsdot",
-        basemap: new Basemap({
+        basemap: new Basemap_1.default({
             baseLayers: [
-                new TileLayer({
+                new TileLayer_1.default({
                     url: urlBasemap,
                 }),
             ],
@@ -19,10 +25,10 @@ const basemaps = [
         })
     }, {
         name: "satellite",
-        basemap: Basemap.fromId("arcgis-imagery")
+        basemap: Basemap_1.default.fromId("arcgis-imagery")
     }
 ];
-export const getBasemapInfo = (name) => {
+const getBasemapInfo = (name) => {
     const results = basemaps.filter((x) => {
         return x.name == name;
     });
@@ -30,11 +36,12 @@ export const getBasemapInfo = (name) => {
         return results[0];
     }
     else {
-        return getDefaultBasemapInfo();
+        return exports.getDefaultBasemapInfo();
     }
 };
+exports.getBasemapInfo = getBasemapInfo;
 // Select the next basemap info in the array.
-export const toggleBasemapInfo = (currentName) => {
+const toggleBasemapInfo = (currentName) => {
     let idx = -1;
     for (let i = 0; i < basemaps.length; i++) {
         if (basemaps[i].name == currentName) {
@@ -49,11 +56,13 @@ export const toggleBasemapInfo = (currentName) => {
         return basemaps[0];
     }
 };
+exports.toggleBasemapInfo = toggleBasemapInfo;
 // Make sure the base map name is valid...
-export const validateBasemapName = (name) => {
+const validateBasemapName = (name) => {
     const result = basemaps.filter((item) => {
         return item.name === name;
     });
     return result.length > 0;
 };
+exports.validateBasemapName = validateBasemapName;
 //# sourceMappingURL=Basemaps.js.map

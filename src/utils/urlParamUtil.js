@@ -1,3 +1,4 @@
+"use strict";
 /*
 URL query parameters:
 * extent
@@ -11,15 +12,18 @@ Sample URLs
 Zoom to Seattle metro area and turn off traffic layer, turn on Park & Rides and Traffic Camera layers, satellite basemap
 ?extent=-122.4489756,47.7741882,-122.1102255,47.5032113&layer=1,2&base=satellite
 */
-import { project } from "@arcgis/core/geometry/projection";
-import SpatialReference from "@arcgis/core/geometry/SpatialReference";
-import Extent from "@arcgis/core/geometry/Extent";
-import { getEsriExtent } from "./extentUtil";
-import { getBasemapInfo } from "@/layers/Basemaps";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getBasemapFromUrl = exports.getExtentFromUrl = exports.setLayerFromUrl = void 0;
+const tslib_1 = require("tslib");
+const projection_1 = require("@arcgis/core/geometry/projection");
+const SpatialReference_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/SpatialReference"));
+const Extent_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/Extent"));
+const extentUtil_1 = require("./extentUtil");
+const Basemaps_1 = require("@/layers/Basemaps");
 // Read the URL query parameters...
 const params = new URLSearchParams(window.location.search);
 // Assign layer visibility if it is specified...
-export const setLayerFromUrl = (layerList) => {
+const setLayerFromUrl = (layerList) => {
     const layerParam = params.get("layer");
     if (layerParam) {
         const visibleLayers = layerParam.split(',').map(x => parseInt(x, 10));
@@ -28,9 +32,10 @@ export const setLayerFromUrl = (layerList) => {
         });
     }
 };
+exports.setLayerFromUrl = setLayerFromUrl;
 // Assign extent if it is specified.
 // If not specified or value is not valid, return full state.
-export const getExtentFromUrl = () => {
+const getExtentFromUrl = () => {
     const extentParam = params.get("extent");
     let extent;
     if (extentParam) {
@@ -49,26 +54,28 @@ export const getExtentFromUrl = () => {
                 }
             }
             if (isValid) {
-                const extentWgs = new Extent({
+                const extentWgs = new Extent_1.default({
                     xmin: extentNums[0],
                     xmax: extentNums[1],
                     ymin: extentNums[2],
                     ymax: extentNums[3],
-                    spatialReference: SpatialReference.WGS84
+                    spatialReference: SpatialReference_1.default.WGS84
                 });
-                extent = project(extentWgs, SpatialReference.WebMercator);
+                extent = projection_1.project(extentWgs, SpatialReference_1.default.WebMercator);
             }
         }
     }
     if (extent === undefined) {
-        extent = getEsriExtent("full");
+        extent = extentUtil_1.getEsriExtent("full");
     }
     return extent;
 };
-export const getBasemapFromUrl = () => {
+exports.getExtentFromUrl = getExtentFromUrl;
+const getBasemapFromUrl = () => {
     const param = params.get("base");
     const name = param ? param : "";
-    const basemapInfo = getBasemapInfo(name);
+    const basemapInfo = Basemaps_1.getBasemapInfo(name);
     return basemapInfo;
 };
+exports.getBasemapFromUrl = getBasemapFromUrl;
 //# sourceMappingURL=urlParamUtil.js.map

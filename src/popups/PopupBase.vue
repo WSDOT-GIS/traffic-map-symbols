@@ -3,28 +3,29 @@
     ref="containerRef"
     class="popup-container w3-card w3-col"
     v-if="Features.length > 0 && Features[0]"
-    :class="sizeClass"
     :style="{
       marginTop: popupTop + 'px',
       marginLeft: popupLeft + 'px',
-      maxHeight: maxHeight + 'px',
     }"
   >
-    <div class="popup-header w3-left-align">
-      <div
-        class="popup-banner"
-        :style="{
-          backgroundColor: LightThemeColor,
-          borderColor: DarkThemeColor,
-        }"
-      >
-        <div class="popup-banner-icon">
-          <slot name="icon"></slot>
+    <!-- container without the pointer -->
+    <div :style="{ maxHeight: maxHeight + 'px' }" class="popup-inner-container">
+      <div class="popup-header w3-left-align">
+        <div
+          class="popup-banner"
+          :style="{
+            backgroundColor: LightThemeColor,
+            borderColor: DarkThemeColor,
+          }"
+        >
+          <div class="popup-banner-icon">
+            <slot name="icon"></slot>
+          </div>
+          <span class="popup-banner-text"> {{ getBannerText() }}</span>
         </div>
-        <span class="popup-banner-text"> {{ getBannerText() }}</span>
-      </div>
-      <div v-if="Config.badgeText" class="popup-badge">
-        {{ getBannerText2() }}
+        <div v-if="badgeText.length > 0" class="popup-badge">
+          {{ badgeText }}
+        </div>
       </div>
       <button
         class="popup-close-button w3-button w3-padding-small"
@@ -32,42 +33,73 @@
       >
         &times;
       </button>
-    </div>
-    <h4 class="popup-title w3-container">
-      {{ getTitle() }}
-    </h4>
-    <Carousel
-      v-if="Config.imageFieldName"
-      :items-to-show="1"
-      :wrapAround="true"
-      @update:modelValue="currentIdx = $event"
-      :style="pagenationStyle"
-    >
-      <Slide v-for="eachFeature in Features" :key="eachFeature.id">
-        <div class="carousel-item-container">
-          <img
-            class="popup-img"
-            :src="
-              Config.imageFieldName
-                ? eachFeature.attributes[Config.imageFieldName]
-                : ''
-            "
-            :alt="eachFeature.id"
-            @load="onImgLoad()"
-          />
-        </div>
-      </Slide>
-      <template #addons="{ slidesCount }">
-        <navigation v-if="slidesCount > 1" />
-        <pagination v-if="slidesCount > 1" />
-      </template>
-    </Carousel>
-    <div
-      v-for="eachConfig in Config.content"
-      :key="eachConfig.label"
-      class="popup-content w3-container"
-    >
-      <PopupRow :Config="eachConfig" :Feature="Features[currentIdx]" />
+      <h4 class="popup-title w3-container">
+        {{ getTitle() }}
+      </h4>
+      <div v-if="propWeatherForecast">
+        <table>
+          <tr id="weatherPeriodText">
+            <td v-for="eachFeature in propWeatherForecast.forecasts" :key="eachFeature.forecastNumber">
+              {{eachFeature.periodText}}
+            </td>
+          </tr>
+          <tr id="weatherForecastIcons" >
+            <td class="weatherForecastIcon" v-for="eachFeature in propWeatherForecast.forecasts" :key="eachFeature.forecastNumber">
+              <img :src="'https://images.wsdot.wa.gov/traffic/weaicons/'+eachFeature.weatherIconFileName"/>
+            </td>
+          </tr>
+          <tr id="weatherForecastDescription">
+            <td v-for="eachFeature in propWeatherForecast.forecasts" :key="eachFeature.forecastNumber">
+              {{eachFeature.weatherDescription}}
+            </td>
+          </tr>
+        </table>
+        <table>
+          <tr>
+            <td>
+              <label>Forecast created </label>
+            </td>
+            <td>
+              {{propWeatherForecast.forecastDateTime}}
+            </td>
+          </tr>
+        </table>
+        <a target="_blank" :href="'https://www.wsdot.com/traffic/forecast/Default.aspx?zone='+propWeatherForecast.nwsZoneId.replace(/\s/g, '')">View Extended Forecast</a>
+      </div>
+      <Carousel
+        v-if="Config.imageFieldName"
+        :items-to-show="1"
+        :wrapAround="true"
+        @update:modelValue="currentIdx = $event"
+        :style="pagenationStyle"
+      >
+        <Slide v-for="eachFeature in Features" :key="eachFeature.id">
+          <div class="carousel-item-container">
+            <img
+              class="popup-img"
+              :src="
+                Config.imageFieldName
+                  ? eachFeature.attributes[Config.imageFieldName]
+                  : ''
+              "
+              :alt="eachFeature.id"
+              @load="onImgLoad()"
+              @error="$event.target.src = require('@/assets/no-image.png')"
+            />
+          </div>
+        </Slide>
+        <template #addons="{ slidesCount }">
+          <navigation v-if="slidesCount > 1" />
+          <pagination v-if="slidesCount > 1" />
+        </template>
+      </Carousel>
+      <div
+        v-for="eachConfig in Config.content"
+        :key="eachConfig.label"
+        class="popup-content w3-container"
+      >
+        <PopupRow :Config="eachConfig" :Feature="Features[currentIdx]" />
+      </div>
     </div>
   </div>
 </template>
@@ -84,23 +116,26 @@ import {
 } from "vue";
 import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
-
-import { mapView, toScreenXY, panMap } from "@/esri-stuff/esriMap";
-// import HighlightSymbol from "@/symbols/HighlightSymbol";
+import { useStore } from "@/store";
+import {
+  mapView,
+  toScreenXY,
+  panMap,
+  highlightFeature,
+  removeHighlight,
+} from "@/esri-stuff/esriMap";
 import FeatureInfo from "@/types/FeatureInfo";
 import PopupConfig from "@/types/PopupConfig";
 import PopupRow from "./PopupRow.vue";
-
+import XY from "@/types/XY";
+import ForecastListInfo from "@/types/ForecastListInfo"
 export default defineComponent({
   components: { Carousel, Slide, Pagination, Navigation, PopupRow },
   props: {
-    MapX: {
-      type: Number,
-      required: true,
-    },
-    MapY: {
-      type: Number,
-      required: true,
+    // MapX & Y are only required to supersede the feature x/y.
+    MapXY: {
+      type: Object as PropType<XY>,
+      required: false,
     },
     Width: {
       // "m (medium) or w (wide)"
@@ -123,15 +158,26 @@ export default defineComponent({
       type: Object as PropType<PopupConfig>,
       required: true,
     },
+    WeatherForecast:{
+      type: Object as PropType<ForecastListInfo>,
+      required: false,
+    }
   },
   setup(props, context) {
     // The DOM only exists while the visibility is true. Get it in onUpdate().
+    const propWeatherForecast = toRefs(props).WeatherForecast
+    watch(propWeatherForecast,()=>{
+      console.log(propWeatherForecast.value)
+    })
     const containerRef = ref<HTMLDivElement>();
-    const maxHeight = ref(1000);
-    // Using toRefs to preserve the reactivity.
-    // If you do "ref(props.MapX)" the value at the time the setup was run is set without reactivity.
-    const mapX = toRefs(props).MapX;
-    const mapY = toRefs(props).MapY;
+    const store = useStore();
+    const mapSize = computed(() => store.state.mapSize);
+    const maxHeight = ref(mapSize.value.height);
+    watch(mapSize, (size) => {
+      maxHeight.value = size.height;
+    });
+    const mapX = ref(0); //toRefs(props).MapX;
+    const mapY = ref(0); //toRefs(props).MapY;
     const screenX = ref(-1);
     const screenY = ref(-1);
     // Popup location.
@@ -143,10 +189,16 @@ export default defineComponent({
     let doPanMap = true;
     // Index of the currently shown feature.
     const currentIdx = ref(0);
+    const badgeText = ref("");
     // Reset variables when the features change...
     const propFeatures = toRefs(props).Features;
     watch(propFeatures, () => {
       currentIdx.value = 0;
+      setBadgeText();
+      highlightMap();
+      mapX.value = 0;
+      mapY.value = 0;
+      setMapXY();
       prevScreenX = -1000;
       prevScreenY = -1000;
       prevHeight = 0;
@@ -161,21 +213,21 @@ export default defineComponent({
     // let gHighlight: Graphic;
     // Set the width...
     // Default...
-    const sizeClass = {
-      m4: true,
-      m6: false,
-      l2: true,
-      l3: false,
-    };
-    if (props.Width) {
-      // Wide...
-      if (props.Width === "w") {
-        sizeClass.m4 = false;
-        sizeClass.m6 = true;
-        sizeClass.l2 = false;
-        sizeClass.l3 = true;
-      }
-    }
+    // const sizeClass = {
+    //   m4: true,
+    //   m6: false,
+    //   l2: true,
+    //   l3: false,
+    // };
+    // if (props.Width) {
+    //   // Wide...
+    //   if (props.Width === "w") {
+    //     sizeClass.m4 = false;
+    //     sizeClass.m6 = true;
+    //     sizeClass.l2 = false;
+    //     sizeClass.l3 = true;
+    //   }
+    // }
     const pagenationStyle = computed(() => {
       return {
         "--carousel-color-primary": props.DarkThemeColor,
@@ -185,7 +237,7 @@ export default defineComponent({
 
     const close = () => {
       // Let the parent handle the close event.
-      // Parent should set the MapX/Y to 0 otherwise the popup will be shown again.
+      // Parent should empty the feature array to close the popup.
       context.emit("close");
     };
     // Adjust popup position when the props change...
@@ -194,6 +246,9 @@ export default defineComponent({
     });
     watch(currentIdx, () => {
       context.emit("idxUpdate", currentIdx.value);
+      setBadgeText();
+      highlightMap();
+      setMapXY();
     });
     // MapView resize event...
     mapView.on("resize", () => {
@@ -203,9 +258,10 @@ export default defineComponent({
     });
     // Watch scale change...
     mapView.watch("scale", () => {
-      if (mapX.value < 0 && mapY.value > 0) {
-        setScreenXY();
-      }
+      // if (mapX.value < 0 && mapY.value > 0) {
+      //   setScreenXY();
+      // }
+      close();
     });
     // Watch map moving...
     mapView.watch("center", (newValue, oldValue) => {
@@ -282,21 +338,28 @@ export default defineComponent({
         prevWidth = w;
         prevHeight = h;
       }
-      //console.log("*** Adjust ***"); // + JSON.stringify(props.Features)); //props.Features[0].layerTitle);
-      // New vertical position...
-      let newTop = screenY.value - h - 30;
-      // New horizontal position.
-      let newLeft = screenX.value - w / 2;
+      // console.log("*** Adjust ***"); // + JSON.stringify(props.Features)); //props.Features[0].layerId);
       // If this is not the initial load, then move popup along with map.
       if (!doPanMap) {
+        // New vertical position...
+        let newTop = screenY.value - h - 30;
+        // Raise the popup a bit so it is not covering the icon completely.
+        if (!props.MapXY) {
+          newTop -= 15;
+        }
+        // New horizontal position.
+        const newLeft = screenX.value - w / 2;
         setPosition(newTop, newLeft);
       } else {
         doPanMap = false;
         nextTick(() => {
           // New vertical position...
-          newTop = screenY.value - h - 30;
+          let newTop = screenY.value - h - 30;
+          if (!props.MapXY) {
+            newTop -= 15;
+          }
           // New horizontal position.
-          newLeft = screenX.value - w / 2;
+          const newLeft = screenX.value - w / 2;
           /**
            * Pan map so the popup is displayed within the map view.
            * Only do this on the initial popup load.
@@ -387,16 +450,15 @@ export default defineComponent({
       }
       return text;
     };
-    const getBannerText2 = () => {
+    const setBadgeText = () => {
       if (
         !props.Features ||
         props.Features.length === 0 ||
-        !props.Features[currentIdx.value]
+        !props.Features[currentIdx.value] ||
+        !props.Config.badgeText
       ) {
         // "Nothing to show...
-        return;
-      }
-      if (!props.Config.badgeText) {
+        badgeText.value = "";
         return;
       }
       let text = "";
@@ -415,22 +477,44 @@ export default defineComponent({
       if (!text) {
         text = "";
       }
-      return text;
+      badgeText.value = text;
     };
+    const highlightMap = () => {
+      const feature = props.Features[currentIdx.value];
+      if (feature) {
+        if (!props.MapXY) {
+          highlightFeature(feature);
+        }
+      } else {
+        removeHighlight();
+      }
+    };
+    /** If MapX and Y are provided, those values supersede the feature x/y.
+     * Otherwise the feature x/y is used to determine the location of the popup.
+     */
+    const setMapXY = () => {
+      const feature = props.Features[currentIdx.value];
+      if (feature) {
+        mapX.value = props.MapXY ? props.MapXY.x : feature.mapPoint.x;
+        mapY.value = props.MapXY ? props.MapXY.y : feature.mapPoint.y;
+        // console.log(mapX.value + ", " + mapY.value);
+      }
+    };
+
     return {
       containerRef,
       popupLeft,
       popupTop,
       maxHeight,
       currentIdx,
-      sizeClass,
       close,
       adjustPositionSize,
       pagenationStyle,
       onImgLoad,
       getBannerText,
-      getBannerText2,
+      badgeText,
       getTitle,
+      propWeatherForecast
     };
   },
 });
@@ -441,6 +525,13 @@ export default defineComponent({
   z-index: 10;
   background-color: #fff;
   position: relative;
+  width: 400px;
+}
+
+@media screen and (max-width: 401px) {
+  .popup-container {
+    width: 100%;
+  }
 }
 
 .popup-container::after {
@@ -462,9 +553,14 @@ export default defineComponent({
   box-shadow: -3px 3px 3px 0 rgba(0, 0, 0, 0.2);
 }
 
+.popup-inner-container {
+  overflow-y: auto;
+}
+
 .popup-header {
   position: relative;
   margin: 8px 0;
+  padding-right: 10px;
   width: 100%;
 }
 .popup-banner {
@@ -500,7 +596,7 @@ export default defineComponent({
   border-style: solid;
   border-color: #ffc107;
   background-color: #fffaec;
-  margin-left: 1em;
+  margin: 3px 1em 0 1em;
 }
 .popup-title {
   margin: 5px 0;
@@ -517,6 +613,7 @@ export default defineComponent({
   border-style: none;
   background-color: transparent;
   font-size: 1.5em;
+  vertical-align: top;
 }
 
 /* Picture stylings ******/
@@ -554,5 +651,11 @@ svg.carousel__icon {
 .carousel__pagination {
   margin: 5px;
   padding-left: 0;
+}
+#weatherForecastIcons #weatherForecastDescription {
+  font-size: 5pt;
+}
+.weatherForecastIcon{
+  font-size: 10pt;
 }
 </style>

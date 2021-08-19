@@ -1,7 +1,6 @@
 <template>
   <PopupBase
-    :MapX="mapX"
-    :MapY="mapY"
+    :MapXY="mapXY"
     Width="w"
     LightThemeColor="#cce5df"
     DarkThemeColor="#007b5f"
@@ -20,10 +19,12 @@
     }"
     @close="close"
   >
-    <template v-slot:icon >
-      <div v-html="layerIcons.find((x) => x.title == features[0].layerTitle)?.paths" width="24"
-        height="24">
-      </div >
+    <template v-slot:icon>
+      <div
+        v-html="layerIcons.find((x) => x.id == features[0].layerId)?.paths"
+        width="24"
+        height="24"
+      ></div>
     </template>
   </PopupBase>
 </template>
@@ -37,6 +38,8 @@ import { getFeatureInfosByIds } from "@/utils/featureInfoUtil";
 import FeatureLayer from "@/layers/CameraLayer";
 import FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
+import XY from "@/types/XY";
+
 export default defineComponent({
   components: { PopupBase },
   props: {
@@ -44,34 +47,29 @@ export default defineComponent({
       type: Object as PropType<FeaturesetInfo>,
       required: true,
     },
-    MapX: {
-      type: Number,
-      required: true,
-    },
-    MapY: {
-      type: Number,
-      required: true,
+    // Supply Map X/Y for the clustered features.
+    MapXY: {
+      type: Object as PropType<XY>,
+      required: false,
     },
   },
   setup(props) {
     const features = ref<FeatureInfo[]>([]);
-    const mapX = ref(0);
-    const mapY = ref(0);
+    const mapXY = ref<XY | undefined>();
     const layerIcons = layerListIcons;
-    const getDirection = (feature: FeatureInfo) => {
-      let dir = "";
+    const getDirection = (feature: FeatureInfo): string | undefined => {
+      let dir: string | undefined;
       if (features.value.length > 0) {
         let val = feature.attributes["CompassDirection"] as string;
         if (val) {
-          dir = val === "B" ? "N/A" : val;
+          dir = val === "B" ? undefined : val;
         }
       }
       return dir;
     };
 
     watch(props, () => {
-      if (props.Featureset.layerTitle === FeatureLayer.title) {
-        console.log("Camera Layer Popup!");
+      if (props.Featureset.layerId === FeatureLayer().id) {
         show();
       } else {
         close();
@@ -79,15 +77,16 @@ export default defineComponent({
     });
     const show = () => {
       const setVal = () => {
-        getFeatureInfosByIds(props.Featureset.ids, FeatureLayer).then(
+        getFeatureInfosByIds(props.Featureset.ids, FeatureLayer()).then(
           (results) => {
+            // console.log(JSON.stringify(results));
             features.value = results;
-            mapX.value = props.MapX;
-            mapY.value = props.MapY;
+            mapXY.value = props.MapXY;
+            // console.log(mapX.value + ", " + mapY.value);
           }
         );
       };
-      if (mapX.value !== 0 || mapY.value !== 0 || features.value.length > 0) {
+      if (features.value.length > 0) {
         // Clean up the previous data...
         close();
         // Wait for the next update. Without doing this, scrolling won't work correctly.
@@ -98,16 +97,14 @@ export default defineComponent({
         setVal();
       }
     };
-    // Setting XY to 0 closes the popup...
+    // Emptying the feature array closes the popup...
     const close = () => {
-      mapX.value = 0;
-      mapY.value = 0;
+      mapXY.value = undefined;
       features.value = [];
     };
 
     return {
-      mapX,
-      mapY,
+      mapXY,
       features,
       layerIcons,
       close,
