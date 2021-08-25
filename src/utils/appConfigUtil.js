@@ -5,7 +5,10 @@ const tslib_1 = require("tslib");
 let appConfig;
 const getConfig = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     if (!appConfig) {
-        const fetchResponse = yield fetch("/appconfig.json");
+        //include path where application was loaded from.  QA/Prod will be different than local dev.
+        const href = window.location.pathname;
+        const dir = href.substring(0, href.lastIndexOf('/'));
+        const fetchResponse = yield fetch(dir + "/appconfig.json");
         const config = yield fetchResponse.json();
         appConfig = config;
     }
