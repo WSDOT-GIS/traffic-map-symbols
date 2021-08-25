@@ -10,7 +10,7 @@
     "traffic": "https://utility.arcgis.com/usrsvcs/appservices/G9CkczziK8rxtWpL/rest/services/World/Traffic/MapServer",
     "weatherStations": "https://data.wsdot.wa.gov/travelcenter/WeatherStations.json",
     "apiKey": "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73",
-    "forecastSummaryAPI": "https://webteamtest/travel/service/api/ForecastSummary/",
-    "forecastExtendedAPI": "https://webteamtest/travel/service/api/Forecast/",
+    "forecastSummaryAPI": "https://wsdotappsqa.wsdot.wa.gov/travel/service/api/ForecastSummary/",
+    "forecastExtendedAPI": "https://wsdotappsqa.wsdot.wa.gov/travel/service/api/Forecast/",
     "travelTimes": "https://data.wsdot.wa.gov/travelcenter/TravelTimes.json"
 }

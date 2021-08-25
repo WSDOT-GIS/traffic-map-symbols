@@ -4,9 +4,9 @@ exports.initLayer = void 0;
 const tslib_1 = require("tslib");
 const GeoJSONLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/GeoJSONLayer"));
 const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
-const WeatherStationSymbol_1 = require("@/symbols/WeatherStationSymbol");
+const WeatherStationSymbol_1 = tslib_1.__importDefault(require("@/symbols/WeatherStationSymbol"));
 const weatherStationRenderer = new SimpleRenderer_1.default({
-    symbol: WeatherStationSymbol_1.weatherStationSymbol
+    symbol: WeatherStationSymbol_1.default
 });
 let layer;
 const initLayer = (url) => {

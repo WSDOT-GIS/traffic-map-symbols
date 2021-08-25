@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.weatherStationSymbol = void 0;
 const tslib_1 = require("tslib");
 // import IconInfo from "@/types/IconInfo"
 // import { layerListIcons } from "@/symbols/IconDefinitions"
@@ -998,5 +997,5 @@ const weatherStationSymbol = new CIMSymbol_1.default({
         }
     }
 });
-exports.weatherStationSymbol = weatherStationSymbol;
+exports.default = weatherStationSymbol;
 //# sourceMappingURL=WeatherStationSymbol.js.map

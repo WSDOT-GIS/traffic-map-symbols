@@ -1,6 +1,6 @@
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer"
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
-import { weatherStationSymbol } from "@/symbols/WeatherStationSymbol"
+import weatherStationSymbol from "@/symbols/WeatherStationSymbol"
 
 const weatherStationRenderer = new simpleRenderer({
     symbol: weatherStationSymbol

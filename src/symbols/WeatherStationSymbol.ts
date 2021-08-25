@@ -997,4 +997,4 @@ const weatherStationSymbol = new CIMSymbol({
     }
   }
 })
-export { weatherStationSymbol }
+export default weatherStationSymbol

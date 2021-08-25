@@ -131,6 +131,7 @@ export default defineComponent({
             if (response) {
               const featureNWSZoneId = response?.attributes?.NWSZoneId?.toString().replace(/\s/g, "")
               const config = await getConfig();
+              console.log(config.forecastExtendedAPI)
               fetch(config.forecastExtendedAPI+featureNWSZoneId).then((result)=>{
                 result.json().then((response)=>{
                   forecastList.value={
@@ -140,6 +141,11 @@ export default defineComponent({
                     nwsZoneRegionName:response.nwsZoneRegionName,
                     forecasts:response.forecastData
                   }
+                })
+              })
+              fetch(config.forecastSummaryAPI+featureNWSZoneId).then((result)=>{
+                result.json().then((response)=>{
+                    console.log(response)
                 })
               })
             }

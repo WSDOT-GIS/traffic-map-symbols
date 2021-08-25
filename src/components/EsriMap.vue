@@ -200,7 +200,9 @@ export default defineComponent({
          
         // pointer move event handler to respond to layer marker hit...
         esriMap.mapView.hitTest(event, featureLayerOpts).then((response) => {
+         
           if(response.results.length>0){
+            console.log(response)
             mapDiv.style.cursor = "pointer";
           }
           else{

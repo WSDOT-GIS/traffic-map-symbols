@@ -64,34 +64,64 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     const pointRestrictionLyr = PointRestrictionsLayer_1.initLayer(config.pointRestrictions);
     const cameraLyr = CameraLayer_1.initLayer(config.cameras);
     const roadAlertsLyr = RoadAlertsLayer_1.initLayer(config.roadAlerts);
+    console.log(config.roadAlerts);
     exports.webmap.addMany([trafficLyr, restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertsLyr]);
     // set refresh interval for GeoJSON...
     // TODO: enable after reloadLayer is working correctly..
-    // setInterval(() => {
-    //     reloadLayer("road-alerts-layer");
-    //     reloadLayer("line-restrictions-layer");
-    //     reloadLayer("mountain-passes-layer");
-    //     reloadLayer("point-restrictions-layer");
-    //     reloadLayer("travel-times-layer");
-    //     reloadLayer("weather-stations-layer");
-    // }, 300000);
+    console.log(exports.webmap.layers);
+    /*webmap.when(()=>{
+        setInterval(() => {
+            reloadLayer("road-alerts-layer", config.roadAlerts, AlertSymbol);
+            //reloadLayer("line-restrictions-layer", config.lineRestrictions, LineRestrictionSymbol);
+            reloadLayer("mountain-passes-layer", config.mountainPasses, MountainPassSymbol);
+            reloadLayer("point-restrictions-layer", config.pointRestrictions, PointRestrictionsSymbol);
+            reloadLayer("travel-times-layer", config.travelTimes, TravelTimeSymbol);
+            reloadLayer("weather-stations-layer", config.weatherStations, WeatherStationSymbol);
+        }, 3000)
+    })*/
 });
 exports.loadOperationalLayers = loadOperationalLayers;
-const reloadLayer = (id) => {
+const reloadLayer = (id, layerURL, layerSymbol) => {
     const lyr = exports.getLayer(id);
-    if (lyr.type in ["feature", "map-image"]) {
-        throw "This layer supports refreshInterval, so use that intead.";
+    if (lyr.visible == true) {
+        if (lyr.type == "geojson") {
+            const geoJsonLayer = lyr;
+            console.log(`loading ${lyr.title}`);
+            /*const lyrIndex = webmap.layers.indexOf(lyr)
+            console.log(lyrIndex)
+            const layerRenderer = new simpleRenderer({
+                symbol: layerSymbol
+            })
+            const newLayer = new GeoJSONLayer({
+                id: lyr.id,
+                url: layerURL,
+                title: lyr.title,
+                renderer: layerRenderer,
+                visible: lyr.visible
+            })
+            webmap.remove(lyr)
+            webmap.add(newLayer,lyrIndex-1)
+            store.commit("setLayerList", store.state.layerList);*/
+            geoJsonLayer.definitionExpression = "1=1";
+            geoJsonLayer.load();
+            exports.webmap.loadAll();
+        }
     }
-    const idx = exports.webmap.layers.findIndex((each) => {
-        return each.id === id;
-    });
-    console.log("Removing " + id);
-    exports.webmap.remove(lyr);
-    // TODO: reinitialize the layer...
-    // Add it back...
-    console.log("Adding " + id);
-    exports.webmap.add(lyr, idx);
+    /*
+     if (lyr.type in ["feature", "map-image"]) {
+         throw "This layer supports refreshInterval, so use that intead.";
+     }
+     const idx = webmap.layers.findIndex((each) => {
+         return each.id === id;
+     });
+     console.log("Removing " + id)
+     webmap.remove(lyr);
+     // TODO: reinitialize the layer...
+ 
+     // Add it back...
+     console.log("Adding " + id)
+     webmap.add(lyr, idx);*/
 };
 const tryZoomToPoint = (point, numLevels) => {
     let isSuccess = true;

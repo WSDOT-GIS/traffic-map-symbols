@@ -27,6 +27,18 @@ import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 import FeatureInfo from "@/types/FeatureInfo";
 import { getConfig } from "@/utils/appConfigUtil";
 import { store } from "@/store";
+import { layerFilter16, layersReference16 } from "@esri/calcite-ui-icons";
+import layer from "@/layers/ZoomExtentLayer";
+import AppConfig from "@/types/AppConfig";
+//
+import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
+import TravelTimeSymbol  from "@/symbols/TravelTimeSymbol";
+import AlertSymbol from "@/symbols/AlertSymbol";
+import WeatherStationSymbol from "@/symbols/WeatherStationSymbol";
+//import LineRestrictionSymbol from "@/symbols/LineRestrictionsSymbol";
+import PointRestrictionsSymbol from "@/symbols/PointRestrictionsSymbol";
+import MountainPassSymbol from "@/symbols/MountainPassSymbol";
+import CIMSymbol from "@arcgis/core/symbols/CIMSymbol";
 
 // EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
 // Initialize empty map, and load layers later...
@@ -68,24 +80,52 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const pointRestrictionLyr = initPointRestrictionsLayer(config.pointRestrictions);
     const cameraLyr = initCameraLayer(config.cameras)
     const roadAlertsLyr = initRoadAlertsLayer(config.roadAlerts)
-
+    console.log(config.roadAlerts)
     webmap.addMany([trafficLyr, restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertsLyr]);
     // set refresh interval for GeoJSON...
     // TODO: enable after reloadLayer is working correctly..
-    // setInterval(() => {
-    //     reloadLayer("road-alerts-layer");
-    //     reloadLayer("line-restrictions-layer");
-    //     reloadLayer("mountain-passes-layer");
-    //     reloadLayer("point-restrictions-layer");
-    //     reloadLayer("travel-times-layer");
-    //     reloadLayer("weather-stations-layer");
-    // }, 300000);
-
+    console.log(webmap.layers)
+    /*webmap.when(()=>{
+        setInterval(() => {
+            reloadLayer("road-alerts-layer", config.roadAlerts, AlertSymbol);
+            //reloadLayer("line-restrictions-layer", config.lineRestrictions, LineRestrictionSymbol);
+            reloadLayer("mountain-passes-layer", config.mountainPasses, MountainPassSymbol);
+            reloadLayer("point-restrictions-layer", config.pointRestrictions, PointRestrictionsSymbol);
+            reloadLayer("travel-times-layer", config.travelTimes, TravelTimeSymbol);
+            reloadLayer("weather-stations-layer", config.weatherStations, WeatherStationSymbol);
+        }, 3000)
+    })*/
 }
 
-const reloadLayer = (id: string): void => {
+const reloadLayer = (id: string, layerURL: string, layerSymbol: CIMSymbol): void => {
     const lyr = getLayer(id);
+    if( lyr.visible==true){
+        if(lyr.type=="geojson"){
+            const geoJsonLayer= lyr as GeoJSONLayer
+            console.log(`loading ${lyr.title}`)
+            /*const lyrIndex = webmap.layers.indexOf(lyr)
+            console.log(lyrIndex)
+            const layerRenderer = new simpleRenderer({
+                symbol: layerSymbol
+            })
+            const newLayer = new GeoJSONLayer({
+                id: lyr.id,
+                url: layerURL,
+                title: lyr.title,
+                renderer: layerRenderer,
+                visible: lyr.visible
+            })
+            webmap.remove(lyr)
+            webmap.add(newLayer,lyrIndex-1)
+            store.commit("setLayerList", store.state.layerList);*/
+            geoJsonLayer.definitionExpression="1=1"
+            geoJsonLayer.load()
+            webmap.loadAll()
+        }
+    }
+    
+   /*
     if (lyr.type in ["feature", "map-image"]) {
         throw "This layer supports refreshInterval, so use that intead.";
     }
@@ -98,7 +138,7 @@ const reloadLayer = (id: string): void => {
 
     // Add it back...
     console.log("Adding " + id)
-    webmap.add(lyr, idx);
+    webmap.add(lyr, idx);*/
 }
 
 export const tryZoomToPoint = (point: Point, numLevels?: number): boolean => {
