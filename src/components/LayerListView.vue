@@ -232,7 +232,7 @@ import { store, useStore } from "@/store";
 import { defineComponent } from "vue";
 import { layerListIcons } from "@/symbols/IconDefinitions";
 import ToggleSwitchView from "./ToggleSwitchView.vue";
-import { webmap } from "@/esri-stuff/esriMap";
+
 export default defineComponent({
   components: { ToggleSwitchView },
   setup() {
@@ -248,14 +248,9 @@ export default defineComponent({
   methods: {
     //#region toggle layer on and off
     clickEvent: async (evt: { checked: boolean; value: string }) => {
-      console.log("clickevent fired")
-      console.log(store.state.layerList)
       store.state.layerList.map((layer, index) => {
         if (evt) {
-          console.log(evt)
           const idxs = evt.value.split(",");
-          console.log(idxs)
-          console.log(index.toString())
           for (let i = 0; i < idxs.length; i++) {
             if (index.toString() === idxs[i]) {
               layer.visible = evt.checked;
@@ -264,16 +259,6 @@ export default defineComponent({
         }
       });
       store.commit("setLayerList", store.state.layerList);
-      /*
-       setLayerList(state, payload) {
-            state.layerList = payload;
-            webmap.layers.map((layer, index) => {
-                if (layer.title && state.layerList[index] && layer.title == state.layerList[index].title) {
-                    layer.visible = state.layerList[index].visible
-                }
-            })
-        },
-      */
     },
 
     //#endregion
