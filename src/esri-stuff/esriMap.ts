@@ -15,8 +15,8 @@ import { initLayer as initParkRideLayer } from "@/layers/ParkRideLayer";
 import { initLayer as initCameraLayer } from "@/layers/CameraLayer";
 import { initLayer as initRestAreaLayer } from "@/layers/RestAreasLayer";
 import { initLayer as initPointRestrictionsLayer } from "@/layers/PointRestrictionsLayer";
-import { initLayer as initRoadAlertsLayer } from "@/layers/RoadAlertsLayer";
 import { initLayer as initLineRestrictionsLayer } from "@/layers/LineRestrictionsLayer";
+import { initLayer as initRoadAlertsLayer } from "@/layers/RoadAlertsLayer";
 import { initLayer as initWeatherLayer } from "@/layers/WeatherStationsLayer";
 import { initLayer as initMountainLayer } from "@/layers/MountainPassesLayer";
 import { initLayer as initTravelTimesLayer } from "@/layers/TravelTimeLayer"
@@ -69,9 +69,11 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const pointRestrictionLyr = initPointRestrictionsLayer(config.pointRestrictions);
     const cameraLyr = initCameraLayer(config.cameras)
     const roadAlertsLyr = initRoadAlertsLayer(config.roadAlerts)
-    console.log(config.roadAlerts)
     webmap.addMany([trafficLyr, restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertsLyr]);
+    //
+    cameraLyr.visible = true;
+    //cameraLyr.visible = false;
 }
 /**
  * Reload GeoJSON layers that are updated frequently.

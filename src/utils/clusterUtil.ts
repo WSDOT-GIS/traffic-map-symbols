@@ -1,11 +1,11 @@
 import FeatureReductionCluster from "@arcgis/core/layers/support/FeatureReductionCluster";
-
 import clusterSymbol from "@/symbols/CameraClusterSymbol";
 
 export const clusterMaxScale = 19000;
 const defaultRadius = 60;
 
-const labelColor = "#005151";//"#fff";
+const labelColor = "#005151";
+
 const clusterConfig = new FeatureReductionCluster({
     clusterRadius: defaultRadius,
     clusterMinSize: 20,
@@ -111,6 +111,7 @@ const clusterConfig = new FeatureReductionCluster({
         },
     ],
 });
+
 // The symbol property is undocumented, so use with caution.
 // https://community.esri.com/t5/arcgis-api-for-javascript-ideas/arcgis-javascript-4-cluster-renderer/idc-p/1059638#M48
 clusterConfig.set("symbol", clusterSymbol);

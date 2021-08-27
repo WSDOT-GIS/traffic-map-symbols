@@ -64,7 +64,7 @@ import CameraLayer, { toggleCluster } from "@/layers/CameraLayer";
 import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
 import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
 import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
-import MountainPassLayer from "@/layers/MountainPassesLayer";
+import MountainPassesLayer from "@/layers/MountainPassesLayer";
 import RoadAlertsLayer from "@/layers/RoadAlertsLayer";
 import TravelTimeLayer from "@/layers/TravelTimeLayer";
 import RestAreasLayer from "@/layers/RestAreasLayer";
@@ -147,116 +147,51 @@ export default defineComponent({
       popupFeatureset.value = { layerId: "", ids: [] };
       popupXY.value = undefined;
     };
-    onMounted(async () => {
-      const esriMap = await import("../esri-stuff/esriMap");
-      mapDiv = document.getElementById("esri-map-view") as HTMLDivElement;
-      esriMap.init(mapDiv);
-      // Read config, then load layers...
-      await esriMap.loadOperationalLayers();
-      let layerList: LayerInfo[] = [];
-      esriMap.mapView.map.layers.map((layer, index) => {
-        layerList.push({
-          id: layer.id,
-          index: index,
-          title: layer.title,
-          visible: layer.visible,
-        });
-      });
-
-      // Set layer visibility based on URL query...
-      setLayerFromUrl(layerList);
-      store.commit("setLayerList", layerList);
-      // set refresh interval for GeoJSON...
-      setInterval(() => {
-        esriMap.reloadGeoJsonLayers(store.state.layerList).then((lyrList) => {
-          store.commit("setLayerList", lyrList);
-        });
-      }, 300000);
-      // Add quick zoom boxes around metro areas...
-      esriMap.webmap.add(ZoomExtentLayer);
-      // Set basemap based on URL query parameter...
-      const basemapInfo = getBasemapFromUrl();
-      store.commit("setBasemap", basemapInfo.name);
-      // Set the initial map size in the state store...
-      store.commit("setMapSize", {
-        width: mapView.width,
-        height: mapView.height,
-      });
-      const featureLayerOpts = {
+    // Setup events on the operational layers...
+    let pointerMoveHandle: { remove: () => void } | undefined;
+    let clickHandle: { remove: () => void } | undefined;
+    const initOperationalLayerEvents = (
+      mapDiv: HTMLDivElement,
+      esriMap: typeof import("../esri-stuff/esriMap")
+    ) => {
+      const opLayerOpts = {
         include: [
           ParkRideLayer(),
           CameraLayer(),
           PointRestrictionsLayer(),
           LineRestrictionsLayer(),
           WeatherStationsLayer(),
-          MountainPassLayer(),
+          MountainPassesLayer(),
           RestAreasLayer(),
           RoadAlertsLayer(),
           TravelTimeLayer(),
         ],
       };
-      // Pointer move event handler...
-      esriMap.mapView.on(["pointer-move", "hold"], (event) => {
-        // Update current poitner x/y in the store...
-        let pt = esriMap.mapView.toMap({ x: event.x, y: event.y });
-        store.commit("setPointerX", pt.longitude);
-        store.commit("setPointerY", pt.latitude);
+      if (pointerMoveHandle) {
+        pointerMoveHandle.remove();
+        pointerMoveHandle = undefined;
+        console.log("Removed pointerMoveHandle");
+      }
+      pointerMoveHandle = mapView.on(["pointer-move", "hold"], (event) => {
         // Change pointer when the cursor is on a feature...
-        esriMap.mapView.hitTest(event, featureLayerOpts).then((response) => {
+        mapView.hitTest(event, opLayerOpts).then((response) => {
           if (response.results.length > 0) {
             mapDiv.style.cursor = "pointer";
           } else {
             mapDiv.style.cursor = "auto";
           }
         });
-        // Check if pointer is over one of the zoom extents...
-        const opts = {
-          include: [ZoomExtentLayer],
-        };
-        esriMap.mapView.hitTest(event, opts).then((response) => {
-          // check if a feature is returned from the zoom layer...
-          if (response.results.length) {
-            // Show custom popup...
-            zoomPopupX.value = event.x;
-            zoomPopupY.value = event.y;
-            const zoomGraphic = response.results[0].graphic;
-            zoomPopupVisible.value = true;
-            // Set zoom popup properties...
-            const id = zoomGraphic.attributes["ObjectID"];
-            getZoomFeatureById(id).then((response) => {
-              const geom = project(
-                response.geometry,
-                SpatialReference.WebMercator
-              ) as Geometry;
-              const extent = geom.extent;
-              zoomExtentInfo.xmin = extent.xmin;
-              zoomExtentInfo.xmax = extent.xmax;
-              zoomExtentInfo.ymin = extent.ymin;
-              zoomExtentInfo.ymax = extent.ymax;
-              zoomPopupLabel.value = response.attributes.Label;
-            });
-            mapDiv.style.cursor = "zoom-in";
-            if (!zoomEventIsOn) {
-              mapDiv.addEventListener("click", zoomMetroEventHandler);
-              zoomEventIsOn = true;
-            }
-          } else {
-            // Resume normal map operation...
-            zoomPopupVisible.value = false;
-            //mapDiv.style.cursor = "auto";
-            if (zoomEventIsOn) {
-              mapDiv.removeEventListener("click", zoomMetroEventHandler);
-              zoomEventIsOn = false;
-            }
-          }
-        });
       });
-
       // MapView click event handler for showing popups...
-      esriMap.mapView.on("click", (clickEvent) => {
+      if (clickHandle) {
+        clickHandle.remove();
+        clickHandle = undefined;
+        console.log("Removed clickHandle");
+      }
+      clickHandle = esriMap.mapView.on("click", (clickEvent) => {
         // Check if feature is clicked on...
         esriMap.mapView
-          .hitTest(clickEvent, featureLayerOpts)
+          .hitTest(clickEvent, opLayerOpts)
           .then((response) => {
             console.log("clicked");
             if (response.results.length) {
@@ -331,29 +266,11 @@ export default defineComponent({
                           );
                         } else {
                           closePopup();
-                          // Zoom-in more...
-                          // esriMap.tryZoomToPointAsync(pt).then((zoomResult) => {
-                          //   if (!zoomResult) {
-                          //     // Cannot zoom in any more, so show everything in cluster...
-                          //     esriMap
-                          //       .getIdsFromCluster(g, results2Show.layer)
-                          //       .then((results) => {
-                          //         results
-                          //           ? showPopup(
-                          //               results2Show.layer.title,
-                          //               results,
-                          //               pt
-                          //             )
-                          //           : closePopup();
-                          //       });
-                          //   }
-                          // });
                         }
                       });
                   } else {
                     // Too many in a cluster, so click to zoom-in...
                     closePopup();
-                    // esriMap.tryZoomToPoint(pt);
                   }
                 } else {
                   // Not aggregate...
@@ -367,6 +284,234 @@ export default defineComponent({
             }
           });
       });
+    };
+
+    onMounted(async () => {
+      const esriMap = await import("../esri-stuff/esriMap");
+      mapDiv = document.getElementById("esri-map-view") as HTMLDivElement;
+      esriMap.init(mapDiv);
+      // Read config, then load layers...
+      await esriMap.loadOperationalLayers();
+      let layerList: LayerInfo[] = [];
+      esriMap.mapView.map.layers.map((layer, index) => {
+        layerList.push({
+          id: layer.id,
+          index: index,
+          title: layer.title,
+          visible: layer.visible,
+        });
+      });
+
+      // Set layer visibility based on URL query...
+      setLayerFromUrl(layerList);
+      store.commit("setLayerList", layerList);
+      // Setup events on the operational layers...
+      initOperationalLayerEvents(mapDiv, esriMap);
+      // Options used for the hit test...
+      // let featureLayerOpts = {
+      //   include: [
+      //     ParkRideLayer(),
+      //     CameraLayer(),
+      //     PointRestrictionsLayer(),
+      //     LineRestrictionsLayer(),
+      //     WeatherStationsLayer(),
+      //     MountainPassLayer(),
+      //     RestAreasLayer(),
+      //     RoadAlertsLayer(),
+      //     TravelTimeLayer(),
+      //   ],
+      // };
+      // set refresh interval for GeoJSON...
+      setInterval(() => {
+        esriMap.reloadGeoJsonLayers(store.state.layerList).then((lyrList) => {
+          store.commit("setLayerList", lyrList);
+          initOperationalLayerEvents(mapDiv, esriMap);
+        });
+        
+      }, 10000);
+      // Add quick zoom boxes around metro areas...
+      esriMap.webmap.add(ZoomExtentLayer);
+      // Set basemap based on URL query parameter...
+      const basemapInfo = getBasemapFromUrl();
+      store.commit("setBasemap", basemapInfo.name);
+      // Set the initial map size in the state store...
+      store.commit("setMapSize", {
+        width: mapView.width,
+        height: mapView.height,
+      });
+
+      // Pointer move event handler...
+      esriMap.mapView.on(["pointer-move", "hold"], (event) => {
+        // Update current poitner x/y in the store...
+        let pt = esriMap.mapView.toMap({ x: event.x, y: event.y });
+        store.commit("setPointerX", pt.longitude);
+        store.commit("setPointerY", pt.latitude);
+        // Change pointer when the cursor is on a feature...
+        // esriMap.mapView.hitTest(event, featureLayerOpts).then((response) => {
+        //   if (response.results.length > 0) {
+        //     mapDiv.style.cursor = "pointer";
+        //   } else {
+        //     mapDiv.style.cursor = "auto";
+        //   }
+        // });
+        // Check if pointer is over one of the zoom extents...
+        const opts = {
+          include: [ZoomExtentLayer],
+        };
+        esriMap.mapView.hitTest(event, opts).then((response) => {
+          // check if a feature is returned from the zoom layer...
+          if (response.results.length) {
+            // Show custom popup...
+            zoomPopupX.value = event.x;
+            zoomPopupY.value = event.y;
+            const zoomGraphic = response.results[0].graphic;
+            zoomPopupVisible.value = true;
+            // Set zoom popup properties...
+            const id = zoomGraphic.attributes["ObjectID"];
+            getZoomFeatureById(id).then((response) => {
+              const geom = project(
+                response.geometry,
+                SpatialReference.WebMercator
+              ) as Geometry;
+              const extent = geom.extent;
+              zoomExtentInfo.xmin = extent.xmin;
+              zoomExtentInfo.xmax = extent.xmax;
+              zoomExtentInfo.ymin = extent.ymin;
+              zoomExtentInfo.ymax = extent.ymax;
+              zoomPopupLabel.value = response.attributes.Label;
+            });
+            mapDiv.style.cursor = "zoom-in";
+            if (!zoomEventIsOn) {
+              mapDiv.addEventListener("click", zoomMetroEventHandler);
+              zoomEventIsOn = true;
+            }
+          } else {
+            // Resume normal map operation...
+            zoomPopupVisible.value = false;
+            //mapDiv.style.cursor = "auto";
+            if (zoomEventIsOn) {
+              mapDiv.removeEventListener("click", zoomMetroEventHandler);
+              zoomEventIsOn = false;
+            }
+          }
+        });
+      });
+
+      // MapView click event handler for showing popups...
+      // esriMap.mapView.on("click", (clickEvent) => {
+      //   // Check if feature is clicked on...
+      //   esriMap.mapView
+      //     .hitTest(clickEvent, featureLayerOpts)
+      //     .then((response) => {
+      //       console.log("clicked");
+      //       if (response.results.length) {
+      //         const resultsByLayer: {
+      //           info: LayerInfo;
+      //           layer: Layer;
+      //           results: { graphic: Graphic; mapPoint: Point }[];
+      //         }[] = [];
+      //         response.results.forEach((eachResult) => {
+      //           const arrayFound = resultsByLayer.find(
+      //             (eachArray) => eachArray.layer === eachResult.graphic.layer
+      //           );
+      //           if (arrayFound) {
+      //             arrayFound.results.push(eachResult);
+      //           } else {
+      //             const layerInfo = store.state.layerList.find(
+      //               (layerInfo) => layerInfo.id === eachResult.graphic.layer.id
+      //             );
+      //             if (layerInfo) {
+      //               resultsByLayer.push({
+      //                 info: layerInfo,
+      //                 layer: eachResult.graphic.layer,
+      //                 results: [eachResult],
+      //               });
+      //             }
+      //           }
+      //         });
+      //         let maxIdx = 0;
+      //         resultsByLayer.forEach((eachResultSet) => {
+      //           if (eachResultSet.info.index > maxIdx) {
+      //             maxIdx = eachResultSet.info.index;
+      //           }
+      //         });
+      //         const results2Show = resultsByLayer.find(
+      //           (eachResultSet) => eachResultSet.info.index === maxIdx
+      //         );
+      //         if (results2Show) {
+      //           const g = results2Show.results[0].graphic;
+      //           const layer = g.layer as GeoJSONLayer;
+      //           if (
+      //             !layer.featureReduction &&
+      //             esriMap.mapView.scale < clusterMaxScale
+      //           ) {
+      //             // If max scale, and features are still overlapping, then show multiple features...
+      //             const query = CameraLayer().createQuery();
+      //             // Select all features within the set pixels...
+      //             query.geometry = esriMap.bufferByPixels(
+      //               10,
+      //               undefined,
+      //               g.geometry as Point
+      //             );
+      //             layer.queryFeatures(query).then((results) => {
+      //               const ids = results.features.map((eachFeature) => {
+      //                 return eachFeature.getObjectId();
+      //               });
+      //               showPopup(g.layer.id, ids);
+      //             });
+      //           }
+      //           // Deal with cluster...
+      //           else if (g.isAggregate) {
+      //             if (g.attributes.cluster_count < 10) {
+      //               // Try to get features from the cluster...
+      //               esriMap
+      //                 .getIdsFromCluster(g, results2Show.layer, 3)
+      //                 .then((results) => {
+      //                   // Show multiple features if infos are returned...
+      //                   if (results) {
+      //                     showPopup(
+      //                       results2Show.layer.id,
+      //                       results,
+      //                       g.geometry as Point
+      //                     );
+      //                   } else {
+      //                     closePopup();
+      //                     // Zoom-in more...
+      //                     // esriMap.tryZoomToPointAsync(pt).then((zoomResult) => {
+      //                     //   if (!zoomResult) {
+      //                     //     // Cannot zoom in any more, so show everything in cluster...
+      //                     //     esriMap
+      //                     //       .getIdsFromCluster(g, results2Show.layer)
+      //                     //       .then((results) => {
+      //                     //         results
+      //                     //           ? showPopup(
+      //                     //               results2Show.layer.title,
+      //                     //               results,
+      //                     //               pt
+      //                     //             )
+      //                     //           : closePopup();
+      //                     //       });
+      //                     //   }
+      //                     // });
+      //                   }
+      //                 });
+      //             } else {
+      //               // Too many in a cluster, so click to zoom-in...
+      //               closePopup();
+      //               // esriMap.tryZoomToPoint(pt);
+      //             }
+      //           } else {
+      //             // Not aggregate...
+      //             const id = g.getObjectId();
+      //             showPopup(results2Show.layer.id, [id]);
+      //           }
+      //         }
+      //       } else {
+      //         //No feature exist...
+      //         closePopup();
+      //       }
+      //     });
+      // });
       // Watch extent change...
       esriMap.mapView.watch("extent", (newValue, oldValue) => {
         // Keep track of map extent in the state store...
