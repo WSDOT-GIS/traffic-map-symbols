@@ -209,25 +209,6 @@ export default defineComponent({
       wasUpdatedOnce = false;
       doPanMap = true;
     });
-    // Feature highlight.
-    // let gHighlight: Graphic;
-    // Set the width...
-    // Default...
-    // const sizeClass = {
-    //   m4: true,
-    //   m6: false,
-    //   l2: true,
-    //   l3: false,
-    // };
-    // if (props.Width) {
-    //   // Wide...
-    //   if (props.Width === "w") {
-    //     sizeClass.m4 = false;
-    //     sizeClass.m6 = true;
-    //     sizeClass.l2 = false;
-    //     sizeClass.l3 = true;
-    //   }
-    // }
     const pagenationStyle = computed(() => {
       return {
         "--carousel-color-primary": props.DarkThemeColor,
@@ -340,7 +321,10 @@ export default defineComponent({
       }
       // console.log("*** Adjust ***"); // + JSON.stringify(props.Features)); //props.Features[0].layerId);
       // If this is not the initial load, then move popup along with map.
-      if (!doPanMap) {
+      if (store.state.isMobile) {
+        setPosition(0, 0);
+      }
+      else if (!doPanMap) {
         // New vertical position...
         let newTop = screenY.value - h - 30;
         // Raise the popup a bit so it is not covering the icon completely.
