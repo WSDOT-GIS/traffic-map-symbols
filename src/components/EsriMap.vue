@@ -170,6 +170,7 @@ export default defineComponent({
           RestAreasLayer(),
           RoadAlertsLayer(),
           TravelTimeLayer(),
+          FireIncidentLayer()
         ],
       };
       if (pointerMoveHandle) {

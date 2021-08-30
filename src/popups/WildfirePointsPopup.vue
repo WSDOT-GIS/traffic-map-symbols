@@ -1,7 +1,7 @@
 <template>
   <PopupBase
-    LightThemeColor="#ccdcdc"
-    DarkThemeColor="#005151"
+    LightThemeColor="#f5c4c7"
+    DarkThemeColor="#c40009"
     :Features="[feature]"
     :Config="{
       bannerText: { text: 'Fire' },
