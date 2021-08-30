@@ -39,18 +39,33 @@
       <div v-if="propWeatherForecast">
         <table>
           <tr id="weatherPeriodText">
-            <td v-for="eachFeature in propWeatherForecast.forecasts" :key="eachFeature.forecastNumber">
-              {{eachFeature.periodText}}
+            <td
+              v-for="eachFeature in propWeatherForecast.forecasts"
+              :key="eachFeature.forecastNumber"
+            >
+              {{ eachFeature.periodText }}
             </td>
           </tr>
-          <tr id="weatherForecastIcons" >
-            <td class="weatherForecastIcon" v-for="eachFeature in propWeatherForecast.forecasts" :key="eachFeature.forecastNumber">
-              <img :src="'https://images.wsdot.wa.gov/traffic/weaicons/'+eachFeature.weatherIconFileName"/>
+          <tr id="weatherForecastIcons">
+            <td
+              class="weatherForecastIcon"
+              v-for="eachFeature in propWeatherForecast.forecasts"
+              :key="eachFeature.forecastNumber"
+            >
+              <img
+                :src="
+                  'https://images.wsdot.wa.gov/traffic/weaicons/' +
+                  eachFeature.weatherIconFileName
+                "
+              />
             </td>
           </tr>
           <tr id="weatherForecastDescription">
-            <td v-for="eachFeature in propWeatherForecast.forecasts" :key="eachFeature.forecastNumber">
-              {{eachFeature.weatherDescription}}
+            <td
+              v-for="eachFeature in propWeatherForecast.forecasts"
+              :key="eachFeature.forecastNumber"
+            >
+              {{ eachFeature.weatherDescription }}
             </td>
           </tr>
         </table>
@@ -60,11 +75,18 @@
               <label>Forecast created </label>
             </td>
             <td>
-              {{propWeatherForecast.forecastDateTime}}
+              {{ propWeatherForecast.forecastDateTime }}
             </td>
           </tr>
         </table>
-        <a target="_blank" :href="'https://www.wsdot.com/traffic/forecast/Default.aspx?zone='+propWeatherForecast.nwsZoneId.replace(/\s/g, '')">View Extended Forecast</a>
+        <a
+          target="_blank"
+          :href="
+            'https://www.wsdot.com/traffic/forecast/Default.aspx?zone=' +
+            propWeatherForecast.nwsZoneId.replace(/\s/g, '')
+          "
+          >View Extended Forecast</a
+        >
       </div>
       <Carousel
         v-if="Config.imageFieldName"
@@ -128,7 +150,9 @@ import FeatureInfo from "@/types/FeatureInfo";
 import PopupConfig from "@/types/PopupConfig";
 import PopupRow from "./PopupRow.vue";
 import XY from "@/types/XY";
-import ForecastListInfo from "@/types/ForecastListInfo"
+import ForecastListInfo from "@/types/ForecastListInfo";
+import { isSmallMedia } from "@/utils/mediaUtil";
+
 export default defineComponent({
   components: { Carousel, Slide, Pagination, Navigation, PopupRow },
   props: {
@@ -158,17 +182,17 @@ export default defineComponent({
       type: Object as PropType<PopupConfig>,
       required: true,
     },
-    WeatherForecast:{
+    WeatherForecast: {
       type: Object as PropType<ForecastListInfo>,
       required: false,
-    }
+    },
   },
   setup(props, context) {
     // The DOM only exists while the visibility is true. Get it in onUpdate().
-    const propWeatherForecast = toRefs(props).WeatherForecast
-    watch(propWeatherForecast,()=>{
-      console.log(propWeatherForecast.value)
-    })
+    const propWeatherForecast = toRefs(props).WeatherForecast;
+    watch(propWeatherForecast, () => {
+      console.log(propWeatherForecast.value);
+    });
     const containerRef = ref<HTMLDivElement>();
     const store = useStore();
     const mapSize = computed(() => store.state.mapSize);
@@ -321,10 +345,9 @@ export default defineComponent({
       }
       // console.log("*** Adjust ***"); // + JSON.stringify(props.Features)); //props.Features[0].layerId);
       // If this is not the initial load, then move popup along with map.
-      if (store.state.isMobile) {
+      if (isSmallMedia()) {
         setPosition(0, 0);
-      }
-      else if (!doPanMap) {
+      } else if (!doPanMap) {
         // New vertical position...
         let newTop = screenY.value - h - 30;
         // Raise the popup a bit so it is not covering the icon completely.
@@ -498,7 +521,7 @@ export default defineComponent({
       getBannerText,
       badgeText,
       getTitle,
-      propWeatherForecast
+      propWeatherForecast,
     };
   },
 });
@@ -509,32 +532,34 @@ export default defineComponent({
   z-index: 10;
   background-color: #fff;
   position: relative;
-  width: 400px;
 }
 
-@media screen and (max-width: 401px) {
+.popup-container {
+  width: 100%;
+}
+@media screen and (min-width: 576px) and (min-height: 576px) {
   .popup-container {
-    width: 100%;
+    width: 400px;
   }
-}
 
-.popup-container::after {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 0;
-  margin-left: -1.41em;
-  bottom: -2em;
-  left: 50%;
-  box-sizing: border-box;
+  .popup-container::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    margin-left: -1.41em;
+    bottom: -2em;
+    left: 50%;
+    box-sizing: border-box;
 
-  border: 1em solid black;
-  border-color: transparent transparent #fff #fff;
+    border: 1em solid black;
+    border-color: transparent transparent #fff #fff;
 
-  transform-origin: 0 0;
-  transform: rotate(-45deg);
+    transform-origin: 0 0;
+    transform: rotate(-45deg);
 
-  box-shadow: -3px 3px 3px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: -3px 3px 3px 0 rgba(0, 0, 0, 0.2);
+  }
 }
 
 .popup-inner-container {
@@ -639,7 +664,7 @@ svg.carousel__icon {
 #weatherForecastIcons #weatherForecastDescription {
   font-size: 5pt;
 }
-.weatherForecastIcon{
+.weatherForecastIcon {
   font-size: 10pt;
 }
 </style>
