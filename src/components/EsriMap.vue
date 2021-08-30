@@ -1,6 +1,5 @@
 <template>
   <div id="esri-map-view"></div>
-  
   <div
     id="map-bottom-left-container"
     class="w3-display-bottomleft w3-container"
@@ -65,9 +64,9 @@ import CameraLayer, { toggleCluster } from "@/layers/CameraLayer";
 import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
 import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
 import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
-import MountainPassLayer from "@/layers/MountainPassesLayer";
+import MountainPassesLayer from "@/layers/MountainPassesLayer";
 import RoadAlertsLayer from "@/layers/RoadAlertsLayer";
-import TravelTimeLayer from "@/layers/TravelTimeLayer"
+import TravelTimeLayer from "@/layers/TravelTimeLayer";
 import RestAreasLayer from "@/layers/RestAreasLayer";
 import FireIncidentLayer from "@/layers/FireIncidentLayer"
 import FirePerimeterLayer from "@/layers/FirePerimeterLayer"
@@ -90,6 +89,7 @@ import CoordinatesView from "@/components/CoordinatesView.vue";
 import MyLocationView from "@/components/MyLocationView.vue";
 import ZoomButtonView from "@/components/ZoomButtonView.vue";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
+import { getConfig } from "@/utils/appConfigUtil";
 
 export default defineComponent({
   components: {
@@ -111,7 +111,7 @@ export default defineComponent({
     ZoomButtonView,
   },
   setup() {
-    const selectedCursor = ref("")
+    const selectedCursor = ref("");
     const store = useStore();
     // Zoom popup...
     const zoomPopupVisible = ref(false);
@@ -152,114 +152,51 @@ export default defineComponent({
       popupFeatureset.value = { layerId: "", ids: [] };
       popupXY.value = undefined;
     };
-    onMounted(async () => {
-      const esriMap = await import("../esri-stuff/esriMap");
-      mapDiv = document.getElementById("esri-map-view") as HTMLDivElement;
-      esriMap.init(mapDiv);
-      // Read config, then load layers...
-      await esriMap.loadOperationalLayers();
-      let layerList: LayerInfo[] = [];
-      esriMap.mapView.map.layers.map((layer, index) => {
-        layerList.push({
-          id: layer.id,
-          index: index,
-          title: layer.title,
-          visible: layer.visible,
-        });
-      });
-      const featureLayerOpts = {
-          include: [
-            ParkRideLayer(),
-            CameraLayer(),
-            PointRestrictionsLayer(),
-            LineRestrictionsLayer(),
-            WeatherStationsLayer(),
-            MountainPassLayer(),
-            RestAreasLayer(),
-            RoadAlertsLayer(),
-            TravelTimeLayer(),
-            FireIncidentLayer(),
-            FirePerimeterLayer()]
-        };
-      // Set layer visibility based on URL query...
-      setLayerFromUrl(layerList);
-      store.commit("setLayerList", layerList);
-      // Add quick zoom boxes around metro areas...
-      esriMap.webmap.add(ZoomExtentLayer);
-      // Set basemap based on URL query parameter...
-      const basemapInfo = getBasemapFromUrl();
-      store.commit("setBasemap", basemapInfo.name);
-      // Set the initial map size in the state store...
-      store.commit("setMapSize", {
-        width: mapView.width,
-        height: mapView.height,
-      });
-      // Pointer move event handler for showing metro zoom popups...
-      esriMap.mapView.on(["pointer-move", "hold"], (event) => {
-        // Update current poitner x/y in the store...
-        let pt = esriMap.mapView.toMap({ x: event.x, y: event.y });
-        store.commit("setPointerX", pt.longitude);
-        store.commit("setPointerY", pt.latitude);
-        // Check if pointer is over one of the zoom extents...
-        const opts = {
-          include: [ZoomExtentLayer],
-        };
-         
-        // pointer move event handler to respond to layer marker hit...
-        esriMap.mapView.hitTest(event, featureLayerOpts).then((response) => {
-         
-          if(response.results.length>0){
+    // Setup events on the operational layers...
+    let pointerMoveHandle: { remove: () => void } | undefined;
+    let clickHandle: { remove: () => void } | undefined;
+    const initOperationalLayerEvents = (
+      mapDiv: HTMLDivElement,
+      esriMap: typeof import("../esri-stuff/esriMap")
+    ) => {
+      const opLayerOpts = {
+        include: [
+          ParkRideLayer(),
+          CameraLayer(),
+          PointRestrictionsLayer(),
+          LineRestrictionsLayer(),
+          WeatherStationsLayer(),
+          MountainPassesLayer(),
+          RestAreasLayer(),
+          RoadAlertsLayer(),
+          TravelTimeLayer(),
+        ],
+      };
+      if (pointerMoveHandle) {
+        pointerMoveHandle.remove();
+        pointerMoveHandle = undefined;
+        // console.log("Removed pointerMoveHandle");
+      }
+      pointerMoveHandle = mapView.on(["pointer-move", "hold"], (event) => {
+        // Change pointer when the cursor is on a feature...
+        mapView.hitTest(event, opLayerOpts).then((response) => {
+          if (response.results.length > 0) {
             mapDiv.style.cursor = "pointer";
-          }
-          else{
+          } else {
             mapDiv.style.cursor = "auto";
           }
-        })
-        esriMap.mapView.hitTest(event, opts).then((response) => {
-          
-          // check if a feature is returned from the zoom layer...
-          if (response.results.length) {
-            // Show custom popup...
-            zoomPopupX.value = event.x;
-            zoomPopupY.value = event.y;
-            const zoomGraphic = response.results[0].graphic;
-            zoomPopupVisible.value = true;
-            // Set zoom popup properties...
-            const id = zoomGraphic.attributes["ObjectID"];
-            getZoomFeatureById(id).then((response) => {
-              const geom = project(
-                response.geometry,
-                SpatialReference.WebMercator
-              ) as Geometry;
-              const extent = geom.extent;
-              zoomExtentInfo.xmin = extent.xmin;
-              zoomExtentInfo.xmax = extent.xmax;
-              zoomExtentInfo.ymin = extent.ymin;
-              zoomExtentInfo.ymax = extent.ymax;
-              zoomPopupLabel.value = response.attributes.Label;
-            });
-            mapDiv.style.cursor = "zoom-in";
-            if (!zoomEventIsOn) {
-              mapDiv.addEventListener("click", zoomMetroEventHandler);
-              zoomEventIsOn = true;
-            }
-          } else {
-            // Resume normal map operation...
-            zoomPopupVisible.value = false;
-            //mapDiv.style.cursor = "auto";
-            if (zoomEventIsOn) {
-              mapDiv.removeEventListener("click", zoomMetroEventHandler);
-              zoomEventIsOn = false;
-            }
-          }
         });
       });
-
       // MapView click event handler for showing popups...
-      esriMap.mapView.on("click", (clickEvent) => {
+      if (clickHandle) {
+        clickHandle.remove();
+        clickHandle = undefined;
+        // console.log("Removed clickHandle");
+      }
+      clickHandle = esriMap.mapView.on("click", (clickEvent) => {
         // Check if feature is clicked on...
-        esriMap.mapView.hitTest(clickEvent,featureLayerOpts).then((response) => {
-          console.log(response)
+        esriMap.mapView.hitTest(clickEvent, opLayerOpts).then((response) => {
+          // console.log("clicked");
           if (response.results.length) {
             const resultsByLayer: {
               info: LayerInfo;
@@ -332,29 +269,11 @@ export default defineComponent({
                         );
                       } else {
                         closePopup();
-                        // Zoom-in more...
-                        // esriMap.tryZoomToPointAsync(pt).then((zoomResult) => {
-                        //   if (!zoomResult) {
-                        //     // Cannot zoom in any more, so show everything in cluster...
-                        //     esriMap
-                        //       .getIdsFromCluster(g, results2Show.layer)
-                        //       .then((results) => {
-                        //         results
-                        //           ? showPopup(
-                        //               results2Show.layer.title,
-                        //               results,
-                        //               pt
-                        //             )
-                        //           : closePopup();
-                        //       });
-                        //   }
-                        // });
                       }
                     });
                 } else {
                   // Too many in a cluster, so click to zoom-in...
                   closePopup();
-                  // esriMap.tryZoomToPoint(pt);
                 }
               } else {
                 // Not aggregate...
@@ -365,6 +284,94 @@ export default defineComponent({
           } else {
             //No feature exist...
             closePopup();
+          }
+        });
+      });
+    };
+
+    onMounted(async () => {
+      const esriMap = await import("../esri-stuff/esriMap");
+      mapDiv = document.getElementById("esri-map-view") as HTMLDivElement;
+      esriMap.init(mapDiv);
+      // Read config, then load layers...
+      await esriMap.loadOperationalLayers();
+      let layerList: LayerInfo[] = [];
+      esriMap.mapView.map.layers.map((layer, index) => {
+        layerList.push({
+          id: layer.id,
+          index: index,
+          title: layer.title,
+          visible: layer.visible,
+        });
+      });
+      // Set layer visibility based on URL query...
+      setLayerFromUrl(layerList);
+      store.commit("setLayerList", layerList);
+      // Setup events on the operational layers...
+      initOperationalLayerEvents(mapDiv, esriMap);
+      // set refresh interval for GeoJSON...
+      const appConfig = await getConfig();
+      setInterval(() => {
+        esriMap.reloadGeoJsonLayers(store.state.layerList).then((lyrList) => {
+          store.commit("setLayerList", lyrList);
+          initOperationalLayerEvents(mapDiv, esriMap);
+        });
+      }, appConfig.layerRefreshMinute * 60000);
+      // Add quick zoom boxes around metro areas...
+      esriMap.webmap.add(ZoomExtentLayer);
+      // Set basemap based on URL query parameter...
+      const basemapInfo = getBasemapFromUrl();
+      store.commit("setBasemap", basemapInfo.name);
+      // Set the initial map size in the state store...
+      store.commit("setMapSize", {
+        width: mapView.width,
+        height: mapView.height,
+      });
+      // Pointer move event handler...
+      esriMap.mapView.on(["pointer-move", "hold"], (event) => {
+        // Update current poitner x/y in the store...
+        let pt = esriMap.mapView.toMap({ x: event.x, y: event.y });
+        store.commit("setPointerX", pt.longitude);
+        store.commit("setPointerY", pt.latitude);
+        // Check if pointer is over one of the zoom extents...
+        const opts = {
+          include: [ZoomExtentLayer],
+        };
+        esriMap.mapView.hitTest(event, opts).then((response) => {
+          // check if a feature is returned from the zoom layer...
+          if (response.results.length) {
+            // Show custom popup...
+            zoomPopupX.value = event.x;
+            zoomPopupY.value = event.y;
+            const zoomGraphic = response.results[0].graphic;
+            zoomPopupVisible.value = true;
+            // Set zoom popup properties...
+            const id = zoomGraphic.attributes["ObjectID"];
+            getZoomFeatureById(id).then((response) => {
+              const geom = project(
+                response.geometry,
+                SpatialReference.WebMercator
+              ) as Geometry;
+              const extent = geom.extent;
+              zoomExtentInfo.xmin = extent.xmin;
+              zoomExtentInfo.xmax = extent.xmax;
+              zoomExtentInfo.ymin = extent.ymin;
+              zoomExtentInfo.ymax = extent.ymax;
+              zoomPopupLabel.value = response.attributes.Label;
+            });
+            mapDiv.style.cursor = "zoom-in";
+            if (!zoomEventIsOn) {
+              mapDiv.addEventListener("click", zoomMetroEventHandler);
+              zoomEventIsOn = true;
+            }
+          } else {
+            // Resume normal map operation...
+            zoomPopupVisible.value = false;
+            //mapDiv.style.cursor = "auto";
+            if (zoomEventIsOn) {
+              mapDiv.removeEventListener("click", zoomMetroEventHandler);
+              zoomEventIsOn = false;
+            }
           }
         });
       });
@@ -402,7 +409,7 @@ export default defineComponent({
       popupXY,
       popupFeatureset,
       closePopup,
-      selectedCursor
+      selectedCursor,
     };
   },
 });

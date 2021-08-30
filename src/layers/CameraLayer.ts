@@ -87,16 +87,6 @@ const getLayer = (): GeoJSONLayer => {
     return layer;
 }
 
-// const layer = new GeoJSONLayer({
-//     id: "traffic-camera-layer",
-//     url: "https://data.wsdot.wa.gov/travelcenter/Cameras.json",
-//     title: "Traffic Cameras",
-//     renderer: renderer,
-//     featureReduction: clusterConfig,
-//     fields: fields,
-//     visible: false
-// });
-
 export default getLayer
 
 /*** Helper functions **************/
@@ -112,7 +102,12 @@ export const toggleCluster = (newScale: number, oldScale: number): void => {
         layer.set("featureReduction", undefined);
         //console.log("Turn off cluster: " + clusterConfig.clusterRadius + " scale: " + oldScale + " > " + newScale);
     }
+}
 
+export const setCluster = (scale: number): void => {
+    if (!layer) { return }
+    const cluster = scale > clusterMaxScale ? clusterConfig : undefined;
+    layer.set("featureReduction", cluster);
 }
 
 

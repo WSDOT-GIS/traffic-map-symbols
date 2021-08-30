@@ -12,11 +12,11 @@ import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 // Layers
 import { initLayer as initTrafficLayer } from "@/layers/TrafficLayer";
 import { initLayer as initParkRideLayer } from "@/layers/ParkRideLayer";
-import { initLayer as initCameraLayer } from "@/layers/CameraLayer";
+import { initLayer as initCameraLayer, setCluster } from "@/layers/CameraLayer";
 import { initLayer as initRestAreaLayer } from "@/layers/RestAreasLayer";
 import { initLayer as initPointRestrictionsLayer } from "@/layers/PointRestrictionsLayer";
-import { initLayer as initRoadAlertsLayer } from "@/layers/RoadAlertsLayer";
 import { initLayer as initLineRestrictionsLayer } from "@/layers/LineRestrictionsLayer";
+import { initLayer as initRoadAlertsLayer } from "@/layers/RoadAlertsLayer";
 import { initLayer as initWeatherLayer } from "@/layers/WeatherStationsLayer";
 import { initLayer as initMountainLayer } from "@/layers/MountainPassesLayer";
 import { initLayer as initTravelTimesLayer } from "@/layers/TravelTimeLayer"
@@ -28,26 +28,12 @@ import { convert2EsriExtent, getEsriExtent } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 import FeatureInfo from "@/types/FeatureInfo";
 import { getConfig } from "@/utils/appConfigUtil";
-import { store } from "@/store";
-import { layerFilter16, layersReference16 } from "@esri/calcite-ui-icons";
-import layer from "@/layers/ZoomExtentLayer";
-import AppConfig from "@/types/AppConfig";
-//
-import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
-import TravelTimeSymbol  from "@/symbols/TravelTimeSymbol";
-import AlertSymbol from "@/symbols/AlertSymbol";
-import WeatherStationSymbol from "@/symbols/WeatherStationSymbol";
-//import LineRestrictionSymbol from "@/symbols/LineRestrictionsSymbol";
-import PointRestrictionsSymbol from "@/symbols/PointRestrictionsSymbol";
-import MountainPassSymbol from "@/symbols/MountainPassSymbol";
-import CIMSymbol from "@arcgis/core/symbols/CIMSymbol";
+import LayerInfo from "@/types/LayerInfo";
 import firePerimeterFeatureIDs from "@/utils/firePerimeterQuery"
-import FirePerimeterSymbol from "@/symbols/FirePerimeterSymbol"
-// EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
 // Initialize empty map, and load layers later...
 export const webmap = new WebMap({
-    //layers: [TrafficLayer, RestAreasLayer, ParkRideLayer, WeatherStationsLayer, MountainPassLayer, LineRestrictionsLayer, PointRestrictionsLayer, CameraLayer, RoadAlertsLayer],
 });
+
 export const mapView = new MapView({
     container: "esri-map-view",
     map: webmap,
@@ -68,12 +54,13 @@ export const init = (container: HTMLDivElement): void => {
             console.warn("Failed to initialize map. Error: ", error);
         });
 };
-// Get config and get apiKey and URL, then initialize layers and add to map...
+/**
+ * Get config and get apiKey and URL, then initialize layers and add to map...
+ */
 export const loadOperationalLayers = async (): Promise<void> => {
     const config = await getConfig();
     EsriConfig.apiKey = config.apiKey;
-    //console.log(config)
-    const trafficLyr = initTrafficLayer(config.traffic);
+    const trafficLyr = initTrafficLayer(config.traffic, config.layerRefreshMinute);
     const restAreasLyr = initRestAreaLayer(config.restAreas);
     const parkRideLyr = initParkRideLayer(config.parkAndRides);
     const weatherLyr = initWeatherLayer(config.weatherStations);
@@ -81,69 +68,56 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const travelTimesLyr = initTravelTimesLayer(config.travelTimes)
     const lineRestrictionLyr = initLineRestrictionsLayer(config.lineRestrictions);
     const pointRestrictionLyr = initPointRestrictionsLayer(config.pointRestrictions);
-    const cameraLyr = initCameraLayer(config.cameras)
+    const cameraLyr = initCameraLayer(config.cameras);
     const roadAlertsLyr = initRoadAlertsLayer(config.roadAlerts)
     const fireIncidentLayer = initFireIncidentsLayer(config.fireIncidents)
     const firePerimeterIDs = await firePerimeterFeatureIDs(fireIncidentLayer)
     const firePerimetersLayer = initFirePerimetersLayer(config.firePerimeters, firePerimeterIDs)//Needed to filter fire perimeters to just those within the state
     webmap.addMany([trafficLyr, restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertsLyr, firePerimetersLayer, fireIncidentLayer]);
-    webmap.load()
-    // set refresh interval for GeoJSON...
-    // TODO: enable after reloadLayer is working correctly..
-    /*webmap.when(()=>{
-        setInterval(() => {
-            reloadLayer("road-alerts-layer", config.roadAlerts, AlertSymbol);
-            //reloadLayer("line-restrictions-layer", config.lineRestrictions, LineRestrictionSymbol);
-            reloadLayer("mountain-passes-layer", config.mountainPasses, MountainPassSymbol);
-            reloadLayer("point-restrictions-layer", config.pointRestrictions, PointRestrictionsSymbol);
-            reloadLayer("travel-times-layer", config.travelTimes, TravelTimeSymbol);
-            reloadLayer("weather-stations-layer", config.weatherStations, WeatherStationSymbol);
-        }, 3000)
-    })*/
+}
+/**
+ * Reload GeoJSON layers that are updated frequently.
+ */
+export const reloadGeoJsonLayers = async (layerList: LayerInfo[]): Promise<LayerInfo[]> => {
+    const config = await getConfig();
+    reloadGeoJsonLayer("road-alerts-layer", config.roadAlerts, initRoadAlertsLayer, layerList);
+    reloadGeoJsonLayer("line-restrictions-layer", config.lineRestrictions, initLineRestrictionsLayer, layerList);
+    reloadGeoJsonLayer("point-restrictions-layer", config.pointRestrictions, initPointRestrictionsLayer, layerList);
+    reloadGeoJsonLayer("mountain-passes-layer", config.mountainPasses, initMountainLayer, layerList);
+    reloadGeoJsonLayer("travel-times-layer", config.travelTimes, initTravelTimesLayer, layerList);
+    reloadGeoJsonLayer("weather-stations-layer", config.weatherStations, initWeatherLayer, layerList);
+    /* Camera layer is not updated frequently, but need to be reloaded. 
+    If not, the cluster label does not show after other layers are refreshed. */
+    reloadGeoJsonLayer("traffic-camera-layer", config.cameras, initCameraLayer, layerList);
+    setCluster(mapView.scale);
+    return layerList;
 }
 
-const reloadLayer = (id: string, layerURL: string, layerSymbol: CIMSymbol): void => {
+const reloadGeoJsonLayer = (id: string, layerUrl: string, initFunc: (url: string) => GeoJSONLayer, layerList: LayerInfo[]): void => {
     const lyr = getLayer(id);
-    if( lyr.visible==true){
-        if(lyr.type=="geojson"){
-            const geoJsonLayer= lyr as GeoJSONLayer
-            console.log(`loading ${lyr.title}`)
-            /*const lyrIndex = webmap.layers.indexOf(lyr)
-            console.log(lyrIndex)
-            const layerRenderer = new simpleRenderer({
-                symbol: layerSymbol
-            })
-            const newLayer = new GeoJSONLayer({
-                id: lyr.id,
-                url: layerURL,
-                title: lyr.title,
-                renderer: layerRenderer,
-                visible: lyr.visible
-            })
-            webmap.remove(lyr)
-            webmap.add(newLayer,lyrIndex-1)
-            store.commit("setLayerList", store.state.layerList);*/
-            geoJsonLayer.definitionExpression="1=1"
-            geoJsonLayer.load()
-            webmap.loadAll()
+    if (lyr.type === "geojson") {
+        const lyrIdx = webmap.layers.indexOf(lyr);
+        const visible = lyr.visible;
+        // Destroys the layer and remove it from the map...
+        lyr.destroy();
+        const newLyr = initFunc(layerUrl);
+        newLyr.visible = visible;
+        webmap.add(newLyr, lyrIdx);
+        // Update the layer list with the new layer object...
+        const lyrInfo = layerList.find((eachInfo) => {
+            return eachInfo.id === id;
+        })
+        if (lyrInfo) {
+            lyrInfo.id = newLyr.id;
+            lyrInfo.title = newLyr.title;
+            lyrInfo.visible = newLyr.visible;
         }
+        // console.log(`Reloaded ${lyr.title}`);
     }
-    
-   /*
-    if (lyr.type in ["feature", "map-image"]) {
-        throw "This layer supports refreshInterval, so use that intead.";
+    else {
+        throw id + " is not a GeoJSON layer."
     }
-    const idx = webmap.layers.findIndex((each) => {
-        return each.id === id;
-    });
-    console.log("Removing " + id)
-    webmap.remove(lyr);
-    // TODO: reinitialize the layer...
-
-    // Add it back...
-    console.log("Adding " + id)
-    webmap.add(lyr, idx);*/
 }
 
 export const tryZoomToPoint = (point: Point, numLevels?: number): boolean => {
@@ -206,7 +180,6 @@ export const toScreenXY = (mapX: number, mapY: number): { x: number, y: number }
 }
 
 export const panMap = async (shiftX: number, shiftY: number): Promise<string> => {
-    //console.log("panMap X: " + shiftX + ", Y: " + shiftY);
     const screenCenter = mapView.toScreen(mapView.center);
     const mapCenter = mapView.toMap({
         x: screenCenter.x - shiftX,
@@ -227,7 +200,7 @@ export const getLayer = (id: string): Layer => {
     return webmap.findLayerById(id);
 }
 
-/* 
+/**  
 NOTE: This function only returns each feature if one of the following coditions is met:
 - maxCount is not set 
 - The number of features is less than the maxCount.
@@ -277,7 +250,6 @@ export const bufferByPixels = (distancePixel: number, screenPoint?: { x: number,
     if (screenPoint && mapPoint) {
         const ptShift = mapView.toMap({ x: screenPoint.x + distancePixel, y: screenPoint.y });
         const mapDist = Math.abs(ptShift.x - mapPoint.x);
-        // console.log("Map distance: " + mapDist);
         const outBuff = geodesicBuffer(
             mapPoint,
             mapDist,
@@ -297,7 +269,6 @@ export const highlightFeature = (featureInfo: FeatureInfo): void => {
     mapView.whenLayerView(layer).then((layerView) => {
         const query = layer.createQuery();
         query.where = `${layer.objectIdField} = ${featureInfo.id}`;
-        // query.where = `${idName} IN ( ${ids.join(",")})`;
         layer.queryFeatures(query).then((result) => {
             if (highlight) {
                 highlight.remove();
