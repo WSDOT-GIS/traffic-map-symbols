@@ -12,7 +12,10 @@ interface AppConfig {
     apiKey: string;
     forecastSummaryAPI: string;
     forecastExtendedAPI: string,
-    travelTimes: string
+    travelTimes: string,
+    fireIncidents:string,
+    firePerimeters:string,
+    mileMarkers: string
 }
 
 export default AppConfig;

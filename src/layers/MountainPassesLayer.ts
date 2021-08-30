@@ -54,7 +54,9 @@ export const initLayer = (url: string): GeoJSONLayer => {
         visible: false,
         fields: fields,
     });
+    console.log(layer)
     return layer;
+    
 }
 
 const getLayer = (): GeoJSONLayer => {

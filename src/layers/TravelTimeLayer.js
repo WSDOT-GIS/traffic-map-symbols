@@ -16,7 +16,7 @@ const initLayer = (url) => {
         title: "Travel Times",
         renderer: travelTimesRenderer,
         visible: false,
-        objectIdField: "AverageTime"
+        objectIdField: "TravelTimesID"
     });
     return layer;
 };

@@ -15,7 +15,7 @@ export const initLayer = (url: string): GeoJSONLayer => {
         title: "Travel Times",
         renderer: travelTimesRenderer,
         visible: false,
-        objectIdField:"AverageTime"
+        objectIdField:"TravelTimesID"
     });
     return layer;
 }

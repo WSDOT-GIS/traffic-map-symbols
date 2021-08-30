@@ -20,9 +20,12 @@ const LineRestrictionsLayer_1 = require("@/layers/LineRestrictionsLayer");
 const WeatherStationsLayer_1 = require("@/layers/WeatherStationsLayer");
 const MountainPassesLayer_1 = require("@/layers/MountainPassesLayer");
 const TravelTimeLayer_1 = require("@/layers/TravelTimeLayer");
+const FireIncidentLayer_1 = require("@/layers/FireIncidentLayer");
+const FirePerimeterLayer_1 = require("@/layers/FirePerimeterLayer");
 const extentUtil_1 = require("@/utils/extentUtil");
 const ZoomExtentLayer_1 = tslib_1.__importDefault(require("@/layers/ZoomExtentLayer"));
 const appConfigUtil_1 = require("@/utils/appConfigUtil");
+const firePerimeterQuery_1 = tslib_1.__importDefault(require("@/utils/firePerimeterQuery"));
 // EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
 // Initialize empty map, and load layers later...
 exports.webmap = new WebMap_1.default({
@@ -64,12 +67,14 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     const pointRestrictionLyr = PointRestrictionsLayer_1.initLayer(config.pointRestrictions);
     const cameraLyr = CameraLayer_1.initLayer(config.cameras);
     const roadAlertsLyr = RoadAlertsLayer_1.initLayer(config.roadAlerts);
-    console.log(config.roadAlerts);
+    const fireIncidentLayer = FireIncidentLayer_1.initLayer(config.fireIncidents);
+    const firePerimeterIDs = yield firePerimeterQuery_1.default(fireIncidentLayer);
+    const firePerimetersLayer = FirePerimeterLayer_1.initLayer(config.firePerimeters, firePerimeterIDs); //Needed to filter fire perimeters to just those within the state
     exports.webmap.addMany([trafficLyr, restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
-        pointRestrictionLyr, cameraLyr, roadAlertsLyr]);
+        pointRestrictionLyr, cameraLyr, roadAlertsLyr, firePerimetersLayer, fireIncidentLayer]);
+    exports.webmap.load();
     // set refresh interval for GeoJSON...
     // TODO: enable after reloadLayer is working correctly..
-    console.log(exports.webmap.layers);
     /*webmap.when(()=>{
         setInterval(() => {
             reloadLayer("road-alerts-layer", config.roadAlerts, AlertSymbol);

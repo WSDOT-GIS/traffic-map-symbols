@@ -20,6 +20,8 @@ import { initLayer as initLineRestrictionsLayer } from "@/layers/LineRestriction
 import { initLayer as initWeatherLayer } from "@/layers/WeatherStationsLayer";
 import { initLayer as initMountainLayer } from "@/layers/MountainPassesLayer";
 import { initLayer as initTravelTimesLayer } from "@/layers/TravelTimeLayer"
+import { initLayer as initFireIncidentsLayer } from "@/layers/FireIncidentLayer";
+import { initLayer as initFirePerimetersLayer } from "@/layers/FirePerimeterLayer";
 //
 import ExtentInfo from "@/types/ExtentInfo";
 import { convert2EsriExtent, getEsriExtent } from "@/utils/extentUtil";
@@ -39,7 +41,8 @@ import WeatherStationSymbol from "@/symbols/WeatherStationSymbol";
 import PointRestrictionsSymbol from "@/symbols/PointRestrictionsSymbol";
 import MountainPassSymbol from "@/symbols/MountainPassSymbol";
 import CIMSymbol from "@arcgis/core/symbols/CIMSymbol";
-
+import firePerimeterFeatureIDs from "@/utils/firePerimeterQuery"
+import FirePerimeterSymbol from "@/symbols/FirePerimeterSymbol"
 // EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
 // Initialize empty map, and load layers later...
 export const webmap = new WebMap({
@@ -80,12 +83,14 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const pointRestrictionLyr = initPointRestrictionsLayer(config.pointRestrictions);
     const cameraLyr = initCameraLayer(config.cameras)
     const roadAlertsLyr = initRoadAlertsLayer(config.roadAlerts)
-    console.log(config.roadAlerts)
+    const fireIncidentLayer = initFireIncidentsLayer(config.fireIncidents)
+    const firePerimeterIDs = await firePerimeterFeatureIDs(fireIncidentLayer)
+    const firePerimetersLayer = initFirePerimetersLayer(config.firePerimeters, firePerimeterIDs)//Needed to filter fire perimeters to just those within the state
     webmap.addMany([trafficLyr, restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
-        pointRestrictionLyr, cameraLyr, roadAlertsLyr]);
+        pointRestrictionLyr, cameraLyr, roadAlertsLyr, firePerimetersLayer, fireIncidentLayer]);
+    webmap.load()
     // set refresh interval for GeoJSON...
     // TODO: enable after reloadLayer is working correctly..
-    console.log(webmap.layers)
     /*webmap.when(()=>{
         setInterval(() => {
             reloadLayer("road-alerts-layer", config.roadAlerts, AlertSymbol);

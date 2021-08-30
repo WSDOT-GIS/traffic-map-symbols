@@ -34,6 +34,7 @@
   <RestAreaPopup :Featureset="popupFeatureset" />
   <RoadAlertPopup :Featureset="popupFeatureset" />
   <TravelTimesPopup :Featureset="popupFeatureset" />
+  <WildfirePointsPopup :Featureset="popupFeatureset"/>
   <LeftPaneView />
 </template>
 
@@ -68,6 +69,8 @@ import MountainPassLayer from "@/layers/MountainPassesLayer";
 import RoadAlertsLayer from "@/layers/RoadAlertsLayer";
 import TravelTimeLayer from "@/layers/TravelTimeLayer"
 import RestAreasLayer from "@/layers/RestAreasLayer";
+import FireIncidentLayer from "@/layers/FireIncidentLayer"
+import FirePerimeterLayer from "@/layers/FirePerimeterLayer"
 /* Popups */
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
 import CameraPopup from "@/popups/CameraPopup.vue";
@@ -78,7 +81,8 @@ import MountainPassPopup from "@/popups/MountainPassPopup.vue";
 import WeatherStationsPopup from "@/popups/WeatherStationPopup.vue";
 import RestAreaPopup from "@/popups/RestAreaPopup.vue";
 import RoadAlertPopup from "@/popups/RoadAlertPopup.vue";
-import TravelTimesPopup from "@/popups/TravelTimesPopup.vue"
+import TravelTimesPopup from "@/popups/TravelTimesPopup.vue";
+import WildfirePointsPopup from "@/popups/WildfirePointsPopup.vue"
 /* Components */
 import LeftPaneView from "@/components/LeftPaneView.vue";
 import BasemapView from "@/components/BasemapView.vue";
@@ -99,6 +103,7 @@ export default defineComponent({
     RestAreaPopup,
     RoadAlertPopup,
     TravelTimesPopup,
+    WildfirePointsPopup,
     LeftPaneView,
     BasemapView,
     CoordinatesView,
@@ -172,7 +177,9 @@ export default defineComponent({
             MountainPassLayer(),
             RestAreasLayer(),
             RoadAlertsLayer(),
-            TravelTimeLayer()]
+            TravelTimeLayer(),
+            FireIncidentLayer(),
+            FirePerimeterLayer()]
         };
       // Set layer visibility based on URL query...
       setLayerFromUrl(layerList);
@@ -202,7 +209,6 @@ export default defineComponent({
         esriMap.mapView.hitTest(event, featureLayerOpts).then((response) => {
          
           if(response.results.length>0){
-            console.log(response)
             mapDiv.style.cursor = "pointer";
           }
           else{
@@ -253,7 +259,7 @@ export default defineComponent({
       esriMap.mapView.on("click", (clickEvent) => {
         // Check if feature is clicked on...
         esriMap.mapView.hitTest(clickEvent,featureLayerOpts).then((response) => {
-          console.log("clicked")
+          console.log(response)
           if (response.results.length) {
             const resultsByLayer: {
               info: LayerInfo;
