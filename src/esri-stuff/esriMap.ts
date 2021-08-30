@@ -12,11 +12,11 @@ import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 // Layers
 import { initLayer as initTrafficLayer } from "@/layers/TrafficLayer";
 import { initLayer as initParkRideLayer } from "@/layers/ParkRideLayer";
-import { initLayer as initCameraLayer } from "@/layers/CameraLayer";
+import { initLayer as initCameraLayer, setCluster } from "@/layers/CameraLayer";
 import { initLayer as initRestAreaLayer } from "@/layers/RestAreasLayer";
 import { initLayer as initPointRestrictionsLayer } from "@/layers/PointRestrictionsLayer";
-import { initLayer as initRoadAlertsLayer } from "@/layers/RoadAlertsLayer";
 import { initLayer as initLineRestrictionsLayer } from "@/layers/LineRestrictionsLayer";
+import { initLayer as initRoadAlertsLayer } from "@/layers/RoadAlertsLayer";
 import { initLayer as initWeatherLayer } from "@/layers/WeatherStationsLayer";
 import { initLayer as initMountainLayer } from "@/layers/MountainPassesLayer";
 import { initLayer as initTravelTimesLayer } from "@/layers/TravelTimeLayer"
@@ -28,11 +28,10 @@ import FeatureInfo from "@/types/FeatureInfo";
 import { getConfig } from "@/utils/appConfigUtil";
 import LayerInfo from "@/types/LayerInfo";
 
-// EsriConfig.apiKey = "AAPKe21082c738fb4109b735927e25b79af5ytyQa1mQmL2NrH3i0u_AptcnZJvkusIlaLc7gZOI9zszvKJfAwkWJB5zUzP6-V73";
 // Initialize empty map, and load layers later...
 export const webmap = new WebMap({
-    //layers: [TrafficLayer, RestAreasLayer, ParkRideLayer, WeatherStationsLayer, MountainPassLayer, LineRestrictionsLayer, PointRestrictionsLayer, CameraLayer, RoadAlertsLayer],
 });
+
 export const mapView = new MapView({
     container: "esri-map-view",
     map: webmap,
@@ -59,7 +58,7 @@ export const init = (container: HTMLDivElement): void => {
 export const loadOperationalLayers = async (): Promise<void> => {
     const config = await getConfig();
     EsriConfig.apiKey = config.apiKey;
-    const trafficLyr = initTrafficLayer(config.traffic);
+    const trafficLyr = initTrafficLayer(config.traffic, config.layerRefreshMinute);
     const restAreasLyr = initRestAreaLayer(config.restAreas);
     const parkRideLyr = initParkRideLayer(config.parkAndRides);
     const weatherLyr = initWeatherLayer(config.weatherStations);
@@ -67,9 +66,8 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const travelTimesLyr = initTravelTimesLayer(config.travelTimes)
     const lineRestrictionLyr = initLineRestrictionsLayer(config.lineRestrictions);
     const pointRestrictionLyr = initPointRestrictionsLayer(config.pointRestrictions);
-    const cameraLyr = initCameraLayer(config.cameras)
+    const cameraLyr = initCameraLayer(config.cameras);
     const roadAlertsLyr = initRoadAlertsLayer(config.roadAlerts)
-    console.log(config.roadAlerts)
     webmap.addMany([trafficLyr, restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertsLyr]);
 }
@@ -84,6 +82,10 @@ export const reloadGeoJsonLayers = async (layerList: LayerInfo[]): Promise<Layer
     reloadGeoJsonLayer("mountain-passes-layer", config.mountainPasses, initMountainLayer, layerList);
     reloadGeoJsonLayer("travel-times-layer", config.travelTimes, initTravelTimesLayer, layerList);
     reloadGeoJsonLayer("weather-stations-layer", config.weatherStations, initWeatherLayer, layerList);
+    /* Camera layer is not updated frequently, but need to be reloaded. 
+    If not, the cluster label does not show after other layers are refreshed. */
+    reloadGeoJsonLayer("traffic-camera-layer", config.cameras, initCameraLayer, layerList);
+    setCluster(mapView.scale);
     return layerList;
 }
 
@@ -106,7 +108,7 @@ const reloadGeoJsonLayer = (id: string, layerUrl: string, initFunc: (url: string
             lyrInfo.title = newLyr.title;
             lyrInfo.visible = newLyr.visible;
         }
-        console.log(`Reloaded ${lyr.title}`);
+        // console.log(`Reloaded ${lyr.title}`);
     }
     else {
         throw id + " is not a GeoJSON layer."

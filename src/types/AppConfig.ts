@@ -1,5 +1,6 @@
 interface AppConfig {
     basemap: string;
+    // Operation layer URLs...
     cameras: string;
     lineRestrictions: string;
     mountainPasses: string;
@@ -9,10 +10,14 @@ interface AppConfig {
     roadAlerts: string;
     traffic: string;
     weatherStations: string;
+    travelTimes: string;
+    // ESRI API Key...
     apiKey: string;
+    // Weather forecast API...
     forecastSummaryAPI: string;
-    forecastExtendedAPI: string,
-    travelTimes: string
+    forecastExtendedAPI: string;
+    // Layer refresh interval in minutes...
+    layerRefreshMinute: number;
 }
 
 export default AppConfig;
