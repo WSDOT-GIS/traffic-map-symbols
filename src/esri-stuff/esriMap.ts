@@ -22,6 +22,7 @@ import { initLayer as initMountainLayer } from "@/layers/MountainPassesLayer";
 import { initLayer as initTravelTimesLayer } from "@/layers/TravelTimeLayer"
 import { initLayer as initFireIncidentsLayer } from "@/layers/FireIncidentLayer";
 import { initLayer as initFirePerimetersLayer } from "@/layers/FirePerimeterLayer";
+import { initLayer as initMileMakersLayer } from "@/layers/MileMarkersLayer";
 //
 import ExtentInfo from "@/types/ExtentInfo";
 import { convert2EsriExtent, getEsriExtent } from "@/utils/extentUtil";
@@ -73,8 +74,9 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const fireIncidentLayer = initFireIncidentsLayer(config.fireIncidents)
     const firePerimeterIDs = await firePerimeterFeatureIDs(fireIncidentLayer)
     const firePerimetersLayer = initFirePerimetersLayer(config.firePerimeters, firePerimeterIDs)//Needed to filter fire perimeters to just those within the state
-    webmap.addMany([trafficLyr, restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
-        pointRestrictionLyr, cameraLyr, roadAlertsLyr, firePerimetersLayer, fireIncidentLayer]);
+    const mileMarkersLayer = initMileMakersLayer(config.mileMarkers)//Needed to filter fire perimeters to just those within the state
+    webmap.addMany([trafficLyr, roadAlertsLyr, cameraLyr, lineRestrictionLyr, 
+        pointRestrictionLyr, travelTimesLyr, mtLyr, weatherLyr, parkRideLyr, restAreasLyr, firePerimetersLayer, fireIncidentLayer, mileMarkersLayer]);
 }
 /**
  * Reload GeoJSON layers that are updated frequently.

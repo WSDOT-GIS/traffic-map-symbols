@@ -14,8 +14,9 @@ const firePerimeterRenderer = new simpleRenderer({
     symbol: firePerimeterSymbol
 })
 let layer: FeatureLayer | undefined;
-
 export const initLayer = (url: string, firePerimeterIDs: string): FeatureLayer => {
+    
+console.log(firePerimeterIDs)
     layer = new FeatureLayer({
         id: "fire-perimeters-layer",
         renderer:firePerimeterRenderer,
