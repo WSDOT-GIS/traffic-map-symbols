@@ -59,6 +59,7 @@ import WsdotButtonView from "@/components/WsdotButtonView.vue";
 import SaveMapFormView from "@/components/SaveMapFormView.vue";
 import LayerInfo from "@/types/LayerInfo";
 import { validateBasemapName } from "@/layers/Basemaps";
+import { isMobile } from "@/utils/mediaUtil";
 
 export default defineComponent({
   components: { WsdotButtonView, SaveMapFormView },
@@ -90,7 +91,7 @@ export default defineComponent({
     onMounted(() => {
       // On the mobile, onUpdated is not triggered initially since the left pane is closed by default.
       // On the big screen, onMounted seems to happen too early and it does not size correctly, so do not handle this.
-      if (store.state.isMobile) {
+      if (isMobile()) {
         //console.log("******onMounted");
         if (mapList.value.length > 0) {
           nextTick(() => {

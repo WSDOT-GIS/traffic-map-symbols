@@ -176,7 +176,6 @@ export default defineComponent({
       if (pointerMoveHandle) {
         pointerMoveHandle.remove();
         pointerMoveHandle = undefined;
-        // console.log("Removed pointerMoveHandle");
       }
       pointerMoveHandle = mapView.on(["pointer-move", "hold"], (event) => {
         // Change pointer when the cursor is on a feature...
@@ -192,12 +191,10 @@ export default defineComponent({
       if (clickHandle) {
         clickHandle.remove();
         clickHandle = undefined;
-        // console.log("Removed clickHandle");
       }
       clickHandle = esriMap.mapView.on("click", (clickEvent) => {
         // Check if feature is clicked on...
         esriMap.mapView.hitTest(clickEvent, opLayerOpts).then((response) => {
-          // console.log("clicked");
           if (response.results.length) {
             const resultsByLayer: {
               info: LayerInfo;
@@ -394,7 +391,6 @@ export default defineComponent({
       });
       // Watch map view size...
       esriMap.mapView.on("resize", (event) => {
-        //console.log("resize");
         store.commit("setMapSize", {
           width: event.width,
           height: event.height,
