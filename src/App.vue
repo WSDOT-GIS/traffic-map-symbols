@@ -30,8 +30,8 @@ import AlertView from "./components/AlertView.vue";
 import AdView from "./components/AdView.vue";
 import FooterView from "./components/FooterView.vue";
 import AlertInfo from "./types/AlertInfo";
-// import AppConfig from "./types/appConfig";
 import { useStore } from "@/store";
+
 export default defineComponent({
   name: "App",
   components: {

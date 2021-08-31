@@ -151,7 +151,6 @@ import PopupConfig from "@/types/PopupConfig";
 import PopupRow from "./PopupRow.vue";
 import XY from "@/types/XY";
 import ForecastListInfo from "@/types/ForecastListInfo";
-import { isSmallMedia } from "@/utils/mediaUtil";
 
 export default defineComponent({
   components: { Carousel, Slide, Pagination, Navigation, PopupRow },
@@ -200,8 +199,8 @@ export default defineComponent({
     watch(mapSize, (size) => {
       maxHeight.value = size.height;
     });
-    const mapX = ref(0); //toRefs(props).MapX;
-    const mapY = ref(0); //toRefs(props).MapY;
+    const mapX = ref(0);
+    const mapY = ref(0);
     const screenX = ref(-1);
     const screenY = ref(-1);
     // Popup location.
@@ -262,12 +261,11 @@ export default defineComponent({
       }
     });
     // Watch scale change...
-    mapView.watch("scale", () => {
-      // if (mapX.value < 0 && mapY.value > 0) {
-      //   setScreenXY();
-      // }
-      close();
-    });
+    // On touch screen, after pinch zoom, panning map also changes the scale, so commented this out so popup does not close when that happens.
+    // mapView.watch("scale", (newValue, oldValue) => {
+    //   console.log("scale changed: " + oldValue + " => " + newValue);
+    //   close();
+    // });
     // Watch map moving...
     mapView.watch("center", (newValue, oldValue) => {
       if (props.Features.length === 0 || !oldValue) {
@@ -324,7 +322,7 @@ export default defineComponent({
         props.Features.length === 0 ||
         !props.Features[0]
       ) {
-        // "Nothing to show...
+        // Nothing to show...
         return;
       }
       const h = containerRef.value.offsetHeight;
@@ -343,11 +341,9 @@ export default defineComponent({
         prevWidth = w;
         prevHeight = h;
       }
-      // console.log("*** Adjust ***"); // + JSON.stringify(props.Features)); //props.Features[0].layerId);
+      // console.log("*** Adjust ****************"); // + JSON.stringify(props.Features)); //props.Features[0].layerId);
       // If this is not the initial load, then move popup along with map.
-      if (isSmallMedia()) {
-        setPosition(0, 0);
-      } else if (!doPanMap) {
+      if (!doPanMap) {
         // New vertical position...
         let newTop = screenY.value - h - 30;
         // Raise the popup a bit so it is not covering the icon completely.
@@ -380,6 +376,7 @@ export default defineComponent({
             shiftX = newLeft < 0 ? -1 * newLeft : mapView.width - newLeft - w;
           }
           setPosition(newTop, newLeft);
+
           if (shiftY <= -1 || shiftY >= 1 || shiftX <= -1 || shiftX >= 1) {
             panMap(shiftX, shiftY);
           }
@@ -504,7 +501,6 @@ export default defineComponent({
       if (feature) {
         mapX.value = props.MapXY ? props.MapXY.x : feature.mapPoint.x;
         mapY.value = props.MapXY ? props.MapXY.y : feature.mapPoint.y;
-        // console.log(mapX.value + ", " + mapY.value);
       }
     };
 
@@ -541,25 +537,24 @@ export default defineComponent({
   .popup-container {
     width: 400px;
   }
+}
+.popup-container::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  margin-left: -1.41em;
+  bottom: -2em;
+  left: 50%;
+  box-sizing: border-box;
 
-  .popup-container::after {
-    content: "";
-    position: absolute;
-    width: 0;
-    height: 0;
-    margin-left: -1.41em;
-    bottom: -2em;
-    left: 50%;
-    box-sizing: border-box;
+  border: 1em solid black;
+  border-color: transparent transparent #fff #fff;
 
-    border: 1em solid black;
-    border-color: transparent transparent #fff #fff;
+  transform-origin: 0 0;
+  transform: rotate(-45deg);
 
-    transform-origin: 0 0;
-    transform: rotate(-45deg);
-
-    box-shadow: -3px 3px 3px 0 rgba(0, 0, 0, 0.2);
-  }
+  box-shadow: -3px 3px 3px 0 rgba(0, 0, 0, 0.2);
 }
 
 .popup-inner-container {
