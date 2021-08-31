@@ -186,7 +186,7 @@ export const panMap = async (shiftX: number, shiftY: number): Promise<string> =>
         x: screenCenter.x - shiftX,
         y: screenCenter.y - shiftY,
     });
-    await mapView.goTo(mapCenter, {
+    await mapView.goTo({target: mapCenter, zoom: mapView.zoom}, {
         duration: 300,
         easing: "ease-in"
     }).catch((error) => {
