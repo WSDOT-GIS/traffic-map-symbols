@@ -262,10 +262,11 @@ export default defineComponent({
     });
     // Watch scale change...
     // On touch screen, after pinch zoom, panning map also changes the scale, so commented this out so popup does not close when that happens.
-    // mapView.watch("scale", (newValue, oldValue) => {
-    //   console.log("scale changed: " + oldValue + " => " + newValue);
-    //   close();
-    // });
+    mapView.watch("scale", () => {
+      // console.log("scale changed: " + oldValue + " => " + newValue);
+      // close();
+      adjustPositionSize();
+    });
     // Watch map moving...
     mapView.watch("center", (newValue, oldValue) => {
       if (props.Features.length === 0 || !oldValue) {
