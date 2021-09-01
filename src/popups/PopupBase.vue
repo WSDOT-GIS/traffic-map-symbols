@@ -210,6 +210,7 @@ export default defineComponent({
     let numImgLoaded = 0;
     let wasUpdatedOnce = false;
     let doPanMap = true;
+    let isPanning = false;
     // Index of the currently shown feature.
     const currentIdx = ref(0);
     const badgeText = ref("");
@@ -262,9 +263,14 @@ export default defineComponent({
     });
     // Watch scale change...
     // On touch screen, after pinch zoom, panning map also changes the scale, so commented this out so popup does not close when that happens.
-    mapView.watch("scale", (newValue, oldValue) => {
-      console.log("scale changed: " + oldValue + " => " + newValue);
-      close();
+    mapView.watch("scale", () => {
+      //console.log("scale changed: " + oldValue + " => " + newValue);
+      if (!isPanning) {
+        close();
+      }
+      // else {
+      //   console.log("Panning - do not close popup");
+      // }
     });
     // Watch map moving...
     mapView.watch("center", (newValue, oldValue) => {
@@ -378,7 +384,10 @@ export default defineComponent({
           setPosition(newTop, newLeft);
 
           if (shiftY <= -1 || shiftY >= 1 || shiftX <= -1 || shiftX >= 1) {
-            panMap(shiftX, shiftY);
+            isPanning = true;
+            panMap(shiftX, shiftY).then(() => {
+              isPanning = false;
+            });
           }
         });
       }
