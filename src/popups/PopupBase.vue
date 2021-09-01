@@ -271,9 +271,10 @@ export default defineComponent({
         close();
       } else {
         console.log("Debug....");
-        setMapXY(true);
-        console.log("MapXY: " + mapX.value + ", " + mapY.value);
-        adjustPositionSize();
+        // setMapXY(true);
+        // console.log("MapXY: " + mapX.value + ", " + mapY.value);
+        // adjustPositionSize();
+        setScreenXY();
       }
     });
     // Watch map moving...
@@ -386,11 +387,33 @@ export default defineComponent({
             shiftX = newLeft < 0 ? -1 * newLeft : mapView.width - newLeft - w;
           }
           setPosition(newTop, newLeft);
-
           if (shiftY <= -1 || shiftY >= 1 || shiftX <= -1 || shiftX >= 1) {
             isPanning = true;
             panMap(shiftX, shiftY).then(() => {
               isPanning = false;
+              setScreenXY();
+              // On the mobile devices after the pinch zoom, the map does not pan enough to show the top of the popup.
+              // So check the popup position again and pan map more if necessary.
+              //console.log(popupTop.value + ", " + popupLeft.value);
+              shiftX = 0;
+              shiftY = 0;
+              if (popupTop.value < 0) {
+                shiftY = -1 * popupTop.value;
+              }
+              if (popupLeft.value < 0 || popupLeft.value + w > mapView.width) {
+                shiftX =
+                  popupLeft.value < 0
+                    ? -1 * popupLeft.value
+                    : mapView.width - popupLeft.value - w;
+              }
+              if (shiftX !== 0 || shiftY !== 0) {
+                //console.log("Pan again!....." + shiftX + ", " + shiftY);
+                isPanning = true;
+                panMap(shiftX, shiftY).then(() => {
+                  isPanning = false;
+                  setScreenXY();
+                });
+              }
             });
           }
         });
