@@ -77,8 +77,10 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const firePerimetersLayer = initFirePerimetersLayer(config.firePerimeters, firePerimeterIDs)//Needed to filter fire perimeters to just those within the state
     const mileMarkersLayer = initMileMakersLayer(config.mileMarkers)//Needed to filter fire perimeters to just those within the state
     //const esriReferenceLayer = initESRIReference(config.esriReferenceLayer)
-    webmap.addMany([/*esriReferenceLayer,*/ trafficLyr, roadAlertsLyr, cameraLyr, lineRestrictionLyr, 
-        pointRestrictionLyr, travelTimesLyr, mtLyr, weatherLyr, parkRideLyr, restAreasLyr, firePerimetersLayer, fireIncidentLayer, mileMarkersLayer]);
+    webmap.addMany([/*esriReferenceLayer,*/ trafficLyr, mileMarkersLayer, firePerimetersLayer, fireIncidentLayer,
+        restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
+        pointRestrictionLyr, cameraLyr, roadAlertsLyr]);
+    
 }
 /**
  * Reload GeoJSON layers that are updated frequently.
