@@ -265,12 +265,17 @@ export default defineComponent({
     // On touch screen, after pinch zoom, panning map also changes the scale, so commented this out so popup does not close when that happens.
     mapView.watch("scale", () => {
       //console.log("scale changed: " + oldValue + " => " + newValue);
+      // While map is being panned to show the popup, map sometimes zoom out as well resulting in scale change, so do not close popup.
+      // Only close if user intentionally change scales.
       if (!isPanning) {
         close();
+      } else {
+        console.log("Debug....");
+        // setMapXY(true);
+        // console.log("MapXY: " + mapX.value + ", " + mapY.value);
+        // adjustPositionSize();
+        setScreenXY();
       }
-      // else {
-      //   console.log("Panning - do not close popup");
-      // }
     });
     // Watch map moving...
     mapView.watch("center", (newValue, oldValue) => {
@@ -382,11 +387,33 @@ export default defineComponent({
             shiftX = newLeft < 0 ? -1 * newLeft : mapView.width - newLeft - w;
           }
           setPosition(newTop, newLeft);
-
           if (shiftY <= -1 || shiftY >= 1 || shiftX <= -1 || shiftX >= 1) {
             isPanning = true;
             panMap(shiftX, shiftY).then(() => {
               isPanning = false;
+              setScreenXY();
+              // On the mobile devices after the pinch zoom, the map does not pan enough to show the top of the popup.
+              // So check the popup position again and pan map more if necessary.
+              //console.log(popupTop.value + ", " + popupLeft.value);
+              shiftX = 0;
+              shiftY = 0;
+              if (popupTop.value < 0) {
+                shiftY = -1 * popupTop.value;
+              }
+              if (popupLeft.value < 0 || popupLeft.value + w > mapView.width) {
+                shiftX =
+                  popupLeft.value < 0
+                    ? -1 * popupLeft.value
+                    : mapView.width - popupLeft.value - w;
+              }
+              if (shiftX !== 0 || shiftY !== 0) {
+                //console.log("Pan again!....." + shiftX + ", " + shiftY);
+                isPanning = true;
+                panMap(shiftX, shiftY).then(() => {
+                  isPanning = false;
+                  setScreenXY();
+                });
+              }
             });
           }
         });
@@ -505,11 +532,20 @@ export default defineComponent({
     /** If MapX and Y are provided, those values supersede the feature x/y.
      * Otherwise the feature x/y is used to determine the location of the popup.
      */
-    const setMapXY = () => {
+    const setMapXY = (ignoreMapXY?: boolean) => {
+      if (!ignoreMapXY) {
+        ignoreMapXY = false;
+      }
       const feature = props.Features[currentIdx.value];
       if (feature) {
-        mapX.value = props.MapXY ? props.MapXY.x : feature.mapPoint.x;
-        mapY.value = props.MapXY ? props.MapXY.y : feature.mapPoint.y;
+        if (ignoreMapXY) {
+          console.log("set mapXY...");
+          mapX.value = feature.mapPoint.x;
+          mapY.value = feature.mapPoint.y;
+        } else {
+          mapX.value = props.MapXY ? props.MapXY.x : feature.mapPoint.x;
+          mapY.value = props.MapXY ? props.MapXY.y : feature.mapPoint.y;
+        }
       }
     };
 

@@ -177,7 +177,7 @@ export default defineComponent({
         pointerMoveHandle.remove();
         pointerMoveHandle = undefined;
       }
-      pointerMoveHandle = mapView.on(["pointer-move", "hold"], (event) => {
+      pointerMoveHandle = mapView.on(["pointer-move"], (event) => {
         // Change pointer when the cursor is on a feature...
         mapView.hitTest(event, opLayerOpts).then((response) => {
           if (response.results.length > 0) {
