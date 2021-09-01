@@ -7,6 +7,12 @@ URL query parameters:
     Comma separated list of layer indices
 * base
     Name of the basemap
+* type
+    Type of the features to turn on. Single type might turn on multiple layers e.g. restriction => point and line layers
+    Types: camera, alert, restriction
+* id
+    Feature ID - if specified in combination with the type parameter, map should zoom to that feature and open popup.
+    If the type parameter is not specified, this is ignored.
 Sample URLs
 Zoom to Seattle metro area and turn off traffic layer, turn on Park & Rides and Traffic Camera layers, satellite basemap
 ?extent=-122.4489756,47.7741882,-122.1102255,47.5032113&layer=1,2&base=satellite
