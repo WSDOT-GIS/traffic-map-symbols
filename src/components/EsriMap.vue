@@ -33,7 +33,7 @@
   <RestAreaPopup :Featureset="popupFeatureset" />
   <RoadAlertPopup :Featureset="popupFeatureset" />
   <TravelTimesPopup :Featureset="popupFeatureset" />
-  <WildfirePointsPopup :Featureset="popupFeatureset"/>
+  <WildfirePointsPopup :Featureset="popupFeatureset" />
   <LeftPaneView />
 </template>
 
@@ -68,8 +68,8 @@ import MountainPassesLayer from "@/layers/MountainPassesLayer";
 import RoadAlertsLayer from "@/layers/RoadAlertsLayer";
 import TravelTimeLayer from "@/layers/TravelTimeLayer";
 import RestAreasLayer from "@/layers/RestAreasLayer";
-import FireIncidentLayer from "@/layers/FireIncidentLayer"
-import FirePerimeterLayer from "@/layers/FirePerimeterLayer"
+import FireIncidentLayer from "@/layers/FireIncidentLayer";
+// import FirePerimeterLayer from "@/layers/FirePerimeterLayer"
 /* Popups */
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
 import CameraPopup from "@/popups/CameraPopup.vue";
@@ -81,7 +81,7 @@ import WeatherStationsPopup from "@/popups/WeatherStationPopup.vue";
 import RestAreaPopup from "@/popups/RestAreaPopup.vue";
 import RoadAlertPopup from "@/popups/RoadAlertPopup.vue";
 import TravelTimesPopup from "@/popups/TravelTimesPopup.vue";
-import WildfirePointsPopup from "@/popups/WildfirePointsPopup.vue"
+import WildfirePointsPopup from "@/popups/WildfirePointsPopup.vue";
 /* Components */
 import LeftPaneView from "@/components/LeftPaneView.vue";
 import BasemapView from "@/components/BasemapView.vue";
@@ -170,7 +170,7 @@ export default defineComponent({
           RestAreasLayer(),
           RoadAlertsLayer(),
           TravelTimeLayer(),
-          FireIncidentLayer()
+          FireIncidentLayer(),
         ],
       };
       if (pointerMoveHandle) {
