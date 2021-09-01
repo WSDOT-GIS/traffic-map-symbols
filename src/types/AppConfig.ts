@@ -19,6 +19,7 @@ interface AppConfig {
     fireIncidents:string,
     firePerimeters:string,
     mileMarkers: string,
+    esriReferenceLayer: string,
     // Layer refresh interval in minutes...
     layerRefreshMinute: number;
 }

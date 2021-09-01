@@ -4,9 +4,9 @@
       <li class="w3-border-0 mapFeaturesLI" style="padding: 0">
         <ToggleSwitchView
           @toggle="clickEvent"
-          :Checked="layerList[0].visible"
-          :Value="layerList[0].index.toString()"
-          :Title="'Toggle ' + layerList[0].title"
+          :Checked="layerList[1].visible"
+          :Value="layerList[1].index.toString()"
+          :Title="'Toggle ' + layerList[1].title"
         >
           <template v-slot>
             <!-- <div class="mapFeaturesIcon"></div> -->
@@ -46,28 +46,6 @@
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
         <ToggleSwitchView
           @toggle="clickEvent"
-          :Checked="layerList[1].visible"
-          :Value="layerList[1].index.toString()"
-          :Title="'Toggle ' + layerList[1].title"
-        >
-          <template v-slot>
-            <div
-              class="mapFeaturesIcon"
-              v-html="
-                layerIcons.find(
-                  (x) => x.id == layerList[1].id
-                )?.paths
-              "
-            ></div>
-            <span class="listLabel">
-              {{ layerList[1].title }}</span
-            >
-          </template>
-        </ToggleSwitchView>
-      </li>
-      <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
-        <ToggleSwitchView
-          @toggle="clickEvent"
           :Checked="layerList[2].visible"
           :Value="layerList[2].index.toString()"
           :Title="'Toggle ' + layerList[2].title"
@@ -87,39 +65,39 @@
           </template>
         </ToggleSwitchView>
       </li>
-
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
         <ToggleSwitchView
           @toggle="clickEvent"
           :Checked="layerList[3].visible"
-          :Value="
-            layerList[3].index.toString() +
-            ',' +
-            layerList[4].index.toString()
-          "
-          Title="Toggle Truck Restrictions"
+          :Value="layerList[3].index.toString()"
+          :Title="'Toggle ' + layerList[3].title"
         >
           <template v-slot>
             <div
               class="mapFeaturesIcon"
               v-html="
                 layerIcons.find(
-                  (x) => x.id == layerList[4].id
+                  (x) => x.id == layerList[3].id
                 )?.paths
               "
             ></div>
-            <span class="listLabel" id="CommercialVehicleLabel"
-              >Truck Restrictions</span
+            <span class="listLabel">
+              {{ layerList[3].title }}</span
             >
           </template>
         </ToggleSwitchView>
       </li>
+
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
         <ToggleSwitchView
           @toggle="clickEvent"
-          :Checked="layerList[5].visible"
-          :Value="layerList[5].index.toString()"
-          :Title="'Toggle ' + layerList[5].title"
+          :Checked="layerList[4].visible"
+          :Value="
+            layerList[4].index.toString() +
+            ',' +
+            layerList[5].index.toString()
+          "
+          Title="Toggle Truck Restrictions"
         >
           <template v-slot>
             <div
@@ -130,8 +108,8 @@
                 )?.paths
               "
             ></div>
-            <span class="listLabel">
-              {{ layerList[5].title }}</span
+            <span class="listLabel" id="CommercialVehicleLabel"
+              >Truck Restrictions</span
             >
           </template>
         </ToggleSwitchView>
@@ -227,11 +205,33 @@
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
         <ToggleSwitchView
           @toggle="clickEvent"
-          :Checked="layerList[11].visible"
+          :Checked="layerList[10].visible"
+          :Value="layerList[10].index.toString()"
+          :Title="'Toggle ' + layerList[10].title"
+        >
+          <template v-slot>
+            <div
+              class="mapFeaturesIcon"
+              v-html="
+                layerIcons.find(
+                  (x) => x.id == layerList[10].id
+                )?.paths
+              "
+            ></div>
+            <span class="listLabel">
+              {{ layerList[10].title }}</span
+            >
+          </template>
+        </ToggleSwitchView>
+      </li>
+      <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
+        <ToggleSwitchView
+          @toggle="clickEvent"
+          :Checked="layerList[12].visible"
           :Value="
-            layerList[11].index.toString() +
+            layerList[12].index.toString() +
             ',' +
-            layerList[10].index.toString()
+            layerList[11].index.toString()
           "
           Title="Toggle Wildland Fires"
         >
@@ -240,7 +240,7 @@
               class="mapFeaturesIcon"
               v-html="
                 layerIcons.find(
-                  (x) => x.id == layerList[11].id
+                  (x) => x.id == layerList[12].id
                 )?.paths
               "
             ></div>

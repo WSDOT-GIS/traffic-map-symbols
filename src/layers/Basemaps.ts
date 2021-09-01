@@ -23,7 +23,7 @@ const basemaps: BasemapInfo[] = [
         })
     }, {
         name: "satellite",
-        basemap: Basemap.fromId("arcgis-imagery")
+        basemap: Basemap.fromId("satellite")
     }]
 
 export const getBasemapInfo = (name: string): BasemapInfo => {

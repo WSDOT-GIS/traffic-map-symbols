@@ -23,6 +23,7 @@ import { initLayer as initTravelTimesLayer } from "@/layers/TravelTimeLayer"
 import { initLayer as initFireIncidentsLayer } from "@/layers/FireIncidentLayer";
 import { initLayer as initFirePerimetersLayer } from "@/layers/FirePerimeterLayer";
 import { initLayer as initMileMakersLayer } from "@/layers/MileMarkersLayer";
+import { initLayer as initESRIReference } from "@/layers/EsriReferenceLayer"
 //
 import ExtentInfo from "@/types/ExtentInfo";
 import { convert2EsriExtent, getEsriExtent } from "@/utils/extentUtil";
@@ -75,7 +76,8 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const firePerimeterIDs = await firePerimeterFeatureIDs(fireIncidentLayer)
     const firePerimetersLayer = initFirePerimetersLayer(config.firePerimeters, firePerimeterIDs)//Needed to filter fire perimeters to just those within the state
     const mileMarkersLayer = initMileMakersLayer(config.mileMarkers)//Needed to filter fire perimeters to just those within the state
-    webmap.addMany([trafficLyr, roadAlertsLyr, cameraLyr, lineRestrictionLyr, 
+    const esriReferenceLayer = initESRIReference(config.esriReferenceLayer)
+    webmap.addMany([esriReferenceLayer, trafficLyr, roadAlertsLyr, cameraLyr, lineRestrictionLyr, 
         pointRestrictionLyr, travelTimesLyr, mtLyr, weatherLyr, parkRideLyr, restAreasLyr, firePerimetersLayer, fireIncidentLayer, mileMarkersLayer]);
 }
 /**

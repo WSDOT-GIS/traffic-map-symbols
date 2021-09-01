@@ -71,6 +71,9 @@ export const store = createStore<State>({
             const basemapInfo = toggleBasemapInfo(state.basemap);
             state.basemap = basemapInfo.name;
             webmap.basemap = basemapInfo.basemap;
+            console.log(webmap.findLayerById("esri-reference-layer").loaded)
+            webmap.basemap.title=="Imagery"? webmap.findLayerById("esri-reference-layer").visible=true:webmap.findLayerById("esri-reference-layer").visible=false
+            
         },
         setPointerX(state, payload) {
             state.pointerX = payload.toFixed(6);
