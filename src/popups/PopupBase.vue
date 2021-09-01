@@ -39,18 +39,33 @@
       <div v-if="propWeatherForecast">
         <table>
           <tr id="weatherPeriodText">
-            <td v-for="eachFeature in propWeatherForecast.forecasts" :key="eachFeature.forecastNumber">
-              {{eachFeature.periodText}}
+            <td
+              v-for="eachFeature in propWeatherForecast.forecasts"
+              :key="eachFeature.forecastNumber"
+            >
+              {{ eachFeature.periodText }}
             </td>
           </tr>
-          <tr id="weatherForecastIcons" >
-            <td class="weatherForecastIcon" v-for="eachFeature in propWeatherForecast.forecasts" :key="eachFeature.forecastNumber">
-              <img :src="'https://images.wsdot.wa.gov/traffic/weaicons/'+eachFeature.weatherIconFileName"/>
+          <tr id="weatherForecastIcons">
+            <td
+              class="weatherForecastIcon"
+              v-for="eachFeature in propWeatherForecast.forecasts"
+              :key="eachFeature.forecastNumber"
+            >
+              <img
+                :src="
+                  'https://images.wsdot.wa.gov/traffic/weaicons/' +
+                  eachFeature.weatherIconFileName
+                "
+              />
             </td>
           </tr>
           <tr id="weatherForecastDescription">
-            <td v-for="eachFeature in propWeatherForecast.forecasts" :key="eachFeature.forecastNumber">
-              {{eachFeature.weatherDescription}}
+            <td
+              v-for="eachFeature in propWeatherForecast.forecasts"
+              :key="eachFeature.forecastNumber"
+            >
+              {{ eachFeature.weatherDescription }}
             </td>
           </tr>
         </table>
@@ -60,11 +75,18 @@
               <label>Forecast created </label>
             </td>
             <td>
-              {{propWeatherForecast.forecastDateTime}}
+              {{ propWeatherForecast.forecastDateTime }}
             </td>
           </tr>
         </table>
-        <a target="_blank" :href="'https://www.wsdot.com/traffic/forecast/Default.aspx?zone='+propWeatherForecast.nwsZoneId.replace(/\s/g, '')">View Extended Forecast</a>
+        <a
+          target="_blank"
+          :href="
+            'https://www.wsdot.com/traffic/forecast/Default.aspx?zone=' +
+            propWeatherForecast.nwsZoneId.replace(/\s/g, '')
+          "
+          >View Extended Forecast</a
+        >
       </div>
       <Carousel
         v-if="Config.imageFieldName"
@@ -128,7 +150,8 @@ import FeatureInfo from "@/types/FeatureInfo";
 import PopupConfig from "@/types/PopupConfig";
 import PopupRow from "./PopupRow.vue";
 import XY from "@/types/XY";
-import ForecastListInfo from "@/types/ForecastListInfo"
+import ForecastListInfo from "@/types/ForecastListInfo";
+
 export default defineComponent({
   components: { Carousel, Slide, Pagination, Navigation, PopupRow },
   props: {
@@ -158,17 +181,17 @@ export default defineComponent({
       type: Object as PropType<PopupConfig>,
       required: true,
     },
-    WeatherForecast:{
+    WeatherForecast: {
       type: Object as PropType<ForecastListInfo>,
       required: false,
-    }
+    },
   },
   setup(props, context) {
     // The DOM only exists while the visibility is true. Get it in onUpdate().
-    const propWeatherForecast = toRefs(props).WeatherForecast
-    watch(propWeatherForecast,()=>{
-      console.log(propWeatherForecast.value)
-    })
+    const propWeatherForecast = toRefs(props).WeatherForecast;
+    watch(propWeatherForecast, () => {
+      console.log(propWeatherForecast.value);
+    });
     const containerRef = ref<HTMLDivElement>();
     const store = useStore();
     const mapSize = computed(() => store.state.mapSize);
@@ -176,8 +199,8 @@ export default defineComponent({
     watch(mapSize, (size) => {
       maxHeight.value = size.height;
     });
-    const mapX = ref(0); //toRefs(props).MapX;
-    const mapY = ref(0); //toRefs(props).MapY;
+    const mapX = ref(0);
+    const mapY = ref(0);
     const screenX = ref(-1);
     const screenY = ref(-1);
     // Popup location.
@@ -187,6 +210,7 @@ export default defineComponent({
     let numImgLoaded = 0;
     let wasUpdatedOnce = false;
     let doPanMap = true;
+    let isPanning = false;
     // Index of the currently shown feature.
     const currentIdx = ref(0);
     const badgeText = ref("");
@@ -209,25 +233,6 @@ export default defineComponent({
       wasUpdatedOnce = false;
       doPanMap = true;
     });
-    // Feature highlight.
-    // let gHighlight: Graphic;
-    // Set the width...
-    // Default...
-    // const sizeClass = {
-    //   m4: true,
-    //   m6: false,
-    //   l2: true,
-    //   l3: false,
-    // };
-    // if (props.Width) {
-    //   // Wide...
-    //   if (props.Width === "w") {
-    //     sizeClass.m4 = false;
-    //     sizeClass.m6 = true;
-    //     sizeClass.l2 = false;
-    //     sizeClass.l3 = true;
-    //   }
-    // }
     const pagenationStyle = computed(() => {
       return {
         "--carousel-color-primary": props.DarkThemeColor,
@@ -257,11 +262,15 @@ export default defineComponent({
       }
     });
     // Watch scale change...
+    // On touch screen, after pinch zoom, panning map also changes the scale, so commented this out so popup does not close when that happens.
     mapView.watch("scale", () => {
-      // if (mapX.value < 0 && mapY.value > 0) {
-      //   setScreenXY();
+      //console.log("scale changed: " + oldValue + " => " + newValue);
+      if (!isPanning) {
+        close();
+      }
+      // else {
+      //   console.log("Panning - do not close popup");
       // }
-      close();
     });
     // Watch map moving...
     mapView.watch("center", (newValue, oldValue) => {
@@ -319,7 +328,7 @@ export default defineComponent({
         props.Features.length === 0 ||
         !props.Features[0]
       ) {
-        // "Nothing to show...
+        // Nothing to show...
         return;
       }
       const h = containerRef.value.offsetHeight;
@@ -338,7 +347,7 @@ export default defineComponent({
         prevWidth = w;
         prevHeight = h;
       }
-      // console.log("*** Adjust ***"); // + JSON.stringify(props.Features)); //props.Features[0].layerId);
+      // console.log("*** Adjust ****************"); // + JSON.stringify(props.Features)); //props.Features[0].layerId);
       // If this is not the initial load, then move popup along with map.
       if (!doPanMap) {
         // New vertical position...
@@ -373,8 +382,12 @@ export default defineComponent({
             shiftX = newLeft < 0 ? -1 * newLeft : mapView.width - newLeft - w;
           }
           setPosition(newTop, newLeft);
+
           if (shiftY <= -1 || shiftY >= 1 || shiftX <= -1 || shiftX >= 1) {
-            panMap(shiftX, shiftY);
+            isPanning = true;
+            panMap(shiftX, shiftY).then(() => {
+              isPanning = false;
+            });
           }
         });
       }
@@ -497,7 +510,6 @@ export default defineComponent({
       if (feature) {
         mapX.value = props.MapXY ? props.MapXY.x : feature.mapPoint.x;
         mapY.value = props.MapXY ? props.MapXY.y : feature.mapPoint.y;
-        // console.log(mapX.value + ", " + mapY.value);
       }
     };
 
@@ -514,7 +526,7 @@ export default defineComponent({
       getBannerText,
       badgeText,
       getTitle,
-      propWeatherForecast
+      propWeatherForecast,
     };
   },
 });
@@ -525,15 +537,16 @@ export default defineComponent({
   z-index: 10;
   background-color: #fff;
   position: relative;
-  width: 400px;
 }
 
-@media screen and (max-width: 401px) {
+.popup-container {
+  width: 100%;
+}
+@media screen and (min-width: 576px) and (min-height: 576px) {
   .popup-container {
-    width: 100%;
+    width: 400px;
   }
 }
-
 .popup-container::after {
   content: "";
   position: absolute;
@@ -655,7 +668,7 @@ svg.carousel__icon {
 #weatherForecastIcons #weatherForecastDescription {
   font-size: 5pt;
 }
-.weatherForecastIcon{
+.weatherForecastIcon {
   font-size: 10pt;
 }
 </style>

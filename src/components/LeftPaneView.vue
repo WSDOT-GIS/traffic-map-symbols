@@ -59,6 +59,7 @@ import { computed, defineComponent, ref, watch } from "vue";
 import { useStore } from "@/store";
 import LayerListView from "./LayerListView.vue";
 import SavedMapView from "./SavedMapView.vue";
+import { isMobile } from "@/utils/mediaUtil";
 
 export default defineComponent({
   components: { LayerListView, SavedMapView },
@@ -70,7 +71,7 @@ export default defineComponent({
       maxHeight.value = size.height;
     });
     // If it is on small device, close it by default.
-    const isOpen = ref(!store.state.isMobile);
+    const isOpen = ref(!isMobile());
 
     const toggleDisplay = () => {
       isOpen.value = !isOpen.value;

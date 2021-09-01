@@ -117,7 +117,6 @@ const reloadGeoJsonLayer = (id: string, layerUrl: string, initFunc: (url: string
             lyrInfo.title = newLyr.title;
             lyrInfo.visible = newLyr.visible;
         }
-        // console.log(`Reloaded ${lyr.title}`);
     }
     else {
         throw id + " is not a GeoJSON layer."
@@ -133,7 +132,7 @@ export const tryZoomToPoint = (point: Point, numLevels?: number): boolean => {
     const orgLevel = mapView.zoom;
     mapView.zoom = mapView.zoom += numLevels;
     if (mapView.zoom === orgLevel) {
-        //console.log("Cannot zoom in any more.");
+        // Cannot zoom in any more.
         isSuccess = false;
     }
     return isSuccess;
@@ -155,7 +154,7 @@ export const tryZoomToPointAsync = async (point: Point, numLevels?: number): Pro
         console.error("tryZoomToPointAsync failed: " + error);
     });
     if (mapView.zoom === orgLevel) {
-        //console.log("Cannot zoom in any more.");
+        // Cannot zoom in any more.
         isSuccess = false;
     }
     return isSuccess;
@@ -233,7 +232,7 @@ export const getIdsFromCluster = async (clusterGraphic: Graphic, layer: Layer, m
             if (!identical) { break; }
         }
         if (identical) {
-            //console.log("All points are located on the same spot!");
+            // All points are located on the same spot!
             doReturn = true;
         }
         //else { //console.log("Points are not identical."); }
