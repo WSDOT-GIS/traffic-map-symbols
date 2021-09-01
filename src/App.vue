@@ -45,7 +45,7 @@ export default defineComponent({
     const headerText =
       "DRAFT – Information on this page is for visual demonstration and should not be used for travel related decisions – DRAFT";
     const tempAlert: AlertInfo = {
-      title: "Pleaceholder for the alert message.",
+      title: "Placeholder for the alert message.",
       description: "description",
       x: 1,
       y: 1,
