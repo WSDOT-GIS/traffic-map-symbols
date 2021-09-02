@@ -673,28 +673,53 @@ export default defineComponent({
 .carousel-item-container {
   width: 100%;
 }
+/* Hide the 1/3 of circle behind right & left arrow. */
+.carousel {
+  overflow: hidden;
+}
 </style>
 <style>
-.popup-inner-container{
+.popup-inner-container {
   color: #000;
 }
-.carousel__prev,
+/* Right and left arrows to scroll the pictures. */
+/* .carousel__prev,
 .carousel__next {
   background-color: transparent !important;
-}
+}*/
 .carousel__prev {
-  left: 5%;
+  left: 7px;
   top: 40%;
 }
 .carousel__next {
-  right: 5%;
+  right: 7px;
   top: 40%;
 }
-svg.carousel__icon {
+.carousel__prev:hover {
+  filter: drop-shadow(2px 2px 3px rgb(0 0 0 / 0.5));
+  right: 6px;
+  top: 39%;
+}
+.carousel__next:hover {
+  filter: drop-shadow(-2px 2px 3px rgb(0 0 0 / 0.5));
+  right: 6px;
+  top: 39%;
+}
+.carousel__prev svg path {
+  d: path(
+    "M 17.000785,17.692215 11.252113,11.931001 17.000785,6.169785 15.231001,4.4 7.7,11.931001 15.231001,19.462 Z"
+  );
+}
+.carousel__next svg path {
+  d: path(
+    "M 6.8,6.1697845 12.548671,11.930999 6.8,17.692215 8.569783,19.462 16.100784,11.930999 8.569783,4.3999995 Z"
+  );
+}
+/* svg.carousel__icon {
   width: 2em;
   height: 2em;
   filter: drop-shadow(3px 3px 2px rgb(0 0 0 / 1));
-}
+}  */
 .carousel__pagination-button {
   width: 10px;
   height: 10px;
@@ -710,5 +735,4 @@ svg.carousel__icon {
 .weatherForecastIcon {
   font-size: 10pt;
 }
-
 </style>
