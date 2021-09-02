@@ -18,11 +18,12 @@
             isTime: true,
             },
         },
+        {label: 'Management Complexity',value:{ fieldName:'FireMgmtComplexity'}},
         {label: 'Owner Category',value:{ fieldName:'POOLandownerCategory'}},
         {label: 'Owner Kind',value:{ fieldName:'POOLandownerKind'}},
         {label: 'Jurisdictional Agency',value:{ fieldName:'POOJurisdictionalAgency'}},
         {label: 'Last Updated',value:{ 
-            fieldName:'ModifiedOnDateTime_dt',
+            fieldName:'ModifiedOnDateTime',
             isDate: true,
             isTime: true,}},
       ],
@@ -70,6 +71,7 @@ export default defineComponent({
         getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(//query feature layer for feature
           (result) => {
             if (result) {
+              console.log(result)
               feature.value = result;
             }
           }

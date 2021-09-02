@@ -675,6 +675,9 @@ export default defineComponent({
 }
 </style>
 <style>
+.popup-inner-container{
+  color: #000;
+}
 .carousel__prev,
 .carousel__next {
   background-color: transparent !important;
@@ -707,4 +710,5 @@ svg.carousel__icon {
 .weatherForecastIcon {
   font-size: 10pt;
 }
+
 </style>
