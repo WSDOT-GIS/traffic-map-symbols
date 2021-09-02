@@ -177,15 +177,16 @@ export const zoomToMax = async (point: Point) => {
     });
 }
 
-export const zoomOnClick = (extentInfo: ExtentInfo): void => {
+export const zoomToMetroArea = (extentInfo: ExtentInfo): void => {
     const extent = convert2EsriExtent(extentInfo);
     mapView.extent = extent;
     ZoomExtentLayer.visible = false;
     // Remember the scale zoomed into so it can detect when map is zoomed out.
-    const zoomExtentLayerMaxScale = mapView.scale;
-    // Set watch to make the layer visible again when user zoomed out.
+    const zoomExtentLayerMaxZoom = mapView.zoom;
+    // Set watch to make the layer visible again when user zoom out 2+ levels.
     const watchHandle = whenTrue(mapView, "stationary", () => {
-        if (mapView.scale > zoomExtentLayerMaxScale) {
+        // Note: Allow users to zoom out one level without showing the extent box, so they still click on features.
+        if (mapView.zoom < zoomExtentLayerMaxZoom - 1) {
             ZoomExtentLayer.visible = true;
             // Watch is no longer needed.
             watchHandle.remove();

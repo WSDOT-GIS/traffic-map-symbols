@@ -48,7 +48,7 @@ import Layer from "@arcgis/core/layers/Layer";
 import Point from "@arcgis/core/geometry/Point";
 
 import { getConfig } from "@/utils/appConfigUtil";
-import { mapView, zoomOnClick } from "@/esri-stuff/esriMap";
+import { mapView, zoomToMetroArea } from "@/esri-stuff/esriMap";
 import {
   getExtentFromUrl,
   getBasemapFromUrl,
@@ -134,7 +134,7 @@ export default defineComponent({
     // Setup event handler for metro zoom...
     let zoomEventIsOn = false;
     const zoomMetroEventHandler = () => {
-      zoomOnClick(zoomExtentInfo);
+      zoomToMetroArea(zoomExtentInfo);
       if (zoomEventIsOn) {
         mapDiv.removeEventListener("click", zoomMetroEventHandler);
         zoomEventIsOn = false;
@@ -332,7 +332,7 @@ export default defineComponent({
         height: mapView.height,
       });
       // Pointer move event handler...
-      esriMap.mapView.on(["pointer-move", "hold"], (event) => {
+      esriMap.mapView.on(["pointer-move", "pointer-down"], (event) => {
         // Update current poitner x/y in the store...
         let pt = esriMap.mapView.toMap({ x: event.x, y: event.y });
         store.commit("setPointerX", pt.longitude);
@@ -454,6 +454,7 @@ export default defineComponent({
   margin: 0;
   height: 100%;
   width: 100%;
+  touch-action: none;
 }
 #map-bottom-right-container {
   display: inline-flex;
