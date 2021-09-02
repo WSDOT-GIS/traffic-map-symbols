@@ -47,13 +47,20 @@ import Graphic from "@arcgis/core/Graphic";
 import Layer from "@arcgis/core/layers/Layer";
 import Point from "@arcgis/core/geometry/Point";
 
+import { getConfig } from "@/utils/appConfigUtil";
 import { mapView, zoomOnClick } from "@/esri-stuff/esriMap";
-import { getExtentFromUrl, getBasemapFromUrl } from "@/utils/urlParamUtil";
+import {
+  getExtentFromUrl,
+  getBasemapFromUrl,
+  setVisibleLayersFromUrl,
+  getFeatureIdFromUrl,
+  getFeatureTypeFromUrl,
+} from "@/utils/urlParamUtil";
+import { getFeature, setLayerVisibility } from "@/utils/layerUtil";
 import ZoomExtentLayer, {
   getFeatureById as getZoomFeatureById,
 } from "@/layers/ZoomExtentLayer";
 import ExtentInfo from "@/types/ExtentInfo";
-import { setLayerFromUrl } from "@/utils/urlParamUtil";
 import { clusterMaxScale } from "@/utils/clusterUtil";
 import LayerInfo from "@/types/LayerInfo";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
@@ -89,7 +96,6 @@ import CoordinatesView from "@/components/CoordinatesView.vue";
 import MyLocationView from "@/components/MyLocationView.vue";
 import ZoomButtonView from "@/components/ZoomButtonView.vue";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
-import { getConfig } from "@/utils/appConfigUtil";
 
 export default defineComponent({
   components: {
@@ -303,7 +309,7 @@ export default defineComponent({
         });
       });
       // Set layer visibility based on URL query...
-      setLayerFromUrl(layerList);
+      setVisibleLayersFromUrl(layerList);
       store.commit("setLayerList", layerList);
       // Setup events on the operational layers...
       initOperationalLayerEvents(mapDiv, esriMap);
@@ -382,7 +388,35 @@ export default defineComponent({
       });
       // Set extent based on the URL query parameter...
       esriMap.mapView.extent = getExtentFromUrl();
-      //
+      // Zoom, turn on layer and open popup if specified in URL query parameter...
+      const featureType = getFeatureTypeFromUrl();
+      const featureId = getFeatureIdFromUrl();
+      if (featureType && featureId) {
+        // Make sure the map is ready, then search for the feature...
+        esriMap.mapView.when().then(() => {
+          getFeature(featureId, featureType, esriMap.webmap).then((result) => {
+            if (result) {
+              if (result.geometry.type !== "point") {
+                throw "The parameter, featuretype, only supports point feature type currently.";
+              }
+              // If the layer is not visible, turn it on...
+              if (!result.layer.visible) {
+                const layerList = setLayerVisibility(
+                  result.layer.id,
+                  true,
+                  store.state.layerList
+                );
+                store.commit("setLayerList", layerList);
+              }
+              // Zoom in...
+              esriMap.zoomToMax(result.geometry as Point).then(() => {
+                showPopup(result.layer.id, [result.getObjectId()]);
+              });
+            }
+          });
+        });
+      }
+      // Adjust cluster setting based on scale...
       esriMap.mapView.watch("scale", (newValue, oldValue) => {
         if (oldValue > 0) {
           //adjustCluster(newValue, oldValue);

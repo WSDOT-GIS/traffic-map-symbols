@@ -2,6 +2,7 @@ import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer"
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import symbol from "@/symbols/AlertSymbol"
 import Field from "@arcgis/core/layers/support/Field"
+
 const roadAlertsRenderer = new simpleRenderer({
     symbol: symbol
 })
@@ -62,13 +63,6 @@ const getLayer = (): GeoJSONLayer => {
     return layer;
 }
 
-// const RoadAlertsLayer = new GeoJSONLayer({
-//     id: "road-alerts-layer",
-//     url: "https://data.wsdot.wa.gov/travelcenter/RoadAlerts.json",
-//     title: "Travel Alerts",
-//     renderer: roadAlertsRenderer,
-//     visible: true
-// })
-
 // export default RoadAlertsLayer
 export default getLayer;
+
