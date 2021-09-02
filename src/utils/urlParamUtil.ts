@@ -42,13 +42,13 @@ const params = new URLSearchParams(window.location.search);
  * Make layers in the specified type visible.
  * @param layerList 
  */
-export const setVisibleLayersFromUrl = (layerList: LayerInfo[]): void => {
-    const typeParam = params.get("layer");
-    if (typeParam) {
-        const types = typeParam.split(',');
+export const setVisibleLayersFromUrl = (layerList: LayerInfo[]): LayerInfo[] => {
+    const param = params.get("layer");
+    if (param) {
+        const layers = param.split(',');
         const layerIds: string[] = [];
-        types.forEach((eachType) => {
-            layerIds.push(...getLayerIds(eachType));
+        layers.forEach((each) => {
+            layerIds.push(...getLayerIds(each));
         })
         layerList.forEach((eachLyr) => {
             if (layerIds.includes(eachLyr.id)) {
@@ -56,6 +56,7 @@ export const setVisibleLayersFromUrl = (layerList: LayerInfo[]): void => {
             }
         });
     }
+    return layerList;
 }
 /**
  * Get feature ID.

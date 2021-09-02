@@ -388,17 +388,18 @@ export default defineComponent({
       });
       // Set extent based on the URL query parameter...
       esriMap.mapView.extent = getExtentFromUrl();
-      // Open popup if specified in URL...
+      // Zoom, turn on layer and open popup if specified in URL query parameter...
       const featureType = getFeatureTypeFromUrl();
       const featureId = getFeatureIdFromUrl();
       if (featureType && featureId) {
+        // Make sure the map is ready, then search for the feature...
         esriMap.mapView.when().then(() => {
           getFeature(featureId, featureType, esriMap.webmap).then((result) => {
-            
             if (result) {
               if (result.geometry.type !== "point") {
-                throw "The parameter, featuretype, only supports point feature currently.";
+                throw "The parameter, featuretype, only supports point feature type currently.";
               }
+              // If the layer is not visible, turn it on...
               if (!result.layer.visible) {
                 const layerList = setLayerVisibility(
                   result.layer.id,
@@ -407,6 +408,7 @@ export default defineComponent({
                 );
                 store.commit("setLayerList", layerList);
               }
+              // Zoom in...
               esriMap.zoomToMax(result.geometry as Point).then(() => {
                 showPopup(result.layer.id, [result.getObjectId()]);
               });
@@ -414,7 +416,7 @@ export default defineComponent({
           });
         });
       }
-      //
+      // Adjust cluster setting based on scale...
       esriMap.mapView.watch("scale", (newValue, oldValue) => {
         if (oldValue > 0) {
           //adjustCluster(newValue, oldValue);
