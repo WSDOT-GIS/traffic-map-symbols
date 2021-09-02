@@ -164,6 +164,30 @@ const layerListIcons = [{
         </g>
     </svg>
     `
+    },
+    {
+        id: `mile-markers-layer`,
+        paths: `<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="24" height="24" viewBox="0 0 24 24" fill="none" version="1.1" id="svg823" sodipodi:docname="Mile Post icon.svg" inkscape:version="0.92.3 (2405546, 2018-03-11)">
+    <metadata id="metadata829">
+      <rdf:RDF>
+        <cc:Work rdf:about="">
+          <dc:format>image/svg+xml</dc:format>
+          <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+          <dc:title/>
+        </cc:Work>
+      </rdf:RDF>
+    </metadata>
+    <defs id="defs827"/>
+    <sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="1920" inkscape:window-height="986" id="namedview825" showgrid="false" inkscape:zoom="13.84375" inkscape:cx="-8.7891398" inkscape:cy="0.22008383" inkscape:window-x="-11" inkscape:window-y="-11" inkscape:window-maximized="1" inkscape:current-layer="svg823"/>
+    <g transform="translate(-284.25688,-247.89165)" id="g828">
+      <path inkscape:connector-curvature="0" d="M 162.8,512 C 57.9,452.9 30.3,396.9 46.1,320.5 57.8,264.1 95.9,218.1 99.6,161.8 c 16.3,29.7 23.1,51.1 24.9,82.1 51.9,-63.5 86.2,-151.5 88.2,-243.9 0,0 135.1,79.4 143.9,199.2 11.6,-24.7 17.5,-64 5.9,-89.4 34.9,25.4 239.1,251.2 -27.7,402.1 50.1,-97.6 12.9,-229.4 -74.1,-290.2 5.8,26.2 -4.4,123.7 -42.9,166.6 10.7,-71.6 -10.2,-101.9 -10.2,-101.9 0,0 -7.1,40.1 -34.9,80.7 -25.3,37 -42.8,76.3 -9.9,144.9 z" id="path826"/>
+    </g>
+    <g id="g1417">
+      <rect y="5.9733071" x="0.97976071" height="12.053386" width="22.040478" id="rect1376" style="fill:#38a800;fill-opacity:1;stroke:#ffffff;stroke-width:1.096;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
+      <text id="text1380" y="16.00399" x="1.3513774" style="font-style:normal;font-weight:normal;font-size:11.01433277px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.27535829" xml:space="preserve"><tspan style="fill:#ffffff;stroke-width:0.27535829" y="16.00399" x="1.3513774" id="tspan1378" sodipodi:role="line">256</tspan></text>
+      <rect y="5.4679866" x="0.52400833" height="13.064027" width="22.951982" id="rect1401" style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.51548696;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
+    </g>
+  </svg>`
     }
 ];
 exports.layerListIcons = layerListIcons;

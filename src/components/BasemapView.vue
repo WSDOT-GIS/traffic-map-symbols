@@ -16,6 +16,7 @@
 import { useStore } from "@/store";
 import { defineComponent, ref } from "vue";
 import MapButtonView from "@/components/MapButtonView.vue";
+import { webmap } from "@/esri-stuff/esriMap";
 /* eslint @typescript-eslint/no-var-requires: "off" */
 export default defineComponent({
   components: { MapButtonView },
@@ -30,8 +31,11 @@ export default defineComponent({
     const labelStyle = ref<string>("iconLabelWhite")
     const labelFontSize = ref<number>(12)
     const windowWidth = ref<number>(window.innerWidth)
-    const onClick = () => {
-      store.commit("toggleBasemap");
+    const toggleImageryReference= ()=>{
+      webmap.basemap.title=="Basemap"||webmap.basemap.title=="WSDOT Basemap"? webmap.findLayerById("esri-reference-layer").visible=true:webmap.findLayerById("esri-reference-layer").visible=false
+      webmap.findLayerById("esri-reference-layer").load()
+    }
+    const updateBasemapIcon = ()=>{
       imgSrc.value == satelliteImage
         ? (imgSrc.value = tileImage)
         : (imgSrc.value = satelliteImage);
@@ -41,6 +45,12 @@ export default defineComponent({
       labelStyle.value == "iconLabelWhite"
       ? (labelStyle.value = "iconLabelBlack"):
       (labelStyle.value = "iconLabelWhite");
+    }
+    const onClick = () => {
+      console.log(webmap.basemap.title)
+      toggleImageryReference()
+      store.commit("toggleBasemap");
+      updateBasemapIcon()
     };
 
     return {
@@ -53,6 +63,9 @@ export default defineComponent({
       imgSize,
       labelFontSize
     };
+  },
+  methods:{
+    
   },
   mounted() {
     if(window.innerWidth <=500){

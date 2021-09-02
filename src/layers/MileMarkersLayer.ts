@@ -1,4 +1,4 @@
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import FeatureLayer from "@arcgis/core/layers/MapImageLayer";
 
 let layer: FeatureLayer | undefined;
 

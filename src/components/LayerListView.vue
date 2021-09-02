@@ -250,6 +250,28 @@
           </template>
         </ToggleSwitchView>
       </li>
+      <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
+        <ToggleSwitchView
+          @toggle="clickEvent"
+          :Checked="layerList[layerList.length - 12].visible"
+          :Value="layerList[layerList.length -12].index.toString()"
+          :Title="'Toggle ' + layerList[layerList.length - 12].title"
+        >
+          <template v-slot>
+            <div
+              class="mapFeaturesIcon"
+              v-html="
+                layerIcons.find(
+                  (x) => x.id == layerList[layerList.length - 12].id
+                )?.paths
+              "
+            ></div>
+            <span class="listLabel">
+              {{ layerList[layerList.length - 12].title }}</span
+            >
+          </template>
+        </ToggleSwitchView>
+      </li>
     </ul>
   </div>
 </template>

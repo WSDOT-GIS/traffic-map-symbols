@@ -23,6 +23,7 @@ const TravelTimeLayer_1 = require("@/layers/TravelTimeLayer");
 const FireIncidentLayer_1 = require("@/layers/FireIncidentLayer");
 const FirePerimeterLayer_1 = require("@/layers/FirePerimeterLayer");
 const MileMarkersLayer_1 = require("@/layers/MileMarkersLayer");
+const EsriReferenceLayer_1 = require("@/layers/EsriReferenceLayer");
 const extentUtil_1 = require("@/utils/extentUtil");
 const ZoomExtentLayer_1 = tslib_1.__importDefault(require("@/layers/ZoomExtentLayer"));
 const appConfigUtil_1 = require("@/utils/appConfigUtil");
@@ -70,8 +71,8 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     const firePerimeterIDs = yield firePerimeterQuery_1.default(fireIncidentLayer);
     const firePerimetersLayer = FirePerimeterLayer_1.initLayer(config.firePerimeters, firePerimeterIDs); //Needed to filter fire perimeters to just those within the state
     const mileMarkersLayer = MileMarkersLayer_1.initLayer(config.mileMarkers); //Needed to filter fire perimeters to just those within the state
-    //const esriReferenceLayer = initESRIReference(config.esriReferenceLayer)
-    exports.webmap.addMany([/*esriReferenceLayer,*/ trafficLyr, mileMarkersLayer, firePerimetersLayer, fireIncidentLayer,
+    const esriReferenceLayer = EsriReferenceLayer_1.initLayer(config.esriReferenceLayer);
+    exports.webmap.addMany([esriReferenceLayer, trafficLyr, mileMarkersLayer, firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertsLyr]);
 });
