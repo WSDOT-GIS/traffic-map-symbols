@@ -275,8 +275,6 @@ export default defineComponent({
     //#region toggle layer on and off
     clickEvent: async (evt: { checked: boolean; value: string }) => {
       store.state.layerList.map((layer, index) => {
-        console.log(layer)
-        console.log(index)
         if (evt) {
           const idxs = evt.value.split(",");
           for (let i = 0; i < idxs.length; i++) {

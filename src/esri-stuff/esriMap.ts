@@ -32,6 +32,8 @@ import FeatureInfo from "@/types/FeatureInfo";
 import { getConfig } from "@/utils/appConfigUtil";
 import LayerInfo from "@/types/LayerInfo";
 import firePerimeterFeatureIDs from "@/utils/firePerimeterQuery"
+import { getBasemapInfo } from "@/layers/Basemaps";
+import TileLayer from "@arcgis/core/layers/TileLayer";
 // Initialize empty map, and load layers later...
 export const webmap = new WebMap({
 });
@@ -46,6 +48,7 @@ export const mapView = new MapView({
 });
 // Zoom buttons are replaced with the custom Vue components.
 mapView.ui.remove("zoom");
+//
 export const init = (container: HTMLDivElement): void => {
     mapView.container = container;
     mapView.when()
@@ -80,7 +83,7 @@ export const loadOperationalLayers = async (): Promise<void> => {
     webmap.addMany([/*esriReferenceLayer,*/ trafficLyr, mileMarkersLayer, firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertsLyr]);
-    
+
 }
 /**
  * Reload GeoJSON layers that are updated frequently.
@@ -162,6 +165,18 @@ export const tryZoomToPointAsync = async (point: Point, numLevels?: number): Pro
     return isSuccess;
 }
 
+export const zoomToMax = async (point: Point) => {
+    await mapView.goTo({
+        target: point,
+        scale: getMaxScale()
+    }, {
+        duration: 300,
+        easing: "ease-in"
+    }).catch((error) => {
+        console.error("zoomToMax failed: " + error);
+    });
+}
+
 export const zoomOnClick = (extentInfo: ExtentInfo): void => {
     const extent = convert2EsriExtent(extentInfo);
     mapView.extent = extent;
@@ -177,6 +192,20 @@ export const zoomOnClick = (extentInfo: ExtentInfo): void => {
         }
     });
 };
+
+let maxScale = 0;
+
+export const getMaxScale = () => {
+    if (maxScale > 0) {
+        return maxScale;
+    } else {
+        const info = getBasemapInfo("wsdot");
+        const lyr = info.basemap.baseLayers.getItemAt(0);
+        const tile = lyr as TileLayer;
+        maxScale = tile.maxScale;
+        return maxScale;
+    }
+}
 
 export const toScreenXY = (mapX: number, mapY: number): { x: number, y: number } => {
     const pt = new Point({ x: mapX, y: mapY, spatialReference: SpatialReference.WebMercator });

@@ -47,13 +47,20 @@ import Graphic from "@arcgis/core/Graphic";
 import Layer from "@arcgis/core/layers/Layer";
 import Point from "@arcgis/core/geometry/Point";
 
+import { getConfig } from "@/utils/appConfigUtil";
 import { mapView, zoomOnClick } from "@/esri-stuff/esriMap";
-import { getExtentFromUrl, getBasemapFromUrl } from "@/utils/urlParamUtil";
+import {
+  getExtentFromUrl,
+  getBasemapFromUrl,
+  setVisibleLayersFromUrl,
+  getFeatureIdFromUrl,
+  getFeatureTypeFromUrl,
+} from "@/utils/urlParamUtil";
+import { getFeature } from "@/utils/layerUtil";
 import ZoomExtentLayer, {
   getFeatureById as getZoomFeatureById,
 } from "@/layers/ZoomExtentLayer";
 import ExtentInfo from "@/types/ExtentInfo";
-import { setLayerFromUrl } from "@/utils/urlParamUtil";
 import { clusterMaxScale } from "@/utils/clusterUtil";
 import LayerInfo from "@/types/LayerInfo";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
@@ -89,7 +96,6 @@ import CoordinatesView from "@/components/CoordinatesView.vue";
 import MyLocationView from "@/components/MyLocationView.vue";
 import ZoomButtonView from "@/components/ZoomButtonView.vue";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
-import { getConfig } from "@/utils/appConfigUtil";
 
 export default defineComponent({
   components: {
@@ -303,7 +309,7 @@ export default defineComponent({
         });
       });
       // Set layer visibility based on URL query...
-      setLayerFromUrl(layerList);
+      setVisibleLayersFromUrl(layerList);
       store.commit("setLayerList", layerList);
       // Setup events on the operational layers...
       initOperationalLayerEvents(mapDiv, esriMap);
@@ -396,6 +402,17 @@ export default defineComponent({
           height: event.height,
         });
       });
+      // Open popup if specified in URL...
+      const featureType = getFeatureTypeFromUrl();
+      const featureId = getFeatureIdFromUrl();
+      if (featureType && featureId) {
+        getFeature(featureId, featureType, esriMap.webmap).then((result) => {
+          if (result) {
+            esriMap.zoomToMax(result.geometry as Point);
+            showPopup(result.layer.id, [result.getObjectId()]);
+          }
+        });
+      }
     });
     return {
       zoomPopupVisible,
