@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeHighlight = exports.highlightFeature = exports.bufferByPixels = exports.getIdsFromCluster = exports.getLayer = exports.panMap = exports.toScreenXY = exports.zoomOnClick = exports.tryZoomToPointAsync = exports.tryZoomToPoint = exports.reloadGeoJsonLayers = exports.loadOperationalLayers = exports.init = exports.mapView = exports.webmap = void 0;
+exports.removeHighlight = exports.highlightFeature = exports.bufferByPixels = exports.getIdsFromCluster = exports.getLayer = exports.panMap = exports.toScreenXY = exports.getMaxScale = exports.zoomOnClick = exports.zoomToMax = exports.tryZoomToPointAsync = exports.tryZoomToPoint = exports.reloadGeoJsonLayers = exports.loadOperationalLayers = exports.init = exports.mapView = exports.webmap = void 0;
 const tslib_1 = require("tslib");
 const WebMap_1 = tslib_1.__importDefault(require("@arcgis/core/WebMap"));
 const MapView_1 = tslib_1.__importDefault(require("@arcgis/core/views/MapView"));
@@ -23,11 +23,13 @@ const TravelTimeLayer_1 = require("@/layers/TravelTimeLayer");
 const FireIncidentLayer_1 = require("@/layers/FireIncidentLayer");
 const FirePerimeterLayer_1 = require("@/layers/FirePerimeterLayer");
 const MileMarkersLayer_1 = require("@/layers/MileMarkersLayer");
-const EsriReferenceLayer_1 = require("@/layers/EsriReferenceLayer");
+const RoadsReferenceLayer_1 = require("@/layers/RoadsReferenceLayer");
+const BoundariesPlacesReferenceLayer_1 = require("@/layers/BoundariesPlacesReferenceLayer");
 const extentUtil_1 = require("@/utils/extentUtil");
 const ZoomExtentLayer_1 = tslib_1.__importDefault(require("@/layers/ZoomExtentLayer"));
 const appConfigUtil_1 = require("@/utils/appConfigUtil");
 const firePerimeterQuery_1 = tslib_1.__importDefault(require("@/utils/firePerimeterQuery"));
+const Basemaps_1 = require("@/layers/Basemaps");
 // Initialize empty map, and load layers later...
 exports.webmap = new WebMap_1.default({});
 exports.mapView = new MapView_1.default({
@@ -40,6 +42,7 @@ exports.mapView = new MapView_1.default({
 });
 // Zoom buttons are replaced with the custom Vue components.
 exports.mapView.ui.remove("zoom");
+//
 const init = (container) => {
     exports.mapView.container = container;
     exports.mapView.when()
@@ -71,8 +74,9 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     const firePerimeterIDs = yield firePerimeterQuery_1.default(fireIncidentLayer);
     const firePerimetersLayer = FirePerimeterLayer_1.initLayer(config.firePerimeters, firePerimeterIDs); //Needed to filter fire perimeters to just those within the state
     const mileMarkersLayer = MileMarkersLayer_1.initLayer(config.mileMarkers); //Needed to filter fire perimeters to just those within the state
-    const esriReferenceLayer = EsriReferenceLayer_1.initLayer(config.esriReferenceLayer);
-    exports.webmap.addMany([esriReferenceLayer, trafficLyr, mileMarkersLayer, firePerimetersLayer, fireIncidentLayer,
+    const esriRoadsReferenceLayer = RoadsReferenceLayer_1.initLayer(config.esriRoadsReferenceLayer);
+    const esriPlacesReferenceLayer = BoundariesPlacesReferenceLayer_1.initLayer(config.esriPlacesReferenceLayer);
+    exports.webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, mileMarkersLayer, firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertsLyr]);
 });
@@ -156,6 +160,18 @@ const tryZoomToPointAsync = (point, numLevels) => tslib_1.__awaiter(void 0, void
     return isSuccess;
 });
 exports.tryZoomToPointAsync = tryZoomToPointAsync;
+const zoomToMax = (point) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+    yield exports.mapView.goTo({
+        target: point,
+        scale: exports.getMaxScale()
+    }, {
+        duration: 300,
+        easing: "ease-in"
+    }).catch((error) => {
+        console.error("zoomToMax failed: " + error);
+    });
+});
+exports.zoomToMax = zoomToMax;
 const zoomOnClick = (extentInfo) => {
     const extent = extentUtil_1.convert2EsriExtent(extentInfo);
     exports.mapView.extent = extent;
@@ -172,6 +188,20 @@ const zoomOnClick = (extentInfo) => {
     });
 };
 exports.zoomOnClick = zoomOnClick;
+let maxScale = 0;
+const getMaxScale = () => {
+    if (maxScale > 0) {
+        return maxScale;
+    }
+    else {
+        const info = Basemaps_1.getBasemapInfo("wsdot");
+        const lyr = info.basemap.baseLayers.getItemAt(0);
+        const tile = lyr;
+        maxScale = tile.maxScale;
+        return maxScale;
+    }
+};
+exports.getMaxScale = getMaxScale;
 const toScreenXY = (mapX, mapY) => {
     const pt = new Point_1.default({ x: mapX, y: mapY, spatialReference: SpatialReference_1.default.WebMercator });
     const screenPt = exports.mapView.toScreen(pt);
