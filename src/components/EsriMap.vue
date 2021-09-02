@@ -56,7 +56,7 @@ import {
   getFeatureIdFromUrl,
   getFeatureTypeFromUrl,
 } from "@/utils/urlParamUtil";
-import { getFeature } from "@/utils/layerUtil";
+import { getFeature, setLayerVisibility } from "@/utils/layerUtil";
 import ZoomExtentLayer, {
   getFeatureById as getZoomFeatureById,
 } from "@/layers/ZoomExtentLayer";
@@ -388,6 +388,32 @@ export default defineComponent({
       });
       // Set extent based on the URL query parameter...
       esriMap.mapView.extent = getExtentFromUrl();
+      // Open popup if specified in URL...
+      const featureType = getFeatureTypeFromUrl();
+      const featureId = getFeatureIdFromUrl();
+      if (featureType && featureId) {
+        esriMap.mapView.when().then(() => {
+          getFeature(featureId, featureType, esriMap.webmap).then((result) => {
+            
+            if (result) {
+              if (result.geometry.type !== "point") {
+                throw "The parameter, featuretype, only supports point feature currently.";
+              }
+              if (!result.layer.visible) {
+                const layerList = setLayerVisibility(
+                  result.layer.id,
+                  true,
+                  store.state.layerList
+                );
+                store.commit("setLayerList", layerList);
+              }
+              esriMap.zoomToMax(result.geometry as Point).then(() => {
+                showPopup(result.layer.id, [result.getObjectId()]);
+              });
+            }
+          });
+        });
+      }
       //
       esriMap.mapView.watch("scale", (newValue, oldValue) => {
         if (oldValue > 0) {
@@ -402,17 +428,6 @@ export default defineComponent({
           height: event.height,
         });
       });
-      // Open popup if specified in URL...
-      const featureType = getFeatureTypeFromUrl();
-      const featureId = getFeatureIdFromUrl();
-      if (featureType && featureId) {
-        getFeature(featureId, featureType, esriMap.webmap).then((result) => {
-          if (result) {
-            esriMap.zoomToMax(result.geometry as Point);
-            showPopup(result.layer.id, [result.getObjectId()]);
-          }
-        });
-      }
     });
     return {
       zoomPopupVisible,

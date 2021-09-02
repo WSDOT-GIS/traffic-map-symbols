@@ -18,6 +18,11 @@ Sample URLs:
 ?extent=-122.4489756,47.7741882,-122.1102255,47.5032113&layer=camera,parkride&base=satellite
 * Open camera popup with ID
 ?featuretype=camera&featureid=1001
+?featuretype=restriction&featureid=R-WA-290-2
+?featuretype=alert&featureid=464389
+?featuretype=weather&featureid=1909
+?featuretype=mountain&featureid=2
+?featuretype=time&featureid=4
 */
 
 import { project } from "@arcgis/core/geometry/projection";
