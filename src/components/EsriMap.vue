@@ -356,7 +356,8 @@ export default defineComponent({
                 response.geometry,
                 SpatialReference.WebMercator
               ) as Geometry;
-              const extent = geom.extent;
+              // Users get lost zooming in too tight, so zoom to larger area...
+              const extent = geom.extent.expand(2);
               zoomExtentInfo.xmin = extent.xmin;
               zoomExtentInfo.xmax = extent.xmax;
               zoomExtentInfo.ymin = extent.ymin;
