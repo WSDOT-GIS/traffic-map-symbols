@@ -96,6 +96,7 @@ import CoordinatesView from "@/components/CoordinatesView.vue";
 import MyLocationView from "@/components/MyLocationView.vue";
 import ZoomButtonView from "@/components/ZoomButtonView.vue";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
+import Extent from "@arcgis/core/geometry/Extent";
 
 export default defineComponent({
   components: {
@@ -124,20 +125,19 @@ export default defineComponent({
     const zoomPopupLabel = ref("");
     const zoomPopupX = ref(0);
     const zoomPopupY = ref(0);
-    const zoomExtentInfo = reactive({
-      xmin: 0,
-      xmax: 0,
-      ymin: 0,
-      ymax: 0,
-    } as ExtentInfo);
+    let zoomExtent: Extent | undefined;
     let mapDiv: HTMLDivElement;
     // Setup event handler for metro zoom...
     let zoomEventIsOn = false;
     const zoomMetroEventHandler = () => {
-      zoomToMetroArea(zoomExtentInfo);
+      if (zoomExtent) {
+        zoomToMetroArea(zoomExtent);
+        zoomExtent = undefined;
+      }
       if (zoomEventIsOn) {
         mapDiv.removeEventListener("click", zoomMetroEventHandler);
         zoomEventIsOn = false;
+        console.log("ZoomEvent is OFF");
       }
       zoomPopupVisible.value = false;
       mapDiv.style.cursor = "auto";
@@ -177,6 +177,7 @@ export default defineComponent({
           RoadAlertsLayer(),
           TravelTimeLayer(),
           FireIncidentLayer(),
+          ZoomExtentLayer,
         ],
       };
       if (pointerMoveHandle) {
@@ -199,9 +200,21 @@ export default defineComponent({
         clickHandle = undefined;
       }
       clickHandle = esriMap.mapView.on("click", (clickEvent) => {
+        if (zoomEventIsOn) {
+          return;
+        }
         // Check if feature is clicked on...
         esriMap.mapView.hitTest(clickEvent, opLayerOpts).then((response) => {
           if (response.results.length) {
+            // Check if metro area layer was clicked on...
+            const zoomExtentResult = response.results.filter((each) => {
+              return each.graphic.layer === ZoomExtentLayer;
+            });
+            if (zoomExtentResult.length) {
+              zoomToMetroArea(zoomExtentResult[0].graphic.geometry.extent);
+              return;
+            }
+            // Operation layer was clicked...
             const resultsByLayer: {
               info: LayerInfo;
               layer: Layer;
@@ -332,7 +345,7 @@ export default defineComponent({
         height: mapView.height,
       });
       // Pointer move event handler...
-      esriMap.mapView.on(["pointer-move", "pointer-down"], (event) => {
+      esriMap.mapView.on(["pointer-move"], (event) => {
         // Update current poitner x/y in the store...
         let pt = esriMap.mapView.toMap({ x: event.x, y: event.y });
         store.commit("setPointerX", pt.longitude);
@@ -357,11 +370,7 @@ export default defineComponent({
                 SpatialReference.WebMercator
               ) as Geometry;
               // Users get lost zooming in too tight, so zoom to larger area...
-              const extent = geom.extent.expand(2);
-              zoomExtentInfo.xmin = extent.xmin;
-              zoomExtentInfo.xmax = extent.xmax;
-              zoomExtentInfo.ymin = extent.ymin;
-              zoomExtentInfo.ymax = extent.ymax;
+              zoomExtent = geom.extent;
               zoomPopupLabel.value = response.attributes.Label;
             });
             mapDiv.style.cursor = "zoom-in";

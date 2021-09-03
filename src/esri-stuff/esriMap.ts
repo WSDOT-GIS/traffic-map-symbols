@@ -34,6 +34,7 @@ import LayerInfo from "@/types/LayerInfo";
 import firePerimeterFeatureIDs from "@/utils/firePerimeterQuery"
 import { getBasemapInfo } from "@/layers/Basemaps";
 import TileLayer from "@arcgis/core/layers/TileLayer";
+import Extent from "@arcgis/core/geometry/Extent";
 // Initialize empty map, and load layers later...
 export const webmap = new WebMap({
 });
@@ -177,9 +178,9 @@ export const zoomToMax = async (point: Point) => {
     });
 }
 
-export const zoomToMetroArea = (extentInfo: ExtentInfo): void => {
-    const extent = convert2EsriExtent(extentInfo);
-    mapView.extent = extent;
+export const zoomToMetroArea = (extent: Extent):void => {
+    mapView.extent = extent.expand(2);
+    console.log(JSON.stringify(extent));
     ZoomExtentLayer.visible = false;
     // Remember the scale zoomed into so it can detect when map is zoomed out.
     const zoomExtentLayerMaxZoom = mapView.zoom;
