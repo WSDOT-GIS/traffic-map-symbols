@@ -167,7 +167,7 @@ export const tryZoomToPointAsync = async (point: Point, numLevels?: number): Pro
     return isSuccess;
 }
 
-export const zoomToMax = async (point: Point) => {
+export const zoomToMax = async (point: Point): Promise<void> => {
     await mapView.goTo({
         target: point,
         scale: getMaxScale()
@@ -179,7 +179,7 @@ export const zoomToMax = async (point: Point) => {
     });
 }
 
-export const zoomToMetroArea = (extent: Extent):void => {
+export const zoomToMetroArea = (extent: Extent): void => {
     mapView.extent = extent.expand(2);
     ZoomExtentLayer.visible = false;
     // Remember the scale zoomed into so it can detect when map is zoomed out.
@@ -197,7 +197,7 @@ export const zoomToMetroArea = (extent: Extent):void => {
 
 let maxScale = 0;
 
-export const getMaxScale = () => {
+export const getMaxScale = (): number => {
     if (maxScale > 0) {
         return maxScale;
     } else {
