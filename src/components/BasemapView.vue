@@ -32,8 +32,8 @@ export default defineComponent({
     const labelFontSize = ref<number>(12)
     const windowWidth = ref<number>(window.innerWidth)
     const toggleImageryReference= ()=>{
-      webmap.basemap.title=="Basemap"||webmap.basemap.title=="WSDOT Basemap"? webmap.findLayerById("esri-reference-layer").visible=true:webmap.findLayerById("esri-reference-layer").visible=false
-      webmap.findLayerById("esri-reference-layer").load()
+      webmap.basemap.title=="Basemap"||webmap.basemap.title=="WSDOT Basemap"? webmap.findLayerById("roads-reference-layer").visible=true:webmap.findLayerById("roads-reference-layer").visible=false
+      webmap.basemap.title=="Basemap"||webmap.basemap.title=="WSDOT Basemap"? webmap.findLayerById("boundaries-places-reference-layer").visible=true:webmap.findLayerById("boundaries-places-reference-layer").visible=false
     }
     const updateBasemapIcon = ()=>{
       imgSrc.value == satelliteImage
@@ -47,7 +47,7 @@ export default defineComponent({
       (labelStyle.value = "iconLabelWhite");
     }
     const onClick = () => {
-      console.log(webmap.basemap.title)
+      console.log(webmap.basemap)
       toggleImageryReference()
       store.commit("toggleBasemap");
       updateBasemapIcon()
