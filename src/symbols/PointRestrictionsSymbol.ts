@@ -182,9 +182,9 @@ const symbol = new CIMSymbol({
                     "type": "CIMSolidFill",
                     "enable": true,
                     "color": [
-                      255,
-                      193,
-                      7,
+                      204,
+                      32,
+                      156,
                       255
                     ]
                   }
@@ -354,9 +354,9 @@ const symbol = new CIMSymbol({
                     "type": "CIMSolidFill",
                     "enable": true,
                     "color": [
-                      255,
-                      193,
-                      7,
+                      204,
+                      32,
+                      156,
                       255
                     ]
                   }

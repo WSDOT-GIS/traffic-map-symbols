@@ -164,9 +164,9 @@ const symbol = new CIMSymbol_1.default({
                                         "type": "CIMSolidFill",
                                         "enable": true,
                                         "color": [
-                                            102,
-                                            176,
-                                            159,
+                                            28,
+                                            120,
+                                            205,
                                             255
                                         ]
                                     }
@@ -336,9 +336,9 @@ const symbol = new CIMSymbol_1.default({
                                         "type": "CIMSolidFill",
                                         "enable": true,
                                         "color": [
-                                            102,
-                                            176,
-                                            159,
+                                            28,
+                                            120,
+                                            205,
                                             255
                                         ]
                                     }
@@ -617,9 +617,9 @@ const symbol = new CIMSymbol_1.default({
                                         "type": "CIMSolidFill",
                                         "enable": true,
                                         "color": [
-                                            102,
-                                            176,
-                                            159,
+                                            28,
+                                            120,
+                                            205,
                                             255
                                         ]
                                     }
@@ -1076,9 +1076,9 @@ const symbol = new CIMSymbol_1.default({
                                         "type": "CIMSolidFill",
                                         "enable": true,
                                         "color": [
-                                            102,
-                                            176,
-                                            159,
+                                            28,
+                                            120,
+                                            205,
                                             255
                                         ]
                                     }

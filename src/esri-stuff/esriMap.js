@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeHighlight = exports.highlightFeature = exports.bufferByPixels = exports.getIdsFromCluster = exports.getLayer = exports.panMap = exports.toScreenXY = exports.getMaxScale = exports.zoomOnClick = exports.zoomToMax = exports.tryZoomToPointAsync = exports.tryZoomToPoint = exports.reloadGeoJsonLayers = exports.loadOperationalLayers = exports.init = exports.mapView = exports.webmap = void 0;
+exports.removeHighlight = exports.highlightFeature = exports.bufferByPixels = exports.getIdsFromCluster = exports.getLayer = exports.panMap = exports.toScreenXY = exports.getMaxScale = exports.zoomToMetroArea = exports.zoomToMax = exports.tryZoomToPointAsync = exports.tryZoomToPoint = exports.reloadGeoJsonLayers = exports.loadOperationalLayers = exports.init = exports.mapView = exports.webmap = void 0;
 const tslib_1 = require("tslib");
 const WebMap_1 = tslib_1.__importDefault(require("@arcgis/core/WebMap"));
 const MapView_1 = tslib_1.__importDefault(require("@arcgis/core/views/MapView"));
@@ -25,6 +25,7 @@ const FirePerimeterLayer_1 = require("@/layers/FirePerimeterLayer");
 const MileMarkersLayer_1 = require("@/layers/MileMarkersLayer");
 const RoadsReferenceLayer_1 = require("@/layers/RoadsReferenceLayer");
 const BoundariesPlacesReferenceLayer_1 = require("@/layers/BoundariesPlacesReferenceLayer");
+//
 const extentUtil_1 = require("@/utils/extentUtil");
 const ZoomExtentLayer_1 = tslib_1.__importDefault(require("@/layers/ZoomExtentLayer"));
 const appConfigUtil_1 = require("@/utils/appConfigUtil");
@@ -172,22 +173,22 @@ const zoomToMax = (point) => tslib_1.__awaiter(void 0, void 0, void 0, function*
     });
 });
 exports.zoomToMax = zoomToMax;
-const zoomOnClick = (extentInfo) => {
-    const extent = extentUtil_1.convert2EsriExtent(extentInfo);
-    exports.mapView.extent = extent;
+const zoomToMetroArea = (extent) => {
+    exports.mapView.extent = extent.expand(2);
     ZoomExtentLayer_1.default.visible = false;
     // Remember the scale zoomed into so it can detect when map is zoomed out.
-    const zoomExtentLayerMaxScale = exports.mapView.scale;
-    // Set watch to make the layer visible again when user zoomed out.
+    const zoomExtentLayerMaxZoom = exports.mapView.zoom;
+    // Set watch to make the layer visible again when user zoom out 2+ levels.
     const watchHandle = watchUtils_1.whenTrue(exports.mapView, "stationary", () => {
-        if (exports.mapView.scale > zoomExtentLayerMaxScale) {
+        // Note: Allow users to zoom out one level without showing the extent box, so they still click on features.
+        if (exports.mapView.zoom < zoomExtentLayerMaxZoom - 1) {
             ZoomExtentLayer_1.default.visible = true;
             // Watch is no longer needed.
             watchHandle.remove();
         }
     });
 };
-exports.zoomOnClick = zoomOnClick;
+exports.zoomToMetroArea = zoomToMetroArea;
 let maxScale = 0;
 const getMaxScale = () => {
     if (maxScale > 0) {
