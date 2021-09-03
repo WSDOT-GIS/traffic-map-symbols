@@ -26,8 +26,7 @@ import { initLayer as initMileMakersLayer } from "@/layers/MileMarkersLayer";
 import { initLayer as initESRIRoadsReference } from "@/layers/RoadsReferenceLayer"
 import { initLayer as initESRIBoundariesPlacesReference } from "@/layers/BoundariesPlacesReferenceLayer"
 //
-import ExtentInfo from "@/types/ExtentInfo";
-import { convert2EsriExtent, getEsriExtent } from "@/utils/extentUtil";
+import { getEsriExtent } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 import FeatureInfo from "@/types/FeatureInfo";
 import { getConfig } from "@/utils/appConfigUtil";
@@ -182,7 +181,6 @@ export const zoomToMax = async (point: Point) => {
 
 export const zoomToMetroArea = (extent: Extent):void => {
     mapView.extent = extent.expand(2);
-    console.log(JSON.stringify(extent));
     ZoomExtentLayer.visible = false;
     // Remember the scale zoomed into so it can detect when map is zoomed out.
     const zoomExtentLayerMaxZoom = mapView.zoom;

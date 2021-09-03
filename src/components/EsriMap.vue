@@ -137,7 +137,6 @@ export default defineComponent({
       if (zoomEventIsOn) {
         mapDiv.removeEventListener("click", zoomMetroEventHandler);
         zoomEventIsOn = false;
-        console.log("ZoomEvent is OFF");
       }
       zoomPopupVisible.value = false;
       mapDiv.style.cursor = "auto";
