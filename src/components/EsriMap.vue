@@ -283,6 +283,9 @@ export default defineComponent({
                           g.geometry as Point
                         );
                       } else {
+                        // Zoom in...
+                        
+                        //
                         closePopup();
                       }
                     });
