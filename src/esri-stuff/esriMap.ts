@@ -80,10 +80,10 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const firePerimeterIDs = await firePerimeterFeatureIDs(fireIncidentLayer)
     const firePerimetersLayer = initFirePerimetersLayer(config.firePerimeters, firePerimeterIDs)//Needed to filter fire perimeters to just those within the state
     const mileMarkersLayer = initMileMakersLayer(config.mileMarkers)
-    const mileMarkersOneTenthLayer = initMileMakersLayer(config.mileMarkersOneTenth)
-    const mileMarkersOneMileLayer = initMileMakersLayer(config.mileMarkersOneMile)
-    const mileMarkersFiveMileLayer = initMileMakersLayer(config.mileMarkersFiveMile)
-    const mileMarkersTenMileLayer = initMileMakersLayer(config.mileMarkersTenMile)
+    //const mileMarkersOneTenthLayer = initMileMakersLayer(config.mileMarkersOneTenth)
+    //const mileMarkersOneMileLayer = initMileMakersLayer(config.mileMarkersOneMile)
+    //const mileMarkersFiveMileLayer = initMileMakersLayer(config.mileMarkersFiveMile)
+    //const mileMarkersTenMileLayer = initMileMakersLayer(config.mileMarkersTenMile)
     const esriRoadsReferenceLayer = initESRIRoadsReference(config.esriRoadsReferenceLayer)
     const esriPlacesReferenceLayer = initESRIBoundariesPlacesReference(config.esriPlacesReferenceLayer)
     webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, mileMarkersLayer, firePerimetersLayer, fireIncidentLayer,

@@ -75,10 +75,10 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     const firePerimeterIDs = yield firePerimeterQuery_1.default(fireIncidentLayer);
     const firePerimetersLayer = FirePerimeterLayer_1.initLayer(config.firePerimeters, firePerimeterIDs); //Needed to filter fire perimeters to just those within the state
     const mileMarkersLayer = MileMarkersLayer_1.initLayer(config.mileMarkers);
-    const mileMarkersOneTenthLayer = MileMarkersLayer_1.initLayer(config.mileMarkersOneTenth);
-    const mileMarkersOneMileLayer = MileMarkersLayer_1.initLayer(config.mileMarkersOneMile);
-    const mileMarkersFiveMileLayer = MileMarkersLayer_1.initLayer(config.mileMarkersFiveMile);
-    const mileMarkersTenMileLayer = MileMarkersLayer_1.initLayer(config.mileMarkersTenMile);
+    //const mileMarkersOneTenthLayer = initMileMakersLayer(config.mileMarkersOneTenth)
+    //const mileMarkersOneMileLayer = initMileMakersLayer(config.mileMarkersOneMile)
+    //const mileMarkersFiveMileLayer = initMileMakersLayer(config.mileMarkersFiveMile)
+    //const mileMarkersTenMileLayer = initMileMakersLayer(config.mileMarkersTenMile)
     const esriRoadsReferenceLayer = RoadsReferenceLayer_1.initLayer(config.esriRoadsReferenceLayer);
     const esriPlacesReferenceLayer = BoundariesPlacesReferenceLayer_1.initLayer(config.esriPlacesReferenceLayer);
     exports.webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, mileMarkersLayer, firePerimetersLayer, fireIncidentLayer,
