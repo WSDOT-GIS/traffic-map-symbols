@@ -75,6 +75,9 @@ import RoadAlertsLayer from "@/layers/RoadAlertsLayer";
 import TravelTimeLayer from "@/layers/TravelTimeLayer";
 import RestAreasLayer from "@/layers/RestAreasLayer";
 import FireIncidentLayer from "@/layers/FireIncidentLayer";
+import MileMarkersLayer from "@/layers/MileMarkersLayer";
+import RoadsReferenceLayer from "@/layers/RoadsReferenceLayer";
+import BoundariesPlacesReferenceLayer from "@/layers/BoundariesPlacesReferenceLayer"
 // import FirePerimeterLayer from "@/layers/FirePerimeterLayer"
 /* Popups */
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
@@ -175,6 +178,9 @@ export default defineComponent({
           RoadAlertsLayer(),
           TravelTimeLayer(),
           FireIncidentLayer(),
+          MileMarkersLayer(),
+          RoadsReferenceLayer(),
+          BoundariesPlacesReferenceLayer(),
           ZoomExtentLayer,
         ],
       };

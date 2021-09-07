@@ -21,6 +21,10 @@ interface AppConfig {
     mileMarkers: string,
     esriPlacesReferenceLayer: string,
     esriRoadsReferenceLayer:string,
+    mileMarkersOneTenth: string;
+    mileMarkersOneMile: string;
+    mileMarkersFiveMile: string;
+    mileMarkersTenMile: string;
     // Layer refresh interval in minutes...
     layerRefreshMinute: number;
 }
