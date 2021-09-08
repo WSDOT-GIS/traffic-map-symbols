@@ -1,6 +1,5 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import "./assets/popups.css"
 import "./assets/global.css"
 import "./assets/w3.css"
 import "./assets/main.css"
