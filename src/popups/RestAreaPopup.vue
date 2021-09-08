@@ -13,6 +13,12 @@
             fieldName: 'title',
           },
         },
+         {
+          label: 'Last Updated',
+          value: {
+            fieldName: 'title',
+          },
+        },
       ],
     }"
     @close="close"

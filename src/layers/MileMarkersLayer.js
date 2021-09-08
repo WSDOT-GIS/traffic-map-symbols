@@ -9,7 +9,7 @@ const initLayer = (url, id) => {
         id: id,
         url: url,
         title: "Mile Markers",
-        visible: true,
+        visible: false,
     });
     return layer;
 };
