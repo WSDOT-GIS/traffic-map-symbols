@@ -80,9 +80,9 @@ export default defineComponent({
         visible.value = false;
       }
       // Temporarily hide...
-      // else if (text === "???") {
-      //   visible.value = false;
-      // }
+      else if (text === "???") {
+        visible.value = false;
+      }
       else {
         visible.value = true;
       }
