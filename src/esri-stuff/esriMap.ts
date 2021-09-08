@@ -82,7 +82,8 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const mileMarkersLayer = initMileMakersLayer(config.mileMarkers)//Needed to filter fire perimeters to just those within the state
     const esriRoadsReferenceLayer = initESRIRoadsReference(config.esriRoadsReferenceLayer)
     const esriPlacesReferenceLayer = initESRIBoundariesPlacesReference(config.esriPlacesReferenceLayer)
-    webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, mileMarkersLayer, firePerimetersLayer, fireIncidentLayer,
+    webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, mileMarkersLayer, 
+        firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertsLyr]);
 
@@ -194,6 +195,15 @@ export const zoomToMetroArea = (extent: Extent): void => {
         }
     });
 };
+
+export const zoomToExtent = async (extent: Extent): Promise<void> => {
+    await mapView.goTo(extent, {
+        duration: 300,
+        easing: "ease-in"
+    }).catch((error) => {
+        console.error("zoomToExtent failed: " + error);
+    });
+}
 
 let maxScale = 0;
 
