@@ -7,7 +7,7 @@ export const initLayer = (url: string, id: string): FeatureLayer => {
         id: id,
         url: url,
         title: "Mile Markers",
-        visible: true,
+        visible: false,
     });
     return layer;
 }

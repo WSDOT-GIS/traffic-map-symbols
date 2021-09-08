@@ -64,14 +64,6 @@
           value: { fieldName: 'TravelDirection'}
         },
 				{ 
-          label:'Time Updated', 
-          value: { 
-            fieldName: 'TimeUpdated',
-            isDate: true,
-            isTime: true
-          },
-        },
-				{ 
           label:'Commute Page Address', 
           value: { fieldName: 'CommutePageAddress'}
         },
@@ -82,6 +74,14 @@
 				{ 
           label:'Longitude', 
           value: { fieldName: 'Longitude'}
+        },
+        { 
+          label:'Last Updated', 
+          value: { 
+            fieldName: 'TimeUpdated',
+            isDate: true,
+            isTime: true
+          }
         }
       ],
     }"
