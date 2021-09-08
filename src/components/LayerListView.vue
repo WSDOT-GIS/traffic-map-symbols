@@ -5,6 +5,7 @@
       <li class="w3-border-0 mapFeaturesLI" style="padding: 0">
         <ToggleSwitchView
           @toggle="clickEvent"
+          :Enabled="true"
           :Checked="layerList[getLayerIndex('traffic-flow-layer')].visible"
           :Value="getLayerIndex('traffic-flow-layer').toString()"
           :Title="'Toggle ' + layerList[getLayerIndex('traffic-flow-layer')].title"
@@ -49,6 +50,7 @@
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
         <ToggleSwitchView
           @toggle="clickEvent"
+          :Enabled="true"
           :Checked="layerList[getLayerIndex('road-alerts-layer')].visible"
           :Value="getLayerIndex('road-alerts-layer').toString()"
           :Title="'Toggle ' + layerList[getLayerIndex('road-alerts-layer')].title"
@@ -72,6 +74,7 @@
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
         <ToggleSwitchView
           @toggle="clickEvent"
+          :Enabled="true"
           :Checked="layerList[getLayerIndex('traffic-camera-layer')].visible"
           :Value="layerList[getLayerIndex('traffic-camera-layer')].index.toString()"
           :Title="'Toggle ' + layerList[getLayerIndex('traffic-camera-layer')].title"
@@ -95,6 +98,7 @@
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
         <ToggleSwitchView
           @toggle="clickEvent"
+          :Enabled="true"
           :Checked="layerList[getLayerIndex('point-restrictions-layer')].visible"
           :Value="
             getLayerIndex('point-restrictions-layer').toString() +
@@ -122,6 +126,7 @@
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
         <ToggleSwitchView
           @toggle="clickEvent"
+          :Enabled="true"
           :Checked="layerList[getLayerIndex('travel-times-layer')].visible"
           :Value="getLayerIndex('travel-times-layer').toString()"
           :Title="'Toggle ' + layerList[getLayerIndex('travel-times-layer')].title"
@@ -145,6 +150,7 @@
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
         <ToggleSwitchView
           @toggle="clickEvent"
+          :Enabled="true"
           :Checked="layerList[getLayerIndex('mountain-passes-layer')].visible"
           :Value="getLayerIndex('mountain-passes-layer').toString()"
           :Title="'Toggle ' + layerList[getLayerIndex('mountain-passes-layer')].title"
@@ -168,6 +174,7 @@
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
         <ToggleSwitchView
           @toggle="clickEvent"
+          :Enabled="true"
           :Checked="layerList[getLayerIndex('weather-stations-layer')].visible"
           :Value="getLayerIndex('weather-stations-layer').toString()"
           :Title="'Toggle ' + layerList[getLayerIndex('weather-stations-layer')].title"
@@ -191,6 +198,7 @@
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
         <ToggleSwitchView
           @toggle="clickEvent"
+          :Enabled="true"
           :Checked="layerList[getLayerIndex('park-ride-layer')].visible"
           :Value="getLayerIndex('park-ride-layer').toString()"
           :Title="'Toggle ' + layerList[getLayerIndex('park-ride-layer')].title"
@@ -214,6 +222,7 @@
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
         <ToggleSwitchView
           @toggle="clickEvent"
+          :Enabled="true"
           :Checked="layerList[getLayerIndex('rest-areas-layer')].visible"
           :Value="getLayerIndex('rest-areas-layer').toString()"
           :Title="'Toggle ' + layerList[getLayerIndex('rest-areas-layer')].title"
@@ -237,6 +246,7 @@
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
         <ToggleSwitchView
           @toggle="clickEvent"
+          :Enabled="true"
           :Checked="layerList[getLayerIndex('fire-perimeters-layer')].visible"
           :Value="
             getLayerIndex('fire-perimeters-layer').toString() +
@@ -264,6 +274,7 @@
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
         <ToggleSwitchView
           @toggle="clickEvent"
+          :Enabled="mileMarkerToggleEnabled"
           :Checked="layerList[getLayerIndex('mile-markers-ten-mile-layer')].visible"
           :Value="
             getLayerIndex('mile-markers-one-tenth-mile-layer').toString()+
@@ -273,7 +284,7 @@
             getLayerIndex('mile-markers-five-mile-layer').toString()+
             ',' +
             getLayerIndex('mile-markers-ten-mile-layer').toString()"
-          Title="Toggle Mile Markers"
+          :Title="mileMarkerToggleEnabled==true?'Toggle Mile Markers':'Zoom in to enable mile marker toggle'"
         >
           <template v-slot>
             <div
@@ -284,7 +295,7 @@
                 )?.paths
               "
             ></div>
-            <span class="listLabel" id="WildlandFireeLabel"
+            <span class="listLabel" id="mileMarkersLabel"
               >Mile Markers</span
             >
           </template>
@@ -295,16 +306,28 @@
 </template>
 <script lang="ts">
 import { store, useStore } from "@/store";
-import { defineComponent } from "vue";
+import { defineComponent, ref} from "vue";
 import { layerListIcons } from "@/symbols/IconDefinitions";
 import ToggleSwitchView from "./ToggleSwitchView.vue";
+import { webmap, mapView } from "@/esri-stuff/esriMap";
 
 export default defineComponent({
   components: { ToggleSwitchView },
   setup() {
     const store = useStore();
     const layerIcons = layerListIcons;
-    return { layerIcons, store };
+    const mileMarkerToggleEnabled = ref<boolean>();
+    mapView.watch("scale",(scale)=>{
+      if(scale >577790.554289){
+        mileMarkerToggleEnabled.value=false
+      }
+      else{
+        mileMarkerToggleEnabled.value=true
+      }
+      console.log(scale)
+    })
+    return { layerIcons, store, mileMarkerToggleEnabled };
+    //add mule markers to return function for v-if when layer visibilty is true
   },
   computed: {
     layerList() {
