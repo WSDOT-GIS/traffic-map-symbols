@@ -9,7 +9,7 @@ const initLayer = (url) => {
         id: "esri-reference-layer",
         url: url,
         title: "ESRI Reference",
-        visible: false,
+        visible: true,
     });
     return layer;
 };

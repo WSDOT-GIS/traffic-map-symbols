@@ -48,7 +48,7 @@ const initLayer = (url) => {
     layer = new GeoJSONLayer_1.default({
         id: "mountain-passes-layer",
         url: url,
-        title: "Mountain Passes",
+        title: "Mountain Pass Reports",
         renderer: mountainPassRenderer,
         visible: false,
         fields: fields,

@@ -264,9 +264,16 @@
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
         <ToggleSwitchView
           @toggle="clickEvent"
-          :Checked="layerList[getLayerIndex('mile-markers-layer')].visible"
-          :Value="getLayerIndex('mile-markers-layer').toString()"
-          :Title="'Toggle ' + layerList[getLayerIndex('mile-markers-layer')].title"
+          :Checked="layerList[getLayerIndex('mile-markers-ten-mile-layer')].visible"
+          :Value="
+            getLayerIndex('mile-markers-one-tenth-mile-layer').toString()+
+            ',' +
+            getLayerIndex('mile-markers-one-mile-layer').toString()+
+            ',' +
+            getLayerIndex('mile-markers-five-mile-layer').toString()+
+            ',' +
+            getLayerIndex('mile-markers-ten-mile-layer').toString()"
+          Title="Toggle Mile Markers"
         >
           <template v-slot>
             <div
@@ -277,8 +284,8 @@
                 )?.paths
               "
             ></div>
-            <span class="listLabel">
-              {{ layerList[getLayerIndex('mile-markers-layer')].title }}</span
+            <span class="listLabel" id="WildlandFireeLabel"
+              >Mile Markers</span
             >
           </template>
         </ToggleSwitchView>

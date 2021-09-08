@@ -140,11 +140,11 @@ export default defineComponent({
     };
 
     const getDirection1Label = (feature: FeatureInfo) => {
-      return "Travel " + feature.attributes["TravelDirection1"];
+      return "Travel " + feature.attributes["TravelDirection1"]?.toString().toLowerCase();
     };
 
     const getDirection2Label = (feature: FeatureInfo) => {
-      return "Travel " + feature.attributes["TravelDirection2"];
+      return "Travel " + feature.attributes["TravelDirection2"]?.toString().toLowerCase();
     };
 
     return {

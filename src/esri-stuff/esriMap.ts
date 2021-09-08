@@ -79,16 +79,15 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const fireIncidentLayer = initFireIncidentsLayer(config.fireIncidents)
     const firePerimeterIDs = await firePerimeterFeatureIDs(fireIncidentLayer)
     const firePerimetersLayer = initFirePerimetersLayer(config.firePerimeters, firePerimeterIDs)//Needed to filter fire perimeters to just those within the state
-    const mileMarkersLayer = initMileMakersLayer(config.mileMarkers)
-    //const mileMarkersOneTenthLayer = initMileMakersLayer(config.mileMarkersOneTenth)
-    //const mileMarkersOneMileLayer = initMileMakersLayer(config.mileMarkersOneMile)
-    //const mileMarkersFiveMileLayer = initMileMakersLayer(config.mileMarkersFiveMile)
-    //const mileMarkersTenMileLayer = initMileMakersLayer(config.mileMarkersTenMile)
+    const mileMarkersOneTenthLayer = initMileMakersLayer(config.mileMarkersOneTenth, "mile-markers-one-tenth-mile-layer")
+    const mileMarkersOneMileLayer = initMileMakersLayer(config.mileMarkersOneMile, "mile-markers-one-mile-layer")
+    const mileMarkersFiveMileLayer = initMileMakersLayer(config.mileMarkersFiveMile, "mile-markers-five-mile-layer")
+    const mileMarkersTenMileLayer = initMileMakersLayer(config.mileMarkersTenMile, "mile-markers-ten-mile-layer")
     const esriRoadsReferenceLayer = initESRIRoadsReference(config.esriRoadsReferenceLayer)
     const esriPlacesReferenceLayer = initESRIBoundariesPlacesReference(config.esriPlacesReferenceLayer)
-    webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, mileMarkersLayer, firePerimetersLayer, fireIncidentLayer,
+    webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
-        pointRestrictionLyr, cameraLyr, roadAlertsLyr]);
+        pointRestrictionLyr, cameraLyr, roadAlertsLyr,mileMarkersOneTenthLayer, mileMarkersOneMileLayer,mileMarkersFiveMileLayer, mileMarkersTenMileLayer ]);
 
 }
 /**

@@ -49,7 +49,7 @@ export const initLayer = (url: string): GeoJSONLayer => {
     layer = new GeoJSONLayer({
         id: "mountain-passes-layer",
         url: url,
-        title: "Mountain Passes",
+        title: "Mountain Pass Reports",
         renderer: mountainPassRenderer,
         visible: false,
         fields: fields,

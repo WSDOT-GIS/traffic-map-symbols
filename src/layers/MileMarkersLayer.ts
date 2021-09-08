@@ -2,9 +2,9 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 let layer: FeatureLayer | undefined;
 
-export const initLayer = (url: string): FeatureLayer => {
+export const initLayer = (url: string, id: string): FeatureLayer => {
     layer = new FeatureLayer({
-        id: "mile-markers-layer",
+        id: id,
         url: url,
         title: "Mile Markers",
         visible: true,

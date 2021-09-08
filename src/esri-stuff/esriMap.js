@@ -74,16 +74,15 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     const fireIncidentLayer = FireIncidentLayer_1.initLayer(config.fireIncidents);
     const firePerimeterIDs = yield firePerimeterQuery_1.default(fireIncidentLayer);
     const firePerimetersLayer = FirePerimeterLayer_1.initLayer(config.firePerimeters, firePerimeterIDs); //Needed to filter fire perimeters to just those within the state
-    const mileMarkersLayer = MileMarkersLayer_1.initLayer(config.mileMarkers);
-    //const mileMarkersOneTenthLayer = initMileMakersLayer(config.mileMarkersOneTenth)
-    //const mileMarkersOneMileLayer = initMileMakersLayer(config.mileMarkersOneMile)
-    //const mileMarkersFiveMileLayer = initMileMakersLayer(config.mileMarkersFiveMile)
-    //const mileMarkersTenMileLayer = initMileMakersLayer(config.mileMarkersTenMile)
+    const mileMarkersOneTenthLayer = MileMarkersLayer_1.initLayer(config.mileMarkersOneTenth, "mile-markers-one-tenth-mile-layer");
+    const mileMarkersOneMileLayer = MileMarkersLayer_1.initLayer(config.mileMarkersOneMile, "mile-markers-one-mile-layer");
+    const mileMarkersFiveMileLayer = MileMarkersLayer_1.initLayer(config.mileMarkersFiveMile, "mile-markers-five-mile-layer");
+    const mileMarkersTenMileLayer = MileMarkersLayer_1.initLayer(config.mileMarkersTenMile, "mile-markers-ten-mile-layer");
     const esriRoadsReferenceLayer = RoadsReferenceLayer_1.initLayer(config.esriRoadsReferenceLayer);
     const esriPlacesReferenceLayer = BoundariesPlacesReferenceLayer_1.initLayer(config.esriPlacesReferenceLayer);
-    exports.webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, mileMarkersLayer, firePerimetersLayer, fireIncidentLayer,
+    exports.webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
-        pointRestrictionLyr, cameraLyr, roadAlertsLyr]);
+        pointRestrictionLyr, cameraLyr, roadAlertsLyr, mileMarkersOneTenthLayer, mileMarkersOneMileLayer, mileMarkersFiveMileLayer, mileMarkersTenMileLayer]);
 });
 exports.loadOperationalLayers = loadOperationalLayers;
 /**

@@ -7,7 +7,7 @@ export const initLayer = (url: string): MapImageLayer => {
         id: "esri-reference-layer",
         url: url,
         title: "ESRI Reference",
-        visible: false,
+        visible: true,
     });
     return layer;
 }

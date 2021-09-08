@@ -32,8 +32,19 @@ export default defineComponent({
     const labelFontSize = ref<number>(12)
     const windowWidth = ref<number>(window.innerWidth)
     const toggleImageryReference= ()=>{
-      webmap.basemap.title=="Basemap"||webmap.basemap.title=="WSDOT Basemap"? webmap.findLayerById("roads-reference-layer").visible=true:webmap.findLayerById("roads-reference-layer").visible=false
-      webmap.basemap.title=="Basemap"||webmap.basemap.title=="WSDOT Basemap"? webmap.findLayerById("boundaries-places-reference-layer").visible=true:webmap.findLayerById("boundaries-places-reference-layer").visible=false
+      store.state.layerList.map((x)=>{
+        if(webmap.basemap.title=="Basemap"||webmap.basemap.title=="WSDOT Basemap"){
+          if(x.id=="roads-reference-layer"||x.id=="boundaries-places-reference-layer"){
+            x.visible=true
+          }
+        }
+        else{
+          if(x.id=="roads-reference-layer"||x.id=="boundaries-places-reference-layer"){
+            x.visible=false
+          }
+        }
+      })
+      store.commit("setLayerList", store.state.layerList);
     }
     const updateBasemapIcon = ()=>{
       imgSrc.value == satelliteImage
