@@ -58,7 +58,7 @@ export default defineComponent({
       (labelStyle.value = "iconLabelWhite");
     }
     const onClick = () => {
-      console.log(webmap.basemap)
+      //console.log(webmap.basemap)
       toggleImageryReference()
       store.commit("toggleBasemap");
       updateBasemapIcon()

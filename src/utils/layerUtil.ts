@@ -88,12 +88,12 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
     } else {
         query.where += uniqueValue
     }
-    console.log(gLayer.id + ", query: " + query.where);
+    // console.log(gLayer.id + ", query: " + query.where);
     query.outFields = [gLayer.objectIdField]
-    console.log("querying...")
+    // console.log("querying...")
     const response = await gLayer.queryFeatures(query);
-    console.log("query end...")
-    console.log(JSON.stringify(response));
+    // console.log("query end...")
+    // console.log(JSON.stringify(response));
     if (response.features.length > 0) {
         return response.features[0];
     }

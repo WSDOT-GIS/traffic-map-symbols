@@ -291,7 +291,6 @@ export default defineComponent({
                       g.geometry as Point
                     );
                   } else {
-                    console.log("Zoom to the extent of all features.");
                     closePopup();
                     // Zoom to the extent of all features...
                     // Note: expand the extent so it won't zoom too tight.
@@ -434,14 +433,6 @@ export default defineComponent({
       }
       // Watch scale change...
       esriMap.mapView.watch("scale", (newValue, oldValue) => {
-        console.log(
-          "******* Scale: " +
-            oldValue +
-            "=>" +
-            newValue +
-            ", Zoom: " +
-            esriMap.mapView.zoom
-        );
         // Adjust cluster setting based on scale...
         if (oldValue > 0) {
           toggleCluster(newValue, oldValue);

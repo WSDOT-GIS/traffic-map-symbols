@@ -264,16 +264,11 @@ export default defineComponent({
     // Watch scale change...
     // On touch screen, after pinch zoom, panning map also changes the scale, so commented this out so popup does not close when that happens.
     mapView.watch("scale", () => {
-      //console.log("scale changed: " + oldValue + " => " + newValue);
       // While map is being panned to show the popup, map sometimes zoom out as well resulting in scale change, so do not close popup.
       // Only close if user intentionally change scales.
       if (!isPanning) {
         close();
       } else {
-        console.log("Debug....");
-        // setMapXY(true);
-        // console.log("MapXY: " + mapX.value + ", " + mapY.value);
-        // adjustPositionSize();
         setScreenXY();
       }
     });
@@ -539,7 +534,7 @@ export default defineComponent({
       const feature = props.Features[currentIdx.value];
       if (feature) {
         if (ignoreMapXY) {
-          console.log("set mapXY...");
+          // console.log("set mapXY...");
           mapX.value = feature.mapPoint.x;
           mapY.value = feature.mapPoint.y;
         } else {

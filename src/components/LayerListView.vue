@@ -322,7 +322,7 @@ export default defineComponent({
           for (let i = 0; i < idxs.length; i++) {
             if (index.toString() === idxs[i]) {
               layer.visible = evt.checked;
-              console.log(layer.title + ": " + layer.visible);
+              //console.log(layer.title + ": " + layer.visible);
             }
           }
         }

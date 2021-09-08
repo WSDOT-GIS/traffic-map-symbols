@@ -33,7 +33,7 @@ export default defineComponent({
   setup(props, context) {
     const onToggle = (evt: Event) => {
       const target = evt.currentTarget as HTMLInputElement;
-      console.log("checked: " + target.checked + " value: " + target.value);
+      //console.log("checked: " + target.checked + " value: " + target.value);
       context.emit("toggle", { checked: target.checked, value: target.value });
     };
     return { onToggle };
