@@ -46,6 +46,8 @@ import { Geometry } from "@arcgis/core/geometry";
 import Graphic from "@arcgis/core/Graphic";
 import Layer from "@arcgis/core/layers/Layer";
 import Point from "@arcgis/core/geometry/Point";
+import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
+import Extent from "@arcgis/core/geometry/Extent";
 
 import { getConfig } from "@/utils/appConfigUtil";
 import { mapView, zoomToMetroArea } from "@/esri-stuff/esriMap";
@@ -97,8 +99,7 @@ import BasemapView from "@/components/BasemapView.vue";
 import CoordinatesView from "@/components/CoordinatesView.vue";
 import MyLocationView from "@/components/MyLocationView.vue";
 import ZoomButtonView from "@/components/ZoomButtonView.vue";
-import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
-import Extent from "@arcgis/core/geometry/Extent";
+
 
 export default defineComponent({
   components: {

@@ -1,8 +1,13 @@
 interface AlertInfo {
-    title: string;
-    description: string;
-    x: number;
-    y: number;
+    EventID: number;
+    EventCategoryID: number;
+    EventCategoryName: string;
+    EventCategoryDescription: string;
+    LastModifiedDate: Date;
+    IconName: string;
+    EventPriorityID: number;
+    HeadlineMessage: string;
+    ExtendedMessage: string;
 }
 
 export default AlertInfo

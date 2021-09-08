@@ -31,6 +31,8 @@ import AdView from "./components/AdView.vue";
 import FooterView from "./components/FooterView.vue";
 import AlertInfo from "./types/AlertInfo";
 import { useStore } from "@/store";
+import { getAlerts } from "@/utils/alertInfoUtil";
+import { getConfig } from "@/utils/appConfigUtil";
 
 export default defineComponent({
   name: "App",
@@ -44,13 +46,18 @@ export default defineComponent({
   setup() {
     const headerText =
       "DRAFT – Information on this page is for visual demonstration and should not be used for travel related decisions – DRAFT";
-    const tempAlert: AlertInfo = {
-      title: "Placeholder for the alert message.",
-      description: "description",
-      x: 1,
-      y: 1,
-    };
-    const alerts = ref<AlertInfo[]>([tempAlert]);
+    // const tempAlert: AlertInfo = {
+    //   title: "Placeholder for the alert message.",
+    //   description: "description",
+    //   x: 1,
+    //   y: 1,
+    // };
+    const alerts = ref<AlertInfo[]>([]);
+    getConfig().then((config) => {
+      getAlerts(config.stateAlerts).then((result) => {
+        alerts.value = result;
+      })
+    })
     const adText = "Placeholder for the advertisement";
     const footerText = "Placeholder for the footer";
     const topRef = ref<HTMLDivElement>();
