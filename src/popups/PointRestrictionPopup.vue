@@ -15,6 +15,7 @@
           value: {
             fieldName: 'date_effective',
             isDate: true,
+            isTime: true,
           },
         },
         {
@@ -22,6 +23,7 @@
           value: {
             fieldName: 'RecordUpdateDate',
             isDate: true,
+            isTime: true,
           },
         },
       ],

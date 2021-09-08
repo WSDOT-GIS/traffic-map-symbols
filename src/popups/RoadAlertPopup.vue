@@ -15,6 +15,7 @@
           value: {
             fieldName: 'LastModifiedDate',
             isDate: true,
+            isTime: true,
           },
         },
       ],

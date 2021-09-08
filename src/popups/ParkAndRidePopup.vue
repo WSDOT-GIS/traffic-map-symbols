@@ -29,6 +29,7 @@
           value: {
             fieldName: 'PublishDate',
             isDate: true,
+            isTime: true,
           },
         },
       ],
