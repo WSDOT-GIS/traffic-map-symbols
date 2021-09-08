@@ -7,7 +7,7 @@
   >
     <p>
       <span class="esri-icon-zoom-in-magnifying-glass"></span>
-      Click to zoom to metro area
+      Click to zoom to {{Label}} metro area
     </p>
   </div>
 </template>
