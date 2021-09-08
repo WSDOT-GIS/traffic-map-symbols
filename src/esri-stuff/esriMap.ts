@@ -87,7 +87,8 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const esriPlacesReferenceLayer = initESRIBoundariesPlacesReference(config.esriPlacesReferenceLayer)
     webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
-        pointRestrictionLyr, cameraLyr, roadAlertsLyr,mileMarkersOneTenthLayer, mileMarkersOneMileLayer,mileMarkersFiveMileLayer, mileMarkersTenMileLayer ]);
+        pointRestrictionLyr, cameraLyr, roadAlertsLyr,
+        mileMarkersOneTenthLayer, mileMarkersOneMileLayer,mileMarkersFiveMileLayer, mileMarkersTenMileLayer ]);
 
 }
 /**
@@ -197,6 +198,15 @@ export const zoomToMetroArea = (extent: Extent): void => {
         }
     });
 };
+
+export const zoomToExtent = async (extent: Extent): Promise<void> => {
+    await mapView.goTo(extent, {
+        duration: 300,
+        easing: "ease-in"
+    }).catch((error) => {
+        console.error("zoomToExtent failed: " + error);
+    });
+}
 
 let maxScale = 0;
 
