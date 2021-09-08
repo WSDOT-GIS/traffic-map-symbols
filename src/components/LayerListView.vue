@@ -326,8 +326,8 @@ export default defineComponent({
       });
       store.commit("setLayerList", store.state.layerList);
     },
-    getLayerIndex: (id:string)=>{
-      let layerIndex = null
+    getLayerIndex: (id:string):number=>{
+      let layerIndex = -1;
       console.log(store.state.layerList)
       store.state.layerList.map((val,index)=>{
         if(val.id==id){
