@@ -11,7 +11,7 @@ export const getConfig = async (): Promise<AppConfig> => {
         const fetchResponse = await fetch(dir + "/appconfig.json");
         const config = await fetchResponse.json();
         appConfig = config as AppConfig;
-        console.log(appConfig)
+        // console.log(appConfig)
     }
     return appConfig;
 

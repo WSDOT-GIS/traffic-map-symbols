@@ -8,7 +8,9 @@
           :Enabled="true"
           :Checked="layerList[getLayerIndex('traffic-flow-layer')].visible"
           :Value="getLayerIndex('traffic-flow-layer').toString()"
-          :Title="'Toggle ' + layerList[getLayerIndex('traffic-flow-layer')].title"
+          :Title="
+            'Toggle ' + layerList[getLayerIndex('traffic-flow-layer')].title
+          "
         >
           <template v-slot>
             <!-- <div class="mapFeaturesIcon"></div> -->
@@ -53,19 +55,19 @@
           :Enabled="true"
           :Checked="layerList[getLayerIndex('road-alerts-layer')].visible"
           :Value="getLayerIndex('road-alerts-layer').toString()"
-          :Title="'Toggle ' + layerList[getLayerIndex('road-alerts-layer')].title"
+          :Title="
+            'Toggle ' + layerList[getLayerIndex('road-alerts-layer')].title
+          "
         >
           <template v-slot>
             <div
               class="mapFeaturesIcon"
               v-html="
-                layerIcons.find(
-                  (x) => x.id == 'road-alerts-layer'
-                )?.paths
+                layerIcons.find((x) => x.id == 'road-alerts-layer')?.paths
               "
             ></div>
             <span class="listLabel">
-              {{ layerList[getLayerIndex('road-alerts-layer')].title}}</span
+              {{ layerList[getLayerIndex("road-alerts-layer")].title }}</span
             >
           </template>
         </ToggleSwitchView>
@@ -76,20 +78,25 @@
           @toggle="clickEvent"
           :Enabled="true"
           :Checked="layerList[getLayerIndex('traffic-camera-layer')].visible"
-          :Value="layerList[getLayerIndex('traffic-camera-layer')].index.toString()"
-          :Title="'Toggle ' + layerList[getLayerIndex('traffic-camera-layer')].title"
+          :Value="
+            getLayerIndex('traffic-camera-layer').toString()
+          "
+          :Title="
+            'Toggle ' + layerList[getLayerIndex('traffic-camera-layer')].title
+          "
         >
           <template v-slot>
             <div
               class="mapFeaturesIcon"
               v-html="
                 layerIcons.find(
-                  (x) => x.id == layerList[getLayerIndex('traffic-camera-layer')].id
+                  (x) =>
+                    x.id == layerList[getLayerIndex('traffic-camera-layer')].id
                 )?.paths
               "
             ></div>
             <span class="listLabel">
-              {{ layerList[getLayerIndex('traffic-camera-layer')].title }}</span
+              {{ layerList[getLayerIndex("traffic-camera-layer")].title }}</span
             >
           </template>
         </ToggleSwitchView>
@@ -111,9 +118,8 @@
             <div
               class="mapFeaturesIcon"
               v-html="
-                layerIcons.find(
-                  (x) => x.id == 'point-restrictions-layer'
-                )?.paths
+                layerIcons.find((x) => x.id == 'point-restrictions-layer')
+                  ?.paths
               "
             ></div>
             <span class="listLabel" id="CommercialVehicleLabel"
@@ -129,19 +135,19 @@
           :Enabled="true"
           :Checked="layerList[getLayerIndex('travel-times-layer')].visible"
           :Value="getLayerIndex('travel-times-layer').toString()"
-          :Title="'Toggle ' + layerList[getLayerIndex('travel-times-layer')].title"
+          :Title="
+            'Toggle ' + layerList[getLayerIndex('travel-times-layer')].title
+          "
         >
           <template v-slot>
             <div
               class="mapFeaturesIcon"
               v-html="
-                layerIcons.find(
-                  (x) => x.id == 'travel-times-layer'
-                )?.paths
+                layerIcons.find((x) => x.id == 'travel-times-layer')?.paths
               "
             ></div>
             <span class="listLabel">
-              {{ layerList[getLayerIndex('travel-times-layer')].title }}</span
+              {{ layerList[getLayerIndex("travel-times-layer")].title }}</span
             >
           </template>
         </ToggleSwitchView>
@@ -153,19 +159,21 @@
           :Enabled="true"
           :Checked="layerList[getLayerIndex('mountain-passes-layer')].visible"
           :Value="getLayerIndex('mountain-passes-layer').toString()"
-          :Title="'Toggle ' + layerList[getLayerIndex('mountain-passes-layer')].title"
+          :Title="
+            'Toggle ' + layerList[getLayerIndex('mountain-passes-layer')].title
+          "
         >
           <template v-slot>
             <div
               class="mapFeaturesIcon"
               v-html="
-                layerIcons.find(
-                  (x) => x.id == 'mountain-passes-layer'
-                )?.paths
+                layerIcons.find((x) => x.id == 'mountain-passes-layer')?.paths
               "
             ></div>
             <span class="listLabel">
-              {{ layerList[getLayerIndex('mountain-passes-layer')].title }}</span
+              {{
+                layerList[getLayerIndex("mountain-passes-layer")].title
+              }}</span
             >
           </template>
         </ToggleSwitchView>
@@ -177,19 +185,21 @@
           :Enabled="true"
           :Checked="layerList[getLayerIndex('weather-stations-layer')].visible"
           :Value="getLayerIndex('weather-stations-layer').toString()"
-          :Title="'Toggle ' + layerList[getLayerIndex('weather-stations-layer')].title"
+          :Title="
+            'Toggle ' + layerList[getLayerIndex('weather-stations-layer')].title
+          "
         >
           <template v-slot>
             <div
               class="mapFeaturesIcon"
               v-html="
-                layerIcons.find(
-                  (x) => x.id == 'weather-stations-layer'
-                )?.paths
+                layerIcons.find((x) => x.id == 'weather-stations-layer')?.paths
               "
             ></div>
             <span class="listLabel">
-              {{ layerList[getLayerIndex('weather-stations-layer')].title }}</span
+              {{
+                layerList[getLayerIndex("weather-stations-layer")].title
+              }}</span
             >
           </template>
         </ToggleSwitchView>
@@ -206,14 +216,10 @@
           <template v-slot>
             <div
               class="mapFeaturesIcon"
-              v-html="
-                layerIcons.find(
-                  (x) => x.id == 'park-ride-layer'
-                )?.paths
-              "
+              v-html="layerIcons.find((x) => x.id == 'park-ride-layer')?.paths"
             ></div>
             <span class="listLabel">
-              {{ layerList[getLayerIndex('park-ride-layer')].title }}</span
+              {{ layerList[getLayerIndex("park-ride-layer")].title }}</span
             >
           </template>
         </ToggleSwitchView>
@@ -225,19 +231,17 @@
           :Enabled="true"
           :Checked="layerList[getLayerIndex('rest-areas-layer')].visible"
           :Value="getLayerIndex('rest-areas-layer').toString()"
-          :Title="'Toggle ' + layerList[getLayerIndex('rest-areas-layer')].title"
+          :Title="
+            'Toggle ' + layerList[getLayerIndex('rest-areas-layer')].title
+          "
         >
           <template v-slot>
             <div
               class="mapFeaturesIcon"
-              v-html="
-                layerIcons.find(
-                  (x) => x.id == 'rest-areas-layer'
-                )?.paths
-              "
+              v-html="layerIcons.find((x) => x.id == 'rest-areas-layer')?.paths"
             ></div>
             <span class="listLabel">
-              {{ layerList[getLayerIndex('rest-areas-layer')].title }}</span
+              {{ layerList[getLayerIndex("rest-areas-layer")].title }}</span
             >
           </template>
         </ToggleSwitchView>
@@ -259,9 +263,7 @@
             <div
               class="mapFeaturesIcon"
               v-html="
-                layerIcons.find(
-                  (x) => x.id == 'fire-incidents-layer'
-                )?.paths
+                layerIcons.find((x) => x.id == 'fire-incidents-layer')?.paths
               "
             ></div>
             <span class="listLabel" id="WildlandFireeLabel"
@@ -290,9 +292,7 @@
             <div
               class="mapFeaturesIcon"
               v-html="
-                layerIcons.find(
-                  (x) => x.id == 'mile-markers-layer'
-                )?.paths
+                layerIcons.find((x) => x.id == 'mile-markers-layer')?.paths
               "
             ></div>
             <span class="listLabel" id="mileMarkersLabel"
@@ -343,22 +343,23 @@ export default defineComponent({
           for (let i = 0; i < idxs.length; i++) {
             if (index.toString() === idxs[i]) {
               layer.visible = evt.checked;
+              //console.log(layer.title + ": " + layer.visible);
             }
           }
         }
       });
       store.commit("setLayerList", store.state.layerList);
     },
-    getLayerIndex: (id:string):number=>{
+    getLayerIndex: (id: string): number => {
       let layerIndex = -1;
-      console.log(store.state.layerList)
-      store.state.layerList.map((val,index)=>{
-        if(val.id==id){
-          layerIndex= index
+      // console.log(store.state.layerList)
+      store.state.layerList.map((val, index) => {
+        if (val.id == id) {
+          layerIndex = index;
         }
-      })
-      return layerIndex
-    }
+      });
+      return layerIndex;
+    },
 
     //#endregion
   },

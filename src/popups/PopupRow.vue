@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visible" >
+  <div v-if="visible">
     <span class="popup-key">{{ getLabel() }}</span>
     <span class="popup-value">{{ getText() }}</span>
   </div>
@@ -63,9 +63,15 @@ export default defineComponent({
               date.getMonth() + 1
             }/${date.getDate()}/${date.getFullYear()}`;
             if (props.Config.value.isTime) {
-              text += ` ${formatTimePart(date.getHours())}:${formatTimePart(
-                date.getMinutes()
-              )}`;
+              let hours = date.getHours();
+              let minutes = date.getMinutes();
+              // Check whether AM or PM
+              const ampm = hours >= 12 ? "PM" : "AM";
+              // Find current hour in AM-PM Format
+              hours = hours % 12;
+              // To display "0" as "12"
+              hours = hours ? hours : 12;
+              text += ` ${hours}:${formatTimePart(minutes)}${ampm}`;
             }
           } else {
             text = value.toString();
@@ -80,10 +86,9 @@ export default defineComponent({
         visible.value = false;
       }
       // Temporarily hide...
-      // else if (text === "???") {
-      //   visible.value = false;
-      // }
-      else {
+      else if (text === "???") {
+        visible.value = false;
+      } else {
         visible.value = true;
       }
       // console.log("...text: " + text);

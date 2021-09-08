@@ -54,6 +54,7 @@
           value: {
             fieldName: 'DisplayDate',
             isDate: true,
+            isTime: true,
           },
         },
       ],

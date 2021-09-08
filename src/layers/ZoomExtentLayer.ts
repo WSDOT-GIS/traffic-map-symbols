@@ -33,7 +33,7 @@ const graphics = [
         },
         attributes: {
             "ObjectID": 1,
-            "Label": "Seattle Metro",
+            "Label": "Seattle",
             "Note": ""
         }
     },
@@ -52,7 +52,7 @@ const graphics = [
         },
         attributes: {
             "ObjectID": 2,
-            "Label": "Spokane Metro",
+            "Label": "Spokane",
             "Note": ""
         }
     },
@@ -71,7 +71,7 @@ const graphics = [
         },
         attributes: {
             "ObjectID": 3,
-            "Label": "Vancouver Metro",
+            "Label": "Vancouver",
             "Note": ""
         }
     },

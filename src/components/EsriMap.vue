@@ -60,7 +60,7 @@ import { getFeature, setLayerVisibility } from "@/utils/layerUtil";
 import ZoomExtentLayer, {
   getFeatureById as getZoomFeatureById,
 } from "@/layers/ZoomExtentLayer";
-import { clusterMaxScale } from "@/utils/clusterUtil";
+import { clusterMaxScale, getIdsFromCluster } from "@/utils/clusterUtil";
 import LayerInfo from "@/types/LayerInfo";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import XY from "@/types/XY";
@@ -276,26 +276,27 @@ export default defineComponent({
               }
               // Deal with cluster...
               else if (g.isAggregate) {
-                if (g.attributes.cluster_count < 10) {
-                  // Try to get features from the cluster...
-                  esriMap
-                    .getIdsFromCluster(g, results2Show.layer, 3)
-                    .then((results) => {
-                      // Show multiple features if infos are returned...
-                      if (results) {
-                        showPopup(
-                          results2Show.layer.id,
-                          results,
-                          g.geometry as Point
-                        );
-                      } else {
-                        closePopup();
-                      }
-                    });
-                } else {
-                  // Too many in a cluster, so click to zoom-in...
-                  closePopup();
-                }
+                // Try to get features from the cluster...
+                getIdsFromCluster(
+                  g,
+                  results2Show.layer,
+                  esriMap.mapView,
+                  3
+                ).then((results) => {
+                  // Show multiple features if infos are returned...
+                  if (results instanceof Array) {
+                    showPopup(
+                      results2Show.layer.id,
+                      results,
+                      g.geometry as Point
+                    );
+                  } else {
+                    closePopup();
+                    // Zoom to the extent of all features...
+                    // Note: expand the extent so it won't zoom too tight.
+                    esriMap.zoomToExtent((results as Extent).expand(1.5));
+                  }
+                });
               } else {
                 // Not aggregate...
                 const id = g.getObjectId();
@@ -430,10 +431,10 @@ export default defineComponent({
           });
         });
       }
-      // Adjust cluster setting based on scale...
+      // Watch scale change...
       esriMap.mapView.watch("scale", (newValue, oldValue) => {
+        // Adjust cluster setting based on scale...
         if (oldValue > 0) {
-          //adjustCluster(newValue, oldValue);
           toggleCluster(newValue, oldValue);
         }
       });
