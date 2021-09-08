@@ -1,10 +1,10 @@
 <template>
   <label class="Toggle" :title="Title">
     <slot></slot>
-    <input  v-if="Enabled==false?disabled:!disabled"
+    <input :disabled='!Enabled'
       type="checkbox"
       name="toggle"
-      class="Toggle__input"
+      class='Toggle__input'
       @change="onToggle"
       :checked="Checked"
       :value="Value"
@@ -13,7 +13,7 @@
   </label>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 export default defineComponent({
   props: {
     Checked: {
@@ -39,6 +39,8 @@ export default defineComponent({
       //console.log("checked: " + target.checked + " value: " + target.value);
       context.emit("toggle", { checked: target.checked, value: target.value });
     };
+    const toggleClass = ref<string>();
+    
     return { onToggle };
   },
 });
