@@ -11,7 +11,7 @@ const getConfig = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
         const fetchResponse = yield fetch(dir + "/appconfig.json");
         const config = yield fetchResponse.json();
         appConfig = config;
-        console.log(appConfig);
+        // console.log(appConfig)
     }
     return appConfig;
 });

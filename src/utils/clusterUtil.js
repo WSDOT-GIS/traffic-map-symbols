@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.adjustCluster = exports.clusterConfig = exports.clusterMaxScale = void 0;
+exports.getIdsFromCluster = exports.clusterConfig = exports.clusterMaxScale = void 0;
 const tslib_1 = require("tslib");
 const FeatureReductionCluster_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/FeatureReductionCluster"));
 const CameraClusterSymbol_1 = tslib_1.__importDefault(require("@/symbols/CameraClusterSymbol"));
+const Extent_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/Extent"));
 exports.clusterMaxScale = 19000;
 const defaultRadius = 60;
 const labelColor = "#005151";
@@ -117,14 +118,75 @@ exports.clusterConfig = clusterConfig;
 // https://community.esri.com/t5/arcgis-api-for-javascript-ideas/arcgis-javascript-4-cluster-renderer/idc-p/1059638#M48
 clusterConfig.set("symbol", CameraClusterSymbol_1.default);
 // Watch scale change...
-const adjustCluster = (newScale, oldScale) => {
-    // Reduce cluster radius at max scale...
-    if (newScale > exports.clusterMaxScale && oldScale < exports.clusterMaxScale) {
-        clusterConfig.clusterRadius = defaultRadius;
+// export const adjustCluster = (newScale: number, oldScale: number): void => {
+//     // Reduce cluster radius at max scale...
+//     if (newScale > clusterMaxScale && oldScale < clusterMaxScale) {
+//         clusterConfig.clusterRadius = defaultRadius;
+//     }
+//     else if (newScale < clusterMaxScale && oldScale > clusterMaxScale) {
+//         clusterConfig.clusterRadius = 10;
+//     }
+// }
+/**
+Returns IDs of each feature if one of the following coditions is met:
+- maxCount is not set
+- The number of features is less than the maxCount.
+- All the features are at the identical location.
+Otherwise returns extent of all features.
+*/
+const getIdsFromCluster = (clusterGraphic, layer, mapView, maxCount) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+    const lyr = layer;
+    if (!lyr) {
+        throw "Only GeoJSONLayer is supported at this time.";
     }
-    else if (newScale < exports.clusterMaxScale && oldScale > exports.clusterMaxScale) {
-        clusterConfig.clusterRadius = 10;
+    const layerView = yield mapView.whenLayerView(lyr);
+    const query = layerView.createQuery();
+    // Object ID of the cluster...
+    query.aggregateIds = [clusterGraphic.getObjectId()];
+    query.outFields = [lyr.objectIdField];
+    const result = yield layerView.queryFeatures(query);
+    // let doReturnId = false;
+    let extent;
+    if (maxCount && result.features.length > maxCount) {
+        // let identical = true;
+        const pt0 = result.features[0].geometry;
+        // Find out extent of all features...
+        let minX = pt0.x;
+        let maxX = pt0.x;
+        let minY = pt0.y;
+        let maxY = pt0.y;
+        for (let i = 1; i < result.features.length; i++) {
+            const pt1 = result.features[i].geometry;
+            if (pt1.x < minX) {
+                minX = pt1.x;
+            }
+            else if (pt1.x > maxX) {
+                maxX = pt1.x;
+            }
+            if (pt1.y < minY) {
+                minY = pt1.y;
+            }
+            else if (pt1.y > maxY) {
+                maxY = pt1.y;
+            }
+        }
+        if (minX !== maxX || minY !== maxY) {
+            extent = new Extent_1.default({
+                xmin: minX,
+                xmax: maxX,
+                ymin: minY,
+                ymax: maxY,
+                spatialReference: pt0.spatialReference
+            });
+        }
     }
-};
-exports.adjustCluster = adjustCluster;
+    if (!extent) {
+        const ids = result.features.map((feature) => { return feature.attributes[lyr.objectIdField]; });
+        return ids;
+    }
+    else {
+        return extent;
+    }
+});
+exports.getIdsFromCluster = getIdsFromCluster;
 //# sourceMappingURL=clusterUtil.js.map

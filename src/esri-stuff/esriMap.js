@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeHighlight = exports.highlightFeature = exports.bufferByPixels = exports.getIdsFromCluster = exports.getLayer = exports.panMap = exports.toScreenXY = exports.getMaxScale = exports.zoomToMetroArea = exports.zoomToMax = exports.tryZoomToPointAsync = exports.tryZoomToPoint = exports.reloadGeoJsonLayers = exports.loadOperationalLayers = exports.init = exports.mapView = exports.webmap = void 0;
+exports.removeHighlight = exports.highlightFeature = exports.bufferByPixels = exports.getIdsFromCluster = exports.getLayer = exports.panMap = exports.toScreenXY = exports.getMaxScale = exports.zoomToExtent = exports.zoomToMetroArea = exports.zoomToMax = exports.tryZoomToPointAsync = exports.tryZoomToPoint = exports.reloadGeoJsonLayers = exports.loadOperationalLayers = exports.init = exports.mapView = exports.webmap = void 0;
 const tslib_1 = require("tslib");
 const WebMap_1 = tslib_1.__importDefault(require("@arcgis/core/WebMap"));
 const MapView_1 = tslib_1.__importDefault(require("@arcgis/core/views/MapView"));
@@ -82,7 +82,8 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     const esriPlacesReferenceLayer = BoundariesPlacesReferenceLayer_1.initLayer(config.esriPlacesReferenceLayer);
     exports.webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
-        pointRestrictionLyr, cameraLyr, roadAlertsLyr, mileMarkersOneTenthLayer, mileMarkersOneMileLayer, mileMarkersFiveMileLayer, mileMarkersTenMileLayer]);
+        pointRestrictionLyr, cameraLyr, roadAlertsLyr,
+        mileMarkersOneTenthLayer, mileMarkersOneMileLayer, mileMarkersFiveMileLayer, mileMarkersTenMileLayer]);
 });
 exports.loadOperationalLayers = loadOperationalLayers;
 /**
@@ -192,6 +193,15 @@ const zoomToMetroArea = (extent) => {
     });
 };
 exports.zoomToMetroArea = zoomToMetroArea;
+const zoomToExtent = (extent) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+    yield exports.mapView.goTo(extent, {
+        duration: 300,
+        easing: "ease-in"
+    }).catch((error) => {
+        console.error("zoomToExtent failed: " + error);
+    });
+});
+exports.zoomToExtent = zoomToExtent;
 let maxScale = 0;
 const getMaxScale = () => {
     if (maxScale > 0) {

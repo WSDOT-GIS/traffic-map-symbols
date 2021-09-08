@@ -91,12 +91,12 @@ const getFeature = (uniqueValue, groupId, map) => tslib_1.__awaiter(void 0, void
     else {
         query.where += uniqueValue;
     }
-    console.log(gLayer.id + ", query: " + query.where);
+    // console.log(gLayer.id + ", query: " + query.where);
     query.outFields = [gLayer.objectIdField];
-    console.log("querying...");
+    // console.log("querying...")
     const response = yield gLayer.queryFeatures(query);
-    console.log("query end...");
-    console.log(JSON.stringify(response));
+    // console.log("query end...")
+    // console.log(JSON.stringify(response));
     if (response.features.length > 0) {
         return response.features[0];
     }
