@@ -25,6 +25,7 @@ import { initLayer as initFirePerimetersLayer } from "@/layers/FirePerimeterLaye
 import { initLayer as initMileMakersLayer } from "@/layers/MileMarkersLayer";
 import { initLayer as initESRIRoadsReference } from "@/layers/RoadsReferenceLayer"
 import { initLayer as initESRIBoundariesPlacesReference } from "@/layers/BoundariesPlacesReferenceLayer"
+import { initLayer as initStateRouteShieldsLayer } from "@/layers/StateRouteShields"
 //
 import { getEsriExtent } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
@@ -86,7 +87,8 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const mileMarkersTenMileLayer = initMileMakersLayer(config.mileMarkersTenMile, "mile-markers-ten-mile-layer")
     const esriRoadsReferenceLayer = initESRIRoadsReference(config.esriRoadsReferenceLayer)
     const esriPlacesReferenceLayer = initESRIBoundariesPlacesReference(config.esriPlacesReferenceLayer)
-    webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, firePerimetersLayer, fireIncidentLayer,
+    const stateRouteShieldsLayer = initStateRouteShieldsLayer(config.stateRouteShieldsLayer)
+    webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer, firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertsLyr,
         mileMarkersOneTenthLayer, mileMarkersOneMileLayer,mileMarkersFiveMileLayer, mileMarkersTenMileLayer ]);
