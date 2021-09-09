@@ -2,7 +2,7 @@ import WebMap from "@arcgis/core/WebMap";
 import MapView from "@arcgis/core/views/MapView";
 import Point from "@arcgis/core/geometry/Point";
 import Polygon from "@arcgis/core/geometry/Polygon";
-import { geodesicBuffer, equals as geomEquals } from "@arcgis/core/geometry/geometryEngine";
+import { geodesicBuffer } from "@arcgis/core/geometry/geometryEngine";
 import { whenTrue } from "@arcgis/core/core/watchUtils";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Layer from "@arcgis/core/layers/Layer";
@@ -46,7 +46,8 @@ export const mapView = new MapView({
     extent: getEsriExtent("full"),
     constraints: {
         rotationEnabled: false, // Disables map rotation
-        // Limit the map navigation. Note: This still allows navigation beyond the extent, but not infinitely.
+        // Limit the map navigation. 
+        // Note: This still allows navigation beyond the extent, but not infinitely.
         geometry: getEsriExtent("full"), 
     }
 });
