@@ -1,5 +1,4 @@
 <template>
-  <!-- <div id="alert-container" v-if="Alerts.length > 0 && Alerts[0]"> -->
   <transition name="alert-view-slide">
     <div
       id="alert-container-open"
@@ -42,7 +41,6 @@
       </g>
     </svg>
   </div>
-  <!-- </div> -->
 </template>
 
 <script lang="ts">
