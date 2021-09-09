@@ -62,13 +62,13 @@ const init = (container) => {
             if (newExtent.xmin < maxExtent.xmin) {
                 newExtent.xmin = maxExtent.xmin;
             }
-            if (newExtent.xmax > maxExtent.xmax) {
+            else if (newExtent.xmax > maxExtent.xmax) {
                 newExtent.xmax = maxExtent.xmax;
             }
             if (newExtent.ymin < maxExtent.ymin) {
                 newExtent.ymin = maxExtent.ymin;
             }
-            if (newExtent.ymax > maxExtent.ymax) {
+            else if (newExtent.ymax > maxExtent.ymax) {
                 newExtent.ymax = maxExtent.ymax;
             }
             exports.mapView.extent = newExtent;
