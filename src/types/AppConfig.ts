@@ -19,12 +19,13 @@ interface AppConfig {
     fireIncidents:string,
     firePerimeters:string,
     mileMarkers: string,
-    esriPlacesReferenceLayer: string,
-    esriRoadsReferenceLayer:string,
     mileMarkersOneTenth: string;
     mileMarkersOneMile: string;
     mileMarkersFiveMile: string;
     mileMarkersTenMile: string;
+    esriPlacesReferenceLayer: string,
+    esriRoadsReferenceLayer:string,
+    stateRouteShieldsLayer:string,
     // Layer refresh interval in minutes...
     layerRefreshMinute: number;
 }

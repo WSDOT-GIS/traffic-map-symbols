@@ -22,5 +22,6 @@
     "mileMarkersTenMile":"https://services.arcgis.com/IYrj3otxNjPsrTRD/ArcGIS/rest/services/MilepostValues_Hosted/FeatureServer/0",
     "esriPlacesReferenceLayer": "http://services.arcgisonline.com/arcgis/rest/services/Reference/World_Boundaries_and_Places/MapServer?f=jsapi",
     "esriRoadsReferenceLayer": "http://services.arcgisonline.com/arcgis/rest/services/Reference/World_Transportation/MapServer",
+    "stateRouteShieldsLayer": "https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/State_Route_Shields/VectorTileServer",
     "layerRefreshMinute": 5
 }
