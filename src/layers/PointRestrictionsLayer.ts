@@ -47,6 +47,7 @@ const fields = [
     new Field({ name: "RelatedRouteQualifier", alias: "Related Route Qualifier", type: "string" }),
     new Field({ name: "AheadBackIndicator", alias: "Ahead Back Indicator", type: "string" }),
     new Field({ name: "ESRI_OID", alias: "OID", type: "integer" }),
+    new Field({ name: "lineMarker", alias: "lineMarker", type: "string"})
 ]
 
 let layer: GeoJSONLayer | undefined;

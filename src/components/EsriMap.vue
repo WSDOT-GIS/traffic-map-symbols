@@ -99,6 +99,8 @@ import MyLocationView from "@/components/MyLocationView.vue";
 import ZoomButtonView from "@/components/ZoomButtonView.vue";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import Extent from "@arcgis/core/geometry/Extent";
+import { getFeatureInfoById, getFeatureInfoByUniqueField, getLineFromPointRestriction } from "@/utils/featureInfoUtil";
+import { addGraphics } from "@/utils/graphicLayerUtil";
 
 export default defineComponent({
   components: {
@@ -298,9 +300,28 @@ export default defineComponent({
                   }
                 });
               } else {
+                LineRestrictionsLayer().definitionExpression="1=0"//clear lines from restrictions layer
                 // Not aggregate...
                 const id = g.getObjectId();
-                showPopup(results2Show.layer.id, [id]);
+                //get lines for restriciton point click
+                if(g.layer.title=="Restriction Points"){
+                  getFeatureInfoById(id,g.layer as GeoJSONLayer).then((result)=>{
+                    if(result?.attributes.lineMarker=="true"){
+                      LineRestrictionsLayer().definitionExpression = `UniqueId = '${result?.attributes.UniqueId}'`
+                      getLineFromPointRestriction("UniqueId",result?.attributes.UniqueId as string,LineRestrictionsLayer()).then((lineSegment)=>{
+                        const anyLine = lineSegment as any
+                        mapView.goTo(anyLine.features[0].geometry).then(()=>
+                        showPopup(results2Show.layer.id, [id]))
+                      })
+                    }
+                    else{
+                      showPopup(results2Show.layer.id, [id]);
+                    }
+                  })
+                }
+                else{
+                  showPopup(results2Show.layer.id, [id]);
+                }
               }
             }
           } else {

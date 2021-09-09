@@ -40,7 +40,7 @@ import { useStore } from "@/store";
 import MapButtonView from "@/components/MapButtonView.vue";
 import Point from "@arcgis/core/geometry/Point";
 import Graphic from "@arcgis/core/Graphic";
-
+import {addGraphics, removeGraphicsByType} from "../utils/graphicLayerUtil"
 export default defineComponent({
   components: { MapButtonView },
   setup() {
@@ -62,7 +62,7 @@ export default defineComponent({
     //#region toggle layer on and off
 
     getLocation: function () {
-      mapView.graphics.removeAll();
+      removeGraphicsByType("myLocation")
       this.warningDisplayClass = "warningOff";
       if (this.store.state.userLocation == null) {
         navigator.geolocation.getCurrentPosition(
@@ -87,32 +87,12 @@ export default defineComponent({
           { duration: 1000, easing: "ease-in-out" }
         )
         .then(() => {
-          this.addPoint(location.coords.longitude, location.coords.latitude);
+          addGraphics("myLocation",location.coords)
         });
     },
     error: function (error: any) {
       this.warningDisplayClass = "warningOn";
       this.errorMessage = `Locating failed for the following reason: ${error.message}`;
-    },
-    addPoint: (locLongitude: number, locLatitude: number) => {
-      const point = new Point({
-        //Create a point
-        longitude: locLongitude,
-        latitude: locLatitude,
-      });
-      const simpleMarkerSymbol = {
-        type: "simple-marker",
-        color: [100, 100, 255], // Orange
-        outline: {
-          color: [255, 255, 255], // White
-          width: 1,
-        },
-      };
-      const pointGraphic = new Graphic({
-        geometry: point,
-        symbol: simpleMarkerSymbol,
-      });
-      mapView.graphics.add(pointGraphic);
     },
     //#endregion
   },

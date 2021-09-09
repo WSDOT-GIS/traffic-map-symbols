@@ -49,6 +49,7 @@ const fields = [
     new Field_1.default({ name: "RelatedRouteQualifier", alias: "Related Route Qualifier", type: "string" }),
     new Field_1.default({ name: "AheadBackIndicator", alias: "Ahead Back Indicator", type: "string" }),
     new Field_1.default({ name: "ESRI_OID", alias: "OID", type: "integer" }),
+    new Field_1.default({ name: "lineMarker", alias: "lineMarker", type: "string" })
 ];
 let layer;
 const initLayer = (url) => {

@@ -68,6 +68,7 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     const mtLyr = MountainPassesLayer_1.initLayer(config.mountainPasses);
     const travelTimesLyr = TravelTimeLayer_1.initLayer(config.travelTimes);
     const lineRestrictionLyr = LineRestrictionsLayer_1.initLayer(config.lineRestrictions);
+    lineRestrictionLyr.definitionExpression = "1=0"; //hide all features
     const pointRestrictionLyr = PointRestrictionsLayer_1.initLayer(config.pointRestrictions);
     const cameraLyr = CameraLayer_1.initLayer(config.cameras);
     const roadAlertsLyr = RoadAlertsLayer_1.initLayer(config.roadAlerts);

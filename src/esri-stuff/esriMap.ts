@@ -73,6 +73,7 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const mtLyr = initMountainLayer(config.mountainPasses);
     const travelTimesLyr = initTravelTimesLayer(config.travelTimes)
     const lineRestrictionLyr = initLineRestrictionsLayer(config.lineRestrictions);
+    lineRestrictionLyr.definitionExpression="1=0" //hide all features
     const pointRestrictionLyr = initPointRestrictionsLayer(config.pointRestrictions);
     const cameraLyr = initCameraLayer(config.cameras);
     const roadAlertsLyr = initRoadAlertsLayer(config.roadAlerts)

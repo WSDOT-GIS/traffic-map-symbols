@@ -43,12 +43,19 @@ export const getFeatureInfosByIds = async (ids: number[], layer: GeoJSONLayer): 
     const infos = response.features.map(convert2Info);
     return infos;
 }
-
+export const getLineFromPointRestriction = async (fieldName: string, value: number|string, layer: GeoJSONLayer): Promise<FeatureInfo | undefined> => {
+    const query = layer.createQuery();
+    const field = layer.getField(fieldName);
+    query.where = `${fieldName} = '${value}'`;
+    query.returnGeometry= true
+    const response = await layer.queryFeatures(query);
+    return response as any
+}
 export const getFeatureInfoByUniqueField = async (fieldName: string, value: number|string, layer: GeoJSONLayer): Promise<FeatureInfo | undefined> => {
     const query = layer.createQuery();
     const field = layer.getField(fieldName);
     query.where = `${fieldName} = `;
-    if (field.type in ["string", "date"]) {
+    if (field.type=="string"||field.type== "date") {
         query.where += `'${value}'`
     } else {
         query.where += value

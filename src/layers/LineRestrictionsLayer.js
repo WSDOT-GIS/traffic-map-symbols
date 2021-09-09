@@ -21,6 +21,7 @@ const lineRestrictionsRenderer = new UniqueValueRenderer_1.default({
 });
 const fields = [
     new Field_1.default({ name: "state", alias: "State", type: "string" }),
+    new Field_1.default({ name: "UniqueId", alias: "UniqueId", type: "string" }),
     new Field_1.default({ name: "route_nr", alias: "Route Number", type: "string" }),
     new Field_1.default({ name: "seq_nr", alias: "Sequence Number", type: "integer" }),
     new Field_1.default({ name: "direction", alias: "Direction", type: "string" }),

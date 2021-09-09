@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFeatureInfoByUniqueField = exports.getFeatureInfosByIds = exports.getFeatureInfoById = exports.getGraphicsInfoById = void 0;
+exports.getFeatureInfoByUniqueField = exports.getLineFromPointRestriction = exports.getFeatureInfosByIds = exports.getFeatureInfoById = exports.getGraphicsInfoById = void 0;
 const tslib_1 = require("tslib");
 const projection_1 = require("@arcgis/core/geometry/projection");
 const SpatialReference_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/SpatialReference"));
@@ -41,11 +41,20 @@ const getFeatureInfosByIds = (ids, layer) => tslib_1.__awaiter(void 0, void 0, v
     return infos;
 });
 exports.getFeatureInfosByIds = getFeatureInfosByIds;
+const getLineFromPointRestriction = (fieldName, value, layer) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+    const query = layer.createQuery();
+    const field = layer.getField(fieldName);
+    query.where = `${fieldName} = '${value}'`;
+    query.returnGeometry = true;
+    const response = yield layer.queryFeatures(query);
+    return response;
+});
+exports.getLineFromPointRestriction = getLineFromPointRestriction;
 const getFeatureInfoByUniqueField = (fieldName, value, layer) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     const query = layer.createQuery();
     const field = layer.getField(fieldName);
     query.where = `${fieldName} = `;
-    if (field.type in ["string", "date"]) {
+    if (field.type == "string" || field.type == "date") {
         query.where += `'${value}'`;
     }
     else {
