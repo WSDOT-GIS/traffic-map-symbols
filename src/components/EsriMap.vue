@@ -1,5 +1,6 @@
 <template>
   <div id="esri-map-view"></div>
+    <AlertView :Alerts="alerts" />
   <div
     id="map-bottom-left-container"
     class="w3-display-bottomleft w3-container"
@@ -66,6 +67,8 @@ import { clusterMaxScale, getIdsFromCluster } from "@/utils/clusterUtil";
 import LayerInfo from "@/types/LayerInfo";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import XY from "@/types/XY";
+import { getAlerts } from "@/utils/alertInfoUtil";
+import AlertInfo from "@/types/AlertInfo";
 /* Layers for popup */
 import ParkRideLayer from "@/layers/ParkRideLayer";
 import CameraLayer, { toggleCluster } from "@/layers/CameraLayer";
@@ -79,7 +82,7 @@ import RestAreasLayer from "@/layers/RestAreasLayer";
 import FireIncidentLayer from "@/layers/FireIncidentLayer";
 import MileMarkersLayer from "@/layers/MileMarkersLayer";
 import RoadsReferenceLayer from "@/layers/RoadsReferenceLayer";
-import BoundariesPlacesReferenceLayer from "@/layers/BoundariesPlacesReferenceLayer"
+import BoundariesPlacesReferenceLayer from "@/layers/BoundariesPlacesReferenceLayer";
 // import FirePerimeterLayer from "@/layers/FirePerimeterLayer"
 /* Popups */
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
@@ -99,7 +102,7 @@ import BasemapView from "@/components/BasemapView.vue";
 import CoordinatesView from "@/components/CoordinatesView.vue";
 import MyLocationView from "@/components/MyLocationView.vue";
 import ZoomButtonView from "@/components/ZoomButtonView.vue";
-
+import AlertView from "@/components/AlertView.vue";
 
 export default defineComponent({
   components: {
@@ -119,10 +122,19 @@ export default defineComponent({
     CoordinatesView,
     MyLocationView,
     ZoomButtonView,
+    AlertView,
   },
   setup() {
     const selectedCursor = ref("");
     const store = useStore();
+    // Statewide alerts...
+    const alerts = ref<AlertInfo[]>([]);
+    getConfig().then((config) => {
+      getAlerts(config.stateAlerts).then((result) => {
+        alerts.value = result;
+        
+      })
+    })
     // Zoom popup...
     const zoomPopupVisible = ref(false);
     const zoomPopupLabel = ref("");
@@ -457,6 +469,7 @@ export default defineComponent({
       popupFeatureset,
       closePopup,
       selectedCursor,
+      alerts,
     };
   },
 });
