@@ -75,6 +75,7 @@ export default defineComponent({
       }
     },
     success: function (location: any) {
+      console.log(location)
       this.store.commit("setUserLocation", location);
       this.warningDisplayClass = "warningOff";
       this.errorMessage = "";
