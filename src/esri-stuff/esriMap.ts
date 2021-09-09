@@ -46,7 +46,8 @@ export const mapView = new MapView({
     extent: getEsriExtent("full"),
     constraints: {
         rotationEnabled: false, // Disables map rotation
-        geometry: getEsriExtent("full"),
+        // Limit the map navigation. Note: This still allows navigation beyond the extent, but not infinitely.
+        geometry: getEsriExtent("full"), 
     }
 });
 // Zoom buttons are replaced with the custom Vue components.
@@ -59,27 +60,6 @@ export const init = (container: HTMLDivElement): void => {
             console.log("Map is ready.");
             // Somehow map does not zoom enough, so set extent again here...
             mapView.extent = getEsriExtent("full");
-            // Limit the navigation to within WA state...
-            // const maxExtent = getEsriExtent("full").expand(1.2);
-            // mapView.watch("extent", (newExtent, oldExtent) => {
-            //     if (geomEquals(newExtent, oldExtent)) {
-            //         return;
-            //     }
-            //     if (newExtent.xmin < maxExtent.xmin) {
-            //         newExtent.xmin = maxExtent.xmin;
-            //     }
-            //     else if (newExtent.xmax > maxExtent.xmax) {
-            //         newExtent.xmax = maxExtent.xmax;
-            //     }
-            //     else if (newExtent.ymin < maxExtent.ymin) {
-            //         newExtent.ymin = maxExtent.ymin;
-            //     }
-            //     else if (newExtent.ymax > maxExtent.ymax) {
-            //         newExtent.ymax = maxExtent.ymax;
-            //     }
-            //     mapView.extent = newExtent;
-            // });
-
         })
         .catch(error => {
             console.warn("Failed to initialize map. Error: ", error);
