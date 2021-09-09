@@ -2,7 +2,7 @@ import WebMap from "@arcgis/core/WebMap";
 import MapView from "@arcgis/core/views/MapView";
 import Point from "@arcgis/core/geometry/Point";
 import Polygon from "@arcgis/core/geometry/Polygon";
-import { geodesicBuffer } from "@arcgis/core/geometry/geometryEngine";
+import { geodesicBuffer, equals as geomEquals } from "@arcgis/core/geometry/geometryEngine";
 import { whenTrue } from "@arcgis/core/core/watchUtils";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Layer from "@arcgis/core/layers/Layer";
@@ -44,7 +44,8 @@ export const mapView = new MapView({
     map: webmap,
     extent: getEsriExtent("full"),
     constraints: {
-        rotationEnabled: false // Disables map rotation
+        rotationEnabled: false, // Disables map rotation
+        geometry: getEsriExtent("full"),
     }
 });
 // Zoom buttons are replaced with the custom Vue components.
@@ -55,6 +56,29 @@ export const init = (container: HTMLDivElement): void => {
     mapView.when()
         .then(() => {
             console.log("Map is ready.");
+            // Somehow map does not zoom enough, so set extent again here...
+            mapView.extent = getEsriExtent("full");
+            // Limit the navigation to within WA state...
+            const maxExtent = getEsriExtent("full").expand(1.2);
+            mapView.watch("extent", (newExtent, oldExtent) => {
+                if (geomEquals(newExtent, oldExtent)) {
+                    return;
+                }
+                if (newExtent.xmin < maxExtent.xmin) {
+                    newExtent.xmin = maxExtent.xmin;
+                }
+                if (newExtent.xmax > maxExtent.xmax) {
+                    newExtent.xmax = maxExtent.xmax;
+                }
+                if (newExtent.ymin < maxExtent.ymin) {
+                    newExtent.ymin = maxExtent.ymin;
+                }
+                if (newExtent.ymax > maxExtent.ymax) {
+                    newExtent.ymax = maxExtent.ymax;
+                }
+                mapView.extent = newExtent;
+            });
+
         })
         .catch(error => {
             console.warn("Failed to initialize map. Error: ", error);
@@ -73,7 +97,7 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const mtLyr = initMountainLayer(config.mountainPasses);
     const travelTimesLyr = initTravelTimesLayer(config.travelTimes)
     const lineRestrictionLyr = initLineRestrictionsLayer(config.lineRestrictions);
-    lineRestrictionLyr.definitionExpression="1=0" //hide all features
+    lineRestrictionLyr.definitionExpression = "1=0" //hide all features
     const pointRestrictionLyr = initPointRestrictionsLayer(config.pointRestrictions);
     const cameraLyr = initCameraLayer(config.cameras);
     const roadAlertsLyr = initRoadAlertsLayer(config.roadAlerts)
@@ -89,7 +113,7 @@ export const loadOperationalLayers = async (): Promise<void> => {
     webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertsLyr,
-        mileMarkersOneTenthLayer, mileMarkersOneMileLayer,mileMarkersFiveMileLayer, mileMarkersTenMileLayer ]);
+        mileMarkersOneTenthLayer, mileMarkersOneMileLayer, mileMarkersFiveMileLayer, mileMarkersTenMileLayer]);
 
 }
 /**
