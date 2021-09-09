@@ -60,25 +60,25 @@ export const init = (container: HTMLDivElement): void => {
             // Somehow map does not zoom enough, so set extent again here...
             mapView.extent = getEsriExtent("full");
             // Limit the navigation to within WA state...
-            const maxExtent = getEsriExtent("full").expand(1.2);
-            mapView.watch("extent", (newExtent, oldExtent) => {
-                if (geomEquals(newExtent, oldExtent)) {
-                    return;
-                }
-                if (newExtent.xmin < maxExtent.xmin) {
-                    newExtent.xmin = maxExtent.xmin;
-                }
-                else if (newExtent.xmax > maxExtent.xmax) {
-                    newExtent.xmax = maxExtent.xmax;
-                }
-                if (newExtent.ymin < maxExtent.ymin) {
-                    newExtent.ymin = maxExtent.ymin;
-                }
-                else if (newExtent.ymax > maxExtent.ymax) {
-                    newExtent.ymax = maxExtent.ymax;
-                }
-                mapView.extent = newExtent;
-            });
+            // const maxExtent = getEsriExtent("full").expand(1.2);
+            // mapView.watch("extent", (newExtent, oldExtent) => {
+            //     if (geomEquals(newExtent, oldExtent)) {
+            //         return;
+            //     }
+            //     if (newExtent.xmin < maxExtent.xmin) {
+            //         newExtent.xmin = maxExtent.xmin;
+            //     }
+            //     else if (newExtent.xmax > maxExtent.xmax) {
+            //         newExtent.xmax = maxExtent.xmax;
+            //     }
+            //     else if (newExtent.ymin < maxExtent.ymin) {
+            //         newExtent.ymin = maxExtent.ymin;
+            //     }
+            //     else if (newExtent.ymax > maxExtent.ymax) {
+            //         newExtent.ymax = maxExtent.ymax;
+            //     }
+            //     mapView.extent = newExtent;
+            // });
 
         })
         .catch(error => {
