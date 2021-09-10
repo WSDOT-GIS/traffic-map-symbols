@@ -115,18 +115,23 @@ exports.reloadGeoJsonLayers = reloadGeoJsonLayers;
 const reloadGeoJsonLayer = (id, layerUrl, initFunc, layerList) => {
     const lyr = exports.getLayer(id);
     if (lyr.type === "geojson") {
-        const lyrIdx = exports.webmap.layers.indexOf(lyr);
-        const visible = lyr.visible;
+        const oldlyr = lyr;
+        const lyrIdx = exports.webmap.layers.indexOf(oldlyr);
+        const visible = oldlyr.visible;
+        const definitionExpression = oldlyr.definitionExpression;
         // Destroys the layer and remove it from the map...
         lyr.destroy();
+        oldlyr.destroy();
         const newLyr = initFunc(layerUrl);
         newLyr.visible = visible;
+        newLyr.definitionExpression = definitionExpression;
         exports.webmap.add(newLyr, lyrIdx);
         // Update the layer list with the new layer object...
         const lyrInfo = layerList.find((eachInfo) => {
             return eachInfo.id === id;
         });
         if (lyrInfo) {
+            console.log(lyrInfo);
             lyrInfo.id = newLyr.id;
             lyrInfo.title = newLyr.title;
             lyrInfo.visible = newLyr.visible;
