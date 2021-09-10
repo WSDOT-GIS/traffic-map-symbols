@@ -40,6 +40,8 @@ exports.mapView = new MapView_1.default({
     extent: extentUtil_1.getEsriExtent("full"),
     constraints: {
         rotationEnabled: false,
+        // Limit the map navigation. 
+        // Note: This still allows navigation beyond the extent, but not infinitely.
         geometry: extentUtil_1.getEsriExtent("full"),
     }
 });
@@ -53,26 +55,6 @@ const init = (container) => {
         console.log("Map is ready.");
         // Somehow map does not zoom enough, so set extent again here...
         exports.mapView.extent = extentUtil_1.getEsriExtent("full");
-        // Limit the navigation to within WA state...
-        const maxExtent = extentUtil_1.getEsriExtent("full").expand(1.2);
-        exports.mapView.watch("extent", (newExtent, oldExtent) => {
-            if (geometryEngine_1.equals(newExtent, oldExtent)) {
-                return;
-            }
-            if (newExtent.xmin < maxExtent.xmin) {
-                newExtent.xmin = maxExtent.xmin;
-            }
-            else if (newExtent.xmax > maxExtent.xmax) {
-                newExtent.xmax = maxExtent.xmax;
-            }
-            if (newExtent.ymin < maxExtent.ymin) {
-                newExtent.ymin = maxExtent.ymin;
-            }
-            else if (newExtent.ymax > maxExtent.ymax) {
-                newExtent.ymax = maxExtent.ymax;
-            }
-            exports.mapView.extent = newExtent;
-        });
     })
         .catch(error => {
         console.warn("Failed to initialize map. Error: ", error);
