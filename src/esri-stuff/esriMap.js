@@ -39,7 +39,10 @@ exports.mapView = new MapView_1.default({
     map: exports.webmap,
     extent: extentUtil_1.getEsriExtent("full"),
     constraints: {
-        rotationEnabled: false // Disables map rotation
+        rotationEnabled: false,
+        // Limit the map navigation. 
+        // Note: This still allows navigation beyond the extent, but not infinitely.
+        geometry: extentUtil_1.getEsriExtent("full"),
     }
 });
 // Zoom buttons are replaced with the custom Vue components.
@@ -50,6 +53,8 @@ const init = (container) => {
     exports.mapView.when()
         .then(() => {
         console.log("Map is ready.");
+        // Somehow map does not zoom enough, so set extent again here...
+        exports.mapView.extent = extentUtil_1.getEsriExtent("full");
     })
         .catch(error => {
         console.warn("Failed to initialize map. Error: ", error);

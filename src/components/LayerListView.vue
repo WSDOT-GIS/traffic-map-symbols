@@ -50,7 +50,7 @@
     </table>
     <ul class="w3-ul">
       <!-- Travel Alerts -->
-      <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
+      <li class="w3-border-0 mapFeaturesLI" style="padding: 0">
         <ToggleSwitchView
           @toggle="clickEvent"
           :Enabled="true"
@@ -61,18 +61,67 @@
           "
         >
           <template v-slot>
-            <div
-              class="mapFeaturesIcon"
-              v-html="
-                layerIcons.find((x) => x.id == 'road-alerts-layer')?.paths
-              "
-            ></div>
-            <span class="listLabel">
-              {{ layerList[getLayerIndex("road-alerts-layer")].title }}</span
-            >
+            <!-- <div class="mapFeaturesIcon"></div> -->
+            <span>Road Alerts</span>
           </template>
         </ToggleSwitchView>
       </li>
+    </ul>
+    <table class="roadAlertsLegendTable" role="presentation">
+      <tr class="roadAlertsLegendRow">
+        <td class="roadAlertsLegendCell">
+           <div
+              class="roadAlertsIcon"
+              v-html="
+                layerIcons.find(
+                  (x) =>
+                    x.id == 'road-alert'
+                )?.paths
+              "
+            ></div>
+        </td>
+        <td class="roadAlertsLegendCell">
+          <div
+              class="roadAlertsIcon"
+              v-html="
+                layerIcons.find(
+                  (x) =>
+                    x.id == 'road-alert-medium'
+                )?.paths
+              "
+            ></div>
+        </td>
+        <td class="roadAlertsLegendCell">
+         <div
+              class="roadAlertsIcon"
+              v-html="
+                layerIcons.find(
+                  (x) =>
+                    x.id == 'road-alert-high'
+                )?.paths
+              "
+            ></div>
+        </td>
+        <td class="roadAlertsLegendCell">
+          <div
+              class="roadAlertsIcon"
+              v-html="
+                layerIcons.find(
+                  (x) =>
+                    x.id == 'road-closed'
+                )?.paths
+              "
+            ></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="roadAlertsLegendLabelCell">Alert</td>
+        <td class="roadAlertsLegendLabelCell">Medium</td>
+        <td class="roadAlertsLegendLabelCell">High</td>
+        <td class="roadAlertsLegendLabelCell">Road Closure</td>
+      </tr>
+    </table>
+    <ul class="w3-ul">
       <!-- Traffic Cameras -->
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
         <ToggleSwitchView
@@ -398,7 +447,7 @@ export default defineComponent({
 .mapFeaturesLI {
   margin-bottom: 5px;
 }
-.trafficLegendTable {
+.trafficLegendTable, .roadAlertsLegendTable {
   margin: auto;
   width: 95%;
   border-radius: 5px;
@@ -407,19 +456,24 @@ export default defineComponent({
   border-color: var(--color-gray40);
   margin-bottom: 5px;
 }
-.trafficLegendCell {
+.trafficLegendCell{
   width: 25%;
   padding: 2px 0px 2px 0px;
   border: 0px;
 }
-.trafficLegendRow {
+.roadAlertsLegendCell {
+  width: 25%;;
+  border: 0px;
+}
+.trafficLegendRow, .roadAlertsLegendRow{
   height: 10px;
 }
-.trafficLegendLabelCell {
+.trafficLegendLabelCell,.roadAlertsLegendLabelCell {
   background-color: white;
   border: none;
   box-shadow: none;
   font-size: small;
+  vertical-align:text-top;
 }
 #CommercialVehicleLabel {
   font-size: 9pt;
