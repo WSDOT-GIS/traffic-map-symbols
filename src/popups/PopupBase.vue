@@ -151,6 +151,7 @@ import PopupConfig from "@/types/PopupConfig";
 import PopupRow from "./PopupRow.vue";
 import XY from "@/types/XY";
 import ForecastListInfo from "@/types/ForecastListInfo";
+import { isSmallMedia } from "@/utils/mediaUtil";
 
 export default defineComponent({
   components: { Carousel, Slide, Pagination, Navigation, PopupRow },
@@ -195,9 +196,13 @@ export default defineComponent({
     const containerRef = ref<HTMLDivElement>();
     const store = useStore();
     const mapSize = computed(() => store.state.mapSize);
+    const mapScale = computed(() => store.state.scale);
     const maxHeight = ref(mapSize.value.height);
     watch(mapSize, (size) => {
       maxHeight.value = size.height;
+      if (mapX.value < 0 && mapY.value > 0) {
+        setScreenXY();
+      }
     });
     const mapX = ref(0);
     const mapY = ref(0);
@@ -255,15 +260,9 @@ export default defineComponent({
       highlightMap();
       setMapXY();
     });
-    // MapView resize event...
-    mapView.on("resize", () => {
-      if (mapX.value < 0 && mapY.value > 0) {
-        setScreenXY();
-      }
-    });
     // Watch scale change...
     // On touch screen, after pinch zoom, panning map also changes the scale, so commented this out so popup does not close when that happens.
-    mapView.watch("scale", () => {
+    watch(mapScale, () => {
       // While map is being panned to show the popup, map sometimes zoom out as well resulting in scale change, so do not close popup.
       // Only close if user intentionally change scales.
       if (!isPanning) {
@@ -331,87 +330,93 @@ export default defineComponent({
         // Nothing to show...
         return;
       }
-      const h = containerRef.value.offsetHeight;
-      const w = containerRef.value.offsetWidth;
-      if (
-        Math.abs(prevScreenX - screenX.value) <= 1 &&
-        Math.abs(prevScreenY - screenY.value) <= 1 &&
-        Math.abs(prevWidth - w) <= 1 &&
-        Math.abs(prevHeight - h) <= 1
-      ) {
-        // Sometimes the width changes slightly for some reason, do not respond to those...
-        return;
+      if (isSmallMedia()) {
+        setPosition(0, 0);
       } else {
-        prevScreenX = screenX.value;
-        prevScreenY = screenY.value;
-        prevWidth = w;
-        prevHeight = h;
-      }
-      // console.log("*** Adjust ****************"); // + JSON.stringify(props.Features)); //props.Features[0].layerId);
-      // If this is not the initial load, then move popup along with map.
-      if (!doPanMap) {
-        // New vertical position...
-        let newTop = screenY.value - h - 30;
-        // Raise the popup a bit so it is not covering the icon completely.
-        if (!props.MapXY) {
-          newTop -= 15;
+        const h = containerRef.value.offsetHeight;
+        const w = containerRef.value.offsetWidth;
+        if (
+          Math.abs(prevScreenX - screenX.value) <= 1 &&
+          Math.abs(prevScreenY - screenY.value) <= 1 &&
+          Math.abs(prevWidth - w) <= 1 &&
+          Math.abs(prevHeight - h) <= 1
+        ) {
+          // Sometimes the width changes slightly for some reason, do not respond to those...
+          return;
+        } else {
+          prevScreenX = screenX.value;
+          prevScreenY = screenY.value;
+          prevWidth = w;
+          prevHeight = h;
         }
-        // New horizontal position.
-        const newLeft = screenX.value - w / 2;
-        setPosition(newTop, newLeft);
-      } else {
-        doPanMap = false;
-        nextTick(() => {
+        // console.log("*** Adjust ****************"); // + JSON.stringify(props.Features)); //props.Features[0].layerId);
+        // If this is not the initial load, then move popup along with map.
+        if (!doPanMap) {
           // New vertical position...
           let newTop = screenY.value - h - 30;
+          // Raise the popup a bit so it is not covering the icon completely.
           if (!props.MapXY) {
             newTop -= 15;
           }
           // New horizontal position.
           const newLeft = screenX.value - w / 2;
-          /**
-           * Pan map so the popup is displayed within the map view.
-           * Only do this on the initial popup load.
-           *  */
-          let shiftY = 0;
-          let shiftX = 0;
-          if (newTop < 0) {
-            shiftY = -1 * newTop;
-          }
-          if (newLeft < 0 || newLeft + w > mapView.width) {
-            shiftX = newLeft < 0 ? -1 * newLeft : mapView.width - newLeft - w;
-          }
           setPosition(newTop, newLeft);
-          if (shiftY <= -1 || shiftY >= 1 || shiftX <= -1 || shiftX >= 1) {
-            isPanning = true;
-            panMap(shiftX, shiftY).then(() => {
-              isPanning = false;
-              setScreenXY();
-              // On the mobile devices after the pinch zoom, the map does not pan enough to show the top of the popup.
-              // So check the popup position again and pan map more if necessary.
-              //console.log(popupTop.value + ", " + popupLeft.value);
-              shiftX = 0;
-              shiftY = 0;
-              if (popupTop.value < 0) {
-                shiftY = -1 * popupTop.value;
-              }
-              if (popupLeft.value < 0 || popupLeft.value + w > mapView.width) {
-                shiftX =
-                  popupLeft.value < 0
-                    ? -1 * popupLeft.value
-                    : mapView.width - popupLeft.value - w;
-              }
-              if (shiftX !== 0 || shiftY !== 0) {
-                //console.log("Pan again!....." + shiftX + ", " + shiftY);
-                isPanning = true;
-                panMap(shiftX, shiftY).then(() => {
-                  isPanning = false;
-                  setScreenXY();
-                });
-              }
-            });
-          }
-        });
+        } else {
+          doPanMap = false;
+          nextTick(() => {
+            // New vertical position...
+            let newTop = screenY.value - h - 30;
+            if (!props.MapXY) {
+              newTop -= 15;
+            }
+            // New horizontal position.
+            const newLeft = screenX.value - w / 2;
+            /**
+             * Pan map so the popup is displayed within the map view.
+             * Only do this on the initial popup load.
+             *  */
+            let shiftY = 0;
+            let shiftX = 0;
+            if (newTop < 0) {
+              shiftY = -1 * newTop;
+            }
+            if (newLeft < 0 || newLeft + w > mapView.width) {
+              shiftX = newLeft < 0 ? -1 * newLeft : mapView.width - newLeft - w;
+            }
+            setPosition(newTop, newLeft);
+            if (shiftY <= -1 || shiftY >= 1 || shiftX <= -1 || shiftX >= 1) {
+              isPanning = true;
+              panMap(shiftX, shiftY).then(() => {
+                isPanning = false;
+                setScreenXY();
+                // On the mobile devices after the pinch zoom, the map does not pan enough to show the top of the popup.
+                // So check the popup position again and pan map more if necessary.
+                //console.log(popupTop.value + ", " + popupLeft.value);
+                shiftX = 0;
+                shiftY = 0;
+                if (popupTop.value < 0) {
+                  shiftY = -1 * popupTop.value;
+                }
+                if (
+                  popupLeft.value < 0 ||
+                  popupLeft.value + w > mapView.width
+                ) {
+                  shiftX =
+                    popupLeft.value < 0
+                      ? -1 * popupLeft.value
+                      : mapView.width - popupLeft.value - w;
+                }
+                if (shiftX !== 0 || shiftY !== 0) {
+                  isPanning = true;
+                  panMap(shiftX, shiftY).then(() => {
+                    isPanning = false;
+                    setScreenXY();
+                  });
+                }
+              });
+            }
+          });
+        }
       }
     };
     const isLoadComplete = () => {
@@ -569,15 +574,16 @@ export default defineComponent({
   background-color: #fff;
   position: relative;
 }
-
 .popup-container {
-  width: 100%;
+  width: 400px;
 }
-@media screen and (min-width: 576px) and (min-height: 576px) {
+@media screen and (max-width: 600px), screen and (max-height: 600px) {
   .popup-container {
-    width: 400px;
+    width: 100%;
+    height: 100%;
   }
 }
+
 .popup-container::after {
   content: "";
   position: absolute;
@@ -683,38 +689,33 @@ export default defineComponent({
   background-color: transparent !important;
 }*/
 .carousel__prev {
-  left: 7px;
+  left: 16px;
   top: 40%;
 }
 .carousel__next {
-  right: 7px;
+  right: 16px;
   top: 40%;
 }
 .carousel__prev:hover {
   filter: drop-shadow(2px 2px 3px rgb(0 0 0 / 0.5));
-  right: 6px;
+  left: 17px;
   top: 39%;
 }
 .carousel__next:hover {
   filter: drop-shadow(-2px 2px 3px rgb(0 0 0 / 0.5));
-  right: 6px;
+  right: 17px;
   top: 39%;
 }
 .carousel__prev svg path {
   d: path(
-    "M 17.000785,17.692215 11.252113,11.931001 17.000785,6.169785 15.231001,4.4 7.7,11.931001 15.231001,19.462 Z"
+    "M 16.500785,17.692215 10.752113,11.931001 16.500785,6.169785 14.731001,4.4 7.2,11.931001 14.731001,19.462 Z"
   );
 }
 .carousel__next svg path {
   d: path(
-    "M 6.8,6.1697845 12.548671,11.930999 6.8,17.692215 8.569783,19.462 16.100784,11.930999 8.569783,4.3999995 Z"
+    "M 7.8,6.1697845 13.548671,11.930999 7.8,17.692215 9.569783,19.462 17.100784,11.930999 9.569783,4.3999995 Z"
   );
 }
-/* svg.carousel__icon {
-  width: 2em;
-  height: 2em;
-  filter: drop-shadow(3px 3px 2px rgb(0 0 0 / 1));
-}  */
 .carousel__pagination-button {
   width: 10px;
   height: 10px;

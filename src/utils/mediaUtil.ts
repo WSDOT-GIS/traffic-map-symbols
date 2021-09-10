@@ -12,8 +12,7 @@ export const isMobile = (): boolean => {
 }
 
 export const isSmallMedia = (): boolean => {
-    const isLargeMedia = window.matchMedia(
-        "(min-width: 576px) and (min-height: 576px)"
-    );
-    return !isLargeMedia.matches;
+    const isSmall = window.matchMedia("(max-width: 600px)").matches
+        || window.matchMedia("(max-height: 600px)").matches
+    return isSmall;
 }
