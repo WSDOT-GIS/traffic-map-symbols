@@ -14,6 +14,7 @@ export interface State {
     pointerX: number;
     pointerY: number;
     mapSize: { width: number; height: number };
+    scale: number;
     layerList: LayerInfo[];
     currentExtent: ExtentInfo;
     userLocation: number[] | null;
@@ -29,6 +30,7 @@ export const store = createStore<State>({
             pointerX: 0,
             pointerY: 0,
             mapSize: { width: 0, height: 0 },
+            scale: 0,
             currentExtent: {
                 xmin: 0,
                 xmax: 0,
@@ -66,6 +68,9 @@ export const store = createStore<State>({
         setMapSize(state, payload) {
             //console.log("setMapSize: " + JSON.stringify(payload))
             state.mapSize = payload;
+        },
+        setScale(state, payload) {
+            state.scale = payload;
         },
         setUserLocation(state, payload) {
             state.userLocation = payload;

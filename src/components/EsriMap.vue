@@ -454,6 +454,7 @@ export default defineComponent({
       }
       // Watch scale change...
       esriMap.mapView.watch("scale", (newValue, oldValue) => {
+        store.commit("setScale", newValue);
         // Adjust cluster setting based on scale...
         if (oldValue > 0) {
           toggleCluster(newValue, oldValue);
