@@ -3,11 +3,40 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.initLayer = void 0;
 const tslib_1 = require("tslib");
 const GeoJSONLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/GeoJSONLayer"));
-const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
-const AlertSymbol_1 = tslib_1.__importDefault(require("@/symbols/AlertSymbol"));
+const UniqueValueRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/UniqueValueRenderer"));
+const AlertSymbol_1 = require("@/symbols/AlertSymbol");
 const Field_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/Field"));
-const roadAlertsRenderer = new SimpleRenderer_1.default({
-    symbol: AlertSymbol_1.default
+const roadAlertsRenderer = new UniqueValueRenderer_1.default({
+    field: "EventPriorityID",
+    uniqueValueInfos: [
+        {
+            label: "HIGHEST IMPACT",
+            value: 1,
+            symbol: AlertSymbol_1.roadClosedSymbol
+        },
+        {
+            label: "HIGH IMPACT",
+            value: 2,
+            symbol: AlertSymbol_1.alertSymbolHigh
+        },
+        {
+            label: "MODERATE IMPACT",
+            value: 3,
+            symbol: AlertSymbol_1.alertSymbolMedium
+        },
+        {
+            label: "LOW IMPACT",
+            value: 4,
+            symbol: AlertSymbol_1.alertSymbol
+        }
+        /*
+        {
+            label:"LOWEST IMPACT",
+            value: 5,
+            symbol: alertSymbol
+        }
+        */
+    ]
 });
 const fields = [
     new Field_1.default({

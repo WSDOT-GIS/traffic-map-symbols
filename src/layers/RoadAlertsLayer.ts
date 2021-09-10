@@ -1,10 +1,39 @@
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer"
-import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
-import symbol from "@/symbols/AlertSymbol"
+import uniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer"
+import {alertSymbol,alertSymbolMedium,alertSymbolHigh,roadClosedSymbol} from "@/symbols/AlertSymbol"
 import Field from "@arcgis/core/layers/support/Field"
 
-const roadAlertsRenderer = new simpleRenderer({
-    symbol: symbol
+const roadAlertsRenderer = new uniqueValueRenderer({
+    field:"EventPriorityID",
+    uniqueValueInfos: [
+        {
+            label:"HIGHEST IMPACT",
+            value: 1,
+            symbol: roadClosedSymbol
+        },
+        {
+            label:"HIGH IMPACT",
+            value: 2,
+            symbol: alertSymbolHigh
+        },
+        {
+            label:"MODERATE IMPACT",
+            value: 3,
+            symbol: alertSymbolMedium
+        },
+        {
+            label:"LOW IMPACT",
+            value: 4,
+            symbol: alertSymbol
+        }
+        /*
+        {
+            label:"LOWEST IMPACT",
+            value: 5,
+            symbol: alertSymbol
+        }
+        */
+    ]
 })
 
 const fields = [
