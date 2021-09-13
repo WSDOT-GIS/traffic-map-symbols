@@ -74,9 +74,10 @@ const fields = [
     new Field_1.default({ name: "TMSOverlap", type: "integer", alias: "TMSOverlap" }),
     new Field_1.default({ name: "RegionID", type: "small-integer", alias: "RegionID" }),
 ];
-let layer;
+let priorityLayer;
+let closureLayer;
 const initPriorityLayer = (url) => {
-    layer = new GeoJSONLayer_1.default({
+    priorityLayer = new GeoJSONLayer_1.default({
         id: "road-alerts-layer",
         url: url,
         title: "Travel Alerts",
@@ -85,11 +86,11 @@ const initPriorityLayer = (url) => {
         fields: fields,
         definitionExpression: "EventCategoryDescription<>'Closure'"
     });
-    return layer;
+    return priorityLayer;
 };
 exports.initPriorityLayer = initPriorityLayer;
 const initClosureLayer = (url) => {
-    layer = new GeoJSONLayer_1.default({
+    closureLayer = new GeoJSONLayer_1.default({
         id: "road-closures-layer",
         url: url,
         title: "Travel Closure Alerts",
@@ -98,14 +99,28 @@ const initClosureLayer = (url) => {
         fields: fields,
         definitionExpression: "EventCategoryDescription='Closure'"
     });
-    return layer;
+    return closureLayer;
 };
 exports.initClosureLayer = initClosureLayer;
-const getLayer = () => {
-    if (!layer) {
-        throw "RoadAlertsLayer is not ready yet!";
+const getLayer = (id) => {
+    let layerToReturn;
+    if (id == "road-alerts-layer") {
+        if (!priorityLayer) {
+            throw "RoadAlertsLayer is not ready yet!";
+        }
+        else {
+            layerToReturn = priorityLayer;
+        }
     }
-    return layer;
+    if (id == "road-closures-layer") {
+        if (!closureLayer) {
+            throw "RoadAlertsLayer is not ready yet!";
+        }
+        else {
+            layerToReturn = closureLayer;
+        }
+    }
+    return layerToReturn;
 };
 // export default RoadAlertsLayer
 exports.default = getLayer;
