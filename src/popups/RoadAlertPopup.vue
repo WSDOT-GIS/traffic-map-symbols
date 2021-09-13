@@ -55,7 +55,6 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, watch } from "vue";
 import PopupBase from "./PopupBase.vue";
-
 import FeatureLayer from "@/layers/RoadAlertsLayer";
 import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
@@ -73,7 +72,7 @@ export default defineComponent({
     const feature = ref<FeatureInfo>();
 
     watch(props, () => {
-      if (props.Featureset.layerId === FeatureLayer().id) {
+      if (props.Featureset.layerId === FeatureLayer("road-alerts-layer").id||props.Featureset.layerId === FeatureLayer("road-closures-layer").id) {
         show();
       } else {
         close();
@@ -82,7 +81,14 @@ export default defineComponent({
 
     const show = () => {
       const setVal = () => {
-        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(
+        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer("road-closures-layer")).then(
+          (result) => {
+            if (result) {
+              feature.value = result;
+            }
+          }
+        );
+        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer("road-alerts-layer")).then(
           (result) => {
             if (result) {
               feature.value = result;

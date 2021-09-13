@@ -330,15 +330,8 @@
         <ToggleSwitchView
           @toggle="clickEvent"
           :Enabled="mileMarkerToggleEnabled"
-          :Checked="layerList[getLayerIndex('mile-markers-ten-mile-layer')].visible"
-          :Value="
-            getLayerIndex('mile-markers-one-tenth-mile-layer').toString()+
-            ',' +
-            getLayerIndex('mile-markers-one-mile-layer').toString()+
-            ',' +
-            getLayerIndex('mile-markers-five-mile-layer').toString()+
-            ',' +
-            getLayerIndex('mile-markers-ten-mile-layer').toString()"
+          :Checked="layerList[getLayerIndex('mile-markers')].visible"
+          :Value="getLayerIndex('mile-markers').toString()"
           :Title="mileMarkerToggleEnabled==true?'Toggle Mile Markers':'Zoom in to enable mile marker toggle'"
         >
           <template v-slot>

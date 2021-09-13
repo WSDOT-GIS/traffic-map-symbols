@@ -192,7 +192,8 @@ export default defineComponent({
           WeatherStationsLayer(),
           MountainPassesLayer(),
           RestAreasLayer(),
-          RoadAlertsLayer(),
+          RoadAlertsLayer("road-closures-layer"),
+          RoadAlertsLayer("road-alerts-layer"),
           TravelTimeLayer(),
           FireIncidentLayer(),
           MileMarkersLayer(),
@@ -209,6 +210,7 @@ export default defineComponent({
         // Change pointer when the cursor is on a feature...
         mapView.hitTest(event, opLayerOpts).then((response) => {
           if (response.results.length > 0) {
+            console.log(response)
             mapDiv.style.cursor = "pointer";
           } else {
             mapDiv.style.cursor = "auto";

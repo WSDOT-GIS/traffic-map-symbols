@@ -1,10 +1,10 @@
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import VectorTileLayer from "@arcgis/core/layers/VectorTileLayer";
 
-let layer: FeatureLayer | undefined;
+let layer: VectorTileLayer | undefined;
 
-export const initLayer = (url: string, id: string): FeatureLayer => {
-    layer = new FeatureLayer({
-        id: id,
+export const initLayer = (url: string): VectorTileLayer => {
+    layer = new VectorTileLayer({
+        id: "mile-markers",
         url: url,
         title: "Mile Markers",
         visible: false,
@@ -12,7 +12,7 @@ export const initLayer = (url: string, id: string): FeatureLayer => {
     return layer;
 }
 
-const getLayer = (): FeatureLayer => {
+const getLayer = (): VectorTileLayer => {
     if (!layer) {
         throw "MileMarkers is not ready yet!";
     }

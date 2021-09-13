@@ -75,10 +75,10 @@ const fields = [
     new Field({ name: "RegionID", type: "small-integer", alias: "RegionID" }),
 ]
 
-let layer: GeoJSONLayer | undefined;
-
+let priorityLayer: GeoJSONLayer | undefined;
+let closureLayer: GeoJSONLayer | undefined;
 export const initPriorityLayer = (url: string): GeoJSONLayer => {
-    layer = new GeoJSONLayer({
+    priorityLayer = new GeoJSONLayer({
         id: "road-alerts-layer",
         url: url,
         title: "Travel Alerts",
@@ -87,10 +87,10 @@ export const initPriorityLayer = (url: string): GeoJSONLayer => {
         fields: fields,
         definitionExpression:"EventCategoryDescription<>'Closure'"
     });
-    return layer;
+    return priorityLayer;
 }
 export const initClosureLayer = (url: string): GeoJSONLayer => {
-    layer = new GeoJSONLayer({
+    closureLayer = new GeoJSONLayer({
         id: "road-closures-layer",
         url: url,
         title: "Travel Closure Alerts",
@@ -99,13 +99,27 @@ export const initClosureLayer = (url: string): GeoJSONLayer => {
         fields: fields,
         definitionExpression:"EventCategoryDescription='Closure'"
     });
-    return layer;
+    return closureLayer;
 }
-const getLayer = (): GeoJSONLayer => {
-    if (!layer) {
-        throw "RoadAlertsLayer is not ready yet!"
+const getLayer = (id:string): GeoJSONLayer => {
+    let layerToReturn;
+    if(id=="road-alerts-layer"){
+        if (!priorityLayer) {
+            throw "RoadAlertsLayer is not ready yet!"
+        }
+        else{
+            layerToReturn = priorityLayer
+        }
     }
-    return layer;
+    if(id=="road-closures-layer"){
+        if (!closureLayer) {
+            throw "RoadAlertsLayer is not ready yet!"
+        }
+        else{
+            layerToReturn = closureLayer
+        }
+    }
+    return layerToReturn as GeoJSONLayer;
 }
 
 // export default RoadAlertsLayer
