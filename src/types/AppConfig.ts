@@ -19,10 +19,6 @@ interface AppConfig {
     fireIncidents:string,
     firePerimeters:string,
     mileMarkers: string,
-    mileMarkersOneTenth: string;
-    mileMarkersOneMile: string;
-    mileMarkersFiveMile: string;
-    mileMarkersTenMile: string;
     esriPlacesReferenceLayer: string,
     esriRoadsReferenceLayer:string,
     stateRouteShieldsLayer:string,
