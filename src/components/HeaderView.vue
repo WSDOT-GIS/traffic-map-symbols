@@ -4,7 +4,13 @@
       <div class="logo-container">
         <div class="region region-header">
           <a class="logo navbar-btn pull-left" href="/" title="Home" rel="home">
-            <img src="/img/wsdot-logo-white.svg" alt="Home" />
+            <!-- The image is loaded later and changes the size of the header. 
+              So let app know when it is loaded so the app can size map view correctly. -->
+            <img
+              src="/img/wsdot-logo-white.svg"
+              alt="Home"
+              @load="onImgLoad()"
+            />
           </a>
           <a class="name navbar-brand" href="/" title="Home" rel="home"
             >WSDOT</a
@@ -222,22 +228,14 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-
 export default defineComponent({
-  props: {
-    text: {
-      require: true,
-      type: String,
-    },
+  setup(props, context) {
+    // DOT icon is loaded slightly later, so let the app know when that is complete.
+    const onImgLoad = () => {
+      context.emit("onLoadComplete");
+    };
+    return { onImgLoad };
   },
 });
 </script>
 
-<style>
-/* #wsdot-header {
-  padding: 5px;
-  color: white;
-  background-color: var(--color-primaryBrand100);
-  min-height: 60px;
-} */
-</style>
