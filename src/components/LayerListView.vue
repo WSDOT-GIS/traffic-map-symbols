@@ -55,7 +55,10 @@
           @toggle="clickEvent"
           :Enabled="true"
           :Checked="layerList[getLayerIndex('road-alerts-layer')].visible"
-          :Value="getLayerIndex('road-alerts-layer').toString()"
+          :Value="
+            getLayerIndex('road-alerts-layer').toString()+
+            ',' +
+            getLayerIndex('road-closures-layer').toString()"
           :Title="
             'Toggle ' + layerList[getLayerIndex('road-alerts-layer')].title
           "

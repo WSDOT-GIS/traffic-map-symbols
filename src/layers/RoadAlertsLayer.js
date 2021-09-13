@@ -1,18 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.initLayer = void 0;
+exports.initClosureLayer = exports.initPriorityLayer = void 0;
 const tslib_1 = require("tslib");
 const GeoJSONLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/GeoJSONLayer"));
 const UniqueValueRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/UniqueValueRenderer"));
 const AlertSymbol_1 = require("@/symbols/AlertSymbol");
 const Field_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/Field"));
-const roadAlertsRenderer = new UniqueValueRenderer_1.default({
+const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
+const roadAlertsPriorityRenderer = new UniqueValueRenderer_1.default({
     field: "EventPriorityID",
     uniqueValueInfos: [
         {
             label: "HIGHEST IMPACT",
             value: 1,
-            symbol: AlertSymbol_1.roadClosedSymbol
+            symbol: AlertSymbol_1.alertSymbolHigh
         },
         {
             label: "HIGH IMPACT",
@@ -28,15 +29,16 @@ const roadAlertsRenderer = new UniqueValueRenderer_1.default({
             label: "LOW IMPACT",
             value: 4,
             symbol: AlertSymbol_1.alertSymbol
-        }
-        /*
+        },
         {
-            label:"LOWEST IMPACT",
+            label: "LOWEST IMPACT",
             value: 5,
-            symbol: alertSymbol
+            symbol: AlertSymbol_1.alertSymbol
         }
-        */
     ]
+});
+const roadAlertsClosureRenderer = new SimpleRenderer_1.default({
+    symbol: AlertSymbol_1.roadClosedSymbol,
 });
 const fields = [
     new Field_1.default({
@@ -73,18 +75,32 @@ const fields = [
     new Field_1.default({ name: "RegionID", type: "small-integer", alias: "RegionID" }),
 ];
 let layer;
-const initLayer = (url) => {
+const initPriorityLayer = (url) => {
     layer = new GeoJSONLayer_1.default({
         id: "road-alerts-layer",
         url: url,
         title: "Travel Alerts",
-        renderer: roadAlertsRenderer,
+        renderer: roadAlertsPriorityRenderer,
         visible: true,
         fields: fields,
+        definitionExpression: "EventCategoryDescription<>'Closure'"
     });
     return layer;
 };
-exports.initLayer = initLayer;
+exports.initPriorityLayer = initPriorityLayer;
+const initClosureLayer = (url) => {
+    layer = new GeoJSONLayer_1.default({
+        id: "road-closures-layer",
+        url: url,
+        title: "Travel Closure Alerts",
+        renderer: roadAlertsClosureRenderer,
+        visible: true,
+        fields: fields,
+        definitionExpression: "EventCategoryDescription='Closure'"
+    });
+    return layer;
+};
+exports.initClosureLayer = initClosureLayer;
 const getLayer = () => {
     if (!layer) {
         throw "RoadAlertsLayer is not ready yet!";

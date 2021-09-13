@@ -2,14 +2,15 @@ import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer"
 import uniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer"
 import {alertSymbol,alertSymbolMedium,alertSymbolHigh,roadClosedSymbol} from "@/symbols/AlertSymbol"
 import Field from "@arcgis/core/layers/support/Field"
+import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 
-const roadAlertsRenderer = new uniqueValueRenderer({
+const roadAlertsPriorityRenderer = new uniqueValueRenderer({
     field:"EventPriorityID",
     uniqueValueInfos: [
         {
             label:"HIGHEST IMPACT",
             value: 1,
-            symbol: roadClosedSymbol
+            symbol: alertSymbolHigh
         },
         {
             label:"HIGH IMPACT",
@@ -25,15 +26,18 @@ const roadAlertsRenderer = new uniqueValueRenderer({
             label:"LOW IMPACT",
             value: 4,
             symbol: alertSymbol
-        }
-        /*
+        },
         {
             label:"LOWEST IMPACT",
             value: 5,
             symbol: alertSymbol
         }
-        */
+        
     ]
+})
+
+const roadAlertsClosureRenderer = new SimpleRenderer({
+    symbol: roadClosedSymbol,
 })
 
 const fields = [
@@ -73,18 +77,30 @@ const fields = [
 
 let layer: GeoJSONLayer | undefined;
 
-export const initLayer = (url: string): GeoJSONLayer => {
+export const initPriorityLayer = (url: string): GeoJSONLayer => {
     layer = new GeoJSONLayer({
         id: "road-alerts-layer",
         url: url,
         title: "Travel Alerts",
-        renderer: roadAlertsRenderer,
+        renderer: roadAlertsPriorityRenderer,
         visible: true,
         fields: fields,
+        definitionExpression:"EventCategoryDescription<>'Closure'"
     });
     return layer;
 }
-
+export const initClosureLayer = (url: string): GeoJSONLayer => {
+    layer = new GeoJSONLayer({
+        id: "road-closures-layer",
+        url: url,
+        title: "Travel Closure Alerts",
+        renderer: roadAlertsClosureRenderer,
+        visible: true,
+        fields: fields,
+        definitionExpression:"EventCategoryDescription='Closure'"
+    });
+    return layer;
+}
 const getLayer = (): GeoJSONLayer => {
     if (!layer) {
         throw "RoadAlertsLayer is not ready yet!"

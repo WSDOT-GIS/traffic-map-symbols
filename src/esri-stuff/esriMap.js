@@ -17,6 +17,7 @@ const RestAreasLayer_1 = require("@/layers/RestAreasLayer");
 const PointRestrictionsLayer_1 = require("@/layers/PointRestrictionsLayer");
 const LineRestrictionsLayer_1 = require("@/layers/LineRestrictionsLayer");
 const RoadAlertsLayer_1 = require("@/layers/RoadAlertsLayer");
+const RoadAlertsLayer_2 = require("@/layers/RoadAlertsLayer");
 const WeatherStationsLayer_1 = require("@/layers/WeatherStationsLayer");
 const MountainPassesLayer_1 = require("@/layers/MountainPassesLayer");
 const TravelTimeLayer_1 = require("@/layers/TravelTimeLayer");
@@ -77,7 +78,8 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     lineRestrictionLyr.definitionExpression = "1=0"; //hide all features
     const pointRestrictionLyr = PointRestrictionsLayer_1.initLayer(config.pointRestrictions);
     const cameraLyr = CameraLayer_1.initLayer(config.cameras);
-    const roadAlertsLyr = RoadAlertsLayer_1.initLayer(config.roadAlerts);
+    const roadAlertsLyr = RoadAlertsLayer_2.initPriorityLayer(config.roadAlerts);
+    const roadClosuresLyr = RoadAlertsLayer_1.initClosureLayer(config.roadAlerts);
     const fireIncidentLayer = FireIncidentLayer_1.initLayer(config.fireIncidents);
     const firePerimeterIDs = yield firePerimeterQuery_1.default(fireIncidentLayer);
     const firePerimetersLayer = FirePerimeterLayer_1.initLayer(config.firePerimeters, firePerimeterIDs); //Needed to filter fire perimeters to just those within the state
@@ -90,7 +92,7 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     const stateRouteShieldsLayer = StateRouteShields_1.initLayer(config.stateRouteShieldsLayer);
     exports.webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer, firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
-        pointRestrictionLyr, cameraLyr, roadAlertsLyr,
+        pointRestrictionLyr, cameraLyr, roadAlertsLyr, roadClosuresLyr,
         mileMarkersOneTenthLayer, mileMarkersOneMileLayer, mileMarkersFiveMileLayer, mileMarkersTenMileLayer]);
 });
 exports.loadOperationalLayers = loadOperationalLayers;
@@ -99,7 +101,8 @@ exports.loadOperationalLayers = loadOperationalLayers;
  */
 const reloadGeoJsonLayers = (layerList) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     const config = yield appConfigUtil_1.getConfig();
-    reloadGeoJsonLayer("road-alerts-layer", config.roadAlerts, RoadAlertsLayer_1.initLayer, layerList);
+    reloadGeoJsonLayer("road-alerts-layer", config.roadAlerts, RoadAlertsLayer_2.initPriorityLayer, layerList);
+    reloadGeoJsonLayer("road-closures-layer", config.roadAlerts, RoadAlertsLayer_1.initClosureLayer, layerList);
     reloadGeoJsonLayer("line-restrictions-layer", config.lineRestrictions, LineRestrictionsLayer_1.initLayer, layerList);
     reloadGeoJsonLayer("point-restrictions-layer", config.pointRestrictions, PointRestrictionsLayer_1.initLayer, layerList);
     reloadGeoJsonLayer("mountain-passes-layer", config.mountainPasses, MountainPassesLayer_1.initLayer, layerList);

@@ -16,7 +16,8 @@ import { initLayer as initCameraLayer, setCluster } from "@/layers/CameraLayer";
 import { initLayer as initRestAreaLayer } from "@/layers/RestAreasLayer";
 import { initLayer as initPointRestrictionsLayer } from "@/layers/PointRestrictionsLayer";
 import { initLayer as initLineRestrictionsLayer } from "@/layers/LineRestrictionsLayer";
-import { initLayer as initRoadAlertsLayer } from "@/layers/RoadAlertsLayer";
+import { initClosureLayer} from "@/layers/RoadAlertsLayer";
+import { initPriorityLayer } from "@/layers/RoadAlertsLayer";
 import { initLayer as initWeatherLayer } from "@/layers/WeatherStationsLayer";
 import { initLayer as initMountainLayer } from "@/layers/MountainPassesLayer";
 import { initLayer as initTravelTimesLayer } from "@/layers/TravelTimeLayer"
@@ -82,7 +83,8 @@ export const loadOperationalLayers = async (): Promise<void> => {
     lineRestrictionLyr.definitionExpression = "1=0" //hide all features
     const pointRestrictionLyr = initPointRestrictionsLayer(config.pointRestrictions);
     const cameraLyr = initCameraLayer(config.cameras);
-    const roadAlertsLyr = initRoadAlertsLayer(config.roadAlerts)
+    const roadAlertsLyr = initPriorityLayer(config.roadAlerts)
+    const roadClosuresLyr = initClosureLayer(config.roadAlerts)
     const fireIncidentLayer = initFireIncidentsLayer(config.fireIncidents)
     const firePerimeterIDs = await firePerimeterFeatureIDs(fireIncidentLayer)
     const firePerimetersLayer = initFirePerimetersLayer(config.firePerimeters, firePerimeterIDs)//Needed to filter fire perimeters to just those within the state
@@ -95,7 +97,7 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const stateRouteShieldsLayer = initStateRouteShieldsLayer(config.stateRouteShieldsLayer)
     webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer, firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
-        pointRestrictionLyr, cameraLyr, roadAlertsLyr,
+        pointRestrictionLyr, cameraLyr, roadAlertsLyr,roadClosuresLyr,
         mileMarkersOneTenthLayer, mileMarkersOneMileLayer, mileMarkersFiveMileLayer, mileMarkersTenMileLayer]);
 
 }
@@ -104,7 +106,8 @@ export const loadOperationalLayers = async (): Promise<void> => {
  */
 export const reloadGeoJsonLayers = async (layerList: LayerInfo[]): Promise<LayerInfo[]> => {
     const config = await getConfig();
-    reloadGeoJsonLayer("road-alerts-layer", config.roadAlerts, initRoadAlertsLayer, layerList);
+    reloadGeoJsonLayer("road-alerts-layer", config.roadAlerts, initPriorityLayer, layerList);
+    reloadGeoJsonLayer("road-closures-layer", config.roadAlerts, initClosureLayer, layerList);
     reloadGeoJsonLayer("line-restrictions-layer", config.lineRestrictions, initLineRestrictionsLayer, layerList);
     reloadGeoJsonLayer("point-restrictions-layer", config.pointRestrictions, initPointRestrictionsLayer, layerList);
     reloadGeoJsonLayer("mountain-passes-layer", config.mountainPasses, initMountainLayer, layerList);
