@@ -2,10 +2,10 @@
   <div id="basemap-widget-container">
     <MapButtonView @click="onClick" :Height="imgSize"  AriaLabel="Change basemap">
       <template v-slot >
-        <div class="container">
+        <div class="basemap-img-container">
           <img :src="imgSrc" :height="imgSize" alt="" />
-          <label class="centeredTop" :id="labelStyle">{{iconTitle}}</label>
-          <label class="centeredBottom" :id="labelStyle">Basemap</label>
+          <label class="basemap-img-centeredTop" :id="labelStyle">{{iconTitle}}</label>
+          <label class="basemap-img-centeredBottom" :id="labelStyle">Basemap</label>
         </div>
       </template>
     </MapButtonView>
@@ -115,17 +115,17 @@ export default defineComponent({
   text-shadow: 2px 2px 4px white;
   position: absolute;
 }
-.container {
+.basemap-img-container {
   position: relative;
   text-align: center;
   color: white;
 }
-.centeredTop {
+.basemap-img-centeredTop {
   position: absolute;
   bottom: 30px;
   left: 5px;
 }
-.centeredBottom{
+.basemap-img-centeredBottom{
   position: absolute;
   bottom: 5%;
   left: 5px;

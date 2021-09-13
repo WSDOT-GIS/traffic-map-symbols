@@ -3,19 +3,75 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="MobileOptimized" content="width">
+    <meta name="HandheldFriendly" content="true">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <!--link rel="icon" href="<%= BASE_URL %>favicon.ico"-->
+    <link rel="shortcut icon" href="https://dev-wsdot-wsdot.pantheonsite.io/sites/default/files/dot.ico"
+      type="image/vnd.microsoft.icon">
     <title><%= htmlWebpackPlugin.options.title %></title>
+    <link rel="stylesheet" media="all"
+      href="https://dev-wsdot-wsdot.pantheonsite.io/libraries/fontawesome/css/all.min.css?qs4gn7">
+    <link rel="stylesheet" media="all"
+      href="https://dev-wsdot-wsdot.pantheonsite.io/libraries/fontawesome/css/v4-shims.min.css?qs4gn7">
+    <link rel="stylesheet" media="all" href="https://fonts.googleapis.com/css?family=Open+Sans&amp;display=swap">
+    <link rel="stylesheet" media="all"
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&amp;display=swap">
+    <link rel="stylesheet" media="all"
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&amp;display=swap">
+    <link rel="stylesheet" media="all"
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&amp;display=swap">
+    <link rel="stylesheet" media="all"
+      href="https://fonts.googleapis.com/css2?family=Gayathri:wght@100;400;700&amp;display=swap">
+    <link rel="stylesheet" media="all"
+      href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,100;0,300;0,400;0,500;0,700;0,800;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&amp;display=swap">
+    <link rel="stylesheet" media="all"
+      href="https://fonts.googleapis.com/css2?family=Quattrocento+Sans:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap">
+    <!-- This messes up basemap switcher -->
+    <link rel="stylesheet" media="all"
+      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.css">
+    <link rel="stylesheet" media="screen"
+      href="https://dev-wsdot-wsdot.pantheonsite.io/modules/contrib/responsive_tables_filter/css/tablesaw-responsive.css">
+    <link rel="stylesheet" media="all"
+      href="https://dev-wsdot-wsdot.pantheonsite.io/modules/contrib/responsive_tables_filter/css/tablesaw-base.css">
+    <link rel="stylesheet" media="all"
+      href="https://dev-wsdot-wsdot.pantheonsite.io/modules/contrib/we_megamenu/assets/includes/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" media="all"
+      href="https://dev-wsdot-wsdot.pantheonsite.io/themes/drupalbase/assets/css/megamenu-custom.css">
+    <link rel="stylesheet" media="all"
+      href="https://dev-wsdot-wsdot.pantheonsite.io/core/modules/layout_discovery/layouts/twocol/twocol.css">
+    <link rel="stylesheet" media="all"
+      href="https://cdn.jsdelivr.net/npm/@unicorn-fail/drupal-bootstrap-styles@0.0.2/dist/3.4.0/8.x-3.x/drupal-bootstrap.css">
+    <link rel="stylesheet" media="all"
+      href="https://dev-wsdot-wsdot.pantheonsite.io/themes/drupalbase/assets/css/style.css">
+    <link rel="stylesheet" media="all"
+      href="https://dev-wsdot-wsdot.pantheonsite.io/themes/drupalbase_custom/assets/styles/alert.css">
+    <link rel="stylesheet" media="all"
+      href="https://dev-wsdot-wsdot.pantheonsite.io/core/modules/system/css/components/align.module.css">
+    <link rel="stylesheet" media="all"
+      href="https://dev-wsdot-wsdot.pantheonsite.io/core/modules/system/css/components/container-inline.module.css">
+    <link rel="stylesheet" media="all"
+      href="https://dev-wsdot-wsdot.pantheonsite.io/core/modules/system/css/components/clearfix.module.css">
+    <link rel="stylesheet" media="all"
+      href="https://dev-wsdot-wsdot.pantheonsite.io/core/modules/system/css/components/hidden.module.css">
+    <link rel="stylesheet" media="all" href="https://dev-wsdot-wsdot.pantheonsite.io/libraries/fontawesome/css/all.min.css">
+    <link rel="stylesheet" media="all"
+      href="https://dev-wsdot-wsdot.pantheonsite.io/themes/drupalbase_custom/assets/styles/style.css">
+    <link rel="stylesheet" media="all"
+      href="https://dev-wsdot-wsdot.pantheonsite.io/themes/drupalbase_custom/assets/styles/navigation.css">
+    <link rel="stylesheet" media="all"
+      href="https://dev-wsdot-wsdot.pantheonsite.io/themes/drupalbase_custom/assets/styles/print.css">
+    <link rel="stylesheet" media="all"
+      href="https://dev-wsdot-wsdot.pantheonsite.io/themes/drupalbase_custom/assets/styles/views.css">
+    <link rel="stylesheet" media="all"
+      href="https://dev-wsdot-wsdot.pantheonsite.io/themes/drupalbase_custom/assets/styles/megamenu-custom-newDB8.css">
   </head>
   <body>
+    
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
-    <div id="wrapper">
-      
+    <div id="wrapper">      
       <div id="app"></div>
-      <div id="legendWidget"></div>
-      <div id="basemapWidget" class=""></div>
     </div>
   </body>
 </html>
