@@ -1,5 +1,6 @@
 <template>
   <div id="esri-map-view"></div>
+    <AlertView :Alerts="alerts" />
   <div
     id="map-bottom-left-container"
     class="w3-display-bottomleft w3-container"
@@ -35,6 +36,7 @@
   <TravelTimesPopup :Featureset="popupFeatureset" />
   <WildfirePointsPopup :Featureset="popupFeatureset" />
   <LeftPaneView />
+  <!-- <AdView /> -->
 </template>
 
 <script lang="ts">
@@ -46,6 +48,8 @@ import { Geometry } from "@arcgis/core/geometry";
 import Graphic from "@arcgis/core/Graphic";
 import Layer from "@arcgis/core/layers/Layer";
 import Point from "@arcgis/core/geometry/Point";
+import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
+import Extent from "@arcgis/core/geometry/Extent";
 
 import { getConfig } from "@/utils/appConfigUtil";
 import { mapView, zoomToMetroArea } from "@/esri-stuff/esriMap";
@@ -64,6 +68,9 @@ import { clusterMaxScale, getIdsFromCluster } from "@/utils/clusterUtil";
 import LayerInfo from "@/types/LayerInfo";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import XY from "@/types/XY";
+import { getAlerts } from "@/utils/alertInfoUtil";
+import AlertInfo from "@/types/AlertInfo";
+import { getFeatureInfoById, getLineFromPointRestriction } from "@/utils/featureInfoUtil";
 /* Layers for popup */
 import ParkRideLayer from "@/layers/ParkRideLayer";
 import CameraLayer, { toggleCluster } from "@/layers/CameraLayer";
@@ -77,7 +84,7 @@ import RestAreasLayer from "@/layers/RestAreasLayer";
 import FireIncidentLayer from "@/layers/FireIncidentLayer";
 import MileMarkersLayer from "@/layers/MileMarkersLayer";
 import RoadsReferenceLayer from "@/layers/RoadsReferenceLayer";
-import BoundariesPlacesReferenceLayer from "@/layers/BoundariesPlacesReferenceLayer"
+import BoundariesPlacesReferenceLayer from "@/layers/BoundariesPlacesReferenceLayer";
 // import FirePerimeterLayer from "@/layers/FirePerimeterLayer"
 /* Popups */
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
@@ -97,10 +104,8 @@ import BasemapView from "@/components/BasemapView.vue";
 import CoordinatesView from "@/components/CoordinatesView.vue";
 import MyLocationView from "@/components/MyLocationView.vue";
 import ZoomButtonView from "@/components/ZoomButtonView.vue";
-import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
-import Extent from "@arcgis/core/geometry/Extent";
-import { getFeatureInfoById, getFeatureInfoByUniqueField, getLineFromPointRestriction } from "@/utils/featureInfoUtil";
-import { addGraphics } from "@/utils/graphicLayerUtil";
+import AlertView from "@/components/AlertView.vue";
+// import AdView from "@/components/AdView.vue";
 
 export default defineComponent({
   components: {
@@ -120,10 +125,20 @@ export default defineComponent({
     CoordinatesView,
     MyLocationView,
     ZoomButtonView,
+    AlertView,
+    // AdView,
   },
   setup() {
     const selectedCursor = ref("");
     const store = useStore();
+    // Statewide alerts...
+    const alerts = ref<AlertInfo[]>([]);
+    getConfig().then((config) => {
+      getAlerts(config.stateAlerts).then((result) => {
+        alerts.value = result;
+        
+      })
+    })
     // Zoom popup...
     const zoomPopupVisible = ref(false);
     const zoomPopupLabel = ref("");
@@ -478,6 +493,7 @@ export default defineComponent({
       popupFeatureset,
       closePopup,
       selectedCursor,
+      alerts,
     };
   },
 });

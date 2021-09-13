@@ -35,7 +35,7 @@
   <div
     v-if="!isOpen"
     id="map-top-left-container-closed"
-    class="z1 w3-container w3-padding-small w3-card w3-white w3-button"
+    class="w3-container w3-padding-small w3-card w3-white w3-button"
     @click="toggleDisplay"
   >
     <label class="w3-medium">Map Features</label>
