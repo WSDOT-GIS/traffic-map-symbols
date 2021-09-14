@@ -4,10 +4,12 @@
       <div class="logo-container">
         <div class="region region-header">
           <a class="logo navbar-btn pull-left" href="/" title="Home" rel="home">
-            <!-- The image is loaded later and changes the size of the header. 
+            <!-- NOTE:
+              - Make sure to change the path when replacing this with new version.
+              - The image is loaded later and changes the size of the header. 
               So let app know when it is loaded so the app can size map view correctly. -->
             <img
-              src="/img/wsdot-logo-white.svg"
+              src="@/assets/wsdot-logo-white.svg"
               alt="Home"
               @load="onImgLoad()"
             />
