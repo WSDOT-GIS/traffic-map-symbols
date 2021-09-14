@@ -1,8 +1,6 @@
 <template>
-  <header id="app-top-container" ref="topRef">
-    <HeaderView :text="headerText" />
-    <AlertView :Alerts="alerts" />
-  </header>
+  <HeaderView @onLoadComplete="resizeMapContainer()" />
+
   <main>
     <div
       id="map-container"
@@ -12,24 +10,19 @@
       <EsriMap />
     </div>
   </main>
-  <footer id="app-bottom-container" ref="bottomRef">
+  <!-- <footer id="app-bottom-container" ref="bottomRef">
     <div ref="adRef">
       <AdView :text="adText" />
-    </div>
-    <div id="footer-wrapper" ref="footerRef">
-      <FooterView :text="footerText" />
-    </div>
-  </footer>
+    </div> -->
+  <FooterView />
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
 import EsriMap from "./components/EsriMap.vue";
 import HeaderView from "./components/HeaderView.vue";
-import AlertView from "./components/AlertView.vue";
-import AdView from "./components/AdView.vue";
+// import AdView from "./components/AdView.vue";
 import FooterView from "./components/FooterView.vue";
-import AlertInfo from "./types/AlertInfo";
 import { useStore } from "@/store";
 
 export default defineComponent({
@@ -37,32 +30,16 @@ export default defineComponent({
   components: {
     EsriMap,
     HeaderView,
-    AlertView,
-    AdView,
+    // AdView,
     FooterView,
   },
   setup() {
-    const headerText =
-      "DRAFT – Information on this page is for visual demonstration and should not be used for travel related decisions – DRAFT";
-    const tempAlert: AlertInfo = {
-      title: "Placeholder for the alert message.",
-      description: "description",
-      x: 1,
-      y: 1,
-    };
-    const alerts = ref<AlertInfo[]>([tempAlert]);
-    const adText = "Placeholder for the advertisement";
-    const footerText = "Placeholder for the footer";
-    const topRef = ref<HTMLDivElement>();
-    const bottomRef = ref<HTMLDivElement>();
-    const adRef = ref<HTMLDivElement>();
-    const footerRef = ref<HTMLDivElement>();
     const mapHeight = ref("500px");
     const store = useStore();
     onMounted(() => {
       resizeMapContainer();
     });
-    // Make map fill the all remaining screen...
+    // Make map fill the screen below the header...
     const resizeMapContainer = () => {
       // if (topRef.value && bottomRef.value) {
       //   const h =
@@ -71,33 +48,22 @@ export default defineComponent({
       //   bottomRef.value.offsetHeight;
       //   mapHeight.value = h + "px";
       // }
-      if (topRef.value && adRef.value) {
-        const h =
-          window.innerHeight -
-          topRef.value.offsetHeight -
-          adRef.value.offsetHeight;
-        mapHeight.value = h + "px";
+      const headDiv = document.querySelector("#header") as HTMLElement;
+      // The menu button has some extra height that is not reflected in the container height, so measure the menu button's height.
+      const menuDiv = document.querySelector(".we-mega-menu-li") as HTMLElement;
+      let navH = 0;
+      if (menuDiv && menuDiv.offsetHeight) {
+        navH = menuDiv.offsetHeight;
       }
-      // if (topRef.value && footerRef.value) {
-      //   const h =
-      //     window.innerHeight -
-      //     topRef.value.offsetHeight -
-      //     footerRef.value.offsetHeight;
-      //   mapHeight.value = h + "px";
-      // }
+      const h = window.innerHeight - headDiv.offsetHeight - navH;
+      mapHeight.value = h + "px";
     };
     window.addEventListener("resize", resizeMapContainer);
+
     return {
-      headerText,
-      alerts,
-      adText,
-      footerText,
       mapHeight,
-      topRef,
-      bottomRef,
-      adRef,
-      footerRef,
       store,
+      resizeMapContainer,
     };
   },
 });
@@ -124,11 +90,6 @@ hr.horizontal-divider {
   border-top: 1px solid #bbb;
   margin: 1vh 1vw;
 }
-/* Remove the border when the map is in focus. */
-/* .esri-view .esri-view-surface--inset-outline:focus::after {
-  outline: none !important;
-} */
-/* App elements positioning */
 
 #app {
   position: absolute;
@@ -146,8 +107,5 @@ hr.horizontal-divider {
 
 #map-container > * {
   position: absolute;
-}
-#app-bottom-container {
-  background-color: var(--color-gray20);
 }
 </style>

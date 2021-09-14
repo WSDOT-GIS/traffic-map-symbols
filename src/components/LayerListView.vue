@@ -446,10 +446,10 @@ export default defineComponent({
 .trafficLegendTable, .roadAlertsLegendTable {
   margin: auto;
   width: 95%;
-  border-radius: 5px;
+  /* border-radius: 5px;
   border-style: solid;
   border-width: 1px;
-  border-color: var(--color-gray40);
+  border-color: var(--color-gray40); */
   margin-bottom: 5px;
 }
 .trafficLegendCell{
