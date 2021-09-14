@@ -74,6 +74,7 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const config = await getConfig();
     EsriConfig.apiKey = config.apiKey;
     const trafficLyr = initTrafficLayer(config.traffic, config.layerRefreshMinute);
+    console.log(config.restAreas)
     const restAreasLyr = initRestAreaLayer(config.restAreas);
     const parkRideLyr = initParkRideLayer(config.parkAndRides);
     const weatherLyr = initWeatherLayer(config.weatherStations);
