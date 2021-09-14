@@ -88,6 +88,9 @@
           >View Extended Forecast</a
         >
       </div>
+      <div v-if="propAmenities">
+        <slot name="amenitiesPanel"></slot>
+      </div>
       <Carousel
         v-if="Config.imageFieldName"
         :items-to-show="1"
@@ -186,13 +189,16 @@ export default defineComponent({
       type: Object as PropType<ForecastListInfo>,
       required: false,
     },
+    Amenities:{
+      type: String,
+      required: false,
+    }
   },
   setup(props, context) {
+    console.log(props)
     // The DOM only exists while the visibility is true. Get it in onUpdate().
-    const propWeatherForecast = toRefs(props).WeatherForecast;
-    watch(propWeatherForecast, () => {
-      console.log(propWeatherForecast.value);
-    });
+    const propWeatherForecast = toRefs(props).WeatherForecast;//bind forecast to ref for v-if conditional rendering
+    const propAmenities=toRefs(props).Amenities;//bind amenities to ref for v-if conditional rendering
     const containerRef = ref<HTMLDivElement>();
     const store = useStore();
     const mapSize = computed(() => store.state.mapSize);
@@ -563,6 +569,7 @@ export default defineComponent({
       badgeText,
       getTitle,
       propWeatherForecast,
+      propAmenities
     };
   },
 });

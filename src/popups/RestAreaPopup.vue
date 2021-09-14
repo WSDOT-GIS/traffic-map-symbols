@@ -2,6 +2,7 @@
   <PopupBase
     LightThemeColor="#d8e8eb"
     DarkThemeColor="#63a4ad"
+    :Amenities="Amenities"
     :Features="[feature]"
     :Config="{
       bannerText: { text: 'Rest Area' },
@@ -30,6 +31,13 @@
         height="24"
       ></div>
     </template>
+    <template v-slot:amenitiesPanel>
+      <div>
+        <table>
+          <label v-for="Amenity in Amenities" :key="Amenity" class="amenityLabel">{{Amenity}}</label>
+        </table>
+      </div>
+    </template>
   </PopupBase>
 </template>
 <script lang="ts">
@@ -51,7 +59,7 @@ export default defineComponent({
   setup(props) {
     const feature = ref<FeatureInfo>();
     const layerIcons = layerListIcons;
-
+    const Amenities = ref<string[]>();
     watch(props, () => {
       if (props.Featureset.layerId === FeatureLayer().id) {
         show();
@@ -66,6 +74,9 @@ export default defineComponent({
           (result) => {
             if (result) {
               feature.value = result;
+              if((feature.value.attributes.Amenties as string).split(",") as string[]!=["none"]){
+                 Amenities.value = (feature.value.attributes.Amenties as string).split(",") as string[]
+              }
             }
           }
         );
@@ -86,9 +97,24 @@ export default defineComponent({
     return {
       feature,
       layerIcons,
+      Amenities,
       close,
     };
   },
 });
 </script>
+<style scoped>
+  .amenityLabel {
+  display: inline-block;
+  font-weight: 700;
+  font-size: small;
+  padding: 3px;
+  border-radius: 5px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #ffc107;
+  background-color: #fffaec;
+  margin: 3px 1em 0 1em;
+}
+</style>
 
