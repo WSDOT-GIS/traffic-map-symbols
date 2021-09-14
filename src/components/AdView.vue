@@ -1,6 +1,6 @@
 <template>
   <div id="ad_container" class="w3-content">
-    <p>{{ text }}</p>
+    <p>Placeholder for advertisement</p>
   </div>
 </template>
 
@@ -22,11 +22,12 @@ export default defineComponent({
   color: var(--color-gray100);
   background-color: var(--color-gray40);
   height: 90px;
-  width: 730px;
+  width: 728px;
 }
-@media screen and (max-width: 730px) {
+@media screen and (max-width: 727px) {
   #ad_container {
-    width: 100%;
+    height: 50px;
+    width: 320px;
   }
 }
 p {

@@ -1,11 +1,14 @@
 <template>
   <div id="esri-map-view"></div>
-    <AlertView :Alerts="alerts" />
+  <AlertView :Alerts="alerts" />
   <div
     id="map-bottom-left-container"
     class="w3-display-bottomleft w3-container"
   >
     <CoordinatesView />
+  </div>
+  <div id="map-bottom-center-container" class="w3-display-bottommiddle">
+    <AdView />
   </div>
   <div id="map-bottom-right-container" class="w3-display-bottomright">
     <div class="map-bottom-right-container-row flex-row">
@@ -36,7 +39,6 @@
   <TravelTimesPopup :Featureset="popupFeatureset" />
   <WildfirePointsPopup :Featureset="popupFeatureset" />
   <LeftPaneView />
-  <!-- <AdView /> -->
 </template>
 
 <script lang="ts">
@@ -70,7 +72,10 @@ import FeaturesetInfo from "@/types/FeaturesetInfo";
 import XY from "@/types/XY";
 import { getAlerts } from "@/utils/alertInfoUtil";
 import AlertInfo from "@/types/AlertInfo";
-import { getFeatureInfoById, getLineFromPointRestriction } from "@/utils/featureInfoUtil";
+import {
+  getFeatureInfoById,
+  getLineFromPointRestriction,
+} from "@/utils/featureInfoUtil";
 /* Layers for popup */
 import ParkRideLayer from "@/layers/ParkRideLayer";
 import CameraLayer, { toggleCluster } from "@/layers/CameraLayer";
@@ -105,7 +110,7 @@ import CoordinatesView from "@/components/CoordinatesView.vue";
 import MyLocationView from "@/components/MyLocationView.vue";
 import ZoomButtonView from "@/components/ZoomButtonView.vue";
 import AlertView from "@/components/AlertView.vue";
-// import AdView from "@/components/AdView.vue";
+import AdView from "@/components/AdView.vue";
 
 export default defineComponent({
   components: {
@@ -126,7 +131,7 @@ export default defineComponent({
     MyLocationView,
     ZoomButtonView,
     AlertView,
-    // AdView,
+    AdView,
   },
   setup() {
     const selectedCursor = ref("");
@@ -136,9 +141,8 @@ export default defineComponent({
     getConfig().then((config) => {
       getAlerts(config.stateAlerts).then((result) => {
         alerts.value = result;
-        
-      })
-    })
+      });
+    });
     // Zoom popup...
     const zoomPopupVisible = ref(false);
     const zoomPopupLabel = ref("");
@@ -210,7 +214,7 @@ export default defineComponent({
         // Change pointer when the cursor is on a feature...
         mapView.hitTest(event, opLayerOpts).then((response) => {
           if (response.results.length > 0) {
-            console.log(response)
+            console.log(response);
             mapDiv.style.cursor = "pointer";
           } else {
             mapDiv.style.cursor = "auto";
@@ -317,26 +321,31 @@ export default defineComponent({
                   }
                 });
               } else {
-                LineRestrictionsLayer().definitionExpression="1=0"//clear lines from restrictions layer
+                LineRestrictionsLayer().definitionExpression = "1=0"; //clear lines from restrictions layer
                 // Not aggregate...
                 const id = g.getObjectId();
                 //get lines for restriciton point click
-                if(g.layer.title=="Restriction Points"){
-                  getFeatureInfoById(id,g.layer as GeoJSONLayer).then((result)=>{
-                    if(result?.attributes.lineMarker=="true"){
-                      LineRestrictionsLayer().definitionExpression = `UniqueId = '${result?.attributes.UniqueId}'`
-                      getLineFromPointRestriction("UniqueId",result?.attributes.UniqueId as string,LineRestrictionsLayer()).then((lineSegment)=>{
-                        const anyLine = lineSegment as any
-                        mapView.goTo(anyLine.features[0].geometry).then(()=>
-                        showPopup(results2Show.layer.id, [id]))
-                      })
+                if (g.layer.title == "Restriction Points") {
+                  getFeatureInfoById(id, g.layer as GeoJSONLayer).then(
+                    (result) => {
+                      if (result?.attributes.lineMarker == "true") {
+                        LineRestrictionsLayer().definitionExpression = `UniqueId = '${result?.attributes.UniqueId}'`;
+                        getLineFromPointRestriction(
+                          "UniqueId",
+                          result?.attributes.UniqueId as string,
+                          LineRestrictionsLayer()
+                        ).then((lineSegment) => {
+                          const anyLine = lineSegment as any;
+                          mapView
+                            .goTo(anyLine.features[0].geometry)
+                            .then(() => showPopup(results2Show.layer.id, [id]));
+                        });
+                      } else {
+                        showPopup(results2Show.layer.id, [id]);
+                      }
                     }
-                    else{
-                      showPopup(results2Show.layer.id, [id]);
-                    }
-                  })
-                }
-                else{
+                  );
+                } else {
                   showPopup(results2Show.layer.id, [id]);
                 }
               }
@@ -512,7 +521,16 @@ export default defineComponent({
 }
 #map-bottom-right-container {
   display: inline-flex;
-  margin: 16px;
+  margin-bottom: 16px;
+}
+
+@media screen and (max-width: 900px) {
+  #map-bottom-right-container {
+    margin-bottom: 66px;
+  }
+  #map-bottom-left-container {
+    margin-bottom: 66px;
+  }
 }
 
 .map-bottom-right-container-row {
@@ -529,6 +547,9 @@ export default defineComponent({
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
+}
+#map-bottom-center-container {
+  margin-bottom: 16px;
 }
 .esri-zoom {
   display: none;
