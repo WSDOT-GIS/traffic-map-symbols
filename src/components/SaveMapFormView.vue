@@ -58,9 +58,10 @@ export default defineComponent({
      * Support for pressing Enter key to save...
      */
     const onKeyUp = (event: KeyboardEvent) => {
-      /** keyCode property is deprecated, but not necessary supported.
+      /** keyCode property is deprecated, but not necessary supported,
+       * so check both.
        * key = Enter
-       * keyCode = 13 is the "Enter" key on the keyboard
+       * keyCode = 13
        */
       if (
         (event.key && event.key === "Enter") ||
