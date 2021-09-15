@@ -75,7 +75,7 @@ export const initLayer = (url: string): GeoJSONLayer => {
         renderer: renderer,
         featureReduction: clusterConfig,
         fields: fields,
-        visible: false
+        visible: false,
     });
     return layer;
 }

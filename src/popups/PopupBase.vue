@@ -195,7 +195,7 @@ export default defineComponent({
     }
   },
   setup(props, context) {
-    console.log(props)
+    // console.log(props)
     // The DOM only exists while the visibility is true. Get it in onUpdate().
     const propWeatherForecast = toRefs(props).WeatherForecast;//bind forecast to ref for v-if conditional rendering
     const propAmenities=toRefs(props).Amenities;//bind amenities to ref for v-if conditional rendering

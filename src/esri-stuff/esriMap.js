@@ -69,7 +69,7 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     const config = yield appConfigUtil_1.getConfig();
     config_1.default.apiKey = config.apiKey;
     const trafficLyr = TrafficLayer_1.initLayer(config.traffic, config.layerRefreshMinute);
-    console.log(config.restAreas);
+    // console.log(config.restAreas);
     const restAreasLyr = RestAreasLayer_1.initLayer(config.restAreas);
     const parkRideLyr = ParkRideLayer_1.initLayer(config.parkAndRides);
     const weatherLyr = WeatherStationsLayer_1.initLayer(config.weatherStations);

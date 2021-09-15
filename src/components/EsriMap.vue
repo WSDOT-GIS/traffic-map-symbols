@@ -214,7 +214,7 @@ export default defineComponent({
         // Change pointer when the cursor is on a feature...
         mapView.hitTest(event, opLayerOpts).then((response) => {
           if (response.results.length > 0) {
-            console.log(response);
+            // console.log(response);
             mapDiv.style.cursor = "pointer";
           } else {
             mapDiv.style.cursor = "auto";

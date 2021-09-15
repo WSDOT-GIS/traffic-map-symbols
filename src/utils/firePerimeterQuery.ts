@@ -4,7 +4,7 @@ const firePerimeterFeatureIDs = async (fireIncidentLayer:FeatureLayer)=>{
     const fireIncidentQuery = fireIncidentLayer.createQuery();
     fireIncidentQuery.outFields = ["IncidentName"];
     const response = await fireIncidentLayer.queryFeatures(fireIncidentQuery)
-    console.log(response.features[0].attributes)
+    // console.log(response.features[0].attributes)
     let queryString = 'IncidentName IN('
     for(let i=0;i<response.features.length;i++){
         if (i==0){

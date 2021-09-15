@@ -89,14 +89,14 @@ export default defineComponent({
       }
       const w = containerRef.value.offsetWidth;
       left.value = (mapSize.value.width - w) / 2;
-      console.log(
-        "left: " +
-          left.value +
-          ", map width: " +
-          mapSize.value.width +
-          ", width: " +
-          w
-      );
+      // console.log(
+      //   "left: " +
+      //     left.value +
+      //     ", map width: " +
+      //     mapSize.value.width +
+      //     ", width: " +
+      //     w
+      // );
     };
     const toggleDisplay = () => {
       isOpen.value = !isOpen.value;
@@ -116,7 +116,7 @@ export default defineComponent({
 #alert-container-open {
   background-color: #ff0000;
   color: #ffffff;
-  z-index: 10;
+  /* z-index: 10; */
 }
 #alert-container-closed {
   position: absolute;

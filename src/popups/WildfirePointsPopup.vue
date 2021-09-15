@@ -71,7 +71,7 @@ export default defineComponent({
         getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(//query feature layer for feature
           (result) => {
             if (result) {
-              console.log(result)
+              // console.log(result)
               feature.value = result;
             }
           }

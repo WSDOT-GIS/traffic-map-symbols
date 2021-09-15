@@ -16,7 +16,7 @@ import { initLayer as initCameraLayer, setCluster } from "@/layers/CameraLayer";
 import { initLayer as initRestAreaLayer } from "@/layers/RestAreasLayer";
 import { initLayer as initPointRestrictionsLayer } from "@/layers/PointRestrictionsLayer";
 import { initLayer as initLineRestrictionsLayer } from "@/layers/LineRestrictionsLayer";
-import { initClosureLayer} from "@/layers/RoadAlertsLayer";
+import { initClosureLayer } from "@/layers/RoadAlertsLayer";
 import { initPriorityLayer } from "@/layers/RoadAlertsLayer";
 import { initLayer as initWeatherLayer } from "@/layers/WeatherStationsLayer";
 import { initLayer as initMountainLayer } from "@/layers/MountainPassesLayer";
@@ -49,7 +49,7 @@ export const mapView = new MapView({
         rotationEnabled: false, // Disables map rotation
         // Limit the map navigation. 
         // Note: This still allows navigation beyond the extent, but not infinitely.
-        geometry: getEsriExtent("full"), 
+        geometry: getEsriExtent("full"),
     }
 });
 // Zoom buttons are replaced with the custom Vue components.
@@ -67,6 +67,27 @@ export const init = (container: HTMLDivElement): void => {
             console.warn("Failed to initialize map. Error: ", error);
         });
 };
+
+export const defaultLayerProps: { id: string, visible: boolean }[] = [
+    { id: "boundaries-places-reference-layer", visible: false },
+    { id: "traffic-camera-layer", visible: false },
+    { id: "esri-reference-layer", visible: true },
+    { id: "fire-incidents-layer", visible: false },
+    { id: "fire-perimeters-layer", visible: false },
+    { id: "line-restrictions-layer", visible: false },
+    { id: "mile-markers", visible: false },
+    { id: "mountain-passes-layer", visible: false },
+    { id: "park-ride-layer", visible: false },
+    { id: "point-restrictions-layer", visible: false },
+    { id: "rest-areas-layer", visible: false },
+    { id: "road-alerts-layer", visible: true },
+    { id: "road-closures-layer", visible: true },
+    { id: "roads-reference-layer", visible: false },
+    { id: "state-route-shields-layer", visible: true },
+    { id: "traffic-flow-layer", visible: true },
+    { id: "travel-times-layer", visible: false },
+    { id: "weather-stations-layer", visible: false },
+]
 /**
  * Get config and get apiKey and URL, then initialize layers and add to map...
  */
@@ -74,7 +95,7 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const config = await getConfig();
     EsriConfig.apiKey = config.apiKey;
     const trafficLyr = initTrafficLayer(config.traffic, config.layerRefreshMinute);
-    console.log(config.restAreas)
+    // console.log(config.restAreas)
     const restAreasLyr = initRestAreaLayer(config.restAreas);
     const parkRideLyr = initParkRideLayer(config.parkAndRides);
     const weatherLyr = initWeatherLayer(config.weatherStations);
@@ -93,11 +114,21 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const esriRoadsReferenceLayer = initESRIRoadsReference(config.esriRoadsReferenceLayer)
     const esriPlacesReferenceLayer = initESRIBoundariesPlacesReference(config.esriPlacesReferenceLayer)
     const stateRouteShieldsLayer = initStateRouteShieldsLayer(config.stateRouteShieldsLayer)
-    webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer, firePerimetersLayer, fireIncidentLayer,
+    // The first one in the array will be displayed at the bottom of the map... 
+    webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
+        firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
-        pointRestrictionLyr, cameraLyr, roadAlertsLyr,roadClosuresLyr,
+        pointRestrictionLyr, cameraLyr, roadAlertsLyr, roadClosuresLyr,
         mileMarkersLayer]);
-
+    // Set the default visibility...
+    webmap.layers.forEach((eachLyr) => {
+        const defaultProp = defaultLayerProps.find((eachProp) => {
+            return eachProp.id === eachLyr.id;
+        });
+        if (defaultProp) {
+            eachLyr.visible = defaultProp.visible;
+        }
+    })
 }
 /**
  * Reload GeoJSON layers that are updated frequently.
@@ -124,7 +155,7 @@ const reloadGeoJsonLayer = (id: string, layerUrl: string, initFunc: (url: string
         const oldlyr = lyr as GeoJSONLayer
         const lyrIdx = webmap.layers.indexOf(oldlyr);
         const visible = oldlyr.visible;
-        const definitionExpression= oldlyr.definitionExpression
+        const definitionExpression = oldlyr.definitionExpression
         // Destroys the layer and remove it from the map...
         lyr.destroy();
         oldlyr.destroy();
@@ -137,7 +168,7 @@ const reloadGeoJsonLayer = (id: string, layerUrl: string, initFunc: (url: string
             return eachInfo.id === id;
         })
         if (lyrInfo) {
-            console.log(lyrInfo)
+            // console.log(lyrInfo)
             lyrInfo.id = newLyr.id;
             lyrInfo.title = newLyr.title;
             lyrInfo.visible = newLyr.visible;

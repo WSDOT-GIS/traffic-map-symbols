@@ -10,20 +10,20 @@
         ref="itemContainerRef"
       >
         <button
-          :title="'Show ' + item.title"
+          :title="'Show ' + item.t"
           class="saved-map-title w3-btn w3-transparent"
           :class="{
-            'w3-text-blue': item.selected,
-            'w3-text-dark-grey': !item.selected,
+            'w3-text-blue': item.s,
+            'w3-text-dark-grey': !item.s,
           }"
           :style="{ width: itemTitleWidth }"
           @click="selectItem($event, item)"
         >
-          {{ item.title }}
+          {{ item.t }}
         </button>
         <button
-          :title="'Delete ' + item.title"
-          :aria-label="'Delete ' + item.title"
+          :title="'Delete ' + item.t"
+          :aria-label="'Delete ' + item.t"
           class="w3-right w3-button w3-transparent"
           @click="removeItem($event, item)"
           ref="closeButtonRef"
@@ -57,9 +57,10 @@ import { setCookie, getCookie } from "@/utils/cookieUtil";
 import { cloneProxyTarget, useStore } from "@/store";
 import WsdotButtonView from "@/components/WsdotButtonView.vue";
 import SaveMapFormView from "@/components/SaveMapFormView.vue";
-import LayerInfo from "@/types/LayerInfo";
+// import LayerInfo from "@/types/LayerInfo";
 import { validateBasemapName } from "@/layers/Basemaps";
 import { isMobile } from "@/utils/mediaUtil";
+import { defaultLayerProps } from "@/esri-stuff/esriMap";
 
 export default defineComponent({
   components: { WsdotButtonView, SaveMapFormView },
@@ -70,18 +71,18 @@ export default defineComponent({
     const itemTitleWidth = ref("0");
     const formVisible = ref(false);
     const newMapTitle = ref("");
-    const cookieText = getCookie("saved-map-list");
+    const cookieName = "savedmaps";
+    const cookieText = getCookie(cookieName);
     const mapList = ref<SavedMapInfo[]>([]);
     if (cookieText) {
       const json = JSON.parse(cookieText);
       mapList.value = json as SavedMapInfo[];
     }
     mapList.value.forEach((each) => {
-      each.selected = false;
+      each.s = false;
     });
     // Resize the list after the component is loaded or updated...
     onUpdated(() => {
-      //console.log("******onUpdated");
       if (mapList.value.length > 0) {
         nextTick(() => {
           resizeItemTitle();
@@ -92,7 +93,6 @@ export default defineComponent({
       // On the mobile, onUpdated is not triggered initially since the left pane is closed by default.
       // On the big screen, onMounted seems to happen too early and it does not size correctly, so do not handle this.
       if (isMobile()) {
-        //console.log("******onMounted");
         if (mapList.value.length > 0) {
           nextTick(() => {
             resizeItemTitle();
@@ -124,34 +124,67 @@ export default defineComponent({
     };
     const selectItem = (event: Event, item: SavedMapInfo) => {
       // Removing the reactivity so the saved state is not altered by store state changes...
-      store.commit("setCurrentExtent", cloneProxyTarget(item.extent));
-      const layerList: LayerInfo[] = cloneProxyTarget(item.layers);
-      if (layerList.length === store.state.layerList.length) {
-        store.commit("setLayerList", cloneProxyTarget(item.layers));
-      }
-      if (validateBasemapName(item.basemap)) {
-        store.commit("setBasemap", item.basemap);
-      }
-      mapList.value.forEach((each) => {
-        each.selected = false;
+      store.commit("setCurrentExtent", cloneProxyTarget(item.e));
+      const layerListCookie = cloneProxyTarget(item.l);
+      // Set layer visibilities...
+      store.state.layerList.forEach((eachInfo) => {
+        // Check cookie...
+        const lyrCookie = layerListCookie.find((eachCookie) => {
+          return eachInfo.id === eachCookie.i;
+        })
+        if (lyrCookie) {
+          eachInfo.visible = lyrCookie.v;
+        } else {
+          // Not in cookie, so apply default...
+          const defaultProp = defaultLayerProps.find((eachProp) => {
+            return eachInfo.id === eachProp.id;
+          });
+          if (defaultProp) {
+            eachInfo.visible = defaultProp.visible;
+          }
+        }
       });
-      item.selected = true;
+      store.commit("setLayerList", store.state.layerList);
+      // Set basemap...
+      if (validateBasemapName(item.b)) {
+        store.commit("setBasemap", item.b);
+      }
+      // Set the "selected" property... 
+      mapList.value.forEach((each) => {
+        each.s = false;
+      });
+      item.s = true;
     };
 
     const addItem = (newTitle: string) => {
       mapList.value.forEach((each) => {
-        each.selected = false;
+        each.s = false;
+      });
+      // Saving only the ID and visibility of each layer if visibility is set to non-default value...
+      const layerListCopy = cloneProxyTarget(store.state.layerList);
+      const layerListFilter = layerListCopy.filter((eachInfo) => {
+        const defaultProp = defaultLayerProps.find((eachProp) => {
+          return eachProp.id === eachInfo.id;
+        });
+        if (defaultProp) {
+          return eachInfo.visible !== defaultProp.visible;
+        } else {
+          return false;
+        }
+      });
+      const layerList = layerListFilter.map((eachInfo) => {
+        return { i: eachInfo.id, v: eachInfo.visible };
       });
       mapList.value.push({
-        title: newTitle.trim(),
+        t: newTitle.trim(),
         // removing reactivity so the saved state is not tied to the store state...
-        extent: cloneProxyTarget(store.state.currentExtent),
-        layers: cloneProxyTarget(store.state.layerList),
-        basemap: store.state.basemap,
-        selected: true,
+        e: cloneProxyTarget(store.state.currentExtent),
+        l: layerList,
+        b: store.state.basemap,
+        s: true,
       });
       const value = JSON.stringify(mapList.value);
-      setCookie("saved-map-list", value);
+      setCookie(cookieName, value);
       closeForm();
     };
 
@@ -164,7 +197,7 @@ export default defineComponent({
       });
       mapList.value.splice(idx, 1);
       const value = JSON.stringify(mapList.value);
-      setCookie("saved-map-list", value);
+      setCookie(cookieName, value);
     };
 
     return {
