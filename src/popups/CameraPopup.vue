@@ -14,7 +14,7 @@
       imageFieldName: 'ImageURL',
       content: [
         { label: 'Camera Direction', value: { custom: getDirection } },
-        { label: 'Refresh Rate', value: { text: 'Approximately every 5 miutes' } },
+        { label: 'Refresh Rate', value: { text: 'Approximately every 5 minutes' } },
       ],
     }"
     @close="close"
