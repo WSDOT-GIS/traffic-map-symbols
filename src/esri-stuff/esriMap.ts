@@ -67,27 +67,8 @@ export const init = (container: HTMLDivElement): void => {
             console.warn("Failed to initialize map. Error: ", error);
         });
 };
-
-export const defaultLayerProps: { id: string, visible: boolean }[] = [
-    { id: "boundaries-places-reference-layer", visible: false },
-    { id: "traffic-camera-layer", visible: false },
-    { id: "esri-reference-layer", visible: true },
-    { id: "fire-incidents-layer", visible: false },
-    { id: "fire-perimeters-layer", visible: false },
-    { id: "line-restrictions-layer", visible: false },
-    { id: "mile-markers", visible: false },
-    { id: "mountain-passes-layer", visible: false },
-    { id: "park-ride-layer", visible: false },
-    { id: "point-restrictions-layer", visible: false },
-    { id: "rest-areas-layer", visible: false },
-    { id: "road-alerts-layer", visible: true },
-    { id: "road-closures-layer", visible: true },
-    { id: "roads-reference-layer", visible: false },
-    { id: "state-route-shields-layer", visible: true },
-    { id: "traffic-flow-layer", visible: true },
-    { id: "travel-times-layer", visible: false },
-    { id: "weather-stations-layer", visible: false },
-]
+/** Store the default layer visibility. This is used by Saved Map function. */
+export const defaultLayerProps: { id: string, visible: boolean }[] = []
 /**
  * Get config and get apiKey and URL, then initialize layers and add to map...
  */
@@ -120,15 +101,10 @@ export const loadOperationalLayers = async (): Promise<void> => {
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertsLyr, roadClosuresLyr,
         mileMarkersLayer]);
-    // Set the default visibility...
+    // Store the default visibility...
     webmap.layers.forEach((eachLyr) => {
-        const defaultProp = defaultLayerProps.find((eachProp) => {
-            return eachProp.id === eachLyr.id;
-        });
-        if (defaultProp) {
-            eachLyr.visible = defaultProp.visible;
-        }
-    })
+        defaultLayerProps.push({ id: eachLyr.id, visible: eachLyr.visible });
+    });
 }
 /**
  * Reload GeoJSON layers that are updated frequently.
