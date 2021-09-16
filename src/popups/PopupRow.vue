@@ -28,7 +28,9 @@ export default defineComponent({
     });
 
     const getLabel = () => {
-      if (!props.Feature) {
+      console.log(props)
+      if(props.Config.label){
+        if (!props.Feature) {
         return;
       }
       let label = "";
@@ -44,6 +46,7 @@ export default defineComponent({
         label = "";
       }
       return label;
+      }
     };
 
     const getText = () => {

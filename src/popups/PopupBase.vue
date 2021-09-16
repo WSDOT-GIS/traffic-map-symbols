@@ -36,12 +36,12 @@
       <h4 class="popup-title w3-container">
         {{ getTitle() }}
       </h4>
-      <div v-if="Config.subtitle!='on Undefined'">
+      <div v-if="Config.subtitle && Config.subtitle!='on Undefined'">
         <div class="popup-content w3-container">
           <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
         </div>
       </div>
-      <div>
+      <div v-if="propWeatherForecast">
         <table class="weatherForecastTable">
           <tr id="weatherPeriodText">
             <td
@@ -129,7 +129,7 @@
           <label v-for="Amenity in Amenities" :key="Amenity" class="amenityBubble">{{Amenity}}</label>
       </table>
     </div>
-    <div>
+    <div v-if="Config.moreInfoURL">
       <div v-if="!Config.moreInfoURL.text==''" class="popup-title w3-container">
           {{ getMoreInfoURL() }}
       </div>
