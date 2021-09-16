@@ -28,7 +28,6 @@ export const removeGraphicsByType=(graphicType:string)=>{
     const collection = mapView.graphics as __esri.Collection
     const graphicsArray = collection.toArray()
    for(let i =0;i< graphicsArray.length;i++){
-       console.log(graphicsArray[i].attributes.graphicType)
         if( graphicsArray[i].attributes.graphicType == graphicType){
             mapView.graphics.remove( graphicsArray[i])
         }

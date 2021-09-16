@@ -347,6 +347,31 @@
           </template>
         </ToggleSwitchView>
       </li>
+      <!--Border Crossings-->
+      <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
+        <ToggleSwitchView
+          @toggle="clickEvent"
+          :Enabled="true"
+          :Checked="layerList[getLayerIndex('border-crossings-layer')].visible"
+          :Value="
+            getLayerIndex('border-crossings-layer').toString()
+          "
+          Title="Toggle Border Crossings"
+        >
+          <template v-slot>
+            <div
+              class="mapFeaturesIcon"
+              v-html="
+                layerIcons.find((x) => x.id == 'border-crossing')
+                  ?.paths
+              "
+            ></div>
+            <span class="listLabel" id="CommercialVehicleLabel"
+              >Border Crossings</span
+            >
+          </template>
+        </ToggleSwitchView>
+      </li>
     </ul>
   </div>
 </template>

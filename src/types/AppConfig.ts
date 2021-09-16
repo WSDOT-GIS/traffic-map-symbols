@@ -8,6 +8,7 @@ interface AppConfig {
     pointRestrictions: string;
     restAreas: string;
     roadAlerts: string;
+    borderCrossings: string;
     traffic: string;
     weatherStations: string;
     travelTimes: string;

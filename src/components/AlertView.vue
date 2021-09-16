@@ -89,14 +89,14 @@ export default defineComponent({
       }
       const w = containerRef.value.offsetWidth;
       left.value = (mapSize.value.width - w) / 2;
-      console.log(
+      /*console.log(
         "left: " +
           left.value +
           ", map width: " +
           mapSize.value.width +
           ", width: " +
           w
-      );
+      );*/
     };
     const toggleDisplay = () => {
       isOpen.value = !isOpen.value;

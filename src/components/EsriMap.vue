@@ -38,6 +38,7 @@
   <RoadAlertPopup :Featureset="popupFeatureset" />
   <TravelTimesPopup :Featureset="popupFeatureset" />
   <WildfirePointsPopup :Featureset="popupFeatureset" />
+  <BorderCrossingPopup :Featureset="popupFeatureset" />
   <LeftPaneView />
 </template>
 
@@ -52,7 +53,6 @@ import Layer from "@arcgis/core/layers/Layer";
 import Point from "@arcgis/core/geometry/Point";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import Extent from "@arcgis/core/geometry/Extent";
-
 import { getConfig } from "@/utils/appConfigUtil";
 import { mapView, zoomToMetroArea } from "@/esri-stuff/esriMap";
 import {
@@ -63,6 +63,7 @@ import {
   getFeatureTypeFromUrl,
 } from "@/utils/urlParamUtil";
 import { getFeature, setLayerVisibility } from "@/utils/layerUtil";
+import {removeGraphicsByType} from "@/utils/graphicLayerUtil"
 import ZoomExtentLayer, {
   getFeatureById as getZoomFeatureById,
 } from "@/layers/ZoomExtentLayer";
@@ -90,6 +91,7 @@ import FireIncidentLayer from "@/layers/FireIncidentLayer";
 import MileMarkersLayer from "@/layers/MileMarkersLayer";
 import RoadsReferenceLayer from "@/layers/RoadsReferenceLayer";
 import BoundariesPlacesReferenceLayer from "@/layers/BoundariesPlacesReferenceLayer";
+import BorderCrossingLayer from "@/layers/BorderCrossingsLayer"
 // import FirePerimeterLayer from "@/layers/FirePerimeterLayer"
 /* Popups */
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
@@ -103,6 +105,7 @@ import RestAreaPopup from "@/popups/RestAreaPopup.vue";
 import RoadAlertPopup from "@/popups/RoadAlertPopup.vue";
 import TravelTimesPopup from "@/popups/TravelTimesPopup.vue";
 import WildfirePointsPopup from "@/popups/WildfirePointsPopup.vue";
+import BorderCrossingPopup from "@/popups/BorderCrossingPopup.vue"
 /* Components */
 import LeftPaneView from "@/components/LeftPaneView.vue";
 import BasemapView from "@/components/BasemapView.vue";
@@ -125,6 +128,7 @@ export default defineComponent({
     RoadAlertPopup,
     TravelTimesPopup,
     WildfirePointsPopup,
+    BorderCrossingPopup,
     LeftPaneView,
     BasemapView,
     CoordinatesView,
@@ -203,6 +207,7 @@ export default defineComponent({
           MileMarkersLayer(),
           RoadsReferenceLayer(),
           BoundariesPlacesReferenceLayer(),
+          BorderCrossingLayer(),
           ZoomExtentLayer,
         ],
       };
@@ -214,7 +219,6 @@ export default defineComponent({
         // Change pointer when the cursor is on a feature...
         mapView.hitTest(event, opLayerOpts).then((response) => {
           if (response.results.length > 0) {
-            console.log(response);
             mapDiv.style.cursor = "pointer";
           } else {
             mapDiv.style.cursor = "auto";
@@ -351,6 +355,8 @@ export default defineComponent({
               }
             }
           } else {
+            LineRestrictionsLayer().definitionExpression="1=0"//remove line restriction symbol 
+            removeGraphicsByType("myLocation")//remove "my location" graphic
             //No feature exist...
             closePopup();
           }

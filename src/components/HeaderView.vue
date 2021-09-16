@@ -7,7 +7,7 @@
             <!-- The image is loaded later and changes the size of the header. 
               So let app know when it is loaded so the app can size map view correctly. -->
             <img
-              src="/img/wsdot-logo-white.svg"
+              src="/assets/icons/wsdot-logo-white.svg"
               alt="Home"
               @load="onImgLoad()"
             />

@@ -3,20 +3,32 @@
     LightThemeColor="#ccdcdc"
     DarkThemeColor="#005151"
     :WeatherForecast="forecastList"
+    :WeatherLocation="weatherLocation"
     :Features="[feature]"
     :Config="{
       bannerText: { text: 'Weather Station' },
-      title: { fieldName: 'WeatherStationDescription' },
-      content: [
+      title: { custom: getTitle },
+      subtitle:
         {
+          label:'Location',
+          value:{
+            custom: getSubtitle
+          }
+        }
+      ,
+      moreInfoURL:{
+        custom: getMoreInfoURL
+      },
+      content: [
+       /* {
           label: 'Location',
           value: {
             custom: getCoord,
           },
         },
         { label: 'Surface temp', value: { custom: getSurfTemp } },
-        { label: 'Air temp', value: { custom: getAirTemp } },
-        {
+        { label: 'Air temp', value: { custom: getAirTemp } },*/
+       /* {
           label: '24hr high/low',
           value: { custom: getHighLowTemp },
         },
@@ -32,7 +44,7 @@
         {
           label: 'Dew point',
           value: { custom: getDewPoint },
-        },
+        },*/
         {
           label: 'Visibility',
           value: { custom: getVisibility },
@@ -80,6 +92,7 @@ import FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
 import { getConfig } from "@/utils/appConfigUtil";
 import ForecastListInfo from "@/types/ForecastListInfo"
+import MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
 export default defineComponent({
   components: { PopupBase },
   props: {
@@ -91,7 +104,8 @@ export default defineComponent({
   setup(props) {
     const feature = ref<FeatureInfo>();
     const layerIcons = layerListIcons;
-    const forecastList=ref<ForecastListInfo>()
+    const forecastList=ref<ForecastListInfo>();
+    const weatherLocation=ref<string>();
     watch(props, () => {
       if (props.Featureset.layerId === FeatureLayer().id) {//if clicked feature belongs to WeatherStations layer
         getWeatherForecast();
@@ -100,13 +114,17 @@ export default defineComponent({
         close();
       }
     });
-
+    const getTitle = (feature: FeatureInfo): string => {
+      const name = feature.attributes["WeatherStationDescription"]?.toString();
+      return `${name?.split("on")[0]}`;
+    };
     const show = () => {
       const setVal = () => {
         getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(//query feature layer for feature
           (result) => {
             if (result) {
               feature.value = result;
+              weatherLocation.value = `on ${feature.value.attributes["WeatherStationDescription"]?.toString().split("on")[1]}`
             }
           }
         );
@@ -127,43 +145,45 @@ export default defineComponent({
     };
     const getWeatherForecast = async()=>{
       getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(//query feature layer for feature
-          async (response) => {
-            if (response) {
-              const featureNWSZoneId = response?.attributes?.NWSZoneId?.toString().replace(/\s/g, "")
-              const config = await getConfig();
-              console.log(config.forecastExtendedAPI)
-              fetch(config.forecastExtendedAPI+featureNWSZoneId).then((result)=>{
-                result.json().then((response)=>{
-                  forecastList.value={
-                    nwsZoneId:response.nwsZoneId,
-                    forecastDateTime:response.forecastDateTime,
-                    forecastExpirationDateTime:response.forecastExpirationDateTime,
-                    nwsZoneRegionName:response.nwsZoneRegionName,
-                    forecasts:response.forecastData
-                  }
-                })
+        async (response) => {
+          if (response) {
+            const featureNWSZoneId = response?.attributes?.NWSZoneId?.toString().replace(/\s/g, "")
+            const config = await getConfig();
+            //fetch(config.forecastSummaryAPI+featureNWSZoneId).then((result)=>{ ~~summary call
+            fetch(config.forecastExtendedAPI+featureNWSZoneId).then((result)=>{
+              result.json().then((response)=>{
+                console.log(response.forecastData)
+                forecastList.value={
+                  nwsZoneId:response.nwsZoneId,
+                  forecastDateTime:response.forecastDateTime,
+                  forecastExpirationDateTime:response.forecastExpirationDateTime,
+                  nwsZoneRegionName:response.nwsZoneRegionName,
+                  forecasts:response.forecastData
+                }
               })
-              fetch(config.forecastSummaryAPI+featureNWSZoneId).then((result)=>{
-                result.json().then((response)=>{
-                    console.log(response)
-                })
-              })
-            }
+            })
           }
-        );
-     /* return {
-        "nwsZoneId": "string",
-        "forecastNumber": 2, // Object ID. Can be used as v-for key.
-        "weatherIconFileName": "string",
-        "weatherDescription": "string",
-        "periodText": "string"
-      } as WeatherForecastInfo*/
-      return "test"
-      
+        }
+      );      
     }
     const naText = "N/A";
-
-    const getCoord = (feature: FeatureInfo) => {
+    const getSubtitle = (feature: FeatureInfo) => {
+      let text = naText;
+      if(feature){
+        text = `on ${feature.attributes["WeatherStationDescription"]?.toString().split("on")[1]}`
+      }
+      return text
+    }
+    const getMoreInfoURL = (feature: FeatureInfo) => {
+      const moreInfoObject =new Object({
+        url: `https://www.wsdot.com/traffic/forecast/Default.aspx?zone=${feature.attributes.NWSZoneId}`,
+        text: "Learn more about the weather and forecast at ",
+        linkText: `${feature.attributes["WeatherStationDescription"]?.toString().split("on")[0]}`
+      }) as MoreInfoURLInfo
+      return moreInfoObject
+      
+    }
+    /*const getCoord = (feature: FeatureInfo) => {
       let text = naText;
       if (feature) {
         const lat = feature.attributes["Latitude"] as number;
@@ -171,9 +191,9 @@ export default defineComponent({
         text = `${lon.toFixed(2)}, ${lat.toFixed(2)}`;
       }
       return text;
-    };
+    };*/
 
-    const getElev = (feature: FeatureInfo) => {
+    /*const getElev = (feature: FeatureInfo) => {
       let text = naText;
       if (feature) {
         const ft = Number(feature.attributes["ElevationFeet"]);
@@ -181,7 +201,7 @@ export default defineComponent({
         text = combineNums(ft, meter, "ft", "m");
       }
       return text;
-    };
+    };*/
 
     const getSurfTemp = (feature: FeatureInfo) => {
       let text = naText;
@@ -205,7 +225,7 @@ export default defineComponent({
       return text;
     };
 
-    const getHighLowTemp = (feature: FeatureInfo) => {
+    /*const getHighLowTemp = (feature: FeatureInfo) => {
       let text = naText;
       if (feature) {
         const high = Number(feature.attributes["MaxTemperature"]);
@@ -213,11 +233,11 @@ export default defineComponent({
         text = combineNums(high, low, "°F", "°F");
       }
       return text;
-    };
+    };*/
 
-    const getPressure = (feature: FeatureInfo) => {
+    /*const getPressure = (feature: FeatureInfo) => {
       return formatNum(feature, "BarometricPressure", "in");
-    };
+    };*/
     const getHumidity = (feature: FeatureInfo) => {
       return formatNum(feature, "RelativeHumidity", "%");
     };
@@ -270,16 +290,20 @@ export default defineComponent({
       feature,
       layerIcons,
       close,
-      getCoord,
-      getElev,
+      //getCoord,
+      //getElev,
       getSurfTemp,
       getAirTemp,
-      getHighLowTemp,
-      getPressure,
+      //getHighLowTemp,
+      //getPressure,
       getHumidity,
       getDewPoint,
       getVisibility,
       getWindSpeed,
+      getTitle,
+      getSubtitle,
+      getMoreInfoURL,
+      weatherLocation,
       forecastList
     };
   },

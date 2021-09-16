@@ -30,7 +30,6 @@ const removeGraphicsByType = (graphicType) => {
     const collection = esriMap_1.mapView.graphics;
     const graphicsArray = collection.toArray();
     for (let i = 0; i < graphicsArray.length; i++) {
-        console.log(graphicsArray[i].attributes.graphicType);
         if (graphicsArray[i].attributes.graphicType == graphicType) {
             esriMap_1.mapView.graphics.remove(graphicsArray[i]);
         }

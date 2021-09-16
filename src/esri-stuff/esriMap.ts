@@ -27,6 +27,7 @@ import { initLayer as initMileMakersLayer } from "@/layers/MileMarkersLayer";
 import { initLayer as initESRIRoadsReference } from "@/layers/RoadsReferenceLayer"
 import { initLayer as initESRIBoundariesPlacesReference } from "@/layers/BoundariesPlacesReferenceLayer"
 import { initLayer as initStateRouteShieldsLayer } from "@/layers/StateRouteShields"
+import { initLayer as initBorderCrossingsLayer } from "@/layers/BorderCrossingsLayer"
 //
 import { getEsriExtent } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
@@ -74,7 +75,6 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const config = await getConfig();
     EsriConfig.apiKey = config.apiKey;
     const trafficLyr = initTrafficLayer(config.traffic, config.layerRefreshMinute);
-    console.log(config.restAreas)
     const restAreasLyr = initRestAreaLayer(config.restAreas);
     const parkRideLyr = initParkRideLayer(config.parkAndRides);
     const weatherLyr = initWeatherLayer(config.weatherStations);
@@ -93,11 +93,11 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const esriRoadsReferenceLayer = initESRIRoadsReference(config.esriRoadsReferenceLayer)
     const esriPlacesReferenceLayer = initESRIBoundariesPlacesReference(config.esriPlacesReferenceLayer)
     const stateRouteShieldsLayer = initStateRouteShieldsLayer(config.stateRouteShieldsLayer)
+    const borderCrossingsLayer = initBorderCrossingsLayer(config.borderCrossings)
     webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer, firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertsLyr,roadClosuresLyr,
-        mileMarkersLayer]);
-
+        mileMarkersLayer, borderCrossingsLayer]);
 }
 /**
  * Reload GeoJSON layers that are updated frequently.
@@ -137,7 +137,6 @@ const reloadGeoJsonLayer = (id: string, layerUrl: string, initFunc: (url: string
             return eachInfo.id === id;
         })
         if (lyrInfo) {
-            console.log(lyrInfo)
             lyrInfo.id = newLyr.id;
             lyrInfo.title = newLyr.title;
             lyrInfo.visible = newLyr.visible;

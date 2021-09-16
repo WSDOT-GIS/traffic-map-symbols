@@ -53,7 +53,6 @@ const initLayer = (url) => {
         visible: false,
         fields: fields,
     });
-    console.log(layer);
     return layer;
 };
 exports.initLayer = initLayer;

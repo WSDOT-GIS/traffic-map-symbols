@@ -10,7 +10,6 @@ const firePerimeterRenderer = new SimpleRenderer_1.default({
 });
 let layer;
 const initLayer = (url, firePerimeterIDs) => {
-    console.log(firePerimeterIDs);
     layer = new FeatureLayer_1.default({
         id: "fire-perimeters-layer",
         renderer: firePerimeterRenderer,

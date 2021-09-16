@@ -36,8 +36,13 @@
       <h4 class="popup-title w3-container">
         {{ getTitle() }}
       </h4>
-      <div v-if="propWeatherForecast">
-        <table>
+      <div v-if="Config.subtitle!='on Undefined'">
+        <div class="popup-content w3-container">
+          <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
+        </div>
+      </div>
+      <div>
+        <table class="weatherForecastTable">
           <tr id="weatherPeriodText">
             <td
               v-for="eachFeature in propWeatherForecast.forecasts"
@@ -69,7 +74,7 @@
             </td>
           </tr>
         </table>
-        <table>
+        <!--<table>
           <tr>
             <td>
               <label>Forecast created </label>
@@ -78,19 +83,9 @@
               {{ propWeatherForecast.forecastDateTime }}
             </td>
           </tr>
-        </table>
-        <a
-          target="_blank"
-          :href="
-            'https://www.wsdot.com/traffic/forecast/Default.aspx?zone=' +
-            propWeatherForecast.nwsZoneId.replace(/\s/g, '')
-          "
-          >View Extended Forecast</a
-        >
+        </table>-->
       </div>
-      <div v-if="propAmenities">
-        <slot name="amenitiesPanel"></slot>
-      </div>
+      
       <Carousel
         v-if="Config.imageFieldName"
         :items-to-show="1"
@@ -123,7 +118,23 @@
         :key="eachConfig.label"
         class="popup-content w3-container"
       >
-        <PopupRow :Config="eachConfig" :Feature="Features[currentIdx]" />
+        <PopupRow  v-if ="Config.content" :Config="eachConfig" :Feature="Features[currentIdx]" />
+      </div>
+    </div>
+    <div v-if="propAmenities" class="amenityDiv">
+      <label class="amenityLabel">
+        Amenities
+      </label>
+      <table>
+          <label v-for="Amenity in Amenities" :key="Amenity" class="amenityBubble">{{Amenity}}</label>
+      </table>
+    </div>
+    <div>
+      <div v-if="!Config.moreInfoURL.text==''" class="popup-title w3-container">
+          {{ getMoreInfoURL() }}
+      </div>
+      <div v-if="Config.moreInfoURL.custom" class="popup-title w3-container">
+        <div v-html="getMoreInfoURL()"></div>
       </div>
     </div>
   </div>
@@ -155,7 +166,7 @@ import PopupRow from "./PopupRow.vue";
 import XY from "@/types/XY";
 import ForecastListInfo from "@/types/ForecastListInfo";
 import { isSmallMedia } from "@/utils/mediaUtil";
-
+import MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
 export default defineComponent({
   components: { Carousel, Slide, Pagination, Navigation, PopupRow },
   props: {
@@ -189,13 +200,16 @@ export default defineComponent({
       type: Object as PropType<ForecastListInfo>,
       required: false,
     },
+    WeatherLocation: {
+      type: String,
+      required: false
+    },
     Amenities:{
       type: String,
       required: false,
-    }
+    },
   },
   setup(props, context) {
-    console.log(props)
     // The DOM only exists while the visibility is true. Get it in onUpdate().
     const propWeatherForecast = toRefs(props).WeatherForecast;//bind forecast to ref for v-if conditional rendering
     const propAmenities=toRefs(props).Amenities;//bind amenities to ref for v-if conditional rendering
@@ -444,6 +458,41 @@ export default defineComponent({
         popupLeft.value = left;
       }
     };
+    const getMoreInfoURL = () =>{
+      if (
+        !props.Features ||
+        props.Features.length === 0 ||
+        !props.Features[currentIdx.value]
+      ) {
+        // "Nothing to show...
+        return;
+      }
+      let text = "";
+      let moreInfoObject;
+      if (props.Config.moreInfoURL.text) {
+        text = props.Config.moreInfoURL.text;
+      } else if (props.Config.moreInfoURL.fieldName) {
+        text = props.Features[currentIdx.value].attributes[
+          props.Config.moreInfoURL.fieldName
+        ] as string;
+      } else if (props.Config.moreInfoURL.custom) {
+        const func = props.Config.moreInfoURL.custom as (
+          f: FeatureInfo
+        ) => MoreInfoURLInfo;
+        moreInfoObject = func(props.Features[currentIdx.value])
+        console.log(moreInfoObject)
+      }
+      if (!text) {
+        text = "";
+      }
+      if(props.Config.moreInfoURL.custom){
+        return `${moreInfoObject?.text}
+        <a href="${moreInfoObject?.url}">${moreInfoObject?.linkText}</a>`
+      }
+      else{
+        return text;
+      }
+    };
     const getBannerText = () => {
       if (
         !props.Features ||
@@ -465,6 +514,7 @@ export default defineComponent({
           f: FeatureInfo
         ) => string;
         text = func(props.Features[currentIdx.value]);
+        console.log(text)
       }
       if (!text) {
         text = "";
@@ -490,6 +540,7 @@ export default defineComponent({
       } else if (props.Config.title.custom) {
         const func = props.Config.title.custom as (f: FeatureInfo) => string;
         text = func(props.Features[currentIdx.value]);
+        console.log(text)
       }
       if (!text) {
         text = "";
@@ -568,6 +619,7 @@ export default defineComponent({
       getBannerText,
       badgeText,
       getTitle,
+      getMoreInfoURL,
       propWeatherForecast,
       propAmenities
     };
@@ -737,5 +789,33 @@ export default defineComponent({
 }
 .weatherForecastIcon {
   font-size: 10pt;
+  width: 25%;
+  padding: 2px 0px 2px 0px;
+  border: 0px;
+}
+ .amenityBubble {
+  display: inline-block;
+  font-weight: 700;
+  font-size: x-small;
+  padding: 1px;
+  border-radius: 20px;
+  border-width: 3px;
+  border-color: #b2b2b2;
+  border-style: solid;
+  background-color: #b2b2b2;
+  margin: 0px 1px 0px 1px;
+  padding: 0px 4px 0px 4px;
+}
+.amenityDiv{
+  text-align: left;
+  margin: 5px 0 5px 16px;
+}
+.amenityLabel {
+  text-align: left;
+}
+.weatherForecastTable{
+  margin: auto;
+  width: 95%;
+  margin-bottom: 5px;
 }
 </style>

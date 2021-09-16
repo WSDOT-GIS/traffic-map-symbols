@@ -27,6 +27,7 @@ const MileMarkersLayer_1 = require("@/layers/MileMarkersLayer");
 const RoadsReferenceLayer_1 = require("@/layers/RoadsReferenceLayer");
 const BoundariesPlacesReferenceLayer_1 = require("@/layers/BoundariesPlacesReferenceLayer");
 const StateRouteShields_1 = require("@/layers/StateRouteShields");
+const BorderCrossingsLayer_1 = require("@/layers/BorderCrossingsLayer");
 //
 const extentUtil_1 = require("@/utils/extentUtil");
 const ZoomExtentLayer_1 = tslib_1.__importDefault(require("@/layers/ZoomExtentLayer"));
@@ -69,7 +70,6 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     const config = yield appConfigUtil_1.getConfig();
     config_1.default.apiKey = config.apiKey;
     const trafficLyr = TrafficLayer_1.initLayer(config.traffic, config.layerRefreshMinute);
-    console.log(config.restAreas);
     const restAreasLyr = RestAreasLayer_1.initLayer(config.restAreas);
     const parkRideLyr = ParkRideLayer_1.initLayer(config.parkAndRides);
     const weatherLyr = WeatherStationsLayer_1.initLayer(config.weatherStations);
@@ -88,10 +88,11 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     const esriRoadsReferenceLayer = RoadsReferenceLayer_1.initLayer(config.esriRoadsReferenceLayer);
     const esriPlacesReferenceLayer = BoundariesPlacesReferenceLayer_1.initLayer(config.esriPlacesReferenceLayer);
     const stateRouteShieldsLayer = StateRouteShields_1.initLayer(config.stateRouteShieldsLayer);
+    const borderCrossingsLayer = BorderCrossingsLayer_1.initLayer(config.borderCrossings);
     exports.webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer, firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertsLyr, roadClosuresLyr,
-        mileMarkersLayer]);
+        mileMarkersLayer, borderCrossingsLayer]);
 });
 exports.loadOperationalLayers = loadOperationalLayers;
 /**
@@ -132,7 +133,6 @@ const reloadGeoJsonLayer = (id, layerUrl, initFunc, layerList) => {
             return eachInfo.id === id;
         });
         if (lyrInfo) {
-            console.log(lyrInfo);
             lyrInfo.id = newLyr.id;
             lyrInfo.title = newLyr.title;
             lyrInfo.visible = newLyr.visible;

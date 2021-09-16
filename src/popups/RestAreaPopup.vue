@@ -6,18 +6,18 @@
     :Features="[feature]"
     :Config="{
       bannerText: { text: 'Rest Area' },
-      title: { fieldName: 'PassName' },
+      title: { text: 'Location' },
       content: [
-        {
+         {
           label: 'Name',
           value: {
-            fieldName: 'title',
+            fieldName: 'RestAreaName',
           },
         },
-         {
-          label: 'Last Updated',
+        {
+          label: 'Place',
           value: {
-            fieldName: 'title',
+            fieldName: 'LocationName',
           },
         },
       ],
@@ -30,13 +30,6 @@
         width="24"
         height="24"
       ></div>
-    </template>
-    <template v-slot:amenitiesPanel>
-      <div>
-        <table>
-          <label v-for="Amenity in Amenities" :key="Amenity" class="amenityLabel">{{Amenity}}</label>
-        </table>
-      </div>
     </template>
   </PopupBase>
 </template>
@@ -67,14 +60,14 @@ export default defineComponent({
         close();
       }
     });
-
     const show = () => {
       const setVal = () => {
         getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(
           (result) => {
             if (result) {
               feature.value = result;
-              if((feature.value.attributes.Amenties as string).split(",") as string[]!=["none"]){
+              console.log(feature.value.attributes.Amenties as string)
+              if((feature.value.attributes.Amenties!="None")){
                  Amenities.value = (feature.value.attributes.Amenties as string).split(",") as string[]
               }
             }
@@ -98,23 +91,12 @@ export default defineComponent({
       feature,
       layerIcons,
       Amenities,
-      close,
+      close
     };
   },
 });
 </script>
 <style scoped>
-  .amenityLabel {
-  display: inline-block;
-  font-weight: 700;
-  font-size: small;
-  padding: 3px;
-  border-radius: 5px;
-  border-width: 2px;
-  border-style: solid;
-  border-color: #ffc107;
-  background-color: #fffaec;
-  margin: 3px 1em 0 1em;
-}
+ 
 </style>
 
