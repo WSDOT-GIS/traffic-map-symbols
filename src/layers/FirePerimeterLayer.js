@@ -5,6 +5,14 @@ const tslib_1 = require("tslib");
 const FeatureLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/FeatureLayer"));
 const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
 const FirePerimeterSymbol_1 = tslib_1.__importDefault(require("@/symbols/FirePerimeterSymbol"));
+// import fireIncidentLayer from "@/layers/FireIncidentLayer"
+// import Field from "@arcgis/core/layers/support/Field"
+// import Polygon from "@arcgis/core/geometry/Polygon"
+// import Extent from "@arcgis/core/geometry/Extent"
+// import Layer from "@arcgis/core/layers/Layer"
+// import SpatialReference from "@arcgis/core/geometry/SpatialReference"
+// import { mapView, webmap } from "@/esri-stuff/esriMap"
+// import Graphic from "@arcgis/core/Graphic"
 const firePerimeterRenderer = new SimpleRenderer_1.default({
     symbol: FirePerimeterSymbol_1.default
 });

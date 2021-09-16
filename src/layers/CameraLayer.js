@@ -74,7 +74,7 @@ const initLayer = (url) => {
         renderer: renderer,
         featureReduction: clusterUtil_1.clusterConfig,
         fields: fields,
-        visible: false
+        visible: false,
     });
     return layer;
 };

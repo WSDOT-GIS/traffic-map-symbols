@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getIdsFromCluster = exports.clusterConfig = exports.clusterMaxScale = void 0;
+exports.getClusterExtent = exports.getIdsFromCluster = exports.clusterConfig = exports.clusterMaxScale = void 0;
 const tslib_1 = require("tslib");
 const FeatureReductionCluster_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/FeatureReductionCluster"));
 const CameraClusterSymbol_1 = tslib_1.__importDefault(require("@/symbols/CameraClusterSymbol"));
@@ -189,4 +189,54 @@ const getIdsFromCluster = (clusterGraphic, layer, mapView, maxCount) => tslib_1.
     }
 });
 exports.getIdsFromCluster = getIdsFromCluster;
+const getClusterExtent = (clusterGraphic, layer, mapView) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+    const lyr = layer;
+    if (!lyr) {
+        throw "Only GeoJSONLayer is supported at this time.";
+    }
+    const layerView = yield mapView.whenLayerView(lyr);
+    const query = layerView.createQuery();
+    // Object ID of the cluster...
+    query.aggregateIds = [clusterGraphic.getObjectId()];
+    query.outFields = [lyr.objectIdField];
+    const result = yield layerView.queryFeatures(query);
+    const pt0 = result.features[0].geometry;
+    // Find out extent of all features...
+    let minX = pt0.x;
+    let maxX = pt0.x;
+    let minY = pt0.y;
+    let maxY = pt0.y;
+    for (let i = 1; i < result.features.length; i++) {
+        const pt1 = result.features[i].geometry;
+        if (pt1.x < minX) {
+            minX = pt1.x;
+        }
+        else if (pt1.x > maxX) {
+            maxX = pt1.x;
+        }
+        if (pt1.y < minY) {
+            minY = pt1.y;
+        }
+        else if (pt1.y > maxY) {
+            maxY = pt1.y;
+        }
+    }
+    if (minX === maxX) {
+        minX -= 1;
+        maxX += 1;
+    }
+    if (minY === maxY) {
+        minY -= 1;
+        maxY += 1;
+    }
+    const extent = new Extent_1.default({
+        xmin: minX,
+        xmax: maxX,
+        ymin: minY,
+        ymax: maxY,
+        spatialReference: pt0.spatialReference
+    });
+    return extent;
+});
+exports.getClusterExtent = getClusterExtent;
 //# sourceMappingURL=clusterUtil.js.map
