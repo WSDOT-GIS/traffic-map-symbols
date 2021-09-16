@@ -8,15 +8,17 @@
     @close-modal="onClose"
   >
     <template v-slot>
-      <label>Name:
-      <input
-        class="w3-input w3-border w3-round"
-        title="Input Map Name"
-        type="text"
-        v-model="newTitle"
-        id="new-map-title"
-        placeholder="Enter a name for this map."
-      />
+      <label
+        >Name:
+        <input
+          class="w3-input w3-border w3-round"
+          title="Input Map Name"
+          type="text"
+          v-model="newTitle"
+          id="new-map-title"
+          placeholder="Enter a name for this map."
+          @keyup="onKeyUp"
+        />
       </label>
       <p>
         WARNING: Saved Maps are stored as cookies on your computer. All saved
@@ -52,6 +54,22 @@ export default defineComponent({
     const onClose = () => {
       context.emit("close-save-map-form");
     };
+    /**
+     * Support for pressing Enter key to save...
+     */
+    const onKeyUp = (event: KeyboardEvent) => {
+      /** keyCode property is deprecated, but not necessary supported,
+       * so check both.
+       * key = Enter
+       * keyCode = 13
+       */
+      if (
+        (event.key && event.key === "Enter") ||
+        (event.keyCode && event.keyCode === 13)
+      ) {
+        onOk();
+      }
+    };
     watch(newTitle, (newValue) => {
       if (warningMsg.value.length > 0 && newValue.length > 0) {
         warningMsg.value = "";
@@ -66,7 +84,7 @@ export default defineComponent({
       }
     });
 
-    return { newTitle, warningMsg, onOk, onClose };
+    return { newTitle, warningMsg, onOk, onClose, onKeyUp };
   },
 });
 </script>

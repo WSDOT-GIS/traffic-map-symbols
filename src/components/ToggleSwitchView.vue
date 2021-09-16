@@ -13,7 +13,7 @@
   </label>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent } from "vue";
 export default defineComponent({
   props: {
     Checked: {
@@ -39,7 +39,6 @@ export default defineComponent({
       //console.log("checked: " + target.checked + " value: " + target.value);
       context.emit("toggle", { checked: target.checked, value: target.value });
     };
-    const toggleClass = ref<string>();
     
     return { onToggle };
   },

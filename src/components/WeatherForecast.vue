@@ -23,7 +23,7 @@ import {
 export default defineComponent({
     setup(props) {
         const propData = toRefs(props)
-        //console.log(propData)
+        // console.log(propData)
         watch(propData,()=>{console.log(propData)})
         return {}
     }

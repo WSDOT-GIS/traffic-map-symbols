@@ -1,14 +1,13 @@
-const maxDays = 30;
+const maxDays = 3650;
 
 export const setCookie = (name: string, val: string): void => {
     const date = new Date();
-    const value = val;
-
     // Set it expire in days
     date.setTime(date.getTime() + (maxDays * 24 * 60 * 60 * 1000));
-
     // Set it
-    document.cookie = name + "=" + value + "; expires=" + date.toUTCString() + "; path=/";
+    document.cookie = name + "=" + val + "; expires=" + date.toUTCString() + "; path=/";
+    // console.log("Bytes: " + getBytes(val));
+    
 }
 
 export const getCookie = (name: string): string => {
@@ -38,4 +37,21 @@ export const deleteCookie = (name: string): void => {
 
     // Set it
     document.cookie = name + "=; expires=" + date.toUTCString() + "; path=/";
+}
+
+const getBytes = (val: string): number => {
+    const escaped_string = encodeURI(val);
+    let count: number;
+    if (escaped_string.indexOf("%") != -1) {
+        count = escaped_string.split("%").length - 1;
+        count = count == 0 ? 1 : count;
+        count = count + (escaped_string.length - (count * 3));
+    }
+    else {
+        count = escaped_string.length;
+    }
+
+    return count;
+
+
 }

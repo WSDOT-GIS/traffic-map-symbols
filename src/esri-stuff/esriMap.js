@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeHighlight = exports.highlightFeature = exports.bufferByPixels = exports.getIdsFromCluster = exports.getLayer = exports.panMap = exports.toScreenXY = exports.getMaxScale = exports.zoomToExtent = exports.zoomToMetroArea = exports.zoomToMax = exports.tryZoomToPointAsync = exports.tryZoomToPoint = exports.reloadGeoJsonLayers = exports.loadOperationalLayers = exports.init = exports.mapView = exports.webmap = void 0;
+exports.removeHighlight = exports.highlightFeature = exports.bufferByPixels = exports.getIdsFromCluster = exports.getLayer = exports.panMap = exports.toScreenXY = exports.getMaxScale = exports.zoomToExtent = exports.zoomToMetroArea = exports.zoomToMax = exports.tryZoomToPointAsync = exports.tryZoomToPoint = exports.reloadGeoJsonLayers = exports.loadOperationalLayers = exports.defaultLayerProps = exports.init = exports.mapView = exports.webmap = void 0;
 const tslib_1 = require("tslib");
 const WebMap_1 = tslib_1.__importDefault(require("@arcgis/core/WebMap"));
 const MapView_1 = tslib_1.__importDefault(require("@arcgis/core/views/MapView"));
@@ -63,6 +63,8 @@ const init = (container) => {
     });
 };
 exports.init = init;
+/** Store the default layer visibility. This is used by Saved Map function. */
+exports.defaultLayerProps = [];
 /**
  * Get config and get apiKey and URL, then initialize layers and add to map...
  */
@@ -88,11 +90,17 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     const esriRoadsReferenceLayer = RoadsReferenceLayer_1.initLayer(config.esriRoadsReferenceLayer);
     const esriPlacesReferenceLayer = BoundariesPlacesReferenceLayer_1.initLayer(config.esriPlacesReferenceLayer);
     const stateRouteShieldsLayer = StateRouteShields_1.initLayer(config.stateRouteShieldsLayer);
+    // The first one in the array will be displayed at the bottom of the map... 
     const borderCrossingsLayer = BorderCrossingsLayer_1.initLayer(config.borderCrossings);
-    exports.webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer, firePerimetersLayer, fireIncidentLayer,
+    exports.webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
+        firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertsLyr, roadClosuresLyr,
         mileMarkersLayer, borderCrossingsLayer]);
+    // Store the default visibility...
+    exports.webmap.layers.forEach((eachLyr) => {
+        exports.defaultLayerProps.push({ id: eachLyr.id, visible: eachLyr.visible });
+    });
 });
 exports.loadOperationalLayers = loadOperationalLayers;
 /**

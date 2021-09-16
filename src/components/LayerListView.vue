@@ -380,7 +380,7 @@ import { store, useStore } from "@/store";
 import { defineComponent, ref} from "vue";
 import { layerListIcons } from "@/symbols/IconDefinitions";
 import ToggleSwitchView from "./ToggleSwitchView.vue";
-import { webmap, mapView } from "@/esri-stuff/esriMap";
+import { mapView } from "@/esri-stuff/esriMap";
 
 export default defineComponent({
   components: { ToggleSwitchView },
@@ -395,7 +395,7 @@ export default defineComponent({
       else{
         mileMarkerToggleEnabled.value=true
       }
-      console.log(scale)
+      // console.log(scale)
     })
     return { layerIcons, store, mileMarkerToggleEnabled };
     //add mule markers to return function for v-if when layer visibilty is true

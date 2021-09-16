@@ -140,7 +140,7 @@ export default defineComponent({
         getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(
           (result) => {
             if (result) {
-              console.log(result)
+              // console.log(result)
               feature.value = result;
               // mapX.value = props.MapX;
               // mapY.value = props.MapY;

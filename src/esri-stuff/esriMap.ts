@@ -16,7 +16,7 @@ import { initLayer as initCameraLayer, setCluster } from "@/layers/CameraLayer";
 import { initLayer as initRestAreaLayer } from "@/layers/RestAreasLayer";
 import { initLayer as initPointRestrictionsLayer } from "@/layers/PointRestrictionsLayer";
 import { initLayer as initLineRestrictionsLayer } from "@/layers/LineRestrictionsLayer";
-import { initClosureLayer} from "@/layers/RoadAlertsLayer";
+import { initClosureLayer } from "@/layers/RoadAlertsLayer";
 import { initPriorityLayer } from "@/layers/RoadAlertsLayer";
 import { initLayer as initWeatherLayer } from "@/layers/WeatherStationsLayer";
 import { initLayer as initMountainLayer } from "@/layers/MountainPassesLayer";
@@ -50,7 +50,7 @@ export const mapView = new MapView({
         rotationEnabled: false, // Disables map rotation
         // Limit the map navigation. 
         // Note: This still allows navigation beyond the extent, but not infinitely.
-        geometry: getEsriExtent("full"), 
+        geometry: getEsriExtent("full"),
     }
 });
 // Zoom buttons are replaced with the custom Vue components.
@@ -68,6 +68,8 @@ export const init = (container: HTMLDivElement): void => {
             console.warn("Failed to initialize map. Error: ", error);
         });
 };
+/** Store the default layer visibility. This is used by Saved Map function. */
+export const defaultLayerProps: { id: string, visible: boolean }[] = []
 /**
  * Get config and get apiKey and URL, then initialize layers and add to map...
  */
@@ -93,11 +95,17 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const esriRoadsReferenceLayer = initESRIRoadsReference(config.esriRoadsReferenceLayer)
     const esriPlacesReferenceLayer = initESRIBoundariesPlacesReference(config.esriPlacesReferenceLayer)
     const stateRouteShieldsLayer = initStateRouteShieldsLayer(config.stateRouteShieldsLayer)
+    // The first one in the array will be displayed at the bottom of the map... 
     const borderCrossingsLayer = initBorderCrossingsLayer(config.borderCrossings)
-    webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer, firePerimetersLayer, fireIncidentLayer,
+    webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
+        firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
-        pointRestrictionLyr, cameraLyr, roadAlertsLyr,roadClosuresLyr,
+        pointRestrictionLyr, cameraLyr, roadAlertsLyr, roadClosuresLyr,
         mileMarkersLayer, borderCrossingsLayer]);
+    // Store the default visibility...
+    webmap.layers.forEach((eachLyr) => {
+        defaultLayerProps.push({ id: eachLyr.id, visible: eachLyr.visible });
+    });
 }
 /**
  * Reload GeoJSON layers that are updated frequently.
@@ -124,7 +132,7 @@ const reloadGeoJsonLayer = (id: string, layerUrl: string, initFunc: (url: string
         const oldlyr = lyr as GeoJSONLayer
         const lyrIdx = webmap.layers.indexOf(oldlyr);
         const visible = oldlyr.visible;
-        const definitionExpression= oldlyr.definitionExpression
+        const definitionExpression = oldlyr.definitionExpression
         // Destroys the layer and remove it from the map...
         lyr.destroy();
         oldlyr.destroy();
