@@ -189,16 +189,16 @@ export default defineComponent({
       type: Object as PropType<ForecastListInfo>,
       required: false,
     },
-    Amenities:{
+    Amenities: {
       type: String,
       required: false,
-    }
+    },
   },
   setup(props, context) {
     // console.log(props)
     // The DOM only exists while the visibility is true. Get it in onUpdate().
-    const propWeatherForecast = toRefs(props).WeatherForecast;//bind forecast to ref for v-if conditional rendering
-    const propAmenities=toRefs(props).Amenities;//bind amenities to ref for v-if conditional rendering
+    const propWeatherForecast = toRefs(props).WeatherForecast; //bind forecast to ref for v-if conditional rendering
+    const propAmenities = toRefs(props).Amenities; //bind amenities to ref for v-if conditional rendering
     const containerRef = ref<HTMLDivElement>();
     const store = useStore();
     const mapSize = computed(() => store.state.mapSize);
@@ -370,10 +370,20 @@ export default defineComponent({
         } else {
           doPanMap = false;
           nextTick(() => {
+            //
+            const doTop = screenY.value > mapSize.value.height / 2;
             // New vertical position...
-            let newTop = screenY.value - h - 30;
-            if (!props.MapXY) {
-              newTop -= 15;
+            let newTop: number;
+            if (doTop) {
+              newTop = screenY.value - h - 30;
+              if (!props.MapXY) {
+                newTop -= 15;
+              }
+            } else {
+              newTop = screenY.value;
+              if (!props.MapXY) {
+                newTop += 15;
+              }
             }
             // New horizontal position.
             const newLeft = screenX.value - w / 2;
@@ -569,7 +579,7 @@ export default defineComponent({
       badgeText,
       getTitle,
       propWeatherForecast,
-      propAmenities
+      propAmenities,
     };
   },
 });
@@ -597,15 +607,18 @@ export default defineComponent({
   width: 0;
   height: 0;
   margin-left: -1.41em;
-  bottom: -2em;
-  left: 50%;
+  /* bottom: -2em; */
+  top: 0em;
+  /* left: 50%; */
+  right: 50%;
   box-sizing: border-box;
 
   border: 1em solid black;
   border-color: transparent transparent #fff #fff;
 
   transform-origin: 0 0;
-  transform: rotate(-45deg);
+  /* transform: rotate(-45deg); */
+  transform: rotate(135deg);
 
   box-shadow: -3px 3px 3px 0 rgba(0, 0, 0, 0.2);
 }
