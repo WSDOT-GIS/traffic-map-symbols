@@ -2,6 +2,10 @@
   <div
     ref="containerRef"
     class="popup-container w3-card w3-col"
+    :class="{
+      'popup-container-above': relativePosition === 'above',
+      'popup-container-below': relativePosition === 'below',
+    }"
     v-if="Features.length > 0 && Features[0]"
     :style="{
       marginTop: popupTop + 'px',
@@ -200,9 +204,11 @@ export default defineComponent({
     const propWeatherForecast = toRefs(props).WeatherForecast; //bind forecast to ref for v-if conditional rendering
     const propAmenities = toRefs(props).Amenities; //bind amenities to ref for v-if conditional rendering
     const containerRef = ref<HTMLDivElement>();
+    const relativePosition = ref("above");
     const store = useStore();
     const mapSize = computed(() => store.state.mapSize);
     const mapScale = computed(() => store.state.scale);
+    const mapCenter = computed(() => store.state.center);
     const maxHeight = ref(mapSize.value.height);
     watch(mapSize, (size) => {
       maxHeight.value = size.height;
@@ -278,12 +284,14 @@ export default defineComponent({
       }
     });
     // Watch map moving...
-    mapView.watch("center", (newValue, oldValue) => {
+    watch(mapCenter, (newValue, oldValue) => {
       if (props.Features.length === 0 || !oldValue) {
         return;
       }
-      const newCenter = mapView.toScreen(newValue);
-      const oldCenter = mapView.toScreen(oldValue);
+      // const newCenter = mapView.toScreen(newValue);
+      // const oldCenter = mapView.toScreen(oldValue);
+      const newCenter = toScreenXY(newValue.x, newValue.y);
+      const oldCenter = toScreenXY(oldValue.x, oldValue.y);
       const diffX = oldCenter.x - newCenter.x;
       const diffY = oldCenter.y - newCenter.y;
       screenX.value += diffX;
@@ -337,8 +345,10 @@ export default defineComponent({
         return;
       }
       if (isSmallMedia()) {
+        // Small screen mode...
         setPosition(0, 0);
       } else {
+        // Large screen mode...
         const h = containerRef.value.offsetHeight;
         const w = containerRef.value.offsetWidth;
         if (
@@ -359,34 +369,24 @@ export default defineComponent({
         // If this is not the initial load, then move popup along with map.
         if (!doPanMap) {
           // New vertical position...
-          let newTop = screenY.value - h - 30;
-          // Raise the popup a bit so it is not covering the icon completely.
-          if (!props.MapXY) {
-            newTop -= 15;
-          }
+          const newTop = calcTop(h);
           // New horizontal position.
           const newLeft = screenX.value - w / 2;
           setPosition(newTop, newLeft);
         } else {
           doPanMap = false;
           nextTick(() => {
-            //
-            const doTop = screenY.value > mapSize.value.height / 2;
             // New vertical position...
-            let newTop: number;
-            if (doTop) {
-              newTop = screenY.value - h - 30;
-              if (!props.MapXY) {
-                newTop -= 15;
-              }
+            if (screenY.value > mapSize.value.height / 2) {
+              // Display above the feature...
+              relativePosition.value = "above";
             } else {
-              newTop = screenY.value;
-              if (!props.MapXY) {
-                newTop += 15;
-              }
+              // Display below the feature...
+              relativePosition.value = "below";
             }
+            const newTop = calcTop(h);
             // New horizontal position.
-            const newLeft = screenX.value - w / 2;
+            let newLeft = screenX.value - w / 2;
             /**
              * Pan map so the popup is displayed within the map view.
              * Only do this on the initial popup load.
@@ -394,7 +394,20 @@ export default defineComponent({
             let shiftY = 0;
             let shiftX = 0;
             if (newTop < 0) {
+              // Top is above the top of the map, so need to pan map down.
               shiftY = -1 * newTop;
+            } else if (newTop + h > mapSize.value.height) {
+              // Bottom is below the bottom of the map, so need to pan map up.
+
+              shiftY = mapSize.value.height - newTop - h;
+              console.log(
+                "***New Top:" +
+                  newTop +
+                  ", h:" +
+                  h +
+                  ", map height:" +
+                  mapSize.value.height
+              );
             }
             if (newLeft < 0 || newLeft + w > mapView.width) {
               shiftX = newLeft < 0 ? -1 * newLeft : mapView.width - newLeft - w;
@@ -402,12 +415,12 @@ export default defineComponent({
             setPosition(newTop, newLeft);
             if (shiftY <= -1 || shiftY >= 1 || shiftX <= -1 || shiftX >= 1) {
               isPanning = true;
-              panMap(shiftX, shiftY).then(() => {
+              panMap(shiftX, shiftY).then((panResult) => {
+                console.log("pan result: " + JSON.stringify(panResult));
                 isPanning = false;
                 setScreenXY();
                 // On the mobile devices after the pinch zoom, the map does not pan enough to show the top of the popup.
                 // So check the popup position again and pan map more if necessary.
-                //console.log(popupTop.value + ", " + popupLeft.value);
                 shiftX = 0;
                 shiftY = 0;
                 if (popupTop.value < 0) {
@@ -424,7 +437,8 @@ export default defineComponent({
                 }
                 if (shiftX !== 0 || shiftY !== 0) {
                   isPanning = true;
-                  panMap(shiftX, shiftY).then(() => {
+                  panMap(shiftX, shiftY).then((panResult) => {
+                    console.log("pan2 result: " + panResult);
                     isPanning = false;
                     setScreenXY();
                   });
@@ -435,6 +449,27 @@ export default defineComponent({
         }
       }
     };
+    /** Figure out the top position of the popup. */
+    const calcTop = (height: number): number => {
+      let newTop = 0;
+      switch (relativePosition.value) {
+        case "below":
+          // Display below the feature...
+          newTop = screenY.value + 5;
+          if (!props.MapXY) {
+            newTop += 15;
+          }
+          break;
+        default:
+          // Display above the feature by default...
+          newTop = screenY.value - height - 30;
+          if (!props.MapXY) {
+            newTop -= 15;
+          }
+      }
+      return newTop;
+    };
+    /** Figure out if everything is loaded or not. */
     const isLoadComplete = () => {
       let isComplete: boolean;
       if (props.Config.imageFieldName) {
@@ -444,6 +479,7 @@ export default defineComponent({
       }
       return isComplete;
     };
+    /** This sets the margin top and left of the popup container. */
     const setPosition = (top: number, left: number) => {
       // Adjust vertical position...
       if (popupTop.value !== top) {
@@ -535,6 +571,7 @@ export default defineComponent({
       }
       badgeText.value = text;
     };
+    /** Highlight the feature on the map. */
     const highlightMap = () => {
       const feature = props.Features[currentIdx.value];
       if (feature) {
@@ -567,6 +604,7 @@ export default defineComponent({
 
     return {
       containerRef,
+      relativePosition,
       popupLeft,
       popupTop,
       maxHeight,
@@ -600,27 +638,34 @@ export default defineComponent({
     height: 100%;
   }
 }
-
+/* Common properties for the arrow. */
 .popup-container::after {
   content: "";
   position: absolute;
   width: 0;
   height: 0;
   margin-left: -1.41em;
-  /* bottom: -2em; */
-  top: 0em;
-  /* left: 50%; */
-  right: 50%;
+
+  left: 50%;
   box-sizing: border-box;
 
   border: 1em solid black;
-  border-color: transparent transparent #fff #fff;
 
   transform-origin: 0 0;
-  /* transform: rotate(-45deg); */
-  transform: rotate(135deg);
-
+  transform: rotate(-45deg);
+}
+/* For showing the arrow below the popup (popup is above the feature). */
+.popup-container-above::after {
+  bottom: -2em;
+  /* Color only half */
+  border-color: transparent transparent #fff #fff;
   box-shadow: -3px 3px 3px 0 rgba(0, 0, 0, 0.2);
+}
+/* For showing arrow at the top of the popup (popup is below the feature) */
+.popup-container-below::after {
+  top: 0.1em;
+  border-color: #fff #fff transparent transparent;
+  box-shadow: 3px -3px 3px 0 rgba(0, 0, 0, 0.2);
 }
 
 .popup-inner-container {

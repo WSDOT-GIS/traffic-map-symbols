@@ -2,6 +2,7 @@ import Extent from "@arcgis/core/geometry/Extent";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 
 import ExtentInfo from "@/types/ExtentInfo";
+import XY from "@/types/XY";
 
 const defaultExtents: ExtentInfo[] = [
     {
@@ -15,6 +16,34 @@ const defaultExtents: ExtentInfo[] = [
         // ymax: 6316025.98739708,
     },
 ];
+/**
+ * Figure out the relative direction from the full extent.
+ * @param mapXY 
+ * Location to compare against the full extent.
+ * @returns 
+ * First char: vertical direction = i/n/s (inside/north/south)
+ * Second char: horizontal direction = i/w/e (inside/west/east)
+ */
+export const getDirectionFromFull = (mapXY: XY): string => {
+    const fullExtent = getExtentInfo("full");
+    let dir = "i"; // Inside
+    // Check vertical...
+    if (mapXY.y > fullExtent.ymax) {
+        dir = "n";
+    } else if (mapXY.y < fullExtent.ymin) {
+        dir = "s";
+    }
+    // Check horizontal...
+    if (mapXY.x > fullExtent.xmax) {
+        dir += "e";
+    } else if (mapXY.x < fullExtent.xmin) {
+        dir += "w";
+    } else {
+        dir += "i";
+    }
+    console.log("getDirectionFromFull: " + dir);
+    return dir;
+}
 
 export const getExtentInfo = (id: string): ExtentInfo => {
     const result = defaultExtents.filter(x => x.id == id);
