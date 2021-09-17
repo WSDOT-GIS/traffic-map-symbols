@@ -25,9 +25,9 @@
           value: {
             custom: getCoord,
           },
-        },
+        },*/
         { label: 'Surface temp', value: { custom: getSurfTemp } },
-        { label: 'Air temp', value: { custom: getAirTemp } },*/
+        { label: 'Air temp', value: { custom: getAirTemp } },
        /* {
           label: '24hr high/low',
           value: { custom: getHighLowTemp },
@@ -116,7 +116,7 @@ export default defineComponent({
     });
     const getTitle = (feature: FeatureInfo): string => {
       const name = feature.attributes["WeatherStationDescription"]?.toString();
-      return `${name?.split("on")[0]}`;
+      return `${name?.split(" on ")[0]}`;
     };
     const show = () => {
       const setVal = () => {
@@ -152,7 +152,7 @@ export default defineComponent({
             //fetch(config.forecastSummaryAPI+featureNWSZoneId).then((result)=>{ ~~summary call
             fetch(config.forecastExtendedAPI+featureNWSZoneId).then((result)=>{
               result.json().then((response)=>{
-                console.log(response.forecastData)
+                //console.log(response.forecastData)
                 forecastList.value={
                   nwsZoneId:response.nwsZoneId,
                   forecastDateTime:response.forecastDateTime,
@@ -170,18 +170,18 @@ export default defineComponent({
     const getSubtitle = (feature: FeatureInfo) => {
       let text = naText;
       if(feature){
-        text = `on ${feature.attributes["WeatherStationDescription"]?.toString().split("on")[1]}`
+        text = `on ${feature.attributes["WeatherStationDescription"]?.toString().split(" on ")[1]}`
       }
       return text
     }
     const getMoreInfoURL = (feature: FeatureInfo) => {
+      //console.log(feature)
       const moreInfoObject =new Object({
-        url: `https://www.wsdot.com/traffic/forecast/Default.aspx?zone=${feature.attributes.NWSZoneId}`,
+        url: `https://wsdotappsqa.wsdot.wa.gov/travel/center/Weather/${feature.attributes.WeatherStationId}`,
         text: "Learn more about the weather and forecast at ",
-        linkText: `${feature.attributes["WeatherStationDescription"]?.toString().split("on")[0]}`
+        linkText: `${feature.attributes["WeatherStationDescription"]?.toString().split(" on ")[0]} station`
       }) as MoreInfoURLInfo
       return moreInfoObject
-      
     }
     /*const getCoord = (feature: FeatureInfo) => {
       let text = naText;

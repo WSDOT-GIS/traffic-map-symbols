@@ -27,8 +27,7 @@ interface PopupConfig {
     };
     imageFieldName?: string;
     content?: PopupRowConfig[];
-    subtitle?: PopupRowConfig;
-    
+    subtitle?: PopupRowConfig;// display hard coded subtitle string
 };
 
 export default PopupConfig;

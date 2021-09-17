@@ -480,14 +480,14 @@ export default defineComponent({
           f: FeatureInfo
         ) => MoreInfoURLInfo;
         moreInfoObject = func(props.Features[currentIdx.value])
-        console.log(moreInfoObject)
+        //console.log(moreInfoObject)
       }
       if (!text) {
         text = "";
       }
       if(props.Config.moreInfoURL.custom){
         return `${moreInfoObject?.text}
-        <a href="${moreInfoObject?.url}">${moreInfoObject?.linkText}</a>`
+        <a href="${moreInfoObject?.url}"  target="_blank">${moreInfoObject?.linkText}</a>`
       }
       else{
         return text;
@@ -514,7 +514,7 @@ export default defineComponent({
           f: FeatureInfo
         ) => string;
         text = func(props.Features[currentIdx.value]);
-        console.log(text)
+        //console.log(text)
       }
       if (!text) {
         text = "";
@@ -540,7 +540,7 @@ export default defineComponent({
       } else if (props.Config.title.custom) {
         const func = props.Config.title.custom as (f: FeatureInfo) => string;
         text = func(props.Features[currentIdx.value]);
-        console.log(text)
+        //console.log(text)
       }
       if (!text) {
         text = "";

@@ -31,6 +31,12 @@
     @close="close"
   >
     <template v-slot:icon>
+      <div class="mapFeaturesIcon"
+              v-html="
+                layerIcons.find((x) => x.id == 'point-restrictions-layer')
+                  ?.paths
+              ">
+      </div>
       <svg
         width="24"
         height="24"
@@ -75,7 +81,7 @@ import FeatureLayer from "@/layers/LineRestrictionsLayer";
 import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import FeatureInfo from "@/types/FeatureInfo";
-
+import { layerListIcons } from "@/symbols/IconDefinitions";
 export default defineComponent({
   components: { PopupBase },
   props: {
@@ -86,7 +92,7 @@ export default defineComponent({
   },
   setup(props) {
     const feature = ref<FeatureInfo>();
-
+    const layerIcons = layerListIcons;
     watch(props, () => {
       if (props.Featureset.layerId === FeatureLayer().id) {
         show();
@@ -136,6 +142,7 @@ export default defineComponent({
       feature,
       close,
       getBadgeText,
+      layerIcons
     };
   },
 });

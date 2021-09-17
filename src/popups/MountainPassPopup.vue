@@ -1,7 +1,7 @@
 <template>
   <PopupBase
-    LightThemeColor="#e0efec"
-    DarkThemeColor="#66B09F"
+    LightThemeColor="#CAF6F6"
+    DarkThemeColor="#1c78cd"
     :Features="[feature]"
     :Config="{
       bannerText: { text: 'Mountain Pass' },
@@ -43,6 +43,12 @@
             fieldName: 'Weather',
           },
         },
+        /*{
+          label: 'Air Temp',
+          value:{
+            text: '???'
+          },
+        },*/
         {
           label: 'Visibility',
           value: {
@@ -58,6 +64,9 @@
           },
         },
       ],
+      moreInfoURL:{
+        custom: getMoreInfoURL
+      },
     }"
     @close="close"
   >
@@ -78,6 +87,7 @@ import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
+import MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
 export default defineComponent({
   components: { PopupBase },
   props: {
@@ -96,7 +106,22 @@ export default defineComponent({
         close();
       }
     });
-
+    const getMoreInfoURL=(feature: FeatureInfo): MoreInfoURLInfo=>{
+      console.log(feature)
+      let linkText;
+      if(feature.attributes["PassName"]?.toString().includes("Pass")){
+        linkText = `${feature.attributes["PassName"]?.toString().split("Pass")[0]} Pass`
+      }
+      else{
+        linkText = feature.attributes["PassName"] as string
+      }
+      const moreInfoObject =new Object({
+        url: ` https://wsdotappsqa.wsdot.wa.gov/travel/center/mountainpasses/${feature.attributes.MountainPassId}`,
+        text: "Learn more about ",
+        linkText: linkText
+      }) as MoreInfoURLInfo
+      return moreInfoObject
+    }
     const show = () => {
       const setVal = () => {
         getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(
@@ -120,24 +145,56 @@ export default defineComponent({
       feature.value = undefined;
     };
 
-    const getTemp = (feature: FeatureInfo): string => {
-      const num = feature.attributes["Temperature"];
-      const unit = feature.attributes["TemperatureUnit"];
-      let text = "";
+    const getTemp = (feature: FeatureInfo): string|undefined => {
+      //const num = feature.attributes["Temperature"] as string;
+      const unit = feature.attributes["TemperatureUnit"] as string;
+      let num = 100
+      //const unit = "Fahrenheit" as string
       if (num) {
-        text = `${num} ${unit ? unit : ""}`;
+        let numF;
+        let numC;
+        switch(unit){
+          case "Fahrenheit" as string:
+            numF = num;
+            numC = Math.ceil((num-32)*.5556);
+            break;
+          case "Celcius" as string:
+            numC = num;
+            numF = Math.ceil((num*1.8)+32);
+            break;
+        }
+        let text = `${numF}°F / ${numC}°C`;
+        return text;
       }
-      return text;
-    };
+      else{
+        return undefined
+      }
+    }
 
-    const getElev = (feature: FeatureInfo) => {
-      const num = feature.attributes["Elevation"];
-      const unit = feature.attributes["ElevationUnit"];
-      let text = "";
-      if (num) {
-        text = `${num} ${unit ? unit : ""}`;
+    const getElev = (feature: FeatureInfo):string|undefined => {
+      console.log(feature)
+      const num = feature.attributes["Elevation"] as number;
+      const unit = feature.attributes["ElevationUnit"] as string;
+      let ftNum;
+      let meterNum;
+      if(num){
+        switch(unit){
+          case "Feet":
+            ftNum=num;
+            meterNum= Math.ceil(num*.3048)
+            break;
+          case "Meters":
+            ftNum=Math.ceil(num/.3048);
+            meterNum=num;
+            break;
+        }
+        let text = `${ftNum}ft / ${meterNum}m`;
+        return text;
       }
-      return text;
+      else{
+        return undefined
+      }
+      
     };
 
     const getDirection1Label = (feature: FeatureInfo) => {
@@ -156,6 +213,7 @@ export default defineComponent({
       getElev,
       getDirection1Label,
       getDirection2Label,
+      getMoreInfoURL
     };
   },
 });

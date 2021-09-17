@@ -9,7 +9,7 @@
       title: { custom: getTitle },
       content: [
         { label: 'Travel delay', value: { text: '???' } },
-        { label: '', value: { fieldName: 'HeadlineMessage' } },
+        { label: 'Description', value: { fieldName: 'HeadlineMessage' } },
         {
           label: 'Last updated',
           value: {

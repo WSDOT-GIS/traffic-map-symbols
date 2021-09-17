@@ -327,12 +327,19 @@
       </li>
       <!-- Mile Markers -->
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
-        <ToggleSwitchView
+       <!-- <ToggleSwitchView
           @toggle="clickEvent"
           :Enabled="mileMarkerToggleEnabled"
           :Checked="layerList[getLayerIndex('mile-markers')].visible"
           :Value="getLayerIndex('mile-markers').toString()"
           :Title="mileMarkerToggleEnabled==true?'Toggle Mile Markers':'Zoom in to enable mile marker toggle'"
+        >-->
+        <ToggleSwitchView
+          @toggle="clickEvent"
+          :Checked="layerList[getLayerIndex('mile-markers')].visible"
+          :Value="getLayerIndex('mile-markers').toString()"
+          :Title="'Toggle Mile Markers'"
+          :Enabled="true"
         >
           <template v-slot>
             <div
@@ -387,7 +394,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const layerIcons = layerListIcons;
-    const mileMarkerToggleEnabled = ref<boolean>();
+    /*const mileMarkerToggleEnabled = ref<boolean>();
     mapView.watch("scale",(scale)=>{
       if(scale >577790.554289){
         mileMarkerToggleEnabled.value=false
@@ -396,8 +403,8 @@ export default defineComponent({
         mileMarkerToggleEnabled.value=true
       }
       // console.log(scale)
-    })
-    return { layerIcons, store, mileMarkerToggleEnabled };
+    })*/
+    return { layerIcons, store /*mileMarkerToggleEnabled*/ };
     //add mule markers to return function for v-if when layer visibilty is true
   },
   computed: {

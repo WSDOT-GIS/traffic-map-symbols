@@ -1,15 +1,15 @@
 <template>
   <PopupBase
-    LightThemeColor="#fff3cd"
-    DarkThemeColor="#FFC107"
+    LightThemeColor="#f5d2eb"
+    DarkThemeColor="#cc209c"
     :Features="[feature]"
     :Config="{
       bannerText: { text: 'Truck Restriction' },
       badgeText: { custom: getBadgeText },
-      title: { fieldName: 'location_description' },
+      title: { custom: getTitle },
       content: [
         { label: 'Travel delay', value: { text: '???' } },
-        { label: '', value: { fieldName: 'restriction_comment' } },
+        { label: 'Description', value: { fieldName: 'restriction_comment' } },
         {
           label: 'Date effective',
           value: {
@@ -27,6 +27,9 @@
           },
         },
       ],
+      moreInfoURL:{
+        custom: getMoreInfoURL
+      },
     }"
     @close="close"
   >
@@ -48,6 +51,7 @@ import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
+import MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
 export default defineComponent({
   components: { PopupBase },
   props: {
@@ -67,7 +71,38 @@ export default defineComponent({
         close();
       }
     });
-
+    const getTitle = (feature: FeatureInfo): string => {
+      console.log(feature)
+      let direction;
+      switch(feature.attributes.cardinal_direction){
+        case "B":
+          direction="Both Directions";
+          break;
+        case "N":
+          direction = "Northbound";
+          break;
+        case "S":
+          direction = "Southbound";
+          break;
+        case "E":
+          direction = "Eastbound";
+          break;
+        case "W":
+          direction = "Westbound";
+          break;
+      }
+      const title = `SR ${feature.attributes.route_nr} ${feature.attributes.bridge_name}, ${direction}`
+      return title
+    }
+    const getMoreInfoURL=(feature: FeatureInfo): MoreInfoURLInfo=>{
+      console.log(feature)
+      const moreInfoObject =new Object({
+        url: `https://wsdot.wa.gov/data/tools/bridgeclearance/`,
+        text: "Be sure to check out your route in the",
+        linkText: "Bridge Vertical Trip Planner"
+      }) as MoreInfoURLInfo
+      return moreInfoObject
+    }
     const show = () => {
       const setVal = () => {
         getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(
@@ -110,6 +145,8 @@ export default defineComponent({
       layerIcons,
       close,
       getBadgeText,
+      getTitle,
+      getMoreInfoURL
     };
   },
 });
