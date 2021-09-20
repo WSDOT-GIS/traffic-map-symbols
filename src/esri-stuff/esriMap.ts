@@ -4,7 +4,9 @@ import Point from "@arcgis/core/geometry/Point";
 import Polygon from "@arcgis/core/geometry/Polygon";
 import { geodesicBuffer } from "@arcgis/core/geometry/geometryEngine";
 import { whenTrue } from "@arcgis/core/core/watchUtils";
-import SpatialReference from "@arcgis/core/geometry/SpatialReference";
+import TileLayer from "@arcgis/core/layers/TileLayer";
+import Extent from "@arcgis/core/geometry/Extent";
+// import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Layer from "@arcgis/core/layers/Layer";
 import EsriConfig from "@arcgis/core/config"
 import Graphic from "@arcgis/core/Graphic";
@@ -29,15 +31,15 @@ import { initLayer as initESRIBoundariesPlacesReference } from "@/layers/Boundar
 import { initLayer as initStateRouteShieldsLayer } from "@/layers/StateRouteShields"
 import { initLayer as initBorderCrossingsLayer } from "@/layers/BorderCrossingsLayer"
 //
-import { getEsriExtent } from "@/utils/extentUtil";
+import { getEsriExtent, getOutOfBoundDirection } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 import FeatureInfo from "@/types/FeatureInfo";
 import { getConfig } from "@/utils/appConfigUtil";
 import LayerInfo from "@/types/LayerInfo";
 import firePerimeterFeatureIDs from "@/utils/firePerimeterQuery"
 import { getBasemapInfo } from "@/layers/Basemaps";
-import TileLayer from "@arcgis/core/layers/TileLayer";
-import Extent from "@arcgis/core/geometry/Extent";
+import XY from "@/types/XY";
+
 // Initialize empty map, and load layers later...
 export const webmap = new WebMap({
 });
@@ -244,26 +246,110 @@ export const getMaxScale = (): number => {
 }
 
 export const toScreenXY = (mapX: number, mapY: number): { x: number, y: number } => {
-    const pt = new Point({ x: mapX, y: mapY, spatialReference: SpatialReference.WebMercator });
+    //const pt = new Point({ x: mapX, y: mapY, spatialReference: SpatialReference.WebMercator });
+    const pt = toPoint(mapX, mapY);
     const screenPt = mapView.toScreen(pt);
     return { x: screenPt.x, y: screenPt.y };
 }
 
-export const panMap = async (shiftX: number, shiftY: number): Promise<string> => {
+export const toPoint = (mapX: number, mapY: number): Point => {
+    const pt = new Point({ x: mapX, y: mapY, spatialReference: mapView.spatialReference });//SpatialReference.WebMercator });
+    // console.log(JSON.stringify(pt));
+    return pt;
+}
+// Set limit for programmatic panning...
+const full = getEsriExtent("full");
+const panExtent = full.expand(1);
+/**
+ * Check the new extent after panning against the max extent allowed and report the direction from the extent.
+ * @param shiftX 
+ * @param shiftY 
+ * @returns
+ * First char: vertical direction = i/n/s (inside/north/south)
+ * Second char: horizontal direction = i/w/e (inside/west/east)
+ */
+export const checkPannedExtent = (shiftX: number, shiftY: number): string => {
+    const topLeft = mapView.toMap({ x: -1 * shiftX, y: -1 * shiftY });
+    const bottomRight = mapView.toMap({ x: mapView.width - shiftX, y: mapView.height - shiftY });
+    console.log("Top left...");
+    const topLeftDir = getOutOfBoundDirection(topLeft, panExtent);
+    console.log("Bottom right...");
+    const bottomRightDir = getOutOfBoundDirection(bottomRight, panExtent);
+    // Positive = panning down/south => check the top, otherwise check the bottom...
+    let outOfBoundsDir = shiftY > 0 ? topLeftDir[0] : bottomRightDir[0];
+    // Positive = panning east/right => check the left, otherwise check the right side...
+    outOfBoundsDir += shiftX > 0 ? topLeftDir[1] : bottomRightDir[1];
+    console.log("checkPannedExtent " + outOfBoundsDir);
+    return outOfBoundsDir;
+}
+
+/**
+ * Pan Map using GoTo()
+ * @param shiftX 
+ * positive = pan east, negative = pan west
+ * @param shiftY
+ * Positive = pan south, negative = pan north
+ * @returns 
+ * If successful or exception, return true/false. Otherwise return the actual amount pan was panned.
+ */
+export const panMap = async (shiftX: number, shiftY: number): Promise<{ actualShift: XY/*, outOfBoundsDir: string*/ } | boolean> => {
+    console.log("***Pan Map X:" + shiftX + ", Y:" + shiftY);
     const screenCenter = mapView.toScreen(mapView.center);
-    const mapCenter = mapView.toMap({
+    const newCenter = mapView.toMap({
         x: screenCenter.x - shiftX,
         y: screenCenter.y - shiftY,
     });
-    await mapView.goTo(mapCenter, {
-        duration: 300,
-        easing: "ease-in"
-    }).catch((error) => {
-        const err = "panMap failed: " + error;
-        console.error(err);
-        return err;
-    });
-    return "success";
+    const oldCenter = mapView.center;
+    let tryCount = 0;
+    const diffShift = { x: -1, y: -1 };
+    const actualShift = { x: 0, y: 0 };
+    try {
+        while (tryCount < 4 && (Math.abs(diffShift.x) >= 1 || Math.abs(diffShift.y) >= 1)) {
+            // console.log("Try " + tryCount + " pan start");
+            tryCount++;
+            // GoTo() does not work as expected for various reasons, so try it a few times if not successful.
+            try {
+                await mapView.goTo(newCenter, {
+                    duration: 300,
+                    easing: "ease-in"
+                });
+            } catch (err) {
+                console.error("mapView.goTo failed: " + err);
+            }
+            // console.log("Try " + tryCount + " pan finished");
+            // Figure out the amount moved in reality...
+            const newScreen = mapView.toScreen(mapView.center);
+            const oldScreen = mapView.toScreen(oldCenter);
+            // console.log("Try " + tryCount + " converted to screen");
+            actualShift.x = oldScreen.x - newScreen.x;
+            actualShift.y = oldScreen.y - newScreen.y;
+            console.log("Try " + tryCount + " Actual shift " + JSON.stringify(actualShift));
+            diffShift.x = shiftX - actualShift.x;
+            diffShift.y = shiftY - actualShift.y;
+        }
+        if (Math.abs(diffShift.x) < 1 && Math.abs(diffShift.y) < 1) {
+            console.log("panMap: success " + JSON.stringify(diffShift));
+            return true;
+        } else {
+            console.log("panMap: fail " + JSON.stringify(diffShift));
+            // Figure out if failure is caused by reaching the max pan extent...
+            // const topLeft = mapView.toMap({ x: 0, y: 0 });
+            // const bottomRight = mapView.toMap({ x: mapView.width, y: mapView.height });
+            // let outOfBoundsDir = "";
+            // if (shiftY > 0) { // Panning south...
+            //     // Check if the top of the map view is in Canada or not...
+            //     const dir = getOutOfBoundDirection(topLeft);
+            //     if (dir[0] === "n") { outOfBoundsDir = "n" }
+            // } else if (shiftY < 0) { // Panning north...
+            //     const dir = getOutOfBoundDirection(bottomRight);
+            //     if (dir[0] === "s") { outOfBoundsDir = "s" }
+            // }
+            return { actualShift: actualShift };//, outOfBoundsDir: outOfBoundsDir };
+        }
+    } catch (err) {
+        console.error("panMap failed: " + err);
+        return false;
+    }
 }
 
 export const getLayer = (id: string): Layer => {

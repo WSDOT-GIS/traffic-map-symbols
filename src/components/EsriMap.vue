@@ -303,9 +303,11 @@ export default defineComponent({
               }
               // Deal with cluster...
               else if (g.isAggregate) {
-                getClusterExtent(g, results2Show.layer, esriMap.mapView).then((clusterExtent) => {
-                  esriMap.zoomToExtent(clusterExtent.expand(1.5));
-                });
+                getClusterExtent(g, results2Show.layer, esriMap.mapView).then(
+                  (clusterExtent) => {
+                    esriMap.zoomToExtent(clusterExtent.expand(1.5));
+                  }
+                );
                 // Try to get features from the cluster...
                 // getIdsFromCluster(
                 //   g,
@@ -501,6 +503,10 @@ export default defineComponent({
           width: event.width,
           height: event.height,
         });
+      });
+      // Watch center change...
+      esriMap.mapView.watch("center", (newValue) => {
+        store.commit("setCenter", { x: newValue.x, y: newValue.y });
       });
     });
     return {
