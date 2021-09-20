@@ -150,6 +150,7 @@ import {
   mapView,
   toScreenXY,
   panMap,
+  checkPannedExtent,
   highlightFeature,
   removeHighlight,
 } from "@/esri-stuff/esriMap";
@@ -159,6 +160,7 @@ import PopupRow from "./PopupRow.vue";
 import XY from "@/types/XY";
 import ForecastListInfo from "@/types/ForecastListInfo";
 import { isSmallMedia } from "@/utils/mediaUtil";
+import { getEsriExtent } from "@/utils/extentUtil";
 
 export default defineComponent({
   components: { Carousel, Slide, Pagination, Navigation, PopupRow },
@@ -204,7 +206,13 @@ export default defineComponent({
     const propWeatherForecast = toRefs(props).WeatherForecast; //bind forecast to ref for v-if conditional rendering
     const propAmenities = toRefs(props).Amenities; //bind amenities to ref for v-if conditional rendering
     const containerRef = ref<HTMLDivElement>();
-    const relativePosition = ref("above");
+    const enum relativePositions {
+      above = "above",
+      below = "below",
+      right = "right",
+      left = "left",
+    }
+    const relativePosition = ref(relativePositions.above);
     const store = useStore();
     const mapSize = computed(() => store.state.mapSize);
     const mapScale = computed(() => store.state.scale);
@@ -325,7 +333,10 @@ export default defineComponent({
     let prevScreenY = 0;
     let prevWidth = 0;
     let prevHeight = 0;
-    // Position popup on top of the feature...
+
+    /**
+     * Position popup on top of the feature...
+     */
     const adjustPositionSize = () => {
       if (!containerRef.value) {
         // Container is null. It is not visible yet.
@@ -368,76 +379,56 @@ export default defineComponent({
         // console.log("*** Adjust ****************"); // + JSON.stringify(props.Features)); //props.Features[0].layerId);
         // If this is not the initial load, then move popup along with map.
         if (!doPanMap) {
-          // New vertical position...
-          const newTop = calcTop(h);
-          // New horizontal position.
-          const newLeft = screenX.value - w / 2;
-          setPosition(newTop, newLeft);
+          // Recalculate top and let position...
+          const newTopLeft = calcTopLeft(h, w);
+          setPosition(newTopLeft.top, newTopLeft.left);
         } else {
           doPanMap = false;
           nextTick(() => {
             // New vertical position...
             if (screenY.value > mapSize.value.height / 2) {
               // Display above the feature...
-              relativePosition.value = "above";
+              relativePosition.value = relativePositions.above;
             } else {
               // Display below the feature...
-              relativePosition.value = "below";
+              relativePosition.value = relativePositions.below;
             }
-            const newTop = calcTop(h);
-            // New horizontal position.
-            let newLeft = screenX.value - w / 2;
+            let newTopLeft = calcTopLeft(h, w);
             /**
-             * Pan map so the popup is displayed within the map view.
-             * Only do this on the initial popup load.
+             * Pan map so the popup is displayed within the map view,
+             * and the top is visible.
+             * NOTE: Only do this on the initial popup load.
              *  */
-            let shiftY = 0;
-            let shiftX = 0;
-            if (newTop < 0) {
-              // Top is above the top of the map, so need to pan map down.
-              shiftY = -1 * newTop;
-            } else if (newTop + h > mapSize.value.height) {
-              // Bottom is below the bottom of the map, so need to pan map up.
+            let shiftXY = calcShiftXY(newTopLeft, h, w);
+            const outOfBoundDir = checkPannedExtent(shiftXY.x, shiftXY.y);
+            if (
+              (relativePosition.value === relativePositions.above &&
+              outOfBoundDir[0] === "n") || (relativePosition.value === relativePositions.below && outOfBoundDir[0] === "s")
+            ) {
+              const bestPosition = getBestRelativePosition(h, w);
+              console.log("Best: " + bestPosition);
+              relativePosition.value = bestPosition;
+              newTopLeft = calcTopLeft(h, w);
+              shiftXY = calcShiftXY(newTopLeft, h, w);
+            }
 
-              shiftY = mapSize.value.height - newTop - h;
-              console.log(
-                "***New Top:" +
-                  newTop +
-                  ", h:" +
-                  h +
-                  ", map height:" +
-                  mapSize.value.height
-              );
-            }
-            if (newLeft < 0 || newLeft + w > mapView.width) {
-              shiftX = newLeft < 0 ? -1 * newLeft : mapView.width - newLeft - w;
-            }
-            setPosition(newTop, newLeft);
-            if (shiftY <= -1 || shiftY >= 1 || shiftX <= -1 || shiftX >= 1) {
+            setPosition(newTopLeft.top, newTopLeft.left);
+            if (Math.abs(shiftXY.x) >= 1 || Math.abs(shiftXY.y) >= 1) {
               isPanning = true;
-              panMap(shiftX, shiftY).then((panResult) => {
+              panMap(shiftXY.x, shiftXY.y).then((panResult) => {
                 console.log("pan result: " + JSON.stringify(panResult));
                 isPanning = false;
                 setScreenXY();
                 // On the mobile devices after the pinch zoom, the map does not pan enough to show the top of the popup.
                 // So check the popup position again and pan map more if necessary.
-                shiftX = 0;
-                shiftY = 0;
-                if (popupTop.value < 0) {
-                  shiftY = -1 * popupTop.value;
-                }
-                if (
-                  popupLeft.value < 0 ||
-                  popupLeft.value + w > mapView.width
-                ) {
-                  shiftX =
-                    popupLeft.value < 0
-                      ? -1 * popupLeft.value
-                      : mapView.width - popupLeft.value - w;
-                }
-                if (shiftX !== 0 || shiftY !== 0) {
+                shiftXY = calcShiftXY(
+                  { top: popupTop.value, left: popupLeft.value },
+                  h,
+                  w
+                );
+                if (shiftXY.x !== 0 || shiftXY.y !== 0) {
                   isPanning = true;
-                  panMap(shiftX, shiftY).then((panResult) => {
+                  panMap(shiftXY.x, shiftXY.y).then((panResult) => {
                     console.log("pan2 result: " + panResult);
                     isPanning = false;
                     setScreenXY();
@@ -449,11 +440,54 @@ export default defineComponent({
         }
       }
     };
-    /** Figure out the top position of the popup. */
-    const calcTop = (height: number): number => {
+    const getBestRelativePosition = (height: number, width: number): relativePositions => {
+      const extent = getEsriExtent("full");
+      const results: { pos: relativePositions; val: number }[] = [];
+      // results.push({
+      //   pos: relativePositions.left,
+      //   val: (mapX.value - extent.xmin) / width,
+      // });
+      // results.push({
+      //   pos: relativePositions.right,
+      //   val: (extent.xmax - mapX.value) / width,
+      // });
+      results.push({
+        pos: relativePositions.above,
+        val: (extent.ymax - mapY.value) / height,
+      });
+      results.push({
+        pos: relativePositions.below,
+        val: (mapY.value - extent.ymin) / height,
+      });
+      console.log(JSON.stringify(results));
+      const maxVal = Math.max.apply(
+        null,
+        results.map((each) => {
+          return each.val;
+        })
+      );
+      console.log("Max val: " + maxVal);
+      const obj = results.find((each) => {
+        return each.val === maxVal;
+      });
+      console.log(JSON.stringify(obj));
+      if (obj) {
+        return obj.pos;
+      } else {
+        throw "getBestRelativePosition() failed.";
+      }
+    };
+    /**
+     * Figure out the top and left position of the popup.
+     * NOTE: Make sure to set the relativePosition before calling this.
+     */
+    const calcTopLeft = (
+      height: number,
+      width: number
+    ): { top: number; left: number } => {
       let newTop = 0;
       switch (relativePosition.value) {
-        case "below":
+        case relativePositions.below:
           // Display below the feature...
           newTop = screenY.value + 5;
           if (!props.MapXY) {
@@ -467,9 +501,41 @@ export default defineComponent({
             newTop -= 15;
           }
       }
-      return newTop;
+      let newLeft = screenX.value - width / 2;
+      return { top: newTop, left: newLeft };
     };
-    /** Figure out if everything is loaded or not. */
+    /**
+     * Calulate how far map need to be moved so the top of the popup is visible within the map view.
+     */
+    const calcShiftXY = (
+      topLeft: { top: number; left: number },
+      height: number,
+      width: number
+    ): XY => {
+      let shiftY = 0;
+      let shiftX = 0;
+      const top = topLeft.top;
+      if (top < 0) {
+        // Top is above the top of the map, so need to pan map down.
+        shiftY = -1 * top;
+      } else if (top + height > mapSize.value.height) {
+        // Bottom is below the bottom of the map, so need to pan map up.
+        shiftY = mapSize.value.height - top - height;
+        console.log("shiftY: " + shiftY + " top:" + top);
+        if (top + shiftY < 60) {
+          shiftY = 60 - top;
+          console.log("shiftY adjusted: " + shiftY);
+        }
+      }
+      const left = topLeft.left;
+      if (left < 0 || left + width > mapView.width) {
+        shiftX = left < 0 ? -1 * left : mapView.width - left - width;
+      }
+      return { x: shiftX, y: shiftY };
+    };
+    /**
+     * Figure out if everything is loaded or not.
+     */
     const isLoadComplete = () => {
       let isComplete: boolean;
       if (props.Config.imageFieldName) {
@@ -592,7 +658,6 @@ export default defineComponent({
       const feature = props.Features[currentIdx.value];
       if (feature) {
         if (ignoreMapXY) {
-          // console.log("set mapXY...");
           mapX.value = feature.mapPoint.x;
           mapY.value = feature.mapPoint.y;
         } else {

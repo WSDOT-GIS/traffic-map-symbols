@@ -30,7 +30,7 @@ import { initLayer as initESRIRoadsReference } from "@/layers/RoadsReferenceLaye
 import { initLayer as initESRIBoundariesPlacesReference } from "@/layers/BoundariesPlacesReferenceLayer"
 import { initLayer as initStateRouteShieldsLayer } from "@/layers/StateRouteShields"
 //
-import { getEsriExtent, getDirectionFromFull } from "@/utils/extentUtil";
+import { getEsriExtent, getOutOfBoundDirection } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 import FeatureInfo from "@/types/FeatureInfo";
 import { getConfig } from "@/utils/appConfigUtil";
@@ -257,6 +257,32 @@ export const toPoint = (mapX: number, mapY: number): Point => {
     // console.log(JSON.stringify(pt));
     return pt;
 }
+// Set limit for programmatic panning...
+const full = getEsriExtent("full");
+const panExtent = full.expand(1);
+/**
+ * Check the new extent after panning against the max extent allowed and report the direction from the extent.
+ * @param shiftX 
+ * @param shiftY 
+ * @returns
+ * First char: vertical direction = i/n/s (inside/north/south)
+ * Second char: horizontal direction = i/w/e (inside/west/east)
+ */
+export const checkPannedExtent = (shiftX: number, shiftY: number): string => {
+    const topLeft = mapView.toMap({ x: -1 * shiftX, y: -1 * shiftY });
+    const bottomRight = mapView.toMap({ x: mapView.width - shiftX, y: mapView.height - shiftY });
+    console.log("Top left...");
+    const topLeftDir = getOutOfBoundDirection(topLeft, panExtent);
+    console.log("Bottom right...");
+    const bottomRightDir = getOutOfBoundDirection(bottomRight, panExtent);
+    // Positive = panning down/south => check the top, otherwise check the bottom...
+    let outOfBoundsDir = shiftY > 0 ? topLeftDir[0] : bottomRightDir[0];
+    // Positive = panning east/right => check the left, otherwise check the right side...
+    outOfBoundsDir += shiftX > 0 ? topLeftDir[1] : bottomRightDir[1];
+    console.log("checkPannedExtent " + outOfBoundsDir);
+    return outOfBoundsDir;
+}
+
 /**
  * Pan Map using GoTo()
  * @param shiftX 
@@ -266,10 +292,10 @@ export const toPoint = (mapX: number, mapY: number): Point => {
  * @returns 
  * If successful or exception, return true/false. Otherwise return the actual amount pan was panned.
  */
-export const panMap = async (shiftX: number, shiftY: number): Promise<{actualShift: XY, outOfBoundsDir: string} | boolean> => {
+export const panMap = async (shiftX: number, shiftY: number): Promise<{ actualShift: XY/*, outOfBoundsDir: string*/ } | boolean> => {
     console.log("***Pan Map X:" + shiftX + ", Y:" + shiftY);
     const screenCenter = mapView.toScreen(mapView.center);
-    const mapCenter = mapView.toMap({
+    const newCenter = mapView.toMap({
         x: screenCenter.x - shiftX,
         y: screenCenter.y - shiftY,
     });
@@ -283,7 +309,7 @@ export const panMap = async (shiftX: number, shiftY: number): Promise<{actualShi
             tryCount++;
             // GoTo() does not work as expected for various reasons, so try it a few times if not successful.
             try {
-                await mapView.goTo(mapCenter, {
+                await mapView.goTo(newCenter, {
                     duration: 300,
                     easing: "ease-in"
                 });
@@ -307,15 +333,18 @@ export const panMap = async (shiftX: number, shiftY: number): Promise<{actualShi
         } else {
             console.log("panMap: fail " + JSON.stringify(diffShift));
             // Figure out if failure is caused by reaching the max pan extent...
-            const topLeft = mapView.toMap({ x: 0, y: 0 });
-            const bottomRight = mapView.toMap({ x: mapView.width, y: mapView.height });
-            let outOfBoundsDir = "";
-            if (shiftY > 0) {
-                // Check if the top of the map view is in Canada or not...
-                const dir = getDirectionFromFull(topLeft);
-                if (dir[0] === "n") { outOfBoundsDir = "n"}
-            }
-            return { actualShift: actualShift, outOfBoundsDir: outOfBoundsDir};
+            // const topLeft = mapView.toMap({ x: 0, y: 0 });
+            // const bottomRight = mapView.toMap({ x: mapView.width, y: mapView.height });
+            // let outOfBoundsDir = "";
+            // if (shiftY > 0) { // Panning south...
+            //     // Check if the top of the map view is in Canada or not...
+            //     const dir = getOutOfBoundDirection(topLeft);
+            //     if (dir[0] === "n") { outOfBoundsDir = "n" }
+            // } else if (shiftY < 0) { // Panning north...
+            //     const dir = getOutOfBoundDirection(bottomRight);
+            //     if (dir[0] === "s") { outOfBoundsDir = "s" }
+            // }
+            return { actualShift: actualShift };//, outOfBoundsDir: outOfBoundsDir };
         }
     } catch (err) {
         console.error("panMap failed: " + err);
