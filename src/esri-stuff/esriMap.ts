@@ -40,6 +40,8 @@ import firePerimeterFeatureIDs from "@/utils/firePerimeterQuery"
 import { getBasemapInfo } from "@/layers/Basemaps";
 import XY from "@/types/XY";
 
+const fullExtent = getEsriExtent("full");
+
 // Initialize empty map, and load layers later...
 export const webmap = new WebMap({
 });
@@ -47,12 +49,12 @@ export const webmap = new WebMap({
 export const mapView = new MapView({
     container: "esri-map-view",
     map: webmap,
-    extent: getEsriExtent("full"),
+    extent: fullExtent,
     constraints: {
         rotationEnabled: false, // Disables map rotation
         // Limit the map navigation. 
         // Note: This still allows navigation beyond the extent, but not infinitely.
-        geometry: getEsriExtent("full"),
+        geometry: fullExtent,
     }
 });
 // Zoom buttons are replaced with the custom Vue components.
@@ -64,7 +66,7 @@ export const init = (container: HTMLDivElement): void => {
         .then(() => {
             console.log("Map is ready.");
             // Somehow map does not zoom enough, so set extent again here...
-            mapView.extent = getEsriExtent("full");
+            mapView.extent = fullExtent;
         })
         .catch(error => {
             console.warn("Failed to initialize map. Error: ", error);
@@ -257,9 +259,6 @@ export const toPoint = (mapX: number, mapY: number): Point => {
     // console.log(JSON.stringify(pt));
     return pt;
 }
-// Set limit for programmatic panning...
-const full = getEsriExtent("full");
-const panExtent = full.expand(1);
 /**
  * Check the new extent after panning against the max extent allowed and report the direction from the extent.
  * @param shiftX 
@@ -271,15 +270,15 @@ const panExtent = full.expand(1);
 export const checkPannedExtent = (shiftX: number, shiftY: number): string => {
     const topLeft = mapView.toMap({ x: -1 * shiftX, y: -1 * shiftY });
     const bottomRight = mapView.toMap({ x: mapView.width - shiftX, y: mapView.height - shiftY });
-    console.log("Top left...");
-    const topLeftDir = getOutOfBoundDirection(topLeft, panExtent);
-    console.log("Bottom right...");
-    const bottomRightDir = getOutOfBoundDirection(bottomRight, panExtent);
+    // console.log("Top left...");
+    const topLeftDir = getOutOfBoundDirection(topLeft, fullExtent);
+    // console.log("Bottom right...");
+    const bottomRightDir = getOutOfBoundDirection(bottomRight, fullExtent);
     // Positive = panning down/south => check the top, otherwise check the bottom...
     let outOfBoundsDir = shiftY > 0 ? topLeftDir[0] : bottomRightDir[0];
     // Positive = panning east/right => check the left, otherwise check the right side...
     outOfBoundsDir += shiftX > 0 ? topLeftDir[1] : bottomRightDir[1];
-    console.log("checkPannedExtent " + outOfBoundsDir);
+    // console.log("checkPannedExtent " + outOfBoundsDir);
     return outOfBoundsDir;
 }
 
@@ -293,7 +292,7 @@ export const checkPannedExtent = (shiftX: number, shiftY: number): string => {
  * If successful or exception, return true/false. Otherwise return the actual amount pan was panned.
  */
 export const panMap = async (shiftX: number, shiftY: number): Promise<{ actualShift: XY/*, outOfBoundsDir: string*/ } | boolean> => {
-    console.log("***Pan Map X:" + shiftX + ", Y:" + shiftY);
+    // console.log("***Pan Map X:" + shiftX + ", Y:" + shiftY);
     const screenCenter = mapView.toScreen(mapView.center);
     const newCenter = mapView.toMap({
         x: screenCenter.x - shiftX,
@@ -323,7 +322,7 @@ export const panMap = async (shiftX: number, shiftY: number): Promise<{ actualSh
             // console.log("Try " + tryCount + " converted to screen");
             actualShift.x = oldScreen.x - newScreen.x;
             actualShift.y = oldScreen.y - newScreen.y;
-            console.log("Try " + tryCount + " Actual shift " + JSON.stringify(actualShift));
+            // console.log("Try " + tryCount + " Actual shift " + JSON.stringify(actualShift));
             diffShift.x = shiftX - actualShift.x;
             diffShift.y = shiftY - actualShift.y;
         }
