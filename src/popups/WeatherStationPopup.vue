@@ -1,7 +1,7 @@
 <template>
   <PopupBase
-    LightThemeColor="#ccdcdc"
-    DarkThemeColor="#005151"
+    LightThemeColor="#c7deff"
+    DarkThemeColor="#00398e"
     :WeatherForecast="forecastList"
     :WeatherLocation="weatherLocation"
     :Features="[feature]"

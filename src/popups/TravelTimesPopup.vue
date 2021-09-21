@@ -1,8 +1,9 @@
 <template>
   <PopupBase
-    LightThemeColor="#ebccff"
-    DarkThemeColor="#ba55d3"
+    LightThemeColor="#fcdeff"
+    DarkThemeColor="#96359f"
     :Features="[feature]"
+    :TravelDelay="TravelDelay"
     :Config="{
       bannerText: { text:'Travel Time' },
       //badgeText: { fieldName: 'EventPriorityDescription' },
@@ -99,7 +100,6 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, watch } from "vue";
 import PopupBase from "./PopupBase.vue";
-
 import FeatureLayer from "@/layers/TravelTimeLayer";
 import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
@@ -124,6 +124,7 @@ export default defineComponent({
   setup(props) {
     const layerIcons = layerListIcons;
     const feature = ref<FeatureInfo>();
+    const TravelDelay = ref<number>(0);
     // const mapX = ref(0);
     // const mapY = ref(0);
 
@@ -142,6 +143,9 @@ export default defineComponent({
             if (result) {
               // console.log(result)
               feature.value = result;
+              if((result.attributes.CurrentTime as number)-(result.attributes.AverageTime as number)>0){
+                TravelDelay.value = (result.attributes.CurrentTime as number)-(result.attributes.AverageTime as number)
+              }
               // mapX.value = props.MapX;
               // mapY.value = props.MapY;
             }
@@ -178,7 +182,8 @@ export default defineComponent({
       feature,
       close,
       getTitle,
-      getTime
+      getTime,
+      TravelDelay
     };
   },
 });

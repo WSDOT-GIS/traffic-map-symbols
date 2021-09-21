@@ -22,13 +22,11 @@ export default defineComponent({
   },
   setup(props) {
     const visible = ref(true);
-
     watch(props, () => {
       getText();
     });
 
     const getLabel = () => {
-      console.log(props)
       if(props.Config.label){
         if (!props.Feature) {
         return;

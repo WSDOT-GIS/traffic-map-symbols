@@ -5,7 +5,7 @@
     :Features="[feature]"
     :Config="{
       bannerText: { fieldName: 'EventCategoryDescription' },
-      badgeText: { fieldName: 'EventPriorityDescription' },
+      badgeText: { custom: getEventPriority },
       title: { custom: getTitle },
       content: [
         { label: 'Travel delay', value: { text: '???' } },
@@ -108,7 +108,10 @@ export default defineComponent({
     const close = () => {
       feature.value = undefined;
     };
-
+    const getEventPriority = (feature: FeatureInfo): string =>{
+      console.log(feature)
+      return ""
+    }
     const getTitle = (feature: FeatureInfo): string => {
       const name = feature.attributes["Road"];
       const dir = feature.attributes["RoadDirection"];
@@ -119,6 +122,7 @@ export default defineComponent({
       feature,
       close,
       getTitle,
+      getEventPriority
     };
   },
 });

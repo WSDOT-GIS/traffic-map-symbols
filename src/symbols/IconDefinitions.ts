@@ -52,14 +52,12 @@ const layerListIcons: IconInfo[] = [
       id: "weather-stations-layer",
       paths: `
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12Z" fill="#005151"/>
-      <path d="M22.4167 11.8311C22.4167 17.4978 17.7563 22.0976 12 22.0976C6.24369 22.0976 1.58334 17.4978 1.58334 11.8311C1.58334 6.16437 6.24369 1.56458 12 1.56458C17.7563 1.56458 22.4167 6.16437 22.4167 11.8311Z" fill="#005151" stroke="white" stroke-width="0.5"/>
-      <rect x="7.87878" y="6.15463" width="0.533333" height="12.8469" rx="0.266667" fill="white"/>
-      <rect x="10.7879" y="6.15463" width="0.32864" height="4.66667" rx="0.16432" transform="rotate(90 10.7879 6.15463)" fill="white"/>
-      <path d="M6.76666 8.48317C6.76666 8.23449 6.99116 8.04608 7.23607 8.08923L19.5694 10.2625C19.7606 10.2961 19.9 10.4623 19.9 10.6564V13.0057C19.9 13.1998 19.7606 13.3659 19.5694 13.3996L7.23607 15.5729C6.99116 15.616 6.76666 15.4276 6.76666 15.1789V8.48317Z" fill="#005151" stroke="white" stroke-width="0.2"/>
-      <path fill-rule="evenodd" clip-rule="evenodd" d="M14.0136 9.24927L11.5649 8.76651V14.7774L14.0136 14.2947V9.24927ZM16.4626 13.8119L18.4247 13.425C18.5653 13.3973 18.6667 13.274 18.6667 13.1307V10.4132C18.6667 10.2699 18.5653 10.1466 18.4247 10.1189L16.4626 9.73209V13.8119ZM7.02468 7.8714L9.11597 8.28369V15.2431L9.11625 15.2602L7.02468 15.6726C6.83927 15.7091 6.66666 15.5672 6.66666 15.3782V8.16573C6.66666 7.97675 6.83928 7.83484 7.02468 7.8714Z" fill="white"/>
-      <path d="M11.8473 6.21701C11.9147 6.25536 11.9147 6.35247 11.8473 6.39082L10.5586 7.12441C10.4919 7.16236 10.4091 7.11421 10.4091 7.03751L10.4091 5.57032C10.4091 5.49361 10.4919 5.44547 10.5586 5.48341L11.8473 6.21701Z" fill="white"/>
-      </svg>`
+<path d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12Z" fill="#00398E"/>
+<path d="M22.4167 11.8233C22.4167 17.4861 17.7565 22.083 12 22.083C6.24354 22.083 1.58334 17.4861 1.58334 11.8233C1.58334 6.16057 6.24354 1.56369 12 1.56369C17.7565 1.56369 22.4167 6.16057 22.4167 11.8233Z" fill="#00398E" stroke="white" stroke-width="0.5"/>
+<path d="M6.87818 8.93889C7.53016 6.61563 9.57306 4.99207 11.9616 4.99207C12.0246 4.99207 12.7822 4.99717 13.551 5.24573C15.2202 5.78541 16.5435 7.1537 17.0446 8.9389C17.2248 8.90489 17.413 8.87937 17.5713 8.87937C17.8914 8.87937 18.2002 8.92854 18.4947 9.01438C18.5511 9.03082 19.0826 9.17561 19.6142 9.58776C20.4529 10.2379 20.9995 11.2738 20.9995 12.4426C20.9995 14.4073 19.4615 16.0058 17.5713 16.0058H6.35179C4.46131 16.0058 2.92365 14.4073 2.92365 12.4426C2.92365 10.4779 4.46131 8.87935 6.35179 8.87935C6.5098 8.87935 6.69836 8.90488 6.87818 8.93889Z" fill="white"/>
+<path d="M11.4967 8.26272V11.6154C11.4967 11.8875 11.7173 12.1081 11.9894 12.1081C12.2614 12.1081 12.482 11.8875 12.482 11.6154V8.26272C12.482 7.99064 12.2614 7.77008 11.9894 7.77008C11.7173 7.77008 11.4967 7.99064 11.4967 8.26272Z" fill="#00398E"/>
+<path d="M11.4967 13.3131C11.4264 13.415 11.3888 13.5348 11.3888 13.6574C11.3891 13.8216 11.4567 13.9791 11.5767 14.0952C11.6968 14.2114 11.8594 14.2768 12.0292 14.2771C12.1558 14.2771 12.2796 14.2407 12.385 14.1726C12.4903 14.1046 12.5723 14.0078 12.6208 13.8945C12.6693 13.7813 12.682 13.6567 12.6573 13.5365C12.6325 13.4163 12.5716 13.3058 12.482 13.2192C12.3924 13.1325 12.2783 13.0735 12.1541 13.0496C12.0299 13.0257 11.9011 13.0379 11.7841 13.0848C11.6671 13.1317 11.5671 13.2112 11.4967 13.3131Z" fill="#00398E"/>
+</svg>`
   },
   {
       id: "park-ride-layer",
@@ -105,26 +103,14 @@ const layerListIcons: IconInfo[] = [
       id: "travel-times-layer",
       paths:
       `
-      <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="24" height="24" viewBox="0 0 24 24" fill="none" version="1.1" id="svg5197" sodipodi:docname="TravelTime icon.svg" inkscape:version="0.92.3 (2405546, 2018-03-11)">
-          <metadata id="metadata5203">
-              <rdf:RDF>
-              <cc:Work rdf:about="">
-                  <dc:format>image/svg+xml</dc:format>
-                  <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-                  <dc:title/>
-              </cc:Work>
-              </rdf:RDF>
-          </metadata>
-          <defs id="defs5201"/>
-          <sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="1920" inkscape:window-height="986" id="namedview5199" showgrid="false" inkscape:zoom="9.8333333" inkscape:cx="21.492768" inkscape:cy="-0.48021901" inkscape:window-x="-11" inkscape:window-y="-11" inkscape:window-maximized="1" inkscape:current-layer="svg5197"/>
-          <path d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12Z" fill="#FF6A13" id="path5189" style="fill:#b665d9;fill-opacity:1"/>
-          <path d="M22.4167 11.8316C22.4167 17.4986 17.7563 22.0986 12 22.0986C6.2437 22.0986 1.58334 17.4986 1.58334 11.8316C1.58334 6.16464 6.2437 1.56464 12 1.56464C17.7563 1.56464 22.4167 6.16464 22.4167 11.8316Z" fill="#FF6A13" stroke="white" stroke-width="0.5" id="path5191" style="fill:#b665d9;fill-opacity:1"/>
-          <g id="g6351" transform="matrix(1.3509368,0,0,1.3509368,-34.710357,9.6493231)">
-              <circle r="6.0453591" cy="1.6271186" cx="34.576271" id="path5140" style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:1.52900004;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
-              <circle r="0.32520244" cy="1.6271186" cx="34.576271" id="path5161" style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:1.09734523;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
-              <path inkscape:connector-curvature="0" id="path5169" d="m 34.576271,1.5333686 v -4.53125" style="fill:none;stroke:#ffffff;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
-              <path inkscape:connector-curvature="0" id="path5171" d="m 34.701271,1.8771186 2.171875,2.171875" style="fill:none;stroke:#ffffff;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
-          </g>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12Z" fill="#96359F"/>
+      <path d="M22.4167 11.8231C22.4167 17.4859 17.7565 22.0828 12 22.0828C6.24354 22.0828 1.58334 17.4859 1.58334 11.8231C1.58334 6.16036 6.24354 1.56348 12 1.56348C17.7565 1.56348 22.4167 6.16036 22.4167 11.8231Z" fill="#96359F" stroke="white" stroke-width="0.5"/>
+      <line x1="8.3" y1="4.00015" x2="8.3" y2="19.0002" stroke="white" stroke-width="0.6"/>
+      <line x1="10.8" y1="4.3" x2="10.8" y2="18.7" stroke="white" stroke-width="0.6" stroke-linecap="round" stroke-dasharray="2 2"/>
+      <line x1="13.3" y1="4" x2="13.3" y2="19" stroke="white" stroke-width="0.6"/>
+      <circle cx="15.5" cy="12.3333" r="3.03333" fill="#96359F" stroke="white" stroke-width="0.6"/>
+      <path d="M15.5006 10.6667V12.3772L16.6673 13.3333" stroke="white" stroke-width="0.6" stroke-linecap="round"/>
       </svg>
       `
   },

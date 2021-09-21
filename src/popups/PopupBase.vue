@@ -113,6 +113,9 @@
           <pagination v-if="slidesCount > 1" />
         </template>
       </Carousel>
+      <div class="travelDelayTime" v-if="propTravelDelay>0">
+        {{`${propTravelDelay} minute delay`}}
+      </div>
       <div
         v-for="eachConfig in Config.content"
         :key="eachConfig.label"
@@ -147,6 +150,7 @@ import {
   onUpdated,
   PropType,
   ref,
+  toRef,
   toRefs,
   watch,
 } from "vue";
@@ -167,6 +171,8 @@ import XY from "@/types/XY";
 import ForecastListInfo from "@/types/ForecastListInfo";
 import { isSmallMedia } from "@/utils/mediaUtil";
 import MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
+import config from "@arcgis/core/config";
+import PopupRowConfig from "@/types/PopupRowConfig";
 export default defineComponent({
   components: { Carousel, Slide, Pagination, Navigation, PopupRow },
   props: {
@@ -191,6 +197,10 @@ export default defineComponent({
     Features: {
       type: Array as PropType<Array<FeatureInfo>>,
       required: true,
+    },
+    TravelDelay:{
+      type: Number,
+      required: false
     },
     Config: {
       type: Object as PropType<PopupConfig>,
@@ -218,6 +228,7 @@ export default defineComponent({
     const mapSize = computed(() => store.state.mapSize);
     const mapScale = computed(() => store.state.scale);
     const maxHeight = ref(mapSize.value.height);
+    const propConfig = ref<PopupConfig>()
     watch(mapSize, (size) => {
       maxHeight.value = size.height;
       if (mapX.value < 0 && mapY.value > 0) {
@@ -241,6 +252,7 @@ export default defineComponent({
     const badgeText = ref("");
     // Reset variables when the features change...
     const propFeatures = toRefs(props).Features;
+    const propTravelDelay = toRefs(props).TravelDelay
     watch(propFeatures, () => {
       currentIdx.value = 0;
       setBadgeText();
@@ -264,7 +276,6 @@ export default defineComponent({
         "--carousel-color-secondary": props.LightThemeColor,
       };
     });
-
     const close = () => {
       // Let the parent handle the close event.
       // Parent should empty the feature array to close the popup.
@@ -621,7 +632,8 @@ export default defineComponent({
       getTitle,
       getMoreInfoURL,
       propWeatherForecast,
-      propAmenities
+      propAmenities,
+      propTravelDelay
     };
   },
 });
@@ -817,5 +829,11 @@ export default defineComponent({
   margin: auto;
   width: 95%;
   margin-bottom: 5px;
+}
+.travelDelayTime{
+  font-size: 20px;
+  color:#DC3545;
+  text-align: left;
+  margin: 0px 0px 5px 16px;
 }
 </style>
