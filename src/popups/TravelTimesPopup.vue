@@ -112,20 +112,10 @@ export default defineComponent({
       type: Object as PropType<FeaturesetInfo>,
       required: true,
     },
-    // MapX: {
-    //   type: Number,
-    //   required: true,
-    // },
-    // MapY: {
-    //   type: Number,
-    //   required: true,
-    // },
   },
   setup(props) {
     const layerIcons = layerListIcons;
     const feature = ref<FeatureInfo>();
-    // const mapX = ref(0);
-    // const mapY = ref(0);
 
     watch(props, () => {
       if (props.Featureset.layerId === FeatureLayer().id) {

@@ -41,9 +41,9 @@
         {{ getTitle() }}
       </h4>
       <div v-if="Config.subtitle && Config.subtitle!='on Undefined'">
-        <div class="popup-content w3-container">
+        <!-- <div class="popup-content w3-container"> -->
           <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
-        </div>
+        <!-- </div> -->
       </div>
       <div v-if="propWeatherForecast">
         <table class="weatherForecastTable">
@@ -120,7 +120,6 @@
       <div
         v-for="eachConfig in Config.content"
         :key="eachConfig.label"
-        class="popup-content w3-container"
       >
         <PopupRow  v-if ="Config.content" :Config="eachConfig" :Feature="Features[currentIdx]" />
       </div>
@@ -836,10 +835,10 @@ export default defineComponent({
   margin: 5px 0;
   text-align: left;
 }
-.popup-content {
+/* .popup-content {
   text-align: left;
   margin-bottom: 8px;
-}
+} */
 .popup-close-button {
   position: absolute;
   top: 0;

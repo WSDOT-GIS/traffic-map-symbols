@@ -26,8 +26,8 @@ interface PopupConfig {
         custom?: (feature: FeatureInfo) => string; // Function that takes feature
     };
     imageFieldName?: string;
-    content?: PopupRowConfig[];
+    content: PopupRowConfig[];
     subtitle?: PopupRowConfig;// display hard coded subtitle string
-};
+}
 
 export default PopupConfig;
