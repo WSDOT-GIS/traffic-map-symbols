@@ -72,7 +72,10 @@ export default defineComponent({
     const feature = ref<FeatureInfo>();
 
     watch(props, () => {
-      if (props.Featureset.layerId === FeatureLayer("road-alerts-layer").id||props.Featureset.layerId === FeatureLayer("road-closures-layer").id) {
+      if (
+        props.Featureset.layerId === FeatureLayer("road-alerts-layer").id ||
+        props.Featureset.layerId === FeatureLayer("road-closures-layer").id
+      ) {
         show();
       } else {
         close();
@@ -81,20 +84,14 @@ export default defineComponent({
 
     const show = () => {
       const setVal = () => {
-        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer("road-closures-layer")).then(
-          (result) => {
-            if (result) {
-              feature.value = result;
-            }
+        getFeatureInfoById(
+          props.Featureset.ids[0],
+          FeatureLayer(props.Featureset.layerId)
+        ).then((result) => {
+          if (result) {
+            feature.value = result;
           }
-        );
-        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer("road-alerts-layer")).then(
-          (result) => {
-            if (result) {
-              feature.value = result;
-            }
-          }
-        );
+        });
       };
       if (feature.value) {
         // Clean up the previous data...
