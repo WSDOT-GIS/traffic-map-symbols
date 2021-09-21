@@ -263,7 +263,6 @@ export default defineComponent({
     // Reset variables when the features change...
     const propFeatures = toRefs(props).Features;
     watch(propFeatures, () => {
-      console.log("Feature collection changed: " + JSON.stringify(propFeatures.value));
       currentIdx.value = 0;
       setBadgeText();
       highlightMap();
@@ -297,7 +296,6 @@ export default defineComponent({
       setScreenXY();
     });
     watch(currentIdx, () => {
-      console.log("Feature Index changed");
       context.emit("idxUpdate", currentIdx.value);
       setBadgeText();
       highlightMap();
@@ -431,7 +429,6 @@ export default defineComponent({
                 outOfBoundDir[0] === "s")
             ) {
               const bestPosition = getBestRelativePosition(h, w);
-              // console.log("Best: " + bestPosition);
               relativePosition.value = bestPosition;
               newTopLeft = calcTopLeft(h, w);
               shiftXY = calcShiftXY(newTopLeft, h, w);
@@ -488,18 +485,15 @@ export default defineComponent({
         pos: relativePositions.below,
         val: (mapY.value - extent.ymin) / height,
       });
-      // console.log(JSON.stringify(results));
       const maxVal = Math.max.apply(
         null,
         results.map((each) => {
           return each.val;
         })
       );
-      // console.log("Max val: " + maxVal);
       const obj = results.find((each) => {
         return each.val === maxVal;
       });
-      // console.log(JSON.stringify(obj));
       if (obj) {
         return obj.pos;
       } else {
@@ -550,10 +544,8 @@ export default defineComponent({
       } else if (top + height > mapSize.value.height) {
         // Bottom is below the bottom of the map, so need to pan map up.
         shiftY = mapSize.value.height - top - height;
-        // console.log("shiftY: " + shiftY + " top:" + top);
         if (top + shiftY < 60) {
           shiftY = 60 - top;
-          // console.log("shiftY adjusted: " + shiftY);
         }
       }
       const left = topLeft.left;
@@ -607,7 +599,6 @@ export default defineComponent({
           f: FeatureInfo
         ) => MoreInfoURLInfo;
         moreInfoObject = func(props.Features[currentIdx.value]);
-        //console.log(moreInfoObject)
       }
       if (!text) {
         text = "";
@@ -640,7 +631,6 @@ export default defineComponent({
           f: FeatureInfo
         ) => string;
         text = func(props.Features[currentIdx.value]);
-        //console.log(text)
       }
       if (!text) {
         text = "";
@@ -666,7 +656,6 @@ export default defineComponent({
       } else if (props.Config.title.custom) {
         const func = props.Config.title.custom as (f: FeatureInfo) => string;
         text = func(props.Features[currentIdx.value]);
-        //console.log(text)
       }
       if (!text) {
         text = "";
