@@ -245,7 +245,7 @@ export default defineComponent({
               zoomToMetroArea(zoomExtentResult[0].graphic.geometry.extent);
               return;
             }
-            // Operation layer was clicked...
+            // Operational layer was clicked...
             const resultsByLayer: {
               info: LayerInfo;
               layer: Layer;
@@ -270,6 +270,7 @@ export default defineComponent({
                 }
               }
             });
+            // Pick the top most layer...
             let maxIdx = 0;
             resultsByLayer.forEach((eachResultSet) => {
               if (eachResultSet.info.index > maxIdx) {
@@ -283,11 +284,12 @@ export default defineComponent({
               const g = results2Show.results[0].graphic;
               const layer = g.layer as GeoJSONLayer;
               if (
-                !layer.featureReduction &&
-                esriMap.mapView.scale < clusterMaxScale
+                layer.id === "traffic-camera-layer"
+                && !layer.featureReduction 
+                && esriMap.mapView.scale < clusterMaxScale
               ) {
-                // If max scale, and features are still overlapping, then show multiple features...
-                const query = CameraLayer().createQuery();
+                // If zoomed more than cluster max scale, and features are still overlapping, then show multiple features...
+                const query = layer.createQuery();
                 // Select all features within the set pixels...
                 query.geometry = esriMap.bufferByPixels(
                   10,
@@ -303,30 +305,11 @@ export default defineComponent({
               }
               // Deal with cluster...
               else if (g.isAggregate) {
-                getClusterExtent(g, results2Show.layer, esriMap.mapView).then((clusterExtent) => {
-                  esriMap.zoomToExtent(clusterExtent.expand(1.5));
-                });
-                // Try to get features from the cluster...
-                // getIdsFromCluster(
-                //   g,
-                //   results2Show.layer,
-                //   esriMap.mapView,
-                //   3
-                // ).then((results) => {
-                //   // Show multiple features if infos are returned...
-                //   if (results instanceof Array) {
-                //     showPopup(
-                //       results2Show.layer.id,
-                //       results,
-                //       g.geometry as Point
-                //     );
-                //   } else {
-                //     closePopup();
-                //     // Zoom to the extent of all features...
-                //     // Note: expand the extent so it won't zoom too tight.
-                //     esriMap.zoomToExtent((results as Extent).expand(1.5));
-                //   }
-                // });
+                getClusterExtent(g, results2Show.layer, esriMap.mapView).then(
+                  (clusterExtent) => {
+                    esriMap.zoomToExtent(clusterExtent.expand(1.5));
+                  }
+                );
               } else {
                 LineRestrictionsLayer().definitionExpression = "1=0"; //clear lines from restrictions layer
                 // Not aggregate...
@@ -501,6 +484,10 @@ export default defineComponent({
           width: event.width,
           height: event.height,
         });
+      });
+      // Watch center change...
+      esriMap.mapView.watch("center", (newValue) => {
+        store.commit("setCenter", { x: newValue.x, y: newValue.y });
       });
     });
     return {

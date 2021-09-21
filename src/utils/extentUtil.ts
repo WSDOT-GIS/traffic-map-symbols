@@ -2,17 +2,22 @@ import Extent from "@arcgis/core/geometry/Extent";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 
 import ExtentInfo from "@/types/ExtentInfo";
+import XY from "@/types/XY";
 
 const defaultExtents: ExtentInfo[] = [
     {
         id: "full",
         title: "Full extent",
+        xmin: -13899444.6466, 
+        xmax: -13014945.794, 
+        ymin: 5667345.69, // Includes Wilsonville, OR - The southern most camera & travel time are located around there.
+        ymax: 6329128.62 // Includes Vancouver, BC
+    },
+    { // WA state extent
+        id: "wa",
+        title: "Washington state extent",
         xmin: -13899444.6466, ymin: 5707531.072999999,
         xmax: -13014945.794, ymax: 6275274.968499999
-        // xmin: -13911155.7073957,
-        // xmax: -12984203.1967109,
-        // ymin: 5704865.77272526,
-        // ymax: 6316025.98739708,
     },
 ];
 
@@ -46,5 +51,36 @@ export const convert2ExtentInfo = (extent: Extent): ExtentInfo => {
     }
     return info;
 };
-
+/**
+ * Figure out the relative direction from the full extent.
+ * @param mapXY 
+ * Location to compare against the full extent.
+ * @returns 
+ * First char: vertical direction = i/n/s (inside/north/south)
+ * Second char: horizontal direction = i/w/e (inside/west/east)
+ */
+export const getOutOfBoundDirection = (mapXY: XY, extent?: ExtentInfo | Extent): string => {
+    if (!extent) {
+        extent = getExtentInfo("full");
+    }
+    let dir = "i"; // Inside
+    // Check vertical...
+    if (mapXY.y > extent.ymax) {
+        dir = "n";
+    } else if (mapXY.y < extent.ymin) {
+        dir = "s";
+    }
+    // Check horizontal...
+    // console.log("X:" + mapXY.x + " Min:" +extent.xmin + " Max:" + extent.xmax)
+    // Note: the values are negative...
+    if (mapXY.x < extent.xmin) {
+        dir += "w";
+    } else if (mapXY.x > extent.xmax) {
+        dir += "e";
+    } else {
+        dir += "i";
+    }
+    // console.log("getOutOfBoundDirection: " + dir);
+    return dir;
+}
 

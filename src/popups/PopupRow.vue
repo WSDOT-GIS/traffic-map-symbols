@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visible">
+  <div v-if="visible" class="popup-content w3-container">
     <span class="popup-key">{{ getLabel() }}</span>
     <span class="popup-value">{{ getText() }}</span>
   </div>
@@ -51,7 +51,6 @@ export default defineComponent({
       if (!props.Feature) {
         return;
       }
-      // console.log("getText()");
       let text = "";
       if (props.Config.value.text) {
         text = props.Config.value.text;
@@ -109,6 +108,10 @@ export default defineComponent({
 });
 </script>
 <style scoped>
+.popup-content {
+  text-align: left;
+  margin-bottom: 8px;
+}
 .popup-key {
   font-weight: bold;
   text-align: left;

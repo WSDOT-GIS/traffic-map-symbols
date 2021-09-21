@@ -2,6 +2,10 @@
   <div
     ref="containerRef"
     class="popup-container w3-card w3-col"
+    :class="{
+      'popup-container-above': relativePosition === 'above',
+      'popup-container-below': relativePosition === 'below',
+    }"
     v-if="Features.length > 0 && Features[0]"
     :style="{
       marginTop: popupTop + 'px',
@@ -36,10 +40,10 @@
       <h4 class="popup-title w3-container">
         {{ getTitle() }}
       </h4>
-      <div v-if="Config.subtitle && Config.subtitle!='on Undefined'">
-        <div class="popup-content w3-container">
-          <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
-        </div>
+      <div v-if="Config.subtitle && Config.subtitle != 'on Undefined'">
+        <!-- <div class="popup-content w3-container"> -->
+        <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
+        <!-- </div> -->
       </div>
       <div v-if="propWeatherForecast">
         <table class="weatherForecastTable">
@@ -85,7 +89,7 @@
           </tr>
         </table>-->
       </div>
-      
+
       <Carousel
         v-if="Config.imageFieldName"
         :items-to-show="1"
@@ -125,16 +129,22 @@
       </div>
     </div>
     <div v-if="propAmenities" class="amenityDiv">
-      <label class="amenityLabel">
-        Amenities
-      </label>
+      <label class="amenityLabel"> Amenities </label>
       <table>
-          <label v-for="Amenity in Amenities" :key="Amenity" class="amenityBubble">{{Amenity}}</label>
+        <label
+          v-for="Amenity in Amenities"
+          :key="Amenity"
+          class="amenityBubble"
+          >{{ Amenity }}</label
+        >
       </table>
     </div>
     <div v-if="Config.moreInfoURL">
-      <div v-if="!Config.moreInfoURL.text==''" class="popup-title w3-container">
-          {{ getMoreInfoURL() }}
+      <div
+        v-if="!Config.moreInfoURL.text == ''"
+        class="popup-title w3-container"
+      >
+        {{ getMoreInfoURL() }}
       </div>
       <div v-if="Config.moreInfoURL.custom" class="popup-title w3-container">
         <div v-html="getMoreInfoURL()"></div>
@@ -161,6 +171,7 @@ import {
   mapView,
   toScreenXY,
   panMap,
+  checkPannedExtent,
   highlightFeature,
   removeHighlight,
 } from "@/esri-stuff/esriMap";
@@ -171,8 +182,8 @@ import XY from "@/types/XY";
 import ForecastListInfo from "@/types/ForecastListInfo";
 import { isSmallMedia } from "@/utils/mediaUtil";
 import MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
-import config from "@arcgis/core/config";
-import PopupRowConfig from "@/types/PopupRowConfig";
+import { getEsriExtent } from "@/utils/extentUtil";
+
 export default defineComponent({
   components: { Carousel, Slide, Pagination, Navigation, PopupRow },
   props: {
@@ -212,21 +223,29 @@ export default defineComponent({
     },
     WeatherLocation: {
       type: String,
-      required: false
+      required: false,
     },
-    Amenities:{
+    Amenities: {
       type: String,
       required: false,
     },
   },
   setup(props, context) {
     // The DOM only exists while the visibility is true. Get it in onUpdate().
-    const propWeatherForecast = toRefs(props).WeatherForecast;//bind forecast to ref for v-if conditional rendering
-    const propAmenities=toRefs(props).Amenities;//bind amenities to ref for v-if conditional rendering
+    const propWeatherForecast = toRefs(props).WeatherForecast; //bind forecast to ref for v-if conditional rendering
+    const propAmenities = toRefs(props).Amenities; //bind amenities to ref for v-if conditional rendering
     const containerRef = ref<HTMLDivElement>();
+    const enum relativePositions {
+      above = "above",
+      below = "below",
+      right = "right",
+      left = "left",
+    }
+    const relativePosition = ref(relativePositions.above);
     const store = useStore();
     const mapSize = computed(() => store.state.mapSize);
     const mapScale = computed(() => store.state.scale);
+    const mapCenter = computed(() => store.state.center);
     const maxHeight = ref(mapSize.value.height);
     const propConfig = ref<PopupConfig>()
     watch(mapSize, (size) => {
@@ -303,12 +322,14 @@ export default defineComponent({
       }
     });
     // Watch map moving...
-    mapView.watch("center", (newValue, oldValue) => {
+    watch(mapCenter, (newValue, oldValue) => {
       if (props.Features.length === 0 || !oldValue) {
         return;
       }
-      const newCenter = mapView.toScreen(newValue);
-      const oldCenter = mapView.toScreen(oldValue);
+      // const newCenter = mapView.toScreen(newValue);
+      // const oldCenter = mapView.toScreen(oldValue);
+      const newCenter = toScreenXY(newValue.x, newValue.y);
+      const oldCenter = toScreenXY(oldValue.x, oldValue.y);
       const diffX = oldCenter.x - newCenter.x;
       const diffY = oldCenter.y - newCenter.y;
       screenX.value += diffX;
@@ -342,7 +363,10 @@ export default defineComponent({
     let prevScreenY = 0;
     let prevWidth = 0;
     let prevHeight = 0;
-    // Position popup on top of the feature...
+
+    /**
+     * Position popup on top of the feature...
+     */
     const adjustPositionSize = () => {
       if (!containerRef.value) {
         // Container is null. It is not visible yet.
@@ -362,8 +386,10 @@ export default defineComponent({
         return;
       }
       if (isSmallMedia()) {
+        // Small screen mode...
         setPosition(0, 0);
       } else {
+        // Large screen mode...
         const h = containerRef.value.offsetHeight;
         const w = containerRef.value.offsetWidth;
         if (
@@ -383,63 +409,58 @@ export default defineComponent({
         // console.log("*** Adjust ****************"); // + JSON.stringify(props.Features)); //props.Features[0].layerId);
         // If this is not the initial load, then move popup along with map.
         if (!doPanMap) {
-          // New vertical position...
-          let newTop = screenY.value - h - 30;
-          // Raise the popup a bit so it is not covering the icon completely.
-          if (!props.MapXY) {
-            newTop -= 15;
-          }
-          // New horizontal position.
-          const newLeft = screenX.value - w / 2;
-          setPosition(newTop, newLeft);
+          // Recalculate top and let position...
+          const newTopLeft = calcTopLeft(h, w);
+          setPosition(newTopLeft.top, newTopLeft.left);
         } else {
           doPanMap = false;
           nextTick(() => {
             // New vertical position...
-            let newTop = screenY.value - h - 30;
-            if (!props.MapXY) {
-              newTop -= 15;
+            if (screenY.value > mapSize.value.height / 2) {
+              // Display above the feature...
+              relativePosition.value = relativePositions.above;
+            } else {
+              // Display below the feature...
+              relativePosition.value = relativePositions.below;
             }
-            // New horizontal position.
-            const newLeft = screenX.value - w / 2;
+            let newTopLeft = calcTopLeft(h, w);
             /**
-             * Pan map so the popup is displayed within the map view.
-             * Only do this on the initial popup load.
+             * Pan map so the popup is displayed within the map view,
+             * and the top is visible.
+             * NOTE: Only do this on the initial popup load.
              *  */
-            let shiftY = 0;
-            let shiftX = 0;
-            if (newTop < 0) {
-              shiftY = -1 * newTop;
+            let shiftXY = calcShiftXY(newTopLeft, h, w);
+            const outOfBoundDir = checkPannedExtent(shiftXY.x, shiftXY.y);
+            if (
+              (relativePosition.value === relativePositions.above &&
+                outOfBoundDir[0] === "n") ||
+              (relativePosition.value === relativePositions.below &&
+                outOfBoundDir[0] === "s")
+            ) {
+              const bestPosition = getBestRelativePosition(h, w);
+              relativePosition.value = bestPosition;
+              newTopLeft = calcTopLeft(h, w);
+              shiftXY = calcShiftXY(newTopLeft, h, w);
             }
-            if (newLeft < 0 || newLeft + w > mapView.width) {
-              shiftX = newLeft < 0 ? -1 * newLeft : mapView.width - newLeft - w;
-            }
-            setPosition(newTop, newLeft);
-            if (shiftY <= -1 || shiftY >= 1 || shiftX <= -1 || shiftX >= 1) {
+
+            setPosition(newTopLeft.top, newTopLeft.left);
+            if (Math.abs(shiftXY.x) >= 1 || Math.abs(shiftXY.y) >= 1) {
               isPanning = true;
-              panMap(shiftX, shiftY).then(() => {
+              panMap(shiftXY.x, shiftXY.y).then((panResult) => {
+                console.log("pan result: " + JSON.stringify(panResult));
                 isPanning = false;
                 setScreenXY();
                 // On the mobile devices after the pinch zoom, the map does not pan enough to show the top of the popup.
                 // So check the popup position again and pan map more if necessary.
-                //console.log(popupTop.value + ", " + popupLeft.value);
-                shiftX = 0;
-                shiftY = 0;
-                if (popupTop.value < 0) {
-                  shiftY = -1 * popupTop.value;
-                }
-                if (
-                  popupLeft.value < 0 ||
-                  popupLeft.value + w > mapView.width
-                ) {
-                  shiftX =
-                    popupLeft.value < 0
-                      ? -1 * popupLeft.value
-                      : mapView.width - popupLeft.value - w;
-                }
-                if (shiftX !== 0 || shiftY !== 0) {
+                shiftXY = calcShiftXY(
+                  { top: popupTop.value, left: popupLeft.value },
+                  h,
+                  w
+                );
+                if (shiftXY.x !== 0 || shiftXY.y !== 0) {
                   isPanning = true;
-                  panMap(shiftX, shiftY).then(() => {
+                  panMap(shiftXY.x, shiftXY.y).then((panResult) => {
+                    console.log("pan2 result: " + panResult);
                     isPanning = false;
                     setScreenXY();
                   });
@@ -450,6 +471,101 @@ export default defineComponent({
         }
       }
     };
+    const getBestRelativePosition = (
+      height: number,
+      width: number
+    ): relativePositions => {
+      const extent = getEsriExtent("full");
+      const results: { pos: relativePositions; val: number }[] = [];
+      // TODO: Maybe in the future, might need to place it on right or left.
+      // results.push({
+      //   pos: relativePositions.left,
+      //   val: (mapX.value - extent.xmin) / width,
+      // });
+      // results.push({
+      //   pos: relativePositions.right,
+      //   val: (extent.xmax - mapX.value) / width,
+      // });
+      results.push({
+        pos: relativePositions.above,
+        val: (extent.ymax - mapY.value) / height,
+      });
+      results.push({
+        pos: relativePositions.below,
+        val: (mapY.value - extent.ymin) / height,
+      });
+      const maxVal = Math.max.apply(
+        null,
+        results.map((each) => {
+          return each.val;
+        })
+      );
+      const obj = results.find((each) => {
+        return each.val === maxVal;
+      });
+      if (obj) {
+        return obj.pos;
+      } else {
+        throw "getBestRelativePosition() failed.";
+      }
+    };
+    /**
+     * Figure out the top and left position of the popup.
+     * NOTE: Make sure to set the relativePosition before calling this.
+     */
+    const calcTopLeft = (
+      height: number,
+      width: number
+    ): { top: number; left: number } => {
+      let newTop = 0;
+      switch (relativePosition.value) {
+        case relativePositions.below:
+          // Display below the feature...
+          newTop = screenY.value + 5;
+          if (!props.MapXY) {
+            newTop += 15;
+          }
+          break;
+        default:
+          // Display above the feature by default...
+          newTop = screenY.value - height - 30;
+          if (!props.MapXY) {
+            newTop -= 15;
+          }
+      }
+      let newLeft = screenX.value - width / 2;
+      return { top: newTop, left: newLeft };
+    };
+    /**
+     * Calulate how far map need to be moved so the top of the popup is visible within the map view.
+     */
+    const calcShiftXY = (
+      topLeft: { top: number; left: number },
+      height: number,
+      width: number
+    ): XY => {
+      let shiftY = 0;
+      let shiftX = 0;
+      const top = topLeft.top;
+      if (top < 0) {
+        // Top is above the top of the map, so need to pan map down.
+        shiftY = -1 * top;
+      } else if (top + height > mapSize.value.height) {
+        // Bottom is below the bottom of the map, so need to pan map up.
+        shiftY = mapSize.value.height - top - height;
+        if (top + shiftY < 60) {
+          shiftY = 60 - top;
+        }
+      }
+      const left = topLeft.left;
+      if (left < 0 || left + width > mapView.width) {
+        shiftX = left < 0 ? -1 * left : mapView.width - left - width;
+      }
+      return { x: shiftX, y: shiftY };
+    };
+    /**
+     * Figure out if everything is loaded or not.
+     */
     const isLoadComplete = () => {
       let isComplete: boolean;
       if (props.Config.imageFieldName) {
@@ -459,6 +575,7 @@ export default defineComponent({
       }
       return isComplete;
     };
+    /** This sets the margin top and left of the popup container. */
     const setPosition = (top: number, left: number) => {
       // Adjust vertical position...
       if (popupTop.value !== top) {
@@ -469,7 +586,7 @@ export default defineComponent({
         popupLeft.value = left;
       }
     };
-    const getMoreInfoURL = () =>{
+    const getMoreInfoURL = () => {
       if (
         !props.Features ||
         props.Features.length === 0 ||
@@ -490,17 +607,15 @@ export default defineComponent({
         const func = props.Config.moreInfoURL.custom as (
           f: FeatureInfo
         ) => MoreInfoURLInfo;
-        moreInfoObject = func(props.Features[currentIdx.value])
-        //console.log(moreInfoObject)
+        moreInfoObject = func(props.Features[currentIdx.value]);
       }
       if (!text) {
         text = "";
       }
-      if(props.Config.moreInfoURL.custom){
+      if (props.Config.moreInfoURL.custom) {
         return `${moreInfoObject?.text}
-        <a href="${moreInfoObject?.url}"  target="_blank">${moreInfoObject?.linkText}</a>`
-      }
-      else{
+        <a href="${moreInfoObject?.url}"  target="_blank">${moreInfoObject?.linkText}</a>`;
+      } else {
         return text;
       }
     };
@@ -525,7 +640,6 @@ export default defineComponent({
           f: FeatureInfo
         ) => string;
         text = func(props.Features[currentIdx.value]);
-        //console.log(text)
       }
       if (!text) {
         text = "";
@@ -551,7 +665,6 @@ export default defineComponent({
       } else if (props.Config.title.custom) {
         const func = props.Config.title.custom as (f: FeatureInfo) => string;
         text = func(props.Features[currentIdx.value]);
-        //console.log(text)
       }
       if (!text) {
         text = "";
@@ -587,6 +700,7 @@ export default defineComponent({
       }
       badgeText.value = text;
     };
+    /** Highlight the feature on the map. */
     const highlightMap = () => {
       const feature = props.Features[currentIdx.value];
       if (feature) {
@@ -607,7 +721,6 @@ export default defineComponent({
       const feature = props.Features[currentIdx.value];
       if (feature) {
         if (ignoreMapXY) {
-          // console.log("set mapXY...");
           mapX.value = feature.mapPoint.x;
           mapY.value = feature.mapPoint.y;
         } else {
@@ -619,6 +732,7 @@ export default defineComponent({
 
     return {
       containerRef,
+      relativePosition,
       popupLeft,
       popupTop,
       maxHeight,
@@ -654,24 +768,34 @@ export default defineComponent({
     height: 100%;
   }
 }
-
+/* Common properties for the arrow. */
 .popup-container::after {
   content: "";
   position: absolute;
   width: 0;
   height: 0;
   margin-left: -1.41em;
-  bottom: -2em;
+
   left: 50%;
   box-sizing: border-box;
 
   border: 1em solid black;
-  border-color: transparent transparent #fff #fff;
 
   transform-origin: 0 0;
   transform: rotate(-45deg);
-
+}
+/* For showing the arrow below the popup (popup is above the feature). */
+.popup-container-above::after {
+  bottom: -2em;
+  /* Color only half */
+  border-color: transparent transparent #fff #fff;
   box-shadow: -3px 3px 3px 0 rgba(0, 0, 0, 0.2);
+}
+/* For showing arrow at the top of the popup (popup is below the feature) */
+.popup-container-below::after {
+  top: 0.1em;
+  border-color: #fff #fff transparent transparent;
+  box-shadow: 3px -3px 3px 0 rgba(0, 0, 0, 0.2);
 }
 
 .popup-inner-container {
@@ -723,10 +847,10 @@ export default defineComponent({
   margin: 5px 0;
   text-align: left;
 }
-.popup-content {
+/* .popup-content {
   text-align: left;
   margin-bottom: 8px;
-}
+} */
 .popup-close-button {
   position: absolute;
   top: 0;
@@ -805,7 +929,7 @@ export default defineComponent({
   padding: 2px 0px 2px 0px;
   border: 0px;
 }
- .amenityBubble {
+.amenityBubble {
   display: inline-block;
   font-weight: 700;
   font-size: x-small;
@@ -818,14 +942,14 @@ export default defineComponent({
   margin: 0px 1px 0px 1px;
   padding: 0px 4px 0px 4px;
 }
-.amenityDiv{
+.amenityDiv {
   text-align: left;
   margin: 5px 0 5px 16px;
 }
 .amenityLabel {
   text-align: left;
 }
-.weatherForecastTable{
+.weatherForecastTable {
   margin: auto;
   width: 95%;
   margin-bottom: 5px;
