@@ -40,9 +40,9 @@
       <h4 class="popup-title w3-container">
         {{ getTitle() }}
       </h4>
-      <div v-if="Config.subtitle && Config.subtitle!='on Undefined'">
+      <div v-if="Config.subtitle && Config.subtitle != 'on Undefined'">
         <!-- <div class="popup-content w3-container"> -->
-          <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
+        <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
         <!-- </div> -->
       </div>
       <div v-if="propWeatherForecast">
@@ -89,7 +89,7 @@
           </tr>
         </table>-->
       </div>
-      
+
       <Carousel
         v-if="Config.imageFieldName"
         :items-to-show="1"
@@ -117,24 +117,31 @@
           <pagination v-if="slidesCount > 1" />
         </template>
       </Carousel>
-      <div
-        v-for="eachConfig in Config.content"
-        :key="eachConfig.label"
-      >
-        <PopupRow  v-if ="Config.content" :Config="eachConfig" :Feature="Features[currentIdx]" />
+      <div v-for="eachConfig in Config.content" :key="eachConfig.label">
+        <PopupRow
+          v-if="Config.content"
+          :Config="eachConfig"
+          :Feature="Features[currentIdx]"
+        />
       </div>
     </div>
     <div v-if="propAmenities" class="amenityDiv">
-      <label class="amenityLabel">
-        Amenities
-      </label>
+      <label class="amenityLabel"> Amenities </label>
       <table>
-          <label v-for="Amenity in Amenities" :key="Amenity" class="amenityBubble">{{Amenity}}</label>
+        <label
+          v-for="Amenity in Amenities"
+          :key="Amenity"
+          class="amenityBubble"
+          >{{ Amenity }}</label
+        >
       </table>
     </div>
     <div v-if="Config.moreInfoURL">
-      <div v-if="!Config.moreInfoURL.text==''" class="popup-title w3-container">
-          {{ getMoreInfoURL() }}
+      <div
+        v-if="!Config.moreInfoURL.text == ''"
+        class="popup-title w3-container"
+      >
+        {{ getMoreInfoURL() }}
       </div>
       <div v-if="Config.moreInfoURL.custom" class="popup-title w3-container">
         <div v-html="getMoreInfoURL()"></div>
@@ -208,9 +215,9 @@ export default defineComponent({
     },
     WeatherLocation: {
       type: String,
-      required: false
+      required: false,
     },
-    Amenities:{
+    Amenities: {
       type: String,
       required: false,
     },
@@ -256,6 +263,7 @@ export default defineComponent({
     // Reset variables when the features change...
     const propFeatures = toRefs(props).Features;
     watch(propFeatures, () => {
+      console.log("Feature collection changed: " + JSON.stringify(propFeatures.value));
       currentIdx.value = 0;
       setBadgeText();
       highlightMap();
@@ -289,6 +297,7 @@ export default defineComponent({
       setScreenXY();
     });
     watch(currentIdx, () => {
+      console.log("Feature Index changed");
       context.emit("idxUpdate", currentIdx.value);
       setBadgeText();
       highlightMap();
@@ -417,7 +426,9 @@ export default defineComponent({
             const outOfBoundDir = checkPannedExtent(shiftXY.x, shiftXY.y);
             if (
               (relativePosition.value === relativePositions.above &&
-              outOfBoundDir[0] === "n") || (relativePosition.value === relativePositions.below && outOfBoundDir[0] === "s")
+                outOfBoundDir[0] === "n") ||
+              (relativePosition.value === relativePositions.below &&
+                outOfBoundDir[0] === "s")
             ) {
               const bestPosition = getBestRelativePosition(h, w);
               // console.log("Best: " + bestPosition);
@@ -454,7 +465,10 @@ export default defineComponent({
         }
       }
     };
-    const getBestRelativePosition = (height: number, width: number): relativePositions => {
+    const getBestRelativePosition = (
+      height: number,
+      width: number
+    ): relativePositions => {
       const extent = getEsriExtent("full");
       const results: { pos: relativePositions; val: number }[] = [];
       // TODO: Maybe in the future, might need to place it on right or left.
@@ -571,7 +585,7 @@ export default defineComponent({
         popupLeft.value = left;
       }
     };
-    const getMoreInfoURL = () =>{
+    const getMoreInfoURL = () => {
       if (
         !props.Features ||
         props.Features.length === 0 ||
@@ -592,17 +606,16 @@ export default defineComponent({
         const func = props.Config.moreInfoURL.custom as (
           f: FeatureInfo
         ) => MoreInfoURLInfo;
-        moreInfoObject = func(props.Features[currentIdx.value])
+        moreInfoObject = func(props.Features[currentIdx.value]);
         //console.log(moreInfoObject)
       }
       if (!text) {
         text = "";
       }
-      if(props.Config.moreInfoURL.custom){
+      if (props.Config.moreInfoURL.custom) {
         return `${moreInfoObject?.text}
-        <a href="${moreInfoObject?.url}"  target="_blank">${moreInfoObject?.linkText}</a>`
-      }
-      else{
+        <a href="${moreInfoObject?.url}"  target="_blank">${moreInfoObject?.linkText}</a>`;
+      } else {
         return text;
       }
     };
@@ -917,7 +930,7 @@ export default defineComponent({
   padding: 2px 0px 2px 0px;
   border: 0px;
 }
- .amenityBubble {
+.amenityBubble {
   display: inline-block;
   font-weight: 700;
   font-size: x-small;
@@ -930,14 +943,14 @@ export default defineComponent({
   margin: 0px 1px 0px 1px;
   padding: 0px 4px 0px 4px;
 }
-.amenityDiv{
+.amenityDiv {
   text-align: left;
   margin: 5px 0 5px 16px;
 }
 .amenityLabel {
   text-align: left;
 }
-.weatherForecastTable{
+.weatherForecastTable {
   margin: auto;
   width: 95%;
   margin-bottom: 5px;

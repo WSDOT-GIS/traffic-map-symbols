@@ -420,7 +420,9 @@ export const bufferByPixels = (distancePixel: number, screenPoint?: { x: number,
 /** Highlight feature */
 let highlight: __esri.Handle;
 export const highlightFeature = (featureInfo: FeatureInfo): void => {
+    console.log("layer id: " + featureInfo.layerId);
     const layer = getLayer(featureInfo.layerId) as GeoJSONLayer;
+    console.log("highlight layer: " + layer.title);
     mapView.whenLayerView(layer).then((layerView) => {
         const query = layer.createQuery();
         query.where = `${layer.objectIdField} = ${featureInfo.id}`;
