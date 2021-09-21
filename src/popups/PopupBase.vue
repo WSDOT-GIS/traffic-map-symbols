@@ -27,8 +27,14 @@
           </div>
           <span class="popup-banner-text"> {{ getBannerText() }}</span>
         </div>
-        <div v-if="badgeText.length > 0" class="popup-badge">
-          {{ badgeText }}
+        <div v-if="badgeText.length > 0" 
+          class="popup-badge"
+          :style="{
+            backgroundColor: badgeLightColor,
+            borderColor: badgeDarkColor,
+            color: badgeTextColor
+          }">
+          {{badgeText}}
         </div>
       </div>
       <button
@@ -205,6 +211,14 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    DarkBadgeColor:{
+      type: String,
+      required: false,
+    },
+    LightBadgeColor:{
+      type: String,
+      required: false,
+    },
     Features: {
       type: Array as PropType<Array<FeatureInfo>>,
       required: true,
@@ -247,7 +261,6 @@ export default defineComponent({
     const mapScale = computed(() => store.state.scale);
     const mapCenter = computed(() => store.state.center);
     const maxHeight = ref(mapSize.value.height);
-    const propConfig = ref<PopupConfig>()
     watch(mapSize, (size) => {
       maxHeight.value = size.height;
       if (mapX.value < 0 && mapY.value > 0) {
@@ -269,12 +282,16 @@ export default defineComponent({
     // Index of the currently shown feature.
     const currentIdx = ref(0);
     const badgeText = ref("");
+    const badgeLightColor = ref("#fffaec");//default light yellow badge background
+    const badgeDarkColor = ref("#ffc107");//default dark yellow badge border
+    const badgeTextColor = ref("black")
     // Reset variables when the features change...
     const propFeatures = toRefs(props).Features;
     const propTravelDelay = toRefs(props).TravelDelay
     watch(propFeatures, () => {
       currentIdx.value = 0;
       setBadgeText();
+      setBadgeColors();
       highlightMap();
       mapX.value = 0;
       mapY.value = 0;
@@ -307,6 +324,7 @@ export default defineComponent({
     watch(currentIdx, () => {
       context.emit("idxUpdate", currentIdx.value);
       setBadgeText();
+      setBadgeColors();
       highlightMap();
       setMapXY();
     });
@@ -671,6 +689,22 @@ export default defineComponent({
       }
       return text;
     };
+    const setBadgeColors = () =>{
+      console.log(props.DarkBadgeColor)
+      console.log(props.LightBadgeColor)
+      if(props.DarkBadgeColor!=undefined){
+        badgeDarkColor.value=props.DarkBadgeColor
+      }
+      if(props.LightBadgeColor!=undefined){
+        badgeLightColor.value=props.LightBadgeColor
+        if(badgeLightColor.value=="#484e55"){
+          badgeTextColor.value="white"
+        }
+        else{
+          badgeTextColor.value="black"
+        }
+      }
+    }
     const setBadgeText = () => {
       if (
         !props.Features ||
@@ -743,6 +777,9 @@ export default defineComponent({
       onImgLoad,
       getBannerText,
       badgeText,
+      badgeLightColor,
+      badgeDarkColor,
+      badgeTextColor,
       getTitle,
       getMoreInfoURL,
       propWeatherForecast,
@@ -839,8 +876,6 @@ export default defineComponent({
   border-radius: 5px;
   border-width: 2px;
   border-style: solid;
-  border-color: #ffc107;
-  background-color: #fffaec;
   margin: 3px 1em 0 1em;
 }
 .popup-title {

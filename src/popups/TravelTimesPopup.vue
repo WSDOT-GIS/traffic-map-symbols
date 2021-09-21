@@ -6,7 +6,7 @@
     :TravelDelay="TravelDelay"
     :Config="{
       bannerText: { text:'Travel Time' },
-      //badgeText: { fieldName: 'EventPriorityDescription' },
+      badgeText: { custom: getDelayStatus },
       title: { custom: getTitle },
       content: [
         { 
@@ -138,6 +138,9 @@ export default defineComponent({
               if((result.attributes.CurrentTime as number)-(result.attributes.AverageTime as number)>0){
                 TravelDelay.value = (result.attributes.CurrentTime as number)-(result.attributes.AverageTime as number)
               }
+              else{
+                TravelDelay.value=0
+              }
               // mapX.value = props.MapX;
               // mapY.value = props.MapY;
             }
@@ -158,7 +161,11 @@ export default defineComponent({
       // mapY.value = 0;
       feature.value = undefined;
     };
-
+    const getDelayStatus = () =>{
+      let delayStatus = undefined;
+      TravelDelay.value>0?delayStatus="Delayed":delayStatus=undefined
+      return delayStatus
+    }
     const getTime = (feature: FeatureInfo): string => {
       const title = feature.attributes["Title"];
       return `${title}`;
@@ -175,6 +182,7 @@ export default defineComponent({
       close,
       getTitle,
       getTime,
+      getDelayStatus,
       TravelDelay
     };
   },
