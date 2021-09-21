@@ -280,13 +280,13 @@ export default defineComponent({
             const results2Show = resultsByLayer.find(
               (eachResultSet) => eachResultSet.info.index === maxIdx
             );
-            console.log("***results2Show: " + results2Show?.layer.id);
             if (results2Show) {
               const g = results2Show.results[0].graphic;
               const layer = g.layer as GeoJSONLayer;
               if (
-                !layer.featureReduction &&
-                esriMap.mapView.scale < clusterMaxScale
+                layer.id === "traffic-camera-layer"
+                && !layer.featureReduction 
+                && esriMap.mapView.scale < clusterMaxScale
               ) {
                 // If zoomed more than cluster max scale, and features are still overlapping, then show multiple features...
                 const query = layer.createQuery();
