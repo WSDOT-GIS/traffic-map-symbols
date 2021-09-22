@@ -15,12 +15,12 @@
         },
         { 
           label: 'Current Time (Min.)', 
-          value: { fieldName: 'CurrentTime'},
+          value: { custom: getCurrentTime},
         },{ 
-          label: 'HOV Current Time (Min.)', 
-          value: { fieldName: 'HOVCurrentTime'},
+          label: 'HOV Lane Time (Min.)', 
+          value: { custom: getHOVTime},
         },
-        { 
+        /*{ 
           label: 'HOV Average Time (Min.)', 
           value: { fieldName: 'HOVAverageTime'},
         },
@@ -75,7 +75,7 @@
 				{ 
           label:'Longitude', 
           value: { fieldName: 'Longitude'}
-        },
+        },*/
         { 
           label:'Last Updated', 
           value: { 
@@ -134,6 +134,7 @@ export default defineComponent({
           (result) => {
             if (result) {
               // console.log(result)
+              console.log(result)
               feature.value = result;
               if((result.attributes.CurrentTime as number)-(result.attributes.AverageTime as number)>0){
                 TravelDelay.value = (result.attributes.CurrentTime as number)-(result.attributes.AverageTime as number)
@@ -170,6 +171,28 @@ export default defineComponent({
       const title = feature.attributes["Title"];
       return `${title}`;
     };
+    const getHOVTime = (feature: FeatureInfo): string  => {
+      let HOVTime;
+      var difference = Date.now() - (new Date(feature.attributes.TimeUpdated as string).getTime());
+      if((difference/1000/60)>60){
+        HOVTime="Not Available"
+      }
+      else{
+        HOVTime = feature.attributes.HOVCurrentTime
+      }
+      return HOVTime as string;
+    };
+    const getCurrentTime = (feature: FeatureInfo): string  => {
+      let currentTime;
+      var difference = Date.now() - (new Date(feature.attributes.TimeUpdated as string).getTime());
+      if((difference/1000/60)>60){
+        currentTime="Not Available"
+      }
+      else{
+        currentTime = feature.attributes.HOVCurrentTime
+      }
+      return currentTime as string;
+    }
     const getTitle = (feature: FeatureInfo): string => {
       const title = feature.attributes["Title"];
       return `${title}`;
@@ -183,7 +206,9 @@ export default defineComponent({
       getTitle,
       getTime,
       getDelayStatus,
-      TravelDelay
+      TravelDelay,
+      getHOVTime,
+      getCurrentTime
     };
   },
 });
