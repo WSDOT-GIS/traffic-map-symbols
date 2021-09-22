@@ -11,7 +11,13 @@
     >
       <div class="alert-header">
         <div class="alert-banner">
-          <div class="alert-banner-icon"></div>
+          <div class="alert-banner-icon">
+            <div
+        v-html="icon?.paths"
+        width="24"
+        height="24"
+      ></div>
+          </div>
           <span class="alert-banner-text">Emergency Alert</span>
         </div>
         <button
@@ -72,6 +78,7 @@ import {
 import { useStore } from "@/store";
 import AlertInfo from "@/types/AlertInfo";
 import { formatEpoch } from "@/utils/miscUtil";
+import { layerListIcons } from "@/symbols/IconDefinitions";
 
 export default defineComponent({
   props: {
@@ -88,6 +95,9 @@ export default defineComponent({
     const sortedAlerts = ref<AlertInfo[]>([]);
     const displayStyle = ref("none");
     const height = ref("auto");
+    const icon = layerListIcons.find((item) => {
+      return item.id === "regional-alert"
+    });
 
     watch(props, () => {
       // Sort by priority ID...
@@ -133,6 +143,7 @@ export default defineComponent({
       toggleDisplay,
       displayStyle,
       formatEpoch,
+      icon,
     };
   },
 });
@@ -155,7 +166,6 @@ export default defineComponent({
 
 .alert-banner {
   background-color: var(--color-error);
-
   left: 0;
   display: inline-block;
   width: 50%;
