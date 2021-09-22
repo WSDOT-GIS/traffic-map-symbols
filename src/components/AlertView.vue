@@ -1,23 +1,40 @@
 <template>
-  <transition name="alert-view-slide">
+  <div
+    id="alert-container-open"
+    :style="{ display: displayStyle }"
+    class="w3-modal"
+  >
     <div
-      id="alert-container-open"
+      class="w3-modal-content w3-card w3-left-align alert-content"
+      :style="{ height: height }"
       ref="containerRef"
-      v-if="isOpen && Alerts.length > 0 && Alerts[0]"
-      class="w3-container w3-card w3-padding-small"
-      :style="{ marginLeft: left + 'px' }"
     >
-      <div class="alert-message">
-        <b>ALERT: {{ sortedAlerts[0]?.HeadlineMessage }}</b>
+      <div class="alert-header">
+        <div class="alert-banner">
+          <div class="alert-banner-icon"></div>
+          <span class="alert-banner-text">Emergency Alert</span>
+        </div>
+        <button
+          class="alert-close-button w3-button w3-display-right"
+          @click="toggleDisplay"
+        >
+          &times;
+        </button>
       </div>
-      <button
-        class="alert-close-button w3-button w3-padding-small w3-display-right"
-        @click="toggleDisplay"
+      <div
+        class="alert-message-container w3-container"
+        v-for="(item, index) in sortedAlerts"
+        :key="index"
       >
-        &times;
-      </button>
+        <div class="alert-title">{{ item.HeadlineMessage }}</div>
+        <div>{{ item.ExtendedMessage }}</div>
+        <div>
+          <span class="alert-row-key">Last updated: </span>
+          <span class="popup-value">{{ formatEpoch(item.LastModifiedDate, true) }}</span>
+        </div>
+      </div>
     </div>
-  </transition>
+  </div>
   <div
     v-if="!isOpen"
     id="alert-container-closed"
@@ -54,6 +71,7 @@ import {
 } from "vue";
 import { useStore } from "@/store";
 import AlertInfo from "@/types/AlertInfo";
+import { formatEpoch } from "@/utils/miscUtil";
 
 export default defineComponent({
   props: {
@@ -67,57 +85,60 @@ export default defineComponent({
     const containerRef = ref<HTMLDivElement>();
     const mapSize = computed(() => store.state.mapSize);
     const isOpen = ref(true);
-    const left = ref(0);
     const sortedAlerts = ref<AlertInfo[]>([]);
+    const displayStyle = ref("none");
+    const height = ref("auto");
+
     watch(props, () => {
       // Sort by priority ID...
       sortedAlerts.value = [...props.Alerts];
       sortedAlerts.value.sort((a, b) => {
         return a.EventPriorityID - b.EventPriorityID;
       });
+      setDisplayStyle();
     });
     onUpdated(() => {
-      positionContainer();
+      resizeContainer();
     });
 
     watch(mapSize, () => {
-      positionContainer();
+      resizeContainer();
     });
-    const positionContainer = () => {
+    const resizeContainer = () => {
       if (!containerRef.value) {
         return;
       }
-      const w = containerRef.value.offsetWidth;
-      left.value = (mapSize.value.width - w) / 2;
-      /*console.log(
-        "left: " +
-          left.value +
-          ", map width: " +
-          mapSize.value.width +
-          ", width: " +
-          w
-      );*/
+      const top = containerRef.value.offsetTop;
+      const h = mapSize.value.height - top * 2;
+      height.value = h + "px";
+      console.log(
+        height.value + " top:" + top + " map height:" + mapSize.value.height
+      );
     };
     const toggleDisplay = () => {
       isOpen.value = !isOpen.value;
+      setDisplayStyle();
+    };
+    const setDisplayStyle = () => {
+      displayStyle.value =
+        isOpen.value && props.Alerts.length > 0 && props.Alerts[0]
+          ? "block"
+          : "none";
     };
     return {
       containerRef,
-      left,
+      height,
       isOpen,
       sortedAlerts,
       toggleDisplay,
+      displayStyle,
+      formatEpoch,
     };
   },
 });
 </script>
 
 <style scoped>
-#alert-container-open {
-  background-color: #ff0000;
-  color: #ffffff;
-  /* z-index: 10; */
-}
 #alert-container-closed {
   position: absolute;
   top: 0;
@@ -125,23 +146,64 @@ export default defineComponent({
   padding: 0;
   margin: 5px;
 }
-.alert-view-slide-enter-active,
-.alert-view-slide-leave-active {
-  transition: transform 0.2s ease;
+
+.alert-content {
+  width: 626px;
+  overflow-y: auto;
 }
-.alert-view-slide-enter-from,
-.alert-view-slide-leave-to {
-  transform: translateX(100%);
-  transition: all 150ms ease-in 0s;
+.alert-banner {
+  background-color: var(--color-error);
+
+  left: 0;
+  display: inline-block;
+  width: 50%;
+  margin: 17px 0;
+  padding: 4px 8px;
+  color: #000;
+  border-radius: 0px 4px 4px 0px;
+  font-family: Lato;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 16px;
 }
-.alert-message {
-  margin-right: 1.5em;
+.alert-banner-icon {
+  vertical-align: middle;
+  display: inline-block;
+  height: 24px;
+  width: 24px;
 }
+.alert-banner-text {
+  padding: 0 5px;
+  vertical-align: middle;
+  font-weight: 700;
+}
+
+.alert-message-container {
+  margin: 0 1.5em 1em;
+  text-align: left;
+}
+
+.alert-title {
+  font-family: Lato;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 20px;
+}
+
 .alert-close-button {
   position: absolute;
-  top: 1em;
-  height: 100%;
-  display: flex;
-  align-items: center;
+  top: 21px;
+  border-style: none;
+  background-color: transparent;
+  font-size: 1.5em;
+  vertical-align: top;
+}
+
+.alert-row {
+  text-align: left;
+  margin-bottom: 8px;
+}
+.alert-row-key {
+  font-weight: bold;
 }
 </style>

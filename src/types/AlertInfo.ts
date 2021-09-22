@@ -3,7 +3,7 @@ interface AlertInfo {
     EventCategoryID: number;
     EventCategoryName: string;
     EventCategoryDescription: string;
-    LastModifiedDate: Date;
+    LastModifiedDate: number;
     IconName: string;
     EventPriorityID: number;
     HeadlineMessage: string;
