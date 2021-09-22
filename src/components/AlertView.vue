@@ -151,6 +151,8 @@ export default defineComponent({
   width: 626px;
   overflow-y: auto;
 }
+
+
 .alert-banner {
   background-color: var(--color-error);
 
@@ -166,6 +168,16 @@ export default defineComponent({
   font-size: 22px;
   line-height: 16px;
 }
+
+@media screen and (max-width: 695px) {
+  .alert-content {
+    width: 90%;
+  }
+  .alert-banner {
+    width: 80%;
+  }
+}
+
 .alert-banner-icon {
   vertical-align: middle;
   display: inline-block;
