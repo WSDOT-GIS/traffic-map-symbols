@@ -134,17 +134,6 @@
         <PopupRow  v-if ="Config.content" :Config="eachConfig" :Feature="Features[currentIdx]" />
       </div>
     </div>
-    <div v-if="propAmenities" class="amenityDiv">
-      <label class="amenityLabel"> Amenities </label>
-      <table>
-        <label
-          v-for="Amenity in Amenities"
-          :key="Amenity"
-          class="amenityBubble"
-          >{{ Amenity }}</label
-        >
-      </table>
-    </div>
     <div v-if="Config.moreInfoURL">
       <div
         v-if="!Config.moreInfoURL.text == ''"
@@ -239,15 +228,10 @@ export default defineComponent({
       type: String,
       required: false,
     },
-    Amenities: {
-      type: String,
-      required: false,
-    },
   },
   setup(props, context) {
     // The DOM only exists while the visibility is true. Get it in onUpdate().
     const propWeatherForecast = toRefs(props).WeatherForecast; //bind forecast to ref for v-if conditional rendering
-    const propAmenities = toRefs(props).Amenities; //bind amenities to ref for v-if conditional rendering
     const containerRef = ref<HTMLDivElement>();
     const enum relativePositions {
       above = "above",
@@ -783,7 +767,6 @@ export default defineComponent({
       getTitle,
       getMoreInfoURL,
       propWeatherForecast,
-      propAmenities,
       propTravelDelay
     };
   },

@@ -142,8 +142,6 @@ export default defineComponent({
               else{
                 TravelDelay.value=0
               }
-              // mapX.value = props.MapX;
-              // mapY.value = props.MapY;
             }
           }
         );

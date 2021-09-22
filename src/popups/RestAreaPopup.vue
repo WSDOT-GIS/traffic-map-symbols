@@ -2,7 +2,6 @@
   <PopupBase
     LightThemeColor="#d8e8eb"
     DarkThemeColor="#63a4ad"
-    :Amenities="Amenities"
     :Features="[feature]"
     :Config="{
       bannerText: { text: 'Rest Area' },
@@ -18,6 +17,12 @@
           label: 'Place',
           value: {
             fieldName: 'LocationName',
+          },
+        },
+        {
+          label: 'Amenities',
+          value: {
+            fieldName: 'Amenties',
           },
         },
       ],
@@ -52,7 +57,6 @@ export default defineComponent({
   setup(props) {
     const feature = ref<FeatureInfo>();
     const layerIcons = layerListIcons;
-    const Amenities = ref<string[]>();
     watch(props, () => {
       if (props.Featureset.layerId === FeatureLayer().id) {
         show();
@@ -67,9 +71,6 @@ export default defineComponent({
             if (result) {
               feature.value = result;
               console.log(feature.value.attributes.Amenties as string)
-              if((feature.value.attributes.Amenties!="None")){
-                 Amenities.value = (feature.value.attributes.Amenties as string).split(",") as string[]
-              }
             }
           }
         );
@@ -90,7 +91,6 @@ export default defineComponent({
     return {
       feature,
       layerIcons,
-      Amenities,
       close
     };
   },
