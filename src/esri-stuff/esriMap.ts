@@ -30,6 +30,8 @@ import { initLayer as initESRIRoadsReference } from "@/layers/RoadsReferenceLaye
 import { initLayer as initESRIBoundariesPlacesReference } from "@/layers/BoundariesPlacesReferenceLayer"
 import { initLayer as initStateRouteShieldsLayer } from "@/layers/StateRouteShields"
 import { initLayer as initBorderCrossingsLayer } from "@/layers/BorderCrossingsLayer"
+import RegionLayer from "@/layers/RegionaLayer";
+import RegionalAlertLayer from "@/layers/RegionalAlertLayer";
 //
 import { getEsriExtent, getOutOfBoundDirection } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
@@ -101,11 +103,11 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const stateRouteShieldsLayer = initStateRouteShieldsLayer(config.stateRouteShieldsLayer)
     // The first one in the array will be displayed at the bottom of the map... 
     const borderCrossingsLayer = initBorderCrossingsLayer(config.borderCrossings)
-    webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
+    webmap.addMany([RegionLayer, esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
         firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertsLyr, roadClosuresLyr,
-        mileMarkersLayer, borderCrossingsLayer]);
+        mileMarkersLayer, borderCrossingsLayer, RegionalAlertLayer]);
     // Store the default visibility...
     webmap.layers.forEach((eachLyr) => {
         defaultLayerProps.push({ id: eachLyr.id, visible: eachLyr.visible });
@@ -281,7 +283,6 @@ export const checkPannedExtent = (shiftX: number, shiftY: number): string => {
     // console.log("checkPannedExtent " + outOfBoundsDir);
     return outOfBoundsDir;
 }
-
 /**
  * Pan Map using GoTo()
  * @param shiftX 
@@ -331,19 +332,7 @@ export const panMap = async (shiftX: number, shiftY: number): Promise<{ actualSh
             return true;
         } else {
             console.log("panMap: fail " + JSON.stringify(diffShift));
-            // Figure out if failure is caused by reaching the max pan extent...
-            // const topLeft = mapView.toMap({ x: 0, y: 0 });
-            // const bottomRight = mapView.toMap({ x: mapView.width, y: mapView.height });
-            // let outOfBoundsDir = "";
-            // if (shiftY > 0) { // Panning south...
-            //     // Check if the top of the map view is in Canada or not...
-            //     const dir = getOutOfBoundDirection(topLeft);
-            //     if (dir[0] === "n") { outOfBoundsDir = "n" }
-            // } else if (shiftY < 0) { // Panning north...
-            //     const dir = getOutOfBoundDirection(bottomRight);
-            //     if (dir[0] === "s") { outOfBoundsDir = "s" }
-            // }
-            return { actualShift: actualShift };//, outOfBoundsDir: outOfBoundsDir };
+            return { actualShift: actualShift };
         }
     } catch (err) {
         console.error("panMap failed: " + err);
@@ -354,7 +343,6 @@ export const panMap = async (shiftX: number, shiftY: number): Promise<{ actualSh
 export const getLayer = (id: string): Layer => {
     return webmap.findLayerById(id);
 }
-
 /**  
 NOTE: This function only returns each feature if one of the following coditions is met:
 - maxCount is not set 
