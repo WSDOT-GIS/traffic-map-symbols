@@ -3,7 +3,6 @@
     LightThemeColor="#c7deff"
     DarkThemeColor="#00398e"
     :WeatherForecast="forecastList"
-    :WeatherLocation="weatherLocation"
     :Features="[feature]"
     :Config="{
       bannerText: { text: 'Weather Station' },
@@ -105,11 +104,10 @@ export default defineComponent({
     const feature = ref<FeatureInfo>();
     const layerIcons = layerListIcons;
     const forecastList=ref<ForecastListInfo>();
-    const weatherLocation=ref<string>();
     watch(props, () => {
       if (props.Featureset.layerId === FeatureLayer().id) {//if clicked feature belongs to WeatherStations layer
-        getWeatherForecast();
         show();
+        
       } else {
         close();
       }
@@ -121,10 +119,10 @@ export default defineComponent({
     const show = () => {
       const setVal = () => {
         getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(//query feature layer for feature
-          (result) => {
+          async(result) => {
             if (result) {
-              feature.value = result;
-              weatherLocation.value = `on ${feature.value.attributes["WeatherStationDescription"]?.toString().split("on")[1]}`
+              forecastList.value=undefined
+              getWeatherForecast(result)
             }
           }
         );
@@ -141,9 +139,11 @@ export default defineComponent({
     };
     // Setting features to undefined closes the popup...
     const close = () => {
+      console.log("closed")
+      forecastList.value=undefined
       feature.value = undefined;
     };
-    const getWeatherForecast = async()=>{
+    const getWeatherForecast = async(featureresult:FeatureInfo)=>{
       getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(//query feature layer for feature
         async (response) => {
           if (response) {
@@ -160,6 +160,7 @@ export default defineComponent({
                   nwsZoneRegionName:response.nwsZoneRegionName,
                   forecasts:response.forecastData
                 }
+                feature.value = featureresult
               })
             })
           }
@@ -303,7 +304,6 @@ export default defineComponent({
       getTitle,
       getSubtitle,
       getMoreInfoURL,
-      weatherLocation,
       forecastList
     };
   },

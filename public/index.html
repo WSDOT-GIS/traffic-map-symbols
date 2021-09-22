@@ -1,6 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+    <script type="application/javascript">
+      window.googletag = window.googletag || {cmd: []};
+      // GPT slots
+      var gptAdSlots = [];
+      googletag.cmd.push(function() {
+
+        // Define a size mapping object. The first parameter to addSize is
+        // a viewport size, while the second is a list of allowed ad sizes.
+        var mapping = googletag.sizeMapping().
+          addSize([100, 100], [88, 31]).
+          addSize([320, 200], [[320, 50], [300, 50], [320, 100], [300,75]]).
+          addSize([730, 200], [728, 90]).
+          addSize([1000, 200], [[970, 90], [728, 90]]).
+          build();
+
+        // Define the GPT slot
+        gptAdSlots[0] = googletag.defineSlot('/22447621233/WSDOT:driving-map:responsive', [320, 50], 'div-gpt-ad-1632317155034-0').
+            defineSizeMapping(mapping).
+            addService(googletag.pubads());
+        googletag.pubads().enableSingleRequest();
+
+        // Start ad fetching
+        googletag.enableServices();
+      });
+    </script>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="MobileOptimized" content="width">
@@ -69,9 +95,13 @@
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
-    
     <div id="main-wrapper">      
       <div id="app"></div>
+      <div id='div-gpt-ad-1632317155034-0' style='min-width: 320px; min-height: 50px;'>
+        <script>
+          googletag.cmd.push(function() { googletag.display('div-gpt-ad-1632317155034-0'); });
+        </script>
+      </div>
     </div>
   </body>
 </html>

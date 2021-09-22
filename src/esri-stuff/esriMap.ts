@@ -327,10 +327,10 @@ export const panMap = async (shiftX: number, shiftY: number): Promise<{ actualSh
             diffShift.y = shiftY - actualShift.y;
         }
         if (Math.abs(diffShift.x) < 1 && Math.abs(diffShift.y) < 1) {
-            console.log("panMap: success " + JSON.stringify(diffShift));
+            //console.log("panMap: success " + JSON.stringify(diffShift));
             return true;
         } else {
-            console.log("panMap: fail " + JSON.stringify(diffShift));
+            //console.log("panMap: fail " + JSON.stringify(diffShift));
             // Figure out if failure is caused by reaching the max pan extent...
             // const topLeft = mapView.toMap({ x: 0, y: 0 });
             // const bottomRight = mapView.toMap({ x: mapView.width, y: mapView.height });
@@ -420,9 +420,9 @@ export const bufferByPixels = (distancePixel: number, screenPoint?: { x: number,
 /** Highlight feature */
 let highlight: __esri.Handle;
 export const highlightFeature = (featureInfo: FeatureInfo): void => {
-    console.log("layer id: " + featureInfo.layerId);
+    //console.log("layer id: " + featureInfo.layerId);
     const layer = getLayer(featureInfo.layerId) as GeoJSONLayer;
-    console.log("highlight layer: " + layer.title);
+    //console.log("highlight layer: " + layer.title);
     mapView.whenLayerView(layer).then((layerView) => {
         const query = layer.createQuery();
         query.where = `${layer.objectIdField} = ${featureInfo.id}`;

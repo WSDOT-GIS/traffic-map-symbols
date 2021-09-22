@@ -6,7 +6,7 @@
       'popup-container-above': relativePosition === 'above',
       'popup-container-below': relativePosition === 'below',
     }"
-    v-if="Features.length > 0 && Features[0]"
+    v-if="propFeatures.length > 0 && propFeatures[0]"
     :style="{
       marginTop: popupTop + 'px',
       marginLeft: popupLeft + 'px',
@@ -51,7 +51,7 @@
         <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
         <!-- </div> -->
       </div>
-      <div v-if="propWeatherForecast">
+      <div v-if="propWeatherForecast!=undefined">
         <table class="weatherForecastTable">
           <tr id="weatherPeriodText">
             <td
@@ -224,14 +224,10 @@ export default defineComponent({
       type: Object as PropType<ForecastListInfo>,
       required: false,
     },
-    WeatherLocation: {
-      type: String,
-      required: false,
-    },
   },
   setup(props, context) {
     // The DOM only exists while the visibility is true. Get it in onUpdate().
-    const propWeatherForecast = toRefs(props).WeatherForecast; //bind forecast to ref for v-if conditional rendering
+    const propWeatherForecast = ref<ForecastListInfo>();
     const containerRef = ref<HTMLDivElement>();
     const enum relativePositions {
       above = "above",
@@ -273,9 +269,11 @@ export default defineComponent({
     const propFeatures = toRefs(props).Features;
     const propTravelDelay = toRefs(props).TravelDelay
     watch(propFeatures, () => {
+      setWeatherForecast();
       currentIdx.value = 0;
       setBadgeText();
       setBadgeColors();
+      
       highlightMap();
       mapX.value = 0;
       mapY.value = 0;
@@ -306,11 +304,13 @@ export default defineComponent({
       setScreenXY();
     });
     watch(currentIdx, () => {
+      setWeatherForecast()
       context.emit("idxUpdate", currentIdx.value);
       setBadgeText();
       setBadgeColors();
       highlightMap();
       setMapXY();
+      
     });
     // Watch scale change...
     // On touch screen, after pinch zoom, panning map also changes the scale, so commented this out so popup does not close when that happens.
@@ -348,6 +348,13 @@ export default defineComponent({
       wasUpdatedOnce = true;
       adjustPositionSize();
     });
+    //Assigns the weather forecast to the weather forecast ref
+    const setWeatherForecast = () =>{
+      if(props.WeatherForecast){
+        propWeatherForecast.value = props.WeatherForecast
+      }
+    }
+    
     // Convert map coordinates to screen coordinates and calculate the popup position...
     const setScreenXY = () => {
       if (mapX.value < 0 && mapY.value > 0) {
@@ -449,7 +456,7 @@ export default defineComponent({
             if (Math.abs(shiftXY.x) >= 1 || Math.abs(shiftXY.y) >= 1) {
               isPanning = true;
               panMap(shiftXY.x, shiftXY.y).then((panResult) => {
-                console.log("pan result: " + JSON.stringify(panResult));
+               // console.log("pan result: " + JSON.stringify(panResult));
                 isPanning = false;
                 setScreenXY();
                 // On the mobile devices after the pinch zoom, the map does not pan enough to show the top of the popup.
@@ -462,7 +469,7 @@ export default defineComponent({
                 if (shiftXY.x !== 0 || shiftXY.y !== 0) {
                   isPanning = true;
                   panMap(shiftXY.x, shiftXY.y).then((panResult) => {
-                    console.log("pan2 result: " + panResult);
+                    //console.log("pan2 result: " + panResult);
                     isPanning = false;
                     setScreenXY();
                   });
@@ -674,8 +681,6 @@ export default defineComponent({
       return text;
     };
     const setBadgeColors = () =>{
-      console.log(props.DarkBadgeColor)
-      console.log(props.LightBadgeColor)
       if(props.DarkBadgeColor!=undefined){
         badgeDarkColor.value=props.DarkBadgeColor
       }
@@ -767,7 +772,8 @@ export default defineComponent({
       getTitle,
       getMoreInfoURL,
       propWeatherForecast,
-      propTravelDelay
+      propTravelDelay,
+      propFeatures
     };
   },
 });
