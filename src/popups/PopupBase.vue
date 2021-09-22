@@ -27,14 +27,16 @@
           </div>
           <span class="popup-banner-text"> {{ getBannerText() }}</span>
         </div>
-        <div v-if="badgeText.length > 0" 
+        <div
+          v-if="badgeText.length > 0"
           class="popup-badge"
           :style="{
             backgroundColor: badgeLightColor,
             borderColor: badgeDarkColor,
-            color: badgeTextColor
-          }">
-          {{badgeText}}
+            color: badgeTextColor,
+          }"
+        >
+          {{ badgeText }}
         </div>
       </div>
       <button
@@ -123,15 +125,19 @@
           <pagination v-if="slidesCount > 1" />
         </template>
       </Carousel>
-      <div class="travelDelayTime" v-if="propTravelDelay>0">
-        {{`${propTravelDelay} minute delay`}}
+      <div class="travelDelayTime" v-if="propTravelDelay > 0">
+        {{ `${propTravelDelay} minute delay` }}
       </div>
       <div
         v-for="eachConfig in Config.content"
         :key="eachConfig.label"
         class="popup-content w3-container"
       >
-        <PopupRow  v-if ="Config.content" :Config="eachConfig" :Feature="Features[currentIdx]" />
+        <PopupRow
+          v-if="Config.content"
+          :Config="eachConfig"
+          :Feature="Features[currentIdx]"
+        />
       </div>
     </div>
     <div v-if="Config.moreInfoURL">
@@ -200,11 +206,11 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    DarkBadgeColor:{
+    DarkBadgeColor: {
       type: String,
       required: false,
     },
-    LightBadgeColor:{
+    LightBadgeColor: {
       type: String,
       required: false,
     },
@@ -212,9 +218,9 @@ export default defineComponent({
       type: Array as PropType<Array<FeatureInfo>>,
       required: true,
     },
-    TravelDelay:{
+    TravelDelay: {
       type: Number,
-      required: false
+      required: false,
     },
     Config: {
       type: Object as PropType<PopupConfig>,
@@ -262,12 +268,12 @@ export default defineComponent({
     // Index of the currently shown feature.
     const currentIdx = ref(0);
     const badgeText = ref("");
-    const badgeLightColor = ref("#fffaec");//default light yellow badge background
-    const badgeDarkColor = ref("#ffc107");//default dark yellow badge border
-    const badgeTextColor = ref("black")
+    const badgeLightColor = ref("#fffaec"); //default light yellow badge background
+    const badgeDarkColor = ref("#ffc107"); //default dark yellow badge border
+    const badgeTextColor = ref("black");
     // Reset variables when the features change...
     const propFeatures = toRefs(props).Features;
-    const propTravelDelay = toRefs(props).TravelDelay
+    const propTravelDelay = toRefs(props).TravelDelay;
     watch(propFeatures, () => {
       setWeatherForecast();
       currentIdx.value = 0;
@@ -693,7 +699,7 @@ export default defineComponent({
           badgeTextColor.value="black"
         }
       }
-    }
+    };
     const setBadgeText = () => {
       if (
         !props.Features ||
@@ -978,9 +984,9 @@ export default defineComponent({
   width: 95%;
   margin-bottom: 5px;
 }
-.travelDelayTime{
+.travelDelayTime {
   font-size: 20px;
-  color:#DC3545;
+  color: #dc3545;
   text-align: left;
   margin: 0px 0px 5px 16px;
 }
