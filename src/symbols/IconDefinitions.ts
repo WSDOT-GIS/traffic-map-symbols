@@ -272,7 +272,7 @@ const layerListIcons: IconInfo[] = [
     </svg>`
   },
   {
-    id: "regional-alert",
+    id: "regional-alert-layer",
     paths: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12Z" fill="#8E0900"/>
     <path d="M22.4167 11.8234C22.4167 17.4861 17.7565 22.083 12 22.083C6.24354 22.083 1.58334 17.4861 1.58334 11.8234C1.58334 6.1606 6.24354 1.56372 12 1.56372C17.7565 1.56372 22.4167 6.1606 22.4167 11.8234Z" fill="#8E0900" stroke="white" stroke-width="0.5"/>
@@ -281,6 +281,104 @@ const layerListIcons: IconInfo[] = [
     <path d="M11.2739 15.93C11.1541 16.1009 11.0901 16.3017 11.0901 16.5072C11.0907 16.7826 11.2058 17.0466 11.4103 17.2413C11.6147 17.4361 11.8919 17.5457 12.1811 17.5462C12.3968 17.5462 12.6078 17.4853 12.7872 17.3711C12.9666 17.257 13.1064 17.0947 13.189 16.9048C13.2715 16.715 13.2931 16.5061 13.2511 16.3045C13.209 16.103 13.1051 15.9178 12.9525 15.7725C12.7999 15.6272 12.6055 15.5283 12.3939 15.4882C12.1823 15.4481 11.9629 15.4687 11.7636 15.5473C11.5642 15.6259 11.3938 15.7591 11.2739 15.93Z" fill="#8E0900"/>
     </svg>
     `
-  }
+  },
 ]
-export { layerListIcons }
+
+const otherIcons: IconInfo[] = [
+  {
+    id: "statewide-alert-banner",
+    paths: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="12" y="0.353553" width="16.4706" height="16.4706" rx="0.25" transform="rotate(45 12 0.353553)" fill="#DC3545" stroke="white" stroke-width="0.5"/>
+    <rect x="12" y="2.82837" width="13.1993" height="13.1993" rx="0.5" transform="rotate(45 12 2.82837)" fill="white"/>
+    <path d="M12.0571 14.1421H12.2337C12.786 14.1421 13.2337 13.6944 13.2337 13.1421V7.59967C13.2337 7.04739 12.786 6.59967 12.2337 6.59967H12.0571C11.5048 6.59967 11.0571 7.04738 11.0571 7.59967V13.1421C11.0571 13.6944 11.5048 14.1421 12.0571 14.1421Z" fill="#DC3545"/>
+    <path d="M11.2478 16.2373C11.1235 16.4145 11.0571 16.6228 11.0571 16.8359C11.0577 17.1215 11.1771 17.3952 11.3892 17.5972C11.6012 17.7991 11.8886 17.9128 12.1885 17.9134C12.4123 17.9134 12.631 17.8502 12.8171 17.7318C13.0031 17.6134 13.1481 17.4451 13.2337 17.2482C13.3194 17.0513 13.3418 16.8347 13.2981 16.6257C13.2545 16.4167 13.1467 16.2247 12.9885 16.074C12.8303 15.9233 12.6287 15.8207 12.4092 15.7791C12.1898 15.7375 11.9623 15.7589 11.7555 15.8404C11.5488 15.922 11.3721 16.0601 11.2478 16.2373Z" fill="#DC3545"/>
+    </svg>
+    `
+  },
+  {
+    id: "statewide-alert-button",
+    paths: `<svg
+   width="60"
+   height="60"
+   viewBox="0 0 60 60"
+   fill="none"
+   version="1.1"
+   id="svg161"
+   sodipodi:docname="statewide alert 60.svg"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs165" />
+  <sodipodi:namedview
+     id="namedview163"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:zoom="1"
+     inkscape:cx="-141"
+     inkscape:cy="18.5"
+     inkscape:window-width="1271"
+     inkscape:window-height="1041"
+     inkscape:window-x="1912"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg161"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <circle
+     cx="30"
+     cy="30"
+     r="30"
+     fill="#dc3545"
+     id="circle149"
+     style="stroke-width:2.5" />
+  <path
+     d="m 55.92225,29.23075 c 0,13.865 -11.5785,25.154 -25.923,25.154 -14.34445,0 -25.923075,-11.289 -25.923075,-25.154 0,-13.864925 11.578625,-25.153825 25.923075,-25.153825 14.3445,0 25.923,11.2889 25.923,25.153825 z"
+     fill="#dc3545"
+     stroke="#ffffff"
+     stroke-width="0.8"
+     id="path151" />
+  <rect
+     x="31.617395"
+     y="-10.809011"
+     width="21.998875"
+     height="21.998875"
+     rx="1.25"
+     transform="rotate(45)"
+     fill="#ffffff"
+     id="rect153"
+     style="stroke-width:2.5" />
+  <rect
+     x="28.909266"
+     y="-13.517141"
+     width="27.034248"
+     height="27.034248"
+     rx="0.625"
+     transform="rotate(45)"
+     stroke="#ffffff"
+     stroke-width="0.5"
+     id="rect155" />
+  <path
+     d="m 28.427,22.81315 v 8.9431 c 0,1.00175 0.81225,1.81375 1.814,1.81375 1.00175,0 1.81375,-0.812 1.81375,-1.81375 v -8.9431 c 0,-1.001775 -0.812,-1.81385 -1.81375,-1.81385 -1.00175,0 -1.814,0.812075 -1.814,1.81385 z"
+     fill="#dc3545"
+     id="path157"
+     style="stroke-width:2.5" />
+  <path
+     d="m 28.745,37.062 c -0.20725,0.29525 -0.318,0.6425 -0.318,0.99775 0.001,0.476 0.2,0.932 0.5535,1.26875 0.3535,0.3365 0.8325,0.526 1.33225,0.527 0.373,0 0.7375,-0.10525 1.0475,-0.30275 C 31.6705,39.3555 31.912,39.075 32.05475,38.747 32.1975,38.41875 32.235,38.05775 32.16225,37.70925 32.08925,37.361 31.90975,37.041 31.646,36.78975 c -0.26375,-0.251 -0.5995,-0.422 -0.9655,-0.4915 C 30.31475,36.229 29.93575,36.2645 29.59125,36.4005 29.2465,36.5365 28.952,36.7665 28.745,37.062 Z"
+     fill="#dc3545"
+     id="path159"
+     style="stroke-width:2.5" />
+</svg>
+    `
+  },
+]
+export { layerListIcons, otherIcons }

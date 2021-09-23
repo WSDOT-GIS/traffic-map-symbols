@@ -12,11 +12,7 @@
       <div class="alert-header">
         <div class="alert-banner">
           <div class="alert-banner-icon">
-            <div
-        v-html="icon?.paths"
-        width="24"
-        height="24"
-      ></div>
+            <div v-html="iconBanner?.paths" width="24" height="24"></div>
           </div>
           <span class="alert-banner-text">Emergency Alert</span>
         </div>
@@ -36,7 +32,9 @@
         <div>{{ item.ExtendedMessage }}</div>
         <div>
           <span class="alert-row-key">Last updated: </span>
-          <span class="popup-value">{{ formatEpoch(item.LastModifiedDate, true) }}</span>
+          <span class="popup-value">{{
+            formatEpoch(item.LastModifiedDate, true)
+          }}</span>
         </div>
       </div>
     </div>
@@ -47,22 +45,7 @@
     class="w3-transparent w3-button"
     @click="toggleDisplay"
   >
-    <svg
-      width="24px"
-      height="24px"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <filter id="shadow" color-interpolation-filters="sRGB">
-        <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.6" />
-      </filter>
-      <g filter="url(#shadow)">
-        <path
-          d="M4 8a6 6 0 0 1 4.03-5.67 2 2 0 1 1 3.95 0A6 6 0 0 1 16 8v6l3 2v1H1v-1l3-2V8zm8 10a2 2 0 1 1-4 0h4z"
-          fill="#ff0000"
-        />
-      </g>
-    </svg>
+    <div v-html="iconButton?.paths" width="60" height="60" class="alert-button"></div>
   </div>
 </template>
 
@@ -78,7 +61,7 @@ import {
 import { useStore } from "@/store";
 import AlertInfo from "@/types/AlertInfo";
 import { formatEpoch } from "@/utils/miscUtil";
-import { layerListIcons } from "@/symbols/IconDefinitions";
+import { otherIcons } from "@/symbols/IconDefinitions";
 
 export default defineComponent({
   props: {
@@ -95,8 +78,11 @@ export default defineComponent({
     const sortedAlerts = ref<AlertInfo[]>([]);
     const displayStyle = ref("none");
     const height = ref("auto");
-    const icon = layerListIcons.find((item) => {
-      return item.id === "regional-alert"
+    const iconBanner = otherIcons.find((item) => {
+      return item.id === "statewide-alert-banner";
+    });
+    const iconButton = otherIcons.find((item) => {
+      return item.id === "statewide-alert-button";
     });
 
     watch(props, () => {
@@ -143,7 +129,8 @@ export default defineComponent({
       toggleDisplay,
       displayStyle,
       formatEpoch,
-      icon,
+      iconBanner,
+      iconButton,
     };
   },
 });
@@ -154,15 +141,18 @@ export default defineComponent({
   position: absolute;
   top: 0;
   right: 0;
-  padding: 0;
-  margin: 5px;
+  padding: 0 5px 0 0;
+}
+
+.alert-button {
+  -webkit-filter: drop-shadow( 3px 3px 2px rgba(0, 0, 0, .6));
+  filter: drop-shadow( 3px 3px 2px rgba(0, 0, 0, .6));
 }
 
 .alert-content {
   width: 626px;
   overflow-y: auto;
 }
-
 
 .alert-banner {
   background-color: var(--color-error);

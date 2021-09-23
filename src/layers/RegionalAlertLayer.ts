@@ -164,20 +164,20 @@ const getLayer = (): FeatureLayer => {
     return layer;
 }
 
-export default getLayer
+export default getLayer;
 
 export const getFeatureById = async (id: number): Promise<Graphic> => {
     const layer = getLayer();
     const query = layer.createQuery();
-    query.where = "EventID =" + id;
-    query.outFields = ["EventID", "Label", "Note"];
+    query.where = layer.objectIdField + " = " + id;
+    query.outFields = ["*"];
     const response = await layer.queryFeatures(query);
     return response.features[0];
 }
 /**
  * Center the alert icon in the center of the region that is visible.
  * @param mapExtent 
- * If not specified, it will place icon at the centroid.
+ * If specified, it will only consider the visible part of the polygon.
  */
 export const centerFeatures = async (mapExtent?: Extent): Promise<void> => {
     const layer = getLayer();
@@ -190,7 +190,7 @@ export const centerFeatures = async (mapExtent?: Extent): Promise<void> => {
     for (let i = 0; i < result.features.length; i++) {
         const feature = result.features[i];
         let newPt: Point | undefined;
-        const regionId = feature.getAttribute("RegionID");
+        const regionId = feature.attributes["RegionID"];
         if (mapExtent) {
             const visibleArea = await getVisibleArea(regionId, mapExtent);
             newPt = visibleArea?.centroid;
@@ -201,9 +201,8 @@ export const centerFeatures = async (mapExtent?: Extent): Promise<void> => {
         if (newPt) {
             feature.geometry = newPt;
             updatedFtrs.push(feature);
-        } 
+        }
     }
-    console.log("Update count: " + updatedFtrs.length);
     const editResult = await layer.applyEdits({ updateFeatures: updatedFtrs });
     console.log(JSON.stringify(editResult));
 }

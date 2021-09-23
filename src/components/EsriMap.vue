@@ -39,6 +39,7 @@
   <TravelTimesPopup :Featureset="popupFeatureset" />
   <WildfirePointsPopup :Featureset="popupFeatureset" />
   <BorderCrossingPopup :Featureset="popupFeatureset" />
+  <RegionalAlertPopup :Featureset="popupFeatureset" />
   <LeftPaneView />
 </template>
 
@@ -109,6 +110,7 @@ import RoadAlertPopup from "@/popups/RoadAlertPopup.vue";
 import TravelTimesPopup from "@/popups/TravelTimesPopup.vue";
 import WildfirePointsPopup from "@/popups/WildfirePointsPopup.vue";
 import BorderCrossingPopup from "@/popups/BorderCrossingPopup.vue";
+import RegionalAlertPopup from "@/popups/RegionalAlertPopup.vue";
 /* Components */
 import LeftPaneView from "@/components/LeftPaneView.vue";
 import BasemapView from "@/components/BasemapView.vue";
@@ -132,6 +134,7 @@ export default defineComponent({
     TravelTimesPopup,
     WildfirePointsPopup,
     BorderCrossingPopup,
+    RegionalAlertPopup,
     LeftPaneView,
     BasemapView,
     CoordinatesView,
@@ -223,6 +226,7 @@ export default defineComponent({
           RoadsReferenceLayer(),
           BoundariesPlacesReferenceLayer(),
           BorderCrossingLayer(),
+          RegionalAlertLayer(),
           ZoomExtentLayer,
         ],
       };
@@ -393,8 +397,6 @@ export default defineComponent({
           initOperationalLayerEvents(mapDiv, esriMap);
         });
       }, appConfig.layerRefreshMinute * 60000);
-      //
-
       // Add quick zoom boxes around metro areas...
       esriMap.webmap.add(ZoomExtentLayer);
       // Set basemap based on URL query parameter...
@@ -456,7 +458,7 @@ export default defineComponent({
         if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
           store.commit("setCurrentExtent", newValue);
         }
-        
+
         centerRegionalAlerts(newValue as Extent);
       });
       // Set extent based on the URL query parameter...
