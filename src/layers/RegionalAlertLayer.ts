@@ -174,8 +174,6 @@ export const getFeatureById = async (id: number): Promise<Graphic> => {
     const response = await layer.queryFeatures(query);
     return response.features[0];
 }
-
-
 /**
  * Center the alert icon in the center of the region that is visible.
  * @param mapExtent 
@@ -194,18 +192,18 @@ export const centerFeatures = async (mapExtent?: Extent): Promise<void> => {
         let newPt: Point | undefined;
         const regionId = feature.getAttribute("RegionID");
         if (mapExtent) {
-            const visibleArea = await getVisibleArea(regionId, mapExtent)
-            newPt = visibleArea.centroid;
+            const visibleArea = await getVisibleArea(regionId, mapExtent);
+            newPt = visibleArea?.centroid;
         } else {
             const regionFtr = await getRegionById(regionId)
             newPt = (regionFtr.geometry as Polygon).centroid;
-
         }
         if (newPt) {
             feature.geometry = newPt;
             updatedFtrs.push(feature);
-        }
+        } 
     }
-    const editResult = await layer.applyEdits({updateFeatures: updatedFtrs });
+    console.log("Update count: " + updatedFtrs.length);
+    const editResult = await layer.applyEdits({ updateFeatures: updatedFtrs });
     console.log(JSON.stringify(editResult));
 }
