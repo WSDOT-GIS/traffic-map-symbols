@@ -4,8 +4,8 @@
       <template v-slot >
         <div class="basemap-img-container">
           <img :src="imgSrc" :height="imgSize" alt="" />
-          <label class="basemap-img-centeredTop" :id="labelStyle">{{iconTitle}}</label>
-          <label class="basemap-img-centeredBottom" :id="labelStyle">Basemap</label>
+          <label :class="topLabelClass" :id="labelStyle">{{iconTitle}}</label>
+          <label :class="bottomLabelClass" :id="labelStyle">Basemap</label>
         </div>
       </template>
     </MapButtonView>
@@ -31,6 +31,8 @@ export default defineComponent({
     const labelStyle = ref<string>("iconLabelWhite")
     const labelFontSize = ref<number>(12)
     const windowWidth = ref<number>(window.innerWidth)
+    const topLabelClass = ref<string>()
+    const bottomLabelClass = ref<string>()
     const toggleImageryReference= ()=>{
       store.state.layerList.map((x)=>{
         if(webmap.basemap.title=="Basemap"||webmap.basemap.title=="WSDOT Basemap"){
@@ -72,7 +74,9 @@ export default defineComponent({
       labelStyle,
       windowWidth,
       imgSize,
-      labelFontSize
+      labelFontSize,
+      topLabelClass,
+      bottomLabelClass
     };
   },
   methods:{
@@ -81,20 +85,24 @@ export default defineComponent({
   mounted() {
     if(window.innerWidth <=500){
       this.imgSize = "50";
-      this.labelFontSize = 6
+      this.topLabelClass = "basemap-img-Top-Small"
+      this.bottomLabelClass = "basemap-img-Bottom-Small"
     }
     if(window.innerWidth >=500){
       this.imgSize= "100"
-      this.labelFontSize = 12
+      this.topLabelClass = "basemap-img-Top-Large"
+      this.bottomLabelClass = "basemap-img-Bottom-Large"
     }
     window.addEventListener("resize",() => {
       if(window.innerWidth <=500){
         this.imgSize = "50";
-        this.labelFontSize = 6
+        this.topLabelClass = "basemap-img-Top-Small"
+        this.bottomLabelClass = "basemap-img-Bottom-Small"
       }
       if(window.innerWidth >=500){
         this.imgSize= "100"
-        this.labelFontSize = 12
+        this.topLabelClass = "basemap-img-Top-Large"
+        this.bottomLabelClass = "basemap-img-Bottom-Large"
       }
     })
   }
@@ -120,15 +128,26 @@ export default defineComponent({
   text-align: center;
   color: white;
 }
-.basemap-img-centeredTop {
+.basemap-img-Top-Large {
   position: absolute;
   bottom: 30px;
   left: 5px;
 }
-.basemap-img-centeredBottom{
+.basemap-img-Bottom-Large{
   position: absolute;
   bottom: 5%;
   left: 5px;
 }
-
+.basemap-img-Top-Small {
+  font-size: small;
+  position: absolute;
+  bottom: 30%;
+  left: 5px;
+}
+.basemap-img-Bottom-Small{
+  font-size: small;
+  position: absolute;
+  bottom: 2%;
+  left: 5px;
+}
 </style>
