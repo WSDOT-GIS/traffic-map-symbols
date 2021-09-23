@@ -1,27 +1,9 @@
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
-import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol";
-import Graphic from "@arcgis/core/Graphic";
-import SpatialReference from "@arcgis/core/geometry/SpatialReference";
-import Field from "@arcgis/core/layers/support/Field";
-
-
-// Create a symbol for rendering the graphic
-const renderer = new SimpleRenderer({
-    symbol: new SimpleFillSymbol({
-        style: "solid",
-        outline: { color: [142, 9, 0, 1] },
-        color: [142, 9, 0, 0.3]
-    })
-});
-
-const graphics = [
+export const regionGraphics = [
     // Colwitz
     {
         geometry: {
             type: "polygon",
             rings: [[
-
                 [
                     -13702665.8094,
                     5842751.806699999
@@ -26304,36 +26286,3 @@ const graphics = [
         }
     },
 ]
-
-const layer = new FeatureLayer({
-    id: "region-layer",
-    title: "Regions",
-    fields: [
-        new Field({
-            name: "RegionID",
-            alias: "RegionID",
-            type: "oid"
-        }),
-        new Field({
-            name: "RegionName",
-            type: "string",
-            alias: "RegionName"
-        }),
-        
-    ],
-    objectIdField: "RegionID",
-    geometryType: "polygon",
-    spatialReference: SpatialReference.WebMercator,
-    renderer: renderer,
-    source: graphics,
-});
-
-export default layer;
-
-export const getFeatureById = async (id: number): Promise<Graphic> => {
-    const query = layer.createQuery();
-    query.where = "RegionID =" + id;
-    query.outFields = ["*"];
-    const response = await layer.queryFeatures(query);
-    return response.features[0];
-}

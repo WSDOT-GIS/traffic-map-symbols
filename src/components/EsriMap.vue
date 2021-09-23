@@ -92,6 +92,9 @@ import MileMarkersLayer from "@/layers/MileMarkersLayer";
 import RoadsReferenceLayer from "@/layers/RoadsReferenceLayer";
 import BoundariesPlacesReferenceLayer from "@/layers/BoundariesPlacesReferenceLayer";
 import BorderCrossingLayer from "@/layers/BorderCrossingsLayer";
+import RegionalAlertLayer, {
+  centerFeatures as centerRegionalAlerts,
+} from "@/layers/RegionalAlertLayer";
 // import FirePerimeterLayer from "@/layers/FirePerimeterLayer"
 /* Popups */
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
@@ -390,6 +393,8 @@ export default defineComponent({
           initOperationalLayerEvents(mapDiv, esriMap);
         });
       }, appConfig.layerRefreshMinute * 60000);
+      //
+
       // Add quick zoom boxes around metro areas...
       esriMap.webmap.add(ZoomExtentLayer);
       // Set basemap based on URL query parameter...
@@ -451,6 +456,8 @@ export default defineComponent({
         if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
           store.commit("setCurrentExtent", newValue);
         }
+        
+        centerRegionalAlerts(newValue as Extent);
       });
       // Set extent based on the URL query parameter...
       esriMap.mapView.extent = getExtentFromUrl();

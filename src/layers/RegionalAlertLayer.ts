@@ -3,17 +3,14 @@ import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import Graphic from "@arcgis/core/Graphic";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Field from "@arcgis/core/layers/support/Field";
+import symbol from "@/symbols/RegionalAlertSymbol";
+import Extent from "@arcgis/core/geometry/Extent";
 
-const symbol = {
-    type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
-    style: "square",
-    color: "red",
-    size: "20px",  // pixels
-    outline: {  // autocasts as new SimpleLineSymbol()
-        color: [255, 255, 0],
-        width: 1  // points
-    }
-};
+import { getVisibleArea, getFeatureById as getRegionById } from "./RegionLayer";
+import Point from "@arcgis/core/geometry/Point";
+import Polygon from "@arcgis/core/geometry/Polygon";
+
+
 
 // Create a symbol for rendering the graphic
 const renderer = new SimpleRenderer({
@@ -89,69 +86,126 @@ const graphics = [
     },
 ]
 
-const layer = new FeatureLayer({
-    id: "regional-alert-layer",
-    title: "Regional Alerts",
-    fields: [
-        new Field({
-            name: "EventID",
-            alias: "EventID",
-            type: "oid"
-        }),
-        new Field({
-            name: "EventCategoryID",
-            type: "integer",
-            alias: "EventCategoryID"
-        }),
-        new Field({
-            name: "EventCategoryName",
-            type: "string",
-            alias: "EventCategoryName"
-        }),
-        new Field({
-            name: "EventCategoryDescription",
-            type: "string",
-            alias: "EventCategoryDescription"
-        }),
-        new Field({
-            name: "LastModifiedDate",
-            type: "date",
-            alias: "LastModifiedDate"
-        }),
-        new Field({
-            name: "EventPriorityID",
-            type: "integer",
-            alias: "EventPriorityID"
-        }),
-        new Field({
-            name: "HeadlineMessage",
-            type: "string",
-            alias: "HeadlineMessage"
-        }),
-        new Field({
-            name: "ExtendedMessage",
-            type: "string",
-            alias: "ExtendedMessage"
-        }),//"IconName"
-        new Field({
-            name: "IconName",
-            type: "string",
-            alias: "IconName"
-        }),
-    ],
-    objectIdField: "EventID",
-    geometryType: "point",
-    spatialReference: SpatialReference.WebMercator,
-    renderer: renderer,
-    source: graphics,
-});
+const fields = [
+    new Field({
+        name: "EventID",
+        alias: "EventID",
+        type: "oid"
+    }),
+    new Field({
+        name: "RegionID",
+        type: "integer",
+        alias: "RegionID"
+    }),
+    new Field({
+        name: "EventCategoryID",
+        type: "integer",
+        alias: "EventCategoryID"
+    }),
+    new Field({
+        name: "EventCategoryName",
+        type: "string",
+        alias: "EventCategoryName"
+    }),
+    new Field({
+        name: "EventCategoryDescription",
+        type: "string",
+        alias: "EventCategoryDescription"
+    }),
+    new Field({
+        name: "LastModifiedDate",
+        type: "date",
+        alias: "LastModifiedDate"
+    }),
+    new Field({
+        name: "EventPriorityID",
+        type: "integer",
+        alias: "EventPriorityID"
+    }),
+    new Field({
+        name: "HeadlineMessage",
+        type: "string",
+        alias: "HeadlineMessage"
+    }),
+    new Field({
+        name: "ExtendedMessage",
+        type: "string",
+        alias: "ExtendedMessage"
+    }),//"IconName"
+    new Field({
+        name: "IconName",
+        type: "string",
+        alias: "IconName"
+    }),
+]
 
-export default layer;
+let layer: FeatureLayer | undefined;
+
+export const initLayer = (url: string): FeatureLayer => {
+    layer = new FeatureLayer({
+        id: "regional-alert-layer",
+        title: "Regional Alerts",
+        fields: fields,
+        objectIdField: "EventID",
+        geometryType: "point",
+        spatialReference: SpatialReference.WebMercator,
+        renderer: renderer,
+        source: graphics,
+        refreshInterval: 5,
+    });
+    centerFeatures();
+    return layer;
+}
+
+const getLayer = (): FeatureLayer => {
+    if (!layer) {
+        throw "Regional Alert Layer is not ready yet!";
+    }
+    return layer;
+}
+
+export default getLayer
 
 export const getFeatureById = async (id: number): Promise<Graphic> => {
+    const layer = getLayer();
     const query = layer.createQuery();
     query.where = "EventID =" + id;
     query.outFields = ["EventID", "Label", "Note"];
     const response = await layer.queryFeatures(query);
     return response.features[0];
+}
+
+
+/**
+ * Center the alert icon in the center of the region that is visible.
+ * @param mapExtent 
+ * If not specified, it will place icon at the centroid.
+ */
+export const centerFeatures = async (mapExtent?: Extent): Promise<void> => {
+    const layer = getLayer();
+    const query = layer.createQuery();
+    query.where = "1 = 1";
+    query.returnGeometry = true;
+    query.outFields = ["EventID", "RegionID"];
+    const result = await layer.queryFeatures(query);
+    const updatedFtrs: Graphic[] = [];
+    for (let i = 0; i < result.features.length; i++) {
+        const feature = result.features[i];
+        let newPt: Point | undefined;
+        const regionId = feature.getAttribute("RegionID");
+        if (mapExtent) {
+            const visibleArea = await getVisibleArea(regionId, mapExtent)
+            newPt = visibleArea.centroid;
+        } else {
+            const regionFtr = await getRegionById(regionId)
+            newPt = (regionFtr.geometry as Polygon).centroid;
+
+        }
+        if (newPt) {
+            feature.geometry = newPt;
+            updatedFtrs.push(feature);
+        }
+    }
+    const editResult = await layer.applyEdits({updateFeatures: updatedFtrs });
+    console.log(JSON.stringify(editResult));
 }
