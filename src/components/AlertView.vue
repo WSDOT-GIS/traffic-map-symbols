@@ -45,7 +45,12 @@
     class="w3-transparent w3-button"
     @click="toggleDisplay"
   >
-    <div v-html="iconButton?.paths" width="60" height="60" class="alert-button"></div>
+    <div
+      v-html="iconButton?.paths"
+      width="48"
+      height="48"
+      class="alert-button"
+    ></div>
   </div>
 </template>
 
@@ -145,8 +150,8 @@ export default defineComponent({
 }
 
 .alert-button {
-  -webkit-filter: drop-shadow( 3px 3px 2px rgba(0, 0, 0, .6));
-  filter: drop-shadow( 3px 3px 2px rgba(0, 0, 0, .6));
+  -webkit-filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.6));
+  filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.6));
 }
 
 .alert-content {

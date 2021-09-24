@@ -6,85 +6,91 @@ import Field from "@arcgis/core/layers/support/Field";
 import symbol from "@/symbols/RegionalAlertSymbol";
 import Extent from "@arcgis/core/geometry/Extent";
 
-import { getVisibleArea, getFeatureById as getRegionById } from "./RegionLayer";
+import { getVisibleArea, getFeatureById as getRegionById } from "./AlertAreaLayer";
 import Point from "@arcgis/core/geometry/Point";
 import Polygon from "@arcgis/core/geometry/Polygon";
-
-
+import RegionalAlertInfo from "@/types/RegionalAlertInfo";
+import { getConfig } from "@/utils/appConfigUtil";
 
 // Create a symbol for rendering the graphic
 const renderer = new SimpleRenderer({
     symbol: symbol
 });
 
-const graphics = [
-    {
-        geometry: {
-            type: "point",
-            x: -13702665.8094,
-            y: 5842751.806699999,
-            spatialReference: { wkid: 102100 }
+const testJson =
+{
+    features: [
+        {
+            // geometry: {
+            //     type: "point",
+            //     x: -13702665.8094,
+            //     y: 5842751.806699999,
+            //     spatialReference: { wkid: 102100 }
+            // },
+            attributes: {
+                "EventID": 345431,
+                "EventCategoryID": 66,
+                "EventCategoryName": "Special Event",
+                "EventCategoryDescription": "Special Event",
+                "LastModifiedDate": 1632307479000,
+                "IconName": "31.gif",
+                "EventPriorityID": 1,
+                "Road": "Statewide",
+                "HeadlineMessage": "This is a test event, please disregard.",
+                "ExtendedMessage": "300 Lorem ipsum dolor sit amet consectetur adipiscing, elit nibh facilisi mauris montes, feugiat dictum ante ad et. Habitasse facilisis venenatis hac hendrerit senectus leo convallis viverra pellentesque, montes congue nec efficitur lobortis himenaeos vel condimentum, torquent libero velit in accums",
+                "LocationName": "Cowlitz",
+                "EventCategoryType": "County",
+                "CountyID": 8
+            }
         },
-        attributes: {
-            "EventID": 345431,
-            "EventCategoryID": 66,
-            "EventCategoryName": "Special Event",
-            "EventCategoryDescription": "Special Event",
-            "LastModifiedDate": 1632307479000,
-            "IconName": "31.gif",
-            "EventPriorityID": 1,
-            "Road": "Statewide",
-            "HeadlineMessage": "This is a test event, please disregard.",
-            "ExtendedMessage": "300 Lorem ipsum dolor sit amet consectetur adipiscing, elit nibh facilisi mauris montes, feugiat dictum ante ad et. Habitasse facilisis venenatis hac hendrerit senectus leo convallis viverra pellentesque, montes congue nec efficitur lobortis himenaeos vel condimentum, torquent libero velit in accums",
-            "LocationName": "Cowlitz",
-            "RegionID": 1,
-        }
-    },
-    {
-        geometry: {
-            type: "point",
-            x: -13028821.178,
-            y: 5984498.009000003,
-            spatialReference: { wkid: 102100 }
+        {
+            // geometry: {
+            //     type: "point",
+            //     x: -13028821.178,
+            //     y: 5984498.009000003,
+            //     spatialReference: { wkid: 102100 }
+            // },
+            attributes: {
+                "EventID": 345432,
+                "EventCategoryID": 66,
+                "EventCategoryName": "Special Event",
+                "EventCategoryDescription": "Special Event",
+                "LastModifiedDate": 1632307479000,
+                "IconName": "31.gif",
+                "EventPriorityID": 1,
+                "Road": "Statewide",
+                "HeadlineMessage": "This is a test event, please disregard.",
+                "ExtendedMessage": "",
+                "LocationName": "Northwest Region",
+                "EventCategoryType": "Region",
+                "CountyID": 1
+            }
         },
-        attributes: {
-            "EventID": 345432,
-            "EventCategoryID": 66,
-            "EventCategoryName": "Special Event",
-            "EventCategoryDescription": "Special Event",
-            "LastModifiedDate": 1632307479000,
-            "IconName": "31.gif",
-            "EventPriorityID": 1,
-            "Road": "Statewide",
-            "HeadlineMessage": "This is a test event, please disregard.",
-            "ExtendedMessage": "",
-            "LocationName": "Whitman County",
-            "RegionID": 2,
-        }
-    },
-    {
-        geometry: {
-            type: "point",
-            x: -13668141.8455,
-            y: 5968533.173699997,
-            spatialReference: { wkid: 102100 }
+        {
+            // geometry: {
+            //     type: "point",
+            //     x: -13668141.8455,
+            //     y: 5968533.173699997,
+            //     spatialReference: { wkid: 102100 }
+            // },
+            attributes: {
+                "EventID": 345433,
+                "EventCategoryID": 66,
+                "EventCategoryName": "Special Event",
+                "EventCategoryDescription": "Special Event",
+                "LastModifiedDate": 1632307479000,
+                "IconName": "31.gif",
+                "EventPriorityID": 1,
+                "Road": "Statewide",
+                "HeadlineMessage": "This is a test event, please disregard.",
+                "ExtendedMessage": "2000 Lorem ipsum dolor sit amet consectetur adipiscing, elit nibh facilisi mauris montes, feugiat dictum ante ad et. Habitasse facilisis venenatis hac hendrerit senectus leo convallis viverra pellentesque, montes congue nec efficitur lobortis himenaeos vel condimentum, torquent libero velit in accumsan finibus at nascetur. Quam aptent porta penatibus ullamcorper a quis curabitur class quisque netus tempor eget, lacus ut etiam sollicitudin vulputate nullam purus hac mollis mattis egestas tortor, orci dictumst consequat lorem efficitur duis gravida non pharetra faucibus euismod. Viverra consectetur himenaeos magna laoreet nunc interdum nam, faucibus nascetur dolor pretium amet urna nisi, arcu integer penatibus pulvinar convallis parturient. Accumsan sit hendrerit leo dapibus varius congue bibendum vestibulum, amet ornare suspendisse lectus a parturient semper euismod, eros eleifend aenean erat venenatis vel molestie. Dapibus pulvinar magna torquent blandit nulla curae ut accumsan, phasellus natoque tortor gravida sit diam tempor, hendrerit penatibus sagittis mollis vitae vestibulum rhoncus. Quisque in magnis eleifend dui erat viverra ullamcorper, vivamus ligula commodo ex sagittis dis mattis vel, facilisi vulputate dignissim interdum adipiscing leo. Lorem ipsum dolor sit amet consectetur adipiscing, elit nibh facilisi mauris montes, feugiat dictum ante ad et. Habitasse facilisis venenatis hac hendrerit senectus leo convallis viverra pellentesque, montes congue nec efficitur lobortis himenaeos vel condimentum, torquent libero velit in accumsan finibus at nascetur. Quam aptent porta penatibus ullamcorper a quis curabitur class quisque netus tempor eget, lacus ut etiam sollicitudin vulputate nullam purus hac mollis mattis egestas tortor, orci dictumst consequat lorem efficitur duis gravida non pharetra faucibus euismod. Viverra consectetur himenaeos magna laoreet nunc interdum nam, faucibus nascetur dolor pretium amet urna nisi, arcu integer penatibus pulvinar convalliss",
+                "LocationName": "Thuston",
+                "EventCategoryType": "County",
+                "CountyID": 34
+            }
         },
-        attributes: {
-            "EventID": 345433,
-            "EventCategoryID": 66,
-            "EventCategoryName": "Special Event",
-            "EventCategoryDescription": "Special Event",
-            "LastModifiedDate": 1632307479000,
-            "IconName": "31.gif",
-            "EventPriorityID": 1,
-            "Road": "Statewide",
-            "HeadlineMessage": "This is a test event, please disregard.",
-            "ExtendedMessage": "2000 Lorem ipsum dolor sit amet consectetur adipiscing, elit nibh facilisi mauris montes, feugiat dictum ante ad et. Habitasse facilisis venenatis hac hendrerit senectus leo convallis viverra pellentesque, montes congue nec efficitur lobortis himenaeos vel condimentum, torquent libero velit in accumsan finibus at nascetur. Quam aptent porta penatibus ullamcorper a quis curabitur class quisque netus tempor eget, lacus ut etiam sollicitudin vulputate nullam purus hac mollis mattis egestas tortor, orci dictumst consequat lorem efficitur duis gravida non pharetra faucibus euismod. Viverra consectetur himenaeos magna laoreet nunc interdum nam, faucibus nascetur dolor pretium amet urna nisi, arcu integer penatibus pulvinar convallis parturient. Accumsan sit hendrerit leo dapibus varius congue bibendum vestibulum, amet ornare suspendisse lectus a parturient semper euismod, eros eleifend aenean erat venenatis vel molestie. Dapibus pulvinar magna torquent blandit nulla curae ut accumsan, phasellus natoque tortor gravida sit diam tempor, hendrerit penatibus sagittis mollis vitae vestibulum rhoncus. Quisque in magnis eleifend dui erat viverra ullamcorper, vivamus ligula commodo ex sagittis dis mattis vel, facilisi vulputate dignissim interdum adipiscing leo. Lorem ipsum dolor sit amet consectetur adipiscing, elit nibh facilisi mauris montes, feugiat dictum ante ad et. Habitasse facilisis venenatis hac hendrerit senectus leo convallis viverra pellentesque, montes congue nec efficitur lobortis himenaeos vel condimentum, torquent libero velit in accumsan finibus at nascetur. Quam aptent porta penatibus ullamcorper a quis curabitur class quisque netus tempor eget, lacus ut etiam sollicitudin vulputate nullam purus hac mollis mattis egestas tortor, orci dictumst consequat lorem efficitur duis gravida non pharetra faucibus euismod. Viverra consectetur himenaeos magna laoreet nunc interdum nam, faucibus nascetur dolor pretium amet urna nisi, arcu integer penatibus pulvinar convalliss",
-            "LocationName": "Thuston",
-            "RegionID": 3,
-        }
-    },
-]
+    ]
+}
 
 const fields = [
     new Field({
@@ -93,9 +99,14 @@ const fields = [
         type: "oid"
     }),
     new Field({
-        name: "RegionID",
+        name: "CountyID",
         type: "integer",
-        alias: "RegionID"
+        alias: "CountyID"
+    }),
+    new Field({
+        name: "EventCategoryType",
+        type: "string",
+        alias: "EventCategoryType"
     }),
     new Field({
         name: "EventCategoryID",
@@ -141,16 +152,47 @@ const fields = [
 
 let layer: FeatureLayer | undefined;
 
-export const initLayer = (url: string): FeatureLayer => {
+export const initLayer = async (url: string): Promise<FeatureLayer> => {
+    // Fetch all alerts from JSON
+    // const fetchResponse = await fetch(url);
+    // const json = await fetchResponse.json();
+
+    // Test
+    const json = testJson;
+    // Get county and region service URLs...
+    const config = await getConfig();
+    // Create graphic out of each alert
+    const alertGraphics: Graphic[] = [];
+    json.features.forEach((each: { attributes: RegionalAlertInfo; }) => {
+        console.log(JSON.stringify(each));
+        // Get region boundary from county or region service...
+        switch (each.attributes.EventCategoryType) {
+            case "County":
+                break;
+            case "Region":
+                break;
+            default:
+                console.error("Invalid EventCategoryType: " + each.attributes.EventCategoryType);
+                break;
+        }
+
+
+
+        // Get centroid and set that as alert's geometry
+
+        // Add the boundary to the Region Layer with EventID
+    });
+
     layer = new FeatureLayer({
         id: "regional-alert-layer",
         title: "Regional Alerts",
+        // source: graphics,
+        source: alertGraphics,
         fields: fields,
         objectIdField: "EventID",
         geometryType: "point",
         spatialReference: SpatialReference.WebMercator,
         renderer: renderer,
-        source: graphics,
         refreshInterval: 5,
     });
     centerFeatures();

@@ -12,19 +12,23 @@ interface AppConfig {
     traffic: string;
     weatherStations: string;
     travelTimes: string;
+    // Additional layer URLs...
+    countyBoundaries: string;
+    regionBoundaries: string;
     // JSON data...
+    regionalAlerts: string;
     stateAlerts: string;
     // ESRI API Key...
     apiKey: string;
     // Weather forecast API...
     forecastSummaryAPI: string;
     forecastExtendedAPI: string,
-    fireIncidents:string,
-    firePerimeters:string,
+    fireIncidents: string,
+    firePerimeters: string,
     mileMarkers: string,
     esriPlacesReferenceLayer: string,
-    esriRoadsReferenceLayer:string,
-    stateRouteShieldsLayer:string,
+    esriRoadsReferenceLayer: string,
+    stateRouteShieldsLayer: string,
     // Layer refresh interval in minutes...
     layerRefreshMinute: number;
 }

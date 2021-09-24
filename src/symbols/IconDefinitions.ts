@@ -297,87 +297,16 @@ const otherIcons: IconInfo[] = [
   },
   {
     id: "statewide-alert-button",
-    paths: `<svg
-   width="60"
-   height="60"
-   viewBox="0 0 60 60"
-   fill="none"
-   version="1.1"
-   id="svg161"
-   sodipodi:docname="statewide alert 60.svg"
-   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
-  <defs
-     id="defs165" />
-  <sodipodi:namedview
-     id="namedview163"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     showgrid="false"
-     inkscape:zoom="1"
-     inkscape:cx="-141"
-     inkscape:cy="18.5"
-     inkscape:window-width="1271"
-     inkscape:window-height="1041"
-     inkscape:window-x="1912"
-     inkscape:window-y="0"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="svg161"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0" />
-  <circle
-     cx="30"
-     cy="30"
-     r="30"
-     fill="#dc3545"
-     id="circle149"
-     style="stroke-width:2.5" />
-  <path
-     d="m 55.92225,29.23075 c 0,13.865 -11.5785,25.154 -25.923,25.154 -14.34445,0 -25.923075,-11.289 -25.923075,-25.154 0,-13.864925 11.578625,-25.153825 25.923075,-25.153825 14.3445,0 25.923,11.2889 25.923,25.153825 z"
-     fill="#dc3545"
-     stroke="#ffffff"
-     stroke-width="0.8"
-     id="path151" />
-  <rect
-     x="31.617395"
-     y="-10.809011"
-     width="21.998875"
-     height="21.998875"
-     rx="1.25"
-     transform="rotate(45)"
-     fill="#ffffff"
-     id="rect153"
-     style="stroke-width:2.5" />
-  <rect
-     x="28.909266"
-     y="-13.517141"
-     width="27.034248"
-     height="27.034248"
-     rx="0.625"
-     transform="rotate(45)"
-     stroke="#ffffff"
-     stroke-width="0.5"
-     id="rect155" />
-  <path
-     d="m 28.427,22.81315 v 8.9431 c 0,1.00175 0.81225,1.81375 1.814,1.81375 1.00175,0 1.81375,-0.812 1.81375,-1.81375 v -8.9431 c 0,-1.001775 -0.812,-1.81385 -1.81375,-1.81385 -1.00175,0 -1.814,0.812075 -1.814,1.81385 z"
-     fill="#dc3545"
-     id="path157"
-     style="stroke-width:2.5" />
-  <path
-     d="m 28.745,37.062 c -0.20725,0.29525 -0.318,0.6425 -0.318,0.99775 0.001,0.476 0.2,0.932 0.5535,1.26875 0.3535,0.3365 0.8325,0.526 1.33225,0.527 0.373,0 0.7375,-0.10525 1.0475,-0.30275 C 31.6705,39.3555 31.912,39.075 32.05475,38.747 32.1975,38.41875 32.235,38.05775 32.16225,37.70925 32.08925,37.361 31.90975,37.041 31.646,36.78975 c -0.26375,-0.251 -0.5995,-0.422 -0.9655,-0.4915 C 30.31475,36.229 29.93575,36.2645 29.59125,36.4005 29.2465,36.5365 28.952,36.7665 28.745,37.062 Z"
-     fill="#dc3545"
-     id="path159"
-     style="stroke-width:2.5" />
-</svg>
+    paths: `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" version="1.1" id="svg161" sodipodi:docname="statewide alert 48.svg" inkscape:version="1.1 (c68e22c387, 2021-05-23)" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+      <defs id="defs165" />
+      <sodipodi:namedview id="namedview163" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" inkscape:pageshadow="2" inkscape:pageopacity="0.0" inkscape:pagecheckerboard="0" showgrid="false" inkscape:zoom="13" inkscape:cx="31.5" inkscape:cy="31.5" inkscape:window-width="1920" inkscape:window-height="1027" inkscape:window-x="1912" inkscape:window-y="-8" inkscape:window-maximized="1" inkscape:current-layer="svg161" fit-margin-top="0" fit-margin-left="0" fit-margin-right="0" fit-margin-bottom="0" />
+      <circle cx="24" cy="24" r="24" fill="#dc3545" id="circle149" style="stroke-width:2" />
+      <path d="m 44.7378,23.3846 c 0,11.092 -9.2628,20.1232 -20.7384,20.1232 -11.47556,0 -20.73846,-9.0312 -20.73846,-20.1232 0,-11.09194 9.2629,-20.12306 20.73846,-20.12306 11.4756,0 20.7384,9.03112 20.7384,20.12306 z" fill="#dc3545" stroke="#ffffff" stroke-width="0.64" id="path151" />
+      <rect x="25.293917" y="-8.6472092" width="17.5991" height="17.5991" rx="1" transform="rotate(45)" fill="#ffffff" id="rect153" style="stroke-width:2" />
+      <rect x="23.127413" y="-10.813713" width="21.627399" height="21.627399" rx="0.5" transform="rotate(45)" stroke="#ffffff" stroke-width="0.4" id="rect155" />
+      <path d="M 22.7416,18.25052 V 25.405 c 0,0.8014 0.6498,1.451 1.4512,1.451 0.8014,0 1.451,-0.6496 1.451,-1.451 v -7.15448 c 0,-0.80142 -0.6496,-1.45108 -1.451,-1.45108 -0.8014,0 -1.4512,0.64966 -1.4512,1.45108 z" fill="#dc3545" id="path157" style="stroke-width:2" />
+      <path d="m 22.996,29.6496 c -0.1658,0.2362 -0.2544,0.514 -0.2544,0.7982 8e-4,0.3808 0.16,0.7456 0.4428,1.015 0.2828,0.2692 0.666,0.4208 1.0658,0.4216 0.2984,0 0.59,-0.0842 0.838,-0.2422 0.2482,-0.1578 0.4414,-0.3822 0.5556,-0.6446 0.1142,-0.2626 0.1442,-0.5514 0.086,-0.8302 -0.0584,-0.2786 -0.202,-0.5346 -0.413,-0.7356 -0.211,-0.2008 -0.4796,-0.3376 -0.7724,-0.3932 -0.2926,-0.0554 -0.5958,-0.027 -0.8714,0.0818 -0.2758,0.1088 -0.5114,0.2928 -0.677,0.5292 z" fill="#dc3545" id="path159" style="stroke-width:2" />
+    </svg>
     `
   },
 ]

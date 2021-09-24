@@ -22,22 +22,22 @@ const renderer = new SimpleRenderer({
 
 
 const layer = new FeatureLayer({
-    id: "region-layer",
-    title: "Regions",
+    id: "alert-area-layer",
+    title: "Alert Areas",
     fields: [
         new Field({
-            name: "RegionID",
-            alias: "RegionID",
+            name: "EventID",
+            alias: "EventID",
             type: "oid"
         }),
         new Field({
-            name: "RegionName",
+            name: "Name",
             type: "string",
-            alias: "RegionName"
+            alias: "Name"
         }),
 
     ],
-    objectIdField: "RegionID",
+    objectIdField: "EventID",
     geometryType: "polygon",
     spatialReference: SpatialReference.WebMercator,
     renderer: renderer,
@@ -46,9 +46,9 @@ const layer = new FeatureLayer({
 
 export default layer;
 
-export const getFeatureById = async (id: number): Promise<Graphic> => {
+export const getFeatureById = async (eventId: number): Promise<Graphic> => {
     const query = layer.createQuery();
-    query.where = "RegionID = " + id;
+    query.where = layer.objectIdField + " = " + eventId;
     query.outFields = ["*"];
     const response = await layer.queryFeatures(query);
     return response.features[0];

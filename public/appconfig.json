@@ -8,6 +8,7 @@
     "restAreas": "https://data.wsdot.wa.gov/travelcenter/RestAreas.json",
     "borderCrossings":"https://data.wsdot.wa.gov/travelcenter/BorderCrossingTimes.json",
     "roadAlerts": "https://data.wsdot.wa.gov/travelcenter/RoadAlerts.json",
+    "regionalAlerts": "https://data.wsdot.wa.gov/travelcenter/CountyAlerts.json",
     "stateAlerts": "https://data.wsdot.wa.gov/travelcenter/StatewideAlerts.json",
     "traffic": "https://utility.arcgis.com/usrsvcs/appservices/G9CkczziK8rxtWpL/rest/services/World/Traffic/MapServer",
     "travelTimes": "https://data.wsdot.wa.gov/travelcenter/TravelTimes.json",
@@ -21,5 +22,7 @@
     "esriPlacesReferenceLayer": "http://services.arcgisonline.com/arcgis/rest/services/Reference/World_Boundaries_and_Places/MapServer?f=jsapi",
     "esriRoadsReferenceLayer": "http://services.arcgisonline.com/arcgis/rest/services/Reference/World_Transportation/MapServer",
     "stateRouteShieldsLayer": "https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/State_Route_Shields/VectorTileServer",
+    "countyBoundaries": "https://services.arcgis.com/IYrj3otxNjPsrTRD/arcgis/rest/services/Travel_Center_Boundaries/FeatureServer/0",
+    "regionBoundaries": "https://services.arcgis.com/IYrj3otxNjPsrTRD/arcgis/rest/services/Travel_Center_Boundaries/FeatureServer/1",
     "layerRefreshMinute": 5
 }
