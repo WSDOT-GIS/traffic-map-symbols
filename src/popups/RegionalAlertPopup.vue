@@ -7,7 +7,7 @@
       bannerText: { text: 'Emergency' },
       title: { custom: getTitle },
       content: [
-        { label: 'Description', value: { fieldName: 'ExtendedMessage' } },
+        { label: 'Description', value: { fieldName: 'HeadlineMessage' } },
         {
           label: 'Last Updated',
           value: {
@@ -93,7 +93,6 @@ export default defineComponent({
             getFeatureInfoById(feature.value?.id, layer).then((result) => {
               if (result && feature.value) {
                 feature.value.mapPoint = result.mapPoint;
-                console.log("*** new map point set");
               }
             });
           }
@@ -107,9 +106,10 @@ export default defineComponent({
     };
     const getTitle = (feature: FeatureInfo): string => {
       return (
-        feature.attributes["HeadlineMessage"] +
-        " for " +
-        feature.attributes["LocationName"]
+        feature.attributes["EventCategoryTypeDescription"] +
+        " alert for " +
+        feature.attributes["LocationName"] +
+        " " + feature.attributes["EventCategoryType"]
       );
     };
     return {

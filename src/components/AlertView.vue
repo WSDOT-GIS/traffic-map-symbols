@@ -32,8 +32,8 @@
         v-for="(item, index) in sortedAlerts"
         :key="index"
       >
-        <div class="alert-title">{{ item.HeadlineMessage }}</div>
-        <div>{{ item.ExtendedMessage }}</div>
+        <div class="alert-title">{{ item.EventCategoryDescription }}</div>
+        <div>{{ item.HeadlineMessage }}</div>
         <div>
           <span class="alert-row-key">Last updated: </span>
           <span class="popup-value">{{
