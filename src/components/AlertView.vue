@@ -6,7 +6,7 @@
   >
     <div
       class="w3-modal-content w3-card w3-left-align alert-content"
-      :style="{ height: height }"
+      :style="{ maxHeight: height }"
       ref="containerRef"
     >
       <div class="alert-header">
@@ -14,7 +14,11 @@
           <div class="alert-banner-icon">
             <div v-html="iconBanner?.paths" width="24" height="24"></div>
           </div>
-          <span class="alert-banner-text">Emergency Alert</span>
+          <span class="alert-banner-text"
+            >{{ Alerts.length > 1 ? Alerts.length : "" }} Emergency Alert{{
+              Alerts.length > 1 ? "s" : ""
+            }}</span
+          >
         </div>
         <button
           class="alert-close-button w3-button w3-display-right"
@@ -45,12 +49,7 @@
     class="w3-transparent w3-button"
     @click="toggleDisplay"
   >
-    <div
-      v-html="iconButton?.paths"
-      width="48"
-      height="48"
-      class="alert-button"
-    ></div>
+    <div v-html="iconButton?.paths" class="alert-button"></div>
   </div>
 </template>
 
@@ -67,6 +66,7 @@ import { useStore } from "@/store";
 import AlertInfo from "@/types/AlertInfo";
 import { formatEpoch } from "@/utils/miscUtil";
 import { otherIcons } from "@/symbols/IconDefinitions";
+import { isSmallMedia } from "@/utils/mediaUtil";
 
 export default defineComponent({
   props: {
@@ -86,8 +86,11 @@ export default defineComponent({
     const iconBanner = otherIcons.find((item) => {
       return item.id === "statewide-alert-banner";
     });
+    const iconName = isSmallMedia()
+      ? "statewide-alert-button-small"
+      : "statewide-alert-button";
     const iconButton = otherIcons.find((item) => {
-      return item.id === "statewide-alert-button";
+      return item.id === iconName;
     });
 
     watch(props, () => {
@@ -150,8 +153,8 @@ export default defineComponent({
 }
 
 .alert-button {
-  -webkit-filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.6));
-  filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.6));
+  -webkit-filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.4));
+  filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.4));
 }
 
 .alert-content {
@@ -165,7 +168,7 @@ export default defineComponent({
   display: inline-block;
   width: 50%;
   margin: 17px 0;
-  padding: 4px 8px;
+  padding: 0.7em 0.2em;
   color: #000;
   border-radius: 0px 4px 4px 0px;
   font-family: Lato;

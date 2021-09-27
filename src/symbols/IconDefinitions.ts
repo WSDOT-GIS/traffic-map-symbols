@@ -297,17 +297,27 @@ const otherIcons: IconInfo[] = [
   },
   {
     id: "statewide-alert-button",
-    paths: `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" version="1.1" id="svg161" sodipodi:docname="statewide alert 48.svg" inkscape:version="1.1 (c68e22c387, 2021-05-23)" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
-      <defs id="defs165" />
-      <sodipodi:namedview id="namedview163" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" inkscape:pageshadow="2" inkscape:pageopacity="0.0" inkscape:pagecheckerboard="0" showgrid="false" inkscape:zoom="13" inkscape:cx="31.5" inkscape:cy="31.5" inkscape:window-width="1920" inkscape:window-height="1027" inkscape:window-x="1912" inkscape:window-y="-8" inkscape:window-maximized="1" inkscape:current-layer="svg161" fit-margin-top="0" fit-margin-left="0" fit-margin-right="0" fit-margin-bottom="0" />
-      <circle cx="24" cy="24" r="24" fill="#dc3545" id="circle149" style="stroke-width:2" />
-      <path d="m 44.7378,23.3846 c 0,11.092 -9.2628,20.1232 -20.7384,20.1232 -11.47556,0 -20.73846,-9.0312 -20.73846,-20.1232 0,-11.09194 9.2629,-20.12306 20.73846,-20.12306 11.4756,0 20.7384,9.03112 20.7384,20.12306 z" fill="#dc3545" stroke="#ffffff" stroke-width="0.64" id="path151" />
-      <rect x="25.293917" y="-8.6472092" width="17.5991" height="17.5991" rx="1" transform="rotate(45)" fill="#ffffff" id="rect153" style="stroke-width:2" />
-      <rect x="23.127413" y="-10.813713" width="21.627399" height="21.627399" rx="0.5" transform="rotate(45)" stroke="#ffffff" stroke-width="0.4" id="rect155" />
-      <path d="M 22.7416,18.25052 V 25.405 c 0,0.8014 0.6498,1.451 1.4512,1.451 0.8014,0 1.451,-0.6496 1.451,-1.451 v -7.15448 c 0,-0.80142 -0.6496,-1.45108 -1.451,-1.45108 -0.8014,0 -1.4512,0.64966 -1.4512,1.45108 z" fill="#dc3545" id="path157" style="stroke-width:2" />
-      <path d="m 22.996,29.6496 c -0.1658,0.2362 -0.2544,0.514 -0.2544,0.7982 8e-4,0.3808 0.16,0.7456 0.4428,1.015 0.2828,0.2692 0.666,0.4208 1.0658,0.4216 0.2984,0 0.59,-0.0842 0.838,-0.2422 0.2482,-0.1578 0.4414,-0.3822 0.5556,-0.6446 0.1142,-0.2626 0.1442,-0.5514 0.086,-0.8302 -0.0584,-0.2786 -0.202,-0.5346 -0.413,-0.7356 -0.211,-0.2008 -0.4796,-0.3376 -0.7724,-0.3932 -0.2926,-0.0554 -0.5958,-0.027 -0.8714,0.0818 -0.2758,0.1088 -0.5114,0.2928 -0.677,0.5292 z" fill="#dc3545" id="path159" style="stroke-width:2" />
+    paths: `<svg width="48" height="48" fill="none" version="1.1" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="24" cy="24" r="24" fill="#dc3545" stroke-width="2"/>
+    <path d="m44.738 23.385c0 11.092-9.2628 20.123-20.738 20.123-11.476 0-20.738-9.0312-20.738-20.123 0-11.092 9.2629-20.123 20.738-20.123 11.476 0 20.738 9.0311 20.738 20.123z" fill="#dc3545" stroke="#fff" stroke-width=".64"/>
+    <rect transform="rotate(45)" x="25.294" y="-8.6472" width="17.599" height="17.599" rx="1" fill="#fff" stroke-width="2"/>
+    <rect transform="rotate(45)" x="23.127" y="-10.814" width="21.627" height="21.627" rx=".5" stroke="#fff" stroke-width=".4"/>
+    <path d="m22.742 18.251v7.1545c0 0.8014 0.6498 1.451 1.4512 1.451s1.451-0.6496 1.451-1.451v-7.1545c0-0.80142-0.6496-1.4511-1.451-1.4511s-1.4512 0.64966-1.4512 1.4511z" fill="#dc3545" stroke-width="2"/>
+    <path d="m22.996 29.65c-0.1658 0.2362-0.2544 0.514-0.2544 0.7982 8e-4 0.3808 0.16 0.7456 0.4428 1.015 0.2828 0.2692 0.666 0.4208 1.0658 0.4216 0.2984 0 0.59-0.0842 0.838-0.2422 0.2482-0.1578 0.4414-0.3822 0.5556-0.6446 0.1142-0.2626 0.1442-0.5514 0.086-0.8302-0.0584-0.2786-0.202-0.5346-0.413-0.7356-0.211-0.2008-0.4796-0.3376-0.7724-0.3932-0.2926-0.0554-0.5958-0.027-0.8714 0.0818-0.2758 0.1088-0.5114 0.2928-0.677 0.5292z" fill="#dc3545" stroke-width="2"/>
     </svg>
     `
   },
+  {
+    id: "statewide-alert-button-small",
+    paths: `<svg width="28" height="28" fill="none" version="1.1" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="14" cy="14" r="14" fill="#dc3545" stroke-width="1.1667"/>
+    <path d="m26.097 13.641c0 6.4703-5.4033 11.739-12.097 11.739-6.6941 0-12.097-5.2682-12.097-11.739 0-6.4703 5.4034-11.738 12.097-11.738 6.6941 0 12.097 5.2682 12.097 11.738z" fill="#dc3545" stroke="#fff" stroke-width=".37333"/>
+    <rect transform="rotate(45)" x="14.755" y="-5.0442" width="10.266" height="10.266" rx=".58333" fill="#fff" stroke-width="1.1667"/>
+    <rect transform="rotate(45)" x="13.491" y="-6.308" width="12.616" height="12.616" rx=".29167" stroke="#fff" stroke-width=".23333"/>
+    <path d="m13.266 10.646v4.1734c0 0.46748 0.37905 0.84642 0.84653 0.84642 0.46748 0 0.84642-0.37893 0.84642-0.84642v-4.1734c0-0.4675-0.37893-0.84646-0.84642-0.84646-0.46748 0-0.84653 0.37897-0.84653 0.84646z" fill="#dc3545" stroke-width="1.1667"/>
+    <path d="m13.414 17.296c-0.09672 0.13778-0.1484 0.29983-0.1484 0.46562 4.67e-4 0.22213 0.09333 0.43493 0.2583 0.59208 0.16497 0.15703 0.3885 0.24547 0.62172 0.24593 0.17407 0 0.34417-0.04912 0.48883-0.14128 0.14478-0.09205 0.25748-0.22295 0.3241-0.37602 0.06662-0.15318 0.08412-0.32165 0.05017-0.48428-0.03407-0.16252-0.11783-0.31185-0.24092-0.4291-0.12308-0.11713-0.27977-0.19693-0.45057-0.22937-0.17068-0.03232-0.34755-0.01575-0.50832 0.04772-0.16088 0.06347-0.29832 0.1708-0.39492 0.3087z" fill="#dc3545" stroke-width="1.1667"/>
+    </svg>
+    `
+  }
 ]
 export { layerListIcons, otherIcons }
