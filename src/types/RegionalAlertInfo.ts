@@ -1,17 +1,17 @@
 interface RegionalAlertInfo {
     EventID: number;
-    EventCategoryID: number;
-    EventCategoryName: string;
-    EventCategoryDescription: string;
-    LastModifiedDate: number;
+    CriticalEventIndicator: number;
     IconName: string;
     EventPriorityID: number;
-    Road: string;
+    EventPriorityDescription: string;
+    EventCategoryType: string;
+    LastModifiedDate: number;
+    DisplayOrder: number;
+    LocationName: number;
     HeadlineMessage: string;
     ExtendedMessage: string;
-    LocationName: string;
-    EventCategoryType: string;
     CountyID: number;
+    EventCategoryTypeDescription: string;
 }
 
 export default RegionalAlertInfo;

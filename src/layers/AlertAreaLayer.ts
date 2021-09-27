@@ -8,8 +8,6 @@ import Polygon from "@arcgis/core/geometry/Polygon";
 import Extent from "@arcgis/core/geometry/Extent";
 import { clip } from "@arcgis/core/geometry/geometryEngine";
 
-import { regionGraphics } from "./TestRegions";
-
 
 // Create a symbol for rendering the graphic
 const renderer = new SimpleRenderer({
@@ -20,33 +18,47 @@ const renderer = new SimpleRenderer({
     })
 });
 
+const fields = [
+    new Field({
+        name: "EventID",
+        alias: "EventID",
+        type: "oid"
+    }),
+    new Field({
+        name: "Name",
+        type: "string",
+        alias: "Name"
+    }),
 
-const layer = new FeatureLayer({
-    id: "alert-area-layer",
-    title: "Alert Areas",
-    fields: [
-        new Field({
-            name: "EventID",
-            alias: "EventID",
-            type: "oid"
-        }),
-        new Field({
-            name: "Name",
-            type: "string",
-            alias: "Name"
-        }),
+]
 
-    ],
-    objectIdField: "EventID",
-    geometryType: "polygon",
-    spatialReference: SpatialReference.WebMercator,
-    renderer: renderer,
-    source: regionGraphics,
-});
+let layer: FeatureLayer | undefined;
 
-export default layer;
+export const initLayer = (features: Graphic[]): FeatureLayer => {
+    layer = new FeatureLayer({
+        id: "alert-area-layer",
+        title: "Alert Areas",
+        fields: fields,
+        objectIdField: "EventID",
+        geometryType: "polygon",
+        spatialReference: SpatialReference.WebMercator,
+        renderer: renderer,
+        source: features,
+    });
+    return layer;
+}
+
+const getLayer = (): FeatureLayer => {
+    if (!layer) {
+        throw "Alert Area Layer is not ready yet!";
+    }
+    return layer;
+}
+
+export default getLayer;
 
 export const getFeatureById = async (eventId: number): Promise<Graphic> => {
+    const layer = getLayer();
     const query = layer.createQuery();
     query.where = layer.objectIdField + " = " + eventId;
     query.outFields = ["*"];
@@ -54,8 +66,8 @@ export const getFeatureById = async (eventId: number): Promise<Graphic> => {
     return response.features[0];
 }
 
-export const getVisibleArea = async (id: number, mapExtent: Extent): Promise<Polygon> => {
-    const g = await getFeatureById(id);
+export const getVisibleArea = async (eventId: number, mapExtent: Extent): Promise<Polygon> => {
+    const g = await getFeatureById(eventId);
     return clip(g.geometry, mapExtent) as Polygon;
 }
 

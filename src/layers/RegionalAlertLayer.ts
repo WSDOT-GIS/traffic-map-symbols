@@ -6,91 +6,16 @@ import Field from "@arcgis/core/layers/support/Field";
 import symbol from "@/symbols/RegionalAlertSymbol";
 import Extent from "@arcgis/core/geometry/Extent";
 
-import { getVisibleArea, getFeatureById as getRegionById } from "./AlertAreaLayer";
+import { getVisibleArea, getFeatureById as getAreaById } from "./AlertAreaLayer";
 import Point from "@arcgis/core/geometry/Point";
 import Polygon from "@arcgis/core/geometry/Polygon";
-import RegionalAlertInfo from "@/types/RegionalAlertInfo";
-import { getConfig } from "@/utils/appConfigUtil";
+import { initLayer as initAreaLayer } from "@/layers/AlertAreaLayer";
+
 
 // Create a symbol for rendering the graphic
 const renderer = new SimpleRenderer({
     symbol: symbol
 });
-
-const testJson =
-{
-    features: [
-        {
-            // geometry: {
-            //     type: "point",
-            //     x: -13702665.8094,
-            //     y: 5842751.806699999,
-            //     spatialReference: { wkid: 102100 }
-            // },
-            attributes: {
-                "EventID": 345431,
-                "EventCategoryID": 66,
-                "EventCategoryName": "Special Event",
-                "EventCategoryDescription": "Special Event",
-                "LastModifiedDate": 1632307479000,
-                "IconName": "31.gif",
-                "EventPriorityID": 1,
-                "Road": "Statewide",
-                "HeadlineMessage": "This is a test event, please disregard.",
-                "ExtendedMessage": "300 Lorem ipsum dolor sit amet consectetur adipiscing, elit nibh facilisi mauris montes, feugiat dictum ante ad et. Habitasse facilisis venenatis hac hendrerit senectus leo convallis viverra pellentesque, montes congue nec efficitur lobortis himenaeos vel condimentum, torquent libero velit in accums",
-                "LocationName": "Cowlitz",
-                "EventCategoryType": "County",
-                "CountyID": 8
-            }
-        },
-        {
-            // geometry: {
-            //     type: "point",
-            //     x: -13028821.178,
-            //     y: 5984498.009000003,
-            //     spatialReference: { wkid: 102100 }
-            // },
-            attributes: {
-                "EventID": 345432,
-                "EventCategoryID": 66,
-                "EventCategoryName": "Special Event",
-                "EventCategoryDescription": "Special Event",
-                "LastModifiedDate": 1632307479000,
-                "IconName": "31.gif",
-                "EventPriorityID": 1,
-                "Road": "Statewide",
-                "HeadlineMessage": "This is a test event, please disregard.",
-                "ExtendedMessage": "",
-                "LocationName": "Northwest Region",
-                "EventCategoryType": "Region",
-                "CountyID": 1
-            }
-        },
-        {
-            // geometry: {
-            //     type: "point",
-            //     x: -13668141.8455,
-            //     y: 5968533.173699997,
-            //     spatialReference: { wkid: 102100 }
-            // },
-            attributes: {
-                "EventID": 345433,
-                "EventCategoryID": 66,
-                "EventCategoryName": "Special Event",
-                "EventCategoryDescription": "Special Event",
-                "LastModifiedDate": 1632307479000,
-                "IconName": "31.gif",
-                "EventPriorityID": 1,
-                "Road": "Statewide",
-                "HeadlineMessage": "This is a test event, please disregard.",
-                "ExtendedMessage": "2000 Lorem ipsum dolor sit amet consectetur adipiscing, elit nibh facilisi mauris montes, feugiat dictum ante ad et. Habitasse facilisis venenatis hac hendrerit senectus leo convallis viverra pellentesque, montes congue nec efficitur lobortis himenaeos vel condimentum, torquent libero velit in accumsan finibus at nascetur. Quam aptent porta penatibus ullamcorper a quis curabitur class quisque netus tempor eget, lacus ut etiam sollicitudin vulputate nullam purus hac mollis mattis egestas tortor, orci dictumst consequat lorem efficitur duis gravida non pharetra faucibus euismod. Viverra consectetur himenaeos magna laoreet nunc interdum nam, faucibus nascetur dolor pretium amet urna nisi, arcu integer penatibus pulvinar convallis parturient. Accumsan sit hendrerit leo dapibus varius congue bibendum vestibulum, amet ornare suspendisse lectus a parturient semper euismod, eros eleifend aenean erat venenatis vel molestie. Dapibus pulvinar magna torquent blandit nulla curae ut accumsan, phasellus natoque tortor gravida sit diam tempor, hendrerit penatibus sagittis mollis vitae vestibulum rhoncus. Quisque in magnis eleifend dui erat viverra ullamcorper, vivamus ligula commodo ex sagittis dis mattis vel, facilisi vulputate dignissim interdum adipiscing leo. Lorem ipsum dolor sit amet consectetur adipiscing, elit nibh facilisi mauris montes, feugiat dictum ante ad et. Habitasse facilisis venenatis hac hendrerit senectus leo convallis viverra pellentesque, montes congue nec efficitur lobortis himenaeos vel condimentum, torquent libero velit in accumsan finibus at nascetur. Quam aptent porta penatibus ullamcorper a quis curabitur class quisque netus tempor eget, lacus ut etiam sollicitudin vulputate nullam purus hac mollis mattis egestas tortor, orci dictumst consequat lorem efficitur duis gravida non pharetra faucibus euismod. Viverra consectetur himenaeos magna laoreet nunc interdum nam, faucibus nascetur dolor pretium amet urna nisi, arcu integer penatibus pulvinar convalliss",
-                "LocationName": "Thuston",
-                "EventCategoryType": "County",
-                "CountyID": 34
-            }
-        },
-    ]
-}
 
 const fields = [
     new Field({
@@ -99,29 +24,30 @@ const fields = [
         type: "oid"
     }),
     new Field({
-        name: "CountyID",
+        name: "CriticalEventIndicator",
         type: "integer",
-        alias: "CountyID"
+        alias: "CriticalEventIndicator"
     }),
+    new Field({
+        name: "IconName",
+        type: "string",
+        alias: "IconName"
+    }),
+    new Field({
+        name: "EventPriorityID",
+        type: "integer",
+        alias: "EventPriorityID"
+    }),
+    new Field({
+        name: "EventPriorityDescription",
+        type: "string",
+        alias: "EventPriorityDescription"
+    }),
+    // County or Region
     new Field({
         name: "EventCategoryType",
         type: "string",
         alias: "EventCategoryType"
-    }),
-    new Field({
-        name: "EventCategoryID",
-        type: "integer",
-        alias: "EventCategoryID"
-    }),
-    new Field({
-        name: "EventCategoryName",
-        type: "string",
-        alias: "EventCategoryName"
-    }),
-    new Field({
-        name: "EventCategoryDescription",
-        type: "string",
-        alias: "EventCategoryDescription"
     }),
     new Field({
         name: "LastModifiedDate",
@@ -129,9 +55,14 @@ const fields = [
         alias: "LastModifiedDate"
     }),
     new Field({
-        name: "EventPriorityID",
+        name: "DisplayOrder",
         type: "integer",
-        alias: "EventPriorityID"
+        alias: "DisplayOrder"
+    }),
+    new Field({
+        name: "LocationName",
+        type: "string",
+        alias: "LocationName"
     }),
     new Field({
         name: "HeadlineMessage",
@@ -142,51 +73,82 @@ const fields = [
         name: "ExtendedMessage",
         type: "string",
         alias: "ExtendedMessage"
-    }),//"IconName"
+    }),
+    // County or Region ID depending on EventCategoryType.
     new Field({
-        name: "IconName",
+        name: "CountyID",
+        type: "integer",
+        alias: "CountyID"
+    }),
+    new Field({
+        name: "EventCategoryTypeDescription",
         type: "string",
-        alias: "IconName"
+        alias: "EventCategoryTypeDescription"
     }),
 ]
 
 let layer: FeatureLayer | undefined;
 
-export const initLayer = async (url: string): Promise<FeatureLayer> => {
-    // Fetch all alerts from JSON
-    // const fetchResponse = await fetch(url);
-    // const json = await fetchResponse.json();
-
-    // Test
-    const json = testJson;
-    // Get county and region service URLs...
-    const config = await getConfig();
-    // Create graphic out of each alert
+export const initLayer = async (alertUrl: string, countyUrl: string, regionUrl: string): Promise<FeatureLayer> => {
+    // Fetch all alerts from JSON...
+    let response = await fetch(alertUrl);
+    let json = await response.json();
+    // Create graphic out of each alert...
     const alertGraphics: Graphic[] = [];
-    json.features.forEach((each: { attributes: RegionalAlertInfo; }) => {
+    // Alert area polygons...
+    const areaGraphics: Graphic[] = [];
+    for (const each of json.features) {
         console.log(JSON.stringify(each));
         // Get region boundary from county or region service...
+        let where = "";
+        let outFields = "";
+        let url = "";
         switch (each.attributes.EventCategoryType) {
             case "County":
+                where = "JURDSG";
+                outFields = "JURLBL";
+                url = countyUrl;
                 break;
             case "Region":
+                where = "DistrictNumber";
+                outFields = "RegionName";
+                url = regionUrl;
                 break;
             default:
                 console.error("Invalid EventCategoryType: " + each.attributes.EventCategoryType);
-                break;
+                continue;
         }
-
-
-
+        where += `=${each.attributes.CountyID}`;
+        response = await fetch(
+            `${url}/query?where=${encodeURIComponent(where)}&outFields=${outFields}&returnGeometry=true&outSR=3857&f=pjson`);
+        json = await response.json();
         // Get centroid and set that as alert's geometry
-
-        // Add the boundary to the Region Layer with EventID
-    });
+        if (!json.features || json.features.length === 0) {
+            console.error(`Failed to locate the regional alert: ${each.attributes.EventID}, 
+            Area Type: ${each.attributes.EventCategoryType}, Area ID: ${each.attributes.CountyID}`);
+            continue;
+        }
+        else {
+            const areaGeom = Polygon.fromJSON(json.features[0].geometry);
+            areaGeom.spatialReference = SpatialReference.fromJSON(json.spatialReference);
+            alertGraphics.push(new Graphic({
+                geometry: areaGeom.centroid,
+                attributes: each.attributes
+            }));
+            // Add the boundary to the Alert Area Layer with EventID
+            areaGraphics.push(new Graphic({
+                geometry: areaGeom,
+                attributes: {
+                    EventID: each.attributes.EventID,
+                    Name: each.attributes[outFields],
+                }
+            }));
+        }
+    }
 
     layer = new FeatureLayer({
         id: "regional-alert-layer",
         title: "Regional Alerts",
-        // source: graphics,
         source: alertGraphics,
         fields: fields,
         objectIdField: "EventID",
@@ -195,7 +157,9 @@ export const initLayer = async (url: string): Promise<FeatureLayer> => {
         renderer: renderer,
         refreshInterval: 5,
     });
-    centerFeatures();
+    // Create the area boundary layer...
+    initAreaLayer(areaGraphics);
+
     return layer;
 }
 
@@ -224,20 +188,20 @@ export const getFeatureById = async (id: number): Promise<Graphic> => {
 export const centerFeatures = async (mapExtent?: Extent): Promise<void> => {
     const layer = getLayer();
     const query = layer.createQuery();
-    query.where = "1 = 1";
+    query.where = "1=1";
     query.returnGeometry = true;
-    query.outFields = ["EventID", "RegionID"];
+    query.outFields = ["EventID"];
     const result = await layer.queryFeatures(query);
     const updatedFtrs: Graphic[] = [];
     for (let i = 0; i < result.features.length; i++) {
         const feature = result.features[i];
         let newPt: Point | undefined;
-        const regionId = feature.attributes["RegionID"];
+        const regionId = feature.attributes["EventID"];
         if (mapExtent) {
             const visibleArea = await getVisibleArea(regionId, mapExtent);
             newPt = visibleArea?.centroid;
         } else {
-            const regionFtr = await getRegionById(regionId)
+            const regionFtr = await getAreaById(regionId)
             newPt = (regionFtr.geometry as Polygon).centroid;
         }
         if (newPt) {
@@ -248,3 +212,61 @@ export const centerFeatures = async (mapExtent?: Extent): Promise<void> => {
     const editResult = await layer.applyEdits({ updateFeatures: updatedFtrs });
     console.log(JSON.stringify(editResult));
 }
+
+
+// const testJson =
+// {
+//     features: [
+//         {
+//             "attributes": {
+//                 "EventID": 345433,
+//                 "CriticalEventIndicator": 0,
+//                 "IconName": "31.gif",
+//                 "EventPriorityID": 1,
+//                 "EventPriorityDescription": "HIGHEST IMPACT",
+//                 "EventCategoryType": "County",
+//                 "LastModifiedDate": 1627305948000,
+//                 "DisplayOrder": 0,
+//                 "LocationName": "Thurston",
+//                 "HeadlineMessage": "Nothing really happening of concern, just a test event.",
+//                 "ExtendedMessage": null,
+//                 "CountyID": 34,
+//                 "EventCategoryTypeDescription": "Incident"
+//             }
+//         },
+//         {
+//             "attributes": {
+//                 "EventID": 346436,
+//                 "CriticalEventIndicator": 0,
+//                 "IconName": "32.gif",
+//                 "EventPriorityID": 2,
+//                 "EventPriorityDescription": "HIGH IMPACT",
+//                 "EventCategoryType": "County",
+//                 "LastModifiedDate": 1631195399000,
+//                 "DisplayOrder": 0,
+//                 "LocationName": "Snohomish",
+//                 "HeadlineMessage": "This is a test, disregard. This would have a vehicle and person description here.",
+//                 "ExtendedMessage": null,
+//                 "CountyID": 31,
+//                 "EventCategoryTypeDescription": "Police activity"
+//             }
+//         },
+//         {
+//             "attributes": {
+//                 "EventID": 347437,
+//                 "CriticalEventIndicator": 0,
+//                 "IconName": "51.gif",
+//                 "EventPriorityID": 1,
+//                 "EventPriorityDescription": "HIGHEST IMPACT",
+//                 "EventCategoryType": "Region",
+//                 "LastModifiedDate": 1632407581000,
+//                 "DisplayOrder": 600,
+//                 "LocationName": "Southwest",
+//                 "HeadlineMessage": "A FAKE weather advisory beginning at 2:31 pm on September 23, 2021. Might be raining, watch for slick roads.",
+//                 "ExtendedMessage": null,
+//                 "CountyID": 12,
+//                 "EventCategoryTypeDescription": "Weather"
+//             }
+//         }
+//     ]
+// }

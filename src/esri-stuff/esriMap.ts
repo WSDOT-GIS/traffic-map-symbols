@@ -30,7 +30,7 @@ import { initLayer as initESRIRoadsReference } from "@/layers/RoadsReferenceLaye
 import { initLayer as initESRIBoundariesPlacesReference } from "@/layers/BoundariesPlacesReferenceLayer"
 import { initLayer as initStateRouteShieldsLayer } from "@/layers/StateRouteShields"
 import { initLayer as initBorderCrossingsLayer } from "@/layers/BorderCrossingsLayer"
-import RegionLayer from "@/layers/AlertAreaLayer";
+import AlertAreaLayer from "@/layers/AlertAreaLayer";
 import { initLayer as initRegionalAlertLayer } from "@/layers/RegionalAlertLayer";
 //
 import { getEsriExtent, getOutOfBoundDirection } from "@/utils/extentUtil";
@@ -101,10 +101,10 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const esriRoadsReferenceLayer = initESRIRoadsReference(config.esriRoadsReferenceLayer)
     const esriPlacesReferenceLayer = initESRIBoundariesPlacesReference(config.esriPlacesReferenceLayer)
     const stateRouteShieldsLayer = initStateRouteShieldsLayer(config.stateRouteShieldsLayer)
-    const regionalAlertLayer = await initRegionalAlertLayer(config.regionalAlerts);
+    const regionalAlertLayer = await initRegionalAlertLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
     // The first one in the array will be displayed at the bottom of the map... 
     const borderCrossingsLayer = initBorderCrossingsLayer(config.borderCrossings)
-    webmap.addMany([RegionLayer, esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
+    webmap.addMany([AlertAreaLayer(), esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
         firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertsLyr, roadClosuresLyr,
