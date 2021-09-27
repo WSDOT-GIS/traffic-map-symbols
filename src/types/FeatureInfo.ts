@@ -12,6 +12,3 @@ interface FeatureInfo {
 
 export default FeatureInfo;
 
-export const getAttribute = (info: FeatureInfo, fieldName: string) => {
-    const x = info.attributes[fieldName];
-}

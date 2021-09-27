@@ -38,13 +38,14 @@
         >
           {{ badgeText }}
         </div>
-      </div>
+     
       <button
-        class="popup-close-button w3-button w3-padding-small"
+        class="popup-close-button w3-button w3-display-right"
         @click="close"
       >
         &times;
       </button>
+       </div>
       <h4 class="popup-title w3-container">
         {{ getTitle() }}
       </h4>
@@ -883,8 +884,8 @@ export default defineComponent({
 } */
 .popup-close-button {
   position: absolute;
-  top: 0;
-  right: 0;
+  /* top: 0; */
+  /* right: 0; */
   border-style: none;
   background-color: transparent;
   font-size: 1.5em;
