@@ -38,14 +38,14 @@
         >
           {{ badgeText }}
         </div>
-     
-      <button
-        class="popup-close-button w3-button w3-display-right"
-        @click="close"
-      >
-        &times;
-      </button>
-       </div>
+
+        <button
+          class="popup-close-button w3-button w3-display-right"
+          @click="close"
+        >
+          &times;
+        </button>
+      </div>
       <h4 class="popup-title w3-container">
         {{ getTitle() }}
       </h4>
@@ -54,7 +54,7 @@
         <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
         <!-- </div> -->
       </div>
-      <div v-if="propWeatherForecast!=undefined">
+      <div v-if="propWeatherForecast != undefined">
         <table class="weatherForecastTable">
           <tr id="weatherPeriodText">
             <td
@@ -162,7 +162,6 @@ import {
   onUpdated,
   PropType,
   ref,
-  toRef,
   toRefs,
   watch,
 } from "vue";
@@ -280,7 +279,7 @@ export default defineComponent({
       currentIdx.value = 0;
       setBadgeText();
       setBadgeColors();
-      
+
       highlightMap();
       mapX.value = 0;
       mapY.value = 0;
@@ -311,13 +310,12 @@ export default defineComponent({
       setScreenXY();
     });
     watch(currentIdx, () => {
-      setWeatherForecast()
+      setWeatherForecast();
       context.emit("idxUpdate", currentIdx.value);
       setBadgeText();
       setBadgeColors();
       highlightMap();
       setMapXY();
-      
     });
     // Watch scale change...
     // On touch screen, after pinch zoom, panning map also changes the scale, so commented this out so popup does not close when that happens.
@@ -356,12 +354,12 @@ export default defineComponent({
       adjustPositionSize();
     });
     //Assigns the weather forecast to the weather forecast ref
-    const setWeatherForecast = () =>{
-      if(props.WeatherForecast){
-        propWeatherForecast.value = props.WeatherForecast
+    const setWeatherForecast = () => {
+      if (props.WeatherForecast) {
+        propWeatherForecast.value = props.WeatherForecast;
       }
-    }
-    
+    };
+
     // Convert map coordinates to screen coordinates and calculate the popup position...
     const setScreenXY = () => {
       if (mapX.value < 0 && mapY.value > 0) {
@@ -440,11 +438,11 @@ export default defineComponent({
               relativePosition.value = relativePositions.below;
             }
             let newTopLeft = calcTopLeft(h, w);
-            /**
+            /*
              * Pan map so the popup is displayed within the map view,
              * and the top is visible.
              * NOTE: Only do this on the initial popup load.
-             *  */
+             */
             let shiftXY = calcShiftXY(newTopLeft, h, w);
             const outOfBoundDir = checkPannedExtent(shiftXY.x, shiftXY.y);
             if (
@@ -462,8 +460,7 @@ export default defineComponent({
             setPosition(newTopLeft.top, newTopLeft.left);
             if (Math.abs(shiftXY.x) >= 1 || Math.abs(shiftXY.y) >= 1) {
               isPanning = true;
-              panMap(shiftXY.x, shiftXY.y).then((panResult) => {
-               // console.log("pan result: " + JSON.stringify(panResult));
+              panMap(shiftXY.x, shiftXY.y).then(() => {
                 isPanning = false;
                 setScreenXY();
                 // On the mobile devices after the pinch zoom, the map does not pan enough to show the top of the popup.
@@ -475,8 +472,7 @@ export default defineComponent({
                 );
                 if (shiftXY.x !== 0 || shiftXY.y !== 0) {
                   isPanning = true;
-                  panMap(shiftXY.x, shiftXY.y).then((panResult) => {
-                    //console.log("pan2 result: " + panResult);
+                  panMap(shiftXY.x, shiftXY.y).then(() => {
                     isPanning = false;
                     setScreenXY();
                   });
@@ -687,17 +683,16 @@ export default defineComponent({
       }
       return text;
     };
-    const setBadgeColors = () =>{
-      if(props.DarkBadgeColor!=undefined){
-        badgeDarkColor.value=props.DarkBadgeColor
+    const setBadgeColors = () => {
+      if (props.DarkBadgeColor != undefined) {
+        badgeDarkColor.value = props.DarkBadgeColor;
       }
-      if(props.LightBadgeColor!=undefined){
-        badgeLightColor.value=props.LightBadgeColor
-        if(badgeLightColor.value=="#484e55"){
-          badgeTextColor.value="white"
-        }
-        else{
-          badgeTextColor.value="black"
+      if (props.LightBadgeColor != undefined) {
+        badgeLightColor.value = props.LightBadgeColor;
+        if (badgeLightColor.value == "#484e55") {
+          badgeTextColor.value = "white";
+        } else {
+          badgeTextColor.value = "black";
         }
       }
     };
@@ -780,7 +775,7 @@ export default defineComponent({
       getMoreInfoURL,
       propWeatherForecast,
       propTravelDelay,
-      propFeatures
+      propFeatures,
     };
   },
 });
@@ -795,12 +790,7 @@ export default defineComponent({
 .popup-container {
   width: 400px;
 }
-@media screen and (max-width: 600px), screen and (max-height: 600px) {
-  .popup-container {
-    width: 100%;
-    height: 100%;
-  }
-}
+
 /* Common properties for the arrow. */
 .popup-container::after {
   content: "";
@@ -830,7 +820,21 @@ export default defineComponent({
   border-color: #fff #fff transparent transparent;
   box-shadow: 3px -3px 3px 0 rgba(0, 0, 0, 0.2);
 }
-
+@media screen and (max-width: 600px), screen and (max-height: 400px) {
+  .popup-container {
+    width: 90%;
+  }
+  /* Hide the arrow */
+  .popup-container::after {
+    display: none;
+  }
+  .popup-container-above::after {
+    display: none;
+  }
+  .popup-container-below::after {
+    display: none;
+  }
+}
 .popup-inner-container {
   overflow-y: auto;
 }

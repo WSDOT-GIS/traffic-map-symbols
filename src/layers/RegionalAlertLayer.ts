@@ -98,7 +98,6 @@ export const initLayer = async (alertUrl: string, countyUrl: string, regionUrl: 
     // Alert area polygons...
     const areaGraphics: Graphic[] = [];
     for (const each of json.features) {
-        console.log(JSON.stringify(each));
         // Get region boundary from county or region service...
         let where = "";
         let outFields = "";
@@ -211,64 +210,5 @@ export const centerFeatures = async (mapExtent?: Extent): Promise<void> => {
             updatedFtrs.push(feature);
         }
     }
-    const editResult = await layer.applyEdits({ updateFeatures: updatedFtrs });
-    console.log(JSON.stringify(editResult));
+    await layer.applyEdits({ updateFeatures: updatedFtrs });
 }
-
-
-// const testJson =
-// {
-//     features: [
-//         {
-//             "attributes": {
-//                 "EventID": 345433,
-//                 "CriticalEventIndicator": 0,
-//                 "IconName": "31.gif",
-//                 "EventPriorityID": 1,
-//                 "EventPriorityDescription": "HIGHEST IMPACT",
-//                 "EventCategoryType": "County",
-//                 "LastModifiedDate": 1627305948000,
-//                 "DisplayOrder": 0,
-//                 "LocationName": "Thurston",
-//                 "HeadlineMessage": "Nothing really happening of concern, just a test event.",
-//                 "ExtendedMessage": null,
-//                 "CountyID": 34,
-//                 "EventCategoryTypeDescription": "Incident"
-//             }
-//         },
-//         {
-//             "attributes": {
-//                 "EventID": 346436,
-//                 "CriticalEventIndicator": 0,
-//                 "IconName": "32.gif",
-//                 "EventPriorityID": 2,
-//                 "EventPriorityDescription": "HIGH IMPACT",
-//                 "EventCategoryType": "County",
-//                 "LastModifiedDate": 1631195399000,
-//                 "DisplayOrder": 0,
-//                 "LocationName": "Snohomish",
-//                 "HeadlineMessage": "This is a test, disregard. This would have a vehicle and person description here.",
-//                 "ExtendedMessage": null,
-//                 "CountyID": 31,
-//                 "EventCategoryTypeDescription": "Police activity"
-//             }
-//         },
-//         {
-//             "attributes": {
-//                 "EventID": 347437,
-//                 "CriticalEventIndicator": 0,
-//                 "IconName": "51.gif",
-//                 "EventPriorityID": 1,
-//                 "EventPriorityDescription": "HIGHEST IMPACT",
-//                 "EventCategoryType": "Region",
-//                 "LastModifiedDate": 1632407581000,
-//                 "DisplayOrder": 600,
-//                 "LocationName": "Southwest",
-//                 "HeadlineMessage": "A FAKE weather advisory beginning at 2:31 pm on September 23, 2021. Might be raining, watch for slick roads.",
-//                 "ExtendedMessage": null,
-//                 "CountyID": 12,
-//                 "EventCategoryTypeDescription": "Weather"
-//             }
-//         }
-//     ]
-// }
