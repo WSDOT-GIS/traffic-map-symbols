@@ -19,18 +19,18 @@ const renderer = new SimpleRenderer({
 });
 
 const fields = [
-    new Field({
+    new Field(
+    {
         name: "EventID",
         alias: "EventID",
         type: "oid"
     }),
     new Field({
         name: "Name",
+        alias: "Name",
         type: "string",
-        alias: "Name"
     }),
-
-]
+];
 
 let layer: FeatureLayer | undefined;
 

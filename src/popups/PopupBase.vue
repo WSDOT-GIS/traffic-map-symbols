@@ -1,93 +1,101 @@
 <template>
   <div
-    ref="containerRef"
-    class="popup-container w3-card w3-col"
     :class="{
-      'popup-container-above': relativePosition === 'above',
-      'popup-container-below': relativePosition === 'below',
-    }"
-    v-if="propFeatures.length > 0 && propFeatures[0]"
-    :style="{
-      marginTop: popupTop + 'px',
-      marginLeft: popupLeft + 'px',
+      'w3-modal': smallMedia,
+      'popup-modal-container-show':
+        smallMedia && propFeatures.length > 0 && propFeatures[0],
+      'popup-modal-container-hide':
+        smallMedia && (!propFeatures || propFeatures.length == 0),
     }"
   >
-    <!-- container without the pointer -->
-    <div :style="{ maxHeight: maxHeight + 'px' }" class="popup-inner-container">
-      <div class="popup-header w3-left-align">
-        <div
-          class="popup-banner"
-          :style="{
-            backgroundColor: LightThemeColor,
-            borderColor: DarkThemeColor,
-          }"
-        >
-          <div class="popup-banner-icon">
-            <slot name="icon"></slot>
-          </div>
-          <span class="popup-banner-text"> {{ getBannerText() }}</span>
-        </div>
-        <div
-          v-if="badgeText.length > 0"
-          class="popup-badge"
-          :style="{
-            backgroundColor: badgeLightColor,
-            borderColor: badgeDarkColor,
-            color: badgeTextColor,
-          }"
-        >
-          {{ badgeText }}
-        </div>
-     
-      <button
-        class="popup-close-button w3-button w3-display-right"
-        @click="close"
+    <div
+      ref="containerRef"
+      class="popup-container w3-card w3-col"
+      :class="{
+        'popup-container-above': relativePosition === 'above',
+        'popup-container-below': relativePosition === 'below',
+        'w3-modal-content': smallMedia,
+      }"
+      v-if="propFeatures.length > 0 && propFeatures[0]"
+      :style="popupTopLeft"
+    >
+      <!-- container without the pointer -->
+      <div
+        :style="{ maxHeight: maxHeight + 'px' }"
+        class="popup-inner-container"
       >
-        &times;
-      </button>
-       </div>
-      <h4 class="popup-title w3-container">
-        {{ getTitle() }}
-      </h4>
-      <div v-if="Config.subtitle && Config.subtitle != 'on Undefined'">
-        <!-- <div class="popup-content w3-container"> -->
-        <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
-        <!-- </div> -->
-      </div>
-      <div v-if="propWeatherForecast!=undefined">
-        <table class="weatherForecastTable">
-          <tr id="weatherPeriodText">
-            <td
-              v-for="eachFeature in propWeatherForecast.forecasts"
-              :key="eachFeature.forecastNumber"
-            >
-              {{ eachFeature.periodText }}
-            </td>
-          </tr>
-          <tr id="weatherForecastIcons">
-            <td
-              class="weatherForecastIcon"
-              v-for="eachFeature in propWeatherForecast.forecasts"
-              :key="eachFeature.forecastNumber"
-            >
-              <img
-                :src="
-                  'https://images.wsdot.wa.gov/traffic/weaicons/' +
-                  eachFeature.weatherIconFileName
-                "
-              />
-            </td>
-          </tr>
-          <tr id="weatherForecastDescription">
-            <td
-              v-for="eachFeature in propWeatherForecast.forecasts"
-              :key="eachFeature.forecastNumber"
-            >
-              {{ eachFeature.weatherDescription }}
-            </td>
-          </tr>
-        </table>
-        <!--<table>
+        <div class="popup-header w3-left-align">
+          <div
+            class="popup-banner"
+            :style="{
+              backgroundColor: LightThemeColor,
+              borderColor: DarkThemeColor,
+            }"
+          >
+            <div class="popup-banner-icon">
+              <slot name="icon"></slot>
+            </div>
+            <span class="popup-banner-text"> {{ getBannerText() }}</span>
+          </div>
+          <div
+            v-if="badgeText.length > 0"
+            class="popup-badge"
+            :style="{
+              backgroundColor: badgeLightColor,
+              borderColor: badgeDarkColor,
+              color: badgeTextColor,
+            }"
+          >
+            {{ badgeText }}
+          </div>
+
+          <button
+            class="popup-close-button w3-button w3-display-right"
+            @click="close"
+          >
+            &times;
+          </button>
+        </div>
+        <h4 class="popup-title w3-container">
+          {{ getTitle() }}
+        </h4>
+        <div v-if="Config.subtitle && Config.subtitle != 'on Undefined'">
+          <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
+        </div>
+        <div v-if="propWeatherForecast != undefined">
+          <table class="weatherForecastTable">
+            <tr id="weatherPeriodText">
+              <td
+                v-for="eachFeature in propWeatherForecast.forecasts"
+                :key="eachFeature.forecastNumber"
+              >
+                {{ eachFeature.periodText }}
+              </td>
+            </tr>
+            <tr id="weatherForecastIcons">
+              <td
+                class="weatherForecastIcon"
+                v-for="eachFeature in propWeatherForecast.forecasts"
+                :key="eachFeature.forecastNumber"
+              >
+                <img
+                  :src="
+                    'https://images.wsdot.wa.gov/traffic/weaicons/' +
+                    eachFeature.weatherIconFileName
+                  "
+                />
+              </td>
+            </tr>
+            <tr id="weatherForecastDescription">
+              <td
+                v-for="eachFeature in propWeatherForecast.forecasts"
+                :key="eachFeature.forecastNumber"
+              >
+                {{ eachFeature.weatherDescription }}
+              </td>
+            </tr>
+          </table>
+          <!--<table>
           <tr>
             <td>
               <label>Forecast created </label>
@@ -97,59 +105,60 @@
             </td>
           </tr>
         </table>-->
-      </div>
+        </div>
 
-      <Carousel
-        v-if="Config.imageFieldName"
-        :items-to-show="1"
-        :wrapAround="true"
-        @update:modelValue="currentIdx = $event"
-        :style="pagenationStyle"
-      >
-        <Slide v-for="eachFeature in Features" :key="eachFeature.id">
-          <div class="carousel-item-container">
-            <img
-              class="popup-img"
-              :src="
-                Config.imageFieldName
-                  ? eachFeature.attributes[Config.imageFieldName]
-                  : ''
-              "
-              :alt="eachFeature.id"
-              @load="onImgLoad()"
-              @error="$event.target.src = require('@/assets/no-image.png')"
-            />
-          </div>
-        </Slide>
-        <template #addons="{ slidesCount }">
-          <navigation v-if="slidesCount > 1" />
-          <pagination v-if="slidesCount > 1" />
-        </template>
-      </Carousel>
-      <div class="travelDelayTime" v-if="propTravelDelay > 0">
-        {{ `${propTravelDelay} minute delay` }}
+        <Carousel
+          v-if="Config.imageFieldName"
+          :items-to-show="1"
+          :wrapAround="true"
+          @update:modelValue="currentIdx = $event"
+          :style="pagenationStyle"
+        >
+          <Slide v-for="eachFeature in Features" :key="eachFeature.id">
+            <div class="carousel-item-container">
+              <img
+                class="popup-img"
+                :src="
+                  Config.imageFieldName
+                    ? eachFeature.attributes[Config.imageFieldName]
+                    : ''
+                "
+                :alt="eachFeature.id"
+                @load="onImgLoad()"
+                @error="$event.target.src = require('@/assets/no-image.png')"
+              />
+            </div>
+          </Slide>
+          <template #addons="{ slidesCount }">
+            <navigation v-if="slidesCount > 1" />
+            <pagination v-if="slidesCount > 1" />
+          </template>
+        </Carousel>
+        <div class="travelDelayTime" v-if="propTravelDelay > 0">
+          {{ `${propTravelDelay} minute delay` }}
+        </div>
+        <div
+          v-for="eachConfig in Config.content"
+          :key="eachConfig.label"
+          class="popup-content w3-container"
+        >
+          <PopupRow
+            v-if="Config.content"
+            :Config="eachConfig"
+            :Feature="Features[currentIdx]"
+          />
+        </div>
       </div>
-      <div
-        v-for="eachConfig in Config.content"
-        :key="eachConfig.label"
-        class="popup-content w3-container"
-      >
-        <PopupRow
-          v-if="Config.content"
-          :Config="eachConfig"
-          :Feature="Features[currentIdx]"
-        />
-      </div>
-    </div>
-    <div v-if="Config.moreInfoURL">
-      <div
-        v-if="!Config.moreInfoURL.text == ''"
-        class="popup-title w3-container"
-      >
-        {{ getMoreInfoURL() }}
-      </div>
-      <div v-if="Config.moreInfoURL.custom" class="popup-title w3-container">
-        <div v-html="getMoreInfoURL()"></div>
+      <div v-if="Config.moreInfoURL">
+        <div
+          v-if="!Config.moreInfoURL.text == ''"
+          class="popup-title w3-container"
+        >
+          {{ getMoreInfoURL() }}
+        </div>
+        <div v-if="Config.moreInfoURL.custom" class="popup-title w3-container">
+          <div v-html="getMoreInfoURL()"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -162,7 +171,6 @@ import {
   onUpdated,
   PropType,
   ref,
-  toRef,
   toRefs,
   watch,
 } from "vue";
@@ -248,8 +256,10 @@ export default defineComponent({
     const mapScale = computed(() => store.state.scale);
     const mapCenter = computed(() => store.state.center);
     const maxHeight = ref(mapSize.value.height);
+    const smallMedia = ref(isSmallMedia());
     watch(mapSize, (size) => {
       maxHeight.value = size.height;
+      smallMedia.value = isSmallMedia();
       if (mapX.value < 0 && mapY.value > 0) {
         setScreenXY();
       }
@@ -259,8 +269,7 @@ export default defineComponent({
     const screenX = ref(-1);
     const screenY = ref(-1);
     // Popup location.
-    const popupLeft = ref(-1000);
-    const popupTop = ref(-1000);
+    const popupTopLeft = ref({ marginTop: "-1000px", marginLeft: "-1000px" });
     //
     let numImgLoaded = 0;
     let wasUpdatedOnce = false;
@@ -280,7 +289,7 @@ export default defineComponent({
       currentIdx.value = 0;
       setBadgeText();
       setBadgeColors();
-      
+
       highlightMap();
       mapX.value = 0;
       mapY.value = 0;
@@ -289,8 +298,11 @@ export default defineComponent({
       prevScreenY = -1000;
       prevHeight = 0;
       prevWidth = 0;
-      popupLeft.value = -1000;
-      popupTop.value = -1000;
+      if (smallMedia.value && propFeatures.value.length > 0) {
+        setPosition();
+      } else {
+        setPosition(-1000, -1000);
+      }
       numImgLoaded = 0;
       wasUpdatedOnce = false;
       doPanMap = true;
@@ -311,13 +323,12 @@ export default defineComponent({
       setScreenXY();
     });
     watch(currentIdx, () => {
-      setWeatherForecast()
+      setWeatherForecast();
       context.emit("idxUpdate", currentIdx.value);
       setBadgeText();
       setBadgeColors();
       highlightMap();
       setMapXY();
-      
     });
     // Watch scale change...
     // On touch screen, after pinch zoom, panning map also changes the scale, so commented this out so popup does not close when that happens.
@@ -335,8 +346,6 @@ export default defineComponent({
       if (props.Features.length === 0 || !oldValue) {
         return;
       }
-      // const newCenter = mapView.toScreen(newValue);
-      // const oldCenter = mapView.toScreen(oldValue);
       const newCenter = toScreenXY(newValue.x, newValue.y);
       const oldCenter = toScreenXY(oldValue.x, oldValue.y);
       const diffX = oldCenter.x - newCenter.x;
@@ -356,12 +365,12 @@ export default defineComponent({
       adjustPositionSize();
     });
     //Assigns the weather forecast to the weather forecast ref
-    const setWeatherForecast = () =>{
-      if(props.WeatherForecast){
-        propWeatherForecast.value = props.WeatherForecast
+    const setWeatherForecast = () => {
+      if (props.WeatherForecast) {
+        propWeatherForecast.value = props.WeatherForecast;
       }
-    }
-    
+    };
+
     // Convert map coordinates to screen coordinates and calculate the popup position...
     const setScreenXY = () => {
       if (mapX.value < 0 && mapY.value > 0) {
@@ -379,7 +388,6 @@ export default defineComponent({
     let prevScreenY = 0;
     let prevWidth = 0;
     let prevHeight = 0;
-
     /**
      * Position popup on top of the feature...
      */
@@ -401,10 +409,17 @@ export default defineComponent({
         // Nothing to show...
         return;
       }
-      if (isSmallMedia()) {
-        // Small screen mode...
-        setPosition(0, 0);
-      } else {
+      // if (smallMedia.value) {
+      //   // Do not set these here. With w3-modal-content, the carousel cannot position picture correctly.
+      //   // Positioning in modal mode need to happen earlier.
+      //   // Small screen mode...
+      //   setPosition(0, 0);
+      //   setPosition(
+      //     0,
+      //     (mapSize.value.width - containerRef.value.offsetWidth) / 2
+      //   );
+      // } else {
+      if (!smallMedia.value) {
         // Large screen mode...
         const h = containerRef.value.offsetHeight;
         const w = containerRef.value.offsetWidth;
@@ -440,11 +455,11 @@ export default defineComponent({
               relativePosition.value = relativePositions.below;
             }
             let newTopLeft = calcTopLeft(h, w);
-            /**
+            /*
              * Pan map so the popup is displayed within the map view,
              * and the top is visible.
              * NOTE: Only do this on the initial popup load.
-             *  */
+             */
             let shiftXY = calcShiftXY(newTopLeft, h, w);
             const outOfBoundDir = checkPannedExtent(shiftXY.x, shiftXY.y);
             if (
@@ -453,7 +468,7 @@ export default defineComponent({
               (relativePosition.value === relativePositions.below &&
                 outOfBoundDir[0] === "s")
             ) {
-              const bestPosition = getBestRelativePosition(h, w);
+              const bestPosition = getBestRelativePosition(h);
               relativePosition.value = bestPosition;
               newTopLeft = calcTopLeft(h, w);
               shiftXY = calcShiftXY(newTopLeft, h, w);
@@ -462,25 +477,24 @@ export default defineComponent({
             setPosition(newTopLeft.top, newTopLeft.left);
             if (Math.abs(shiftXY.x) >= 1 || Math.abs(shiftXY.y) >= 1) {
               isPanning = true;
-              panMap(shiftXY.x, shiftXY.y).then((panResult) => {
-               // console.log("pan result: " + JSON.stringify(panResult));
+              panMap(shiftXY.x, shiftXY.y).then(() => {
                 isPanning = false;
                 setScreenXY();
+                // Do not pan map on small device...
                 // On the mobile devices after the pinch zoom, the map does not pan enough to show the top of the popup.
                 // So check the popup position again and pan map more if necessary.
-                shiftXY = calcShiftXY(
-                  { top: popupTop.value, left: popupLeft.value },
-                  h,
-                  w
-                );
-                if (shiftXY.x !== 0 || shiftXY.y !== 0) {
-                  isPanning = true;
-                  panMap(shiftXY.x, shiftXY.y).then((panResult) => {
-                    //console.log("pan2 result: " + panResult);
-                    isPanning = false;
-                    setScreenXY();
-                  });
-                }
+                // shiftXY = calcShiftXY(
+                //   { top: popupTop.value, left: popupLeft.value },
+                //   h,
+                //   w
+                // );
+                // if (shiftXY.x !== 0 || shiftXY.y !== 0) {
+                //   isPanning = true;
+                //   panMap(shiftXY.x, shiftXY.y).then(() => {
+                //     isPanning = false;
+                //     setScreenXY();
+                //   });
+                // }
               });
             }
           });
@@ -488,8 +502,8 @@ export default defineComponent({
       }
     };
     const getBestRelativePosition = (
-      height: number,
-      width: number
+      height: number
+      // width: number // TODO: maybe in the future...
     ): relativePositions => {
       const extent = getEsriExtent("full");
       const results: { pos: relativePositions; val: number }[] = [];
@@ -592,15 +606,29 @@ export default defineComponent({
       return isComplete;
     };
     /** This sets the margin top and left of the popup container. */
-    const setPosition = (top: number, left: number) => {
+    const setPosition = (top?: number, left?: number) => {
       // Adjust vertical position...
-      if (popupTop.value !== top) {
-        popupTop.value = top;
+      if (top) {
+        const currentTop = parseInt(popupTopLeft.value.marginTop);
+        if (!currentTop || currentTop !== top) {
+          popupTopLeft.value.marginTop = top + "px";
+        }
+      } else {
+        popupTopLeft.value.marginTop = "";
       }
       // Adjust horizontal position.
-      if (popupLeft.value !== left) {
-        popupLeft.value = left;
+      if (left) {
+        const currentTop = parseInt(popupTopLeft.value.marginLeft);
+        if (!currentTop || currentTop !== left) {
+          popupTopLeft.value.marginLeft = left + "px";
+        }
+      } else {
+        popupTopLeft.value.marginLeft = "";
       }
+
+      // if (popupLeft.value !== left) {
+      //   popupLeft.value = left;
+      // }
     };
     const getMoreInfoURL = () => {
       if (
@@ -687,17 +715,16 @@ export default defineComponent({
       }
       return text;
     };
-    const setBadgeColors = () =>{
-      if(props.DarkBadgeColor!=undefined){
-        badgeDarkColor.value=props.DarkBadgeColor
+    const setBadgeColors = () => {
+      if (props.DarkBadgeColor != undefined) {
+        badgeDarkColor.value = props.DarkBadgeColor;
       }
-      if(props.LightBadgeColor!=undefined){
-        badgeLightColor.value=props.LightBadgeColor
-        if(badgeLightColor.value=="#484e55"){
-          badgeTextColor.value="white"
-        }
-        else{
-          badgeTextColor.value="black"
+      if (props.LightBadgeColor != undefined) {
+        badgeLightColor.value = props.LightBadgeColor;
+        if (badgeLightColor.value == "#484e55") {
+          badgeTextColor.value = "white";
+        } else {
+          badgeTextColor.value = "black";
         }
       }
     };
@@ -763,8 +790,7 @@ export default defineComponent({
     return {
       containerRef,
       relativePosition,
-      popupLeft,
-      popupTop,
+      popupTopLeft,
       maxHeight,
       currentIdx,
       close,
@@ -780,13 +806,21 @@ export default defineComponent({
       getMoreInfoURL,
       propWeatherForecast,
       propTravelDelay,
-      propFeatures
+      propFeatures,
+      smallMedia,
     };
   },
 });
 </script>
 
 <style scoped>
+.popup-modal-container-show {
+  display: block;
+  padding-top: 15px;
+}
+.popup-modal-container-hide {
+  display: none;
+}
 .popup-container {
   z-index: 10;
   background-color: #fff;
@@ -795,12 +829,7 @@ export default defineComponent({
 .popup-container {
   width: 400px;
 }
-@media screen and (max-width: 600px), screen and (max-height: 600px) {
-  .popup-container {
-    width: 100%;
-    height: 100%;
-  }
-}
+
 /* Common properties for the arrow. */
 .popup-container::after {
   content: "";
@@ -830,7 +859,21 @@ export default defineComponent({
   border-color: #fff #fff transparent transparent;
   box-shadow: 3px -3px 3px 0 rgba(0, 0, 0, 0.2);
 }
-
+@media screen and (max-width: 600px), screen and (max-height: 400px) {
+  /* .popup-container {
+    width: 90%;
+  } */
+  /* Hide the arrow */
+  .popup-container::after {
+    display: none;
+  }
+  .popup-container-above::after {
+    display: none;
+  }
+  .popup-container-below::after {
+    display: none;
+  }
+}
 .popup-inner-container {
   overflow-y: auto;
 }
