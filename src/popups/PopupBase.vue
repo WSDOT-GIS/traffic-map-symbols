@@ -1,93 +1,106 @@
 <template>
   <div
-    ref="containerRef"
-    class="popup-container w3-card w3-col"
     :class="{
-      'popup-container-above': relativePosition === 'above',
-      'popup-container-below': relativePosition === 'below',
-    }"
-    v-if="propFeatures.length > 0 && propFeatures[0]"
-    :style="{
-      marginTop: popupTop + 'px',
-      marginLeft: popupLeft + 'px',
+      'w3-modal': smallMedia,
+      'popup-modal-container-show':
+        smallMedia && propFeatures.length > 0 && propFeatures[0],
+      'popup-modal-container-hide':
+        smallMedia && (!propFeatures || propFeatures.length == 0),
     }"
   >
-    <!-- container without the pointer -->
-    <div :style="{ maxHeight: maxHeight + 'px' }" class="popup-inner-container">
-      <div class="popup-header w3-left-align">
-        <div
-          class="popup-banner"
-          :style="{
-            backgroundColor: LightThemeColor,
-            borderColor: DarkThemeColor,
-          }"
-        >
-          <div class="popup-banner-icon">
-            <slot name="icon"></slot>
+    <div
+      ref="containerRef"
+      class="popup-container w3-card w3-col"
+      :class="{
+        'popup-container-above': relativePosition === 'above',
+        'popup-container-below': relativePosition === 'below',
+        'w3-modal-content': smallMedia,
+      }"
+      v-if="propFeatures.length > 0 && propFeatures[0]"
+      :style="{
+        marginTop: popupTop + 'px',
+        marginLeft: popupLeft + 'px',
+      }"
+    >
+      <!-- container without the pointer -->
+      <div
+        :style="{ maxHeight: maxHeight + 'px' }"
+        class="popup-inner-container"
+      >
+        <div class="popup-header w3-left-align">
+          <div
+            class="popup-banner"
+            :style="{
+              backgroundColor: LightThemeColor,
+              borderColor: DarkThemeColor,
+            }"
+          >
+            <div class="popup-banner-icon">
+              <slot name="icon"></slot>
+            </div>
+            <span class="popup-banner-text"> {{ getBannerText() }}</span>
           </div>
-          <span class="popup-banner-text"> {{ getBannerText() }}</span>
-        </div>
-        <div
-          v-if="badgeText.length > 0"
-          class="popup-badge"
-          :style="{
-            backgroundColor: badgeLightColor,
-            borderColor: badgeDarkColor,
-            color: badgeTextColor,
-          }"
-        >
-          {{ badgeText }}
-        </div>
+          <div
+            v-if="badgeText.length > 0"
+            class="popup-badge"
+            :style="{
+              backgroundColor: badgeLightColor,
+              borderColor: badgeDarkColor,
+              color: badgeTextColor,
+            }"
+          >
+            {{ badgeText }}
+          </div>
 
-        <button
-          class="popup-close-button w3-button w3-display-right"
-          @click="close"
-        >
-          &times;
-        </button>
-      </div>
-      <h4 class="popup-title w3-container">
-        {{ getTitle() }}
-      </h4>
-      <div v-if="Config.subtitle && Config.subtitle != 'on Undefined'">
-        <!-- <div class="popup-content w3-container"> -->
-        <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
-        <!-- </div> -->
-      </div>
-      <div v-if="propWeatherForecast != undefined">
-        <table class="weatherForecastTable">
-          <tr id="weatherPeriodText">
-            <td
-              v-for="eachFeature in propWeatherForecast.forecasts"
-              :key="eachFeature.forecastNumber"
-            >
-              {{ eachFeature.periodText }}
-            </td>
-          </tr>
-          <tr id="weatherForecastIcons">
-            <td
-              class="weatherForecastIcon"
-              v-for="eachFeature in propWeatherForecast.forecasts"
-              :key="eachFeature.forecastNumber"
-            >
-              <img
-                :src="
-                  'https://images.wsdot.wa.gov/traffic/weaicons/' +
-                  eachFeature.weatherIconFileName
-                "
-              />
-            </td>
-          </tr>
-          <tr id="weatherForecastDescription">
-            <td
-              v-for="eachFeature in propWeatherForecast.forecasts"
-              :key="eachFeature.forecastNumber"
-            >
-              {{ eachFeature.weatherDescription }}
-            </td>
-          </tr>
-        </table>
-        <!--<table>
+          <button
+            class="popup-close-button w3-button w3-display-right"
+            @click="close"
+          >
+            &times;
+          </button>
+        </div>
+        <h4 class="popup-title w3-container">
+          {{ getTitle() }}
+        </h4>
+        <div v-if="Config.subtitle && Config.subtitle != 'on Undefined'">
+          <!-- <div class="popup-content w3-container"> -->
+          <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
+          <!-- </div> -->
+        </div>
+        <div v-if="propWeatherForecast != undefined">
+          <table class="weatherForecastTable">
+            <tr id="weatherPeriodText">
+              <td
+                v-for="eachFeature in propWeatherForecast.forecasts"
+                :key="eachFeature.forecastNumber"
+              >
+                {{ eachFeature.periodText }}
+              </td>
+            </tr>
+            <tr id="weatherForecastIcons">
+              <td
+                class="weatherForecastIcon"
+                v-for="eachFeature in propWeatherForecast.forecasts"
+                :key="eachFeature.forecastNumber"
+              >
+                <img
+                  :src="
+                    'https://images.wsdot.wa.gov/traffic/weaicons/' +
+                    eachFeature.weatherIconFileName
+                  "
+                />
+              </td>
+            </tr>
+            <tr id="weatherForecastDescription">
+              <td
+                v-for="eachFeature in propWeatherForecast.forecasts"
+                :key="eachFeature.forecastNumber"
+              >
+                {{ eachFeature.weatherDescription }}
+              </td>
+            </tr>
+          </table>
+          <!--<table>
           <tr>
             <td>
               <label>Forecast created </label>
@@ -97,59 +110,60 @@
             </td>
           </tr>
         </table>-->
-      </div>
+        </div>
 
-      <Carousel
-        v-if="Config.imageFieldName"
-        :items-to-show="1"
-        :wrapAround="true"
-        @update:modelValue="currentIdx = $event"
-        :style="pagenationStyle"
-      >
-        <Slide v-for="eachFeature in Features" :key="eachFeature.id">
-          <div class="carousel-item-container">
-            <img
-              class="popup-img"
-              :src="
-                Config.imageFieldName
-                  ? eachFeature.attributes[Config.imageFieldName]
-                  : ''
-              "
-              :alt="eachFeature.id"
-              @load="onImgLoad()"
-              @error="$event.target.src = require('@/assets/no-image.png')"
-            />
-          </div>
-        </Slide>
-        <template #addons="{ slidesCount }">
-          <navigation v-if="slidesCount > 1" />
-          <pagination v-if="slidesCount > 1" />
-        </template>
-      </Carousel>
-      <div class="travelDelayTime" v-if="propTravelDelay > 0">
-        {{ `${propTravelDelay} minute delay` }}
+        <Carousel
+          v-if="Config.imageFieldName"
+          :items-to-show="1"
+          :wrapAround="true"
+          @update:modelValue="currentIdx = $event"
+          :style="pagenationStyle"
+        >
+          <Slide v-for="eachFeature in Features" :key="eachFeature.id">
+            <div class="carousel-item-container">
+              <img
+                class="popup-img"
+                :src="
+                  Config.imageFieldName
+                    ? eachFeature.attributes[Config.imageFieldName]
+                    : ''
+                "
+                :alt="eachFeature.id"
+                @load="onImgLoad()"
+                @error="$event.target.src = require('@/assets/no-image.png')"
+              />
+            </div>
+          </Slide>
+          <template #addons="{ slidesCount }">
+            <navigation v-if="slidesCount > 1" />
+            <pagination v-if="slidesCount > 1" />
+          </template>
+        </Carousel>
+        <div class="travelDelayTime" v-if="propTravelDelay > 0">
+          {{ `${propTravelDelay} minute delay` }}
+        </div>
+        <div
+          v-for="eachConfig in Config.content"
+          :key="eachConfig.label"
+          class="popup-content w3-container"
+        >
+          <PopupRow
+            v-if="Config.content"
+            :Config="eachConfig"
+            :Feature="Features[currentIdx]"
+          />
+        </div>
       </div>
-      <div
-        v-for="eachConfig in Config.content"
-        :key="eachConfig.label"
-        class="popup-content w3-container"
-      >
-        <PopupRow
-          v-if="Config.content"
-          :Config="eachConfig"
-          :Feature="Features[currentIdx]"
-        />
-      </div>
-    </div>
-    <div v-if="Config.moreInfoURL">
-      <div
-        v-if="!Config.moreInfoURL.text == ''"
-        class="popup-title w3-container"
-      >
-        {{ getMoreInfoURL() }}
-      </div>
-      <div v-if="Config.moreInfoURL.custom" class="popup-title w3-container">
-        <div v-html="getMoreInfoURL()"></div>
+      <div v-if="Config.moreInfoURL">
+        <div
+          v-if="!Config.moreInfoURL.text == ''"
+          class="popup-title w3-container"
+        >
+          {{ getMoreInfoURL() }}
+        </div>
+        <div v-if="Config.moreInfoURL.custom" class="popup-title w3-container">
+          <div v-html="getMoreInfoURL()"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -247,8 +261,10 @@ export default defineComponent({
     const mapScale = computed(() => store.state.scale);
     const mapCenter = computed(() => store.state.center);
     const maxHeight = ref(mapSize.value.height);
+    const smallMedia = ref(isSmallMedia());
     watch(mapSize, (size) => {
       maxHeight.value = size.height;
+      smallMedia.value = isSmallMedia();
       if (mapX.value < 0 && mapY.value > 0) {
         setScreenXY();
       }
@@ -333,8 +349,6 @@ export default defineComponent({
       if (props.Features.length === 0 || !oldValue) {
         return;
       }
-      // const newCenter = mapView.toScreen(newValue);
-      // const oldCenter = mapView.toScreen(oldValue);
       const newCenter = toScreenXY(newValue.x, newValue.y);
       const oldCenter = toScreenXY(oldValue.x, oldValue.y);
       const diffX = oldCenter.x - newCenter.x;
@@ -377,7 +391,6 @@ export default defineComponent({
     let prevScreenY = 0;
     let prevWidth = 0;
     let prevHeight = 0;
-
     /**
      * Position popup on top of the feature...
      */
@@ -399,9 +412,10 @@ export default defineComponent({
         // Nothing to show...
         return;
       }
-      if (isSmallMedia()) {
+      if (smallMedia.value) {
         // Small screen mode...
-        setPosition(0, 0);
+        // setPosition(0, 0);
+        setPosition(0, (mapSize.value.width - containerRef.value.offsetWidth) / 2);
       } else {
         // Large screen mode...
         const h = containerRef.value.offsetHeight;
@@ -776,12 +790,19 @@ export default defineComponent({
       propWeatherForecast,
       propTravelDelay,
       propFeatures,
+      smallMedia,
     };
   },
 });
 </script>
 
 <style scoped>
+.popup-modal-container-show {
+  display: block;
+}
+.popup-modal-container-hide {
+  display: none;
+}
 .popup-container {
   z-index: 10;
   background-color: #fff;
