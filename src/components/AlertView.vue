@@ -5,7 +5,7 @@
     class="w3-modal"
   >
     <div
-      class="w3-modal-content w3-card w3-left-align alert-content"
+      class="w3-modal-content w3-animate-right w3-card w3-left-align alert-content"
       :style="{ maxHeight: height }"
       ref="containerRef"
     >

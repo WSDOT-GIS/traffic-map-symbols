@@ -17,10 +17,7 @@
         'w3-modal-content': smallMedia,
       }"
       v-if="propFeatures.length > 0 && propFeatures[0]"
-      :style="{
-        marginTop: popupTop + 'px',
-        marginLeft: popupLeft + 'px',
-      }"
+      :style="popupTopLeft"
     >
       <!-- container without the pointer -->
       <div
@@ -63,9 +60,7 @@
           {{ getTitle() }}
         </h4>
         <div v-if="Config.subtitle && Config.subtitle != 'on Undefined'">
-          <!-- <div class="popup-content w3-container"> -->
           <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
-          <!-- </div> -->
         </div>
         <div v-if="propWeatherForecast != undefined">
           <table class="weatherForecastTable">
@@ -274,8 +269,7 @@ export default defineComponent({
     const screenX = ref(-1);
     const screenY = ref(-1);
     // Popup location.
-    const popupLeft = ref(-1000);
-    const popupTop = ref(-1000);
+    const popupTopLeft = ref({ marginTop: "-1000px", marginLeft: "-1000px" });
     //
     let numImgLoaded = 0;
     let wasUpdatedOnce = false;
@@ -304,8 +298,11 @@ export default defineComponent({
       prevScreenY = -1000;
       prevHeight = 0;
       prevWidth = 0;
-      popupLeft.value = -1000;
-      popupTop.value = -1000;
+      if (smallMedia.value && propFeatures.value.length > 0) {
+        setPosition();
+      } else {
+        setPosition(-1000, -1000);
+      }
       numImgLoaded = 0;
       wasUpdatedOnce = false;
       doPanMap = true;
@@ -412,11 +409,17 @@ export default defineComponent({
         // Nothing to show...
         return;
       }
-      if (smallMedia.value) {
-        // Small screen mode...
-        // setPosition(0, 0);
-        setPosition(0, (mapSize.value.width - containerRef.value.offsetWidth) / 2);
-      } else {
+      // if (smallMedia.value) {
+      //   // Do not set these here. With w3-modal-content, the carousel cannot position picture correctly.
+      //   // Positioning in modal mode need to happen earlier.
+      //   // Small screen mode...
+      //   setPosition(0, 0);
+      //   setPosition(
+      //     0,
+      //     (mapSize.value.width - containerRef.value.offsetWidth) / 2
+      //   );
+      // } else {
+      if (!smallMedia.value) {
         // Large screen mode...
         const h = containerRef.value.offsetHeight;
         const w = containerRef.value.offsetWidth;
@@ -465,7 +468,7 @@ export default defineComponent({
               (relativePosition.value === relativePositions.below &&
                 outOfBoundDir[0] === "s")
             ) {
-              const bestPosition = getBestRelativePosition(h, w);
+              const bestPosition = getBestRelativePosition(h);
               relativePosition.value = bestPosition;
               newTopLeft = calcTopLeft(h, w);
               shiftXY = calcShiftXY(newTopLeft, h, w);
@@ -477,20 +480,21 @@ export default defineComponent({
               panMap(shiftXY.x, shiftXY.y).then(() => {
                 isPanning = false;
                 setScreenXY();
+                // Do not pan map on small device...
                 // On the mobile devices after the pinch zoom, the map does not pan enough to show the top of the popup.
                 // So check the popup position again and pan map more if necessary.
-                shiftXY = calcShiftXY(
-                  { top: popupTop.value, left: popupLeft.value },
-                  h,
-                  w
-                );
-                if (shiftXY.x !== 0 || shiftXY.y !== 0) {
-                  isPanning = true;
-                  panMap(shiftXY.x, shiftXY.y).then(() => {
-                    isPanning = false;
-                    setScreenXY();
-                  });
-                }
+                // shiftXY = calcShiftXY(
+                //   { top: popupTop.value, left: popupLeft.value },
+                //   h,
+                //   w
+                // );
+                // if (shiftXY.x !== 0 || shiftXY.y !== 0) {
+                //   isPanning = true;
+                //   panMap(shiftXY.x, shiftXY.y).then(() => {
+                //     isPanning = false;
+                //     setScreenXY();
+                //   });
+                // }
               });
             }
           });
@@ -498,8 +502,8 @@ export default defineComponent({
       }
     };
     const getBestRelativePosition = (
-      height: number,
-      width: number
+      height: number
+      // width: number // TODO: maybe in the future...
     ): relativePositions => {
       const extent = getEsriExtent("full");
       const results: { pos: relativePositions; val: number }[] = [];
@@ -602,15 +606,29 @@ export default defineComponent({
       return isComplete;
     };
     /** This sets the margin top and left of the popup container. */
-    const setPosition = (top: number, left: number) => {
+    const setPosition = (top?: number, left?: number) => {
       // Adjust vertical position...
-      if (popupTop.value !== top) {
-        popupTop.value = top;
+      if (top) {
+        const currentTop = parseInt(popupTopLeft.value.marginTop);
+        if (!currentTop || currentTop !== top) {
+          popupTopLeft.value.marginTop = top + "px";
+        }
+      } else {
+        popupTopLeft.value.marginTop = "";
       }
       // Adjust horizontal position.
-      if (popupLeft.value !== left) {
-        popupLeft.value = left;
+      if (left) {
+        const currentTop = parseInt(popupTopLeft.value.marginLeft);
+        if (!currentTop || currentTop !== left) {
+          popupTopLeft.value.marginLeft = left + "px";
+        }
+      } else {
+        popupTopLeft.value.marginLeft = "";
       }
+
+      // if (popupLeft.value !== left) {
+      //   popupLeft.value = left;
+      // }
     };
     const getMoreInfoURL = () => {
       if (
@@ -772,8 +790,7 @@ export default defineComponent({
     return {
       containerRef,
       relativePosition,
-      popupLeft,
-      popupTop,
+      popupTopLeft,
       maxHeight,
       currentIdx,
       close,
@@ -799,6 +816,7 @@ export default defineComponent({
 <style scoped>
 .popup-modal-container-show {
   display: block;
+  padding-top: 15px;
 }
 .popup-modal-container-hide {
   display: none;
@@ -842,9 +860,9 @@ export default defineComponent({
   box-shadow: 3px -3px 3px 0 rgba(0, 0, 0, 0.2);
 }
 @media screen and (max-width: 600px), screen and (max-height: 400px) {
-  .popup-container {
+  /* .popup-container {
     width: 90%;
-  }
+  } */
   /* Hide the arrow */
   .popup-container::after {
     display: none;
