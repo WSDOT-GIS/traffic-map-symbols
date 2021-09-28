@@ -18,7 +18,7 @@ const isMobile = () => {
 exports.isMobile = isMobile;
 const isSmallMedia = () => {
     const isSmall = window.matchMedia("(max-width: 600px)").matches
-        || window.matchMedia("(max-height: 600px)").matches;
+        || window.matchMedia("(max-height: 400px)").matches;
     return isSmall;
 };
 exports.isSmallMedia = isSmallMedia;

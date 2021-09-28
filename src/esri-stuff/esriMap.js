@@ -27,6 +27,8 @@ const RoadsReferenceLayer_1 = require("@/layers/RoadsReferenceLayer");
 const BoundariesPlacesReferenceLayer_1 = require("@/layers/BoundariesPlacesReferenceLayer");
 const StateRouteShields_1 = require("@/layers/StateRouteShields");
 const BorderCrossingsLayer_1 = require("@/layers/BorderCrossingsLayer");
+const AlertAreaLayer_1 = tslib_1.__importDefault(require("@/layers/AlertAreaLayer"));
+const RegionalAlertLayer_1 = require("@/layers/RegionalAlertLayer");
 //
 const extentUtil_1 = require("@/utils/extentUtil");
 const ZoomExtentLayer_1 = tslib_1.__importDefault(require("@/layers/ZoomExtentLayer"));
@@ -90,13 +92,14 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     const esriRoadsReferenceLayer = RoadsReferenceLayer_1.initLayer(config.esriRoadsReferenceLayer);
     const esriPlacesReferenceLayer = BoundariesPlacesReferenceLayer_1.initLayer(config.esriPlacesReferenceLayer);
     const stateRouteShieldsLayer = StateRouteShields_1.initLayer(config.stateRouteShieldsLayer);
+    const regionalAlertLayer = yield RegionalAlertLayer_1.initLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
     // The first one in the array will be displayed at the bottom of the map... 
     const borderCrossingsLayer = BorderCrossingsLayer_1.initLayer(config.borderCrossings);
-    exports.webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
+    exports.webmap.addMany([AlertAreaLayer_1.default(), esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
         firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertsLyr, roadClosuresLyr,
-        mileMarkersLayer, borderCrossingsLayer]);
+        mileMarkersLayer, borderCrossingsLayer, regionalAlertLayer]);
     // Store the default visibility...
     exports.webmap.layers.forEach((eachLyr) => {
         exports.defaultLayerProps.push({ id: eachLyr.id, visible: eachLyr.visible });
@@ -324,20 +327,8 @@ const panMap = (shiftX, shiftY) => tslib_1.__awaiter(void 0, void 0, void 0, fun
             return true;
         }
         else {
-            //console.log("panMap: fail " + JSON.stringify(diffShift));
-            // Figure out if failure is caused by reaching the max pan extent...
-            // const topLeft = mapView.toMap({ x: 0, y: 0 });
-            // const bottomRight = mapView.toMap({ x: mapView.width, y: mapView.height });
-            // let outOfBoundsDir = "";
-            // if (shiftY > 0) { // Panning south...
-            //     // Check if the top of the map view is in Canada or not...
-            //     const dir = getOutOfBoundDirection(topLeft);
-            //     if (dir[0] === "n") { outOfBoundsDir = "n" }
-            // } else if (shiftY < 0) { // Panning north...
-            //     const dir = getOutOfBoundDirection(bottomRight);
-            //     if (dir[0] === "s") { outOfBoundsDir = "s" }
-            // }
-            return { actualShift: actualShift }; //, outOfBoundsDir: outOfBoundsDir };
+            console.log("panMap: fail " + JSON.stringify(diffShift));
+            return { actualShift: actualShift };
         }
     }
     catch (err) {
