@@ -174,6 +174,7 @@ export default defineComponent({
       var difference = Date.now() - (new Date(feature.attributes.TimeUpdated as string).getTime());
       if((difference/1000/60)>60){
         HOVTime="Not Available"
+        TravelDelay.value=0
       }
       else{
         HOVTime = feature.attributes.HOVCurrentTime
@@ -185,6 +186,7 @@ export default defineComponent({
       var difference = Date.now() - (new Date(feature.attributes.TimeUpdated as string).getTime());
       if((difference/1000/60)>60){
         currentTime="Not Available"
+        TravelDelay.value=0
       }
       else{
         currentTime = feature.attributes.HOVCurrentTime

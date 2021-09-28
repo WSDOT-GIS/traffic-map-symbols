@@ -106,6 +106,17 @@
             ></div>
         </td>
         <td class="roadAlertsLegendCell">
+         <div
+              class="roadAlertsIcon"
+              v-html="
+                layerIcons.find(
+                  (x) =>
+                    x.id == 'road-alert-highest'
+                )?.paths
+              "
+            ></div>
+        </td>
+        <td class="roadAlertsLegendCell">
           <div
               class="roadAlertsIcon"
               v-html="
@@ -121,6 +132,7 @@
         <td class="roadAlertsLegendLabelCell">Alert</td>
         <td class="roadAlertsLegendLabelCell">Medium</td>
         <td class="roadAlertsLegendLabelCell">High</td>
+        <td class="roadAlertsLegendLabelCell">Highest</td>
         <td class="roadAlertsLegendLabelCell">Road Closure</td>
       </tr>
     </table>

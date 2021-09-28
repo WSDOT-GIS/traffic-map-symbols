@@ -108,13 +108,13 @@ export default defineComponent({
       else{
         switch(feature.attributes.EventPriorityID){
           case 1:
-            badgeText="High";
+            badgeText="Highest";
              badgeIcon.value = (layerListIcons.find(
                   (x) =>
-                    x.id == 'road-alert-high'
+                    x.id == 'road-alert-highest'
                 )?.paths) as string
-            lightBadgeColor.value = "#e6818b"
-            darkBadgeColor.value = "#DC354599"
+            lightBadgeColor.value = "#da9793"
+            darkBadgeColor.value = "#B30B00"
             
             break;
           case 2:
