@@ -70,7 +70,7 @@ const initLayer = (url) => {
     layer = new GeoJSONLayer_1.default({
         id: "traffic-camera-layer",
         url: url,
-        title: "Traffic Cameras",
+        title: "Cameras",
         renderer: renderer,
         featureReduction: clusterUtil_1.clusterConfig,
         fields: fields,

@@ -15,7 +15,7 @@
         >
           <template v-slot>
             <!-- <div class="mapFeaturesIcon"></div> -->
-            <span>Traffic Flow</span>
+            <span>Traffic flow</span>
           </template>
         </ToggleSwitchView>
       </li>
@@ -188,31 +188,7 @@
               "
             ></div>
             <span class="listLabel" id="CommercialVehicleLabel"
-              >Truck Restrictions</span
-            >
-          </template>
-        </ToggleSwitchView>
-      </li>
-      <!-- Travel Times -->
-      <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
-        <ToggleSwitchView
-          @toggle="clickEvent"
-          :Enabled="true"
-          :Checked="layerList[getLayerIndex('travel-times-layer')].visible"
-          :Value="getLayerIndex('travel-times-layer').toString()"
-          :Title="
-            'Toggle ' + layerList[getLayerIndex('travel-times-layer')].title
-          "
-        >
-          <template v-slot>
-            <div
-              class="mapFeaturesIcon"
-              v-html="
-                layerIcons.find((x) => x.id == 'travel-times-layer')?.paths
-              "
-            ></div>
-            <span class="listLabel">
-              {{ layerList[getLayerIndex("travel-times-layer")].title }}</span
+              >Truck restrictions</span
             >
           </template>
         </ToggleSwitchView>
@@ -236,9 +212,7 @@
               "
             ></div>
             <span class="listLabel">
-              {{
-                layerList[getLayerIndex("mountain-passes-layer")].title
-              }}</span
+              Mountain pass reports</span
             >
           </template>
         </ToggleSwitchView>
@@ -262,29 +236,7 @@
               "
             ></div>
             <span class="listLabel">
-              {{
-                layerList[getLayerIndex("weather-stations-layer")].title
-              }}</span
-            >
-          </template>
-        </ToggleSwitchView>
-      </li>
-      <!-- Park And Rides -->
-      <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
-        <ToggleSwitchView
-          @toggle="clickEvent"
-          :Enabled="true"
-          :Checked="layerList[getLayerIndex('park-ride-layer')].visible"
-          :Value="getLayerIndex('park-ride-layer').toString()"
-          :Title="'Toggle ' + layerList[getLayerIndex('park-ride-layer')].title"
-        >
-          <template v-slot>
-            <div
-              class="mapFeaturesIcon"
-              v-html="layerIcons.find((x) => x.id == 'park-ride-layer')?.paths"
-            ></div>
-            <span class="listLabel">
-              {{ layerList[getLayerIndex("park-ride-layer")].title }}</span
+              Weather stations</span
             >
           </template>
         </ToggleSwitchView>
@@ -306,7 +258,76 @@
               v-html="layerIcons.find((x) => x.id == 'rest-areas-layer')?.paths"
             ></div>
             <span class="listLabel">
-              {{ layerList[getLayerIndex("rest-areas-layer")].title }}</span
+              Rest areas</span
+            >
+          </template>
+        </ToggleSwitchView>
+      </li>
+      <!-- Park And Rides -->
+      <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
+        <ToggleSwitchView
+          @toggle="clickEvent"
+          :Enabled="true"
+          :Checked="layerList[getLayerIndex('park-ride-layer')].visible"
+          :Value="getLayerIndex('park-ride-layer').toString()"
+          :Title="'Toggle ' + layerList[getLayerIndex('park-ride-layer')].title"
+        >
+          <template v-slot>
+            <div
+              class="mapFeaturesIcon"
+              v-html="layerIcons.find((x) => x.id == 'park-ride-layer')?.paths"
+            ></div>
+            <span class="listLabel">
+              {{`Park & Rides`}}</span
+            >
+          </template>
+        </ToggleSwitchView>
+      </li>
+      <!-- Travel Times -->
+      <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
+        <ToggleSwitchView
+          @toggle="clickEvent"
+          :Enabled="true"
+          :Checked="layerList[getLayerIndex('travel-times-layer')].visible"
+          :Value="getLayerIndex('travel-times-layer').toString()"
+          :Title="
+            'Toggle ' + layerList[getLayerIndex('travel-times-layer')].title
+          "
+        >
+          <template v-slot>
+            <div
+              class="mapFeaturesIcon"
+              v-html="
+                layerIcons.find((x) => x.id == 'travel-times-layer')?.paths
+              "
+            ></div>
+            <span class="listLabel">
+              Travel times</span
+            >
+          </template>
+        </ToggleSwitchView>
+      </li>
+      <!--Border Crossings-->
+      <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
+        <ToggleSwitchView
+          @toggle="clickEvent"
+          :Enabled="true"
+          :Checked="layerList[getLayerIndex('border-crossings-layer')].visible"
+          :Value="
+            getLayerIndex('border-crossings-layer').toString()
+          "
+          Title="Toggle Border Crossings"
+        >
+          <template v-slot>
+            <div
+              class="mapFeaturesIcon"
+              v-html="
+                layerIcons.find((x) => x.id == 'border-crossing')
+                  ?.paths
+              "
+            ></div>
+            <span class="listLabel" id="CommercialVehicleLabel"
+              >Border crossings</span
             >
           </template>
         </ToggleSwitchView>
@@ -332,7 +353,7 @@
               "
             ></div>
             <span class="listLabel" id="WildlandFireeLabel"
-              >Wildland Fires</span
+              >Wildland fires</span
             >
           </template>
         </ToggleSwitchView>
@@ -361,32 +382,7 @@
               "
             ></div>
             <span class="listLabel" id="mileMarkersLabel"
-              >Mile Markers</span
-            >
-          </template>
-        </ToggleSwitchView>
-      </li>
-      <!--Border Crossings-->
-      <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
-        <ToggleSwitchView
-          @toggle="clickEvent"
-          :Enabled="true"
-          :Checked="layerList[getLayerIndex('border-crossings-layer')].visible"
-          :Value="
-            getLayerIndex('border-crossings-layer').toString()
-          "
-          Title="Toggle Border Crossings"
-        >
-          <template v-slot>
-            <div
-              class="mapFeaturesIcon"
-              v-html="
-                layerIcons.find((x) => x.id == 'border-crossing')
-                  ?.paths
-              "
-            ></div>
-            <span class="listLabel" id="CommercialVehicleLabel"
-              >Border Crossings</span
+              >Mileposts</span
             >
           </template>
         </ToggleSwitchView>

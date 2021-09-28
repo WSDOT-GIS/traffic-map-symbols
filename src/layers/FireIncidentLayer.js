@@ -16,7 +16,8 @@ const initLayer = (url) => {
         title: "Fire Incidents",
         renderer: fireIncidentRenderer,
         visible: false,
-        definitionExpression: "POOState= 'US-WA'"
+        definitionExpression: "POOState= 'US-WA'",
+        labelsVisible: false
     });
     return layer;
 };

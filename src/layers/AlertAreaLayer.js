@@ -24,8 +24,8 @@ const fields = [
     }),
     new Field_1.default({
         name: "Name",
+        alias: "Name",
         type: "string",
-        alias: "Name"
     }),
 ];
 let layer;

@@ -71,7 +71,7 @@ export const initLayer = (url: string): GeoJSONLayer => {
     layer = new GeoJSONLayer({
         id: "traffic-camera-layer",
         url: url,
-        title: "Traffic Cameras",
+        title: "Cameras",
         renderer: renderer,
         featureReduction: clusterConfig,
         fields: fields,

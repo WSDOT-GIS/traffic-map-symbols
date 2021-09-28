@@ -15,7 +15,8 @@ export const initLayer = (url: string): FeatureLayer => {
         title: "Fire Incidents",
         renderer: fireIncidentRenderer,
         visible: false,
-        definitionExpression: "POOState= 'US-WA'"
+        definitionExpression: "POOState= 'US-WA'",
+        labelsVisible: false
     });
     return layer;
 }
