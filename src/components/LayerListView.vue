@@ -65,7 +65,7 @@
         >
           <template v-slot>
             <!-- <div class="mapFeaturesIcon"></div> -->
-            <span>Road Alerts</span>
+            <span>Alert</span>
           </template>
         </ToggleSwitchView>
       </li>
@@ -133,7 +133,7 @@
         <td class="roadAlertsLegendLabelCell">Medium</td>
         <td class="roadAlertsLegendLabelCell">High</td>
         <td class="roadAlertsLegendLabelCell">Highest</td>
-        <td class="roadAlertsLegendLabelCell">Road Closure</td>
+        <td class="roadAlertsLegendLabelCell">Closed</td>
       </tr>
     </table>
     <ul class="w3-ul">
