@@ -118,11 +118,7 @@
             <div class="carousel-item-container">
               <img
                 class="popup-img"
-                :src="
-                  Config.imageFieldName
-                    ? eachFeature.attributes[Config.imageFieldName]
-                    : ''
-                "
+                :src="getImgUrl(eachFeature)"
                 :alt="eachFeature.id"
                 @load="onImgLoad()"
                 @error="$event.target.src = require('@/assets/no-image.png')"
@@ -757,6 +753,14 @@ export default defineComponent({
       }
       badgeText.value = text;
     };
+    const getImgUrl = (feature: FeatureInfo): string => {
+      let url = "";
+      if (props.Config.imageFieldName) {
+        const d = new Date();
+        url = feature.attributes[props.Config.imageFieldName] + "?a=" + d.getTime();
+      }
+      return url;
+    };
     /** Highlight the feature on the map. */
     const highlightMap = () => {
       const feature = props.Features[currentIdx.value];
@@ -804,6 +808,7 @@ export default defineComponent({
       badgeTextColor,
       getTitle,
       getMoreInfoURL,
+      getImgUrl,
       propWeatherForecast,
       propTravelDelay,
       propFeatures,
