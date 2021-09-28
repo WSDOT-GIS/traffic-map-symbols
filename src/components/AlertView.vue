@@ -5,7 +5,7 @@
     class="w3-modal"
   >
     <div
-      class="w3-modal-content w3-card w3-left-align alert-content"
+      class="w3-modal-content w3-animate-right w3-card w3-left-align alert-content"
       :style="{ maxHeight: height }"
       ref="containerRef"
     >
@@ -115,9 +115,6 @@ export default defineComponent({
       const top = containerRef.value.offsetTop;
       const h = mapSize.value.height - top * 2;
       height.value = h + "px";
-      console.log(
-        height.value + " top:" + top + " map height:" + mapSize.value.height
-      );
     };
     const toggleDisplay = () => {
       isOpen.value = !isOpen.value;

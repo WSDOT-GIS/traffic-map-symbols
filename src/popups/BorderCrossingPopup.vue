@@ -67,7 +67,7 @@ export default defineComponent({
           (result) => {
             if (result) {
               feature.value = result;
-              console.log(result)
+              //console.log(result)
             }
           }
         );

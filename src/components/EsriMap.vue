@@ -337,7 +337,7 @@ export default defineComponent({
                 if (g.layer.title == "Restriction Points") {
                   getFeatureInfoById(id, g.layer as GeoJSONLayer).then(
                     (result) => {
-                      console.log(result?.attributes.lineMarker)
+                      // console.log(result?.attributes.lineMarker)
                       if (result?.attributes.lineMarker == "true"||result?.attributes.lineMarker == "True") {
                         LineRestrictionsLayer().definitionExpression = `UniqueId = '${result?.attributes.UniqueId}'`;
                         getLineFromPointRestriction(
