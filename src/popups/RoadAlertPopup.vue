@@ -11,7 +11,12 @@
       title: { custom: getTitle },
       content: [
         { label: 'Travel delay', value: { text: '???' } },
-        { label: 'Description', value: { fieldName: 'HeadlineMessage' } },
+        { label: 'Description', 
+        value: { 
+          fieldName: 'HeadlineMessage',
+          isHTML:true
+         }
+        },
         {
           label: 'Last updated',
           value: {

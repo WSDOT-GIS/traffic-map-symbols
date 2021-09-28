@@ -1,7 +1,8 @@
 <template>
   <div v-if="visible" class="popup-content w3-container">
     <span class="popup-key">{{ getLabel() }}</span>
-    <span class="popup-value">{{ getText() }}</span>
+    <span v-if="isHTML==false" class="popup-value">{{ getText() }}</span>
+    <span v-if="isHTML==true" class="popup-value">{{ getText() }}</span>
   </div>
 </template>
 <script lang="ts">
@@ -25,7 +26,7 @@ export default defineComponent({
     watch(props, () => {
       getText();
     });
-
+    const propIsHTML = ref<boolean>(false)
     const getLabel = () => {
       if(props.Config.label){
         if (!props.Feature) {
@@ -73,6 +74,10 @@ export default defineComponent({
               hours = hours ? hours : 12;
               text += ` ${hours}:${formatTimePart(minutes)}${ampm}`;
             }
+          }
+          else if(props.Config.value.isHTML==true){
+            propIsHTML.value=true
+            text = value.toString();
           } else {
             text = value.toString();
           }
@@ -103,6 +108,7 @@ export default defineComponent({
       visible,
       getLabel,
       getText,
+      propIsHTML
     };
   },
 });
