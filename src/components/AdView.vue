@@ -1,10 +1,12 @@
 <template>
-  <div></div> 
-  <!-- /22447621233/WSDOT:driving-map:responsive -->
+  <div id="ad_container" class="w3-content">
+    <p>Placeholder for advertisement</p>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent } from "vue";
+
 export default defineComponent({
   props: {
     text: {
@@ -12,12 +14,6 @@ export default defineComponent({
       type: String,
     },
   },
-  setup(){
-    const containerNode = ref(null)
-    onMounted(()=>{
-      ""
-    })
-  }
 });
 </script>
 

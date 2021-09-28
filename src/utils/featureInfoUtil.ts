@@ -43,6 +43,7 @@ export const getFeatureInfosByIds = async (ids: number[], layer: GeoJSONLayer): 
     const infos = response.features.map(convert2Info);
     return infos;
 }
+
 export const getLineFromPointRestriction = async (fieldName: string, value: number|string, layer: GeoJSONLayer): Promise<FeatureInfo | undefined> => {
     const query = layer.createQuery();
     const field = layer.getField(fieldName);
