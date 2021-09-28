@@ -1,7 +1,7 @@
 <template>
   <div v-if="visible" class="popup-content w3-container">
     <span class="popup-key">{{ getLabel() }}</span>
-    <span v-if="isHTML==false" class="popup-value">{{ getText() }}</span>
+    <span v-if="isHTML!=true" class="popup-value">{{ getText() }}</span>
     <span v-if="isHTML==true" class="popup-value">{{ getText() }}</span>
   </div>
 </template>
