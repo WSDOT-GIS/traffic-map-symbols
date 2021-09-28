@@ -118,9 +118,10 @@ const reloadGeoJsonLayers = (layerList) => tslib_1.__awaiter(void 0, void 0, voi
     reloadGeoJsonLayer("mountain-passes-layer", config.mountainPasses, MountainPassesLayer_1.initLayer, layerList);
     reloadGeoJsonLayer("travel-times-layer", config.travelTimes, TravelTimeLayer_1.initLayer, layerList);
     reloadGeoJsonLayer("weather-stations-layer", config.weatherStations, WeatherStationsLayer_1.initLayer, layerList);
+    reloadGeoJsonLayer("border-crossings-layer", config.borderCrossings, BorderCrossingsLayer_1.initLayer, layerList);
     /* Camera layer is not updated frequently, but need to be reloaded.
     If not, the cluster label does not show after other layers are refreshed. */
-    reloadGeoJsonLayer("traffic-camera-layer", config.cameras, CameraLayer_1.initLayer, layerList);
+    //reloadGeoJsonLayer("traffic-camera-layer", config.cameras, initCameraLayer, layerList);
     CameraLayer_1.setCluster(exports.mapView.scale);
     return layerList;
 });

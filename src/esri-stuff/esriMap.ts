@@ -126,9 +126,10 @@ export const reloadGeoJsonLayers = async (layerList: LayerInfo[]): Promise<Layer
     reloadGeoJsonLayer("mountain-passes-layer", config.mountainPasses, initMountainLayer, layerList);
     reloadGeoJsonLayer("travel-times-layer", config.travelTimes, initTravelTimesLayer, layerList);
     reloadGeoJsonLayer("weather-stations-layer", config.weatherStations, initWeatherLayer, layerList);
+    reloadGeoJsonLayer("border-crossings-layer", config.borderCrossings, initBorderCrossingsLayer, layerList);
     /* Camera layer is not updated frequently, but need to be reloaded. 
     If not, the cluster label does not show after other layers are refreshed. */
-    reloadGeoJsonLayer("traffic-camera-layer", config.cameras, initCameraLayer, layerList);
+    //reloadGeoJsonLayer("traffic-camera-layer", config.cameras, initCameraLayer, layerList);
     setCluster(mapView.scale);
     return layerList;
 }
