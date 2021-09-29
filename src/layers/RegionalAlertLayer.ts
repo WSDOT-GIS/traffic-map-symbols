@@ -89,7 +89,7 @@ const fields = [
 
 let layer: FeatureLayer | undefined;
 
-export const initLayer = async (alertUrl: string, countyUrl: string, regionUrl: string): Promise<FeatureLayer> => {
+export const initLayer = async (alertUrl: string, countyUrl: string, regionUrl: string): Promise<{ point: FeatureLayer, polygon: FeatureLayer }> => {
     // Fetch all alerts from JSON...
     let response = await fetch(alertUrl);
     let json = await response.json();
@@ -160,9 +160,9 @@ export const initLayer = async (alertUrl: string, countyUrl: string, regionUrl: 
         refreshInterval: 5,
     });
     // Create the area boundary layer...
-    initAreaLayer(areaGraphics);
+    const areaLayer = initAreaLayer(areaGraphics);
 
-    return layer;
+    return { point: layer, polygon: areaLayer };
 }
 
 const getLayer = (): FeatureLayer => {
