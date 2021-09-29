@@ -84,7 +84,7 @@ export const defaultLayerProps: { id: string, visible: boolean }[] = []
  */
 export const loadOperationalLayers = async (): Promise<void> => {
     const config = await getConfig();
-    EsriConfig.apiKey = config.apiKey;
+    //EsriConfig.apiKey = config.apiKey;
     const trafficLyr = initTrafficLayer(config.traffic, config.layerRefreshMinute);
     const restAreasLyr = initRestAreaLayer(config.restAreas);
     const parkRideLyr = initParkRideLayer(config.parkAndRides);
