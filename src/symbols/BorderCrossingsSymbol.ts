@@ -511,8 +511,8 @@ const symbol = new CIMSymbol({
                           {
                             "type": "CIMGeometricEffectDashes",
                             "dashTemplate": [
-                              1.5,
-                              1.5
+                              3,
+                              3
                             ],
                             "lineDashEnding": "NoConstraint",
                             "controlPointEnding": "NoConstraint"
