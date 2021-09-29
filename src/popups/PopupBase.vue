@@ -657,6 +657,7 @@ export default defineComponent({
       if (props.Config.moreInfoURL.custom) {
         return `${moreInfoObject?.text}
         <a href="${moreInfoObject?.url}"  target="_blank">${moreInfoObject?.linkText}</a>`;
+        //open popup in new tab
       } else {
         return text;
       }
