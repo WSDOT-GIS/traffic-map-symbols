@@ -118,11 +118,7 @@
             <div class="carousel-item-container">
               <img
                 class="popup-img"
-                :src="
-                  Config.imageFieldName
-                    ? eachFeature.attributes[Config.imageFieldName]
-                    : ''
-                "
+                :src="getImgUrl(eachFeature)"
                 :alt="eachFeature.id"
                 @load="onImgLoad()"
                 @error="$event.target.src = require('@/assets/no-image.png')"
@@ -480,21 +476,23 @@ export default defineComponent({
               panMap(shiftXY.x, shiftXY.y).then(() => {
                 isPanning = false;
                 setScreenXY();
-                // Do not pan map on small device...
-                // On the mobile devices after the pinch zoom, the map does not pan enough to show the top of the popup.
-                // So check the popup position again and pan map more if necessary.
-                // shiftXY = calcShiftXY(
-                //   { top: popupTop.value, left: popupLeft.value },
-                //   h,
-                //   w
-                // );
-                // if (shiftXY.x !== 0 || shiftXY.y !== 0) {
-                //   isPanning = true;
-                //   panMap(shiftXY.x, shiftXY.y).then(() => {
-                //     isPanning = false;
-                //     setScreenXY();
-                //   });
-                // }
+                // Check the popup position again and pan map more if necessary.
+                shiftXY = calcShiftXY(
+                  //{ top: popupTop.value, left: popupLeft.value },
+                  {
+                    top: parseInt(popupTopLeft.value.marginTop),
+                    left: parseInt(popupTopLeft.value.marginLeft),
+                  },
+                  h,
+                  w
+                );
+                if (shiftXY.x !== 0 || shiftXY.y !== 0) {
+                  isPanning = true;
+                  panMap(shiftXY.x, shiftXY.y).then(() => {
+                    isPanning = false;
+                    setScreenXY();
+                  });
+                }
               });
             }
           });
@@ -757,6 +755,15 @@ export default defineComponent({
       }
       badgeText.value = text;
     };
+    const getImgUrl = (feature: FeatureInfo): string => {
+      let url = "";
+      if (props.Config.imageFieldName) {
+        const d = new Date();
+        url =
+          feature.attributes[props.Config.imageFieldName] + "?a=" + d.getTime();
+      }
+      return url;
+    };
     /** Highlight the feature on the map. */
     const highlightMap = () => {
       const feature = props.Features[currentIdx.value];
@@ -804,6 +811,7 @@ export default defineComponent({
       badgeTextColor,
       getTitle,
       getMoreInfoURL,
+      getImgUrl,
       propWeatherForecast,
       propTravelDelay,
       propFeatures,
@@ -859,10 +867,11 @@ export default defineComponent({
   border-color: #fff #fff transparent transparent;
   box-shadow: 3px -3px 3px 0 rgba(0, 0, 0, 0.2);
 }
+.popup-inner-container {
+  overflow-y: auto;
+  padding: 16px 0;
+}
 @media screen and (max-width: 600px), screen and (max-height: 400px) {
-  /* .popup-container {
-    width: 90%;
-  } */
   /* Hide the arrow */
   .popup-container::after {
     display: none;
@@ -873,14 +882,14 @@ export default defineComponent({
   .popup-container-below::after {
     display: none;
   }
-}
-.popup-inner-container {
-  overflow-y: auto;
+  .popup-inner-container {
+    padding: 12px 0;
+  }
 }
 
 .popup-header {
   position: relative;
-  margin: 8px 0;
+  /* margin: 8px 0; */
   padding-right: 10px;
   width: 100%;
 }
