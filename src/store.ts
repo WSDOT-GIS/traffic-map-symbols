@@ -14,7 +14,7 @@ export interface State {
     pointerX: number;
     pointerY: number;
     mapSize: { width: number; height: number };
-    center: { x: number, y: number};
+    center: { x: number, y: number };
     scale: number;
     layerList: LayerInfo[];
     currentExtent: ExtentInfo;
@@ -82,12 +82,29 @@ export const store = createStore<State>({
             state.userLocation = payload;
         },
         setLayerList(state, payload) {
-            state.layerList = payload;
-            webmap.layers.map((layer, index) => {
-                if (layer.title && state.layerList[index] && layer.title == state.layerList[index].title) {
-                    layer.visible = state.layerList[index].visible
-                }
-            })
+            let layerList: LayerInfo[];
+            if (!payload) {
+                layerList = [];
+                webmap.layers.map((layer, index) => {
+                    layerList.push({
+                        id: layer.id,
+                        index: index,
+                        title: layer.title,
+                        visible: layer.visible,
+                    });
+                });
+            }
+            else {
+                layerList = payload;
+            }
+            state.layerList = layerList;
+            if (payload) {
+                webmap.layers.map((layer, index) => {
+                    if (state.layerList[index] && layer.id == state.layerList[index].id) {
+                        layer.visible = state.layerList[index].visible
+                    }
+                })
+            }
         },
         setCurrentExtent(state, payload) {
             if (payload instanceof Extent) {

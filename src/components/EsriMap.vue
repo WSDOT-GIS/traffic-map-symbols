@@ -119,6 +119,7 @@ import MyLocationView from "@/components/MyLocationView.vue";
 import ZoomButtonView from "@/components/ZoomButtonView.vue";
 import AlertView from "@/components/AlertView.vue";
 import AdView from "@/components/AdView.vue";
+import WebMap from "@arcgis/core/WebMap";
 
 export default defineComponent({
   components: {
@@ -377,37 +378,40 @@ export default defineComponent({
       const esriMap = await import("../esri-stuff/esriMap");
       mapDiv = document.getElementById("esri-map-view") as HTMLDivElement;
       esriMap.init(mapDiv);
-      // Read config, then load layers...
+      // Set basemap based on URL query parameter or display default...
+      const basemapInfo = getBasemapFromUrl();
+      store.commit("setBasemap", basemapInfo.name);
+      // Read config, then load operational layers...
       await esriMap.loadOperationalLayers();
-      let layerList: LayerInfo[] = [];
-      esriMap.mapView.map.layers.map((layer, index) => {
-        layerList.push({
-          id: layer.id,
-          index: index,
-          title: layer.title,
-          visible: layer.visible,
-        });
-      });
-      // Set layer visibility based on URL query...
-      setVisibleLayersFromUrl(layerList);
-      store.commit("setLayerList", layerList);
-      // Setup events on the operational layers...
-      initOperationalLayerEvents(mapDiv, esriMap);
-      // set refresh interval for GeoJSON...
+      /* Set layer list here before the rest of the map is ready, so we can show the layer list UI early.
+       * Otherwise user will see a map without layer list until everything is ready. */
+      store.commit("setLayerList");
+      // Load regional alert after the other operations layers have been loaded so it won't slow down the map loading...
+      await esriMap.loadRegionalAlert();
+      // Update the layer list with regional alert layers.
+      store.commit("setLayerList");
+      // Set refresh interval for layers...
       const appConfig = await getConfig();
       setInterval(() => {
         esriMap.reloadGeoJsonLayers(store.state.layerList).then((lyrList) => {
-          store.commit("setLayerList", lyrList);
-          initOperationalLayerEvents(mapDiv, esriMap);
+          esriMap.reloadRegionAlert(lyrList).then((lyrList) => {
+            store.commit("setLayerList", lyrList);
+            initOperationalLayerEvents(mapDiv, esriMap);
+          });
         });
-      }, appConfig.layerRefreshMinute * 60000);
-      //
-      esriMap.addOutOfExtentLayer();
+        getAlerts(appConfig.stateAlerts).then((result) => {
+          alerts.value = result;
+        });
+      }, appConfig.layerRefreshMinute * 60000); //60000
+      // Setup events on the operational layers...
+      initOperationalLayerEvents(mapDiv, esriMap);
       // Add quick zoom boxes around metro areas...
       esriMap.webmap.add(ZoomExtentLayer);
-      // Set basemap based on URL query parameter...
-      const basemapInfo = getBasemapFromUrl();
-      store.commit("setBasemap", basemapInfo.name);
+      // Gray out areas outside of the display area...
+      esriMap.addOutOfExtentLayer();
+      // Set layer visibility based on URL query...
+      const layerList = setVisibleLayersFromUrl(store.state.layerList);
+      store.commit("setLayerList", layerList);
       // Set the initial map size in the state store...
       store.commit("setMapSize", {
         width: mapView.width,

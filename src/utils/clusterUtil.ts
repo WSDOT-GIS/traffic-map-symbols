@@ -30,8 +30,6 @@ const clusterConfig = new FeatureReductionCluster({
                     family: "Noto Sans",
                     size: "10px"
                 },
-                // haloColor: "#45b6fe",
-                // haloSize: 0
                 xoffset: 0,
                 yoffset: 0
             },
@@ -50,8 +48,6 @@ const clusterConfig = new FeatureReductionCluster({
                     family: "Noto Sans",
                     size: "10px"
                 },
-                // haloColor: "#3792cd",
-                // haloSize: 1
                 xoffset: 0,
                 yoffset: 0
             },
@@ -70,8 +66,6 @@ const clusterConfig = new FeatureReductionCluster({
                     family: "Noto Sans",
                     size: "11px"
                 },
-                // haloColor: "#296d98",
-                // haloSize: 1
                 xoffset: 0,
                 yoffset: 0
             },
@@ -89,8 +83,6 @@ const clusterConfig = new FeatureReductionCluster({
                     family: "Noto Sans",
                     size: "12px"
                 },
-                // haloColor: "#1c4966",
-                // haloSize: 1
                 xoffset: 0,
                 yoffset: 0
             },
@@ -108,8 +100,6 @@ const clusterConfig = new FeatureReductionCluster({
                     family: "Noto Sans",
                     size: "13px"
                 },
-                // haloColor: "#0e2433",
-                // haloSize: 1,
                 xoffset: 0,
                 yoffset: 0
             },
@@ -123,18 +113,6 @@ const clusterConfig = new FeatureReductionCluster({
 clusterConfig.set("symbol", clusterSymbol);
 
 export { clusterConfig }
-
-// Watch scale change...
-// export const adjustCluster = (newScale: number, oldScale: number): void => {
-//     // Reduce cluster radius at max scale...
-//     if (newScale > clusterMaxScale && oldScale < clusterMaxScale) {
-//         clusterConfig.clusterRadius = defaultRadius;
-//     }
-//     else if (newScale < clusterMaxScale && oldScale > clusterMaxScale) {
-//         clusterConfig.clusterRadius = 10;
-//     }
-
-// }
 
 /**  
 Returns IDs of each feature if one of the following coditions is met:
@@ -225,7 +203,7 @@ export const getClusterExtent = async (clusterGraphic: Graphic, layer: Layer, ma
             maxY = pt1.y;
         }
     }
-    if (minX === maxX) { 
+    if (minX === maxX) {
         minX -= 1;
         maxX += 1;
     }
