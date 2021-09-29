@@ -97,7 +97,7 @@ export default defineComponent({
       let badgeText="";
       if(feature.attributes.EventCategoryDescription=="Closure"){
         console.log(feature.attributes.EventCategoryDescription)
-        badgeText = "Road Closure"
+        badgeText = "Closed"
         badgeIcon.value = (layerListIcons.find(
                   (x) =>
                     x.id == 'road-closed'

@@ -65,7 +65,7 @@
         >
           <template v-slot>
             <!-- <div class="mapFeaturesIcon"></div> -->
-            <span>Alert</span>
+            <span>Alerts</span>
           </template>
         </ToggleSwitchView>
       </li>
