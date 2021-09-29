@@ -44,6 +44,7 @@ import firePerimeterFeatureIDs from "@/utils/firePerimeterQuery"
 import { getBasemapInfo } from "@/layers/Basemaps";
 import XY from "@/types/XY";
 import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol";
+import layer from "@/layers/ZoomExtentLayer";
 
 const fullExtent = getEsriExtent("full");
 
@@ -160,14 +161,7 @@ const reloadGeoJsonLayer = (id: string, layerUrl: string, initFunc: (url: string
         newLyr.definitionExpression = definitionExpression;
         webmap.add(newLyr, lyrIdx);
         // Update the layer list with the new layer object...
-        const lyrInfo = layerList.find((eachInfo) => {
-            return eachInfo.id === id;
-        })
-        if (lyrInfo) {
-            lyrInfo.id = newLyr.id;
-            lyrInfo.title = newLyr.title;
-            lyrInfo.visible = newLyr.visible;
-        }
+        updateLayerList(layerList, newLyr);
     }
     else {
         throw id + " is not a GeoJSON layer."
