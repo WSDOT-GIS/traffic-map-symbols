@@ -11,6 +11,8 @@ import Layer from "@arcgis/core/layers/Layer";
 import EsriConfig from "@arcgis/core/config"
 import Graphic from "@arcgis/core/Graphic";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
+import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
+import { difference } from "@arcgis/core/geometry/geometryEngine";
 // Layers
 import { initLayer as initTrafficLayer } from "@/layers/TrafficLayer";
 import { initLayer as initParkRideLayer } from "@/layers/ParkRideLayer";
@@ -41,6 +43,7 @@ import LayerInfo from "@/types/LayerInfo";
 import firePerimeterFeatureIDs from "@/utils/firePerimeterQuery"
 import { getBasemapInfo } from "@/layers/Basemaps";
 import XY from "@/types/XY";
+import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol";
 
 const fullExtent = getEsriExtent("full");
 
@@ -431,3 +434,38 @@ export const removeHighlight = (): void => {
         highlight.remove();
     }
 }
+/*** grey out outside ***/
+const outOfExtentLayer = new GraphicsLayer();
+const displayExtent = getEsriExtent("full").expand(1.2);
+export const addOutOfExtentLayer = (): void => {
+    webmap.add(outOfExtentLayer);
+}
+export const updateOutOfExtentLayer = (): void => {
+    outOfExtentLayer.removeAll();
+    const symbol = new SimpleFillSymbol({
+        style: "solid",
+        color: [128, 128, 128, 0.5],
+        outline: {
+            style: "none"
+        }
+    });
+
+    //const fullExtent = getEsriExtent("full");
+    const diffGeoms = difference(mapView.extent, displayExtent);
+    if (Array.isArray(diffGeoms)) {
+        for (const each of diffGeoms) {
+            const g = new Graphic({
+                geometry: each,
+                symbol: symbol,
+            })
+            outOfExtentLayer.add(g);
+        }
+    } else {
+        const g = new Graphic({
+            geometry: diffGeoms,
+            symbol: symbol,
+        })
+        outOfExtentLayer.add(g);
+    }
+}
+

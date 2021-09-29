@@ -338,7 +338,10 @@ export default defineComponent({
                   getFeatureInfoById(id, g.layer as GeoJSONLayer).then(
                     (result) => {
                       // console.log(result?.attributes.lineMarker)
-                      if (result?.attributes.lineMarker == "true"||result?.attributes.lineMarker == "True") {
+                      if (
+                        result?.attributes.lineMarker == "true" ||
+                        result?.attributes.lineMarker == "True"
+                      ) {
                         LineRestrictionsLayer().definitionExpression = `UniqueId = '${result?.attributes.UniqueId}'`;
                         getLineFromPointRestriction(
                           "UniqueId",
@@ -398,6 +401,8 @@ export default defineComponent({
           initOperationalLayerEvents(mapDiv, esriMap);
         });
       }, appConfig.layerRefreshMinute * 60000);
+      //
+      esriMap.addOutOfExtentLayer();
       // Add quick zoom boxes around metro areas...
       esriMap.webmap.add(ZoomExtentLayer);
       // Set basemap based on URL query parameter...
@@ -408,6 +413,36 @@ export default defineComponent({
         width: mapView.width,
         height: mapView.height,
       });
+      // Set extent based on the URL query parameter...
+      esriMap.mapView.extent = getExtentFromUrl();
+      // Zoom, turn on layer and open popup if specified in URL query parameter...
+      const featureType = getFeatureTypeFromUrl();
+      const featureId = getFeatureIdFromUrl();
+      if (featureType && featureId) {
+        // Make sure the map is ready, then search for the feature...
+        esriMap.mapView.when().then(() => {
+          getFeature(featureId, featureType, esriMap.webmap).then((result) => {
+            if (result) {
+              if (result.geometry.type !== "point") {
+                throw "The parameter, featuretype, only supports point feature type currently.";
+              }
+              // If the layer is not visible, turn it on...
+              if (!result.layer.visible) {
+                const layerList = setLayerVisibility(
+                  result.layer.id,
+                  true,
+                  store.state.layerList
+                );
+                store.commit("setLayerList", layerList);
+              }
+              // Zoom in...
+              esriMap.zoomToMax(result.geometry as Point).then(() => {
+                showPopup(result.layer.id, [result.getObjectId()]);
+              });
+            }
+          });
+        });
+      }
       // Pointer move event handler...
       esriMap.mapView.on(["pointer-move"], (event) => {
         // Update current poitner x/y in the store...
@@ -462,36 +497,6 @@ export default defineComponent({
 
         centerRegionalAlerts(newValue as Extent);
       });
-      // Set extent based on the URL query parameter...
-      esriMap.mapView.extent = getExtentFromUrl();
-      // Zoom, turn on layer and open popup if specified in URL query parameter...
-      const featureType = getFeatureTypeFromUrl();
-      const featureId = getFeatureIdFromUrl();
-      if (featureType && featureId) {
-        // Make sure the map is ready, then search for the feature...
-        esriMap.mapView.when().then(() => {
-          getFeature(featureId, featureType, esriMap.webmap).then((result) => {
-            if (result) {
-              if (result.geometry.type !== "point") {
-                throw "The parameter, featuretype, only supports point feature type currently.";
-              }
-              // If the layer is not visible, turn it on...
-              if (!result.layer.visible) {
-                const layerList = setLayerVisibility(
-                  result.layer.id,
-                  true,
-                  store.state.layerList
-                );
-                store.commit("setLayerList", layerList);
-              }
-              // Zoom in...
-              esriMap.zoomToMax(result.geometry as Point).then(() => {
-                showPopup(result.layer.id, [result.getObjectId()]);
-              });
-            }
-          });
-        });
-      }
       // Watch scale change...
       esriMap.mapView.watch("scale", (newValue, oldValue) => {
         store.commit("setScale", newValue);
@@ -510,6 +515,13 @@ export default defineComponent({
       // Watch center change...
       esriMap.mapView.watch("center", (newValue) => {
         store.commit("setCenter", { x: newValue.x, y: newValue.y });
+      });
+      //
+      esriMap.mapView.watch("stationary", (newValue) => {
+        if (!newValue) {
+          return;
+        }
+        esriMap.updateOutOfExtentLayer();
       });
     });
     return {
