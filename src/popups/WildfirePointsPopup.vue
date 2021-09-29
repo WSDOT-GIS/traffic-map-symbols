@@ -9,19 +9,15 @@
       content: [
         {label: 'Type',value: {fieldName: 'IncidentTypeCategory'}},
         {label: 'Cause', value: {fieldName: 'FireCause' }},
-        {label: 'Wind dir.',value: {fieldName: 'CardinalCompassDirection'}},
-        {label: 'Irwin ID',value: {fieldName: 'IrwinID'},},
-        {label: 'Acres',value: {fieldName: 'CalculatedAcres'}},
+        {label: 'Daily acres',value: {custom:getDailyAcres}},
+        {label: 'Total acres burned',value: {custom:getTotalAcres}},
+        {label: 'Percentage contained',value:{ custom:getPercentContained}},
         {label: 'Discovery Date',value: {
             fieldName: 'FireDiscoveryDateTime',
             isDate: true,
             isTime: true,
             },
         },
-        {label: 'Management Complexity',value:{ fieldName:'FireMgmtComplexity'}},
-        {label: 'Owner Category',value:{ fieldName:'POOLandownerCategory'}},
-        {label: 'Owner Kind',value:{ fieldName:'POOLandownerKind'}},
-        {label: 'Jurisdictional Agency',value:{ fieldName:'POOJurisdictionalAgency'}},
         {label: 'Last Updated',value:{ 
             fieldName:'ModifiedOnDateTime',
             isDate: true,
@@ -65,7 +61,27 @@ export default defineComponent({
         close();
       }
     });
-
+    const getPercentContained=(feature:FeatureInfo)=>{
+      let formattedPercent = ""
+      if(feature.attributes["PercentContained"]){
+        formattedPercent=`${feature.attributes["PercentContained"]}%`
+      }
+      return formattedPercent
+    }
+    const getDailyAcres = (feature:FeatureInfo)=>{
+       let formattedAcres = ""
+      if(feature.attributes["DailyAcres"]){
+        formattedAcres=`${(parseFloat(feature.attributes["DailyAcres"] as string)).toLocaleString()}`
+      }
+      return formattedAcres
+    }
+    const getTotalAcres = (feature:FeatureInfo)=>{
+      let formattedAcres = ""
+      if(feature.attributes["CalculatedAcres"]){
+        formattedAcres=`${(parseFloat(feature.attributes["CalculatedAcres"] as string)).toLocaleString()}`
+      }
+      return formattedAcres
+    }
     const show = () => {
       const setVal = () => {
         getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(//query feature layer for feature
@@ -95,6 +111,9 @@ export default defineComponent({
       feature,
       layerIcons,
       close,
+      getPercentContained,
+      getDailyAcres,
+      getTotalAcres
     };
   },
 });
