@@ -145,7 +145,6 @@ export default defineComponent({
     AdView,
   },
   setup() {
-    const selectedCursor = ref("");
     const store = useStore();
     // Statewide alerts...
     const alerts = ref<AlertInfo[]>([]);
@@ -537,7 +536,6 @@ export default defineComponent({
       popupXY,
       popupFeatureset,
       closePopup,
-      selectedCursor,
       alerts,
     };
   },

@@ -21,18 +21,15 @@ import { webmap } from "@/esri-stuff/esriMap";
 export default defineComponent({
   components: { MapButtonView },
   setup() {
-    const store = useStore();
-    const expanded = ref<string>("block");
-    const tileImage = require("@/assets/icons/tileBasemap.png")
-    const satelliteImage = require("@/assets/icons/worldImagery.png")
-    const imgSrc = ref<any>(satelliteImage)
-    const imgSize = ref<string>("100")
-    const iconTitle = ref<string>("Imagery")
-    const labelStyle = ref<string>("iconLabelWhite")
-    const labelFontSize = ref<number>(12)
-    const windowWidth = ref<number>(window.innerWidth)
-    const topLabelClass = ref<string>()
-    const bottomLabelClass = ref<string>()
+    const store = useStore();//create reference to vuex store
+    const tileImage = require("@/assets/icons/tileBasemap.png")//use wsdot basemap icon
+    const satelliteImage = require("@/assets/icons/worldImagery.png")//use imagery basemap icon
+    const imgSrc = ref<string>(satelliteImage)//reference to image used in icon
+    const imgSize = ref<string>("100")//reference to icon size determined by screen size
+    const iconTitle = ref<string>("Imagery")//reference to text used in icon, determined by selected basemap
+    const labelStyle = ref<string>("iconLabelWhite")//reference to class used to define label color, determined by selected basemap
+    const topLabelClass = ref<string>()//reference to class used to define top label size and placement, determined by selected basemap
+    const bottomLabelClass = ref<string>()//reference to class used to define bottom label size and placement, determined by selected basemap
     const toggleImageryReference= ()=>{
       store.state.layerList.map((x)=>{
         if(webmap.basemap.title=="Basemap"||webmap.basemap.title=="WSDOT Basemap"){
@@ -60,27 +57,20 @@ export default defineComponent({
       (labelStyle.value = "iconLabelWhite");
     }
     const onClick = () => {
-      //console.log(webmap.basemap)
       toggleImageryReference()
-      store.commit("toggleBasemap");
+      store.commit("toggleBasemap");//fire "toggleBasemap" mutation in store.ts
       updateBasemapIcon()
     };
 
     return {
-      expanded,
       imgSrc,
       iconTitle,
       onClick,
       labelStyle,
-      windowWidth,
       imgSize,
-      labelFontSize,
       topLabelClass,
       bottomLabelClass
     };
-  },
-  methods:{
-    
   },
   mounted() {
     if(window.innerWidth <=500){
