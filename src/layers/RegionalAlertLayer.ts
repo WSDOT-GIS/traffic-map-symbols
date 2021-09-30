@@ -177,29 +177,17 @@ export default getLayer;
 export const reloadData = async (alertUrl: string, countyUrl: string, regionUrl: string): Promise<void> => {
     const fetchResults = await fetchData(alertUrl, countyUrl, regionUrl);
     const pointLyr = getLayer();
-    pointLyr.applyEdits({ deleteFeatures: pointLyr.source }).then(() => {
-        console.log("*** point: " + pointLyr.source.length);
-        pointLyr.applyEdits({ addFeatures: fetchResults.point }).then(() => {
-            pointLyr.queryFeatures().then(() => {
-                pointLyr.refresh();
-                console.log("*** point: " + pointLyr.source.length);
-            });
+    pointLyr.queryFeatures().then((featureSet) => {
+        pointLyr.applyEdits({ deleteFeatures: featureSet.features }).then(() => {
+            pointLyr.applyEdits({ addFeatures: fetchResults.point });
         });
     });
     const polyLyr = AlertAreaLayer();
     polyLyr.queryFeatures().then((featureSet) => {
-        polyLyr.applyEdits({ deleteFeatures: polyLyr.source }).then((editResults) => {
-            console.log("*** Deleted: " + JSON.stringify(editResults));
-            polyLyr.queryFeatures().then((featureSet) => {
-                console.log("*** after poly: " + featureSet.features.length);
-            });
+        polyLyr.applyEdits({ deleteFeatures: featureSet.features }).then((/*editResults*/) => {
+            //console.log("*** Deleted: " + JSON.stringify(editResults));
+            polyLyr.applyEdits({ addFeatures: fetchResults.polygon });
         });
-        // polyLyr.applyEdits({ addFeatures: fetchResults.polygon }).then(() => {
-        //     polyLyr.queryFeatures().then(() => {
-        //         polyLyr.refresh();
-        //         console.log("*** poly: " + polyLyr.source.length);
-        //     });
-        // });
     });
 }
 
