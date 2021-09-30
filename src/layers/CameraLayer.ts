@@ -4,6 +4,11 @@ import Field from "@arcgis/core/layers/support/Field";
 import Symbol from "@/symbols/CameraSymbol";
 
 import { clusterConfig, clusterMaxScale } from "@/utils/clusterUtil";
+// import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+// import Point from "@arcgis/core/geometry/Point";
+// import SpatialReference from "@arcgis/core/geometry/SpatialReference";
+// import { geographicToWebMercator } from "@arcgis/core/geometry/support/webMercatorUtils";
+// import Graphic from "@arcgis/core/Graphic";
 
 const renderer = new SimpleRenderer({ symbol: Symbol });
 
@@ -86,6 +91,48 @@ const getLayer = (): GeoJSONLayer => {
     }
     return layer;
 }
+/*** create feature layer from GeoJSON */
+// let layer2: FeatureLayer | undefined;
+
+// export const initLayer2 = async (url: string): Promise<FeatureLayer> => {
+//     // Fetch all alerts from JSON...
+//     const response = await fetch(url);
+//     const json = await response.json();
+//     // Create graphic out of each feature...
+//     const graphics: Graphic[] = [];
+//     for (const each of json.features) {
+//         const ptWgs = new Point({
+//             x: each.geometry.coordinates[0],
+//             y: each.geometry.coordinates[1],
+//             spatialReference: SpatialReference.WGS84
+//         });
+//         const pt = geographicToWebMercator(ptWgs);
+//         graphics.push(new Graphic({
+//             geometry: pt,
+//             attributes: each.properties,
+//         }))
+//     }
+//     layer2 = new FeatureLayer({
+//         id: "traffic-camera-layer",
+//         title: "Cameras",
+//         source: graphics,
+//         fields: fields,
+//         objectIdField: "CameraID",
+//         geometryType: "point",
+//         spatialReference: SpatialReference.WebMercator,
+//         renderer: renderer,
+//         featureReduction: clusterConfig,
+//         visible: false,
+//     });
+//     return layer2;
+// }
+
+// const getLayer2 = (): FeatureLayer => {
+//     if (!layer2) {
+//         throw "CameraLayer is not ready yet!";
+//     }
+//     return layer2;
+// }
 
 export default getLayer
 
@@ -106,6 +153,9 @@ export const toggleCluster = (newScale: number, oldScale: number): void => {
 
 export const setCluster = (scale: number): void => {
     if (!layer) { return }
+    if (layer.featureReduction) {
+        layer.set("featureReduction", undefined);
+    }
     const cluster = scale > clusterMaxScale ? clusterConfig : undefined;
     layer.set("featureReduction", cluster);
 }

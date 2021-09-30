@@ -12,6 +12,7 @@ const defaultRadius = 60;
 
 const labelColor = "#005151";
 
+
 const clusterConfig = new FeatureReductionCluster({
     clusterRadius: defaultRadius,
     clusterMinSize: 20,

@@ -85,7 +85,7 @@ export const store = createStore<State>({
             let layerList: LayerInfo[];
             if (!payload) {
                 layerList = [];
-                webmap.layers.map((layer, index) => {
+                webmap.layers.forEach((layer, index) => {
                     layerList.push({
                         id: layer.id,
                         index: index,
@@ -99,7 +99,7 @@ export const store = createStore<State>({
             }
             state.layerList = layerList;
             if (payload) {
-                webmap.layers.map((layer, index) => {
+                webmap.layers.forEach((layer, index) => {
                     if (state.layerList[index] && layer.id == state.layerList[index].id) {
                         layer.visible = state.layerList[index].visible
                     }

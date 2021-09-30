@@ -389,8 +389,8 @@ export default defineComponent({
       const appConfig = await getConfig();
       setInterval(() => {
         esriMap.reloadGeoJsonLayers(store.state.layerList).then((lyrList) => {
-          esriMap.reloadRegionAlert(lyrList).then((lyrList) => {
-            store.commit("setLayerList", lyrList);
+          esriMap.reloadRegionAlert(lyrList).then(() => {
+            store.commit("setLayerList");//, lyrList);
             initOperationalLayerEvents(mapDiv, esriMap);
           });
         });
@@ -493,8 +493,7 @@ export default defineComponent({
         if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
           store.commit("setCurrentExtent", newValue);
         }
-
-        centerRegionalAlerts(newValue as Extent);
+        // centerRegionalAlerts(newValue as Extent);
       });
       // Watch scale change...
       esriMap.mapView.watch("scale", (newValue, oldValue) => {
@@ -521,6 +520,7 @@ export default defineComponent({
           return;
         }
         esriMap.updateOutOfExtentLayer();
+        centerRegionalAlerts(esriMap.mapView.extent);
       });
     });
     return {

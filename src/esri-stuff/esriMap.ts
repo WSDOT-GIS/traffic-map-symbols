@@ -6,9 +6,8 @@ import { geodesicBuffer } from "@arcgis/core/geometry/geometryEngine";
 import { whenTrue } from "@arcgis/core/core/watchUtils";
 import TileLayer from "@arcgis/core/layers/TileLayer";
 import Extent from "@arcgis/core/geometry/Extent";
-// import SpatialReference from "@arcgis/core/geometry/SpatialReference";
+import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol";
 import Layer from "@arcgis/core/layers/Layer";
-import EsriConfig from "@arcgis/core/config"
 import Graphic from "@arcgis/core/Graphic";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
@@ -16,7 +15,7 @@ import { difference } from "@arcgis/core/geometry/geometryEngine";
 // Layers
 import { initLayer as initTrafficLayer } from "@/layers/TrafficLayer";
 import { initLayer as initParkRideLayer } from "@/layers/ParkRideLayer";
-import { initLayer as initCameraLayer, setCluster } from "@/layers/CameraLayer";
+import CameraLayer, { initLayer as initCameraLayer, setCluster } from "@/layers/CameraLayer";
 import { initLayer as initRestAreaLayer } from "@/layers/RestAreasLayer";
 import { initLayer as initPointRestrictionsLayer } from "@/layers/PointRestrictionsLayer";
 import { initLayer as initLineRestrictionsLayer } from "@/layers/LineRestrictionsLayer";
@@ -32,7 +31,6 @@ import { initLayer as initESRIRoadsReference } from "@/layers/RoadsReferenceLaye
 import { initLayer as initESRIBoundariesPlacesReference } from "@/layers/BoundariesPlacesReferenceLayer"
 import { initLayer as initStateRouteShieldsLayer } from "@/layers/StateRouteShields"
 import { initLayer as initBorderCrossingsLayer } from "@/layers/BorderCrossingsLayer"
-import AlertAreaLayer from "@/layers/AlertAreaLayer";
 import { initLayer as initRegionalAlertLayer } from "@/layers/RegionalAlertLayer";
 //
 import { getEsriExtent, getOutOfBoundDirection } from "@/utils/extentUtil";
@@ -43,8 +41,7 @@ import LayerInfo from "@/types/LayerInfo";
 import firePerimeterFeatureIDs from "@/utils/firePerimeterQuery"
 import { getBasemapInfo } from "@/layers/Basemaps";
 import XY from "@/types/XY";
-import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol";
-import layer from "@/layers/ZoomExtentLayer";
+
 
 const fullExtent = getEsriExtent("full");
 
@@ -140,8 +137,8 @@ export const reloadGeoJsonLayers = async (layerList: LayerInfo[]): Promise<Layer
     reloadGeoJsonLayer("border-crossings-layer", config.borderCrossings, initBorderCrossingsLayer, layerList);
     /* Camera layer is not updated frequently, but need to be reloaded. 
     If not, the cluster label does not show after other layers are refreshed. */
-    reloadGeoJsonLayer("traffic-camera-layer", config.cameras, initCameraLayer, layerList);
-    setCluster(mapView.scale);
+    // reloadGeoJsonLayer("traffic-camera-layer", config.cameras, initCameraLayer, layerList);
+    // setCluster(mapView.scale);
     console.log("...Reloaded GeoJSON layers.")
     return layerList;
 }
@@ -155,6 +152,7 @@ const reloadGeoJsonLayer = (id: string, layerUrl: string, initFunc: (url: string
         const definitionExpression = oldlyr.definitionExpression
         // Destroys the layer and remove it from the map...
         // lyr.destroy();
+        webmap.remove(oldlyr);
         oldlyr.destroy();
         const newLyr = initFunc(layerUrl);
         newLyr.visible = visible;
@@ -487,8 +485,6 @@ export const updateOutOfExtentLayer = (): void => {
             style: "none"
         }
     });
-
-    //const fullExtent = getEsriExtent("full");
     const diffGeoms = difference(mapView.extent, displayExtent);
     if (Array.isArray(diffGeoms)) {
         for (const each of diffGeoms) {

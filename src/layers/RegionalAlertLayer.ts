@@ -157,7 +157,6 @@ export const initLayer = async (alertUrl: string, countyUrl: string, regionUrl: 
         geometryType: "point",
         spatialReference: SpatialReference.WebMercator,
         renderer: renderer,
-        refreshInterval: 5,
     });
     // Create the area boundary layer...
     const areaLayer = initAreaLayer(areaGraphics);
