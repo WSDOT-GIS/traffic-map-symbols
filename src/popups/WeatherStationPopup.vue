@@ -19,31 +19,8 @@
         custom: getMoreInfoURL
       },
       content: [
-       /* {
-          label: 'Location',
-          value: {
-            custom: getCoord,
-          },
-        },*/
         { label: 'Surface temp', value: { custom: getSurfTemp } },
         { label: 'Air temp', value: { custom: getAirTemp } },
-       /* {
-          label: '24hr high/low',
-          value: { custom: getHighLowTemp },
-        },
-        {
-          label: 'Pressure',
-          value: { custom: getPressure },
-        },
-        { label: 'Elevation', value: { custom: getElev } },
-        {
-          label: 'Humidity',
-          value: { custom: getHumidity },
-        },
-        {
-          label: 'Dew point',
-          value: { custom: getDewPoint },
-        },*/
         {
           label: 'Visibility',
           value: { custom: getVisibility },
@@ -184,26 +161,6 @@ export default defineComponent({
       }) as MoreInfoURLInfo
       return moreInfoObject
     }
-    /*const getCoord = (feature: FeatureInfo) => {
-      let text = naText;
-      if (feature) {
-        const lat = feature.attributes["Latitude"] as number;
-        const lon = feature.attributes["Longitude"] as number;
-        text = `${lon.toFixed(2)}, ${lat.toFixed(2)}`;
-      }
-      return text;
-    };*/
-
-    /*const getElev = (feature: FeatureInfo) => {
-      let text = naText;
-      if (feature) {
-        const ft = Number(feature.attributes["ElevationFeet"]);
-        const meter = Number(feature.attributes["ElevationMeters"]);
-        text = combineNums(ft, meter, "ft", "m");
-      }
-      return text;
-    };*/
-
     const getSurfTemp = (feature: FeatureInfo) => {
       let text = naText;
       if (feature) {
@@ -225,20 +182,6 @@ export default defineComponent({
       }
       return text;
     };
-
-    /*const getHighLowTemp = (feature: FeatureInfo) => {
-      let text = naText;
-      if (feature) {
-        const high = Number(feature.attributes["MaxTemperature"]);
-        const low = Number(feature.attributes["MinTemperature"]);
-        text = combineNums(high, low, "°F", "°F");
-      }
-      return text;
-    };*/
-
-    /*const getPressure = (feature: FeatureInfo) => {
-      return formatNum(feature, "BarometricPressure", "in");
-    };*/
     const getHumidity = (feature: FeatureInfo) => {
       return formatNum(feature, "RelativeHumidity", "%");
     };
@@ -291,12 +234,8 @@ export default defineComponent({
       feature,
       layerIcons,
       close,
-      //getCoord,
-      //getElev,
       getSurfTemp,
       getAirTemp,
-      //getHighLowTemp,
-      //getPressure,
       getHumidity,
       getDewPoint,
       getVisibility,

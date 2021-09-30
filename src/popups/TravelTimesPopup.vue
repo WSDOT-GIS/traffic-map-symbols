@@ -20,62 +20,6 @@
           label: 'HOV Lane Time (Min.)', 
           value: { custom: getHOVTime},
         },
-        /*{ 
-          label: 'HOV Average Time (Min.)', 
-          value: { fieldName: 'HOVAverageTime'},
-        },
-        { 
-          label: 'Express Lane Title', 
-          value: { fieldName: 'ExpressLaneTitle'}
-        },
-				{ 
-          label:'Express Lane Average Time (Min.)', 
-          value: { fieldName: 'ExpressLaneAverageTime'}
-        },
-				{ 
-          label:'Express Lane Current Time (Min.)', 
-          value: { fieldName: 'ExpressLaneCurrentTime'}
-        },
-				{ 
-          label:'Express Lane HOV Current Time (Min.)', 
-          value: { fieldName: 'ExpressLaneHOVCurrentTime'}
-        },
-				{ 
-          label:'Express Lane HOV Average Time (Min.)', 
-          value: { fieldName: 'ExpressLaneHOVAverageTime'}
-        },
-				{ 
-          label:'Covered Routes', 
-          value: { fieldName: 'CoveredRoutes'}
-        },
-				{ 
-          label:'Travel Region', 
-          value: { fieldName: 'TravelRegion'}
-        },
-				{ 
-          label:'Display Order All', 
-          value: { fieldName: 'DisplayOrderAll'}
-        },
-				{ 
-          label:'Display Order Direction', 
-          value: { fieldName: 'DisplayOrderDirection'}
-        },
-				{ 
-          label:'Travel Direction', 
-          value: { fieldName: 'TravelDirection'}
-        },
-				{ 
-          label:'Commute Page Address', 
-          value: { fieldName: 'CommutePageAddress'}
-        },
-				{ 
-          label:'Latitude', 
-          value: { fieldName: 'Latitude'}
-        },
-				{ 
-          label:'Longitude', 
-          value: { fieldName: 'Longitude'}
-        },*/
         { 
           label:'Last Updated', 
           value: { 
@@ -117,8 +61,6 @@ export default defineComponent({
     const layerIcons = layerListIcons;
     const feature = ref<FeatureInfo>();
     const TravelDelay = ref<number>(0);
-    // const mapX = ref(0);
-    // const mapY = ref(0);
 
     watch(props, () => {
       if (props.Featureset.layerId === FeatureLayer().id) {
@@ -156,8 +98,6 @@ export default defineComponent({
     };
     // Setting XY to 0 closes the popup...
     const close = () => {
-      // mapX.value = 0;
-      // mapY.value = 0;
       feature.value = undefined;
     };
     const getDelayStatus = () =>{
@@ -199,8 +139,6 @@ export default defineComponent({
     };
     return {
       layerIcons,
-      // mapX,
-      // mapY,
       feature,
       close,
       getTitle,

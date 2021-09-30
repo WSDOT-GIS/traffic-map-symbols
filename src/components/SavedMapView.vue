@@ -70,7 +70,6 @@ export default defineComponent({
     const closeButtonRef = ref<HTMLElement>();
     const itemTitleWidth = ref("0");
     const formVisible = ref(false);
-    const newMapTitle = ref("");
     const cookieName = "savedmaps";
     const cookieText = getCookie(cookieName);
     const mapList = ref<SavedMapInfo[]>([]);
@@ -203,7 +202,6 @@ export default defineComponent({
     return {
       mapList,
       formVisible,
-      newMapTitle,
       itemContainerRef,
       closeButtonRef,
       itemTitleWidth,

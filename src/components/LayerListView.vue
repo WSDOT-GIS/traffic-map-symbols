@@ -402,18 +402,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const layerIcons = layerListIcons;
-    /*const mileMarkerToggleEnabled = ref<boolean>();
-    mapView.watch("scale",(scale)=>{
-      if(scale >577790.554289){
-        mileMarkerToggleEnabled.value=false
-      }
-      else{
-        mileMarkerToggleEnabled.value=true
-      }
-      // console.log(scale)
-    })*/
     return { layerIcons, store /*mileMarkerToggleEnabled*/ };
-    //add mule markers to return function for v-if when layer visibilty is true
   },
   computed: {
     layerList() {
