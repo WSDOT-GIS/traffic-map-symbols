@@ -182,12 +182,6 @@ export default defineComponent({
       }
       return text;
     };
-    const getHumidity = (feature: FeatureInfo) => {
-      return formatNum(feature, "RelativeHumidity", "%");
-    };
-    const getDewPoint = (feature: FeatureInfo) => {
-      return formatNum(feature, "DewPoint", "°F");
-    };
     const getVisibility = (feature: FeatureInfo) => {
       return formatNum(feature, "Visibility", "Mile");
     };
@@ -236,8 +230,6 @@ export default defineComponent({
       close,
       getSurfTemp,
       getAirTemp,
-      getHumidity,
-      getDewPoint,
       getVisibility,
       getWindSpeed,
       getTitle,
