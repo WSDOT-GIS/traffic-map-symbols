@@ -41,6 +41,8 @@ import LayerInfo from "@/types/LayerInfo";
 import firePerimeterFeatureIDs from "@/utils/firePerimeterQuery"
 import { getBasemapInfo } from "@/layers/Basemaps";
 import XY from "@/types/XY";
+import { reloadData } from "@/utils/layerUtil";
+import layer from "@/layers/ZoomExtentLayer";
 
 
 const fullExtent = getEsriExtent("full");
@@ -122,6 +124,21 @@ export const loadRegionalAlert = async (): Promise<void> => {
     webmap.add(layers.point);
     webmap.add(layers.polygon, 0);
 }
+export const refreshLayerData = async (): Promise<void> => {
+    const config = await getConfig();
+    const layerIds = [{id: "road-alerts-layer", url: config.roadAlerts}, {id:"road-closures-layer"]
+    webmap.layers.forEach((each) => {
+        if (layerIds.indexOf(each.id) < 0) {
+            return;
+        }
+        
+        reloadData(config.roadAlerts, each as GeoJSONLayer);
+        console.log(`...Reloaded ${each.id} layer.`)
+    });
+    reloadRegionalAlert(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
+    console.log("...Reloaded region alert.");
+};
+
 /**
  * Reload GeoJSON layers that are updated frequently.
  */

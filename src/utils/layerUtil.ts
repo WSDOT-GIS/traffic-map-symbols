@@ -1,7 +1,12 @@
 import LayerInfo from "@/types/LayerInfo";
+import Point from "@arcgis/core/geometry/Point";
+import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Graphic from "@arcgis/core/Graphic";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import WebMap from "@arcgis/core/WebMap";
+import { geographicToWebMercator } from "@arcgis/core/geometry/support/webMercatorUtils";
+import Geometry from "@arcgis/core/geometry/Geometry";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 /**  Mapping between layer groups (type in URL query param) and layer IDs...
  *   * id
@@ -97,5 +102,87 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
     if (response.features.length > 0) {
         return response.features[0];
     }
+}
 
+export const reloadData = async (geojsonUrl: string, layer: GeoJSONLayer): Promise<void> => {
+    // Fetch all features from JSON...
+    const graphics = await fetchGeoJsonData(geojsonUrl, layer);
+    // Replace old with new features...
+    await replaceFeatures(layer, graphics);
+    // const response = await fetch(geojsonUrl);
+    // const json = await response.json();
+    // // Create graphic out of each feature...
+    // const graphics: Graphic[] = [];
+    // for (const each of json.features) {
+    //     let geom: Geometry;
+    //     if (layer.geometryType === "point") {
+    //         const pt4326 = new Point({
+    //             x: each.geometry.coordinates[0],
+    //             y: each.geometry.coordinates[1],
+    //             spatialReference: SpatialReference.WGS84
+    //         });
+    //         geom = geographicToWebMercator(pt4326);
+    //     }
+    //     else {
+    //         throw "Not implemented yet."
+    //     }
+    //     graphics.push(new Graphic({
+    //         geometry: geom,
+    //         attributes: each.properties,
+    //     }));
+    // }
+    // Delete existing features...
+    // let msg = `Refreshed ${layer.id}, feature count before: `;
+    // const fs = await layer.queryFeatures();
+    // msg += fs.features.length;
+    // await layer.applyEdits({ deleteFeatures: fs.features });
+    // // Load features...
+    // await layer.applyEdits({ addFeatures: graphics });
+    // const fCount = await layer.queryFeatureCount();
+    // msg += `, after: ${fCount}`;
+    // console.log(msg);
+}
+
+const replaceFeatures = async (layer: GeoJSONLayer|FeatureLayer, newFeatures: Graphic[]) => {
+    // Delete existing features...
+    let msg = `Refreshed ${layer.id}, feature count before: `;
+    const fs = await layer.queryFeatures();
+    msg += fs.features.length;
+    await layer.applyEdits({ deleteFeatures: fs.features });
+    // Load features...
+    await layer.applyEdits({ addFeatures: newFeatures });
+    const fCount = await layer.queryFeatureCount();
+    msg += `, after: ${fCount}`;
+    console.log(msg);
+}
+
+export const fetchJsonData = async (): Promise<Graphic[]> => {
+    
+}
+
+export const fetchGeoJsonData = async (geojsonUrl: string, layer: GeoJSONLayer): Promise<Graphic[]> => {
+    // Fetch all features from JSON...
+    const response = await fetch(geojsonUrl);
+    const json = await response.json();
+    // Create graphic out of each feature...
+    const graphics: Graphic[] = [];
+    for (const each of json.features) {
+        let geom: Geometry;
+        if (layer.geometryType === "point") {
+            const pt4326 = new Point({
+                x: each.geometry.coordinates[0],
+                y: each.geometry.coordinates[1],
+                spatialReference: SpatialReference.WGS84
+            });
+            geom = geographicToWebMercator(pt4326);
+        }
+        else {
+            throw "Not implemented yet."
+        }
+        graphics.push(new Graphic({
+            geometry: geom,
+            attributes: each.properties,
+        }));
+    }
+    return graphics;
 }

@@ -184,13 +184,18 @@ export const reloadData = async (alertUrl: string, countyUrl: string, regionUrl:
     });
     const polyLyr = AlertAreaLayer();
     polyLyr.queryFeatures().then((featureSet) => {
-        polyLyr.applyEdits({ deleteFeatures: featureSet.features }).then((/*editResults*/) => {
-            //console.log("*** Deleted: " + JSON.stringify(editResults));
+        polyLyr.applyEdits({ deleteFeatures: featureSet.features }).then(() => {
             polyLyr.applyEdits({ addFeatures: fetchResults.polygon });
         });
     });
 }
-
+/**
+ * Fetch alerts from JSON, fetch boundaries from county or region map services, then create graphics.
+ * @param alertUrl 
+ * @param countyUrl 
+ * @param regionUrl 
+ * @returns 
+ */
 const fetchData = async (alertUrl: string, countyUrl: string, regionUrl: string): Promise<{ point: Graphic[], polygon: Graphic[] }> => {
     // Fetch all alerts from JSON...
     let response = await fetch(alertUrl);

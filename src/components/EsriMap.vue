@@ -392,11 +392,12 @@ export default defineComponent({
       // Set refresh interval for layers...
       const appConfig = await getConfig();
       setInterval(() => {
+        esriMap.refreshLayerData();
         //esriMap.reloadGeoJsonLayers(store.state.layerList).then((lyrList) => {
-          esriMap.refreshRegionAlert().then(() => {
-            store.commit("setLayerList");//, lyrList);
-            initOperationalLayerEvents(mapDiv, esriMap);
-          });
+          // esriMap.refreshRegionAlert().then(() => {
+          //   store.commit("setLayerList");//, lyrList);
+          //   initOperationalLayerEvents(mapDiv, esriMap);
+          // });
        //});
         getAlerts(appConfig.stateAlerts).then((result) => {
           alerts.value = result;
