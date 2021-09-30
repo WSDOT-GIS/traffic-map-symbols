@@ -26,12 +26,4 @@ const getLayer = (): GeoJSONLayer => {
     return layer;
 }
 
-// const WeatherStationsLayer = new GeoJSONLayer({
-//     id: "weather-stations-layer",
-//     url: "https://data.wsdot.wa.gov/travelcenter/WeatherStations.json",
-//     title: "Weather Stations",
-//     renderer: weatherStationRenderer,
-//     visible: false
-// })
-
 export default getLayer

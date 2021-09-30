@@ -30,7 +30,6 @@
   ></ZoomPopupView>
   <CameraPopup :MapXY="popupXY" :Featureset="popupFeatureset" />
   <ParkRidePopup :Featureset="popupFeatureset" />
-  <LineRestrictionPopup :Featureset="popupFeatureset" />
   <PointRestrictionPopup :Featureset="popupFeatureset" />
   <MountainPassPopup :Featureset="popupFeatureset" />
   <WeatherStationsPopup :Featureset="popupFeatureset" />
@@ -102,7 +101,6 @@ import ZoomPopupView from "@/components/ZoomPopupView.vue";
 import CameraPopup from "@/popups/CameraPopup.vue";
 import ParkRidePopup from "@/popups/ParkAndRidePopup.vue";
 import PointRestrictionPopup from "@/popups/PointRestrictionPopup.vue";
-import LineRestrictionPopup from "@/popups/LineRestrictionPopup.vue";
 import MountainPassPopup from "@/popups/MountainPassPopup.vue";
 import WeatherStationsPopup from "@/popups/WeatherStationPopup.vue";
 import RestAreaPopup from "@/popups/RestAreaPopup.vue";
@@ -127,7 +125,6 @@ export default defineComponent({
     CameraPopup,
     ParkRidePopup,
     PointRestrictionPopup,
-    LineRestrictionPopup,
     MountainPassPopup,
     WeatherStationsPopup,
     RestAreaPopup,
@@ -214,7 +211,6 @@ export default defineComponent({
           ParkRideLayer(),
           CameraLayer(),
           PointRestrictionsLayer(),
-          LineRestrictionsLayer(),
           WeatherStationsLayer(),
           MountainPassesLayer(),
           RestAreasLayer(),

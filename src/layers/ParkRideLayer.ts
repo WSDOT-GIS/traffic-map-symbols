@@ -22,11 +22,6 @@ const fields = [
         type: "string"
     }),
     new Field({
-        name: "CityName",
-        alias: "City Name",
-        type: "string"
-    }),
-    new Field({
         name: "Street_Location",
         alias: "Street Location",
         type: "string"
@@ -34,11 +29,6 @@ const fields = [
     new Field({
         name: "Address",
         alias: "Address",
-        type: "string"
-    }),
-    new Field({
-        name: "ZipCode",
-        alias: "Zip Code",
         type: "string"
     }),
     new Field({
@@ -51,11 +41,6 @@ const fields = [
         alias: "Publish Date",
         type: "date"
     }),
-    new Field({
-        name: "GlobalID",
-        alias: "Global ID",
-        type: "string"
-    })
 ]
 
 let layer: GeoJSONLayer | undefined;
@@ -66,7 +51,7 @@ export const initLayer = (url: string): GeoJSONLayer => {
         url: url,
         title: "Park and Rides",
         renderer: renderer,
-        fields: fields,
+        //fields: fields,
         visible: false
     });
     return layer;
