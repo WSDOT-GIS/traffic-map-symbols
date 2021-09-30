@@ -41,15 +41,20 @@ dataSources = [
     {
         "url": "https://hqolymgis30s.wsdot.loc/arcgis/rest/services/TravelCenter/TravelCenter/MapServer/9/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&having=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentOnly=false&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=geojson",
         "title": "TravelTimes"
-    }
-
-]
-''' {
-        "url": "https://hqolymgis30s.wsdot.loc/arcgis/rest/services/TravelCenter/TravelCenter/MapServer/6/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&having=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentOnly=false&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=geojson",
-        "title": "CountyAlerts"
     },
-
-    '''
+    {
+        "url": "https://hqolymgis30s.wsdot.loc/arcgis/rest/services/TravelCenter/TravelCenter/MapServer/11/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&having=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentOnly=false&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=geojson",
+        "title": "BorderCrossingTimes"
+    },
+    {
+        "url": "https://hqolymgis30s.wsdot.loc/arcgis/rest/services/TravelCenter/TravelCenter/MapServer/10/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&having=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentOnly=false&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=geojson",
+        "title": "RestAreas"
+    },
+    {      
+		"url":		 
+        "https://hqolymgis30s.wsdot.loc/arcgis/rest/services/TravelCenter/TravelCenter/MapServer/6/query?f=json&where=1%3D1&returnGeometry=false&outFields=*",
+		"title": "CountyAlerts"
+    }]
 
 
 def getGeoJson():
@@ -68,7 +73,7 @@ def addRestrictionMidpoints(dataSourcesWithJSON):#add midpoints of lines to poin
             parsedRestrictionLinesLayer = json.loads(dataSourcesWithJSON[idx]["response"])
     i = len(parsedRestrictionPointsLayer["features"])
     for feature in parsedRestrictionPointsLayer["features"]:
-        feature["properties"]["lineMarker"] = False
+        feature["properties"]["lineMarker"] = "False"
     for feature in parsedRestrictionLinesLayer["features"]:
         newFeature = feature
         middleIndex = float(len(feature["geometry"]["coordinates"])) / 2
@@ -80,7 +85,7 @@ def addRestrictionMidpoints(dataSourcesWithJSON):#add midpoints of lines to poin
         newFeature["geometry"]["type"] = "Point"
         newFeature["id"] = i
         newFeature['properties']["ESRI_OID"] = i
-        newFeature['properties']["lineMarker"] = True
+        newFeature['properties']["lineMarker"] = "True"
         parsedRestrictionPointsLayer["features"].append(newFeature)
         i+=1
     for idx, val in enumerate(dataSourcesWithJSON):
@@ -94,7 +99,11 @@ def addRestrictionMidpoints(dataSourcesWithJSON):#add midpoints of lines to poin
 
 def writeFiles(jsonData):
     for file in jsonData:
+        file["response"] = file["response"].replace('href=', "target='_blank' href=")
+        file["response"] = file["response"].replace('&#x0D;', '')
+        file["response"] = file["response"].replace('–', '-')
         file["response"] = file["response"].replace(':""', ':null')
+        file["response"] = file["response"].replace(': ""', ': null')
         if "Invalid or missing input parameters" in file["response"]:
             continue
         else:
