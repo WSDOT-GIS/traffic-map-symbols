@@ -392,16 +392,16 @@ export default defineComponent({
       // Set refresh interval for layers...
       const appConfig = await getConfig();
       setInterval(() => {
-        esriMap.reloadGeoJsonLayers(store.state.layerList).then((lyrList) => {
-          esriMap.reloadRegionAlert(lyrList).then((lyrList) => {
+        //esriMap.reloadGeoJsonLayers(store.state.layerList).then((lyrList) => {
+          esriMap.refreshRegionAlert().then(() => {
             store.commit("setLayerList");//, lyrList);
             initOperationalLayerEvents(mapDiv, esriMap);
           });
-        });
+       //});
         getAlerts(appConfig.stateAlerts).then((result) => {
           alerts.value = result;
         });
-      }, appConfig.layerRefreshMinute * 60000); //60000
+      }, appConfig.layerRefreshMinute * 1500); //60000
       // Setup events on the operational layers...
       initOperationalLayerEvents(mapDiv, esriMap);
       // Add quick zoom boxes around metro areas...

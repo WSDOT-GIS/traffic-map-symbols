@@ -31,7 +31,7 @@ import { initLayer as initESRIRoadsReference } from "@/layers/RoadsReferenceLaye
 import { initLayer as initESRIBoundariesPlacesReference } from "@/layers/BoundariesPlacesReferenceLayer"
 import { initLayer as initStateRouteShieldsLayer } from "@/layers/StateRouteShields"
 import { initLayer as initBorderCrossingsLayer } from "@/layers/BorderCrossingsLayer"
-import { initLayer as initRegionalAlertLayer } from "@/layers/RegionalAlertLayer";
+import { initLayer as initRegionalAlertLayer, reloadData as reloadRegionalAlert } from "@/layers/RegionalAlertLayer";
 //
 import { getEsriExtent, getOutOfBoundDirection } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
@@ -125,25 +125,25 @@ export const loadRegionalAlert = async (): Promise<void> => {
 /**
  * Reload GeoJSON layers that are updated frequently.
  */
-export const reloadGeoJsonLayers = async (layerList: LayerInfo[]): Promise<LayerInfo[]> => {
+export const reloadGeoJsonLayers = async (/*layerList: LayerInfo[]*/): Promise<void> => {
     const config = await getConfig();
-    reloadGeoJsonLayer("road-alerts-layer", config.roadAlerts, initPriorityLayer, layerList);
-    reloadGeoJsonLayer("road-closures-layer", config.roadAlerts, initClosureLayer, layerList);
-    reloadGeoJsonLayer("line-restrictions-layer", config.lineRestrictions, initLineRestrictionsLayer, layerList);
-    reloadGeoJsonLayer("point-restrictions-layer", config.pointRestrictions, initPointRestrictionsLayer, layerList);
-    reloadGeoJsonLayer("mountain-passes-layer", config.mountainPasses, initMountainLayer, layerList);
-    reloadGeoJsonLayer("travel-times-layer", config.travelTimes, initTravelTimesLayer, layerList);
-    reloadGeoJsonLayer("weather-stations-layer", config.weatherStations, initWeatherLayer, layerList);
-    reloadGeoJsonLayer("border-crossings-layer", config.borderCrossings, initBorderCrossingsLayer, layerList);
+    reloadGeoJsonLayer("road-alerts-layer", config.roadAlerts, initPriorityLayer);//, layerList);
+    reloadGeoJsonLayer("road-closures-layer", config.roadAlerts, initClosureLayer);//, layerList);
+    reloadGeoJsonLayer("line-restrictions-layer", config.lineRestrictions, initLineRestrictionsLayer);//, layerList);
+    reloadGeoJsonLayer("point-restrictions-layer", config.pointRestrictions, initPointRestrictionsLayer);//, layerList);
+    reloadGeoJsonLayer("mountain-passes-layer", config.mountainPasses, initMountainLayer);//, layerList);
+    reloadGeoJsonLayer("travel-times-layer", config.travelTimes, initTravelTimesLayer);//, layerList);
+    reloadGeoJsonLayer("weather-stations-layer", config.weatherStations, initWeatherLayer);//, layerList);
+    reloadGeoJsonLayer("border-crossings-layer", config.borderCrossings, initBorderCrossingsLayer);//, layerList);
     /* Camera layer is not updated frequently, but need to be reloaded. 
     If not, the cluster label does not show after other layers are refreshed. */
     // reloadGeoJsonLayer("traffic-camera-layer", config.cameras, initCameraLayer, layerList);
     // setCluster(mapView.scale);
     console.log("...Reloaded GeoJSON layers.")
-    return layerList;
+    //return layerList;
 }
 
-const reloadGeoJsonLayer = (id: string, layerUrl: string, initFunc: (url: string) => GeoJSONLayer, layerList: LayerInfo[]): void => {
+const reloadGeoJsonLayer = (id: string, layerUrl: string, initFunc: (url: string) => GeoJSONLayer/*, layerList: LayerInfo[]*/): void => {
     const lyr = getLayer(id);
     if (lyr.type === "geojson") {
         const oldlyr = lyr as GeoJSONLayer
@@ -159,32 +159,33 @@ const reloadGeoJsonLayer = (id: string, layerUrl: string, initFunc: (url: string
         newLyr.definitionExpression = definitionExpression;
         webmap.add(newLyr, lyrIdx);
         // Update the layer list with the new layer object...
-        updateLayerList(layerList, newLyr);
+        // updateLayerList(layerList, newLyr);
     }
     else {
         throw id + " is not a GeoJSON layer."
     }
 }
 
-export const reloadRegionAlert = async (layerList: LayerInfo[]): Promise<LayerInfo[]> => {
-    const oldPointLyr = getLayer("regional-alert-layer");
-    const oldPolyLyr = getLayer("alert-area-layer");
+export const refreshRegionAlert = async (/*layerList: LayerInfo[]*/): Promise<void> => {
+    // const oldPointLyr = getLayer("regional-alert-layer");
+    // const oldPolyLyr = getLayer("alert-area-layer");
     // Recreate the layers...
     const config = await getConfig();
-    const layers = await initRegionalAlertLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
+    // const layers = await initRegionalAlertLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
+    reloadRegionalAlert(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
     // Swap the point layer...
-    const pointLyrIdx = webmap.layers.indexOf(oldPointLyr);
-    oldPointLyr.destroy();
-    webmap.add(layers.point, pointLyrIdx);
-    // Swap the polygon layer...
-    const polyLyrIdx = webmap.layers.indexOf(oldPolyLyr);
-    oldPolyLyr.destroy();
-    webmap.add(layers.polygon, polyLyrIdx);
+    // const pointLyrIdx = webmap.layers.indexOf(oldPointLyr);
+    // oldPointLyr.destroy();
+    // webmap.add(layers.point, pointLyrIdx);
+    // // Swap the polygon layer...
+    // const polyLyrIdx = webmap.layers.indexOf(oldPolyLyr);
+    // oldPolyLyr.destroy();
+    // webmap.add(layers.polygon, polyLyrIdx);
     // Update the layer list with the new layer object...
-    updateLayerList(layerList, layers.point);
-    updateLayerList(layerList, layers.polygon);
+    // updateLayerList(layerList, layers.point);
+    // updateLayerList(layerList, layers.polygon);
     console.log("...Reloaded region alert.");
-    return layerList;
+    // return layerList;
 }
 /**
  * After a layer object is recreated, update the reference to the new layer object.
