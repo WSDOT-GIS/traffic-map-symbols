@@ -395,7 +395,7 @@ export default defineComponent({
       setInterval(() => {
         esriMap.reloadGeoJsonLayers(store.state.layerList).then((lyrList) => {
           esriMap.reloadRegionAlert(lyrList).then((lyrList) => {
-            store.commit("setLayerList", lyrList);
+            store.commit("setLayerList");//, lyrList);
             initOperationalLayerEvents(mapDiv, esriMap);
           });
         });

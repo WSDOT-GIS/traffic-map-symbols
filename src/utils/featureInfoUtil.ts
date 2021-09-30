@@ -34,7 +34,7 @@ export const getFeatureInfoById = async (id: number, layer: GeoJSONLayer|Feature
     }
 }
 
-export const getFeatureInfosByIds = async (ids: number[], layer: GeoJSONLayer): Promise<FeatureInfo[]> => {
+export const getFeatureInfosByIds = async (ids: number[], layer: GeoJSONLayer|FeatureLayer): Promise<FeatureInfo[]> => {
     const query = layer.createQuery();
     const idName = layer.objectIdField;
     query.where = `${idName} IN ( ${ids.join(",")})`;
