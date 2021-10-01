@@ -151,11 +151,10 @@ const initLayer = (alertUrl, countyUrl, regionUrl) => tslib_1.__awaiter(void 0, 
         geometryType: "point",
         spatialReference: SpatialReference_1.default.WebMercator,
         renderer: renderer,
-        refreshInterval: 5,
     });
     // Create the area boundary layer...
-    AlertAreaLayer_2.initLayer(areaGraphics);
-    return layer;
+    const areaLayer = AlertAreaLayer_2.initLayer(areaGraphics);
+    return { point: layer, polygon: areaLayer };
 });
 exports.initLayer = initLayer;
 const getLayer = () => {

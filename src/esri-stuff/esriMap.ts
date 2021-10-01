@@ -32,6 +32,7 @@ import { initLayer as initESRIBoundariesPlacesReference } from "@/layers/Boundar
 import { initLayer as initStateRouteShieldsLayer } from "@/layers/StateRouteShields"
 import { initLayer as initBorderCrossingsLayer } from "@/layers/BorderCrossingsLayer"
 import { initLayer as initRegionalAlertLayer } from "@/layers/RegionalAlertLayer";
+import { initLayer as initFerryRoutesLayer } from "@/layers/FerryRoutesLayer"
 //
 import { getEsriExtent, getOutOfBoundDirection } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
@@ -105,11 +106,12 @@ export const loadOperationalLayers = async (): Promise<void> => {
     // const regionalAlertLayer = await initRegionalAlertLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
     // The first one in the array will be displayed at the bottom of the map... 
     const borderCrossingsLayer = initBorderCrossingsLayer(config.borderCrossings)
+    const ferryRoutesLayer = initFerryRoutesLayer(config.ferryRoutes)
     webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
         firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertsLyr, roadClosuresLyr,
-        mileMarkersLayer, borderCrossingsLayer]);
+        mileMarkersLayer, borderCrossingsLayer, ferryRoutesLayer]);
     // Store the default visibility...
     webmap.layers.forEach((eachLyr) => {
         defaultLayerProps.push({ id: eachLyr.id, visible: eachLyr.visible });

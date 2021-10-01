@@ -1,13 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeHighlight = exports.highlightFeature = exports.bufferByPixels = exports.getIdsFromCluster = exports.getLayer = exports.panMap = exports.checkPannedExtent = exports.toPoint = exports.toScreenXY = exports.getMaxScale = exports.zoomToExtent = exports.zoomToMetroArea = exports.zoomToMax = exports.tryZoomToPointAsync = exports.tryZoomToPoint = exports.reloadGeoJsonLayers = exports.loadOperationalLayers = exports.defaultLayerProps = exports.init = exports.mapView = exports.webmap = void 0;
+exports.updateOutOfExtentLayer = exports.addOutOfExtentLayer = exports.removeHighlight = exports.highlightFeature = exports.bufferByPixels = exports.getIdsFromCluster = exports.getLayer = exports.panMap = exports.checkPannedExtent = exports.toPoint = exports.toScreenXY = exports.getMaxScale = exports.zoomToExtent = exports.zoomToMetroArea = exports.zoomToMax = exports.tryZoomToPointAsync = exports.tryZoomToPoint = exports.reloadRegionAlert = exports.reloadGeoJsonLayers = exports.loadRegionalAlert = exports.loadOperationalLayers = exports.defaultLayerProps = exports.init = exports.mapView = exports.webmap = void 0;
 const tslib_1 = require("tslib");
 const WebMap_1 = tslib_1.__importDefault(require("@arcgis/core/WebMap"));
 const MapView_1 = tslib_1.__importDefault(require("@arcgis/core/views/MapView"));
 const Point_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/Point"));
 const geometryEngine_1 = require("@arcgis/core/geometry/geometryEngine");
 const watchUtils_1 = require("@arcgis/core/core/watchUtils");
-const config_1 = tslib_1.__importDefault(require("@arcgis/core/config"));
+const SimpleFillSymbol_1 = tslib_1.__importDefault(require("@arcgis/core/symbols/SimpleFillSymbol"));
+const Graphic_1 = tslib_1.__importDefault(require("@arcgis/core/Graphic"));
+const GraphicsLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/GraphicsLayer"));
+const geometryEngine_2 = require("@arcgis/core/geometry/geometryEngine");
 // Layers
 const TrafficLayer_1 = require("@/layers/TrafficLayer");
 const ParkRideLayer_1 = require("@/layers/ParkRideLayer");
@@ -27,7 +30,6 @@ const RoadsReferenceLayer_1 = require("@/layers/RoadsReferenceLayer");
 const BoundariesPlacesReferenceLayer_1 = require("@/layers/BoundariesPlacesReferenceLayer");
 const StateRouteShields_1 = require("@/layers/StateRouteShields");
 const BorderCrossingsLayer_1 = require("@/layers/BorderCrossingsLayer");
-const AlertAreaLayer_1 = tslib_1.__importDefault(require("@/layers/AlertAreaLayer"));
 const RegionalAlertLayer_1 = require("@/layers/RegionalAlertLayer");
 //
 const extentUtil_1 = require("@/utils/extentUtil");
@@ -72,7 +74,7 @@ exports.defaultLayerProps = [];
  */
 const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     const config = yield appConfigUtil_1.getConfig();
-    config_1.default.apiKey = config.apiKey;
+    //EsriConfig.apiKey = config.apiKey;
     const trafficLyr = TrafficLayer_1.initLayer(config.traffic, config.layerRefreshMinute);
     const restAreasLyr = RestAreasLayer_1.initLayer(config.restAreas);
     const parkRideLyr = ParkRideLayer_1.initLayer(config.parkAndRides);
@@ -92,20 +94,28 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     const esriRoadsReferenceLayer = RoadsReferenceLayer_1.initLayer(config.esriRoadsReferenceLayer);
     const esriPlacesReferenceLayer = BoundariesPlacesReferenceLayer_1.initLayer(config.esriPlacesReferenceLayer);
     const stateRouteShieldsLayer = StateRouteShields_1.initLayer(config.stateRouteShieldsLayer);
-    const regionalAlertLayer = yield RegionalAlertLayer_1.initLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
+    // const regionalAlertLayer = await initRegionalAlertLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
     // The first one in the array will be displayed at the bottom of the map... 
     const borderCrossingsLayer = BorderCrossingsLayer_1.initLayer(config.borderCrossings);
-    exports.webmap.addMany([AlertAreaLayer_1.default(), esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
+    exports.webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
         firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertsLyr, roadClosuresLyr,
-        mileMarkersLayer, borderCrossingsLayer, regionalAlertLayer]);
+        mileMarkersLayer, borderCrossingsLayer]);
     // Store the default visibility...
     exports.webmap.layers.forEach((eachLyr) => {
         exports.defaultLayerProps.push({ id: eachLyr.id, visible: eachLyr.visible });
     });
 });
 exports.loadOperationalLayers = loadOperationalLayers;
+/** Load regional alert point and polygon layers. */
+const loadRegionalAlert = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+    const config = yield appConfigUtil_1.getConfig();
+    const layers = yield RegionalAlertLayer_1.initLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
+    exports.webmap.add(layers.point);
+    exports.webmap.add(layers.polygon, 0);
+});
+exports.loadRegionalAlert = loadRegionalAlert;
 /**
  * Reload GeoJSON layers that are updated frequently.
  */
@@ -121,8 +131,9 @@ const reloadGeoJsonLayers = (layerList) => tslib_1.__awaiter(void 0, void 0, voi
     reloadGeoJsonLayer("border-crossings-layer", config.borderCrossings, BorderCrossingsLayer_1.initLayer, layerList);
     /* Camera layer is not updated frequently, but need to be reloaded.
     If not, the cluster label does not show after other layers are refreshed. */
-    //reloadGeoJsonLayer("traffic-camera-layer", config.cameras, initCameraLayer, layerList);
-    CameraLayer_1.setCluster(exports.mapView.scale);
+    // reloadGeoJsonLayer("traffic-camera-layer", config.cameras, initCameraLayer, layerList);
+    // setCluster(mapView.scale);
+    console.log("...Reloaded GeoJSON layers.");
     return layerList;
 });
 exports.reloadGeoJsonLayers = reloadGeoJsonLayers;
@@ -134,24 +145,54 @@ const reloadGeoJsonLayer = (id, layerUrl, initFunc, layerList) => {
         const visible = oldlyr.visible;
         const definitionExpression = oldlyr.definitionExpression;
         // Destroys the layer and remove it from the map...
-        lyr.destroy();
+        // lyr.destroy();
+        exports.webmap.remove(oldlyr);
         oldlyr.destroy();
         const newLyr = initFunc(layerUrl);
         newLyr.visible = visible;
         newLyr.definitionExpression = definitionExpression;
         exports.webmap.add(newLyr, lyrIdx);
         // Update the layer list with the new layer object...
-        const lyrInfo = layerList.find((eachInfo) => {
-            return eachInfo.id === id;
-        });
-        if (lyrInfo) {
-            lyrInfo.id = newLyr.id;
-            lyrInfo.title = newLyr.title;
-            lyrInfo.visible = newLyr.visible;
-        }
+        updateLayerList(layerList, newLyr);
     }
     else {
         throw id + " is not a GeoJSON layer.";
+    }
+};
+const reloadRegionAlert = (layerList) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+    const oldPointLyr = exports.getLayer("regional-alert-layer");
+    const oldPolyLyr = exports.getLayer("alert-area-layer");
+    // Recreate the layers...
+    const config = yield appConfigUtil_1.getConfig();
+    const layers = yield RegionalAlertLayer_1.initLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
+    // Swap the point layer...
+    const pointLyrIdx = exports.webmap.layers.indexOf(oldPointLyr);
+    oldPointLyr.destroy();
+    exports.webmap.add(layers.point, pointLyrIdx);
+    // Swap the polygon layer...
+    const polyLyrIdx = exports.webmap.layers.indexOf(oldPolyLyr);
+    oldPolyLyr.destroy();
+    exports.webmap.add(layers.polygon, polyLyrIdx);
+    // Update the layer list with the new layer object...
+    updateLayerList(layerList, layers.point);
+    updateLayerList(layerList, layers.polygon);
+    console.log("...Reloaded region alert.");
+    return layerList;
+});
+exports.reloadRegionAlert = reloadRegionAlert;
+/**
+ * After a layer object is recreated, update the reference to the new layer object.
+ * @param layerList
+ * @param layer
+ */
+const updateLayerList = (layerList, layer) => {
+    const lyrInfo = layerList.find((eachInfo) => {
+        return eachInfo.id === layer.id;
+    });
+    if (lyrInfo) {
+        lyrInfo.id = layer.id;
+        lyrInfo.title = layer.title;
+        lyrInfo.visible = layer.visible;
     }
 };
 const tryZoomToPoint = (point, numLevels) => {
@@ -426,4 +467,39 @@ const removeHighlight = () => {
     }
 };
 exports.removeHighlight = removeHighlight;
+/*** grey out outside ***/
+const outOfExtentLayer = new GraphicsLayer_1.default();
+const displayExtent = extentUtil_1.getEsriExtent("full").expand(1.2);
+const addOutOfExtentLayer = () => {
+    exports.webmap.add(outOfExtentLayer);
+};
+exports.addOutOfExtentLayer = addOutOfExtentLayer;
+const updateOutOfExtentLayer = () => {
+    outOfExtentLayer.removeAll();
+    const symbol = new SimpleFillSymbol_1.default({
+        style: "solid",
+        color: [128, 128, 128, 0.5],
+        outline: {
+            style: "none"
+        }
+    });
+    const diffGeoms = geometryEngine_2.difference(exports.mapView.extent, displayExtent);
+    if (Array.isArray(diffGeoms)) {
+        for (const each of diffGeoms) {
+            const g = new Graphic_1.default({
+                geometry: each,
+                symbol: symbol,
+            });
+            outOfExtentLayer.add(g);
+        }
+    }
+    else {
+        const g = new Graphic_1.default({
+            geometry: diffGeoms,
+            symbol: symbol,
+        });
+        outOfExtentLayer.add(g);
+    }
+};
+exports.updateOutOfExtentLayer = updateOutOfExtentLayer;
 //# sourceMappingURL=esriMap.js.map
