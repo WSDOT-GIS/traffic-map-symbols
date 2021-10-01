@@ -7,6 +7,7 @@ import WebMap from "@arcgis/core/WebMap";
 import { geographicToWebMercator } from "@arcgis/core/geometry/support/webMercatorUtils";
 import Geometry from "@arcgis/core/geometry/Geometry";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import * as geomJsonUtils from "@arcgis/core/geometry/support/jsonUtils";
 
 /**  Mapping between layer groups (type in URL query param) and layer IDs...
  *   * id
@@ -104,46 +105,23 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
     }
 }
 
-export const reloadData = async (geojsonUrl: string, layer: GeoJSONLayer): Promise<void> => {
-    // Fetch all features from JSON...
-    const graphics = await fetchGeoJsonData(geojsonUrl, layer);
-    // Replace old with new features...
-    await replaceFeatures(layer, graphics);
-    // const response = await fetch(geojsonUrl);
-    // const json = await response.json();
-    // // Create graphic out of each feature...
-    // const graphics: Graphic[] = [];
-    // for (const each of json.features) {
-    //     let geom: Geometry;
-    //     if (layer.geometryType === "point") {
-    //         const pt4326 = new Point({
-    //             x: each.geometry.coordinates[0],
-    //             y: each.geometry.coordinates[1],
-    //             spatialReference: SpatialReference.WGS84
-    //         });
-    //         geom = geographicToWebMercator(pt4326);
-    //     }
-    //     else {
-    //         throw "Not implemented yet."
-    //     }
-    //     graphics.push(new Graphic({
-    //         geometry: geom,
-    //         attributes: each.properties,
-    //     }));
-    // }
-    // Delete existing features...
-    // let msg = `Refreshed ${layer.id}, feature count before: `;
-    // const fs = await layer.queryFeatures();
-    // msg += fs.features.length;
-    // await layer.applyEdits({ deleteFeatures: fs.features });
-    // // Load features...
-    // await layer.applyEdits({ addFeatures: graphics });
-    // const fCount = await layer.queryFeatureCount();
-    // msg += `, after: ${fCount}`;
-    // console.log(msg);
+export const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
+    layer.watch("visible", (newValue, oldValue, propName, target) => {
+        const lyr = target as FeatureLayer;
+        if (newValue && lyr.source.length === 0) {
+            reloadData(jsonUrl, lyr);
+        }
+    });
 }
 
-const replaceFeatures = async (layer: GeoJSONLayer|FeatureLayer, newFeatures: Graphic[]) => {
+export const reloadData = async (jsonUrl: string, layer: FeatureLayer): Promise<void> => {
+    // Fetch all features from JSON...
+    const graphics = await fetchJsonData(jsonUrl);
+    // Replace old with new features...
+    await replaceFeatures(layer, graphics);
+}
+
+export const replaceFeatures = async (layer: FeatureLayer, newFeatures: Graphic[]): Promise<void> => {
     // Delete existing features...
     let msg = `Refreshed ${layer.id}, feature count before: `;
     const fs = await layer.queryFeatures();
@@ -154,10 +132,25 @@ const replaceFeatures = async (layer: GeoJSONLayer|FeatureLayer, newFeatures: Gr
     const fCount = await layer.queryFeatureCount();
     msg += `, after: ${fCount}`;
     console.log(msg);
+    layer.refresh();
 }
 
-export const fetchJsonData = async (): Promise<Graphic[]> => {
-    
+export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
+    // Fetch all features from JSON...
+    const response = await fetch(jsonUrl);
+    const json = await response.json();
+    const sr = SpatialReference.fromJSON(json.spatialReference);
+    // Create graphic out of each feature...
+    const graphics: Graphic[] = [];
+    for (const each of json.features) {
+        const geom = geomJsonUtils.fromJSON(each.geometry);
+        geom.spatialReference = sr;
+        graphics.push(new Graphic({
+            geometry: geom,
+            attributes: each.attributes ? each.attributes : each.properties,
+        }));
+    }
+    return graphics;
 }
 
 export const fetchGeoJsonData = async (geojsonUrl: string, layer: GeoJSONLayer): Promise<Graphic[]> => {

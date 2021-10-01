@@ -150,7 +150,7 @@ export default defineComponent({
     const alerts = ref<AlertInfo[]>([]);
     getConfig().then((config) => {
       getAlerts(config.stateAlerts).then((result) => {
-        // quatrupling one alert for testing...
+        // quadrupling one alert for testing...
         // result.push(...result);
         // result.push(...result);
         // result = JSON.parse(JSON.stringify(result));
