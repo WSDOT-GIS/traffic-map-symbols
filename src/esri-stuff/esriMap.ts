@@ -85,14 +85,14 @@ export const loadOperationalLayers = async (): Promise<void> => {
     //EsriConfig.apiKey = config.apiKey;
     const trafficLyr = initTrafficLayer(config.traffic, config.layerRefreshMinute);
     const restAreasLyr = initRestAreaLayer(config.restAreas);
-    const parkRideLyr = await initParkRideLayer(false);
+    const parkRideLyr = await initParkRideLayer(config.parkAndRides);
     const weatherLyr = initWeatherLayer(config.weatherStations);
-    const mtLyr = await initMountainLayer(false);
+    const mtLyr = await initMountainLayer(config.mountainPasses);
     const travelTimesLyr = initTravelTimesLayer(config.travelTimes)
     const lineRestrictionLyr = initLineRestrictionsLayer(config.lineRestrictions);
     lineRestrictionLyr.definitionExpression = "1=0" //hide all features
     const pointRestrictionLyr = initPointRestrictionsLayer(config.pointRestrictions);
-    const cameraLyr = initCameraLayer(config.cameras);
+    const cameraLyr = await initCameraLayer(config.cameras);
     const roadAlertLyrs = await RoadAlertsLayer.initLayer(config.roadAlerts);
     // const roadAlertsLyr = RoadAlertsLayer.initPriorityLayer();
     // const roadClosuresLyr = RoadAlertsLayer.initClosureLayer();

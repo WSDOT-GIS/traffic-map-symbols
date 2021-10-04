@@ -1,14 +1,14 @@
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import Field from "@arcgis/core/layers/support/Field";
-import Symbol from "@/symbols/CameraSymbol";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
+import Symbol from "@/symbols/CameraSymbol";
 import { clusterConfig, clusterMaxScale } from "@/utils/clusterUtil";
-// import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-// import Point from "@arcgis/core/geometry/Point";
-// import SpatialReference from "@arcgis/core/geometry/SpatialReference";
-// import { geographicToWebMercator } from "@arcgis/core/geometry/support/webMercatorUtils";
-// import Graphic from "@arcgis/core/Graphic";
+import * as layerUtil from "@/utils/layerUtil";
+import LayerInfo from "@/types/LayerInfo";
+
+
 
 const renderer = new SimpleRenderer({ symbol: Symbol });
 
@@ -70,69 +70,52 @@ const fields = [
     }),
 ]
 
-let layer: GeoJSONLayer | undefined;
+let layer: FeatureLayer | undefined;
 
-export const initLayer = (url: string): GeoJSONLayer => {
-    layer = new GeoJSONLayer({
-        id: "traffic-camera-layer",
-        url: url,
-        title: "Cameras",
-        renderer: renderer,
-        featureReduction: clusterConfig,
-        fields: fields,
-        visible: false,
-    });
+export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
+    layer = await layerUtil.initLayer(jsonUrl, "traffic-camera-layer", "Cameras", "CameraID", renderer, fields, "point", false);
+    layer.featureReduction = clusterConfig;
+    // layer = new GeoJSONLayer({
+    //     id: "traffic-camera-layer",
+    //     url: url,
+    //     title: "Cameras",
+    //     renderer: renderer,
+    //     featureReduction: clusterConfig,
+    //     fields: fields,
+    //     visible: false,
+    // });
     return layer;
 }
 
-const getLayer = (): GeoJSONLayer => {
+const getLayer = (): FeatureLayer => {
     if (!layer) {
         throw "CameraLayer is not ready yet!";
     }
     return layer;
 }
-/*** create feature layer from GeoJSON */
-// let layer2: FeatureLayer | undefined;
 
-// export const initLayer2 = async (url: string): Promise<FeatureLayer> => {
-//     // Fetch all alerts from JSON...
-//     const response = await fetch(url);
-//     const json = await response.json();
-//     // Create graphic out of each feature...
-//     const graphics: Graphic[] = [];
-//     for (const each of json.features) {
-//         const ptWgs = new Point({
-//             x: each.geometry.coordinates[0],
-//             y: each.geometry.coordinates[1],
-//             spatialReference: SpatialReference.WGS84
-//         });
-//         const pt = geographicToWebMercator(ptWgs);
-//         graphics.push(new Graphic({
-//             geometry: pt,
-//             attributes: each.properties,
-//         }))
-//     }
-//     layer2 = new FeatureLayer({
+// let layer: GeoJSONLayer | undefined;
+
+// export const initLayer = (url: string): GeoJSONLayer => {
+//     layer = new GeoJSONLayer({
 //         id: "traffic-camera-layer",
+//         url: url,
 //         title: "Cameras",
-//         source: graphics,
-//         fields: fields,
-//         objectIdField: "CameraID",
-//         geometryType: "point",
-//         spatialReference: SpatialReference.WebMercator,
 //         renderer: renderer,
 //         featureReduction: clusterConfig,
+//         fields: fields,
 //         visible: false,
 //     });
-//     return layer2;
+//     return layer;
 // }
 
-// const getLayer2 = (): FeatureLayer => {
-//     if (!layer2) {
+// const getLayer = (): GeoJSONLayer => {
+//     if (!layer) {
 //         throw "CameraLayer is not ready yet!";
 //     }
-//     return layer2;
+//     return layer;
 // }
+
 
 export default getLayer
 

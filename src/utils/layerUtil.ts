@@ -8,6 +8,8 @@ import { geographicToWebMercator } from "@arcgis/core/geometry/support/webMercat
 import Geometry from "@arcgis/core/geometry/Geometry";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as geomJsonUtils from "@arcgis/core/geometry/support/jsonUtils";
+import Renderer from "@arcgis/core/renderers/Renderer";
+import Field from "@arcgis/core/layers/support/Field";
 
 /**  Mapping between layer groups (type in URL query param) and layer IDs...
  *   * id
@@ -103,6 +105,31 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
     if (response.features.length > 0) {
         return response.features[0];
     }
+}
+
+export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: string, oidField: string,
+    renderer: Renderer, fields: Field[], geometryType: "point" | "multipoint" | "polyline" | "polygon",
+    visible: boolean): Promise<FeatureLayer> => {
+    let graphics: Graphic[] = [];
+    if (visible) {
+        graphics = await fetchJsonData(jsonUrl);
+    }
+    const layer = new FeatureLayer({
+        id: layerId,
+        title: layerTitle,
+        objectIdField: oidField,
+        renderer: renderer,
+        fields: fields,
+        visible: visible,
+        source: graphics,
+        geometryType: geometryType,
+        spatialReference: SpatialReference.WebMercator,
+    });
+    // Set event to load layer when it becomes visible...
+    if (!visible) {
+        setLayerEvent(layer, jsonUrl);
+    }
+    return layer;
 }
 
 export const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {

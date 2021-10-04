@@ -1,12 +1,13 @@
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
-import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
+// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import Symbol from "@/symbols/ParkRideSymbol";
 import Field from "@arcgis/core/layers/support/Field";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import SpatialReference from "@arcgis/core/geometry/SpatialReference";
-import Graphic from "@arcgis/core/Graphic";
-import { getConfig } from "@/utils/appConfigUtil";
+// import SpatialReference from "@arcgis/core/geometry/SpatialReference";
+// import Graphic from "@arcgis/core/Graphic";
+// import { getConfig } from "@/utils/appConfigUtil";
 import * as layerUtil from "@/utils/layerUtil";
+// import layer from "./ZoomExtentLayer";
 
 const renderer = new SimpleRenderer({ symbol: Symbol });
 
@@ -65,24 +66,24 @@ const fields = [
 
 let layer: FeatureLayer | undefined;
 
-export const initLayer = async (visible: boolean): Promise<FeatureLayer> => {
-    let graphics: Graphic[] = [];
-    const config = await getConfig();
-    if (visible) {
-        graphics = await layerUtil.fetchJsonData(config.parkAndRides);
-    }
-    layer = new FeatureLayer({
-        id: "park-ride-layer",
-        title: "Park and Rides",
-        objectIdField: "OBJECTID",
-        renderer: renderer,
-        fields: fields,
-        visible: visible,
-        source: graphics,
-        geometryType: "point",
-        spatialReference: SpatialReference.WebMercator,
-    });
-    layerUtil.setLayerEvent(layer, config.parkAndRides);
+export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
+    // let graphics: Graphic[] = [];
+    // if (visible) {
+    //     graphics = await layerUtil.fetchJsonData(jsonUrl);
+    // }
+    // layer = new FeatureLayer({
+    //     id: "park-ride-layer",
+    //     title: "Park and Rides",
+    //     objectIdField: "OBJECTID",
+    //     renderer: renderer,
+    //     fields: fields,
+    //     visible: visible,
+    //     source: graphics,
+    //     geometryType: "point",
+    //     spatialReference: SpatialReference.WebMercator,
+    // });
+    // layerUtil.setLayerEvent(layer, jsonUrl);
+    layer = await layerUtil.initLayer(jsonUrl, "park-ride-layer", "Park and Rides", "OBJECTID", renderer, fields, "point", false);
     return layer;
 }
 
