@@ -6,6 +6,7 @@ import Polygon from "@arcgis/core/geometry/Polygon";
 import { project } from "@arcgis/core/geometry/projection";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import FeatureSet from "@arcgis/core/tasks/support/FeatureSet";
 
 export const getGraphicsInfoById = async (graphic: Graphic, layer: GeoJSONLayer): Promise<FeatureInfo | undefined> => {
     const query = layer.createQuery();
@@ -21,7 +22,7 @@ export const getGraphicsInfoById = async (graphic: Graphic, layer: GeoJSONLayer)
     }
 }
 
-export const getFeatureInfoById = async (id: number, layer: GeoJSONLayer|FeatureLayer): Promise<FeatureInfo | undefined> => {
+export const getFeatureInfoById = async (id: number, layer: GeoJSONLayer | FeatureLayer): Promise<FeatureInfo | undefined> => {
     const query = layer.createQuery();
     const idName = layer.objectIdField;
     query.where = `${idName} = ${id}`;
@@ -34,7 +35,7 @@ export const getFeatureInfoById = async (id: number, layer: GeoJSONLayer|Feature
     }
 }
 
-export const getFeatureInfosByIds = async (ids: number[], layer: GeoJSONLayer|FeatureLayer): Promise<FeatureInfo[]> => {
+export const getFeatureInfosByIds = async (ids: number[], layer: GeoJSONLayer | FeatureLayer): Promise<FeatureInfo[]> => {
     const query = layer.createQuery();
     const idName = layer.objectIdField;
     query.where = `${idName} IN ( ${ids.join(",")})`;
@@ -44,19 +45,19 @@ export const getFeatureInfosByIds = async (ids: number[], layer: GeoJSONLayer|Fe
     return infos;
 }
 
-export const getLineFromPointRestriction = async (fieldName: string, value: number|string, layer: GeoJSONLayer): Promise<FeatureInfo | undefined> => {
+export const getLineFromPointRestriction = async (fieldName: string, value: number | string, layer: FeatureLayer | GeoJSONLayer): Promise<FeatureSet> => {
     const query = layer.createQuery();
-    const field = layer.getField(fieldName);
+    // const field = layer.getField(fieldName);
     query.where = `${fieldName} = '${value}'`;
-    query.returnGeometry= true
+    query.returnGeometry = true
     const response = await layer.queryFeatures(query);
-    return response as any
+    return response
 }
-export const getFeatureInfoByUniqueField = async (fieldName: string, value: number|string, layer: GeoJSONLayer): Promise<FeatureInfo | undefined> => {
+export const getFeatureInfoByUniqueField = async (fieldName: string, value: number | string, layer: FeatureLayer | GeoJSONLayer): Promise<FeatureInfo | undefined> => {
     const query = layer.createQuery();
     const field = layer.getField(fieldName);
     query.where = `${fieldName} = `;
-    if (field.type=="string"||field.type== "date") {
+    if (field.type == "string" || field.type == "date") {
         query.where += `'${value}'`
     } else {
         query.where += value

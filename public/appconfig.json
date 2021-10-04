@@ -1,10 +1,10 @@
 {
     "basemap": "https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/Travel_Center_Basemap_Dev/MapServer",
     "cameras": "https://data.wsdot.wa.gov/travelcenter/Dev/Cameras.json",
-    "lineRestrictions": "https://data.wsdot.wa.gov/travelcenter/LineRestrictions.json",
+    "lineRestrictions": "https://data.wsdot.wa.gov/travelcenter/Dev/LineRestrictions.json",
     "mountainPasses": "https://data.wsdot.wa.gov/travelcenter/Dev/MountainPasses.json",
     "parkAndRides": "https://data.wsdot.wa.gov/travelcenter/Dev/ParkAndRides.json",
-    "pointRestrictions": "https://data.wsdot.wa.gov/travelcenter/PointRestrictions.json",
+    "pointRestrictions": "https://data.wsdot.wa.gov/travelcenter/Dev/PointRestrictions.json",
     "restAreas": "https://data.wsdot.wa.gov/travelcenter/Dev/RestAreas.json",
     "borderCrossings": "https://data.wsdot.wa.gov/travelcenter/BorderCrossingTimes.json",
     "roadAlerts": "https://data.wsdot.wa.gov/travelcenter/Dev/RoadAlerts.json",

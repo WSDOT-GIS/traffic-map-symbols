@@ -120,6 +120,7 @@ import ZoomButtonView from "@/components/ZoomButtonView.vue";
 import AlertView from "@/components/AlertView.vue";
 import AdView from "@/components/AdView.vue";
 import WebMap from "@arcgis/core/WebMap";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 export default defineComponent({
   components: {
@@ -334,10 +335,9 @@ export default defineComponent({
                 // Not aggregate...
                 const id = g.getObjectId();
                 //get lines for restriciton point click
-                if (g.layer.title == "Restriction Points") {
-                  getFeatureInfoById(id, g.layer as GeoJSONLayer).then(
+                if (g.layer.id === "point-restrictions-layer") {
+                  getFeatureInfoById(id, g.layer as FeatureLayer).then(
                     (result) => {
-                      // console.log(result?.attributes.lineMarker)
                       if (
                         result?.attributes.lineMarker == "true" ||
                         result?.attributes.lineMarker == "True"
@@ -347,10 +347,9 @@ export default defineComponent({
                           "UniqueId",
                           result?.attributes.UniqueId as string,
                           LineRestrictionsLayer()
-                        ).then((lineSegment) => {
-                          const anyLine = lineSegment as any;
+                        ).then((lines) => {
                           mapView
-                            .goTo(anyLine.features[0].geometry)
+                            .goTo(lines.features[0].geometry)
                             .then(() => showPopup(results2Show.layer.id, [id]));
                         });
                       } else {

@@ -89,9 +89,9 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const weatherLyr = await initWeatherLayer(config.weatherStations);
     const mtLyr = await initMountainLayer(config.mountainPasses);
     const travelTimesLyr = await initTravelTimesLayer(config.travelTimes)
-    const lineRestrictionLyr = initLineRestrictionsLayer(config.lineRestrictions);
+    const lineRestrictionLyr = await initLineRestrictionsLayer(config.lineRestrictions);
     lineRestrictionLyr.definitionExpression = "1=0" //hide all features
-    const pointRestrictionLyr = initPointRestrictionsLayer(config.pointRestrictions);
+    const pointRestrictionLyr = await initPointRestrictionsLayer(config.pointRestrictions);
     const cameraLyr = await initCameraLayer(config.cameras);
     const roadAlertLyrs = await RoadAlertsLayer.initLayer(config.roadAlerts);
     // const roadAlertsLyr = RoadAlertsLayer.initPriorityLayer();
