@@ -29,7 +29,8 @@ interface AppConfig {
     esriPlacesReferenceLayer: string,
     esriRoadsReferenceLayer: string,
     stateRouteShieldsLayer: string,
-    ferryRoutes: string,
+    ferryRouteLines: string, 
+    ferryRoutePoints: string,
     // Layer refresh interval in minutes...
     layerRefreshMinute: number;
 }

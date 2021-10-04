@@ -10,7 +10,7 @@ let layer: FeatureLayer | undefined;
 
 export const initLayer = (url: string): FeatureLayer => {
     layer = new FeatureLayer({
-        id: "ferry-routes-layer",
+        id: "ferry-routes-lines-layer",
         url: url,
         title: "ferryRoutes",
         renderer: ferryRoutesRenderer,

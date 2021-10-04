@@ -58,7 +58,9 @@
           :Value="
             getLayerIndex('road-alerts-layer').toString()+
             ',' +
-            getLayerIndex('road-closures-layer').toString()"
+            getLayerIndex('road-closures-layer').toString()+
+            ',' +
+            getLayerIndex('ferry-routes-points-layer').toString()"
           :Title="
             'Toggle ' + layerList[getLayerIndex('road-alerts-layer')].title
           "
@@ -391,9 +393,9 @@
         <ToggleSwitchView
           @toggle="clickEvent"
           :Enabled="true"
-          :Checked="layerList[getLayerIndex('ferry-routes-layer')].visible"
+          :Checked="layerList[getLayerIndex('ferry-routes-lines-layer')].visible"
           :Value="
-            getLayerIndex('ferry-routes-layer').toString()
+            getLayerIndex('ferry-routes-lines-layer').toString()
           "
           Title="Toggle Ferry Routes"
         >
@@ -401,7 +403,7 @@
             <div
               class="mapFeaturesIcon"
               v-html="
-                layerIcons.find((x) => x.id == 'ferry-routes')
+                layerIcons.find((x) => x.id == 'ferry-routes-lines-layer')
                   ?.paths
               "
             ></div>
@@ -452,6 +454,8 @@ export default defineComponent({
     getLayerIndex: (id: string): number => {
       let layerIndex = -1;
       // console.log(store.state.layerList)
+      console.log(id)
+      console.log(store.state.layerList)
       store.state.layerList.map((val, index) => {
         if (val.id == id) {
           layerIndex = index;
