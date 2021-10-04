@@ -83,7 +83,7 @@ export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
     //     spatialReference: SpatialReference.WebMercator,
     // });
     // layerUtil.setLayerEvent(layer, jsonUrl);
-    layer = await layerUtil.initLayer(jsonUrl, "park-ride-layer", "Park and Rides", "OBJECTID", renderer, fields, "point", false);
+    layer = await layerUtil.initLayer(jsonUrl, "park-ride-layer", "Park and Rides", renderer, fields, "point", false, "OBJECTID");
     return layer;
 }
 

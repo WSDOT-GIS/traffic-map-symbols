@@ -68,7 +68,7 @@ export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
     // });
     // layerUtil.setLayerEvent(layer, config.mountainPasses);
     layer = await layerUtil.initLayer(jsonUrl, "mountain-passes-layer", "Mountain Pass Reports",
-        "MountainPassId", renderer, fields, "point", false);
+        renderer, fields, "point", false, "MountainPassId");
     return layer;
 
 }

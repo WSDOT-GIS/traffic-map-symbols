@@ -107,12 +107,25 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
     }
 }
 
-export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: string, oidField: string,
+export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: string,
     renderer: Renderer, fields: Field[], geometryType: "point" | "multipoint" | "polyline" | "polygon",
-    visible: boolean): Promise<FeatureLayer> => {
+    visible: boolean, oidField?: string): Promise<FeatureLayer> => {
+    // Create Graphics from JSON...
     let graphics: Graphic[] = [];
     if (visible) {
         graphics = await fetchJsonData(jsonUrl);
+    }
+    // If the OID field is missing, use the array index as object ID...
+    if (!oidField) {
+        oidField = "objindex";
+        graphics.forEach((each, idx) => {
+            each.attributes.push({ objindex: idx });
+        });
+        fields.push(new Field({
+            name: oidField,
+            alias: oidField,
+            type: "oid"
+        }));
     }
     const layer = new FeatureLayer({
         id: layerId,
