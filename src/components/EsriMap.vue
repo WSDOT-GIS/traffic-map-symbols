@@ -51,7 +51,7 @@ import { Geometry } from "@arcgis/core/geometry";
 import Graphic from "@arcgis/core/Graphic";
 import Layer from "@arcgis/core/layers/Layer";
 import Point from "@arcgis/core/geometry/Point";
-import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
+// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import Extent from "@arcgis/core/geometry/Extent";
 import { getConfig } from "@/utils/appConfigUtil";
 import { mapView, zoomToMetroArea } from "@/esri-stuff/esriMap";
@@ -118,6 +118,7 @@ import ZoomButtonView from "@/components/ZoomButtonView.vue";
 import AlertView from "@/components/AlertView.vue";
 import AdView from "@/components/AdView.vue";
 import WebMap from "@arcgis/core/WebMap";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 export default defineComponent({
   components: {
@@ -147,7 +148,7 @@ export default defineComponent({
     const alerts = ref<AlertInfo[]>([]);
     getConfig().then((config) => {
       getAlerts(config.stateAlerts).then((result) => {
-        // quatrupling one alert for testing...
+        // quadrupling one alert for testing...
         // result.push(...result);
         // result.push(...result);
         // result = JSON.parse(JSON.stringify(result));
@@ -297,7 +298,7 @@ export default defineComponent({
             );
             if (results2Show) {
               const g = results2Show.results[0].graphic;
-              const layer = g.layer as GeoJSONLayer;
+              const layer = g.layer as FeatureLayer;
               if (
                 layer.id === "traffic-camera-layer" &&
                 !layer.featureReduction &&
@@ -320,20 +321,21 @@ export default defineComponent({
               }
               // Deal with cluster...
               else if (g.isAggregate) {
-                getClusterExtent(g, results2Show.layer, esriMap.mapView).then(
-                  (clusterExtent) => {
-                    esriMap.zoomToExtent(clusterExtent.expand(1.5));
-                  }
-                );
+                getClusterExtent(
+                  g,
+                  results2Show.layer as FeatureLayer,
+                  esriMap.mapView
+                ).then((clusterExtent) => {
+                  esriMap.zoomToExtent(clusterExtent.expand(1.5));
+                });
               } else {
                 LineRestrictionsLayer().definitionExpression = "1=0"; //clear lines from restrictions layer
                 // Not aggregate...
                 const id = g.getObjectId();
                 //get lines for restriciton point click
-                if (g.layer.title == "Restriction Points") {
-                  getFeatureInfoById(id, g.layer as GeoJSONLayer).then(
+                if (g.layer.id === "point-restrictions-layer") {
+                  getFeatureInfoById(id, g.layer as FeatureLayer).then(
                     (result) => {
-                      // console.log(result?.attributes.lineMarker)
                       if (
                         result?.attributes.lineMarker == "true" ||
                         result?.attributes.lineMarker == "True"
@@ -343,10 +345,9 @@ export default defineComponent({
                           "UniqueId",
                           result?.attributes.UniqueId as string,
                           LineRestrictionsLayer()
-                        ).then((lineSegment) => {
-                          const anyLine = lineSegment as any;
+                        ).then((lines) => {
                           mapView
-                            .goTo(anyLine.features[0].geometry)
+                            .goTo(lines.features[0].geometry)
                             .then(() => showPopup(results2Show.layer.id, [id]));
                         });
                       } else {
@@ -388,12 +389,7 @@ export default defineComponent({
       // Set refresh interval for layers...
       const appConfig = await getConfig();
       setInterval(() => {
-        esriMap.reloadGeoJsonLayers(store.state.layerList).then((lyrList) => {
-          esriMap.reloadRegionAlert(lyrList).then(() => {
-            store.commit("setLayerList");//, lyrList);
-            initOperationalLayerEvents(mapDiv, esriMap);
-          });
-        });
+        esriMap.refreshLayerData();
         getAlerts(appConfig.stateAlerts).then((result) => {
           alerts.value = result;
         });

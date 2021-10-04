@@ -2,6 +2,7 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import fireIncidentSymbol from "@/symbols/FireIncidentSymbol"
 
+
 const fireIncidentRenderer = new simpleRenderer({
     symbol: fireIncidentSymbol
 })
