@@ -1,7 +1,13 @@
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
-import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
+// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import Symbol from "@/symbols/ParkRideSymbol";
 import Field from "@arcgis/core/layers/support/Field";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+// import SpatialReference from "@arcgis/core/geometry/SpatialReference";
+// import Graphic from "@arcgis/core/Graphic";
+// import { getConfig } from "@/utils/appConfigUtil";
+import * as layerUtil from "@/utils/layerUtil";
+// import layer from "./ZoomExtentLayer";
 
 const renderer = new SimpleRenderer({ symbol: Symbol });
 
@@ -43,26 +49,40 @@ const fields = [
     }),
 ]
 
-let layer: GeoJSONLayer | undefined;
+let layer: FeatureLayer | undefined;
 
-export const initLayer = (url: string): GeoJSONLayer => {
-    layer = new GeoJSONLayer({
-        id: "park-ride-layer",
-        url: url,
-        title: "Park and Rides",
-        renderer: renderer,
-        //fields: fields,
-        visible: false
-    });
+export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
+    layer = await layerUtil.initLayer(jsonUrl, "park-ride-layer", "Park and Rides", renderer, fields, "point", false, "OBJECTID");
     return layer;
 }
 
-const getLayer = (): GeoJSONLayer => {
+const getLayer = (): FeatureLayer => {
     if (!layer) {
         throw "ParkRideLayer is not ready yet!";
     }
     return layer;
 }
+
+// let layer: GeoJSONLayer | undefined;
+
+// export const initLayer = (url: string): GeoJSONLayer => {
+//     layer = new GeoJSONLayer({
+//         id: "park-ride-layer",
+//         url: url,
+//         title: "Park and Rides",
+//         renderer: renderer,
+//         fields: fields,
+//         visible: false
+//     });
+//     return layer;
+// }
+
+// const getLayer = (): GeoJSONLayer => {
+//     if (!layer) {
+//         throw "ParkRideLayer is not ready yet!";
+//     }
+//     return layer;
+// }
 
 // const layer = new GeoJSONLayer({
 //     id: "park-ride-layer",

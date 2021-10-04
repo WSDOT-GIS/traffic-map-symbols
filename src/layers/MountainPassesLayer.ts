@@ -1,14 +1,19 @@
-import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer"
+// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer"
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import mountainPassSymbol from "@/symbols/MountainPassSymbol"
 import Field from "@arcgis/core/layers/support/Field"
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
+import SpatialReference from "@arcgis/core/geometry/SpatialReference"
+import * as layerUtil from "@/utils/layerUtil";
+import Graphic from "@arcgis/core/Graphic"
+import { getConfig } from "@/utils/appConfigUtil"
 
-const mountainPassRenderer = new simpleRenderer({
+const renderer = new simpleRenderer({
     symbol: mountainPassSymbol
 })
 
 const fields = [
-    new Field({ name: "MountainPassId", type: "integer", alias: "MountainPassId" }),
+    new Field({ name: "MountainPassId", type: "oid", alias: "MountainPassId" }),
     new Field({ name: "PassName", type: "string", alias: "PassName", length: 50 }),
     new Field({
         name: "Elevation", type: "integer", alias: "Elevation"
@@ -42,28 +47,62 @@ const fields = [
     new Field({ name: "PublicMessage2", type: "string", alias: "PublicMessage2", length: 300 }),
 ]
 
+let layer: FeatureLayer | undefined;
 
-let layer: GeoJSONLayer | undefined;
-
-export const initLayer = (url: string): GeoJSONLayer => {
-    layer = new GeoJSONLayer({
-        id: "mountain-passes-layer",
-        url: url,
-        title: "Mountain Pass Reports",
-        renderer: mountainPassRenderer,
-        visible: false,
-        fields: fields,
-    });
+export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
+    // let graphics: Graphic[] = [];
+    // const config = await getConfig();
+    // if (visible) {
+    //     graphics = await layerUtil.fetchJsonData(config.mountainPasses);
+    // }
+    // layer = new FeatureLayer({
+    //     id: "mountain-passes-layer",
+    //     title: "Mountain Pass Reports",
+    //     objectIdField: "MountainPassId",
+    //     renderer: mountainPassRenderer,
+    //     visible: visible,
+    //     fields: fields,
+    //     source: graphics,
+    //     geometryType: "point",
+    //     spatialReference: SpatialReference.WebMercator,
+    // });
+    // layerUtil.setLayerEvent(layer, config.mountainPasses);
+    layer = await layerUtil.initLayer(jsonUrl, "mountain-passes-layer", "Mountain Pass Reports",
+        renderer, fields, "point", false, "MountainPassId");
     return layer;
-    
+
 }
 
-const getLayer = (): GeoJSONLayer => {
+const getLayer = (): FeatureLayer => {
     if (!layer) {
         throw "MountainPassLayer is not ready yet!";
     }
     return layer;
 }
+
+
+
+// let layer: GeoJSONLayer | undefined;
+
+// export const initLayer = (url: string): GeoJSONLayer => {
+//     layer = new GeoJSONLayer({
+//         id: "mountain-passes-layer",
+//         url: url,
+//         title: "Mountain Pass Reports",
+//         renderer: mountainPassRenderer,
+//         visible: false,
+//         fields: fields,
+//     });
+//     return layer;
+
+// }
+
+// const getLayer = (): GeoJSONLayer => {
+//     if (!layer) {
+//         throw "MountainPassLayer is not ready yet!";
+//     }
+//     return layer;
+// }
 
 // const FeatureLayer = new GeoJSONLayer({
 //     id: "mountain-passes-layer",
