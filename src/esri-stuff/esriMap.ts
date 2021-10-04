@@ -32,8 +32,8 @@ import * as StateRouteShieldsLayer from "@/layers/StateRouteShields"
 import * as BorderCrossingsLayer from "@/layers/BorderCrossingsLayer"
 import * as RegionalAlertLayer from "@/layers/RegionalAlertLayer";
 import * as RestAreasLayer from "@/layers/RestAreasLayer";
-//import { initLayer as initLineFerryRoutesLayer } from "@/layers/LineFerryRoutesLayer"
-//import { initLayer as initPointFerryRoutesLayer } from "@/layers/PointFerryRoutesLayer"
+import { initLayer as initLineFerryRoutesLayer } from "@/layers/LineFerryRoutesLayer"
+import { initLayer as initPointFerryRoutesLayer } from "@/layers/PointFerryRoutesLayer"
 //
 import { getEsriExtent, getOutOfBoundDirection } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
@@ -105,7 +105,8 @@ export const loadOperationalLayers = async (): Promise<void> => {
     // const regionalAlertLayer = await initRegionalAlertLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
     // The first one in the array will be displayed at the bottom of the map... 
     // const borderCrossingsLayer = initBorderCrossingsLayer(config.borderCrossings)
-    // const ferryRoutesLayer = initFerryRoutesLayer(config.ferryRoutes)
+    const ferryRouteLinesLayer = initLineFerryRoutesLayer(config.ferryRouteLines)
+    const ferryRoutePointsLayer = initPointFerryRoutesLayer(config.ferryRoutePoints)
     // webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
     //     firePerimetersLayer, fireIncidentLayer,
     //     restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
@@ -116,7 +117,7 @@ export const loadOperationalLayers = async (): Promise<void> => {
         firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertLyrs.priority, roadAlertLyrs.closure,
-        mileMarkersLayer, borderCrossingsLayer/*, ferryRouteLinesLayer, ferryRoutePointsLayer*/]);
+        mileMarkersLayer, borderCrossingsLayer, ferryRouteLinesLayer, ferryRoutePointsLayer]);
     // Store the default visibility...
     webmap.layers.forEach((eachLyr) => {
         defaultLayerProps.push({ id: eachLyr.id, visible: eachLyr.visible });
