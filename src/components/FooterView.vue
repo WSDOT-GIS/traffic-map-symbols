@@ -1,4 +1,252 @@
 <template>
+  <div class="footer-wrapper" role="contentinfo">
+    <footer class="footer">
+      <div class="container">
+        <div class="region region-footer">
+          <section
+            id="block-footer1"
+            class="
+              col-lg-2 col-md-2 col-sm-6 col-xs-12
+              block
+              block-block-content
+              block-block-content056b448f-d00e-4781-b2d6-5903107de9ee
+              clearfix
+            "
+          >
+            <div
+              class="
+                field
+                field--name-body
+                field--type-text-with-summary
+                field--label-hidden
+                field--item
+              "
+            >
+              <ul>
+                <li>
+                  <a
+                    href="https://live-wsdot-wsdot.pantheonsite.io/about/contacts"
+                    >Contact</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://live-wsdot-wsdot.pantheonsite.io/about/civil-rights-act-title-vi-and-ada"
+                    >Civil rights, Title VI, and Accessibility</a
+                  >
+                </li>
+                <li>
+                  <a href="https://live-wsdot-wsdot.pantheonsite.io/sitemap"
+                    >Site index</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </section>
+          <section
+            id="block-footer2"
+            class="
+              col-lg-4 col-md-4 col-sm-6 col-xs-12
+              block
+              block-block-content
+              block-block-contentd6f7d4a7-99f3-475f-85ec-c1f97dcc99e4
+              clearfix
+            "
+          >
+            <div
+              class="
+                field
+                field--name-body
+                field--type-text-with-summary
+                field--label-hidden
+                field--item
+              "
+            >
+              <p class="update">
+                &nbsp;<span class="fontawesome-icon-inline"
+                  ><span class="fas fa-envelope"></span>&nbsp;</span
+                ><a href="#">Sign up for email or text updates</a>
+              </p>
+
+              <p>
+                Subscribe to customized email or text alerts to help you know
+                before you go. Receive current traffic conditions, mountain pass
+                reports, construction updates and more.
+              </p>
+            </div>
+          </section>
+          <section
+            id="block-footer3"
+            class="
+              col-lg-2 col-md-2 col-sm-6 col-xs-12
+              block
+              block-block-content
+              block-block-contentb863acea-75cf-4d12-90c4-5c82a36558bb
+              clearfix
+            "
+          >
+            <div
+              class="
+                field
+                field--name-body
+                field--type-text-with-summary
+                field--label-hidden
+                field--item
+              "
+            >
+              <ul>
+                <li>
+                  <a href="https://traffic.wsdot.wa.gov/"
+                    ><span class="fontawesome-icon-inline"
+                      ><span class="fal fa-external-link"></span></span></a
+                  >&nbsp;&nbsp;<a href="https://traffic.wsdot.wa.gov/"
+                    >WSDOT Traffic App</a
+                  >
+                </li>
+                <li>
+                  <a href="https://access.wa.gov/"
+                    ><span class="fontawesome-icon-inline"
+                      ><span class="fal fa-external-link"></span></span></a
+                  ><span class="fontawesome-icon-inline">&nbsp;&nbsp;</span
+                  ><a href="https://access.wa.gov/">Access Washington</a>
+                </li>
+                <li>
+                  <a href="https://www.governor.wa.gov/"
+                    ><span class="fontawesome-icon-inline"
+                      ><span class="fal fa-external-link"></span></span></a
+                  ><span class="fontawesome-icon-inline">&nbsp;&nbsp;</span
+                  ><a href="https://www.governor.wa.gov/"
+                    >Office of the Governor</a
+                  >
+                </li>
+                <li>
+                  <a href="https://wstc.wa.gov/"
+                    ><span class="fontawesome-icon-inline"
+                      ><span class="fal fa-external-link"></span></span></a
+                  ><span class="fontawesome-icon-inline">&nbsp;&nbsp;</span
+                  ><a href="https://wstc.wa.gov/"
+                    ><span class="fontawesome-icon-inline"></span>Transportation
+                    Commission</a
+                  >
+                </li>
+                <li>
+                  <a href="https://mygoodtogo.com/"
+                    ><span class="fontawesome-icon-inline"
+                      ><span class="fal fa-external-link"></span></span></a
+                  ><span class="fontawesome-icon-inline">&nbsp;&nbsp;</span
+                  ><a href="https://mygoodtogo.com/">Good To Go! Tolling</a>
+                </li>
+              </ul>
+            </div>
+          </section>
+          <section
+            id="block-footer4"
+            class="
+              col-lg-4 col-md-4 col-sm-6 col-xs-12
+              block
+              block-block-content
+              block-block-content80cdc4af-54f5-4f24-9819-27bf6eaf6232
+              clearfix
+            "
+          >
+            <div
+              class="
+                field
+                field--name-body
+                field--type-text-with-summary
+                field--label-hidden
+                field--item
+              "
+            >
+              <ul>
+                <li>
+                  <a href="https://www.facebook.com/wsdot"
+                    ><span class="fontawesome-icon-inline"
+                      ><span class="fab fa-facebook-square"></span></span></a
+                  ><span class="fontawesome-icon-inline">&nbsp;&nbsp;</span
+                  ><a href="https://www.facebook.com/wsdot"
+                    ><span class="fontawesome-icon-inline"></span>Facebook</a
+                  >
+                </li>
+                <li>
+                  <a
+                    data-entity-substitution="canonical"
+                    data-entity-type="node"
+                    data-entity-uuid="587a57cc-12f1-4017-a6bb-37a50127b1c3"
+                    href="#"
+                    ><span class="fontawesome-icon-inline"
+                      ><span class="fab fa-twitter-square"></span></span></a
+                  ><span class="fontawesome-icon-inline">&nbsp;&nbsp;</span
+                  ><a href="https://twitter.com/wsdot">Twitter</a>
+                </li>
+                <li>
+                  <a href="https://www.instagram.com/wsdot/"
+                    ><span class="fontawesome-icon-inline"
+                      ><span class="fab fa-instagram"></span></span></a
+                  ><span class="fontawesome-icon-inline">&nbsp;&nbsp;</span
+                  ><a href="https://www.instagram.com/wsdot/"
+                    ><span class="fontawesome-icon-inline"></span>Instagram</a
+                  >
+                </li>
+                <li>
+                  <a
+                    data-entity-substitution="canonical"
+                    data-entity-type="node"
+                    data-entity-uuid="df91d571-97d2-4de4-a828-f84482785cc0"
+                    href="#"
+                    ><span class="fontawesome-icon-inline"
+                      ><span class="fab fa-linkedin"></span></span></a
+                  ><span class="fontawesome-icon-inline">&nbsp;&nbsp;</span
+                  ><a
+                    data-entity-substitution="canonical"
+                    data-entity-type="node"
+                    data-entity-uuid="df91d571-97d2-4de4-a828-f84482785cc0"
+                    href="#"
+                    ><span class="fontawesome-icon-inline"></span></a
+                  ><a
+                    href="https://www.linkedin.com/company/washington-state-department-of-transportation"
+                    >LinkedIn</a
+                  >
+                </li>
+                <li>
+                  <a href="https://www.youtube.com/wsdot"
+                    ><span class="fontawesome-icon-inline"
+                      ><span class="fab fa-youtube-square"></span></span></a
+                  ><span class="fontawesome-icon-inline">&nbsp;&nbsp;</span
+                  ><a href="https://www.youtube.com/wsdot"
+                    ><span class="fontawesome-icon-inline"></span>YouTube</a
+                  >
+                </li>
+                <li>
+                  <a href="https://wsdotblog.blogspot.com/"
+                    ><span class="fontawesome-icon-inline"
+                      ><span class="fab fa-medium"></span></span></a
+                  >&nbsp;&nbsp;<a href="https://wsdotblog.blogspot.com/"
+                    >WSDOT Blog</a
+                  >
+                </li>
+                <li>
+                  <a href="https://www.flickr.com/photos/wsdot/"
+                    ><span class="fontawesome-icon-inline"
+                      ><span class="fab fa-flickr"></span></span></a
+                  >&nbsp;&nbsp;<a href="https://www.flickr.com/photos/wsdot/"
+                    >WSDOT Flickr</a
+                  >
+                </li>
+                <li>
+                  <a href="https://wsdot.wa.gov/news/rss.xml"
+                    ><span class="fontawesome-icon-inline"
+                      ><span class="fas fa-rss-square"></span></span></a
+                  >&nbsp;
+                  <a href="https://wsdot.wa.gov/news/rss.xml">RSS Feed</a>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </div>
+      </div>
+    </footer>
+  </div>
   <div class="footer-bottom">
     <div class="container">
       <div class="region region-footer-bottom">
