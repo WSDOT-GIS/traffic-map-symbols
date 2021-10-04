@@ -33,7 +33,7 @@ import { initLayer as initStateRouteShieldsLayer } from "@/layers/StateRouteShie
 import { initLayer as initBorderCrossingsLayer } from "@/layers/BorderCrossingsLayer"
 import { initLayer as initRegionalAlertLayer } from "@/layers/RegionalAlertLayer";
 import { initLayer as initLineFerryRoutesLayer } from "@/layers/LineFerryRoutesLayer"
-import { initLayer as initPointFerryRoutesLayer } from "@/layers/LineFerryRoutesLayer"
+import { initLayer as initPointFerryRoutesLayer } from "@/layers/PointFerryRoutesLayer"
 //
 import { getEsriExtent, getOutOfBoundDirection } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
