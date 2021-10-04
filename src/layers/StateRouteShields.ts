@@ -1,6 +1,4 @@
 import VectorTileLayer from "@arcgis/core/layers/VectorTileLayer"
-import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
-import  symbol  from "@/symbols/TravelTimeSymbol"
 
 
 let layer: VectorTileLayer | undefined;

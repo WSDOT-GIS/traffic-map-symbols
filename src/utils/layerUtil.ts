@@ -1,7 +1,16 @@
 import LayerInfo from "@/types/LayerInfo";
+// import Point from "@arcgis/core/geometry/Point";
+import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Graphic from "@arcgis/core/Graphic";
-import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
+// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import WebMap from "@arcgis/core/WebMap";
+// import { geographicToWebMercator } from "@arcgis/core/geometry/support/webMercatorUtils";
+// import Geometry from "@arcgis/core/geometry/Geometry";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import * as geomJsonUtils from "@arcgis/core/geometry/support/jsonUtils";
+import Renderer from "@arcgis/core/renderers/Renderer";
+import Field from "@arcgis/core/layers/support/Field";
+import { registerRuntimeCompiler } from "@vue/runtime-core";
 
 /**  Mapping between layer groups (type in URL query param) and layer IDs...
  *   * id
@@ -79,7 +88,7 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
     if (layer.type !== "geojson") {
         throw layer.type + " is not supported.";
     }
-    const gLayer = layer as GeoJSONLayer;
+    const gLayer = layer as FeatureLayer;
     const query = gLayer.createQuery();
     const field = gLayer.getField(fieldName);
     query.where = `${fieldName} = `;
@@ -97,5 +106,118 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
     if (response.features.length > 0) {
         return response.features[0];
     }
-
 }
+
+export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: string,
+    renderer: Renderer, fields: Field[], geometryType: "point" | "multipoint" | "polyline" | "polygon",
+    visible: boolean, oidField?: string): Promise<FeatureLayer> => {
+    // Create Graphics from JSON...
+    let graphics: Graphic[] = [];
+    if (visible) {
+        graphics = await fetchJsonData(jsonUrl);
+    }
+    // If the OID field is missing, use the array index as object ID...
+    if (!oidField) {
+        oidField = "objindex";
+        graphics.forEach((each, idx) => {
+            each.attributes.push({ objindex: idx });
+        });
+        fields.push(new Field({
+            name: oidField,
+            alias: oidField,
+            type: "oid"
+        }));
+    }
+    const layer = new FeatureLayer({
+        id: layerId,
+        title: layerTitle,
+        objectIdField: oidField,
+        renderer: renderer,
+        fields: fields,
+        visible: visible,
+        source: graphics,
+        geometryType: geometryType,
+        spatialReference: SpatialReference.WebMercator,
+    });
+    // Set event to load layer when it becomes visible...
+    if (!visible) {
+        setLayerEvent(layer, jsonUrl);
+    }
+    return layer;
+}
+
+export const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
+    layer.watch("visible", (newValue, oldValue, propName, target) => {
+        const lyr = target as FeatureLayer;
+        if (newValue) {
+            reloadData(jsonUrl, lyr);
+        }
+    });
+}
+
+export const reloadData = async (jsonUrl: string, layer: FeatureLayer): Promise<void> => {
+    if (!layer.visible) { return; }
+    // Fetch all features from JSON...
+    const graphics = await fetchJsonData(jsonUrl);
+    // Replace old with new features...
+    await replaceFeatures(layer, graphics);
+}
+
+export const replaceFeatures = async (layer: FeatureLayer, newFeatures: Graphic[]): Promise<void> => {
+    // Delete existing features...
+    let msg = `Refreshed ${layer.id}, feature count before: `;
+    const fs = await layer.queryFeatures();
+    msg += fs.features.length;
+    await layer.applyEdits({ deleteFeatures: fs.features });
+    // Load features...
+    await layer.applyEdits({ addFeatures: newFeatures });
+    const fCount = await layer.queryFeatureCount();
+    msg += `, after: ${fCount}`;
+    console.log(msg);
+    layer.refresh();
+}
+
+export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
+    // Fetch all features from JSON...
+    const response = await fetch(jsonUrl);
+    const json = await response.json();
+    const sr = SpatialReference.fromJSON(json.spatialReference);
+    // Create graphic out of each feature...
+    const graphics: Graphic[] = [];
+    for (const each of json.features) {
+        const geom = geomJsonUtils.fromJSON(each.geometry);
+        geom.spatialReference = sr;
+        graphics.push(new Graphic({
+            geometry: geom,
+            attributes: each.attributes ? each.attributes : each.properties,
+        }));
+    }
+    return graphics;
+}
+
+// export const fetchGeoJsonData = async (geojsonUrl: string, layer: GeoJSONLayer): Promise<Graphic[]> => {
+//     // Fetch all features from JSON...
+//     const response = await fetch(geojsonUrl);
+//     const json = await response.json();
+//     // Create graphic out of each feature...
+//     const graphics: Graphic[] = [];
+//     for (const each of json.features) {
+//         let geom: Geometry;
+//         if (layer.geometryType === "point") {
+//             const pt4326 = new Point({
+//                 x: each.geometry.coordinates[0],
+//                 y: each.geometry.coordinates[1],
+//                 spatialReference: SpatialReference.WGS84
+//             });
+//             geom = geographicToWebMercator(pt4326);
+//         }
+//         else {
+//             throw "Not implemented yet."
+//         }
+//         graphics.push(new Graphic({
+//             geometry: geom,
+//             attributes: each.properties,
+//         }));
+//     }
+//     return graphics;
+// }
