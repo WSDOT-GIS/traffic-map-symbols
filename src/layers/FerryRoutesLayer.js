@@ -13,10 +13,9 @@ const initLayer = (url) => {
     layer = new FeatureLayer_1.default({
         id: "ferry-routes-layer",
         url: url,
-        title: "Fire Incidents",
+        title: "ferryRoutes",
         renderer: ferryRoutesRenderer,
         visible: false,
-        definitionExpression: "POOState= 'US-WA'",
         labelsVisible: false
     });
     return layer;
@@ -24,7 +23,7 @@ const initLayer = (url) => {
 exports.initLayer = initLayer;
 const getLayer = () => {
     if (!layer) {
-        throw "Fire Incident is not ready yet!";
+        throw "Ferry Routes is not ready yet!";
     }
     return layer;
 };

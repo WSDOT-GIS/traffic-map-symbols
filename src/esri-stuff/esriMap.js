@@ -31,6 +31,7 @@ const BoundariesPlacesReferenceLayer_1 = require("@/layers/BoundariesPlacesRefer
 const StateRouteShields_1 = require("@/layers/StateRouteShields");
 const BorderCrossingsLayer_1 = require("@/layers/BorderCrossingsLayer");
 const RegionalAlertLayer_1 = require("@/layers/RegionalAlertLayer");
+const FerryRoutesLayer_1 = require("@/layers/FerryRoutesLayer");
 //
 const extentUtil_1 = require("@/utils/extentUtil");
 const ZoomExtentLayer_1 = tslib_1.__importDefault(require("@/layers/ZoomExtentLayer"));
@@ -97,11 +98,12 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     // const regionalAlertLayer = await initRegionalAlertLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
     // The first one in the array will be displayed at the bottom of the map... 
     const borderCrossingsLayer = BorderCrossingsLayer_1.initLayer(config.borderCrossings);
+    const ferryRoutesLayer = FerryRoutesLayer_1.initLayer(config.ferryRoutes);
     exports.webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
         firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertsLyr, roadClosuresLyr,
-        mileMarkersLayer, borderCrossingsLayer]);
+        mileMarkersLayer, borderCrossingsLayer, ferryRoutesLayer]);
     // Store the default visibility...
     exports.webmap.layers.forEach((eachLyr) => {
         exports.defaultLayerProps.push({ id: eachLyr.id, visible: eachLyr.visible });
