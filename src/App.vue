@@ -16,7 +16,6 @@
 import { defineComponent, onMounted, ref } from "vue";
 import EsriMap from "./components/EsriMap.vue";
 import HeaderView from "./components/HeaderView.vue";
-// import AdView from "./components/AdView.vue";
 import FooterView from "./components/FooterView.vue";
 import { useStore } from "@/store";
 
@@ -25,33 +24,30 @@ export default defineComponent({
   components: {
     EsriMap,
     HeaderView,
-    // AdView,
     FooterView,
   },
   setup() {
     const mapHeight = ref("500px");
     const store = useStore();
     onMounted(() => {
-      resizeMapContainer();
+      //resizeMapContainer();
     });
     // Make map fill the screen below the header...
     const resizeMapContainer = () => {
-      // if (topRef.value && bottomRef.value) {
-      //   const h =
-      //   window.innerHeight -
-      //   topRef.value.offsetHeight -
-      //   bottomRef.value.offsetHeight;
-      //   mapHeight.value = h + "px";
-      // }
       const headDiv = document.querySelector("#header") as HTMLElement;
       // The menu button has some extra height that is not reflected in the container height, so measure the menu button's height.
-      const menuDiv = document.querySelector(".we-mega-menu-li") as HTMLElement;
+      //const menuDiv = document.querySelector(".we-mega-menu-li") as HTMLElement;
+      const navDiv = document.querySelector(
+        ".nav-outer-wrapper"
+      ) as HTMLElement;
+      //console.log("*** resizeMapContainer() headDiv: " + headDiv.offsetHeight + ", menu: " + menuDiv.offsetHeight);
       let navH = 0;
-      if (menuDiv && menuDiv.offsetHeight) {
-        navH = menuDiv.offsetHeight;
+      if (navDiv && navDiv.offsetHeight) {
+        navH = navDiv.offsetHeight;
       }
       const h = window.innerHeight - headDiv.offsetHeight - navH;
       mapHeight.value = h + "px";
+      //console.log("*** resizeMapContainer() " + mapHeight.value + " navH:" + navH + " head:" + headDiv.offsetHeight);
     };
     window.addEventListener("resize", resizeMapContainer);
 
