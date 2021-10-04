@@ -52,7 +52,7 @@ import { Geometry } from "@arcgis/core/geometry";
 import Graphic from "@arcgis/core/Graphic";
 import Layer from "@arcgis/core/layers/Layer";
 import Point from "@arcgis/core/geometry/Point";
-import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
+// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import Extent from "@arcgis/core/geometry/Extent";
 import { getConfig } from "@/utils/appConfigUtil";
 import { mapView, zoomToMetroArea } from "@/esri-stuff/esriMap";
@@ -302,7 +302,7 @@ export default defineComponent({
             );
             if (results2Show) {
               const g = results2Show.results[0].graphic;
-              const layer = g.layer as GeoJSONLayer;
+              const layer = g.layer as FeatureLayer;
               if (
                 layer.id === "traffic-camera-layer" &&
                 !layer.featureReduction &&
@@ -325,11 +325,13 @@ export default defineComponent({
               }
               // Deal with cluster...
               else if (g.isAggregate) {
-                getClusterExtent(g, results2Show.layer, esriMap.mapView).then(
-                  (clusterExtent) => {
-                    esriMap.zoomToExtent(clusterExtent.expand(1.5));
-                  }
-                );
+                getClusterExtent(
+                  g,
+                  results2Show.layer as FeatureLayer,
+                  esriMap.mapView
+                ).then((clusterExtent) => {
+                  esriMap.zoomToExtent(clusterExtent.expand(1.5));
+                });
               } else {
                 LineRestrictionsLayer().definitionExpression = "1=0"; //clear lines from restrictions layer
                 // Not aggregate...
@@ -393,15 +395,15 @@ export default defineComponent({
       setInterval(() => {
         esriMap.refreshLayerData();
         //esriMap.reloadGeoJsonLayers(store.state.layerList).then((lyrList) => {
-          // esriMap.refreshRegionAlert().then(() => {
-          //   store.commit("setLayerList");//, lyrList);
-          //   initOperationalLayerEvents(mapDiv, esriMap);
-          // });
-       //});
+        // esriMap.refreshRegionAlert().then(() => {
+        //   store.commit("setLayerList");//, lyrList);
+        //   initOperationalLayerEvents(mapDiv, esriMap);
+        // });
+        //});
         getAlerts(appConfig.stateAlerts).then((result) => {
           alerts.value = result;
         });
-      }, appConfig.layerRefreshMinute * 1500); //60000
+      }, appConfig.layerRefreshMinute * 3000); //60000
       // Setup events on the operational layers...
       initOperationalLayerEvents(mapDiv, esriMap);
       // Add quick zoom boxes around metro areas...

@@ -9,28 +9,30 @@ import Extent from "@arcgis/core/geometry/Extent";
 import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol";
 import Layer from "@arcgis/core/layers/Layer";
 import Graphic from "@arcgis/core/Graphic";
-import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
+// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import { difference } from "@arcgis/core/geometry/geometryEngine";
 // Layers
-import { initLayer as initTrafficLayer } from "@/layers/TrafficLayer";
-import { initLayer as initParkRideLayer } from "@/layers/ParkRideLayer";
-import CameraLayer, { initLayer as initCameraLayer, setCluster } from "@/layers/CameraLayer";
-import { initLayer as initRestAreaLayer } from "@/layers/RestAreasLayer";
-import { initLayer as initPointRestrictionsLayer } from "@/layers/PointRestrictionsLayer";
-import { initLayer as initLineRestrictionsLayer } from "@/layers/LineRestrictionsLayer";
+import * as TrafficLayer from "@/layers/TrafficLayer";
+import * as ParkRideLayer from "@/layers/ParkRideLayer";
+import * as CameraLayer from "@/layers/CameraLayer";
+import * as initRestAreaLayer from "@/layers/RestAreasLayer";
+import * as PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
+import * as LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
 import * as RoadAlertsLayer from "@/layers/RoadAlertsLayer";
-import { initLayer as initWeatherLayer } from "@/layers/WeatherStationsLayer";
-import { initLayer as initMountainLayer } from "@/layers/MountainPassesLayer";
-import { initLayer as initTravelTimesLayer } from "@/layers/TravelTimeLayer"
-import { initLayer as initFireIncidentsLayer } from "@/layers/FireIncidentLayer";
-import { initLayer as initFirePerimetersLayer } from "@/layers/FirePerimeterLayer";
-import { initLayer as initMileMakersLayer } from "@/layers/MileMarkersLayer";
-import { initLayer as initESRIRoadsReference } from "@/layers/RoadsReferenceLayer"
-import { initLayer as initESRIBoundariesPlacesReference } from "@/layers/BoundariesPlacesReferenceLayer"
-import { initLayer as initStateRouteShieldsLayer } from "@/layers/StateRouteShields"
-import { initLayer as initBorderCrossingsLayer } from "@/layers/BorderCrossingsLayer"
+import * as WeatherLayer from "@/layers/WeatherStationsLayer";
+import * as MountainLayer from "@/layers/MountainPassesLayer";
+import * as TravelTimesLayer from "@/layers/TravelTimeLayer"
+import * as FireIncidentsLayer from "@/layers/FireIncidentLayer";
+import * as FirePerimetersLayer from "@/layers/FirePerimeterLayer";
+import * as MileMakersLayer from "@/layers/MileMarkersLayer";
+import * as RoadsReferenceLayer from "@/layers/RoadsReferenceLayer"
+import * as BoundariesPlacesReferenceLayer from "@/layers/BoundariesPlacesReferenceLayer"
+import * as StateRouteShieldsLayer from "@/layers/StateRouteShields"
+import * as BorderCrossingsLayer from "@/layers/BorderCrossingsLayer"
 import * as RegionalAlertLayer from "@/layers/RegionalAlertLayer";
+import * as RestAreasLayer from "@/layers/RestAreasLayer";
 //
 import { getEsriExtent, getOutOfBoundDirection } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
@@ -41,6 +43,7 @@ import firePerimeterFeatureIDs from "@/utils/firePerimeterQuery"
 import { getBasemapInfo } from "@/layers/Basemaps";
 import XY from "@/types/XY";
 import * as layerUtil from "@/utils/layerUtil";
+
 
 
 const fullExtent = getEsriExtent("full");
@@ -83,29 +86,26 @@ export const defaultLayerProps: { id: string, visible: boolean }[] = []
 export const loadOperationalLayers = async (): Promise<void> => {
     const config = await getConfig();
     //EsriConfig.apiKey = config.apiKey;
-    const trafficLyr = initTrafficLayer(config.traffic, config.layerRefreshMinute);
-    const restAreasLyr = await initRestAreaLayer(config.restAreas);
-    const parkRideLyr = await initParkRideLayer(config.parkAndRides);
-    const weatherLyr = await initWeatherLayer(config.weatherStations);
-    const mtLyr = await initMountainLayer(config.mountainPasses);
-    const travelTimesLyr = await initTravelTimesLayer(config.travelTimes)
-    const lineRestrictionLyr = await initLineRestrictionsLayer(config.lineRestrictions);
-    lineRestrictionLyr.definitionExpression = "1=0" //hide all features
-    const pointRestrictionLyr = await initPointRestrictionsLayer(config.pointRestrictions);
-    const cameraLyr = await initCameraLayer(config.cameras);
+    const trafficLyr = TrafficLayer.initLayer(config.traffic, config.layerRefreshMinute);
+    const restAreasLyr = await RestAreasLayer.initLayer(config.restAreas);
+    const parkRideLyr = await ParkRideLayer.initLayer(config.parkAndRides);
+    const weatherLyr = await WeatherLayer.initLayer(config.weatherStations);
+    const mtLyr = await MountainLayer.initLayer(config.mountainPasses);
+    const travelTimesLyr = await TravelTimesLayer.initLayer(config.travelTimes)
+    const lineRestrictionLyr = await LineRestrictionsLayer.initLayer(config.lineRestrictions);
+    const pointRestrictionLyr = await PointRestrictionsLayer.initLayer(config.pointRestrictions);
+    const cameraLyr = await CameraLayer.initLayer(config.cameras);
     const roadAlertLyrs = await RoadAlertsLayer.initLayer(config.roadAlerts);
-    // const roadAlertsLyr = RoadAlertsLayer.initPriorityLayer();
-    // const roadClosuresLyr = RoadAlertsLayer.initClosureLayer();
-    const fireIncidentLayer = initFireIncidentsLayer(config.fireIncidents)
+    const fireIncidentLayer = FireIncidentsLayer.initLayer(config.fireIncidents)
     const firePerimeterIDs = await firePerimeterFeatureIDs(fireIncidentLayer)
-    const firePerimetersLayer = initFirePerimetersLayer(config.firePerimeters, firePerimeterIDs)//Needed to filter fire perimeters to just those within the state
-    const mileMarkersLayer = initMileMakersLayer(config.mileMarkers)
-    const esriRoadsReferenceLayer = initESRIRoadsReference(config.esriRoadsReferenceLayer)
-    const esriPlacesReferenceLayer = initESRIBoundariesPlacesReference(config.esriPlacesReferenceLayer)
-    const stateRouteShieldsLayer = initStateRouteShieldsLayer(config.stateRouteShieldsLayer)
+    const firePerimetersLayer = FirePerimetersLayer.initLayer(config.firePerimeters, firePerimeterIDs)//Needed to filter fire perimeters to just those within the state
+    const mileMarkersLayer = MileMakersLayer.initLayer(config.mileMarkers)
+    const esriRoadsReferenceLayer = RoadsReferenceLayer.initLayer(config.esriRoadsReferenceLayer)
+    const esriPlacesReferenceLayer = BoundariesPlacesReferenceLayer.initLayer(config.esriPlacesReferenceLayer)
+    const stateRouteShieldsLayer = StateRouteShieldsLayer.initLayer(config.stateRouteShieldsLayer)
     // const regionalAlertLayer = await initRegionalAlertLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
     // The first one in the array will be displayed at the bottom of the map... 
-    const borderCrossingsLayer = initBorderCrossingsLayer(config.borderCrossings)
+    const borderCrossingsLayer = await BorderCrossingsLayer.initLayer(config.borderCrossings)
     webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
         firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
@@ -123,12 +123,19 @@ export const loadRegionalAlert = async (): Promise<void> => {
     webmap.add(layers.point);
     webmap.add(layers.polygon, 0);
 }
+/**
+ * Reload data for some layers.
+ */
 export const refreshLayerData = async (): Promise<void> => {
     const config = await getConfig();
     RoadAlertsLayer.reloadData(config.roadAlerts);
-    //layerUtil.reloadData()
     RegionalAlertLayer.reloadData(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
-    console.log("...Reloaded region alert.");
+    layerUtil.reloadData(config.pointRestrictions, PointRestrictionsLayer.default());
+    layerUtil.reloadData(config.lineRestrictions, LineRestrictionsLayer.default());
+    layerUtil.reloadData(config.travelTimes, TravelTimesLayer.default());
+    layerUtil.reloadData(config.mountainPasses, MountainLayer.default());
+    layerUtil.reloadData(config.weatherStations, WeatherLayer.default());
+    layerUtil.reloadData(config.borderCrossings, BorderCrossingsLayer.default());
 };
 
 /**
@@ -402,7 +409,7 @@ NOTE: This function only returns each feature if one of the following coditions 
 - All the features are at the identical location.
 */
 export const getIdsFromCluster = async (clusterGraphic: Graphic, layer: Layer, maxCount?: number): Promise<number[] | undefined> => {
-    const lyr = layer as GeoJSONLayer;
+    const lyr = layer as FeatureLayer;
     if (!lyr) {
         throw "Invalid layer type was specified.";
     }
@@ -461,7 +468,7 @@ export const bufferByPixels = (distancePixel: number, screenPoint?: { x: number,
 let highlight: __esri.Handle;
 export const highlightFeature = (featureInfo: FeatureInfo): void => {
     //console.log("layer id: " + featureInfo.layerId);
-    const layer = getLayer(featureInfo.layerId) as GeoJSONLayer;
+    const layer = getLayer(featureInfo.layerId) as FeatureLayer;
     //console.log("highlight layer: " + layer.title);
     mapView.whenLayerView(layer).then((layerView) => {
         const query = layer.createQuery();

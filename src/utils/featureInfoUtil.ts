@@ -1,6 +1,6 @@
 import Graphic from "@arcgis/core/Graphic";
 import FeatureInfo from "@/types/FeatureInfo";
-import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
+// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import Point from "@arcgis/core/geometry/Point";
 import Polygon from "@arcgis/core/geometry/Polygon";
 import { project } from "@arcgis/core/geometry/projection";
@@ -8,7 +8,7 @@ import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import FeatureSet from "@arcgis/core/tasks/support/FeatureSet";
 
-export const getGraphicsInfoById = async (graphic: Graphic, layer: GeoJSONLayer): Promise<FeatureInfo | undefined> => {
+export const getGraphicsInfoById = async (graphic: Graphic, layer: FeatureLayer): Promise<FeatureInfo | undefined> => {
     const query = layer.createQuery();
     const idName = layer.objectIdField;
     const theid = graphic.getObjectId()
@@ -22,7 +22,7 @@ export const getGraphicsInfoById = async (graphic: Graphic, layer: GeoJSONLayer)
     }
 }
 
-export const getFeatureInfoById = async (id: number, layer: GeoJSONLayer | FeatureLayer): Promise<FeatureInfo | undefined> => {
+export const getFeatureInfoById = async (id: number, layer: FeatureLayer): Promise<FeatureInfo | undefined> => {
     const query = layer.createQuery();
     const idName = layer.objectIdField;
     query.where = `${idName} = ${id}`;
@@ -35,7 +35,7 @@ export const getFeatureInfoById = async (id: number, layer: GeoJSONLayer | Featu
     }
 }
 
-export const getFeatureInfosByIds = async (ids: number[], layer: GeoJSONLayer | FeatureLayer): Promise<FeatureInfo[]> => {
+export const getFeatureInfosByIds = async (ids: number[], layer: FeatureLayer): Promise<FeatureInfo[]> => {
     const query = layer.createQuery();
     const idName = layer.objectIdField;
     query.where = `${idName} IN ( ${ids.join(",")})`;
@@ -45,7 +45,7 @@ export const getFeatureInfosByIds = async (ids: number[], layer: GeoJSONLayer | 
     return infos;
 }
 
-export const getLineFromPointRestriction = async (fieldName: string, value: number | string, layer: FeatureLayer | GeoJSONLayer): Promise<FeatureSet> => {
+export const getLineFromPointRestriction = async (fieldName: string, value: number | string, layer: FeatureLayer): Promise<FeatureSet> => {
     const query = layer.createQuery();
     // const field = layer.getField(fieldName);
     query.where = `${fieldName} = '${value}'`;
@@ -53,7 +53,7 @@ export const getLineFromPointRestriction = async (fieldName: string, value: numb
     const response = await layer.queryFeatures(query);
     return response
 }
-export const getFeatureInfoByUniqueField = async (fieldName: string, value: number | string, layer: FeatureLayer | GeoJSONLayer): Promise<FeatureInfo | undefined> => {
+export const getFeatureInfoByUniqueField = async (fieldName: string, value: number | string, layer: FeatureLayer): Promise<FeatureInfo | undefined> => {
     const query = layer.createQuery();
     const field = layer.getField(fieldName);
     query.where = `${fieldName} = `;

@@ -1,15 +1,16 @@
 import LayerInfo from "@/types/LayerInfo";
-import Point from "@arcgis/core/geometry/Point";
+// import Point from "@arcgis/core/geometry/Point";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Graphic from "@arcgis/core/Graphic";
-import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
+// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import WebMap from "@arcgis/core/WebMap";
-import { geographicToWebMercator } from "@arcgis/core/geometry/support/webMercatorUtils";
-import Geometry from "@arcgis/core/geometry/Geometry";
+// import { geographicToWebMercator } from "@arcgis/core/geometry/support/webMercatorUtils";
+// import Geometry from "@arcgis/core/geometry/Geometry";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as geomJsonUtils from "@arcgis/core/geometry/support/jsonUtils";
 import Renderer from "@arcgis/core/renderers/Renderer";
 import Field from "@arcgis/core/layers/support/Field";
+import { registerRuntimeCompiler } from "@vue/runtime-core";
 
 /**  Mapping between layer groups (type in URL query param) and layer IDs...
  *   * id
@@ -87,7 +88,7 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
     if (layer.type !== "geojson") {
         throw layer.type + " is not supported.";
     }
-    const gLayer = layer as GeoJSONLayer;
+    const gLayer = layer as FeatureLayer;
     const query = gLayer.createQuery();
     const field = gLayer.getField(fieldName);
     query.where = `${fieldName} = `;
@@ -148,13 +149,14 @@ export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: st
 export const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
     layer.watch("visible", (newValue, oldValue, propName, target) => {
         const lyr = target as FeatureLayer;
-        if (newValue && lyr.source.length === 0) {
+        if (newValue) {
             reloadData(jsonUrl, lyr);
         }
     });
 }
 
 export const reloadData = async (jsonUrl: string, layer: FeatureLayer): Promise<void> => {
+    if (!layer.visible) { return; }
     // Fetch all features from JSON...
     const graphics = await fetchJsonData(jsonUrl);
     // Replace old with new features...
@@ -193,29 +195,29 @@ export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
     return graphics;
 }
 
-export const fetchGeoJsonData = async (geojsonUrl: string, layer: GeoJSONLayer): Promise<Graphic[]> => {
-    // Fetch all features from JSON...
-    const response = await fetch(geojsonUrl);
-    const json = await response.json();
-    // Create graphic out of each feature...
-    const graphics: Graphic[] = [];
-    for (const each of json.features) {
-        let geom: Geometry;
-        if (layer.geometryType === "point") {
-            const pt4326 = new Point({
-                x: each.geometry.coordinates[0],
-                y: each.geometry.coordinates[1],
-                spatialReference: SpatialReference.WGS84
-            });
-            geom = geographicToWebMercator(pt4326);
-        }
-        else {
-            throw "Not implemented yet."
-        }
-        graphics.push(new Graphic({
-            geometry: geom,
-            attributes: each.properties,
-        }));
-    }
-    return graphics;
-}
+// export const fetchGeoJsonData = async (geojsonUrl: string, layer: GeoJSONLayer): Promise<Graphic[]> => {
+//     // Fetch all features from JSON...
+//     const response = await fetch(geojsonUrl);
+//     const json = await response.json();
+//     // Create graphic out of each feature...
+//     const graphics: Graphic[] = [];
+//     for (const each of json.features) {
+//         let geom: Geometry;
+//         if (layer.geometryType === "point") {
+//             const pt4326 = new Point({
+//                 x: each.geometry.coordinates[0],
+//                 y: each.geometry.coordinates[1],
+//                 spatialReference: SpatialReference.WGS84
+//             });
+//             geom = geographicToWebMercator(pt4326);
+//         }
+//         else {
+//             throw "Not implemented yet."
+//         }
+//         graphics.push(new Graphic({
+//             geometry: geom,
+//             attributes: each.properties,
+//         }));
+//     }
+//     return graphics;
+// }

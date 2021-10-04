@@ -1,4 +1,4 @@
-import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer"
+// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer"
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import Field from "@arcgis/core/layers/support/Field";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";

@@ -74,6 +74,8 @@ export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
         "polyline",
         false,
     );
+    // hide all features... Show only when the corresponding point was selected.
+    layer.definitionExpression = "1=0" 
     return layer;
 }
 

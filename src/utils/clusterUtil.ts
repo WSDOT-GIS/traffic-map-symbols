@@ -1,11 +1,12 @@
 import FeatureReductionCluster from "@arcgis/core/layers/support/FeatureReductionCluster";
 import clusterSymbol from "@/symbols/CameraClusterSymbol";
 import Graphic from "@arcgis/core/Graphic";
-import Layer from "@arcgis/core/layers/Layer";
-import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
+// import Layer from "@arcgis/core/layers/Layer";
+// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import Point from "@arcgis/core/geometry/Point";
 import MapView from "@arcgis/core/views/MapView";
 import Extent from "@arcgis/core/geometry/Extent";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 export const clusterMaxScale = 19000;
 const defaultRadius = 60;
@@ -122,16 +123,12 @@ Returns IDs of each feature if one of the following coditions is met:
 - All the features are at the identical location.
 Otherwise returns extent of all features.
 */
-export const getIdsFromCluster = async (clusterGraphic: Graphic, layer: Layer, mapView: MapView, maxCount?: number): Promise<number[] | Extent> => {
-    const lyr = layer as GeoJSONLayer;
-    if (!lyr) {
-        throw "Only GeoJSONLayer is supported at this time.";
-    }
-    const layerView = await mapView.whenLayerView(lyr);
+export const getIdsFromCluster = async (clusterGraphic: Graphic, layer: FeatureLayer, mapView: MapView, maxCount?: number): Promise<number[] | Extent> => {
+    const layerView = await mapView.whenLayerView(layer);
     const query = layerView.createQuery();
     // Object ID of the cluster...
     query.aggregateIds = [clusterGraphic.getObjectId()];
-    query.outFields = [lyr.objectIdField];
+    query.outFields = [layer.objectIdField];
     const result = await layerView.queryFeatures(query);
     // let doReturnId = false;
     let extent: Extent | undefined;
@@ -167,23 +164,19 @@ export const getIdsFromCluster = async (clusterGraphic: Graphic, layer: Layer, m
         }
     }
     if (!extent) {
-        const ids = result.features.map((feature) => { return feature.attributes[lyr.objectIdField]; })
+        const ids = result.features.map((feature) => { return feature.attributes[layer.objectIdField]; })
         return ids;
     } else {
         return extent;
     }
 }
 
-export const getClusterExtent = async (clusterGraphic: Graphic, layer: Layer, mapView: MapView): Promise<Extent> => {
-    const lyr = layer as GeoJSONLayer;
-    if (!lyr) {
-        throw "Only GeoJSONLayer is supported at this time.";
-    }
-    const layerView = await mapView.whenLayerView(lyr);
+export const getClusterExtent = async (clusterGraphic: Graphic, layer: FeatureLayer, mapView: MapView): Promise<Extent> => {
+    const layerView = await mapView.whenLayerView(layer);
     const query = layerView.createQuery();
     // Object ID of the cluster...
     query.aggregateIds = [clusterGraphic.getObjectId()];
-    query.outFields = [lyr.objectIdField];
+    query.outFields = [layer.objectIdField];
     const result = await layerView.queryFeatures(query);
     const pt0 = result.features[0].geometry as Point;
     // Find out extent of all features...

@@ -1,12 +1,12 @@
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
-import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
+// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import Field from "@arcgis/core/layers/support/Field";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 import Symbol from "@/symbols/CameraSymbol";
 import { clusterConfig, clusterMaxScale } from "@/utils/clusterUtil";
 import * as layerUtil from "@/utils/layerUtil";
-import LayerInfo from "@/types/LayerInfo";
+// import LayerInfo from "@/types/LayerInfo";
 
 
 
