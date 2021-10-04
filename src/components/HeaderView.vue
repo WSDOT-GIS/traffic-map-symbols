@@ -1,14 +1,9 @@
 <template>
-  <header id="header" role="header">
+  <header id="header">
     <div class="header-wrapper">
       <div class="logo-container">
         <div class="region region-header">
           <a class="logo navbar-btn pull-left" href="/" title="Home" rel="home">
-            <!-- NOTE:
-              - Make sure to change the path when replacing this with new version.
-              - The image is loaded later and changes the size of the header. 
-                So let app know when it is loaded so the app can size map view correctly. 
-                -->
             <img
               src="@/assets/wsdot-logo-white.svg"
               alt="Home"
@@ -19,212 +14,92 @@
             >WSDOT</a
           >
           <section
-            id="block-headerlinks"
+            id="block-externalsearchsearchformblock"
             class="
-              col-lg-3 col-md-3 col-sm-12 col-xs-12
+              contextual-region
               block
-              block-block-content
-              block-block-content7289c7a7-b6dd-4b1f-b3a9-1ce517572c24
+              block-wsdot-external-search-forms
+              block-external-search-form-block
               clearfix
             "
           >
-            <div
-              class="
-                field
-                field--name-body
-                field--type-text-with-summary
-                field--label-hidden
-                field--item
-              "
-            >
-              <ul>
-                <li><a href="/about/news">News</a></li>
-                <li><a href="/employment">Employment</a></li>
-              </ul>
-            </div>
-          </section>
-          <section
-            class="
-              search-api-page-block-form-search
-              search-api-page-block-form
-              search-form
-              search-block-form
-              container-inline
-              block block-search-api-page block-search-api-page-form-block
-              clearfix
-            "
-            data-drupal-selector="search-api-page-block-form-search"
-            id="block-searchapipagesearchblockform"
-          >
-            <h2 class="block-title">Search Api Page search block form</h2>
             <form
-              action="https://dev-wsdot-wsdot.pantheonsite.io/search"
-              method="post"
-              id="search-api-page-block-form-search"
-              accept-charset="UTF-8"
+              action="https://www.wsdot.wa.gov/search-beta"
+              method="GET"
+              id="ext-search"
+              class="form-inline external-search-form"
+              data-drupal-form-fields="ext-search-input"
             >
-              <div
-                class="
-                  form-item
-                  js-form-item
-                  form-type-search
-                  js-form-type-search
-                  form-item-keys
-                  js-form-item-keys
-                  form-no-label form-group
-                "
-              >
-                <label for="edit-keys" class="control-label sr-only"
-                  ><span class="form-value">Search</span></label
-                >
+              <div class="form-group">
+                <label class="sr-only">Search</label>
                 <input
-                  title="Enter the terms you wish to search for."
-                  data-drupal-selector="edit-keys"
-                  class="form-search form-control"
+                  type="text"
+                  name="q"
+                  class="form-control"
                   placeholder="Search"
-                  type="search"
-                  id="edit-keys"
-                  name="keys"
-                  value=""
-                  size="15"
-                  maxlength="128"
+                  id="ext-search-input"
                 />
-              </div>
-              <input
-                autocomplete="off"
-                data-drupal-selector="form-f9u4aflua-hfsq9yzdazxizistbtrzmivm-e7c1yg6c"
-                type="hidden"
-                name="form_build_id"
-                value="form-f9u4AFlUA_HfSQ9YzdAZxIZISTbTRzmIVM-e7C1YG6c"
-              />
-              <input
-                data-drupal-selector="edit-search-api-page-block-form-search"
-                type="hidden"
-                name="form_id"
-                value="search_api_page_block_form_search"
-              />
-              <div
-                data-drupal-selector="edit-actions"
-                class="form-actions form-group js-form-wrapper form-wrapper"
-                id="edit-actions"
-              >
-                <button
-                  class="
-                    search-form__submit
-                    button
-                    js-form-submit
-                    form-submit
-                    btn-default btn
-                  "
-                  data-drupal-selector="edit-submit"
-                  type="submit"
-                  id="edit-submit"
-                  name="op"
-                  value="Search"
-                >
+                <button type="submit" class="btn search-form__submit">
                   <span class="sr-only">Search</span>
                 </button>
               </div>
             </form>
           </section>
+          <a id="main-menu" href="#menu-schmenu" class="sidr-trigger"
+            ><span class="sidr-trigger__icon"><i class="fa fa-bars"></i></span>
+          </a>
         </div>
       </div>
     </div>
   </header>
   <div class="nav-outer-wrapper">
     <div class="navbar navbar-default container" id="navbar" role="nav">
-      <button role="button" id="menu-button" class="menu-toggle">
-        <i class="far fa-bars"></i><span class="”sr-only”"></span>
-      </button>
-      <nav role="navigation">
-        <div class="navbar-header">
-          <div class="region region-navigation">
-            <section
-              id="block-mainnavigation"
-              class="
-                block block-we-megamenu block-we-megamenu-blockmain
-                clearfix
-              "
-            >
-              <div class="region-we-mega-menu">
-                <a class="navbar-toggle collapsed">
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-                </a>
-                <nav
-                  class="
-                    main
-                    navbar navbar-default navbar-we-mega-menu
-                    mobile-collapse
-                    hover-action
-                  "
+      <div class="nav-tabs break-lg-control" aria-hidden="false">
+        <nav aria-describedby="block-mainnavigation-8-menu">
+          <h2 class="sr-only menu-heading" id="block-mainnavigation-8-menu">
+            Main navigation
+          </h2>
+          <div class="container-fluid" id="menu-schmenu">
+            <ul class="menu menu--main nav">
+              <li class="first">
+                <a
+                  href="https://live-wsdot-wsdot.pantheonsite.io/travel"
+                  data-drupal-link-system-path="node/403"
+                  >Travel</a
                 >
-                  <div class="container-fluid">
-                    <ul class="we-mega-menu-ul nav nav-tabs">
-                      <li class="we-mega-menu-li" data-level="0">
-                        <a class="we-mega-menu-li" title="" href="/" target="">
-                          Home
-                        </a>
-                      </li>
-                      <li class="we-mega-menu-li" data-level="0">
-                        <a
-                          class="we-mega-menu-li"
-                          title=""
-                          href="/travel"
-                          target=""
-                        >
-                          Travel
-                        </a>
-                      </li>
-                      <li class="we-mega-menu-li" data-level="0">
-                        <a
-                          class="we-mega-menu-li"
-                          title=""
-                          href="/construction-planning"
-                          target=""
-                        >
-                          Construction &amp; Planning
-                        </a>
-                      </li>
-                      <li class="we-mega-menu-li" data-level="0">
-                        <a
-                          class="we-mega-menu-li"
-                          title=""
-                          href="/business-wsdot"
-                          target=""
-                        >
-                          Business with WSDOT
-                        </a>
-                      </li>
-                      <li class="we-mega-menu-li" data-level="0">
-                        <a
-                          class="we-mega-menu-li"
-                          title=""
-                          href="/engineering-standards"
-                          target=""
-                        >
-                          Engineering &amp; Standards
-                        </a>
-                      </li>
-                      <li class="we-mega-menu-li" data-level="0">
-                        <a
-                          class="we-mega-menu-li"
-                          title=""
-                          href="/about"
-                          target=""
-                        >
-                          About
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </nav>
-              </div>
-            </section>
+              </li>
+              <li>
+                <a
+                  href="https://live-wsdot-wsdot.pantheonsite.io/construction-planning"
+                  data-drupal-link-system-path="node/404"
+                  >Construction &amp; planning</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://live-wsdot-wsdot.pantheonsite.io/business-wsdot"
+                  data-drupal-link-system-path="node/405"
+                  >Business with WSDOT</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://live-wsdot-wsdot.pantheonsite.io/engineering-standards"
+                  data-drupal-link-system-path="node/406"
+                  >Engineering &amp; standards</a
+                >
+              </li>
+              <li class="last">
+                <a
+                  href="https://live-wsdot-wsdot.pantheonsite.io/about"
+                  data-drupal-link-system-path="node/53"
+                  >About</a
+                >
+              </li>
+            </ul>
           </div>
-        </div>
-      </nav>
+        </nav>
+      </div>
     </div>
   </div>
 </template>

@@ -1,6 +1,5 @@
 <template>
   <HeaderView @onLoadComplete="resizeMapContainer()" />
-
   <main>
     <div
       id="map-container"
@@ -10,10 +9,6 @@
       <EsriMap />
     </div>
   </main>
-  <!-- <footer id="app-bottom-container" ref="bottomRef">
-    <div ref="adRef">
-      <AdView :text="adText" />
-    </div> -->
   <FooterView />
 </template>
 
