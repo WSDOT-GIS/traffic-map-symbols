@@ -98,14 +98,12 @@ export default defineComponent({
       }
      })
       if(descriptionText){
-        console.log(descriptionText)
         return descriptionText
       }
     };
     const getTitle= (feature: FeatureInfo): string|undefined => {
       let titleText:string|undefined = undefined
       props.Alerts.map((x)=>{
-        console.log(feature.attributes)
         if((x.FerryRouteId) as number==feature.attributes.FerryRouteID){
           titleText=x.AlertFullTitle
         }

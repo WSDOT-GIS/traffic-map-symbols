@@ -173,7 +173,7 @@ export const replaceFeatures = async (layer: FeatureLayer, newFeatures: Graphic[
     await layer.applyEdits({ addFeatures: newFeatures });
     const fCount = await layer.queryFeatureCount();
     msg += `, after: ${fCount}`;
-    console.log(msg);
+    //console.log(msg);
     layer.refresh();
 }
 
@@ -185,7 +185,7 @@ export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
     // Create graphic out of each feature...
     const graphics: Graphic[] = [];
     for (const each of json.features) {
-        console.log(each)
+        //console.log(each)
         const geom = geomJsonUtils.fromJSON(each.geometry);
         geom.spatialReference = sr;
         graphics.push(new Graphic({

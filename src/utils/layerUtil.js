@@ -175,7 +175,7 @@ const replaceFeatures = (layer, newFeatures) => tslib_1.__awaiter(void 0, void 0
     yield layer.applyEdits({ addFeatures: newFeatures });
     const fCount = yield layer.queryFeatureCount();
     msg += `, after: ${fCount}`;
-    console.log(msg);
+    //console.log(msg);
     layer.refresh();
 });
 exports.replaceFeatures = replaceFeatures;
@@ -187,7 +187,7 @@ const fetchJsonData = (jsonUrl) => tslib_1.__awaiter(void 0, void 0, void 0, fun
     // Create graphic out of each feature...
     const graphics = [];
     for (const each of json.features) {
-        console.log(each);
+        //console.log(each)
         const geom = geomJsonUtils.fromJSON(each.geometry);
         geom.spatialReference = sr;
         graphics.push(new Graphic_1.default({
