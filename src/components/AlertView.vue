@@ -5,7 +5,10 @@
     class="w3-modal"
   >
     <div
-      class="w3-modal-content w3-animate-right w3-card w3-left-align alert-content"
+      class="
+        w3-modal-content w3-animate-right w3-card w3-left-align
+        alert-content
+      "
       :style="{ maxHeight: height }"
       ref="containerRef"
     >
@@ -142,6 +145,11 @@ export default defineComponent({
 </script>
 
 <style scoped>
+#alert-container-open {
+  /* This needs to be higher than the popup's z-index, so popup is displayed under the gray background. */
+  z-index: 11;
+}
+
 #alert-container-closed {
   position: absolute;
   top: 0;

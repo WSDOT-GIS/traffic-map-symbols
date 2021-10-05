@@ -13,7 +13,7 @@ const renderer = new simpleRenderer({
 })
 
 const fields = [
-    new Field({ name: "MountainPassId", type: "oid", alias: "MountainPassId" }),
+    new Field({ name: "MountainPassId", type: "integer", alias: "MountainPassId" }),
     new Field({ name: "PassName", type: "string", alias: "PassName", length: 50 }),
     new Field({
         name: "Elevation", type: "integer", alias: "Elevation"
@@ -68,7 +68,7 @@ export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
     // });
     // layerUtil.setLayerEvent(layer, config.mountainPasses);
     layer = await layerUtil.initLayer(jsonUrl, "mountain-passes-layer", "Mountain Pass Reports",
-        renderer, fields, "point", false, "MountainPassId");
+        renderer, fields, "point", false);
     return layer;
 
 }

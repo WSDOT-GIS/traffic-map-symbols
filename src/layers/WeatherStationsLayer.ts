@@ -18,7 +18,7 @@ const fields = [
     }),
     new Field({
         "name": "WeatherStationId",
-        "type": "oid",
+        "type": "integer",
         "alias": "WeatherStationId"
     }),
     new Field({
@@ -73,7 +73,7 @@ export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
         fields,
         "point",
         false,
-        "WeatherStationId",
+        //"WeatherStationId"
     );
     return layer;
 }

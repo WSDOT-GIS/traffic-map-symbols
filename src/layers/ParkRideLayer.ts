@@ -15,7 +15,7 @@ const fields = [
     new Field({
         name: "OBJECTID",
         alias: "OBJECTID",
-        type: "oid"
+        type: "integer"
     }),
     new Field({
         name: "Lot_Name",
@@ -52,7 +52,7 @@ const fields = [
 let layer: FeatureLayer | undefined;
 
 export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
-    layer = await layerUtil.initLayer(jsonUrl, "park-ride-layer", "Park and Rides", renderer, fields, "point", false, "OBJECTID");
+    layer = await layerUtil.initLayer(jsonUrl, "park-ride-layer", "Park and Rides", renderer, fields, "point", false);
     return layer;
 }
 
