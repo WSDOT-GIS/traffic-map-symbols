@@ -1,5 +1,7 @@
 <template>
   <div
+    ref="modalContainerRef"
+    class="popup-modal-container"
     :class="{
       'w3-modal': smallMedia,
       'popup-modal-container-show':
@@ -239,6 +241,7 @@ export default defineComponent({
   setup(props, context) {
     // The DOM only exists while the visibility is true. Get it in onUpdate().
     const propWeatherForecast = ref<ForecastListInfo>();
+    const modalContainerRef = ref<HTMLDivElement>();
     const containerRef = ref<HTMLDivElement>();
     const enum relativePositions {
       above = "above",
@@ -357,6 +360,23 @@ export default defineComponent({
     };
     // Adjust position after the container DIV is available...
     onUpdated(() => {
+      if (modalContainerRef.value && containerRef.value) {
+        if (!smallMedia.value) {
+          if (modalContainerRef.value.contains(containerRef.value)) {
+            // if (parent?.classList.contains("popup-modal-container")) {
+            document
+              .getElementById("map-container")
+              ?.appendChild(containerRef.value);
+            console.log("...Removed popup div from the modal div.");
+          }
+        } 
+        // else {
+        //    if (!modalContainerRef.value.contains(containerRef.value)) {
+        //     modalContainerRef.value.appendChild(containerRef.value);
+        //     console.log("...Appended popup div to the modal div.");
+        //   }
+        // }
+      }
       wasUpdatedOnce = true;
       adjustPositionSize();
     });
@@ -796,6 +816,7 @@ export default defineComponent({
     };
 
     return {
+      modalContainerRef,
       containerRef,
       relativePosition,
       popupTopLeft,
