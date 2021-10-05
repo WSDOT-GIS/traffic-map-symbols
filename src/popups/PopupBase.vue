@@ -361,13 +361,14 @@ export default defineComponent({
     // Adjust position after the container DIV is available...
     onUpdated(() => {
       if (modalContainerRef.value && containerRef.value) {
+        /* On the large screen, the modal container does not allow user to click on the map
+           even though the w3-modal class is disabled. So need to move the popup out of the container. */
         if (!smallMedia.value) {
           if (modalContainerRef.value.contains(containerRef.value)) {
-            // if (parent?.classList.contains("popup-modal-container")) {
             document
               .getElementById("map-container")
               ?.appendChild(containerRef.value);
-            console.log("...Removed popup div from the modal div.");
+            // console.log("...Removed popup div from the modal div.");
           }
         } 
         // else {
@@ -636,17 +637,15 @@ export default defineComponent({
       }
       // Adjust horizontal position.
       if (left) {
-        const currentTop = parseInt(popupTopLeft.value.marginLeft);
-        if (!currentTop || currentTop !== left) {
+        const currentLeft = parseInt(popupTopLeft.value.marginLeft);
+        if (!currentLeft || currentLeft !== left) {
           popupTopLeft.value.marginLeft = left + "px";
         }
       } else {
+        console.log("*** Debug");
         popupTopLeft.value.marginLeft = "";
       }
-
-      // if (popupLeft.value !== left) {
-      //   popupLeft.value = left;
-      // }
+      console.log(JSON.stringify(popupTopLeft.value));
     };
     const getMoreInfoURL = () => {
       if (
