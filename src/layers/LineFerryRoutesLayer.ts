@@ -1,7 +1,8 @@
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import {ferryRoutesSymbol} from "@/symbols/FerryRoutesSymbol"
-
+import Field from "@arcgis/core/layers/support/Field";
+import * as layerUtil from "@/utils/layerUtil";
 const ferryRoutesRenderer = new simpleRenderer({
     symbol: ferryRoutesSymbol
 })
@@ -14,7 +15,8 @@ export const initLayer = (url: string): FeatureLayer => {
         url: url,
         title: "ferryRoutes",
         renderer: ferryRoutesRenderer,
-        visible: false,
+        visible: true,
+        definitionExpression:"1=0",
         labelsVisible: false
     });
     return layer;

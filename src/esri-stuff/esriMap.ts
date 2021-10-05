@@ -33,7 +33,7 @@ import * as BorderCrossingsLayer from "@/layers/BorderCrossingsLayer"
 import * as RegionalAlertLayer from "@/layers/RegionalAlertLayer";
 import * as RestAreasLayer from "@/layers/RestAreasLayer";
 import { initLayer as initLineFerryRoutesLayer } from "@/layers/LineFerryRoutesLayer"
-import { initLayer as initPointFerryRoutesLayer } from "@/layers/PointFerryRoutesLayer"
+import * as FerryRoutePointsLayer from "@/layers/PointFerryRoutesLayer"
 //
 import { getEsriExtent, getOutOfBoundDirection } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
@@ -106,7 +106,7 @@ export const loadOperationalLayers = async (): Promise<void> => {
     // The first one in the array will be displayed at the bottom of the map... 
     // const borderCrossingsLayer = initBorderCrossingsLayer(config.borderCrossings)
     const ferryRouteLinesLayer = initLineFerryRoutesLayer(config.ferryRouteLines)
-    const ferryRoutePointsLayer = initPointFerryRoutesLayer(config.ferryRoutePoints)
+    const ferryRoutePointsLayer = FerryRoutePointsLayer.initLayer(config.ferryRoutePoints)
     // webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
     //     firePerimetersLayer, fireIncidentLayer,
     //     restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
@@ -117,7 +117,7 @@ export const loadOperationalLayers = async (): Promise<void> => {
         firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertLyrs.priority, roadAlertLyrs.closure,
-        mileMarkersLayer, borderCrossingsLayer, ferryRouteLinesLayer, ferryRoutePointsLayer]);
+        mileMarkersLayer, borderCrossingsLayer, ferryRouteLinesLayer,ferryRoutePointsLayer]);
     // Store the default visibility...
     webmap.layers.forEach((eachLyr) => {
         defaultLayerProps.push({ id: eachLyr.id, visible: eachLyr.visible });

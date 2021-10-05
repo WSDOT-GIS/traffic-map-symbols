@@ -53,7 +53,7 @@ export default defineComponent({
       }
     });
     const getMoreInfoURL=(feature: FeatureInfo): MoreInfoURLInfo=>{
-      console.log(feature)
+      //console.log(feature)
       const moreInfoObject =new Object({
         url: `https://www.th.gov.bc.ca/ATIS/index.htm`,
         text: "Get the",

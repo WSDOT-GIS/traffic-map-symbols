@@ -45,6 +45,16 @@ const fields = [
         "type": "string",
         "alias": "cardinal_direction",
     }),
+    new Field({
+        "name": "UniqueId",
+        "type": "string",
+        "alias": "UniqueId",
+    }),
+    new Field({
+        "name": "lineMarker",
+        "type": "string",
+        "alias": "lineMarker",
+    })
 ]
 
 let layer: FeatureLayer | undefined;

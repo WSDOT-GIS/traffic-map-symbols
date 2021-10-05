@@ -389,30 +389,6 @@
           </template>
         </ToggleSwitchView>
       </li>
-      <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
-        <ToggleSwitchView
-          @toggle="clickEvent"
-          :Enabled="true"
-          :Checked="layerList[getLayerIndex('ferry-routes-lines-layer')].visible"
-          :Value="
-            getLayerIndex('ferry-routes-lines-layer').toString()
-          "
-          Title="Toggle Ferry Routes"
-        >
-          <template v-slot>
-            <div
-              class="mapFeaturesIcon"
-              v-html="
-                layerIcons.find((x) => x.id == 'ferry-routes-lines-layer')
-                  ?.paths
-              "
-            ></div>
-            <span class="listLabel" id="FerryRoutesLabel"
-              >Ferry Routes</span
-            >
-          </template>
-        </ToggleSwitchView>
-      </li>
     </ul>
   </div>
 </template>
@@ -454,8 +430,8 @@ export default defineComponent({
     getLayerIndex: (id: string): number => {
       let layerIndex = -1;
       // console.log(store.state.layerList)
-      console.log(id)
-      console.log(store.state.layerList)
+      //console.log(id)
+     // console.log(store.state.layerList)
       store.state.layerList.map((val, index) => {
         if (val.id == id) {
           layerIndex = index;

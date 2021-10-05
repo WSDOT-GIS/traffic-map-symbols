@@ -107,7 +107,7 @@ export default defineComponent({
       }
     });
     const getMoreInfoURL=(feature: FeatureInfo): MoreInfoURLInfo=>{
-      console.log(feature)
+      //console.log(feature)
       let linkText;
       if(feature.attributes["PassName"]?.toString().includes("Pass")){
         linkText = `${feature.attributes["PassName"]?.toString().split("Pass")[0]} Pass`
@@ -172,7 +172,7 @@ export default defineComponent({
     }
 
     const getElev = (feature: FeatureInfo):string|undefined => {
-      console.log(feature)
+      //console.log(feature)
       const num = feature.attributes["Elevation"] as number;
       const unit = feature.attributes["ElevationUnit"] as string;
       let ftNum;

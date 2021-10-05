@@ -332,14 +332,17 @@ export default defineComponent({
                 LineRestrictionsLayer().definitionExpression = "1=0"; //clear lines from restrictions layer
                 // Not aggregate...
                 const id = g.getObjectId();
+                console.log(g.layer.id)
                 //get lines for restriciton point click
                 if (g.layer.id === "point-restrictions-layer") {
                   getFeatureInfoById(id, g.layer as FeatureLayer).then(
                     (result) => {
+                      console.log(result)
                       if (
                         result?.attributes.lineMarker == "true" ||
                         result?.attributes.lineMarker == "True"
                       ) {
+                        console.log(result?.attributes.UniqueId)
                         LineRestrictionsLayer().definitionExpression = `UniqueId = '${result?.attributes.UniqueId}'`;
                         getLineFromPointRestriction(
                           "UniqueId",

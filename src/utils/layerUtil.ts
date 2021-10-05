@@ -185,6 +185,7 @@ export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
     // Create graphic out of each feature...
     const graphics: Graphic[] = [];
     for (const each of json.features) {
+        console.log(each)
         const geom = geomJsonUtils.fromJSON(each.geometry);
         geom.spatialReference = sr;
         graphics.push(new Graphic({

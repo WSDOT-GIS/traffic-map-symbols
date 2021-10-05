@@ -76,7 +76,7 @@ export default defineComponent({
           (result) => {
             if (result) {
               // console.log(result)
-              console.log(result)
+              //console.log(result)
               feature.value = result;
               if((result.attributes.CurrentTime as number)-(result.attributes.AverageTime as number)>0){
                 TravelDelay.value = (result.attributes.CurrentTime as number)-(result.attributes.AverageTime as number)

@@ -96,7 +96,7 @@ export default defineComponent({
     const getEventPriority = (feature: FeatureInfo): string =>{
       let badgeText="";
       if(feature.attributes.EventCategoryDescription=="Closure"){
-        console.log(feature.attributes.EventCategoryDescription)
+        //console.log(feature.attributes.EventCategoryDescription)
         badgeText = "Closed"
         badgeIcon.value = (layerListIcons.find(
                   (x) =>

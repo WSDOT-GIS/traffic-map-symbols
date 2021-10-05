@@ -72,7 +72,7 @@ export default defineComponent({
       }
     });
     const getTitle = (feature: FeatureInfo): string => {
-      console.log(feature)
+      //console.log(feature)
       let direction;
       switch(feature.attributes.cardinal_direction){
         case "B":
@@ -95,7 +95,7 @@ export default defineComponent({
       return title
     }
     const getMoreInfoURL=(feature: FeatureInfo): MoreInfoURLInfo=>{
-      console.log(feature)
+      //console.log(feature)
       const moreInfoObject =new Object({
         url: `https://wsdot.wa.gov/data/tools/bridgeclearance/`,
         text: "Be sure to check out your route in the",
