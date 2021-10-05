@@ -219,7 +219,7 @@ export default defineComponent({
           RoadAlertsLayer("road-alerts-layer"),
           TravelTimeLayer(),
           FireIncidentLayer(),
-          MileMarkersLayer(),
+          //MileMarkersLayer(),
           RoadsReferenceLayer(),
           BoundariesPlacesReferenceLayer(),
           BorderCrossingLayer(),
