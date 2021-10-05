@@ -19,11 +19,16 @@ const renderer = new SimpleRenderer({
 });
 
 const fields = [
+    new Field({
+        name: "AppGenId",
+        alias: "AppGenId",
+        type: "oid"
+    }),
     new Field(
     {
         name: "EventID",
         alias: "EventID",
-        type: "oid"
+        type: "integer"
     }),
     new Field({
         name: "Name",
@@ -60,7 +65,7 @@ export default getLayer;
 export const getFeatureById = async (eventId: number): Promise<Graphic> => {
     const layer = getLayer();
     const query = layer.createQuery();
-    query.where = layer.objectIdField + " = " + eventId;
+    query.where = "EventID = " + eventId;
     query.outFields = ["*"];
     const response = await layer.queryFeatures(query);
     return response.features[0];

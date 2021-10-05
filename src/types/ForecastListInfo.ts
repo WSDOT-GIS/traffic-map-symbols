@@ -6,5 +6,5 @@ interface ForecastListInfo {
     forecastExpirationDateTime: string;
     nwsZoneId: string;
     nwsZoneRegionName: string;
-};
+}
 export default ForecastListInfo

@@ -10,8 +10,10 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as geomJsonUtils from "@arcgis/core/geometry/support/jsonUtils";
 import Renderer from "@arcgis/core/renderers/Renderer";
 import Field from "@arcgis/core/layers/support/Field";
-import { registerRuntimeCompiler } from "@vue/runtime-core";
-
+// import { registerRuntimeCompiler } from "@vue/runtime-core";
+// import { getConfig } from "./appConfigUtil";
+import GroupLayerInfo from "@/types/GroupLayerInfo";
+import AppConfig from "@/types/AppConfig";
 /**  Mapping between layer groups (type in URL query param) and layer IDs...
  *   * id
  *      ID for the layer group (type).
@@ -20,39 +22,75 @@ import { registerRuntimeCompiler } from "@vue/runtime-core";
  *   * uniqueField
  *      Unique field that is from the source database. Do not use ESRI ID.
 */
-const layerGroups = [
-    { id: "camera", layerIds: ["traffic-camera-layer"], uniqueField: "CameraID" },
-    { id: "alert", layerIds: ["road-alerts-layer"], uniqueField: "EventID" },
-    { id: "restriction", layerIds: ["point-restrictions-layer", "line-restrictions-layer"], uniqueField: "UniqueId" },
-    { id: "fire", layerIds: ["fire-incidents-layer", "fire-perimeters-layer"], uniqueField: "UniqueFireIdentifier" },
-    { id: "time", layerIds: ["travel-times-layer"], uniqueField: "TravelTimesID" },
-    { id: "mountain", layerIds: ["mountain-passes-layer"], uniqueField: "MountainPassId" },
-    { id: "weather", layerIds: ["weather-stations-layer"], uniqueField: "WeatherStationId" },
-    { id: "parkride", layerIds: ["park-ride-layer"], uniqueField: "" }, // TODO: need unique field
-    { id: "restarea", layerIds: ["rest-areas-layer"], uniqueField: "" } // TODO: need unique field
-]
+
+const layerGroups: GroupLayerInfo[] = [];
+export const createLayerGroupInfos = (config: AppConfig): void => {
+    layerGroups.push({ id: "camera", layers: [{ id: "traffic-camera-layer", uniqueField: "CameraID", jsonUrl: config.cameras }] });
+    layerGroups.push({ id: "alert", layers: [{ id: "road-alerts-layer", uniqueField: "EventID" }] }); // Loaded by default, should not need to load data.
+    layerGroups.push({
+        id: "restriction", layers: [
+            { id: "point-restrictions-layer", uniqueField: "UniqueId", jsonUrl: config.pointRestrictions },
+            { id: "line-restrictions-layer", uniqueField: "UniqueId", jsonUrl: config.lineRestrictions }
+        ]
+    });
+    layerGroups.push({
+        id: "fire", layers: [
+            { id: "fire-incidents-layer", uniqueField: "UniqueFireIdentifier" },
+            { id: "fire-perimeters-layer", uniqueField: "UniqueFireIdentifier" }
+        ]
+    });
+    layerGroups.push({ id: "time", layers: [{ id: "travel-times-layer", uniqueField: "TravelTimesID", jsonUrl: config.travelTimes }] });
+    layerGroups.push({ id: "mountain", layers: [{ id: "mountain-passes-layer", uniqueField: "MountainPassId", jsonUrl: config.mountainPasses }] });
+    layerGroups.push({ id: "weather", layers: [{ id: "weather-stations-layer", uniqueField: "WeatherStationId", jsonUrl: config.weatherStations }] });
+    layerGroups.push({ id: "parkride", layers: [{ id: "park-ride-layer", uniqueField: "", jsonUrl: config.parkAndRides }] }); // TODO: need unique field
+    layerGroups.push({ id: "restarea", layers: [{ id: "rest-areas-layer", uniqueField: "", jsonUrl: config.restAreas }] }); // TODO: need unique field
+};
+//     { id: "camera", layerIds: ["traffic-camera-layer"], uniqueField: "CameraID" },
+//     { id: "alert", layerIds: ["road-alerts-layer"], uniqueField: "EventID" },
+//     { id: "restriction", layerIds: ["point-restrictions-layer", "line-restrictions-layer"], uniqueField: "UniqueId" },
+//     { id: "fire", layerIds: ["fire-incidents-layer", "fire-perimeters-layer"], uniqueField: "UniqueFireIdentifier" },
+//     { id: "time", layerIds: ["travel-times-layer"], uniqueField: "TravelTimesID" },
+//     { id: "mountain", layerIds: ["mountain-passes-layer"], uniqueField: "MountainPassId" },
+//     { id: "weather", layerIds: ["weather-stations-layer"], uniqueField: "WeatherStationId" },
+//     { id: "parkride", layerIds: ["park-ride-layer"], uniqueField: "" }, // TODO: need unique field
+//     { id: "restarea", layerIds: ["rest-areas-layer"], uniqueField: "" } // TODO: need unique field
+// ]
+
+const getGroupLayerInfo = (groupId: string): GroupLayerInfo => {
+    const result = layerGroups.find((item) => {
+        return item.id === groupId;
+    });
+    if (!result) {
+        throw `${groupId} is an invalid group ID (feature type).`
+    }
+    return result;
+}
 
 export const getLayerIds = (groupId: string): string[] => {
     const result = layerGroups.find((item) => {
         return item.id === groupId;
     });
     if (result) {
-        return result.layerIds;
+        return result.layers.map((each) => {
+            return each.id;
+        });
     } else {
         throw "Failed to find layer IDs for " + groupId + ".";
     }
 }
 
-export const getUniqueField = (groupId: string): string => {
-    const result = layerGroups.find((item) => {
-        return item.id === groupId;
-    });
-    if (result) {
-        return result.uniqueField;
-    } else {
-        throw "Failed to find ID field for " + groupId + ".";
-    }
-}
+// export const getUniqueField = (groupId: string): string => {
+//     const result = layerGroups.find((item) => {
+//         return item.id === groupId;
+//     });
+//     if (result) {
+//         return result.layers.map((each) => {
+//             return each.uniqueField;
+//         })
+//     } else {
+//         throw "Failed to find ID field for " + groupId + ".";
+//     }
+// }
 /**
  * Set the visibility of the specified layer in the layer list.
  * NOTE: The layer list need to be committed to the state store.
@@ -80,29 +118,50 @@ export const setLayerVisibility = (layerId: string, visible: boolean, layerList:
  * @returns 
  */
 export const getFeature = async (uniqueValue: number | string, groupId: string, map: WebMap): Promise<Graphic | undefined> => {
-    const fieldName = getUniqueField(groupId);
-    const layerIds = getLayerIds(groupId);
-    const layer = map.findLayerById(layerIds[0]);
+    const groupInfo = getGroupLayerInfo(groupId);
+    const layer = map.findLayerById(groupInfo.layers[0].id);
     // Make sure the layer is loaded. If this is done too early, query does not resolve...
     await layer.when();
-    if (layer.type !== "geojson") {
+    if (layer.type !== "feature") {
         throw layer.type + " is not supported.";
     }
-    const gLayer = layer as FeatureLayer;
-    const query = gLayer.createQuery();
-    const field = gLayer.getField(fieldName);
-    query.where = `${fieldName} = `;
+    const fLayer = layer as FeatureLayer;
+    fLayer.visible = true;
+    const ftrCount = await fLayer.queryFeatureCount();
+    if (groupInfo.layers[0].jsonUrl && ftrCount === 0) {
+        await reloadData(groupInfo.layers[0].jsonUrl, fLayer);
+        if (groupInfo.layers.length > 1) {
+            for (const eachLyr of groupInfo.layers) {
+                if (eachLyr.id === groupInfo.layers[0].id) {
+                    continue;
+                }
+                const fLyr2 = map.findLayerById(eachLyr.id) as FeatureLayer;
+                if (eachLyr.jsonUrl) {
+                    fLyr2.visible = true;
+                    await reloadData(eachLyr.jsonUrl, fLyr2);
+                }
+            }
+        }
+    }
+    const query = fLayer.createQuery();
+    const field = fLayer.getField(groupInfo.layers[0].uniqueField);
+    query.where = `${groupInfo.layers[0].uniqueField} = `;
     if (["string", "date"].includes(field.type)) {
         query.where += `'${uniqueValue}'`
     } else {
         query.where += uniqueValue
     }
-    // console.log(gLayer.id + ", query: " + query.where);
-    query.outFields = [gLayer.objectIdField]
+    // console.log(fLayer.id + ", query: " + query.where);
+    query.outFields = [fLayer.objectIdField]
     // console.log("querying...")
-    const response = await gLayer.queryFeatures(query);
+    const response = await fLayer.queryFeatures(query);
     // console.log("query end...")
-    // console.log(JSON.stringify(response));
+    // console.log("getFeature(): " + JSON.stringify(response));
+    // const count = await fLayer.queryFeatureCount();
+    // console.log("Feature count: " + count);
+
+    // const fs = await fLayer.queryFeatures();
+    // console.log("First feature: " + JSON.stringify(fs.features[10]));
     if (response.features.length > 0) {
         return response.features[0];
     }
@@ -110,24 +169,26 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
 
 export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: string,
     renderer: Renderer, fields: Field[], geometryType: "point" | "multipoint" | "polyline" | "polygon",
-    visible: boolean, oidField?: string): Promise<FeatureLayer> => {
+    visible: boolean/*, oidField?: string*/): Promise<FeatureLayer> => {
     // Create Graphics from JSON...
     let graphics: Graphic[] = [];
     if (visible) {
         graphics = await fetchJsonData(jsonUrl);
     }
-    // If the OID field is missing, use the array index as object ID...
-    if (!oidField) {
-        oidField = "objindex";
-        graphics.forEach((each, idx) => {
-            each.attributes.push({ objindex: idx });
-        });
-        fields.push(new Field({
-            name: oidField,
-            alias: oidField,
-            type: "oid"
-        }));
+    // Do not set the WSDOT unique ID as OID. The app might change them.
+    // So create a new system generated field as OID.
+    let oidField = "AppGenId";
+    const foundOid = fields.find((each) => {
+        return each.name === oidField;
+    })
+    if (foundOid) {
+        oidField += 2;
     }
+    fields.push(new Field({
+        name: oidField,
+        alias: oidField,
+        type: "oid"
+    }));
     const layer = new FeatureLayer({
         id: layerId,
         title: layerTitle,
@@ -185,7 +246,7 @@ export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
     // Create graphic out of each feature...
     const graphics: Graphic[] = [];
     for (const each of json.features) {
-        //console.log(each)
+        // console.log(each)
         const geom = geomJsonUtils.fromJSON(each.geometry);
         geom.spatialReference = sr;
         graphics.push(new Graphic({

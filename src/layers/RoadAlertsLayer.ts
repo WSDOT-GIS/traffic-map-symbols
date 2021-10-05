@@ -47,7 +47,12 @@ const roadAlertsClosureRenderer = new SimpleRenderer({
 
 const fields = [
     new Field({
-        name: "EventID", type: "oid", alias: "EventID"
+        name: "AppGenId",
+        alias: "AppGenId",
+        type: "oid"
+    }),
+    new Field({
+        name: "EventID", type: "integer", alias: "EventID"
     }),
     new Field({ name: "EventCategoryDescription", type: "string", alias: "EventCategoryDescription", length: 400 }),
     new Field({ name: "EventCategoryID", type: "integer", alias: "EventCategoryID" }),
@@ -99,7 +104,7 @@ export const initLayer = async (url?: string): Promise<{ priority: FeatureLayer,
     priorityLayer = new FeatureLayer({
         id: "road-alerts-layer",
         title: "Travel Alerts",
-        objectIdField: "EventID",
+        objectIdField: "AppGenId",
         renderer: roadAlertsPriorityRenderer,
         visible: true,
         fields: fields,
@@ -111,7 +116,7 @@ export const initLayer = async (url?: string): Promise<{ priority: FeatureLayer,
     closureLayer = new FeatureLayer({
         id: "road-closures-layer",
         title: "Travel Closure Alerts",
-        objectIdField: "EventID",
+        objectIdField: "AppGenId",
         renderer: roadAlertsClosureRenderer,
         visible: true,
         fields: fields,

@@ -469,7 +469,7 @@ export default defineComponent({
           prevWidth = w;
           prevHeight = h;
         }
-        //console.log("*** Adjust " + JSON.stringify(props.Features)); //props.Features[0].layerId);
+        // console.log("*** Adjust " + JSON.stringify(props.Features)); //props.Features[0].layerId);
         // If this is not the initial load, then move popup along with map.
         if (!doPanMap) {
           // Recalculate top and let position...
@@ -659,7 +659,7 @@ export default defineComponent({
       } else {
         popupTopLeft.value.marginLeft = "";
       }
-     // console.log(JSON.stringify(popupTopLeft.value));
+      // console.log(JSON.stringify(popupTopLeft.value));
     };
     const getMoreInfoURL = () => {
       if (
