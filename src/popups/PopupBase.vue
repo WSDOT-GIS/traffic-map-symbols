@@ -344,15 +344,28 @@ export default defineComponent({
     });
     // Watch map moving...
     watch(mapCenter, (newValue, oldValue) => {
-      if (props.Features.length === 0 || !oldValue) {
+      if (
+        !props.Features ||
+        props.Features.length === 0 ||
+        !props.Features[0] ||
+        !oldValue
+      ) {
         return;
       }
-      const newCenter = toScreenXY(newValue.x, newValue.y);
-      const oldCenter = toScreenXY(oldValue.x, oldValue.y);
-      const diffX = oldCenter.x - newCenter.x;
-      const diffY = oldCenter.y - newCenter.y;
-      screenX.value += diffX;
-      screenY.value += diffY;
+      if (oldValue.x !== 0 && oldValue.y !== 0) {
+        const newCenter = toScreenXY(newValue.x, newValue.y);
+        const oldCenter = toScreenXY(oldValue.x, oldValue.y);
+        const diffX = oldCenter.x - newCenter.x;
+        const diffY = oldCenter.y - newCenter.y;
+        screenX.value += diffX;
+        screenY.value += diffY;
+      } else {
+        // The very first time, the oldValue's x and y are 0. So cannot calculate the difference from the previous.
+        const mapPt = props.Features[currentIdx.value].mapPoint;
+        const screenXY = toScreenXY(mapPt.x, mapPt.y);
+        screenX.value = screenXY.x;
+        screenY.value = screenXY.y;
+      }
       adjustPositionSize();
     });
     // Image load happens later and change the size of the popup, so need to make adjustment after that...
@@ -372,7 +385,7 @@ export default defineComponent({
               ?.appendChild(containerRef.value);
             // console.log("...Removed popup div from the modal div.");
           }
-        } 
+        }
         // else {
         //    if (!modalContainerRef.value.contains(containerRef.value)) {
         //     modalContainerRef.value.appendChild(containerRef.value);
@@ -456,7 +469,7 @@ export default defineComponent({
           prevWidth = w;
           prevHeight = h;
         }
-        // console.log("*** Adjust ****************"); // + JSON.stringify(props.Features)); //props.Features[0].layerId);
+        console.log("*** Adjust " + JSON.stringify(props.Features)); //props.Features[0].layerId);
         // If this is not the initial load, then move popup along with map.
         if (!doPanMap) {
           // Recalculate top and let position...
@@ -644,7 +657,6 @@ export default defineComponent({
           popupTopLeft.value.marginLeft = left + "px";
         }
       } else {
-        console.log("*** Debug");
         popupTopLeft.value.marginLeft = "";
       }
       console.log(JSON.stringify(popupTopLeft.value));
