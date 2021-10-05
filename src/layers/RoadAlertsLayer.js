@@ -45,7 +45,12 @@ const roadAlertsClosureRenderer = new SimpleRenderer_1.default({
 });
 const fields = [
     new Field_1.default({
-        name: "EventID", type: "oid", alias: "EventID"
+        name: "AppGenId",
+        alias: "AppGenId",
+        type: "oid"
+    }),
+    new Field_1.default({
+        name: "EventID", type: "integer", alias: "EventID"
     }),
     new Field_1.default({ name: "EventCategoryDescription", type: "string", alias: "EventCategoryDescription", length: 400 }),
     new Field_1.default({ name: "EventCategoryID", type: "integer", alias: "EventCategoryID" }),
@@ -96,7 +101,7 @@ const initLayer = (url) => tslib_1.__awaiter(void 0, void 0, void 0, function* (
     priorityLayer = new FeatureLayer_1.default({
         id: "road-alerts-layer",
         title: "Travel Alerts",
-        objectIdField: "EventID",
+        objectIdField: "AppGenId",
         renderer: roadAlertsPriorityRenderer,
         visible: true,
         fields: fields,
@@ -107,7 +112,7 @@ const initLayer = (url) => tslib_1.__awaiter(void 0, void 0, void 0, function* (
     closureLayer = new FeatureLayer_1.default({
         id: "road-closures-layer",
         title: "Travel Closure Alerts",
-        objectIdField: "EventID",
+        objectIdField: "AppGenId",
         renderer: roadAlertsClosureRenderer,
         visible: true,
         fields: fields,

@@ -11,7 +11,7 @@ const renderer = new SimpleRenderer_1.default({
     symbol: MountainPassSymbol_1.default
 });
 const fields = [
-    new Field_1.default({ name: "MountainPassId", type: "oid", alias: "MountainPassId" }),
+    new Field_1.default({ name: "MountainPassId", type: "integer", alias: "MountainPassId" }),
     new Field_1.default({ name: "PassName", type: "string", alias: "PassName", length: 50 }),
     new Field_1.default({
         name: "Elevation", type: "integer", alias: "Elevation"
@@ -63,7 +63,7 @@ const initLayer = (jsonUrl) => tslib_1.__awaiter(void 0, void 0, void 0, functio
     //     spatialReference: SpatialReference.WebMercator,
     // });
     // layerUtil.setLayerEvent(layer, config.mountainPasses);
-    layer = yield layerUtil.initLayer(jsonUrl, "mountain-passes-layer", "Mountain Pass Reports", renderer, fields, "point", false, "MountainPassId");
+    layer = yield layerUtil.initLayer(jsonUrl, "mountain-passes-layer", "Mountain Pass Reports", renderer, fields, "point", false);
     return layer;
 });
 exports.initLayer = initLayer;
