@@ -63,7 +63,7 @@ import {
   getFeatureIdFromUrl,
   getFeatureTypeFromUrl,
 } from "@/utils/urlParamUtil";
-import { getFeature, setLayerVisibility } from "@/utils/layerUtil";
+import { createLayerGroupInfos, getFeature, setLayerVisibility } from "@/utils/layerUtil";
 import { removeGraphicsByType } from "@/utils/graphicLayerUtil";
 import ZoomExtentLayer, {
   getFeatureById as getZoomFeatureById,
@@ -90,7 +90,7 @@ import RoadAlertsLayer from "@/layers/RoadAlertsLayer";
 import TravelTimeLayer from "@/layers/TravelTimeLayer";
 import RestAreasLayer from "@/layers/RestAreasLayer";
 import FireIncidentLayer from "@/layers/FireIncidentLayer";
-import MileMarkersLayer from "@/layers/MileMarkersLayer";
+// import MileMarkersLayer from "@/layers/MileMarkersLayer";
 import RoadsReferenceLayer from "@/layers/RoadsReferenceLayer";
 import BoundariesPlacesReferenceLayer from "@/layers/BoundariesPlacesReferenceLayer";
 import BorderCrossingLayer from "@/layers/BorderCrossingsLayer";
@@ -172,6 +172,8 @@ export default defineComponent({
       getFerryAlerts(config.ferryAlerts).then((result) => {
         ferryAlerts.value=result
       })
+      // Build the list used by the URL query...
+      createLayerGroupInfos(config);
     });
     
     // Zoom popup...
