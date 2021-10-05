@@ -15,7 +15,13 @@
             custom: getDescription,
             isHTML: true
           }
-        }
+        },
+        {
+          label: 'Last updated',
+          value: {
+            text: '*coming soon*',
+            },
+        },
       ],
     }"
     @close="close"
@@ -88,10 +94,11 @@ export default defineComponent({
      let descriptionText:string|undefined = undefined
      props.Alerts.map((x)=>{
       if((x.FerryRouteId) as number==feature.attributes.FerryRouteID){
-        descriptionText=x.Description
+        descriptionText=x.HomepageAlertText
       }
      })
       if(descriptionText){
+        console.log(descriptionText)
         return descriptionText
       }
     };
@@ -100,7 +107,7 @@ export default defineComponent({
       props.Alerts.map((x)=>{
         console.log(feature.attributes)
         if((x.FerryRouteId) as number==feature.attributes.FerryRouteID){
-          titleText=x.HomepageAlertText
+          titleText=x.AlertFullTitle
         }
       })
       if(titleText){

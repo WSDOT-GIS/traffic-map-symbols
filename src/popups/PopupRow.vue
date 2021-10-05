@@ -83,7 +83,12 @@ export default defineComponent({
           }
         }
       } else if (props.Config.value.custom) {
-        text = props.Config.value.custom(props.Feature);
+         if(props.Config.value.isHTML==true){
+            propIsHTML.value=true
+            text =props.Config.value.custom(props.Feature);
+          } else {
+            text =props.Config.value.custom(props.Feature);
+          }
       }
       // Do not show when data is not available...
       if (!text) {
