@@ -2,15 +2,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.initLayer = void 0;
 const tslib_1 = require("tslib");
-const GeoJSONLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/GeoJSONLayer"));
+// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer"
 const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
 const MountainPassSymbol_1 = tslib_1.__importDefault(require("@/symbols/MountainPassSymbol"));
 const Field_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/Field"));
-const mountainPassRenderer = new SimpleRenderer_1.default({
+const layerUtil = tslib_1.__importStar(require("@/utils/layerUtil"));
+const renderer = new SimpleRenderer_1.default({
     symbol: MountainPassSymbol_1.default
 });
 const fields = [
-    new Field_1.default({ name: "MountainPassId", type: "integer", alias: "MountainPassId" }),
+    new Field_1.default({ name: "MountainPassId", type: "oid", alias: "MountainPassId" }),
     new Field_1.default({ name: "PassName", type: "string", alias: "PassName", length: 50 }),
     new Field_1.default({
         name: "Elevation", type: "integer", alias: "Elevation"
@@ -44,17 +45,27 @@ const fields = [
     new Field_1.default({ name: "PublicMessage2", type: "string", alias: "PublicMessage2", length: 300 }),
 ];
 let layer;
-const initLayer = (url) => {
-    layer = new GeoJSONLayer_1.default({
-        id: "mountain-passes-layer",
-        url: url,
-        title: "Mountain Pass Reports",
-        renderer: mountainPassRenderer,
-        visible: false,
-        fields: fields,
-    });
+const initLayer = (jsonUrl) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+    // let graphics: Graphic[] = [];
+    // const config = await getConfig();
+    // if (visible) {
+    //     graphics = await layerUtil.fetchJsonData(config.mountainPasses);
+    // }
+    // layer = new FeatureLayer({
+    //     id: "mountain-passes-layer",
+    //     title: "Mountain Pass Reports",
+    //     objectIdField: "MountainPassId",
+    //     renderer: mountainPassRenderer,
+    //     visible: visible,
+    //     fields: fields,
+    //     source: graphics,
+    //     geometryType: "point",
+    //     spatialReference: SpatialReference.WebMercator,
+    // });
+    // layerUtil.setLayerEvent(layer, config.mountainPasses);
+    layer = yield layerUtil.initLayer(jsonUrl, "mountain-passes-layer", "Mountain Pass Reports", renderer, fields, "point", false, "MountainPassId");
     return layer;
-};
+});
 exports.initLayer = initLayer;
 const getLayer = () => {
     if (!layer) {
@@ -62,6 +73,24 @@ const getLayer = () => {
     }
     return layer;
 };
+// let layer: GeoJSONLayer | undefined;
+// export const initLayer = (url: string): GeoJSONLayer => {
+//     layer = new GeoJSONLayer({
+//         id: "mountain-passes-layer",
+//         url: url,
+//         title: "Mountain Pass Reports",
+//         renderer: mountainPassRenderer,
+//         visible: false,
+//         fields: fields,
+//     });
+//     return layer;
+// }
+// const getLayer = (): GeoJSONLayer => {
+//     if (!layer) {
+//         throw "MountainPassLayer is not ready yet!";
+//     }
+//     return layer;
+// }
 // const FeatureLayer = new GeoJSONLayer({
 //     id: "mountain-passes-layer",
 //     url: "https://data.wsdot.wa.gov/travelcenter/MountainPasses.json",

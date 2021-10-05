@@ -3,15 +3,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.setCluster = exports.toggleCluster = exports.initLayer = void 0;
 const tslib_1 = require("tslib");
 const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
-const GeoJSONLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/GeoJSONLayer"));
+// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 const Field_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/Field"));
 const CameraSymbol_1 = tslib_1.__importDefault(require("@/symbols/CameraSymbol"));
 const clusterUtil_1 = require("@/utils/clusterUtil");
-// import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-// import Point from "@arcgis/core/geometry/Point";
-// import SpatialReference from "@arcgis/core/geometry/SpatialReference";
-// import { geographicToWebMercator } from "@arcgis/core/geometry/support/webMercatorUtils";
-// import Graphic from "@arcgis/core/Graphic";
+const layerUtil = tslib_1.__importStar(require("@/utils/layerUtil"));
+// import LayerInfo from "@/types/LayerInfo";
 const renderer = new SimpleRenderer_1.default({ symbol: CameraSymbol_1.default });
 const fields = [
     new Field_1.default({
@@ -71,18 +68,20 @@ const fields = [
     }),
 ];
 let layer;
-const initLayer = (url) => {
-    layer = new GeoJSONLayer_1.default({
-        id: "traffic-camera-layer",
-        url: url,
-        title: "Cameras",
-        renderer: renderer,
-        featureReduction: clusterUtil_1.clusterConfig,
-        fields: fields,
-        visible: false,
-    });
+const initLayer = (jsonUrl) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+    layer = yield layerUtil.initLayer(jsonUrl, "traffic-camera-layer", "Cameras", renderer, fields, "point", false, "CameraID");
+    layer.featureReduction = clusterUtil_1.clusterConfig;
+    // layer = new GeoJSONLayer({
+    //     id: "traffic-camera-layer",
+    //     url: url,
+    //     title: "Cameras",
+    //     renderer: renderer,
+    //     featureReduction: clusterConfig,
+    //     fields: fields,
+    //     visible: false,
+    // });
     return layer;
-};
+});
 exports.initLayer = initLayer;
 const getLayer = () => {
     if (!layer) {
@@ -90,45 +89,24 @@ const getLayer = () => {
     }
     return layer;
 };
-/*** create feature layer from GeoJSON */
-// let layer2: FeatureLayer | undefined;
-// export const initLayer2 = async (url: string): Promise<FeatureLayer> => {
-//     // Fetch all alerts from JSON...
-//     const response = await fetch(url);
-//     const json = await response.json();
-//     // Create graphic out of each feature...
-//     const graphics: Graphic[] = [];
-//     for (const each of json.features) {
-//         const ptWgs = new Point({
-//             x: each.geometry.coordinates[0],
-//             y: each.geometry.coordinates[1],
-//             spatialReference: SpatialReference.WGS84
-//         });
-//         const pt = geographicToWebMercator(ptWgs);
-//         graphics.push(new Graphic({
-//             geometry: pt,
-//             attributes: each.properties,
-//         }))
-//     }
-//     layer2 = new FeatureLayer({
+// let layer: GeoJSONLayer | undefined;
+// export const initLayer = (url: string): GeoJSONLayer => {
+//     layer = new GeoJSONLayer({
 //         id: "traffic-camera-layer",
+//         url: url,
 //         title: "Cameras",
-//         source: graphics,
-//         fields: fields,
-//         objectIdField: "CameraID",
-//         geometryType: "point",
-//         spatialReference: SpatialReference.WebMercator,
 //         renderer: renderer,
 //         featureReduction: clusterConfig,
+//         fields: fields,
 //         visible: false,
 //     });
-//     return layer2;
+//     return layer;
 // }
-// const getLayer2 = (): FeatureLayer => {
-//     if (!layer2) {
+// const getLayer = (): GeoJSONLayer => {
+//     if (!layer) {
 //         throw "CameraLayer is not ready yet!";
 //     }
-//     return layer2;
+//     return layer;
 // }
 exports.default = getLayer;
 /*** Helper functions **************/

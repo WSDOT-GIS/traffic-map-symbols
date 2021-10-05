@@ -39,6 +39,7 @@
   <WildfirePointsPopup :Featureset="popupFeatureset" />
   <BorderCrossingPopup :Featureset="popupFeatureset" />
   <RegionalAlertPopup :Featureset="popupFeatureset" />
+  <FerryRoutesPopup :Featureset="popupFeatureset" :Alerts="ferryAlerts" />
   <LeftPaneView />
 </template>
 
@@ -71,8 +72,9 @@ import { clusterMaxScale, getClusterExtent } from "@/utils/clusterUtil";
 import LayerInfo from "@/types/LayerInfo";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import XY from "@/types/XY";
-import { getAlerts } from "@/utils/alertInfoUtil";
+import { getAlerts, getFerryAlerts } from "@/utils/alertInfoUtil";
 import AlertInfo from "@/types/AlertInfo";
+import FerryAlertInfo from "@/types/FerryAlertInfo";
 import {
   getFeatureInfoById,
   getLineFromPointRestriction,
@@ -92,6 +94,7 @@ import MileMarkersLayer from "@/layers/MileMarkersLayer";
 import RoadsReferenceLayer from "@/layers/RoadsReferenceLayer";
 import BoundariesPlacesReferenceLayer from "@/layers/BoundariesPlacesReferenceLayer";
 import BorderCrossingLayer from "@/layers/BorderCrossingsLayer";
+import PointFerryRoutesLayer from "@/layers/PointFerryRoutesLayer";
 import RegionalAlertLayer, {
   centerFeatures as centerRegionalAlerts,
 } from "@/layers/RegionalAlertLayer";
@@ -109,6 +112,7 @@ import TravelTimesPopup from "@/popups/TravelTimesPopup.vue";
 import WildfirePointsPopup from "@/popups/WildfirePointsPopup.vue";
 import BorderCrossingPopup from "@/popups/BorderCrossingPopup.vue";
 import RegionalAlertPopup from "@/popups/RegionalAlertPopup.vue";
+import FerryRoutesPopup from "@/popups/FerryRoutesPopup.vue"
 /* Components */
 import LeftPaneView from "@/components/LeftPaneView.vue";
 import BasemapView from "@/components/BasemapView.vue";
@@ -134,6 +138,7 @@ export default defineComponent({
     WildfirePointsPopup,
     BorderCrossingPopup,
     RegionalAlertPopup,
+    FerryRoutesPopup,
     LeftPaneView,
     BasemapView,
     CoordinatesView,
@@ -146,7 +151,9 @@ export default defineComponent({
     const store = useStore();
     // Statewide alerts...
     const alerts = ref<AlertInfo[]>([]);
+    const ferryAlerts = ref<FerryAlertInfo[]>([])
     getConfig().then((config) => {
+      console.log(config)
       getAlerts(config.stateAlerts).then((result) => {
         // quadrupling one alert for testing...
         // result.push(...result);
@@ -162,7 +169,11 @@ export default defineComponent({
         //   "5000 Lorem ipsum dolor sit amet consectetur adipiscing, elit nibh facilisi mauris montes, feugiat dictum ante ad et. Habitasse facilisis venenatis hac hendrerit senectus leo convallis viverra pellentesque, montes congue nec efficitur lobortis himenaeos vel condimentum, torquent libero velit in accumsan finibus at nascetur. Quam aptent porta penatibus ullamcorper a quis curabitur class quisque netus tempor eget, lacus ut etiam sollicitudin vulputate nullam purus hac mollis mattis egestas tortor, orci dictumst consequat lorem efficitur duis gravida non pharetra faucibus euismod. Viverra consectetur himenaeos magna laoreet nunc interdum nam, faucibus nascetur dolor pretium amet urna nisi, arcu integer penatibus pulvinar convallis parturient. Accumsan sit hendrerit leo dapibus varius congue bibendum vestibulum, amet ornare suspendisse lectus a parturient semper euismod, eros eleifend aenean erat venenatis vel molestie. Dapibus pulvinar magna torquent blandit nulla curae ut accumsan, phasellus natoque tortor gravida sit diam tempor, hendrerit penatibus sagittis mollis vitae vestibulum rhoncus. Quisque in magnis eleifend dui erat viverra ullamcorper, vivamus ligula commodo ex sagittis dis mattis vel, facilisi vulputate dignissim interdum adipiscing leo. Lorem ipsum dolor sit amet consectetur adipiscing, elit nibh facilisi mauris montes, feugiat dictum ante ad et. Habitasse facilisis venenatis hac hendrerit senectus leo convallis viverra pellentesque, montes congue nec efficitur lobortis himenaeos vel condimentum, torquent libero velit in accumsan finibus at nascetur. Quam aptent porta penatibus ullamcorper a quis curabitur class quisque netus tempor eget, lacus ut etiam sollicitudin vulputate nullam purus hac mollis mattis egestas tortor, orci dictumst consequat lorem efficitur duis gravida non pharetra faucibus euismod. Viverra consectetur himenaeos magna laoreet nunc interdum nam, faucibus nascetur dolor pretium amet urna nisi, arcu integer penatibus pulvinar convallis parturient. Accumsan sit hendrerit leo dapibus varius congue bibendum vestibulum, amet ornare suspendisse lectus a parturient semper euismod, eros eleifend aenean erat venenatis vel molestie. Dapibus pulvinar magna torquent blandit nulla curae ut accumsan, phasellus natoque tortor gravida sit diam tempor, hendrerit penatibus sagittis mollis vitae vestibulum rhoncus. Quisque in magnis eleifend dui erat viverra ullamcorper, vivamus ligula commodo ex sagittis dis mattis vel, facilisi vulputate dignissim interdum adipiscing leo. Lorem ipsum dolor sit amet consectetur adipiscing, elit nibh facilisi mauris montes, feugiat dictum ante ad et. Habitasse facilisis venenatis hac hendrerit senectus leo convallis viverra pellentesque, montes congue nec efficitur lobortis himenaeos vel condimentum, torquent libero velit in accumsan finibus at nascetur. Quam aptent porta penatibus ullamcorper a quis curabitur class quisque netus tempor eget, lacus ut etiam sollicitudin vulputate nullam purus hac mollis mattis egestas tortor, orci dictumst consequat lorem efficitur duis gravida non pharetra faucibus euismod. Viverra consectetur himenaeos magna laoreet nunc interdum nam, faucibus nascetur dolor pretium amet urna nisi, arcu integer penatibus pulvinar convallis parturient. Accumsan sit hendrerit leo dapibus varius congue bibendum vestibulum, amet ornare suspendisse lectus a parturient semper euismod, eros eleifend aenean erat venenatis vel molestie. Dapibus pulvinar magna torquent blandit nulla curae ut accumsan, phasellus natoque tortor gravida sit diam tempor, hendrerit penatibus sagittis mollis vitae vestibulum rhoncus. Quisque in magnis eleifend dui erat viverra ullamcorper, vivamus ligula commodo ex sagittis dis mattis vel, facilisi vulputate dignissim interdum adipiscing leo. Lorem ipsum dolor sit amet consectetur adipiscing, elit nibh facilisi mauris montes, feugiat dictum ante ad et. Habitasse facilisis venenatis hac hendrerit senectus leo convallis viverra pellentesque, montes congue nec efficitur lobortis himenaeos vel condimentum, torquent libero velit in accumsan finibus at nascetur. Quam aptent porta penatibus ullamcorper a quis curabitur class quisque netus tempor eget, lacus ut etiam sollicitudin vulputate nullam purus hac mollis mattis egestas tortor, orci dictumst consequat lorem efficitur duis gravida non pharetra faucibus euismod. Viverra consectetur himenaeos magna laoreet nunc interdum nam, faucibus nascetur dolor pretium amet urna nisi, arcu integer penatibus pulvinar convallis parturient. Accumsan sit hendrerit leo dapibus varius congue bibendum vestibulum, amet ornare suspendisse lectus a parturient semper euismod, eros eleifend aenean erat venenatis vel molestie. Dapibus pulvinar magna torquent blandit nulla curae ut accumsan, phasellus natoque tortor gravida sit diam tempor, hendrerit penatibus sagittis mollis vitae vestibulum rhoncus. Quisque in magnis eleifend dui erat viverra ullamcorper, vivamus ligula commodo ex sagittis dis mattis ve";
         alerts.value = result;
       });
+      getFerryAlerts(config.ferryAlerts).then((result) => {
+        ferryAlerts.value=result
+      })
     });
+    
     // Zoom popup...
     const zoomPopupVisible = ref(false);
     const zoomPopupLabel = ref("");
@@ -224,6 +235,7 @@ export default defineComponent({
           BoundariesPlacesReferenceLayer(),
           BorderCrossingLayer(),
           RegionalAlertLayer(),
+          PointFerryRoutesLayer(),
           ZoomExtentLayer,
         ],
       };
@@ -532,6 +544,7 @@ export default defineComponent({
       popupFeatureset,
       closePopup,
       alerts,
+      ferryAlerts
     };
   },
 });

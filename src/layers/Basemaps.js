@@ -9,7 +9,7 @@ exports.getDefaultBasemapInfo = getDefaultBasemapInfo;
 const urlBasemap = 
 //"https://data.wsdot.wa.gov/arcgis/rest/services/Shared/WebBaseMapWebMercator/MapServer";
 //"https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/TravelCenterBasemapTileTest/MapServer"
-"https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/Travel_Center_Basemap_Dev/MapServer";
+"https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/TravelCenterBasemap/MapServer";
 // Array of basemaps. The first one is the default.
 const basemaps = [
     {

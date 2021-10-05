@@ -58,8 +58,10 @@
             &times;
           </button>
         </div>
-        <h4 class="popup-title w3-container">
+        <h4 v-if="Config.title.isHTML!=true" class="popup-title w3-container">
           {{ getTitle() }}
+        </h4>
+        <h4 v-if="Config.title.isHTML==true" v-html="getTitle()" class="popup-title w3-container">
         </h4>
         <div v-if="Config.subtitle && Config.subtitle != 'on Undefined'">
           <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
@@ -239,7 +241,7 @@ export default defineComponent({
     },
   },
   setup(props, context) {
-    // The DOM only exists while the visibility is true. Get it in onUpdate().
+    // The DOM only exists while the visibility is true. Get it in onUpdate().  
     const propWeatherForecast = ref<ForecastListInfo>();
     const modalContainerRef = ref<HTMLDivElement>();
     const containerRef = ref<HTMLDivElement>();
@@ -836,7 +838,7 @@ export default defineComponent({
       propWeatherForecast,
       propTravelDelay,
       propFeatures,
-      smallMedia,
+      smallMedia
     };
   },
 });

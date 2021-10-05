@@ -23,6 +23,7 @@ interface PopupConfig {
     title: {
         text?: string; // display hard coded string
         fieldName?: string; // Display field value
+        isHTML?: boolean; // Determines whether or not title contains HTML
         custom?: (feature: FeatureInfo) => string; // Function that takes feature
     };
     imageFieldName?: string;

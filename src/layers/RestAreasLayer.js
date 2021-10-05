@@ -2,37 +2,59 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.initLayer = void 0;
 const tslib_1 = require("tslib");
-const GeoJSONLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/GeoJSONLayer"));
+// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer"
 const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
 const RestAreasSymbol_1 = tslib_1.__importDefault(require("@/symbols/RestAreasSymbol"));
-const restAreasRenderer = new SimpleRenderer_1.default({
+const Field_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/Field"));
+const layerUtil = tslib_1.__importStar(require("@/utils/layerUtil"));
+const renderer = new SimpleRenderer_1.default({
     symbol: RestAreasSymbol_1.default
 });
+const fields = [
+    new Field_1.default({
+        name: "RestAreaName",
+        alias: "RestAreaName",
+        type: "string"
+    }),
+    new Field_1.default({
+        name: "LocationName",
+        alias: "LocationName",
+        type: "string"
+    }),
+    new Field_1.default({
+        name: "Amenties",
+        alias: "Amenties",
+        type: "string"
+    }),
+];
 let layer;
-const initLayer = (url) => {
-    layer = new GeoJSONLayer_1.default({
-        id: "rest-areas-layer",
-        url: url,
-        title: "Rest Areas",
-        renderer: restAreasRenderer,
-        visible: false
-    });
+const initLayer = (jsonUrl) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+    layer = yield layerUtil.initLayer(jsonUrl, "rest-areas-layer", "Rest Areas", renderer, fields, "point", false);
     return layer;
-};
+});
 exports.initLayer = initLayer;
 const getLayer = () => {
     if (!layer) {
-        throw "Layer is not ready yet!";
+        throw "Rest Area Layer is not ready yet!";
     }
     return layer;
 };
-// const FeatureLayer = new GeoJSONLayer({
-//     id: "rest-areas-layer",
-//     url: "https://data.wsdot.wa.gov/travelcenter/RestAreas.json",
-//     //url: await getURL(),
-//     title: "Rest Areas",
-//     renderer: restAreasRenderer,
-//     visible: false
-// });
+// let layer: GeoJSONLayer | undefined;
+// export const initLayer = (url: string): GeoJSONLayer => {
+//     layer = new GeoJSONLayer({
+//         id: "rest-areas-layer",
+//         url: url,
+//         title: "Rest Areas",
+//         renderer: restAreasRenderer,
+//         visible: false
+//     });
+//     return layer;
+// }
+// const getLayer = (): GeoJSONLayer => {
+//     if (!layer) {
+//         throw "Layer is not ready yet!";
+//     }
+//     return layer;
+// }
 exports.default = getLayer;
 //# sourceMappingURL=RestAreasLayer.js.map

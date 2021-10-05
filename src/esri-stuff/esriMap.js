@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateOutOfExtentLayer = exports.addOutOfExtentLayer = exports.removeHighlight = exports.highlightFeature = exports.bufferByPixels = exports.getIdsFromCluster = exports.getLayer = exports.panMap = exports.checkPannedExtent = exports.toPoint = exports.toScreenXY = exports.getMaxScale = exports.zoomToExtent = exports.zoomToMetroArea = exports.zoomToMax = exports.tryZoomToPointAsync = exports.tryZoomToPoint = exports.reloadRegionAlert = exports.reloadGeoJsonLayers = exports.loadRegionalAlert = exports.loadOperationalLayers = exports.defaultLayerProps = exports.init = exports.mapView = exports.webmap = void 0;
+exports.updateOutOfExtentLayer = exports.addOutOfExtentLayer = exports.removeHighlight = exports.highlightFeature = exports.bufferByPixels = exports.getIdsFromCluster = exports.getLayer = exports.panMap = exports.checkPannedExtent = exports.toPoint = exports.toScreenXY = exports.getMaxScale = exports.zoomToExtent = exports.zoomToMetroArea = exports.zoomToMax = exports.tryZoomToPointAsync = exports.tryZoomToPoint = exports.refreshLayerData = exports.loadRegionalAlert = exports.loadOperationalLayers = exports.defaultLayerProps = exports.init = exports.mapView = exports.webmap = void 0;
 const tslib_1 = require("tslib");
 const WebMap_1 = tslib_1.__importDefault(require("@arcgis/core/WebMap"));
 const MapView_1 = tslib_1.__importDefault(require("@arcgis/core/views/MapView"));
@@ -12,32 +12,34 @@ const Graphic_1 = tslib_1.__importDefault(require("@arcgis/core/Graphic"));
 const GraphicsLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/GraphicsLayer"));
 const geometryEngine_2 = require("@arcgis/core/geometry/geometryEngine");
 // Layers
-const TrafficLayer_1 = require("@/layers/TrafficLayer");
-const ParkRideLayer_1 = require("@/layers/ParkRideLayer");
-const CameraLayer_1 = require("@/layers/CameraLayer");
-const RestAreasLayer_1 = require("@/layers/RestAreasLayer");
-const PointRestrictionsLayer_1 = require("@/layers/PointRestrictionsLayer");
-const LineRestrictionsLayer_1 = require("@/layers/LineRestrictionsLayer");
-const RoadAlertsLayer_1 = require("@/layers/RoadAlertsLayer");
-const RoadAlertsLayer_2 = require("@/layers/RoadAlertsLayer");
-const WeatherStationsLayer_1 = require("@/layers/WeatherStationsLayer");
-const MountainPassesLayer_1 = require("@/layers/MountainPassesLayer");
-const TravelTimeLayer_1 = require("@/layers/TravelTimeLayer");
-const FireIncidentLayer_1 = require("@/layers/FireIncidentLayer");
-const FirePerimeterLayer_1 = require("@/layers/FirePerimeterLayer");
-const MileMarkersLayer_1 = require("@/layers/MileMarkersLayer");
-const RoadsReferenceLayer_1 = require("@/layers/RoadsReferenceLayer");
-const BoundariesPlacesReferenceLayer_1 = require("@/layers/BoundariesPlacesReferenceLayer");
-const StateRouteShields_1 = require("@/layers/StateRouteShields");
-const BorderCrossingsLayer_1 = require("@/layers/BorderCrossingsLayer");
-const RegionalAlertLayer_1 = require("@/layers/RegionalAlertLayer");
-const FerryRoutesLayer_1 = require("@/layers/FerryRoutesLayer");
+const TrafficLayer = tslib_1.__importStar(require("@/layers/TrafficLayer"));
+const ParkRideLayer = tslib_1.__importStar(require("@/layers/ParkRideLayer"));
+const CameraLayer = tslib_1.__importStar(require("@/layers/CameraLayer"));
+const PointRestrictionsLayer = tslib_1.__importStar(require("@/layers/PointRestrictionsLayer"));
+const LineRestrictionsLayer = tslib_1.__importStar(require("@/layers/LineRestrictionsLayer"));
+const RoadAlertsLayer = tslib_1.__importStar(require("@/layers/RoadAlertsLayer"));
+const WeatherLayer = tslib_1.__importStar(require("@/layers/WeatherStationsLayer"));
+const MountainLayer = tslib_1.__importStar(require("@/layers/MountainPassesLayer"));
+const TravelTimesLayer = tslib_1.__importStar(require("@/layers/TravelTimeLayer"));
+const FireIncidentsLayer = tslib_1.__importStar(require("@/layers/FireIncidentLayer"));
+const FirePerimetersLayer = tslib_1.__importStar(require("@/layers/FirePerimeterLayer"));
+const MileMakersLayer = tslib_1.__importStar(require("@/layers/MileMarkersLayer"));
+const RoadsReferenceLayer = tslib_1.__importStar(require("@/layers/RoadsReferenceLayer"));
+const BoundariesPlacesReferenceLayer = tslib_1.__importStar(require("@/layers/BoundariesPlacesReferenceLayer"));
+const StateRouteShieldsLayer = tslib_1.__importStar(require("@/layers/StateRouteShields"));
+const BorderCrossingsLayer = tslib_1.__importStar(require("@/layers/BorderCrossingsLayer"));
+const RegionalAlertLayer = tslib_1.__importStar(require("@/layers/RegionalAlertLayer"));
+const RestAreasLayer = tslib_1.__importStar(require("@/layers/RestAreasLayer"));
+const LineFerryRoutesLayer_1 = require("@/layers/LineFerryRoutesLayer");
+const FerryRoutePointsLayer = tslib_1.__importStar(require("@/layers/PointFerryRoutesLayer"));
 //
 const extentUtil_1 = require("@/utils/extentUtil");
 const ZoomExtentLayer_1 = tslib_1.__importDefault(require("@/layers/ZoomExtentLayer"));
 const appConfigUtil_1 = require("@/utils/appConfigUtil");
+// import LayerInfo from "@/types/LayerInfo";
 const firePerimeterQuery_1 = tslib_1.__importDefault(require("@/utils/firePerimeterQuery"));
 const Basemaps_1 = require("@/layers/Basemaps");
+const layerUtil = tslib_1.__importStar(require("@/utils/layerUtil"));
 const fullExtent = extentUtil_1.getEsriExtent("full");
 // Initialize empty map, and load layers later...
 exports.webmap = new WebMap_1.default({});
@@ -76,127 +78,146 @@ exports.defaultLayerProps = [];
 const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     const config = yield appConfigUtil_1.getConfig();
     //EsriConfig.apiKey = config.apiKey;
-    const trafficLyr = TrafficLayer_1.initLayer(config.traffic, config.layerRefreshMinute);
-    const restAreasLyr = RestAreasLayer_1.initLayer(config.restAreas);
-    const parkRideLyr = ParkRideLayer_1.initLayer(config.parkAndRides);
-    const weatherLyr = WeatherStationsLayer_1.initLayer(config.weatherStations);
-    const mtLyr = MountainPassesLayer_1.initLayer(config.mountainPasses);
-    const travelTimesLyr = TravelTimeLayer_1.initLayer(config.travelTimes);
-    const lineRestrictionLyr = LineRestrictionsLayer_1.initLayer(config.lineRestrictions);
-    lineRestrictionLyr.definitionExpression = "1=0"; //hide all features
-    const pointRestrictionLyr = PointRestrictionsLayer_1.initLayer(config.pointRestrictions);
-    const cameraLyr = CameraLayer_1.initLayer(config.cameras);
-    const roadAlertsLyr = RoadAlertsLayer_2.initPriorityLayer(config.roadAlerts);
-    const roadClosuresLyr = RoadAlertsLayer_1.initClosureLayer(config.roadAlerts);
-    const fireIncidentLayer = FireIncidentLayer_1.initLayer(config.fireIncidents);
+    const trafficLyr = TrafficLayer.initLayer(config.traffic, config.layerRefreshMinute);
+    const restAreasLyr = yield RestAreasLayer.initLayer(config.restAreas);
+    const parkRideLyr = yield ParkRideLayer.initLayer(config.parkAndRides);
+    const weatherLyr = yield WeatherLayer.initLayer(config.weatherStations);
+    const mtLyr = yield MountainLayer.initLayer(config.mountainPasses);
+    const travelTimesLyr = yield TravelTimesLayer.initLayer(config.travelTimes);
+    const lineRestrictionLyr = yield LineRestrictionsLayer.initLayer(config.lineRestrictions);
+    const pointRestrictionLyr = yield PointRestrictionsLayer.initLayer(config.pointRestrictions);
+    const cameraLyr = yield CameraLayer.initLayer(config.cameras);
+    const roadAlertLyrs = yield RoadAlertsLayer.initLayer(config.roadAlerts);
+    const fireIncidentLayer = FireIncidentsLayer.initLayer(config.fireIncidents);
     const firePerimeterIDs = yield firePerimeterQuery_1.default(fireIncidentLayer);
-    const firePerimetersLayer = FirePerimeterLayer_1.initLayer(config.firePerimeters, firePerimeterIDs); //Needed to filter fire perimeters to just those within the state
-    const mileMarkersLayer = MileMarkersLayer_1.initLayer(config.mileMarkers);
-    const esriRoadsReferenceLayer = RoadsReferenceLayer_1.initLayer(config.esriRoadsReferenceLayer);
-    const esriPlacesReferenceLayer = BoundariesPlacesReferenceLayer_1.initLayer(config.esriPlacesReferenceLayer);
-    const stateRouteShieldsLayer = StateRouteShields_1.initLayer(config.stateRouteShieldsLayer);
+    const firePerimetersLayer = FirePerimetersLayer.initLayer(config.firePerimeters, firePerimeterIDs); //Needed to filter fire perimeters to just those within the state
+    const mileMarkersLayer = MileMakersLayer.initLayer(config.mileMarkers);
+    const esriRoadsReferenceLayer = RoadsReferenceLayer.initLayer(config.esriRoadsReferenceLayer);
+    const esriPlacesReferenceLayer = BoundariesPlacesReferenceLayer.initLayer(config.esriPlacesReferenceLayer);
+    const stateRouteShieldsLayer = StateRouteShieldsLayer.initLayer(config.stateRouteShieldsLayer);
     // const regionalAlertLayer = await initRegionalAlertLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
     // The first one in the array will be displayed at the bottom of the map... 
-    const borderCrossingsLayer = BorderCrossingsLayer_1.initLayer(config.borderCrossings);
-    const ferryRoutesLayer = FerryRoutesLayer_1.initLayer(config.ferryRoutes);
+    // const borderCrossingsLayer = initBorderCrossingsLayer(config.borderCrossings)
+    const ferryRouteLinesLayer = LineFerryRoutesLayer_1.initLayer(config.ferryRouteLines);
+    const ferryRoutePointsLayer = FerryRoutePointsLayer.initLayer(config.ferryRoutePoints);
+    // webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
+    //     firePerimetersLayer, fireIncidentLayer,
+    //     restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
+    //     pointRestrictionLyr, cameraLyr, roadAlertsLyr, roadClosuresLyr,
+    //     mileMarkersLayer, borderCrossingsLayer, ferryRoutesLayer]);
+    const borderCrossingsLayer = yield BorderCrossingsLayer.initLayer(config.borderCrossings);
     exports.webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
         firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
-        pointRestrictionLyr, cameraLyr, roadAlertsLyr, roadClosuresLyr,
-        mileMarkersLayer, borderCrossingsLayer, ferryRoutesLayer]);
+        pointRestrictionLyr, cameraLyr, roadAlertLyrs.priority, roadAlertLyrs.closure,
+        mileMarkersLayer, borderCrossingsLayer, ferryRouteLinesLayer, ferryRoutePointsLayer]);
     // Store the default visibility...
     exports.webmap.layers.forEach((eachLyr) => {
         exports.defaultLayerProps.push({ id: eachLyr.id, visible: eachLyr.visible });
     });
 });
 exports.loadOperationalLayers = loadOperationalLayers;
-/** Load regional alert point and polygon layers. */
+/** Load regional alert point and polygon layers separately from the other operation layers. */
 const loadRegionalAlert = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     const config = yield appConfigUtil_1.getConfig();
-    const layers = yield RegionalAlertLayer_1.initLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
+    const layers = yield RegionalAlertLayer.initLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
     exports.webmap.add(layers.point);
     exports.webmap.add(layers.polygon, 0);
 });
 exports.loadRegionalAlert = loadRegionalAlert;
 /**
+ * Reload data for some layers.
+ */
+const refreshLayerData = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+    const config = yield appConfigUtil_1.getConfig();
+    RoadAlertsLayer.reloadData(config.roadAlerts);
+    RegionalAlertLayer.reloadData(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
+    layerUtil.reloadData(config.pointRestrictions, PointRestrictionsLayer.default());
+    layerUtil.reloadData(config.lineRestrictions, LineRestrictionsLayer.default());
+    layerUtil.reloadData(config.travelTimes, TravelTimesLayer.default());
+    layerUtil.reloadData(config.mountainPasses, MountainLayer.default());
+    layerUtil.reloadData(config.weatherStations, WeatherLayer.default());
+    layerUtil.reloadData(config.borderCrossings, BorderCrossingsLayer.default());
+});
+exports.refreshLayerData = refreshLayerData;
+/**
  * Reload GeoJSON layers that are updated frequently.
  */
-const reloadGeoJsonLayers = (layerList) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    const config = yield appConfigUtil_1.getConfig();
-    reloadGeoJsonLayer("road-alerts-layer", config.roadAlerts, RoadAlertsLayer_2.initPriorityLayer, layerList);
-    reloadGeoJsonLayer("road-closures-layer", config.roadAlerts, RoadAlertsLayer_1.initClosureLayer, layerList);
-    reloadGeoJsonLayer("line-restrictions-layer", config.lineRestrictions, LineRestrictionsLayer_1.initLayer, layerList);
-    reloadGeoJsonLayer("point-restrictions-layer", config.pointRestrictions, PointRestrictionsLayer_1.initLayer, layerList);
-    reloadGeoJsonLayer("mountain-passes-layer", config.mountainPasses, MountainPassesLayer_1.initLayer, layerList);
-    reloadGeoJsonLayer("travel-times-layer", config.travelTimes, TravelTimeLayer_1.initLayer, layerList);
-    reloadGeoJsonLayer("weather-stations-layer", config.weatherStations, WeatherStationsLayer_1.initLayer, layerList);
-    reloadGeoJsonLayer("border-crossings-layer", config.borderCrossings, BorderCrossingsLayer_1.initLayer, layerList);
-    /* Camera layer is not updated frequently, but need to be reloaded.
-    If not, the cluster label does not show after other layers are refreshed. */
-    // reloadGeoJsonLayer("traffic-camera-layer", config.cameras, initCameraLayer, layerList);
-    // setCluster(mapView.scale);
-    console.log("...Reloaded GeoJSON layers.");
-    return layerList;
-});
-exports.reloadGeoJsonLayers = reloadGeoJsonLayers;
-const reloadGeoJsonLayer = (id, layerUrl, initFunc, layerList) => {
-    const lyr = exports.getLayer(id);
-    if (lyr.type === "geojson") {
-        const oldlyr = lyr;
-        const lyrIdx = exports.webmap.layers.indexOf(oldlyr);
-        const visible = oldlyr.visible;
-        const definitionExpression = oldlyr.definitionExpression;
-        // Destroys the layer and remove it from the map...
-        // lyr.destroy();
-        exports.webmap.remove(oldlyr);
-        oldlyr.destroy();
-        const newLyr = initFunc(layerUrl);
-        newLyr.visible = visible;
-        newLyr.definitionExpression = definitionExpression;
-        exports.webmap.add(newLyr, lyrIdx);
-        // Update the layer list with the new layer object...
-        updateLayerList(layerList, newLyr);
-    }
-    else {
-        throw id + " is not a GeoJSON layer.";
-    }
-};
-const reloadRegionAlert = (layerList) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    const oldPointLyr = exports.getLayer("regional-alert-layer");
-    const oldPolyLyr = exports.getLayer("alert-area-layer");
-    // Recreate the layers...
-    const config = yield appConfigUtil_1.getConfig();
-    const layers = yield RegionalAlertLayer_1.initLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
-    // Swap the point layer...
-    const pointLyrIdx = exports.webmap.layers.indexOf(oldPointLyr);
-    oldPointLyr.destroy();
-    exports.webmap.add(layers.point, pointLyrIdx);
-    // Swap the polygon layer...
-    const polyLyrIdx = exports.webmap.layers.indexOf(oldPolyLyr);
-    oldPolyLyr.destroy();
-    exports.webmap.add(layers.polygon, polyLyrIdx);
-    // Update the layer list with the new layer object...
-    updateLayerList(layerList, layers.point);
-    updateLayerList(layerList, layers.polygon);
-    console.log("...Reloaded region alert.");
-    return layerList;
-});
-exports.reloadRegionAlert = reloadRegionAlert;
+// export const reloadGeoJsonLayers = async (/*layerList: LayerInfo[]*/): Promise<void> => {
+//     // const config = await getConfig();
+//     // reloadGeoJsonLayer("road-alerts-layer", config.roadAlerts, initPriorityLayer);//, layerList);
+//     // reloadGeoJsonLayer("road-closures-layer", config.roadAlerts, initClosureLayer);//, layerList);
+//     // reloadGeoJsonLayer("line-restrictions-layer", config.lineRestrictions, initLineRestrictionsLayer);//, layerList);
+//     // reloadGeoJsonLayer("point-restrictions-layer", config.pointRestrictions, initPointRestrictionsLayer);//, layerList);
+//     // reloadGeoJsonLayer("mountain-passes-layer", config.mountainPasses, initMountainLayer);//, layerList);
+//     // reloadGeoJsonLayer("travel-times-layer", config.travelTimes, initTravelTimesLayer);//, layerList);
+//     // reloadGeoJsonLayer("weather-stations-layer", config.weatherStations, initWeatherLayer);//, layerList);
+//     // reloadGeoJsonLayer("border-crossings-layer", config.borderCrossings, initBorderCrossingsLayer);//, layerList);
+//     /* Camera layer is not updated frequently, but need to be reloaded. 
+//     If not, the cluster label does not show after other layers are refreshed. */
+//     // reloadGeoJsonLayer("traffic-camera-layer", config.cameras, initCameraLayer, layerList);
+//     // setCluster(mapView.scale);
+//     console.log("...Reloaded GeoJSON layers.")
+//     //return layerList;
+// }
+// const reloadGeoJsonLayer = (id: string, layerUrl: string, initFunc: (url: string) => GeoJSONLayer/*, layerList: LayerInfo[]*/): void => {
+//     const lyr = getLayer(id);
+//     if (lyr.type === "geojson") {
+//         const oldlyr = lyr as GeoJSONLayer
+//         const lyrIdx = webmap.layers.indexOf(oldlyr);
+//         const visible = oldlyr.visible;
+//         const definitionExpression = oldlyr.definitionExpression
+//         // Destroys the layer and remove it from the map...
+//         // lyr.destroy();
+//         webmap.remove(oldlyr);
+//         oldlyr.destroy();
+//         const newLyr = initFunc(layerUrl);
+//         newLyr.visible = visible;
+//         newLyr.definitionExpression = definitionExpression;
+//         webmap.add(newLyr, lyrIdx);
+//         // Update the layer list with the new layer object...
+//         // updateLayerList(layerList, newLyr);
+//     }
+//     else {
+//         throw id + " is not a GeoJSON layer."
+//     }
+// }
+// export const refreshRegionAlert = async (/*layerList: LayerInfo[]*/): Promise<void> => {
+//     // const oldPointLyr = getLayer("regional-alert-layer");
+//     // const oldPolyLyr = getLayer("alert-area-layer");
+//     // Recreate the layers...
+//     const config = await getConfig();
+//     // const layers = await initRegionalAlertLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
+//     reloadRegionalAlert(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
+//     // Swap the point layer...
+//     // const pointLyrIdx = webmap.layers.indexOf(oldPointLyr);
+//     // oldPointLyr.destroy();
+//     // webmap.add(layers.point, pointLyrIdx);
+//     // // Swap the polygon layer...
+//     // const polyLyrIdx = webmap.layers.indexOf(oldPolyLyr);
+//     // oldPolyLyr.destroy();
+//     // webmap.add(layers.polygon, polyLyrIdx);
+//     // Update the layer list with the new layer object...
+//     // updateLayerList(layerList, layers.point);
+//     // updateLayerList(layerList, layers.polygon);
+//     console.log("...Reloaded region alert.");
+//     // return layerList;
+// }
 /**
  * After a layer object is recreated, update the reference to the new layer object.
  * @param layerList
  * @param layer
  */
-const updateLayerList = (layerList, layer) => {
-    const lyrInfo = layerList.find((eachInfo) => {
-        return eachInfo.id === layer.id;
-    });
-    if (lyrInfo) {
-        lyrInfo.id = layer.id;
-        lyrInfo.title = layer.title;
-        lyrInfo.visible = layer.visible;
-    }
-};
+// const updateLayerList = (layerList: LayerInfo[], layer: Layer) => {
+//     const lyrInfo = layerList.find((eachInfo) => {
+//         return eachInfo.id === layer.id;
+//     })
+//     if (lyrInfo) {
+//         lyrInfo.id = layer.id;
+//         lyrInfo.title = layer.title;
+//         lyrInfo.visible = layer.visible;
+//     }
+// }
 const tryZoomToPoint = (point, numLevels) => {
     let isSuccess = true;
     if (!numLevels) {

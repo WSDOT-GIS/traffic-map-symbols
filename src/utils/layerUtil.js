@@ -1,7 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFeature = exports.setLayerVisibility = exports.getUniqueField = exports.getLayerIds = void 0;
+exports.fetchJsonData = exports.replaceFeatures = exports.reloadData = exports.setLayerEvent = exports.initLayer = exports.getFeature = exports.setLayerVisibility = exports.getUniqueField = exports.getLayerIds = void 0;
 const tslib_1 = require("tslib");
+// import Point from "@arcgis/core/geometry/Point";
+const SpatialReference_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/SpatialReference"));
+const Graphic_1 = tslib_1.__importDefault(require("@arcgis/core/Graphic"));
+// import { geographicToWebMercator } from "@arcgis/core/geometry/support/webMercatorUtils";
+// import Geometry from "@arcgis/core/geometry/Geometry";
+const FeatureLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/FeatureLayer"));
+const geomJsonUtils = tslib_1.__importStar(require("@arcgis/core/geometry/support/jsonUtils"));
+const Field_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/Field"));
 /**  Mapping between layer groups (type in URL query param) and layer IDs...
  *   * id
  *      ID for the layer group (type).
@@ -102,4 +110,118 @@ const getFeature = (uniqueValue, groupId, map) => tslib_1.__awaiter(void 0, void
     }
 });
 exports.getFeature = getFeature;
+const initLayer = (jsonUrl, layerId, layerTitle, renderer, fields, geometryType, visible, oidField) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+    // Create Graphics from JSON...
+    let graphics = [];
+    if (visible) {
+        graphics = yield exports.fetchJsonData(jsonUrl);
+    }
+    // If the OID field is missing, use the array index as object ID...
+    if (!oidField) {
+        oidField = "objindex";
+        graphics.forEach((each, idx) => {
+            each.attributes.push({ objindex: idx });
+        });
+        fields.push(new Field_1.default({
+            name: oidField,
+            alias: oidField,
+            type: "oid"
+        }));
+    }
+    const layer = new FeatureLayer_1.default({
+        id: layerId,
+        title: layerTitle,
+        objectIdField: oidField,
+        renderer: renderer,
+        fields: fields,
+        visible: visible,
+        source: graphics,
+        geometryType: geometryType,
+        spatialReference: SpatialReference_1.default.WebMercator,
+    });
+    // Set event to load layer when it becomes visible...
+    if (!visible) {
+        exports.setLayerEvent(layer, jsonUrl);
+    }
+    return layer;
+});
+exports.initLayer = initLayer;
+const setLayerEvent = (layer, jsonUrl) => {
+    layer.watch("visible", (newValue, oldValue, propName, target) => {
+        const lyr = target;
+        if (newValue) {
+            exports.reloadData(jsonUrl, lyr);
+        }
+    });
+};
+exports.setLayerEvent = setLayerEvent;
+const reloadData = (jsonUrl, layer) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+    if (!layer.visible) {
+        return;
+    }
+    // Fetch all features from JSON...
+    const graphics = yield exports.fetchJsonData(jsonUrl);
+    // Replace old with new features...
+    yield exports.replaceFeatures(layer, graphics);
+});
+exports.reloadData = reloadData;
+const replaceFeatures = (layer, newFeatures) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+    // Delete existing features...
+    let msg = `Refreshed ${layer.id}, feature count before: `;
+    const fs = yield layer.queryFeatures();
+    msg += fs.features.length;
+    yield layer.applyEdits({ deleteFeatures: fs.features });
+    // Load features...
+    yield layer.applyEdits({ addFeatures: newFeatures });
+    const fCount = yield layer.queryFeatureCount();
+    msg += `, after: ${fCount}`;
+    console.log(msg);
+    layer.refresh();
+});
+exports.replaceFeatures = replaceFeatures;
+const fetchJsonData = (jsonUrl) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+    // Fetch all features from JSON...
+    const response = yield fetch(jsonUrl);
+    const json = yield response.json();
+    const sr = SpatialReference_1.default.fromJSON(json.spatialReference);
+    // Create graphic out of each feature...
+    const graphics = [];
+    for (const each of json.features) {
+        console.log(each);
+        const geom = geomJsonUtils.fromJSON(each.geometry);
+        geom.spatialReference = sr;
+        graphics.push(new Graphic_1.default({
+            geometry: geom,
+            attributes: each.attributes ? each.attributes : each.properties,
+        }));
+    }
+    return graphics;
+});
+exports.fetchJsonData = fetchJsonData;
+// export const fetchGeoJsonData = async (geojsonUrl: string, layer: GeoJSONLayer): Promise<Graphic[]> => {
+//     // Fetch all features from JSON...
+//     const response = await fetch(geojsonUrl);
+//     const json = await response.json();
+//     // Create graphic out of each feature...
+//     const graphics: Graphic[] = [];
+//     for (const each of json.features) {
+//         let geom: Geometry;
+//         if (layer.geometryType === "point") {
+//             const pt4326 = new Point({
+//                 x: each.geometry.coordinates[0],
+//                 y: each.geometry.coordinates[1],
+//                 spatialReference: SpatialReference.WGS84
+//             });
+//             geom = geographicToWebMercator(pt4326);
+//         }
+//         else {
+//             throw "Not implemented yet."
+//         }
+//         graphics.push(new Graphic({
+//             geometry: geom,
+//             attributes: each.properties,
+//         }));
+//     }
+//     return graphics;
+// }
 //# sourceMappingURL=layerUtil.js.map

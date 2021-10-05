@@ -43,7 +43,7 @@ const getFeatureInfosByIds = (ids, layer) => tslib_1.__awaiter(void 0, void 0, v
 exports.getFeatureInfosByIds = getFeatureInfosByIds;
 const getLineFromPointRestriction = (fieldName, value, layer) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     const query = layer.createQuery();
-    const field = layer.getField(fieldName);
+    // const field = layer.getField(fieldName);
     query.where = `${fieldName} = '${value}'`;
     query.returnGeometry = true;
     const response = yield layer.queryFeatures(query);

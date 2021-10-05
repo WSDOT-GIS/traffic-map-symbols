@@ -1,11 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.initClosureLayer = exports.initPriorityLayer = void 0;
+exports.reloadData = exports.initLayer = void 0;
 const tslib_1 = require("tslib");
-const GeoJSONLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/GeoJSONLayer"));
+// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer"
 const UniqueValueRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/UniqueValueRenderer"));
 const AlertSymbol_1 = require("@/symbols/AlertSymbol");
+const Field_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/Field"));
 const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
+const layerUtil = tslib_1.__importStar(require("@/utils/layerUtil"));
+const FeatureLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/FeatureLayer"));
+const SpatialReference_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/SpatialReference"));
 const roadAlertsPriorityRenderer = new UniqueValueRenderer_1.default({
     field: "EventPriorityID",
     uniqueValueInfos: [
@@ -39,32 +43,82 @@ const roadAlertsPriorityRenderer = new UniqueValueRenderer_1.default({
 const roadAlertsClosureRenderer = new SimpleRenderer_1.default({
     symbol: AlertSymbol_1.roadClosedSymbol,
 });
+const fields = [
+    new Field_1.default({
+        name: "EventID", type: "oid", alias: "EventID"
+    }),
+    new Field_1.default({ name: "EventCategoryDescription", type: "string", alias: "EventCategoryDescription", length: 400 }),
+    new Field_1.default({ name: "EventCategoryID", type: "integer", alias: "EventCategoryID" }),
+    new Field_1.default({ name: "CriticalEventIndicator", type: "small-integer", alias: "CriticalEventIndicator" }),
+    new Field_1.default({ name: "LastModifiedDate", type: "date", alias: "LastModifiedDate" }),
+    new Field_1.default({ name: "IconName", type: "string", alias: "IconName", length: 20 }),
+    new Field_1.default({ name: "EventPriorityID", type: "integer", alias: "EventPriorityID" }),
+    new Field_1.default({ name: "EventPriorityDescription", type: "string", alias: "EventPriorityDescription", length: 150 }),
+    new Field_1.default({ name: "Road", type: "string", alias: "Road", length: 50 }),
+    new Field_1.default({ name: "RoadDirection", type: "string", alias: "RoadDirection", length: 15 }),
+    new Field_1.default({ name: "RoadType", type: "string", alias: "RoadType", length: 1 }),
+    new Field_1.default({ name: "Latitude", type: "double", alias: "Latitude" }),
+    new Field_1.default({ name: "Longitude", type: "double", alias: "Longitude" }),
+    new Field_1.default({ name: "DisplayOrder", type: "integer", alias: "DisplayOrder" }),
+    new Field_1.default({ name: "HeadlineMessage", type: "string", alias: "HeadlineMessage", length: 8000 }),
+    new Field_1.default({ name: "ExtendedMessage", type: "string", alias: "ExtendedMessage", length: 5000 }),
+    new Field_1.default({ name: "LocationName", type: "string", alias: "LocationName", length: 20 }),
+    new Field_1.default({ name: "StartSRMP", type: "single", alias: "StartSRMP" }),
+    new Field_1.default({ name: "EndSRMP", type: "single", alias: "EndSRMP" }),
+    new Field_1.default({ name: "RecurringEvent", type: "integer", alias: "RecurringEvent" }),
+    new Field_1.default({
+        name: "StartTime", type: "date", alias: "StartTime", length: 8
+    }),
+    new Field_1.default({
+        name: "EndTime", type: "date", alias: "EndTime", length: 8
+    }),
+    new Field_1.default({ name: "SourceSystemID", type: "integer", alias: "SourceSystemID" }),
+    new Field_1.default({ name: "SourceSystemEventID", type: "string", alias: "SourceSystemEventID", length: 50 }),
+    new Field_1.default({ name: "TMSOverlap", type: "integer", alias: "TMSOverlap" }),
+    new Field_1.default({ name: "RegionID", type: "small-integer", alias: "RegionID" }),
+];
 let priorityLayer;
 let closureLayer;
-const initPriorityLayer = (url) => {
-    priorityLayer = new GeoJSONLayer_1.default({
+/**
+ * Initialize two road alert layers.
+ * @param url
+ * Specify this if data should be loaded at start up. Otherwise not necessary.
+ * @returns
+ */
+const initLayer = (url) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+    let pGraphics = [];
+    let cGraphics = [];
+    if (url) {
+        const features = yield getFeatures(url);
+        pGraphics = features.priority;
+        cGraphics = features.closure;
+    }
+    priorityLayer = new FeatureLayer_1.default({
         id: "road-alerts-layer",
-        url: url,
         title: "Travel Alerts",
+        objectIdField: "EventID",
         renderer: roadAlertsPriorityRenderer,
         visible: true,
-        definitionExpression: "EventCategoryDescription<>'Closure'"
+        fields: fields,
+        source: pGraphics,
+        geometryType: "point",
+        spatialReference: SpatialReference_1.default.WebMercator,
     });
-    return priorityLayer;
-};
-exports.initPriorityLayer = initPriorityLayer;
-const initClosureLayer = (url) => {
-    closureLayer = new GeoJSONLayer_1.default({
+    closureLayer = new FeatureLayer_1.default({
         id: "road-closures-layer",
-        url: url,
         title: "Travel Closure Alerts",
+        objectIdField: "EventID",
         renderer: roadAlertsClosureRenderer,
         visible: true,
-        definitionExpression: "EventCategoryDescription='Closure'"
+        fields: fields,
+        source: cGraphics,
+        geometryType: "point",
+        spatialReference: SpatialReference_1.default.WebMercator,
     });
-    return closureLayer;
-};
-exports.initClosureLayer = initClosureLayer;
+    // console.log(JSON.stringify(cGraphics));
+    return { priority: priorityLayer, closure: closureLayer };
+});
+exports.initLayer = initLayer;
 const getLayer = (id) => {
     let layerToReturn;
     if (id == "road-alerts-layer") {
@@ -75,7 +129,7 @@ const getLayer = (id) => {
             layerToReturn = priorityLayer;
         }
     }
-    if (id == "road-closures-layer") {
+    else if (id == "road-closures-layer") {
         if (!closureLayer) {
             throw "RoadAlertsLayer is not ready yet!";
         }
@@ -83,8 +137,81 @@ const getLayer = (id) => {
             layerToReturn = closureLayer;
         }
     }
+    else {
+        throw `Invalid layer ID, ${id}, was specified.`;
+    }
     return layerToReturn;
 };
 // export default RoadAlertsLayer
 exports.default = getLayer;
+const reloadData = (url) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+    const features = yield getFeatures(url);
+    if (priorityLayer) {
+        layerUtil.replaceFeatures(priorityLayer, features.priority);
+    }
+    if (closureLayer) {
+        layerUtil.replaceFeatures(closureLayer, features.closure);
+    }
+});
+exports.reloadData = reloadData;
+const getFeatures = (url) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+    const graphics = yield layerUtil.fetchJsonData(url);
+    let pGraphics = [];
+    let cGraphics = [];
+    // Priority features...
+    pGraphics = graphics.filter((each) => {
+        return each.attributes.EventCategoryDescription !== 'Closure';
+    });
+    // Closure features...
+    cGraphics = graphics.filter((each) => {
+        return each.attributes.EventCategoryDescription === 'Closure';
+    });
+    return { priority: pGraphics, closure: cGraphics };
+});
+// let priorityLayer: GeoJSONLayer | undefined;
+// let closureLayer: GeoJSONLayer | undefined;
+// export const initPriorityLayer = (url: string): GeoJSONLayer => {
+//     priorityLayer = new GeoJSONLayer({
+//         id: "road-alerts-layer",
+//         url: url,
+//         title: "Travel Alerts",
+//         renderer: roadAlertsPriorityRenderer,
+//         visible: true,
+//         fields: fields,
+//         definitionExpression: "EventCategoryDescription<>'Closure'"
+//     });
+//     return priorityLayer;
+// }
+// export const initClosureLayer = (url: string): GeoJSONLayer => {
+//     closureLayer = new GeoJSONLayer({
+//         id: "road-closures-layer",
+//         url: url,
+//         title: "Travel Closure Alerts",
+//         renderer: roadAlertsClosureRenderer,
+//         visible: true,
+//         fields: fields,
+//         definitionExpression: "EventCategoryDescription='Closure'"
+//     });
+//     return closureLayer;
+// }
+// const getLayer = (id: string): GeoJSONLayer => {
+//     let layerToReturn;
+//     if (id == "road-alerts-layer") {
+//         if (!priorityLayer) {
+//             throw "RoadAlertsLayer is not ready yet!"
+//         }
+//         else {
+//             layerToReturn = priorityLayer
+//         }
+//     }
+//     if (id == "road-closures-layer") {
+//         if (!closureLayer) {
+//             throw "RoadAlertsLayer is not ready yet!"
+//         }
+//         else {
+//             layerToReturn = closureLayer
+//         }
+//     }
+//     return layerToReturn as GeoJSONLayer;
+// }
 //# sourceMappingURL=RoadAlertsLayer.js.map

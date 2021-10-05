@@ -3,9 +3,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.initLayer = void 0;
 const tslib_1 = require("tslib");
 const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
-const GeoJSONLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/GeoJSONLayer"));
+// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 const ParkRideSymbol_1 = tslib_1.__importDefault(require("@/symbols/ParkRideSymbol"));
 const Field_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/Field"));
+// import SpatialReference from "@arcgis/core/geometry/SpatialReference";
+// import Graphic from "@arcgis/core/Graphic";
+// import { getConfig } from "@/utils/appConfigUtil";
+const layerUtil = tslib_1.__importStar(require("@/utils/layerUtil"));
+// import layer from "./ZoomExtentLayer";
 const renderer = new SimpleRenderer_1.default({ symbol: ParkRideSymbol_1.default });
 const fields = [
     new Field_1.default({
@@ -45,17 +50,10 @@ const fields = [
     }),
 ];
 let layer;
-const initLayer = (url) => {
-    layer = new GeoJSONLayer_1.default({
-        id: "park-ride-layer",
-        url: url,
-        title: "Park and Rides",
-        renderer: renderer,
-        //fields: fields,
-        visible: false
-    });
+const initLayer = (jsonUrl) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+    layer = yield layerUtil.initLayer(jsonUrl, "park-ride-layer", "Park and Rides", renderer, fields, "point", false, "OBJECTID");
     return layer;
-};
+});
 exports.initLayer = initLayer;
 const getLayer = () => {
     if (!layer) {
@@ -63,6 +61,24 @@ const getLayer = () => {
     }
     return layer;
 };
+// let layer: GeoJSONLayer | undefined;
+// export const initLayer = (url: string): GeoJSONLayer => {
+//     layer = new GeoJSONLayer({
+//         id: "park-ride-layer",
+//         url: url,
+//         title: "Park and Rides",
+//         renderer: renderer,
+//         fields: fields,
+//         visible: false
+//     });
+//     return layer;
+// }
+// const getLayer = (): GeoJSONLayer => {
+//     if (!layer) {
+//         throw "ParkRideLayer is not ready yet!";
+//     }
+//     return layer;
+// }
 // const layer = new GeoJSONLayer({
 //     id: "park-ride-layer",
 //     url: "https://data.wsdot.wa.gov/travelcenter/ParkAndRides.json",

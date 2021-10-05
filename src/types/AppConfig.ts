@@ -31,6 +31,7 @@ interface AppConfig {
     stateRouteShieldsLayer: string,
     ferryRouteLines: string, 
     ferryRoutePoints: string,
+    ferryAlerts: string,
     // Layer refresh interval in minutes...
     layerRefreshMinute: number;
 }

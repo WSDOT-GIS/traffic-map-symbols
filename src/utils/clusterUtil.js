@@ -115,15 +115,11 @@ Returns IDs of each feature if one of the following coditions is met:
 Otherwise returns extent of all features.
 */
 const getIdsFromCluster = (clusterGraphic, layer, mapView, maxCount) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    const lyr = layer;
-    if (!lyr) {
-        throw "Only GeoJSONLayer is supported at this time.";
-    }
-    const layerView = yield mapView.whenLayerView(lyr);
+    const layerView = yield mapView.whenLayerView(layer);
     const query = layerView.createQuery();
     // Object ID of the cluster...
     query.aggregateIds = [clusterGraphic.getObjectId()];
-    query.outFields = [lyr.objectIdField];
+    query.outFields = [layer.objectIdField];
     const result = yield layerView.queryFeatures(query);
     // let doReturnId = false;
     let extent;
@@ -161,7 +157,7 @@ const getIdsFromCluster = (clusterGraphic, layer, mapView, maxCount) => tslib_1.
         }
     }
     if (!extent) {
-        const ids = result.features.map((feature) => { return feature.attributes[lyr.objectIdField]; });
+        const ids = result.features.map((feature) => { return feature.attributes[layer.objectIdField]; });
         return ids;
     }
     else {
@@ -170,15 +166,11 @@ const getIdsFromCluster = (clusterGraphic, layer, mapView, maxCount) => tslib_1.
 });
 exports.getIdsFromCluster = getIdsFromCluster;
 const getClusterExtent = (clusterGraphic, layer, mapView) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    const lyr = layer;
-    if (!lyr) {
-        throw "Only GeoJSONLayer is supported at this time.";
-    }
-    const layerView = yield mapView.whenLayerView(lyr);
+    const layerView = yield mapView.whenLayerView(layer);
     const query = layerView.createQuery();
     // Object ID of the cluster...
     query.aggregateIds = [clusterGraphic.getObjectId()];
-    query.outFields = [lyr.objectIdField];
+    query.outFields = [layer.objectIdField];
     const result = yield layerView.queryFeatures(query);
     const pt0 = result.features[0].geometry;
     // Find out extent of all features...
