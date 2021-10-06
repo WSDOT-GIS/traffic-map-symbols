@@ -39,7 +39,7 @@ const initLayer = (features) => {
         id: "alert-area-layer",
         title: "Alert Areas",
         fields: fields,
-        objectIdField: "EventID",
+        objectIdField: "AppGenId",
         geometryType: "polygon",
         spatialReference: SpatialReference_1.default.WebMercator,
         renderer: renderer,
