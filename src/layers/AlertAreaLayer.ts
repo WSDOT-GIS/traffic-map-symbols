@@ -44,7 +44,7 @@ export const initLayer = (features: Graphic[]): FeatureLayer => {
         id: "alert-area-layer",
         title: "Alert Areas",
         fields: fields,
-        objectIdField: "EventID",
+        objectIdField: "AppGenId",
         geometryType: "polygon",
         spatialReference: SpatialReference.WebMercator,
         renderer: renderer,
