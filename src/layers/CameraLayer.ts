@@ -16,7 +16,7 @@ const fields = [
     new Field({
         name: "CameraID",
         alias: "Camera ID",
-        type: "oid"
+        type: "integer"
     }),
     new Field({
         name: "CameraTitle",
