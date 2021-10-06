@@ -59,20 +59,23 @@ export default defineComponent({
         let value = props.Feature.attributes[props.Config.value.fieldName];
         if (value) {
           if (props.Config.value.isDate) {
+            /* The date value is in local time, so do not let JS do time conversion.
+               By using the UTC... functions, we can get the date as is without conversion. */
             const date = new Date(value);
             text = `${
-              date.getMonth() + 1
-            }/${date.getDate()}/${date.getFullYear()}`;
+              formatDateTimePart(date.getUTCMonth() + 1)
+            }/${formatDateTimePart(date.getUTCDate())
+            }/${date.getUTCFullYear()}`;
             if (props.Config.value.isTime) {
-              let hours = date.getHours();
-              let minutes = date.getMinutes();
+              let hours = date.getUTCHours();
+              let minutes = date.getUTCMinutes();
               // Check whether AM or PM
               const ampm = hours >= 12 ? "PM" : "AM";
               // Find current hour in AM-PM Format
               hours = hours % 12;
               // To display "0" as "12"
               hours = hours ? hours : 12;
-              text += ` ${hours}:${formatTimePart(minutes)}${ampm}`;
+              text += ` ${formatDateTimePart(hours)}:${formatDateTimePart(minutes)} ${ampm}`;
             }
           }
           else if(props.Config.value.isHTML==true){
@@ -105,7 +108,7 @@ export default defineComponent({
       return text;
     };
 
-    const formatTimePart = (part: number) => {
+    const formatDateTimePart = (part: number) => {
       return ("0" + part).slice(-2);
     };
 

@@ -15,7 +15,7 @@
           value: {
             fieldName: 'date_effective',
             isDate: true,
-            isTime: true,
+            isTime: false,
           },
         },
         {
