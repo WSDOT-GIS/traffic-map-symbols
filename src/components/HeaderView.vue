@@ -1,5 +1,6 @@
 <template>
-  <!-- 1. Copy the header from the template, then make the following changes.
+  <!-- Get the code from https://dev.azure.com/WSDOT/External%20HTML%20Template/_git/ExternalHtmlTemplate?path=/default.htm 
+    1. Copy the header from the template, then make the following changes.
       - Update WSDOT logo image path to src="@/assets/wsdot-logo-white.svg"
       - Add @load="onImgLoad()" to the WSDOT logo
           <img src="@/assets/wsdot-logo-white.svg" alt="Home" @load="onImgLoad()" />
