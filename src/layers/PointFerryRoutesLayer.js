@@ -69,16 +69,18 @@ const initLayer = (url) => {
         id: "ferry-routes-points-layer",
         url: url,
         title: "ferryRoutesPoints",
+        //fields: fields,
         renderer: renderer,
         visible: true,
         labelsVisible: false
     });
+    console.log(layer.id + " was initialized.");
     return layer;
 };
 exports.initLayer = initLayer;
 const getLayer = () => {
     if (!layer) {
-        throw "PointRestrictionLayer is not ready yet!";
+        throw "Ferry Point Layer is not ready yet!";
     }
     return layer;
 };
