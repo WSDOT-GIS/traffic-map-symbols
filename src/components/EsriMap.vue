@@ -77,7 +77,7 @@ import AlertInfo from "@/types/AlertInfo";
 import FerryAlertInfo from "@/types/FerryAlertInfo";
 import {
   getFeatureInfoById,
-  getLineFromPointRestriction,
+  getLineFromPointId,
 } from "@/utils/featureInfoUtil";
 /* Layers for popup */
 import ParkRideLayer from "@/layers/ParkRideLayer";
@@ -94,6 +94,7 @@ import FireIncidentLayer from "@/layers/FireIncidentLayer";
 import RoadsReferenceLayer from "@/layers/RoadsReferenceLayer";
 import BoundariesPlacesReferenceLayer from "@/layers/BoundariesPlacesReferenceLayer";
 import BorderCrossingLayer from "@/layers/BorderCrossingsLayer";
+import LineFerryRoutesLayer from "@/layers/LineFerryRoutesLayer";
 import PointFerryRoutesLayer from "@/layers/PointFerryRoutesLayer";
 import RegionalAlertLayer, {
   centerFeatures as centerRegionalAlerts,
@@ -344,8 +345,10 @@ export default defineComponent({
                 });
               } else {
                 LineRestrictionsLayer().definitionExpression = "1=0"; //clear lines from restrictions layer
+                LineRestrictionsLayer().definitionExpression = "1=0"; //clear lines from restrictions layer
                 // Not aggregate...
                 const id = g.getObjectId();
+                console.log(id)
                 console.log(g.layer.id)
                 //get lines for restriciton point click
                 if (g.layer.id === "point-restrictions-layer") {
@@ -358,7 +361,7 @@ export default defineComponent({
                       ) {
                         console.log(result?.attributes.UniqueId)
                         LineRestrictionsLayer().definitionExpression = `UniqueId = '${result?.attributes.UniqueId}'`;
-                        getLineFromPointRestriction(
+                        getLineFromPointId(
                           "UniqueId",
                           result?.attributes.UniqueId as string,
                           LineRestrictionsLayer()
@@ -372,7 +375,17 @@ export default defineComponent({
                       }
                     }
                   );
-                } else {
+                } 
+                else if(g.layer.id === "ferry-routes-points-layer"){
+                  getFeatureInfoById(id, g.layer as FeatureLayer).then(
+                    (result) => {
+                      console.log(`FerryRouteID = ${result?.attributes.FerryRouteID}`)
+                      LineRestrictionsLayer().definitionExpression = `FerryRouteID = ${result?.attributes.FerryRouteID}`
+                      showPopup(results2Show.layer.id, [id]);
+                    }
+                  );
+                }
+                else {
                   showPopup(results2Show.layer.id, [id]);
                 }
               }

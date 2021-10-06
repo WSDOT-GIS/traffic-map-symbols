@@ -234,7 +234,7 @@ export const replaceFeatures = async (layer: FeatureLayer, newFeatures: Graphic[
     await layer.applyEdits({ addFeatures: newFeatures });
     const fCount = await layer.queryFeatureCount();
     msg += `, after: ${fCount}`;
-    console.log(msg);
+    //console.log(msg);
     layer.refresh();
 }
 

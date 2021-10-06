@@ -69,7 +69,7 @@ const fields = [
 ];
 let layer;
 const initLayer = (jsonUrl) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    layer = yield layerUtil.initLayer(jsonUrl, "traffic-camera-layer", "Cameras", renderer, fields, "point", false, "CameraID");
+    layer = yield layerUtil.initLayer(jsonUrl, "traffic-camera-layer", "Cameras", renderer, fields, "point", false);
     layer.featureReduction = clusterUtil_1.clusterConfig;
     // layer = new GeoJSONLayer({
     //     id: "traffic-camera-layer",

@@ -16,7 +16,7 @@ const fields = [
     new Field_1.default({
         name: "OBJECTID",
         alias: "OBJECTID",
-        type: "oid"
+        type: "integer"
     }),
     new Field_1.default({
         name: "Lot_Name",
@@ -51,7 +51,7 @@ const fields = [
 ];
 let layer;
 const initLayer = (jsonUrl) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    layer = yield layerUtil.initLayer(jsonUrl, "park-ride-layer", "Park and Rides", renderer, fields, "point", false, "OBJECTID");
+    layer = yield layerUtil.initLayer(jsonUrl, "park-ride-layer", "Park and Rides", renderer, fields, "point", false);
     return layer;
 });
 exports.initLayer = initLayer;

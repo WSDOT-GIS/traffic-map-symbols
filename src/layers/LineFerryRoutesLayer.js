@@ -16,7 +16,7 @@ const initLayer = (url) => {
         title: "ferryRoutes",
         renderer: ferryRoutesRenderer,
         visible: true,
-        definitionExpression: "1=0",
+        definitionExpression: "1 = 0",
         labelsVisible: false
     });
     return layer;

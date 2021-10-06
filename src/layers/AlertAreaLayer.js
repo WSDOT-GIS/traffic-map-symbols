@@ -18,9 +18,14 @@ const renderer = new SimpleRenderer_1.default({
 });
 const fields = [
     new Field_1.default({
+        name: "AppGenId",
+        alias: "AppGenId",
+        type: "oid"
+    }),
+    new Field_1.default({
         name: "EventID",
         alias: "EventID",
-        type: "oid"
+        type: "integer"
     }),
     new Field_1.default({
         name: "Name",
@@ -53,7 +58,7 @@ exports.default = getLayer;
 const getFeatureById = (eventId) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     const layer = getLayer();
     const query = layer.createQuery();
-    query.where = layer.objectIdField + " = " + eventId;
+    query.where = "EventID = " + eventId;
     query.outFields = ["*"];
     const response = yield layer.queryFeatures(query);
     return response.features[0];

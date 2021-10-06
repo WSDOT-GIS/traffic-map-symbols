@@ -45,7 +45,7 @@ export const getFeatureInfosByIds = async (ids: number[], layer: FeatureLayer): 
     return infos;
 }
 
-export const getLineFromPointRestriction = async (fieldName: string, value: number | string, layer: FeatureLayer): Promise<FeatureSet> => {
+export const getLineFromPointId = async (fieldName: string, value: number | string, layer: FeatureLayer): Promise<FeatureSet> => {
     const query = layer.createQuery();
     // const field = layer.getField(fieldName);
     query.where = `${fieldName} = '${value}'`;

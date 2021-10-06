@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchJsonData = exports.replaceFeatures = exports.reloadData = exports.setLayerEvent = exports.initLayer = exports.getFeature = exports.setLayerVisibility = exports.getUniqueField = exports.getLayerIds = void 0;
+exports.fetchJsonData = exports.replaceFeatures = exports.reloadData = exports.setLayerEvent = exports.initLayer = exports.getFeature = exports.setLayerVisibility = exports.getLayerIds = exports.createLayerGroupInfos = void 0;
 const tslib_1 = require("tslib");
 // import Point from "@arcgis/core/geometry/Point";
 const SpatialReference_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/SpatialReference"));
@@ -18,41 +18,74 @@ const Field_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/Fie
  *   * uniqueField
  *      Unique field that is from the source database. Do not use ESRI ID.
 */
-const layerGroups = [
-    { id: "camera", layerIds: ["traffic-camera-layer"], uniqueField: "CameraID" },
-    { id: "alert", layerIds: ["road-alerts-layer"], uniqueField: "EventID" },
-    { id: "restriction", layerIds: ["point-restrictions-layer", "line-restrictions-layer"], uniqueField: "UniqueId" },
-    { id: "fire", layerIds: ["fire-incidents-layer", "fire-perimeters-layer"], uniqueField: "UniqueFireIdentifier" },
-    { id: "time", layerIds: ["travel-times-layer"], uniqueField: "TravelTimesID" },
-    { id: "mountain", layerIds: ["mountain-passes-layer"], uniqueField: "MountainPassId" },
-    { id: "weather", layerIds: ["weather-stations-layer"], uniqueField: "WeatherStationId" },
-    { id: "parkride", layerIds: ["park-ride-layer"], uniqueField: "" },
-    { id: "restarea", layerIds: ["rest-areas-layer"], uniqueField: "" } // TODO: need unique field
-];
+const layerGroups = [];
+const createLayerGroupInfos = (config) => {
+    layerGroups.push({ id: "camera", layers: [{ id: "traffic-camera-layer", uniqueField: "CameraID", jsonUrl: config.cameras }] });
+    layerGroups.push({ id: "alert", layers: [{ id: "road-alerts-layer", uniqueField: "EventID" }] }); // Loaded by default, should not need to load data.
+    layerGroups.push({
+        id: "restriction", layers: [
+            { id: "point-restrictions-layer", uniqueField: "UniqueId", jsonUrl: config.pointRestrictions },
+            { id: "line-restrictions-layer", uniqueField: "UniqueId", jsonUrl: config.lineRestrictions }
+        ]
+    });
+    layerGroups.push({
+        id: "fire", layers: [
+            { id: "fire-incidents-layer", uniqueField: "UniqueFireIdentifier" },
+            { id: "fire-perimeters-layer", uniqueField: "UniqueFireIdentifier" }
+        ]
+    });
+    layerGroups.push({ id: "time", layers: [{ id: "travel-times-layer", uniqueField: "TravelTimesID", jsonUrl: config.travelTimes }] });
+    layerGroups.push({ id: "mountain", layers: [{ id: "mountain-passes-layer", uniqueField: "MountainPassId", jsonUrl: config.mountainPasses }] });
+    layerGroups.push({ id: "weather", layers: [{ id: "weather-stations-layer", uniqueField: "WeatherStationId", jsonUrl: config.weatherStations }] });
+    layerGroups.push({ id: "parkride", layers: [{ id: "park-ride-layer", uniqueField: "", jsonUrl: config.parkAndRides }] }); // TODO: need unique field
+    layerGroups.push({ id: "restarea", layers: [{ id: "rest-areas-layer", uniqueField: "", jsonUrl: config.restAreas }] }); // TODO: need unique field
+};
+exports.createLayerGroupInfos = createLayerGroupInfos;
+//     { id: "camera", layerIds: ["traffic-camera-layer"], uniqueField: "CameraID" },
+//     { id: "alert", layerIds: ["road-alerts-layer"], uniqueField: "EventID" },
+//     { id: "restriction", layerIds: ["point-restrictions-layer", "line-restrictions-layer"], uniqueField: "UniqueId" },
+//     { id: "fire", layerIds: ["fire-incidents-layer", "fire-perimeters-layer"], uniqueField: "UniqueFireIdentifier" },
+//     { id: "time", layerIds: ["travel-times-layer"], uniqueField: "TravelTimesID" },
+//     { id: "mountain", layerIds: ["mountain-passes-layer"], uniqueField: "MountainPassId" },
+//     { id: "weather", layerIds: ["weather-stations-layer"], uniqueField: "WeatherStationId" },
+//     { id: "parkride", layerIds: ["park-ride-layer"], uniqueField: "" }, // TODO: need unique field
+//     { id: "restarea", layerIds: ["rest-areas-layer"], uniqueField: "" } // TODO: need unique field
+// ]
+const getGroupLayerInfo = (groupId) => {
+    const result = layerGroups.find((item) => {
+        return item.id === groupId;
+    });
+    if (!result) {
+        throw `${groupId} is an invalid group ID (feature type).`;
+    }
+    return result;
+};
 const getLayerIds = (groupId) => {
     const result = layerGroups.find((item) => {
         return item.id === groupId;
     });
     if (result) {
-        return result.layerIds;
+        return result.layers.map((each) => {
+            return each.id;
+        });
     }
     else {
         throw "Failed to find layer IDs for " + groupId + ".";
     }
 };
 exports.getLayerIds = getLayerIds;
-const getUniqueField = (groupId) => {
-    const result = layerGroups.find((item) => {
-        return item.id === groupId;
-    });
-    if (result) {
-        return result.uniqueField;
-    }
-    else {
-        throw "Failed to find ID field for " + groupId + ".";
-    }
-};
-exports.getUniqueField = getUniqueField;
+// export const getUniqueField = (groupId: string): string => {
+//     const result = layerGroups.find((item) => {
+//         return item.id === groupId;
+//     });
+//     if (result) {
+//         return result.layers.map((each) => {
+//             return each.uniqueField;
+//         })
+//     } else {
+//         throw "Failed to find ID field for " + groupId + ".";
+//     }
+// }
 /**
  * Set the visibility of the specified layer in the layer list.
  * NOTE: The layer list need to be committed to the state store.
@@ -81,53 +114,75 @@ exports.setLayerVisibility = setLayerVisibility;
  * @returns
  */
 const getFeature = (uniqueValue, groupId, map) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    const fieldName = exports.getUniqueField(groupId);
-    const layerIds = exports.getLayerIds(groupId);
-    const layer = map.findLayerById(layerIds[0]);
+    const groupInfo = getGroupLayerInfo(groupId);
+    const layer = map.findLayerById(groupInfo.layers[0].id);
     // Make sure the layer is loaded. If this is done too early, query does not resolve...
     yield layer.when();
-    if (layer.type !== "geojson") {
+    if (layer.type !== "feature") {
         throw layer.type + " is not supported.";
     }
-    const gLayer = layer;
-    const query = gLayer.createQuery();
-    const field = gLayer.getField(fieldName);
-    query.where = `${fieldName} = `;
+    const fLayer = layer;
+    fLayer.visible = true;
+    const ftrCount = yield fLayer.queryFeatureCount();
+    if (groupInfo.layers[0].jsonUrl && ftrCount === 0) {
+        yield exports.reloadData(groupInfo.layers[0].jsonUrl, fLayer);
+        if (groupInfo.layers.length > 1) {
+            for (const eachLyr of groupInfo.layers) {
+                if (eachLyr.id === groupInfo.layers[0].id) {
+                    continue;
+                }
+                const fLyr2 = map.findLayerById(eachLyr.id);
+                if (eachLyr.jsonUrl) {
+                    fLyr2.visible = true;
+                    yield exports.reloadData(eachLyr.jsonUrl, fLyr2);
+                }
+            }
+        }
+    }
+    const query = fLayer.createQuery();
+    const field = fLayer.getField(groupInfo.layers[0].uniqueField);
+    query.where = `${groupInfo.layers[0].uniqueField} = `;
     if (["string", "date"].includes(field.type)) {
         query.where += `'${uniqueValue}'`;
     }
     else {
         query.where += uniqueValue;
     }
-    // console.log(gLayer.id + ", query: " + query.where);
-    query.outFields = [gLayer.objectIdField];
+    // console.log(fLayer.id + ", query: " + query.where);
+    query.outFields = [fLayer.objectIdField];
     // console.log("querying...")
-    const response = yield gLayer.queryFeatures(query);
+    const response = yield fLayer.queryFeatures(query);
     // console.log("query end...")
-    // console.log(JSON.stringify(response));
+    // console.log("getFeature(): " + JSON.stringify(response));
+    // const count = await fLayer.queryFeatureCount();
+    // console.log("Feature count: " + count);
+    // const fs = await fLayer.queryFeatures();
+    // console.log("First feature: " + JSON.stringify(fs.features[10]));
     if (response.features.length > 0) {
         return response.features[0];
     }
 });
 exports.getFeature = getFeature;
-const initLayer = (jsonUrl, layerId, layerTitle, renderer, fields, geometryType, visible, oidField) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+const initLayer = (jsonUrl, layerId, layerTitle, renderer, fields, geometryType, visible /*, oidField?: string*/) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     // Create Graphics from JSON...
     let graphics = [];
     if (visible) {
         graphics = yield exports.fetchJsonData(jsonUrl);
     }
-    // If the OID field is missing, use the array index as object ID...
-    if (!oidField) {
-        oidField = "objindex";
-        graphics.forEach((each, idx) => {
-            each.attributes.push({ objindex: idx });
-        });
-        fields.push(new Field_1.default({
-            name: oidField,
-            alias: oidField,
-            type: "oid"
-        }));
+    // Do not set the WSDOT unique ID as OID. The app might change them.
+    // So create a new system generated field as OID.
+    let oidField = "AppGenId";
+    const foundOid = fields.find((each) => {
+        return each.name === oidField;
+    });
+    if (foundOid) {
+        oidField += 2;
     }
+    fields.push(new Field_1.default({
+        name: oidField,
+        alias: oidField,
+        type: "oid"
+    }));
     const layer = new FeatureLayer_1.default({
         id: layerId,
         title: layerTitle,
@@ -175,7 +230,7 @@ const replaceFeatures = (layer, newFeatures) => tslib_1.__awaiter(void 0, void 0
     yield layer.applyEdits({ addFeatures: newFeatures });
     const fCount = yield layer.queryFeatureCount();
     msg += `, after: ${fCount}`;
-    console.log(msg);
+    //console.log(msg);
     layer.refresh();
 });
 exports.replaceFeatures = replaceFeatures;
@@ -187,7 +242,7 @@ const fetchJsonData = (jsonUrl) => tslib_1.__awaiter(void 0, void 0, void 0, fun
     // Create graphic out of each feature...
     const graphics = [];
     for (const each of json.features) {
-        console.log(each);
+        // console.log(each)
         const geom = geomJsonUtils.fromJSON(each.geometry);
         geom.spatialReference = sr;
         graphics.push(new Graphic_1.default({

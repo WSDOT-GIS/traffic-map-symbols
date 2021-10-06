@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.initLayer = void 0;
 const tslib_1 = require("tslib");
 const MapImageLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/MapImageLayer"));
+// import VectorTileLayer from "@arcgis/core/layers/VectorTileLayer"
 let layer;
 const initLayer = (url) => {
     layer = new MapImageLayer_1.default({
