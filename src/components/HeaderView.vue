@@ -1,9 +1,11 @@
 <template>
   <!-- 1. Copy the header from the template, then make the following changes.
-      - Update WSDOT logo image path
+      - Update WSDOT logo image path to src="@/assets/wsdot-logo-white.svg"
       - Add @load="onImgLoad()" to the WSDOT logo
           <img src="@/assets/wsdot-logo-white.svg" alt="Home" @load="onImgLoad()" />
       - Update the link to the home page https://live-wsdot-wsdot.pantheonsite.io/
+        Two places to update:
+          <a class="logo navbar-btn pull-left" href="https://live-wsdot-wsdot.pantheonsite.io/" title="Home" rel="home">
           <a class="name navbar-brand" href="https://live-wsdot-wsdot.pantheonsite.io/" title="Home" rel="home">
     2. Copy the navigation bar section.
 -->
@@ -11,8 +13,11 @@
     <div class="header-wrapper">
       <div class="logo-container">
         <div class="region region-header">
-          <a class="logo navbar-btn pull-left" href="/" title="Home" rel="home"
-            ><img src="@/assets/wsdot-logo-white.svg" alt="Home" @load="onImgLoad()"
+          <a class="logo navbar-btn pull-left" href="https://live-wsdot-wsdot.pantheonsite.io/" title="Home" rel="home"
+            ><img
+              src="@/assets/wsdot-logo-white.svg"
+              alt="Home"
+              @load="onImgLoad()"
           /></a>
           <a
             class="name navbar-brand"
