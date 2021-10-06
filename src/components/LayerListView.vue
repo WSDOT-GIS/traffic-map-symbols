@@ -7,8 +7,7 @@
           @toggle="clickEvent"
           :Enabled="true"
           :Checked="layerList[getLayerIndex('traffic-flow-layer')].visible"
-          :Value="getLayerIndex('traffic-flow-layer').toString()+ ',' +
-            getLayerIndex('state-route-shields-layer').toString()"
+          :Value="getLayerIndex('traffic-flow-layer').toString()"
           :Title="
             'Toggle ' + layerList[getLayerIndex('traffic-flow-layer')].title
           "

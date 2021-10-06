@@ -222,14 +222,14 @@ const reloadData = (jsonUrl, layer) => tslib_1.__awaiter(void 0, void 0, void 0,
 exports.reloadData = reloadData;
 const replaceFeatures = (layer, newFeatures) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     // Delete existing features...
-    let msg = `Refreshed ${layer.id}, feature count before: `;
+    // let msg = `Refreshed ${layer.id}, feature count before: `;
     const fs = yield layer.queryFeatures();
-    msg += fs.features.length;
+    // msg += fs.features.length;
     yield layer.applyEdits({ deleteFeatures: fs.features });
     // Load features...
     yield layer.applyEdits({ addFeatures: newFeatures });
-    const fCount = yield layer.queryFeatureCount();
-    msg += `, after: ${fCount}`;
+    // const fCount = await layer.queryFeatureCount();
+    // msg += `, after: ${fCount}`;
     //console.log(msg);
     layer.refresh();
 });
@@ -244,11 +244,16 @@ const fetchJsonData = (jsonUrl) => tslib_1.__awaiter(void 0, void 0, void 0, fun
     for (const each of json.features) {
         // console.log(each)
         const geom = geomJsonUtils.fromJSON(each.geometry);
-        geom.spatialReference = sr;
-        graphics.push(new Graphic_1.default({
-            geometry: geom,
-            attributes: each.attributes ? each.attributes : each.properties,
-        }));
+        if (!geom) {
+            console.warn("Failed to get geometry. " + JSON.stringify(each));
+        }
+        else {
+            geom.spatialReference = sr;
+            graphics.push(new Graphic_1.default({
+                geometry: geom,
+                attributes: each.attributes ? each.attributes : each.properties,
+            }));
+        }
     }
     return graphics;
 });
