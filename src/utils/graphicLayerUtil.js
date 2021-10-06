@@ -26,12 +26,23 @@ const addGraphics = (type, featureGeometry) => {
     esriMap_1.mapView.graphics.add(graphic);
 };
 exports.addGraphics = addGraphics;
-const removeGraphicsByType = (graphicType) => {
-    const collection = esriMap_1.mapView.graphics;
-    const graphicsArray = collection.toArray();
-    for (let i = 0; i < graphicsArray.length; i++) {
-        if (graphicsArray[i].attributes.graphicType == graphicType) {
-            esriMap_1.mapView.graphics.remove(graphicsArray[i]);
+const removeGraphicsByType = (graphicType, layer) => {
+    switch (graphicType) {
+        case "pointInteractionLine": {
+            const targetLayer = layer;
+            if (targetLayer) {
+                targetLayer.definitionExpression = "1=0"; //remove line restriction symbol
+            }
+            break;
+        }
+        default: {
+            const collection = esriMap_1.mapView.graphics;
+            const graphicsArray = collection.toArray();
+            for (let i = 0; i < graphicsArray.length; i++) {
+                if (graphicsArray[i].attributes.graphicType == graphicType) {
+                    esriMap_1.mapView.graphics.remove(graphicsArray[i]);
+                }
+            }
         }
     }
 };

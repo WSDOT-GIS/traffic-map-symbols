@@ -113,7 +113,7 @@ import TravelTimesPopup from "@/popups/TravelTimesPopup.vue";
 import WildfirePointsPopup from "@/popups/WildfirePointsPopup.vue";
 import BorderCrossingPopup from "@/popups/BorderCrossingPopup.vue";
 import RegionalAlertPopup from "@/popups/RegionalAlertPopup.vue";
-import FerryRoutesPopup from "@/popups/FerryRoutesPopup.vue"
+import FerryRoutesPopup from "@/popups/FerryRoutesPopup.vue";
 /* Components */
 import LeftPaneView from "@/components/LeftPaneView.vue";
 import BasemapView from "@/components/BasemapView.vue";
@@ -344,8 +344,8 @@ export default defineComponent({
                   esriMap.zoomToExtent(clusterExtent.expand(1.5));
                 });
               } else {
-                LineRestrictionsLayer().definitionExpression = "1=0"; //clear lines from restrictions layer
-                LineRestrictionsLayer().definitionExpression = "1=0"; //clear lines from restrictions layer
+                removeGraphicsByType("pointInteractionLine",LineRestrictionsLayer())
+                //LineRestrictionsLayer().definitionExpression = "1=0"; //clear lines from restrictions layer
                 // Not aggregate...
                 const id = g.getObjectId();
                 console.log(id)
@@ -391,7 +391,8 @@ export default defineComponent({
               }
             }
           } else {
-            LineRestrictionsLayer().definitionExpression = "1=0"; //remove line restriction symbol
+            removeGraphicsByType("pointInteractionLine",LineRestrictionsLayer())
+            //LineRestrictionsLayer().definitionExpression = "1=0"; //remove line restriction symbol
             removeGraphicsByType("myLocation"); //remove "my location" graphic
             //No feature exist...
             closePopup();
