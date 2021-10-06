@@ -83,5 +83,3 @@ export const getOutOfBoundDirection = (mapXY: XY, extent?: ExtentInfo | Extent):
     // console.log("getOutOfBoundDirection: " + dir);
     return dir;
 }
-
-

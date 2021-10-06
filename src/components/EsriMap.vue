@@ -64,7 +64,7 @@ import {
   getFeatureTypeFromUrl,
 } from "@/utils/urlParamUtil";
 import { createLayerGroupInfos, getFeature, setLayerVisibility } from "@/utils/layerUtil";
-import { removeGraphicsByType } from "@/utils/graphicLayerUtil";
+import { removeGraphicsByType, hidePointInteractionGraphics, displayPointInteractionGraphics } from "@/utils/graphicLayerUtil";
 import ZoomExtentLayer, {
   getFeatureById as getZoomFeatureById,
 } from "@/layers/ZoomExtentLayer";
@@ -344,7 +344,8 @@ export default defineComponent({
                   esriMap.zoomToExtent(clusterExtent.expand(1.5));
                 });
               } else {
-                removeGraphicsByType("pointInteractionLine",LineRestrictionsLayer())
+                hidePointInteractionGraphics(LineRestrictionsLayer())
+                hidePointInteractionGraphics(LineFerryRoutesLayer())
                 // Not aggregate...
                 const id = g.getObjectId();
                 console.log(id)
@@ -358,18 +359,9 @@ export default defineComponent({
                         result?.attributes.lineMarker == "true" ||
                         result?.attributes.lineMarker == "True"
                       ) {
-                        console.log(result?.attributes.UniqueId)
-                        
-                        LineRestrictionsLayer().definitionExpression = `UniqueId = '${result?.attributes.UniqueId}'`;
-                        getLineFromPointId(
-                          "UniqueId",
-                          result?.attributes.UniqueId as string,
-                          LineRestrictionsLayer()
-                        ).then((lines) => {
-                          mapView
-                            .goTo(lines.features[0].geometry)
-                            .then(() => showPopup(results2Show.layer.id, [id]));
-                        });
+                        displayPointInteractionGraphics(LineRestrictionsLayer(),"UniqueId",result?.attributes.UniqueId)
+                        //LineRestrictionsLayer().definitionExpression = `UniqueId = '${result?.attributes.UniqueId}'`;
+                        showPopup(results2Show.layer.id, [id]);
                       } else {
                         showPopup(results2Show.layer.id, [id]);
                       }
@@ -379,8 +371,7 @@ export default defineComponent({
                 else if(g.layer.id === "ferry-routes-points-layer"){
                   getFeatureInfoById(id, g.layer as FeatureLayer).then(
                     (result) => {
-                      console.log(`FerryRouteID = ${result?.attributes.FerryRouteID}`)
-                      LineRestrictionsLayer().definitionExpression = `FerryRouteID = ${result?.attributes.FerryRouteID}`
+                      displayPointInteractionGraphics(LineFerryRoutesLayer(),"FerryRouteID",result?.attributes.FerryRouteID)
                       showPopup(results2Show.layer.id, [id]);
                     }
                   );
@@ -391,7 +382,8 @@ export default defineComponent({
               }
             }
           } else {
-            removeGraphicsByType("pointInteractionLine",LineRestrictionsLayer())
+            hidePointInteractionGraphics(LineRestrictionsLayer())
+            hidePointInteractionGraphics(LineFerryRoutesLayer())
             removeGraphicsByType("myLocation"); //remove "my location" graphic
             //No feature exist...
             closePopup();

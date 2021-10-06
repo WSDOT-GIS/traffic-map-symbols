@@ -1,3 +1,5 @@
+//A set of functions to deal with the display of graphics that aren't intended to persist in the map.
+
 import { roadRestrictionLine,bridgeRestrictionLine } from "@/symbols/LineRestrictionsSymbol";
 import Point from "@arcgis/core/geometry/Point";
 import Polyline from "@arcgis/core/geometry/Polyline"
@@ -7,9 +9,10 @@ import { webmap, mapView } from "../esri-stuff/esriMap";
 import { MyLocationSymbol } from "@/symbols/MyLocationSymbol";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import { def } from "@vue/runtime-core/node_modules/@vue/shared";
-export const displayGraphicsByType = (graphicType:string, featureGeometry?:any)=>{
+import { getLineFromPointId } from "./featureInfoUtil";
+export const addGraphicsByType = (type:string, featureGeometry:any)=>{
     let graphic;
-    switch (graphicType){
+    switch (type){
         case "myLocation":
             graphic=new Graphic({
                 geometry:new Point({
@@ -21,22 +24,31 @@ export const displayGraphicsByType = (graphicType:string, featureGeometry?:any)=
                 },
                 symbol: MyLocationSymbol
             })
-        break;
-        case "pointInteractionLine":
-            break;
+           break;
     }
     //mapView.graphics.add(pointGraphic);
     mapView.graphics.add(graphic as Graphic)
 }
-export const removeGraphicsByType=(graphicType:string, layer?:FeatureLayer)=>{
+export const displayPointInteractionGraphics = (layer:FeatureLayer,targetField:string,targetValue:string|number|undefined)=>{
+    layer.definitionExpression = `${targetField} = '${targetValue}'`
+    getLineFromPointId(
+        targetField,
+        targetValue as string,
+        layer
+    ).then((lines) => {
+        mapView
+        .goTo(lines.features[0].geometry)
+    });
+    
+}
+export const hidePointInteractionGraphics = (layer?:FeatureLayer)=>{
+    const targetLayer = layer as FeatureLayer
+    if(targetLayer){
+        targetLayer.definitionExpression = "1=0"; //remove line restriction symbol
+    }
+}
+export const removeGraphicsByType=(graphicType:string)=>{
     switch(graphicType){
-        case "pointInteractionLine":{
-            const targetLayer = layer as FeatureLayer
-            if(targetLayer){
-                targetLayer.definitionExpression = "1=0"; //remove line restriction symbol
-            }
-            break;
-        }
         default: {
             const collection = mapView.graphics as __esri.Collection
             const graphicsArray = collection.toArray()
