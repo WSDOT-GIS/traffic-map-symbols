@@ -226,14 +226,14 @@ export const reloadData = async (jsonUrl: string, layer: FeatureLayer): Promise<
 
 export const replaceFeatures = async (layer: FeatureLayer, newFeatures: Graphic[]): Promise<void> => {
     // Delete existing features...
-    let msg = `Refreshed ${layer.id}, feature count before: `;
+    // let msg = `Refreshed ${layer.id}, feature count before: `;
     const fs = await layer.queryFeatures();
-    msg += fs.features.length;
+    // msg += fs.features.length;
     await layer.applyEdits({ deleteFeatures: fs.features });
     // Load features...
     await layer.applyEdits({ addFeatures: newFeatures });
-    const fCount = await layer.queryFeatureCount();
-    msg += `, after: ${fCount}`;
+    // const fCount = await layer.queryFeatureCount();
+    // msg += `, after: ${fCount}`;
     //console.log(msg);
     layer.refresh();
 }
