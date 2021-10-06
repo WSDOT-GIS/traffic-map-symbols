@@ -90,14 +90,14 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const parkRideLyr = await ParkRideLayer.initLayer(config.parkAndRides);
     const weatherLyr = await WeatherLayer.initLayer(config.weatherStations);
     const mtLyr = await MountainLayer.initLayer(config.mountainPasses);
-    const travelTimesLyr = await TravelTimesLayer.initLayer(config.travelTimes)
+    const travelTimesLyr = await TravelTimesLayer.initLayer(config.travelTimes);
     const lineRestrictionLyr = await LineRestrictionsLayer.initLayer(config.lineRestrictions);
     const pointRestrictionLyr = await PointRestrictionsLayer.initLayer(config.pointRestrictions);
     const cameraLyr = await CameraLayer.initLayer(config.cameras);
     const roadAlertLyrs = await RoadAlertsLayer.initLayer(config.roadAlerts);
-    const fireIncidentLayer = FireIncidentsLayer.initLayer(config.fireIncidents)
-    const firePerimeterIDs = await firePerimeterFeatureIDs(fireIncidentLayer)
-    const firePerimetersLayer = FirePerimetersLayer.initLayer(config.firePerimeters, firePerimeterIDs)//Needed to filter fire perimeters to just those within the state
+    const fireIncidentLayer = FireIncidentsLayer.initLayer(config.fireIncidents);
+    const firePerimeterIDs = await firePerimeterFeatureIDs(fireIncidentLayer);
+    const firePerimetersLayer = FirePerimetersLayer.initLayer(config.firePerimeters, firePerimeterIDs);//Needed to filter fire perimeters to just those within the state
     const mileMarkersLayer = MileMakersLayer.initLayer(config.mileMarkers)
     const esriRoadsReferenceLayer = RoadsReferenceLayer.initLayer(config.esriRoadsReferenceLayer)
     const esriPlacesReferenceLayer = BoundariesPlacesReferenceLayer.initLayer(config.esriPlacesReferenceLayer)
@@ -117,7 +117,7 @@ export const loadOperationalLayers = async (): Promise<void> => {
         firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertLyrs.priority, roadAlertLyrs.closure,
-        mileMarkersLayer, borderCrossingsLayer, ferryRouteLinesLayer,ferryRoutePointsLayer]);
+        mileMarkersLayer, borderCrossingsLayer, ferryRouteLinesLayer, ferryRoutePointsLayer]);
     // Store the default visibility...
     webmap.layers.forEach((eachLyr) => {
         defaultLayerProps.push({ id: eachLyr.id, visible: eachLyr.visible });

@@ -61,7 +61,7 @@ export default defineComponent({
     const layerIcons = layerListIcons;
 
     watch(props, () => {
-      if (props.Featureset.layerId === FeatureLayer().id) {
+      if (props.Featureset.layerId === "ferry-routes-points-layer") {//FeatureLayer().id) {
         show();
       } else {
         close();
