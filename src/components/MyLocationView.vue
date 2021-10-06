@@ -40,7 +40,7 @@ import { useStore } from "@/store";
 import MapButtonView from "@/components/MapButtonView.vue";
 import Point from "@arcgis/core/geometry/Point";
 import Graphic from "@arcgis/core/Graphic";
-import {addGraphics, removeGraphicsByType} from "../utils/graphicLayerUtil"
+import {displayGraphicsByType, removeGraphicsByType} from "../utils/graphicLayerUtil"
 export default defineComponent({
   components: { MapButtonView },
   setup() {
@@ -88,7 +88,7 @@ export default defineComponent({
           { duration: 1000, easing: "ease-in-out" }
         )
         .then(() => {
-          addGraphics("myLocation",location.coords)
+          displayGraphicsByType("myLocation",location.coords)
         });
     },
     error: function (error: any) {

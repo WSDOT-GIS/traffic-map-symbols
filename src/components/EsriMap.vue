@@ -345,7 +345,6 @@ export default defineComponent({
                 });
               } else {
                 removeGraphicsByType("pointInteractionLine",LineRestrictionsLayer())
-                //LineRestrictionsLayer().definitionExpression = "1=0"; //clear lines from restrictions layer
                 // Not aggregate...
                 const id = g.getObjectId();
                 console.log(id)
@@ -360,6 +359,7 @@ export default defineComponent({
                         result?.attributes.lineMarker == "True"
                       ) {
                         console.log(result?.attributes.UniqueId)
+                        
                         LineRestrictionsLayer().definitionExpression = `UniqueId = '${result?.attributes.UniqueId}'`;
                         getLineFromPointId(
                           "UniqueId",
@@ -392,7 +392,6 @@ export default defineComponent({
             }
           } else {
             removeGraphicsByType("pointInteractionLine",LineRestrictionsLayer())
-            //LineRestrictionsLayer().definitionExpression = "1=0"; //remove line restriction symbol
             removeGraphicsByType("myLocation"); //remove "my location" graphic
             //No feature exist...
             closePopup();

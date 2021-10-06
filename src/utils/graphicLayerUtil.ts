@@ -7,9 +7,9 @@ import { webmap, mapView } from "../esri-stuff/esriMap";
 import { MyLocationSymbol } from "@/symbols/MyLocationSymbol";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import { def } from "@vue/runtime-core/node_modules/@vue/shared";
-export const addGraphics = (type:string, featureGeometry:any)=>{
+export const displayGraphicsByType = (graphicType:string, featureGeometry?:any)=>{
     let graphic;
-    switch (type){
+    switch (graphicType){
         case "myLocation":
             graphic=new Graphic({
                 geometry:new Point({
@@ -21,7 +21,9 @@ export const addGraphics = (type:string, featureGeometry:any)=>{
                 },
                 symbol: MyLocationSymbol
             })
-           break;
+        break;
+        case "pointInteractionLine":
+            break;
     }
     //mapView.graphics.add(pointGraphic);
     mapView.graphics.add(graphic as Graphic)

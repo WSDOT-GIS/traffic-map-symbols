@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeGraphicsByType = exports.addGraphics = void 0;
+exports.removeGraphicsByType = exports.displayGraphicsByType = void 0;
 const tslib_1 = require("tslib");
 const Point_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/Point"));
 const Graphic_1 = tslib_1.__importDefault(require("@arcgis/core/Graphic"));
 const esriMap_1 = require("../esri-stuff/esriMap");
 const MyLocationSymbol_1 = require("@/symbols/MyLocationSymbol");
-const addGraphics = (type, featureGeometry) => {
+const displayGraphicsByType = (graphicType, featureGeometry) => {
     let graphic;
-    switch (type) {
+    switch (graphicType) {
         case "myLocation":
             graphic = new Graphic_1.default({
                 geometry: new Point_1.default({
@@ -21,11 +21,13 @@ const addGraphics = (type, featureGeometry) => {
                 symbol: MyLocationSymbol_1.MyLocationSymbol
             });
             break;
+        case "pointInteractionLine":
+            break;
     }
     //mapView.graphics.add(pointGraphic);
     esriMap_1.mapView.graphics.add(graphic);
 };
-exports.addGraphics = addGraphics;
+exports.displayGraphicsByType = displayGraphicsByType;
 const removeGraphicsByType = (graphicType, layer) => {
     switch (graphicType) {
         case "pointInteractionLine": {
