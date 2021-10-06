@@ -248,11 +248,15 @@ export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
     for (const each of json.features) {
         // console.log(each)
         const geom = geomJsonUtils.fromJSON(each.geometry);
-        geom.spatialReference = sr;
-        graphics.push(new Graphic({
-            geometry: geom,
-            attributes: each.attributes ? each.attributes : each.properties,
-        }));
+        if (!geom) {
+            console.warn("Failed to get geometry. " + JSON.stringify(each));
+        } else {
+            geom.spatialReference = sr;
+            graphics.push(new Graphic({
+                geometry: geom,
+                attributes: each.attributes ? each.attributes : each.properties,
+            }));
+        }
     }
     return graphics;
 }
