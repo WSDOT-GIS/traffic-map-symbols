@@ -1,16 +1,24 @@
 <template>
+  <!-- 1. Copy the header from the template, then make the following changes.
+      - Update WSDOT logo image path
+      - Add @load="onImgLoad()" to the WSDOT logo
+          <img src="@/assets/wsdot-logo-white.svg" alt="Home" @load="onImgLoad()" />
+      - Update the link to the home page https://live-wsdot-wsdot.pantheonsite.io/
+          <a class="name navbar-brand" href="https://live-wsdot-wsdot.pantheonsite.io/" title="Home" rel="home">
+    2. Copy the navigation bar section.
+-->
   <header id="header">
     <div class="header-wrapper">
       <div class="logo-container">
         <div class="region region-header">
-          <a class="logo navbar-btn pull-left" href="/" title="Home" rel="home">
-            <img
-              src="@/assets/wsdot-logo-white.svg"
-              alt="Home"
-              @load="onImgLoad()"
-            />
-          </a>
-          <a class="name navbar-brand" href="/" title="Home" rel="home"
+          <a class="logo navbar-btn pull-left" href="/" title="Home" rel="home"
+            ><img src="@/assets/wsdot-logo-white.svg" alt="Home" @load="onImgLoad()"
+          /></a>
+          <a
+            class="name navbar-brand"
+            href="https://live-wsdot-wsdot.pantheonsite.io/"
+            title="Home"
+            rel="home"
             >WSDOT</a
           >
           <section
@@ -46,8 +54,8 @@
             </form>
           </section>
           <a id="main-menu" href="#menu-schmenu" class="sidr-trigger"
-            ><span class="sidr-trigger__icon"><i class="fa fa-bars"></i></span>
-          </a>
+            ><span class="sidr-trigger__icon"><i class="fa fa-bars"></i></span
+          ></a>
         </div>
       </div>
     </div>
