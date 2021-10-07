@@ -8,7 +8,7 @@
     <CoordinatesView />
   </div>
   <div id="map-bottom-center-container" class="w3-display-bottommiddle">
-    <AdView @onSizeChanged="adjustBottomControls"/>
+    <AdView @onResize="adjustBottomControls"/>
   </div>
   <div id="map-bottom-right-container" class="w3-display-bottomright">
     <div class="map-bottom-right-container-row flex-row">

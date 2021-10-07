@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, onUpdated, ref } from "vue";
 
 export default defineComponent({
   emits: ["onResize"],
@@ -20,12 +20,11 @@ export default defineComponent({
   setup(props, context) {
     const containerDiv = ref<HTMLDivElement>();
     onMounted(() => {
-      /* To make this code working, make sure to setup the followings...
-         1. Import the gpt.js in the index.html
-          <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
-         2. Install doubleclick-gpt NPM package for type definitions.
-         3. Declare the window extension in the globals.d.ts
-       */
+      // To make this code working, make sure to setup the followings...
+      //  1. Import the gpt.js in the index.html
+      //   script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js" 
+      //  2. Install doubleclick-gpt NPM package for type definitions.
+      //  3. Declare the window extension in the globals.d.ts
       window.googletag = window.googletag || {cmd: []};
       // GPT slots
       const gptAdSlots = [];
@@ -50,10 +49,14 @@ export default defineComponent({
 
       googletag.cmd.push(() => { googletag.display('div-gpt-ad-1632317155034-0'); });
 
-      googletag.pubads().addEventListener('slotOnload', () => {
+      // googletag.pubads().addEventListener('slotOnload', () => {
+        googletag.pubads().addEventListener('slotRenderEnded', () => {
         onResize();
       });
     });
+    onUpdated(() => {
+      console.log("*** onUpdated");
+    })
     const prevSize = { width: 0, height: 0 };
     const onResize = () => {
       console.log("*** onResize");
@@ -67,7 +70,7 @@ export default defineComponent({
           newSize.height !== prevSize.height
         ) {
           context.emit("onResize", newSize);
-          console.log(JSON.stringify(newSize));
+          console.log("*** Emitted onResize");
           prevSize.width = newSize.width;
           prevSize.height = newSize.height;
         }
