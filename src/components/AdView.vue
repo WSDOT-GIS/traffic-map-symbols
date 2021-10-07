@@ -1,33 +1,36 @@
 <template>
-  <div id="div-gpt-ad-1632317155034-0" class="w3-content ad-container"></div>
+  <div
+    id="div-gpt-ad-1632317155034-0"
+    class="w3-content ad-container"
+    ref="containerDiv"
+  ></div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 
 export default defineComponent({
+  emits: ["onResize"],
   props: {
     text: {
       require: true,
       type: String,
     },
   },
-  setup() {
+  setup(props, context) {
+    const containerDiv = ref<HTMLDivElement>();
     onMounted(() => {
-      // Import JS...
-      const script1 = document.createElement("script");
-      script1.setAttribute(
-        "src",
-        "https://securepubads.g.doubleclick.net/tag/js/gpt.js"
-      );
-      document.head.appendChild(script1);
-      // Add script supplied by the communication team...
-      const script2 = document.createElement("script");
-      script2.innerHTML = `
+      /* To make this code working, make sure to setup the followings...
+         1. Import the gpt.js in the index.html
+          <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+         2. Install doubleclick-gpt NPM package for type definitions.
+         3. Declare the window extension in the globals.d.ts
+       */
       window.googletag = window.googletag || {cmd: []};
       // GPT slots
-      var gptAdSlots = [];
-      googletag.cmd.push(function() {
+      const gptAdSlots = [];
+      const googletag = window.googletag;
+      googletag.cmd.push(() => {
         // Define a size mapping object. The first parameter to addSize is
         // a viewport size, while the second is a list of allowed ad sizes.
         var mapping = googletag.sizeMapping().
@@ -36,25 +39,41 @@ export default defineComponent({
           addSize([730, 200], [728, 90]).
           addSize([1000, 200], [[970, 90], [728, 90]]).
           build();
-
         // Define the GPT slot
         gptAdSlots[0] = googletag.defineSlot('/22447621233/WSDOT:driving-map:responsive', [320, 50], 'div-gpt-ad-1632317155034-0').
             defineSizeMapping(mapping).
             addService(googletag.pubads());
         googletag.pubads().enableSingleRequest();
-
         // Start ad fetching
         googletag.enableServices();
-      });`;
-      document.head.appendChild(script2);
-      // Add script inside the div...
-      const script3 = document.createElement("script");
-      script3.innerHTML = `googletag.cmd.push(function() { googletag.display('div-gpt-ad-1632317155034-0'); });`;
-      document
-        .getElementById("div-gpt-ad-1632317155034-0")
-        ?.appendChild(script3);
+      });
+
+      googletag.cmd.push(() => { googletag.display('div-gpt-ad-1632317155034-0'); });
+
+      googletag.pubads().addEventListener('slotOnload', () => {
+        onResize();
+      });
     });
-    return {};
+    const prevSize = { width: 0, height: 0 };
+    const onResize = () => {
+      console.log("*** onResize");
+      if (containerDiv.value) {
+        const newSize = {
+          width: containerDiv.value.offsetWidth,
+          height: containerDiv.value.offsetHeight,
+        };
+        if (
+          newSize.width !== prevSize.width ||
+          newSize.height !== prevSize.height
+        ) {
+          context.emit("onResize", newSize);
+          console.log(JSON.stringify(newSize));
+          prevSize.width = newSize.width;
+          prevSize.height = newSize.height;
+        }
+      }
+    };
+    return { containerDiv, onResize };
   },
 });
 </script>
@@ -63,13 +82,13 @@ export default defineComponent({
 .ad_container {
   color: var(--color-gray100);
   background-color: var(--color-gray40);
-  height: 90px;
-  width: 728px;
+  min-height: 50px;
+  min-width: 300px;
 }
-@media screen and (max-width: 727px) {
-  #ad_container {
-    min-height: 50px;
-    min-width: 320px;
+@media screen and (min-width: 730px) {
+  .ad_container {
+    min-height: 90px;
+    min-width: 728px;
   }
 }
 p {

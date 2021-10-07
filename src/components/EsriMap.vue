@@ -8,7 +8,7 @@
     <CoordinatesView />
   </div>
   <div id="map-bottom-center-container" class="w3-display-bottommiddle">
-    <AdView />
+    <AdView @onSizeChanged="adjustBottomControls"/>
   </div>
   <div id="map-bottom-right-container" class="w3-display-bottomright">
     <div class="map-bottom-right-container-row flex-row">
@@ -154,7 +154,7 @@ export default defineComponent({
     const alerts = ref<AlertInfo[]>([]);
     const ferryAlerts = ref<FerryAlertInfo[]>([])
     getConfig().then((config) => {
-      console.log(config)
+      // console.log(config)
       getAlerts(config.stateAlerts).then((result) => {
         // quadrupling one alert for testing...
         // result.push(...result);
@@ -541,6 +541,9 @@ export default defineComponent({
         centerRegionalAlerts(esriMap.mapView.extent);
       });
     });
+    const adjustBottomControls = (event: any) => {
+      console.log("*** " + JSON.stringify(event));
+    }
     return {
       zoomPopupVisible,
       zoomPopupX,
@@ -551,7 +554,8 @@ export default defineComponent({
       popupFeatureset,
       closePopup,
       alerts,
-      ferryAlerts
+      ferryAlerts,
+      adjustBottomControls,
     };
   },
 });
