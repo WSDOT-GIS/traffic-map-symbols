@@ -78,12 +78,6 @@ export default defineComponent({
               // console.log(result)
               //console.log(result)
               feature.value = result;
-              if((result.attributes.CurrentTime as number)-(result.attributes.AverageTime as number)>0){
-                TravelDelay.value = (result.attributes.CurrentTime as number)-(result.attributes.AverageTime as number)
-              }
-              else{
-                TravelDelay.value=0
-              }
             }
           }
         );
@@ -111,7 +105,9 @@ export default defineComponent({
     };
     const getHOVTime = (feature: FeatureInfo): string  => {
       let HOVTime;
-      var difference = Date.now() - (new Date(feature.attributes.TimeUpdated as string).getTime());
+      var now = new Date;
+      var utc_timestamp = Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate(),now.getUTCHours(),now.getUTCMinutes(),now.getUTCSeconds(),now.getUTCMilliseconds());
+      var difference = utc_timestamp - ((feature.attributes.TimeUpdated as number)+ 1000*7*60*60);
       if((difference/1000/60)>60){
         HOVTime="Not Available"
         TravelDelay.value=0
@@ -123,13 +119,18 @@ export default defineComponent({
     };
     const getCurrentTime = (feature: FeatureInfo): string  => {
       let currentTime;
-      var difference = Date.now() - (new Date(feature.attributes.TimeUpdated as string).getTime());
+      var now = new Date;
+      var utc_timestamp = Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate(),now.getUTCHours(),now.getUTCMinutes(),now.getUTCSeconds(),now.getUTCMilliseconds());
+      //console.log(`feature time ${formattedTime2}`);
+      var difference = utc_timestamp - ((feature.attributes.TimeUpdated as number)+ 1000*7*60*60);//converts feature time from PST to GMT
+      console.log(difference/1000/60)
       if((difference/1000/60)>60){
         currentTime="Not Available"
         TravelDelay.value=0
       }
       else{
-        currentTime = feature.attributes.HOVCurrentTime
+        currentTime = feature.attributes.CurrentTime as number
+        ((feature.attributes.CurrentTime as number) - (feature.attributes.AverageTime as number))>0?TravelDelay.value=((feature.attributes.CurrentTime as number) - (feature.attributes.AverageTime as number)):TravelDelay.value=0
       }
       return currentTime as string;
     }

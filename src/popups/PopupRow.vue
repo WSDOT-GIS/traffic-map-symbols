@@ -57,11 +57,15 @@ export default defineComponent({
         text = props.Config.value.text;
       } else if (props.Config.value.fieldName) {
         let value = props.Feature.attributes[props.Config.value.fieldName];
+        
         if (value) {
           if (props.Config.value.isDate) {
             /* The date value is in local time, so do not let JS do time conversion.
                By using the UTC... functions, we can get the date as is without conversion. */
             const date = new Date(value);
+            let hrs = date.getUTCHours()+9
+            console.log(hrs)
+            console.log(date.getMinutes)
             text = `${
               formatDateTimePart(date.getUTCMonth() + 1)
             }/${formatDateTimePart(date.getUTCDate())

@@ -99,16 +99,6 @@
               </td>
             </tr>
           </table>
-          <!--<table>
-          <tr>
-            <td>
-              <label>Forecast created </label>
-            </td>
-            <td>
-              {{ propWeatherForecast.forecastDateTime }}
-            </td>
-          </tr>
-        </table>-->
         </div>
 
         <Carousel
