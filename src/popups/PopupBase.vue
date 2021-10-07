@@ -58,11 +58,14 @@
             &times;
           </button>
         </div>
-        <h4 v-if="Config.title.isHTML!=true" class="popup-title w3-container">
+        <h4 v-if="Config.title.isHTML != true" class="popup-title w3-container">
           {{ getTitle() }}
         </h4>
-        <h4 v-if="Config.title.isHTML==true" v-html="getTitle()" class="popup-title w3-container">
-        </h4>
+        <h4
+          v-if="Config.title.isHTML == true"
+          v-html="getTitle()"
+          class="popup-title w3-container"
+        ></h4>
         <div v-if="Config.subtitle && Config.subtitle != 'on Undefined'">
           <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
         </div>
@@ -241,7 +244,7 @@ export default defineComponent({
     },
   },
   setup(props, context) {
-    // The DOM only exists while the visibility is true. Get it in onUpdate().  
+    // The DOM only exists while the visibility is true. Get it in onUpdate().
     const propWeatherForecast = ref<ForecastListInfo>();
     const modalContainerRef = ref<HTMLDivElement>();
     const containerRef = ref<HTMLDivElement>();
@@ -258,8 +261,9 @@ export default defineComponent({
     const mapCenter = computed(() => store.state.center);
     const maxHeight = ref(mapSize.value.height);
     const smallMedia = ref(isSmallMedia());
+    const minTop = 60; // Space needed at the top so the icon and arrow is visible.
     watch(mapSize, (size) => {
-      maxHeight.value = size.height;
+      maxHeight.value = size.height - minTop;
       smallMedia.value = isSmallMedia();
       if (mapX.value < 0 && mapY.value > 0) {
         setScreenXY();
@@ -617,8 +621,8 @@ export default defineComponent({
       } else if (top + height > mapSize.value.height) {
         // Bottom is below the bottom of the map, so need to pan map up.
         shiftY = mapSize.value.height - top - height;
-        if (top + shiftY < 60) {
-          shiftY = 60 - top;
+        if (top + shiftY < minTop) {
+          shiftY = minTop - top;
         }
       }
       const left = topLeft.left;
@@ -850,7 +854,7 @@ export default defineComponent({
       propWeatherForecast,
       propTravelDelay,
       propFeatures,
-      smallMedia
+      smallMedia,
     };
   },
 });
