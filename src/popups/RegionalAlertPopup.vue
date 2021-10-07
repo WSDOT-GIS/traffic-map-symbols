@@ -16,6 +16,12 @@
             isTime: true,
           },
         },
+        {
+          label:'',
+          value:{
+            fieldName: 'ExtendedMessage',
+          }
+        }
       ],
     }"
     @close="close"

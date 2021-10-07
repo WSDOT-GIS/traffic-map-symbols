@@ -7,12 +7,12 @@
       bannerText: { text: 'Mountain Pass' },
       title: { fieldName: 'PassName' },
       content: [
-        {
+       /* {
           label: 'Temperature',
           value: {
             custom: getTemp,
           },
-        },
+        },*/
         {
           label: 'Elevation',
           value: {
