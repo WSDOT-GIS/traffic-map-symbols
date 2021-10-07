@@ -121,6 +121,8 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 export default defineComponent({
+  // https://v3.vuejs.org/guide/component-custom-events.html#defining-custom-events
+  emits: ["onLoadComplete"],
   setup(props, context) {
     // DOT icon is loaded slightly later, so let the app know when that is complete.
     const onImgLoad = () => {
