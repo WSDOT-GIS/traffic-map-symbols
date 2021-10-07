@@ -35,7 +35,7 @@ export const displayPointInteractionGraphics = (layer:FeatureLayer,targetField:s
         targetField,
         targetValue as string,
         layer
-    )/*.then((lines) => {
+    )/*.then((lines) => {// zoom to the graphic after it displays
         mapView
         .goTo(lines.features[0].geometry)
     });*/

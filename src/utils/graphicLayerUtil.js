@@ -30,7 +30,7 @@ const addGraphicsByType = (type, featureGeometry) => {
 exports.addGraphicsByType = addGraphicsByType;
 const displayPointInteractionGraphics = (layer, targetField, targetValue) => {
     layer.definitionExpression = `${targetField} = '${targetValue}'`;
-    featureInfoUtil_1.getLineFromPointId(targetField, targetValue, layer); /*.then((lines) => {
+    featureInfoUtil_1.getLineFromPointId(targetField, targetValue, layer); /*.then((lines) => {// zoom to the graphic after it displays
         mapView
         .goTo(lines.features[0].geometry)
     });*/

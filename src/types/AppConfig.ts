@@ -1,5 +1,5 @@
 interface AppConfig {
-   // basemap: string;
+    basemap: string;
     // Operation layer URLs...
     cameras: string;
     lineRestrictions: string;

@@ -79,6 +79,8 @@ import {
   getFeatureInfoById,
   getLineFromPointId,
 } from "@/utils/featureInfoUtil";
+/*Basemap*/
+import {initBasemap} from "@/layers/Basemaps"
 /* Layers for popup */
 import ParkRideLayer from "@/layers/ParkRideLayer";
 import CameraLayer, { toggleCluster } from "@/layers/CameraLayer";
@@ -90,7 +92,6 @@ import RoadAlertsLayer from "@/layers/RoadAlertsLayer";
 import TravelTimeLayer from "@/layers/TravelTimeLayer";
 import RestAreasLayer from "@/layers/RestAreasLayer";
 import FireIncidentLayer from "@/layers/FireIncidentLayer";
-// import MileMarkersLayer from "@/layers/MileMarkersLayer";
 import RoadsReferenceLayer from "@/layers/RoadsReferenceLayer";
 import BoundariesPlacesReferenceLayer from "@/layers/BoundariesPlacesReferenceLayer";
 import BorderCrossingLayer from "@/layers/BorderCrossingsLayer";
@@ -393,9 +394,12 @@ export default defineComponent({
     };
 
     onMounted(async () => {
+      const appConfig = await getConfig();
       const esriMap = await import("../esri-stuff/esriMap");
+      const basemap = await import("../layers/Basemaps")
       mapDiv = document.getElementById("esri-map-view") as HTMLDivElement;
       esriMap.init(mapDiv);
+      basemap.initBasemap(appConfig.basemap)
       // Set basemap based on URL query parameter or display default...
       const basemapInfo = getBasemapFromUrl();
       store.commit("setBasemap", basemapInfo.name);
@@ -409,7 +413,6 @@ export default defineComponent({
       // Update the layer list with regional alert layers.
       store.commit("setLayerList");
       // Set refresh interval for layers...
-      const appConfig = await getConfig();
       setInterval(() => {
         esriMap.refreshLayerData();
         getAlerts(appConfig.stateAlerts).then((result) => {

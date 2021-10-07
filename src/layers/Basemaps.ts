@@ -3,29 +3,27 @@ import TileLayer from "@arcgis/core/layers/TileLayer";
 import BasemapInfo from "@/types/BasemapInfo";
 import { getConfig } from "@/utils/appConfigUtil";
 export const getDefaultBasemapInfo = (): BasemapInfo => { return basemaps[0] }
-const urlBasemap =
-    //"https://data.wsdot.wa.gov/arcgis/rest/services/Shared/WebBaseMapWebMercator/MapServer";
-    //"https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/TravelCenterBasemapTileTest/MapServer"
-    "https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/TravelCenterBasemap/MapServer"
-
 // Array of basemaps. The first one is the default.
-const basemaps: BasemapInfo[] = [
-    {
-        name: "wsdot",
-        basemap: new Basemap({
-            baseLayers: [
-                new TileLayer({
-                    url: urlBasemap,
-                }),
-            ],
-            title: "WSDOT Basemap",
-            id: "wsdot-basemap",
-        })
-    }, {
-        name: "satellite",
-        basemap: Basemap.fromId("satellite")
-    }]
-
+let basemaps: BasemapInfo[]=[]
+export const initBasemap = async(basemapString:string)=>{
+    basemaps =  [
+        {
+            name: "wsdot",
+            basemap: new Basemap({
+                baseLayers: [
+                    new TileLayer({
+                        url: basemapString,
+                    }),
+                ],
+                title: "WSDOT Basemap",
+                id: "wsdot-basemap",
+            })
+        }, {
+            name: "satellite",
+            basemap: Basemap.fromId("satellite")
+        }
+    ]   
+}
 export const getBasemapInfo = (name: string): BasemapInfo => {
     const results = basemaps.filter((x) => {
         return x.name == name;
