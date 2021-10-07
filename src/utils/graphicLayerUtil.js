@@ -30,10 +30,10 @@ const addGraphicsByType = (type, featureGeometry) => {
 exports.addGraphicsByType = addGraphicsByType;
 const displayPointInteractionGraphics = (layer, targetField, targetValue) => {
     layer.definitionExpression = `${targetField} = '${targetValue}'`;
-    featureInfoUtil_1.getLineFromPointId(targetField, targetValue, layer).then((lines) => {
-        esriMap_1.mapView
-            .goTo(lines.features[0].geometry);
-    });
+    featureInfoUtil_1.getLineFromPointId(targetField, targetValue, layer); /*.then((lines) => {
+        mapView
+        .goTo(lines.features[0].geometry)
+    });*/
 };
 exports.displayPointInteractionGraphics = displayPointInteractionGraphics;
 const hidePointInteractionGraphics = (layer) => {

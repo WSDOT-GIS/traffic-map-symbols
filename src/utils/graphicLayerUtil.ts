@@ -35,10 +35,10 @@ export const displayPointInteractionGraphics = (layer:FeatureLayer,targetField:s
         targetField,
         targetValue as string,
         layer
-    ).then((lines) => {
+    )/*.then((lines) => {
         mapView
         .goTo(lines.features[0].geometry)
-    });
+    });*/
     
 }
 export const hidePointInteractionGraphics = (layer?:FeatureLayer)=>{
