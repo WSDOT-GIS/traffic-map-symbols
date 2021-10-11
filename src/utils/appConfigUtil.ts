@@ -2,7 +2,6 @@ import AppConfig from "@/types/AppConfig"
 
 let appConfig: AppConfig | undefined;
 
-
 export const getConfig = async (): Promise<AppConfig> => {
     if (!appConfig) {
         //include path where application was loaded from.  QA/Prod will be different than local dev.

@@ -74,7 +74,7 @@ export const initLayer = (url: string): FeatureLayer => {
         visible: true,
         labelsVisible: false
     });
-    console.log(layer.id + " was initialized.");
+    // console.log(layer.id + " was initialized.");
     return layer;
 }
 

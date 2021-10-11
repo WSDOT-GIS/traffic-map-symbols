@@ -1,5 +1,5 @@
 <template>
-  <div v-if="fullScreen==true" title="Cursor Coordinates" class="w3-border w3-round w3-card-2 w3-white w3-panel w3-small">
+  <div v-if="fullScreen==true" title="Cursor Coordinates" class="w3-border w3-round w3-card-2 w3-white w3-container w3-small">
       Lat: {{ pointerY }}, Long: {{ pointerX }}
   </div>
 </template>
