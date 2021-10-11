@@ -587,7 +587,6 @@ export default defineComponent({
       let ctrWidth: number;
       let ctrHeight: number;
       if (event) {
-        console.log("*** " + JSON.stringify(event));
         ctrWidth = event.width;
         ctrHeight = event.height;
       } else if (bottomCtrDiv.value) {
@@ -601,12 +600,6 @@ export default defineComponent({
         bottomLeftDiv.value &&
         store.state.mapSize.width
       ) {
-        console.log(
-          "Right:" +
-            bottomRightDiv.value.offsetWidth +
-            ", Left:" +
-            bottomLeftDiv.value.offsetWidth
-        );
         if (
           ctrWidth +
             bottomRightDiv.value.offsetWidth +

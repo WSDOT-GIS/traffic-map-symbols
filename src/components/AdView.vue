@@ -63,9 +63,9 @@ export default defineComponent({
           .defineSizeMapping(mapping)
           .addService(googletag.pubads());
         googletag.pubads().enableSingleRequest();
-        //
+        // This event is fired whenever the on-screen percentage of an ad slot's area changes.
+        // Catch this so the controls can reposition accordingly to avoid overlapping with the ad.
         googletag.pubads().addEventListener("slotVisibilityChanged", () => {
-          console.log("*slotVisibilityChanged");
           onResize();
         });
         // Start ad fetching
@@ -88,7 +88,6 @@ export default defineComponent({
           newSize.height !== prevSize.height
         ) {
           context.emit("onResize", newSize);
-          console.log("*** Emitted onResize");
           prevSize.width = newSize.width;
           prevSize.height = newSize.height;
         }
