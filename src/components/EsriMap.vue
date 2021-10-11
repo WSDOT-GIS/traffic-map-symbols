@@ -4,13 +4,24 @@
   <div
     id="map-bottom-left-container"
     class="w3-display-bottomleft w3-container"
+    ref="bottomLeftDiv"
+    :style="{ marginBottom: marginBottomContainer }"
   >
     <CoordinatesView />
   </div>
-  <div id="map-bottom-center-container" class="w3-display-bottommiddle">
-    <AdView @onResize="adjustBottomControls"/>
+  <div
+    id="map-bottom-center-container"
+    class="w3-display-bottommiddle"
+    ref="bottomCtrDiv"
+  >
+    <AdView @onResize="adjustBottomControls" />
   </div>
-  <div id="map-bottom-right-container" class="w3-display-bottomright">
+  <div
+    id="map-bottom-right-container"
+    class="w3-display-bottomright"
+    ref="bottomRightDiv"
+    :style="{ marginBottom: marginBottomContainer }"
+  >
     <div class="map-bottom-right-container-row flex-row">
       <div class="map-bottom-right-container-column flex-column">
         <BasemapView />
@@ -63,8 +74,16 @@ import {
   getFeatureIdFromUrl,
   getFeatureTypeFromUrl,
 } from "@/utils/urlParamUtil";
-import { createLayerGroupInfos, getFeature, setLayerVisibility } from "@/utils/layerUtil";
-import { removeGraphicsByType, hidePointInteractionGraphics, displayPointInteractionGraphics } from "@/utils/graphicLayerUtil";
+import {
+  createLayerGroupInfos,
+  getFeature,
+  setLayerVisibility,
+} from "@/utils/layerUtil";
+import {
+  removeGraphicsByType,
+  hidePointInteractionGraphics,
+  displayPointInteractionGraphics,
+} from "@/utils/graphicLayerUtil";
 import ZoomExtentLayer, {
   getFeatureById as getZoomFeatureById,
 } from "@/layers/ZoomExtentLayer";
@@ -152,7 +171,7 @@ export default defineComponent({
     const store = useStore();
     // Statewide alerts...
     const alerts = ref<AlertInfo[]>([]);
-    const ferryAlerts = ref<FerryAlertInfo[]>([])
+    const ferryAlerts = ref<FerryAlertInfo[]>([]);
     getConfig().then((config) => {
       // console.log(config)
       getAlerts(config.stateAlerts).then((result) => {
@@ -171,12 +190,12 @@ export default defineComponent({
         alerts.value = result;
       });
       getFerryAlerts(config.ferryAlerts).then((result) => {
-        ferryAlerts.value=result
-      })
+        ferryAlerts.value = result;
+      });
       // Build the list used by the URL query...
       createLayerGroupInfos(config);
     });
-    
+
     // Zoom popup...
     const zoomPopupVisible = ref(false);
     const zoomPopupLabel = ref("");
@@ -233,7 +252,6 @@ export default defineComponent({
           RoadAlertsLayer("road-alerts-layer"),
           TravelTimeLayer(),
           FireIncidentLayer(),
-          //MileMarkersLayer(),
           RoadsReferenceLayer(),
           BoundariesPlacesReferenceLayer(),
           BorderCrossingLayer(),
@@ -344,22 +362,26 @@ export default defineComponent({
                   esriMap.zoomToExtent(clusterExtent.expand(1.5));
                 });
               } else {
-                hidePointInteractionGraphics(LineRestrictionsLayer())
-                hidePointInteractionGraphics(LineFerryRoutesLayer())
+                hidePointInteractionGraphics(LineRestrictionsLayer());
+                hidePointInteractionGraphics(LineFerryRoutesLayer());
                 // Not aggregate...
                 const id = g.getObjectId();
-                console.log(id)
-                console.log(g.layer.id)
+                console.log(id);
+                console.log(g.layer.id);
                 //get lines for restriciton point click
                 if (g.layer.id === "point-restrictions-layer") {
                   getFeatureInfoById(id, g.layer as FeatureLayer).then(
                     (result) => {
-                      console.log(result)
+                      console.log(result);
                       if (
                         result?.attributes.lineMarker == "true" ||
                         result?.attributes.lineMarker == "True"
                       ) {
-                        displayPointInteractionGraphics(LineRestrictionsLayer(),"UniqueId",result?.attributes.UniqueId)
+                        displayPointInteractionGraphics(
+                          LineRestrictionsLayer(),
+                          "UniqueId",
+                          result?.attributes.UniqueId
+                        );
                         //LineRestrictionsLayer().definitionExpression = `UniqueId = '${result?.attributes.UniqueId}'`;
                         showPopup(results2Show.layer.id, [id]);
                       } else {
@@ -367,23 +389,25 @@ export default defineComponent({
                       }
                     }
                   );
-                } 
-                else if(g.layer.id === "ferry-routes-points-layer"){
+                } else if (g.layer.id === "ferry-routes-points-layer") {
                   getFeatureInfoById(id, g.layer as FeatureLayer).then(
                     (result) => {
-                      displayPointInteractionGraphics(LineFerryRoutesLayer(),"FerryRouteID",result?.attributes.FerryRouteID)
+                      displayPointInteractionGraphics(
+                        LineFerryRoutesLayer(),
+                        "FerryRouteID",
+                        result?.attributes.FerryRouteID
+                      );
                       showPopup(results2Show.layer.id, [id]);
                     }
                   );
-                }
-                else {
+                } else {
                   showPopup(results2Show.layer.id, [id]);
                 }
               }
             }
           } else {
-            hidePointInteractionGraphics(LineRestrictionsLayer())
-            hidePointInteractionGraphics(LineFerryRoutesLayer())
+            hidePointInteractionGraphics(LineRestrictionsLayer());
+            hidePointInteractionGraphics(LineFerryRoutesLayer());
             removeGraphicsByType("myLocation"); //remove "my location" graphic
             //No feature exist...
             closePopup();
@@ -396,6 +420,10 @@ export default defineComponent({
       const esriMap = await import("../esri-stuff/esriMap");
       mapDiv = document.getElementById("esri-map-view") as HTMLDivElement;
       esriMap.init(mapDiv);
+      store.commit("setMapSize", {
+        width: esriMap.mapView.width,
+        height: esriMap.mapView.height,
+      });
       // Set basemap based on URL query parameter or display default...
       const basemapInfo = getBasemapFromUrl();
       store.commit("setBasemap", basemapInfo.name);
@@ -523,10 +551,12 @@ export default defineComponent({
       });
       // Watch map view size...
       esriMap.mapView.on("resize", (event) => {
+        console.log("Map resize...")
         store.commit("setMapSize", {
           width: event.width,
           height: event.height,
         });
+        adjustBottomControls();
       });
       // Watch center change...
       esriMap.mapView.watch("center", (newValue) => {
@@ -541,10 +571,56 @@ export default defineComponent({
         centerRegionalAlerts(esriMap.mapView.extent);
       });
     });
-    const adjustBottomControls = (event: any) => {
-      console.log("*** " + JSON.stringify(event));
-    }
+    //
+    const bottomRightDiv = ref<HTMLDivElement>();
+    const bottomLeftDiv = ref<HTMLDivElement>();
+    const bottomCtrDiv = ref<HTMLDivElement>();
+    const marginBottomContainer = ref("0 px");
+    //
+    const adjustBottomControls = (event?: {
+      width: number;
+      height: number;
+    }) => {
+      let ctrWidth: number;
+      let ctrHeight: number;
+      if (event) {
+        console.log("*** " + JSON.stringify(event));
+        ctrWidth = event.width;
+        ctrHeight = event.height;
+      } else if (bottomCtrDiv.value) {
+        ctrWidth = bottomCtrDiv.value.offsetWidth;
+        ctrHeight = bottomCtrDiv.value.offsetHeight;
+      } else {
+        return;
+      }
+      if (
+        bottomRightDiv.value &&
+        bottomLeftDiv.value &&
+        store.state.mapSize.width
+      ) {
+        console.log(
+          "Right:" +
+            bottomRightDiv.value.offsetWidth +
+            ", Left:" +
+            bottomLeftDiv.value.offsetWidth
+        );
+        if (
+          ctrWidth +
+            bottomRightDiv.value.offsetWidth +
+            bottomLeftDiv.value.offsetWidth >
+          store.state.mapSize.width
+        ) {
+          marginBottomContainer.value = ctrHeight + 16 + "px";
+        } else {
+          marginBottomContainer.value = "16px";
+        }
+      }
+    };
+
     return {
+      bottomRightDiv,
+      bottomLeftDiv,
+      bottomCtrDiv,
       zoomPopupVisible,
       zoomPopupX,
       zoomPopupY,
@@ -556,6 +632,7 @@ export default defineComponent({
       alerts,
       ferryAlerts,
       adjustBottomControls,
+      marginBottomContainer,
     };
   },
 });
@@ -575,14 +652,14 @@ export default defineComponent({
   margin-bottom: 16px;
 }
 
-@media screen and (max-width: 900px) {
+/* @media screen and (max-width: 900px) {
   #map-bottom-right-container {
     margin-bottom: 66px;
   }
   #map-bottom-left-container {
     margin-bottom: 66px;
   }
-}
+} */
 
 .map-bottom-right-container-row {
   display: flex;

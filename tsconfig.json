@@ -13,7 +13,7 @@
     "baseUrl": ".",
     "types": [
       "webpack-env",
-      "doubleclick-gpt"
+      "@types/doubleclick-gpt"
     ],
     "paths": {
       "@/*": [

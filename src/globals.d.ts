@@ -28,5 +28,5 @@ declare var noTrafficImpactLayer: any
 // For the google ad...
 // Also installed via npm doubleclick-gpt for the type definition.
 interface Window {
-    googletag: any;
+    googletag: googletag.Googletag;
 }
