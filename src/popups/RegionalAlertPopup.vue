@@ -9,6 +9,13 @@
       content: [
         { label: 'Description', value: { fieldName: 'HeadlineMessage' } },
         {
+          label:'',
+          value:{
+            custom: getExtendedMessage,
+            isHTML: true
+          }
+        },
+        {
           label: 'Last Updated',
           value: {
             fieldName: 'LastModifiedDate',
@@ -16,12 +23,6 @@
             isTime: true,
           },
         },
-        {
-          label:'',
-          value:{
-            fieldName: 'ExtendedMessage',
-          }
-        }
       ],
     }"
     @close="close"
@@ -110,6 +111,15 @@ export default defineComponent({
       feature.value = undefined;
       esriHandles.removeAll();
     };
+    const getExtendedMessage = (feature: FeatureInfo): string => {
+      return (`
+        <br>
+          <div>
+            ${feature.attributes["ExtendedMessage"]}
+          </div>
+        <br>`
+      );
+    }
     const getTitle = (feature: FeatureInfo): string => {
       return (
         feature.attributes["EventCategoryTypeDescription"] +
@@ -123,6 +133,7 @@ export default defineComponent({
       layerIcons,
       close,
       getTitle,
+      getExtendedMessage
     };
   },
 });
