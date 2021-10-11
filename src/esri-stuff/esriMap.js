@@ -40,6 +40,7 @@ const appConfigUtil_1 = require("@/utils/appConfigUtil");
 const firePerimeterQuery_1 = tslib_1.__importDefault(require("@/utils/firePerimeterQuery"));
 const Basemaps_1 = require("@/layers/Basemaps");
 const layerUtil = tslib_1.__importStar(require("@/utils/layerUtil"));
+const config_1 = tslib_1.__importDefault(require("@arcgis/core/config"));
 const fullExtent = extentUtil_1.getEsriExtent("full");
 // Initialize empty map, and load layers later...
 exports.webmap = new WebMap_1.default({});
@@ -77,7 +78,7 @@ exports.defaultLayerProps = [];
  */
 const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     const config = yield appConfigUtil_1.getConfig();
-    //EsriConfig.apiKey = config.apiKey;
+    config_1.default.apiKey = config.apiKey;
     const trafficLyr = TrafficLayer.initLayer(config.traffic, config.layerRefreshMinute);
     const restAreasLyr = yield RestAreasLayer.initLayer(config.restAreas);
     const parkRideLyr = yield ParkRideLayer.initLayer(config.parkAndRides);

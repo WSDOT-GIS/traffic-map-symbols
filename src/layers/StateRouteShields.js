@@ -2,10 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.initLayer = void 0;
 const tslib_1 = require("tslib");
-const VectorTileLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/VectorTileLayer"));
+const TileLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/TileLayer"));
 let layer;
 const initLayer = (url) => {
-    layer = new VectorTileLayer_1.default({
+    layer = new TileLayer_1.default({
         id: "state-route-shields-layer",
         url: url,
         title: "State Route Shields",

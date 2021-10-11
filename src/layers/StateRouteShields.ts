@@ -1,10 +1,12 @@
+import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
+import TileLayer from "@arcgis/core/layers/TileLayer";
 import VectorTileLayer from "@arcgis/core/layers/VectorTileLayer"
 
 
-let layer: VectorTileLayer | undefined;
+let layer: TileLayer | undefined;
 
-export const initLayer = (url: string): VectorTileLayer => {
-    layer = new VectorTileLayer({
+export const initLayer = (url: string): TileLayer => {
+    layer = new TileLayer({
         id: "state-route-shields-layer",
         url: url,
         title: "State Route Shields",
@@ -13,7 +15,7 @@ export const initLayer = (url: string): VectorTileLayer => {
     return layer;
 }
 
-const getLayer = (): VectorTileLayer => {
+const getLayer = (): TileLayer => {
     if (!layer) {
         throw "State Route Shields is not ready yet!";
     }

@@ -44,7 +44,7 @@ import firePerimeterFeatureIDs from "@/utils/firePerimeterQuery"
 import { getBasemapInfo, initBasemap } from "@/layers/Basemaps";
 import XY from "@/types/XY";
 import * as layerUtil from "@/utils/layerUtil";
-
+import EsriConfig from "@arcgis/core/config"
 const fullExtent = getEsriExtent("full");
 
 // Initialize empty map, and load layers later...
@@ -84,7 +84,7 @@ export const defaultLayerProps: { id: string, visible: boolean }[] = []
  */
 export const loadOperationalLayers = async (): Promise<void> => {
     const config = await getConfig();
-    //EsriConfig.apiKey = config.apiKey;
+    EsriConfig.apiKey = config.apiKey;
     const trafficLyr = TrafficLayer.initLayer(config.traffic, config.layerRefreshMinute);
     const restAreasLyr = await RestAreasLayer.initLayer(config.restAreas);
     const parkRideLyr = await ParkRideLayer.initLayer(config.parkAndRides);
