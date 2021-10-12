@@ -7,7 +7,7 @@ export const initLayer = (url: string): TileLayer => {
         id: "ferry-routes-reference-layer",
         url: url,
         title: "Ferry Routes Reference",
-        visible: true,
+        visible: false,
     });
     return layer;
 }

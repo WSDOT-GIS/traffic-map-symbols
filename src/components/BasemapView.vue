@@ -33,12 +33,12 @@ export default defineComponent({
     const toggleImageryReference= ()=>{
       store.state.layerList.map((x)=>{
         if(webmap.basemap.title=="Basemap"||webmap.basemap.title=="WSDOT Basemap"){
-          if(x.id=="roads-reference-layer"||x.id=="boundaries-places-reference-layer"){
+          if(x.id=="roads-reference-layer"||x.id=="boundaries-places-reference-layer"||x.id=="ferry-routes-reference-layer"){
             x.visible=true
           }
         }
         else{
-          if(x.id=="roads-reference-layer"||x.id=="boundaries-places-reference-layer"){
+          if(x.id=="roads-reference-layer"||x.id=="boundaries-places-reference-layer"||x.id=="ferry-routes-reference-layer"){
             x.visible=false
           }
         }
