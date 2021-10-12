@@ -32,6 +32,7 @@ import * as StateRouteShieldsLayer from "@/layers/StateRouteShields"
 import * as BorderCrossingsLayer from "@/layers/BorderCrossingsLayer"
 import * as RegionalAlertLayer from "@/layers/RegionalAlertLayer";
 import * as RestAreasLayer from "@/layers/RestAreasLayer";
+import * as FerryRoutesReferenceLayer from "@/layers/ferryRoutesReferenceLayer"
 import { initLayer as initLineFerryRoutesLayer } from "@/layers/LineFerryRoutesLayer"
 import * as FerryRoutePointsLayer from "@/layers/PointFerryRoutesLayer"
 //
@@ -105,6 +106,8 @@ export const loadOperationalLayers = async (): Promise<void> => {
     // const regionalAlertLayer = await initRegionalAlertLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
     // The first one in the array will be displayed at the bottom of the map... 
     // const borderCrossingsLayer = initBorderCrossingsLayer(config.borderCrossings)
+    
+    const ferryRoutesReferenceLayer = FerryRoutesReferenceLayer.initLayer(config.ferryRoutesReferenceLayer)
     const ferryRouteLinesLayer = initLineFerryRoutesLayer(config.ferryRouteLines)
     const ferryRoutePointsLayer = FerryRoutePointsLayer.initLayer(config.ferryRoutePoints)
     // webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
@@ -113,7 +116,7 @@ export const loadOperationalLayers = async (): Promise<void> => {
     //     pointRestrictionLyr, cameraLyr, roadAlertsLyr, roadClosuresLyr,
     //     mileMarkersLayer, borderCrossingsLayer, ferryRoutesLayer]);
     const borderCrossingsLayer = await BorderCrossingsLayer.initLayer(config.borderCrossings)
-    webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
+    webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, ferryRoutesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
         firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertLyrs.priority, roadAlertLyrs.closure,

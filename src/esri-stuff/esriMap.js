@@ -30,6 +30,7 @@ const StateRouteShieldsLayer = tslib_1.__importStar(require("@/layers/StateRoute
 const BorderCrossingsLayer = tslib_1.__importStar(require("@/layers/BorderCrossingsLayer"));
 const RegionalAlertLayer = tslib_1.__importStar(require("@/layers/RegionalAlertLayer"));
 const RestAreasLayer = tslib_1.__importStar(require("@/layers/RestAreasLayer"));
+const FerryRoutesReferenceLayer = tslib_1.__importStar(require("@/layers/ferryRoutesReferenceLayer"));
 const LineFerryRoutesLayer_1 = require("@/layers/LineFerryRoutesLayer");
 const FerryRoutePointsLayer = tslib_1.__importStar(require("@/layers/PointFerryRoutesLayer"));
 //
@@ -99,6 +100,7 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     // const regionalAlertLayer = await initRegionalAlertLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
     // The first one in the array will be displayed at the bottom of the map... 
     // const borderCrossingsLayer = initBorderCrossingsLayer(config.borderCrossings)
+    const ferryRoutesReferenceLayer = FerryRoutesReferenceLayer.initLayer(config.ferryRoutesReferenceLayer);
     const ferryRouteLinesLayer = LineFerryRoutesLayer_1.initLayer(config.ferryRouteLines);
     const ferryRoutePointsLayer = FerryRoutePointsLayer.initLayer(config.ferryRoutePoints);
     // webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
@@ -107,7 +109,7 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     //     pointRestrictionLyr, cameraLyr, roadAlertsLyr, roadClosuresLyr,
     //     mileMarkersLayer, borderCrossingsLayer, ferryRoutesLayer]);
     const borderCrossingsLayer = yield BorderCrossingsLayer.initLayer(config.borderCrossings);
-    exports.webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
+    exports.webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, ferryRoutesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
         firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertLyrs.priority, roadAlertLyrs.closure,

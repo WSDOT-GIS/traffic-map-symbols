@@ -29,6 +29,7 @@ interface AppConfig {
     esriPlacesReferenceLayer: string,
     esriRoadsReferenceLayer: string,
     stateRouteShieldsLayer: string,
+    ferryRoutesReferenceLayer: string,
     ferryRouteLines: string, 
     ferryRoutePoints: string,
     ferryAlerts: string,
