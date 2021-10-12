@@ -1,6 +1,7 @@
 <template>
   <PopupBase
-    LightThemeColor="#8E09001E"
+    :IconSvg="layerIcons.find((x) => x.id === 'regional-alert-layer')?.paths"
+    LightThemeColor="#8E09004D"
     DarkThemeColor="#8E0900"
     :Features="[feature]"
     :Config="{
@@ -8,6 +9,7 @@
       title: { custom: getTitle },
       content: [
         { label: 'Description', value: { fieldName: 'HeadlineMessage' } },
+        { label: '', value: { fieldName: 'ExtendedMessage' } },
         {
           label: 'Last Updated',
           value: {
@@ -20,13 +22,6 @@
     }"
     @close="close"
   >
-    <template v-slot:icon>
-      <div
-        v-html="layerIcons.find((x) => x.id == feature?.layerId)?.paths"
-        width="24"
-        height="24"
-      ></div>
-    </template>
   </PopupBase>
 </template>
 <script lang="ts">
@@ -109,7 +104,8 @@ export default defineComponent({
         feature.attributes["EventCategoryTypeDescription"] +
         " alert for " +
         feature.attributes["LocationName"] +
-        " " + feature.attributes["EventCategoryType"]
+        " " +
+        feature.attributes["EventCategoryType"]
       );
     };
     return {

@@ -1,13 +1,8 @@
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
-// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import Symbol from "@/symbols/ParkRideSymbol";
 import Field from "@arcgis/core/layers/support/Field";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-// import SpatialReference from "@arcgis/core/geometry/SpatialReference";
-// import Graphic from "@arcgis/core/Graphic";
-// import { getConfig } from "@/utils/appConfigUtil";
 import * as layerUtil from "@/utils/layerUtil";
-// import layer from "./ZoomExtentLayer";
 
 const renderer = new SimpleRenderer({ symbol: Symbol });
 

@@ -1,38 +1,33 @@
 <template>
   <PopupBase
+    :IconSvg="layerIcons.find((x) => x.id === 'road-alert')?.paths"
     LightThemeColor="#FFC1074D"
     DarkThemeColor="#FFC107"
     :Features="[feature]"
     :Config="{
-      bannerText: { text: 'Ferries' },
-      title: { 
+      bannerText: { text: 'Ferry' },
+      title: {
         custom: getTitle,
-        isHTML: true
+        isHTML: true,
       },
       content: [
-        { label: 'Description', 
-          value: { 
+        {
+          label: 'Description',
+          value: {
             custom: getDescription,
-            isHTML: true
-          }
+            isHTML: true,
+          },
         },
         {
           label: 'Last updated',
           value: {
             text: '*coming soon*',
-            },
+          },
         },
       ],
     }"
     @close="close"
   >
-    <template v-slot:icon>
-      <div
-        v-html="layerIcons.find((x) => x.id === 'road-alert')?.paths"
-        width="24"
-        height="24"
-      ></div>
-    </template>
   </PopupBase>
 </template>
 <script lang="ts">
@@ -51,17 +46,18 @@ export default defineComponent({
       type: Object as PropType<FeaturesetInfo>,
       required: true,
     },
-    Alerts:{
+    Alerts: {
       type: Object as PropType<Array<FerryAlertInfo>>,
-      required: true
-    }
+      required: true,
+    },
   },
   setup(props) {
     const feature = ref<FeatureInfo>();
     const layerIcons = layerListIcons;
 
     watch(props, () => {
-      if (props.Featureset.layerId === "ferry-routes-points-layer") {//FeatureLayer().id) {
+      if (props.Featureset.layerId === "ferry-routes-points-layer") {
+        //FeatureLayer().id) {
         show();
       } else {
         close();
@@ -70,13 +66,11 @@ export default defineComponent({
 
     const show = () => {
       const setVal = () => {
-        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(
-          (result) => {
-            if (result) {
-              feature.value = result;
-            }
+        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then((result) => {
+          if (result) {
+            feature.value = result;
           }
-        );
+        });
       };
       if (feature.value) {
         // Clean up the previous data...
@@ -90,26 +84,26 @@ export default defineComponent({
     const close = () => {
       feature.value = undefined;
     };
-    const getDescription = (feature: FeatureInfo): string|undefined => {
-     let descriptionText:string|undefined = undefined
-     props.Alerts.map((x)=>{
-      if((x.FerryRouteId) as number==feature.attributes.FerryRouteID){
-        descriptionText=x.HomepageAlertText
-      }
-     })
-      if(descriptionText){
-        return descriptionText
+    const getDescription = (feature: FeatureInfo): string | undefined => {
+      let descriptionText: string | undefined = undefined;
+      props.Alerts.map((x) => {
+        if ((x.FerryRouteId as number) == feature.attributes.FerryRouteID) {
+          descriptionText = x.HomepageAlertText;
+        }
+      });
+      if (descriptionText) {
+        return descriptionText;
       }
     };
-    const getTitle= (feature: FeatureInfo): string|undefined => {
-      let titleText:string|undefined = undefined
-      props.Alerts.map((x)=>{
-        if((x.FerryRouteId) as number==feature.attributes.FerryRouteID){
-          titleText=x.AlertFullTitle
+    const getTitle = (feature: FeatureInfo): string | undefined => {
+      let titleText: string | undefined = undefined;
+      props.Alerts.map((x) => {
+        if ((x.FerryRouteId as number) == feature.attributes.FerryRouteID) {
+          titleText = x.AlertFullTitle;
         }
-      })
-      if(titleText){
-        return titleText
+      });
+      if (titleText) {
+        return titleText;
       }
     };
     return {
@@ -117,7 +111,7 @@ export default defineComponent({
       layerIcons,
       close,
       getTitle,
-      getDescription
+      getDescription,
     };
   },
 });

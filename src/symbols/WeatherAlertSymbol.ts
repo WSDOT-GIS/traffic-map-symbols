@@ -164,8 +164,8 @@ const weatherStationSymbol = new CIMSymbol({
                     "enable": true,
                     "color": [
                       0,
-                      57,
-                      142,
+                      81,
+                      81,
                       255
                     ]
                   }
@@ -320,8 +320,8 @@ const weatherStationSymbol = new CIMSymbol({
                     "enable": true,
                     "color": [
                       0,
-                      57,
-                      142,
+                      81,
+                      81,
                       255
                     ]
                   }
@@ -745,8 +745,8 @@ const weatherStationSymbol = new CIMSymbol({
                     "enable": true,
                     "color": [
                       0,
-                      57,
-                      142,
+                      81,
+                      81,
                       255
                     ]
                   }
@@ -813,8 +813,8 @@ const weatherStationSymbol = new CIMSymbol({
                     "enable": true,
                     "color": [
                       0,
-                      57,
-                      142,
+                      81,
+                      81,
                       255
                     ]
                   }

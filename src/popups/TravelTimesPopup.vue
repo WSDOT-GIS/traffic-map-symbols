@@ -1,44 +1,39 @@
 <template>
   <PopupBase
-    LightThemeColor="#fcdeff"
+    :IconSvg="layerIcons.find((x) => x.id == 'travel-times-layer')?.paths"
+    LightThemeColor="#96359f33"
     DarkThemeColor="#96359f"
     :Features="[feature]"
     :TravelDelay="TravelDelay"
     :Config="{
-      bannerText: { text:'Travel Time' },
+      bannerText: { text: 'Travel time' },
       badgeText: { custom: getDelayStatus },
       title: { custom: getTitle },
       content: [
-        { 
-          label: 'Average Time (Min.)', 
-          value: { fieldName: 'AverageTime' }, 
+        {
+          label: 'Average Time (Min.)',
+          value: { fieldName: 'AverageTime' },
         },
-        { 
-          label: 'Current Time (Min.)', 
-          value: { custom: getCurrentTime},
-        },{ 
-          label: 'HOV Lane Time (Min.)', 
-          value: { custom: getHOVTime},
+        {
+          label: 'Current Time (Min.)',
+          value: { custom: getCurrentTime },
         },
-        { 
-          label:'Last Updated', 
-          value: { 
+        {
+          label: 'HOV Lane Time (Min.)',
+          value: { custom: getHOVTime },
+        },
+        {
+          label: 'Last Updated',
+          value: {
             fieldName: 'TimeUpdated',
             isDate: true,
-            isTime: true
-          }
-        }
+            isTime: true,
+          },
+        },
       ],
     }"
     @close="close"
   >
-    <template v-slot:icon>
-      <div
-        v-html="layerIcons.find((x) => x.id == feature?.layerId)?.paths"
-        width="24"
-        height="24"
-      ></div>
-    </template>
   </PopupBase>
 </template>
 <script lang="ts">
@@ -72,21 +67,18 @@ export default defineComponent({
 
     const show = () => {
       const setVal = () => {
-        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(
-          (result) => {
-            if (result) {
-              // console.log(result)
-              //console.log(result)
-              feature.value = result;
-              if((result.attributes.CurrentTime as number)-(result.attributes.AverageTime as number)>0){
-                TravelDelay.value = (result.attributes.CurrentTime as number)-(result.attributes.AverageTime as number)
-              }
-              else{
-                TravelDelay.value=0
-              }
+        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then((result) => {
+          if (result) {
+            // console.log(result)
+            //console.log(result)
+            feature.value = result;
+            if ((result.attributes.CurrentTime as number) - (result.attributes.AverageTime as number) > 0) {
+              TravelDelay.value = (result.attributes.CurrentTime as number) - (result.attributes.AverageTime as number);
+            } else {
+              TravelDelay.value = 0;
             }
           }
-        );
+        });
       };
       if (feature.value) {
         // Clean up the previous data...
@@ -100,39 +92,37 @@ export default defineComponent({
     const close = () => {
       feature.value = undefined;
     };
-    const getDelayStatus = () =>{
+    const getDelayStatus = () => {
       let delayStatus = undefined;
-      TravelDelay.value>0?delayStatus="Delayed":delayStatus=undefined
-      return delayStatus
-    }
+      TravelDelay.value > 0 ? (delayStatus = "Delayed") : (delayStatus = undefined);
+      return delayStatus;
+    };
     const getTime = (feature: FeatureInfo): string => {
       const title = feature.attributes["Title"];
       return `${title}`;
     };
-    const getHOVTime = (feature: FeatureInfo): string  => {
+    const getHOVTime = (feature: FeatureInfo): string => {
       let HOVTime;
-      var difference = Date.now() - (new Date(feature.attributes.TimeUpdated as string).getTime());
-      if((difference/1000/60)>60){
-        HOVTime="Not Available"
-        TravelDelay.value=0
-      }
-      else{
-        HOVTime = feature.attributes.HOVCurrentTime
+      var difference = Date.now() - new Date(feature.attributes.TimeUpdated as string).getTime();
+      if (difference / 1000 / 60 > 60) {
+        HOVTime = "Not Available";
+        TravelDelay.value = 0;
+      } else {
+        HOVTime = feature.attributes.HOVCurrentTime;
       }
       return HOVTime as string;
     };
-    const getCurrentTime = (feature: FeatureInfo): string  => {
+    const getCurrentTime = (feature: FeatureInfo): string => {
       let currentTime;
-      var difference = Date.now() - (new Date(feature.attributes.TimeUpdated as string).getTime());
-      if((difference/1000/60)>60){
-        currentTime="Not Available"
-        TravelDelay.value=0
-      }
-      else{
-        currentTime = feature.attributes.HOVCurrentTime
+      var difference = Date.now() - new Date(feature.attributes.TimeUpdated as string).getTime();
+      if (difference / 1000 / 60 > 60) {
+        currentTime = "Not Available";
+        TravelDelay.value = 0;
+      } else {
+        currentTime = feature.attributes.HOVCurrentTime;
       }
       return currentTime as string;
-    }
+    };
     const getTitle = (feature: FeatureInfo): string => {
       const title = feature.attributes["Title"];
       return `${title}`;
@@ -146,7 +136,7 @@ export default defineComponent({
       getDelayStatus,
       TravelDelay,
       getHOVTime,
-      getCurrentTime
+      getCurrentTime,
     };
   },
 });

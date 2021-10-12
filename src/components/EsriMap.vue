@@ -109,7 +109,6 @@ import RoadAlertsLayer from "@/layers/RoadAlertsLayer";
 import TravelTimeLayer from "@/layers/TravelTimeLayer";
 import RestAreasLayer from "@/layers/RestAreasLayer";
 import FireIncidentLayer from "@/layers/FireIncidentLayer";
-// import MileMarkersLayer from "@/layers/MileMarkersLayer";
 import RoadsReferenceLayer from "@/layers/RoadsReferenceLayer";
 import BoundariesPlacesReferenceLayer from "@/layers/BoundariesPlacesReferenceLayer";
 import BorderCrossingLayer from "@/layers/BorderCrossingsLayer";
@@ -118,7 +117,6 @@ import PointFerryRoutesLayer from "@/layers/PointFerryRoutesLayer";
 import RegionalAlertLayer, {
   centerFeatures as centerRegionalAlerts,
 } from "@/layers/RegionalAlertLayer";
-// import FirePerimeterLayer from "@/layers/FirePerimeterLayer"
 /* Popups */
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
 import CameraPopup from "@/popups/CameraPopup.vue";
@@ -366,8 +364,6 @@ export default defineComponent({
                 hidePointInteractionGraphics(LineFerryRoutesLayer());
                 // Not aggregate...
                 const id = g.getObjectId();
-                console.log(id);
-                console.log(g.layer.id);
                 //get lines for restriciton point click
                 if (g.layer.id === "point-restrictions-layer") {
                   getFeatureInfoById(id, g.layer as FeatureLayer).then(
@@ -584,7 +580,6 @@ export default defineComponent({
       let ctrWidth: number;
       let ctrHeight: number;
       if (event) {
-        console.log("*** " + JSON.stringify(event));
         ctrWidth = event.width;
         ctrHeight = event.height;
       } else if (bottomCtrDiv.value) {
@@ -598,12 +593,6 @@ export default defineComponent({
         bottomLeftDiv.value &&
         store.state.mapSize.width
       ) {
-        console.log(
-          "Right:" +
-            bottomRightDiv.value.offsetWidth +
-            ", Left:" +
-            bottomLeftDiv.value.offsetWidth
-        );
         if (
           ctrWidth +
             bottomRightDiv.value.offsetWidth +

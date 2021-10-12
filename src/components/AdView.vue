@@ -65,7 +65,6 @@ export default defineComponent({
         googletag.pubads().enableSingleRequest();
         //
         googletag.pubads().addEventListener("slotVisibilityChanged", () => {
-          console.log("*slotVisibilityChanged");
           onResize();
         });
         // Start ad fetching
@@ -88,7 +87,6 @@ export default defineComponent({
           newSize.height !== prevSize.height
         ) {
           context.emit("onResize", newSize);
-          console.log("*** Emitted onResize");
           prevSize.width = newSize.width;
           prevSize.height = newSize.height;
         }

@@ -1,6 +1,7 @@
 <template>
   <PopupBase
-    LightThemeColor="#f7e5ae"
+    :IconSvg="badgeIcon"
+    LightThemeColor="#FFC1074D"
     DarkThemeColor="#FFC107"
     :LightBadgeColor="lightBadgeColor"
     :DarkBadgeColor="darkBadgeColor"
@@ -11,11 +12,12 @@
       title: { custom: getTitle },
       content: [
         { label: 'Travel delay', value: { text: '???' } },
-        { label: 'Description', 
-        value: { 
-          fieldName: 'HeadlineMessage',
-          isHTML:true
-         }
+        {
+          label: 'Description',
+          value: {
+            fieldName: 'HeadlineMessage',
+            isHTML: true,
+          },
         },
         {
           label: 'Last updated',
@@ -29,13 +31,6 @@
     }"
     @close="close"
   >
-    <template v-slot:icon>
-      <div
-        v-html="badgeIcon"
-        width="24"
-        height="24"
-      ></div>
-    </template>
   </PopupBase>
 </template>
 <script lang="ts">
@@ -72,10 +67,7 @@ export default defineComponent({
 
     const show = () => {
       const setVal = () => {
-        getFeatureInfoById(
-          props.Featureset.ids[0],
-          FeatureLayer(props.Featureset.layerId)
-        ).then((result) => {
+        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer(props.Featureset.layerId)).then((result) => {
           if (result) {
             feature.value = result;
           }
@@ -93,70 +85,51 @@ export default defineComponent({
     const close = () => {
       feature.value = undefined;
     };
-    const getEventPriority = (feature: FeatureInfo): string =>{
-      let badgeText="";
-      if(feature.attributes.EventCategoryDescription=="Closure"){
+    const getEventPriority = (feature: FeatureInfo): string => {
+      let badgeText = "";
+      if (feature.attributes.EventCategoryDescription == "Closure") {
         //console.log(feature.attributes.EventCategoryDescription)
-        badgeText = "Closed"
-        badgeIcon.value = (layerListIcons.find(
-                  (x) =>
-                    x.id == 'road-closed'
-                )?.paths) as string
-        lightBadgeColor.value = "#484e55"
-        darkBadgeColor.value = "#000000"
-      }
-      else{
-        switch(feature.attributes.EventPriorityID){
+        badgeText = "Closed";
+        badgeIcon.value = layerListIcons.find((x) => x.id == "road-closed")?.paths as string;
+        lightBadgeColor.value = "#484e55";
+        darkBadgeColor.value = "#000000";
+      } else {
+        switch (feature.attributes.EventPriorityID) {
           case 1:
-            badgeText="Highest";
-             badgeIcon.value = (layerListIcons.find(
-                  (x) =>
-                    x.id == 'road-alert-highest'
-                )?.paths) as string
-            lightBadgeColor.value = "#da9793"
-            darkBadgeColor.value = "#B30B00"
-            
+            badgeText = "Highest";
+            badgeIcon.value = layerListIcons.find((x) => x.id == "road-alert-highest")?.paths as string;
+            lightBadgeColor.value = "#da9793";
+            darkBadgeColor.value = "#B30B00";
+
             break;
           case 2:
-            badgeText="High";
-             badgeIcon.value = (layerListIcons.find(
-                  (x) =>
-                    x.id == 'road-alert-high'
-                )?.paths) as string
-            lightBadgeColor.value = "#e6818b"
-            darkBadgeColor.value = "#DC354599"
+            badgeText = "High";
+            badgeIcon.value = layerListIcons.find((x) => x.id == "road-alert-high")?.paths as string;
+            lightBadgeColor.value = "#e6818b";
+            darkBadgeColor.value = "#DC354599";
             break;
           case 3:
-            badgeText="Medium";
-            badgeIcon.value = (layerListIcons.find(
-                  (x) =>
-                    x.id == 'road-alert-medium'
-                )?.paths) as string
-            lightBadgeColor.value = "#f7cbb1"
-            darkBadgeColor.value = "#FF6A13"
+            badgeText = "Medium";
+            badgeIcon.value = layerListIcons.find((x) => x.id == "road-alert-medium")?.paths as string;
+            lightBadgeColor.value = "#f7cbb1";
+            darkBadgeColor.value = "#FF6A13";
             break;
           case 4:
-            badgeText="Low";
-            badgeIcon.value = (layerListIcons.find(
-                  (x) =>
-                    x.id == 'road-alert'
-                )?.paths) as string
-            lightBadgeColor.value = "#fffaec"
-            darkBadgeColor.value = "#ffc107"
+            badgeText = "Low";
+            badgeIcon.value = layerListIcons.find((x) => x.id == "road-alert")?.paths as string;
+            lightBadgeColor.value = "#fffaec";
+            darkBadgeColor.value = "#ffc107";
             break;
           case 5:
-            badgeText="Low";
-            badgeIcon.value = (layerListIcons.find(
-                  (x) =>
-                    x.id == 'road-alert'
-                )?.paths) as string
-            lightBadgeColor.value = "#fffaec"
-            darkBadgeColor.value = "#ffc107"
+            badgeText = "Low";
+            badgeIcon.value = layerListIcons.find((x) => x.id == "road-alert")?.paths as string;
+            lightBadgeColor.value = "#fffaec";
+            darkBadgeColor.value = "#ffc107";
             break;
         }
       }
-      return badgeText
-    }
+      return badgeText;
+    };
     const getTitle = (feature: FeatureInfo): string => {
       const name = feature.attributes["Road"];
       const dir = feature.attributes["RoadDirection"];
@@ -170,7 +143,7 @@ export default defineComponent({
       getEventPriority,
       lightBadgeColor,
       darkBadgeColor,
-      badgeIcon
+      badgeIcon,
     };
   },
 });
