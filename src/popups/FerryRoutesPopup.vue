@@ -52,7 +52,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const features = ref<FeatureInfo[]>();
+    const features = ref<FeatureInfo[]>([]);
     const layerIcons = layerListIcons;
 
     watch(props, () => {
@@ -81,7 +81,7 @@ export default defineComponent({
     };
     // Setting features to undefined closes the popup...
     const close = () => {
-      features.value = undefined;
+      features.value = [];
     };
     const getDescription = (feature: FeatureInfo): string | undefined => {
       let descriptionText: string | undefined = undefined;

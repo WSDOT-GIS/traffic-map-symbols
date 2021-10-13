@@ -363,15 +363,15 @@ export default defineComponent({
     onMounted(async () => {
       const appConfig = await getConfig();
       const esriMap = await import("../esri-stuff/esriMap");
-      const basemap = await import("../layers/Basemaps");
+      // const basemap = await import("../layers/Basemaps");
       mapDiv = document.getElementById("esri-map-view") as HTMLDivElement;
       esriMap.init(mapDiv);
-      basemap.initBasemap(appConfig.basemap);
       store.commit("setMapSize", {
         width: esriMap.mapView.width,
         height: esriMap.mapView.height,
       });
       // Set basemap based on URL query parameter or display default...
+      await initBasemap(appConfig.basemap);
       const basemapInfo = getBasemapFromUrl();
       store.commit("setBasemap", basemapInfo.name);
       // Read config, then load operational layers...
@@ -464,7 +464,6 @@ export default defineComponent({
           } else {
             // Resume normal map operation...
             zoomPopupVisible.value = false;
-            //mapDiv.style.cursor = "auto";
             if (zoomEventIsOn) {
               mapDiv.removeEventListener("click", zoomMetroEventHandler);
               zoomEventIsOn = false;
@@ -478,7 +477,6 @@ export default defineComponent({
         if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
           store.commit("setCurrentExtent", newValue);
         }
-        // centerRegionalAlerts(newValue as Extent);
       });
       // Watch scale change...
       esriMap.mapView.watch("scale", (newValue, oldValue) => {

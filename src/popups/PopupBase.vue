@@ -906,9 +906,9 @@ export default defineComponent({
   width: 100%;
 }
 /* Hide the 1/3 of circle behind right & left arrow. */
-.carousel {
+/* .carousel {
   overflow: hidden;
-}
+} */
 #weatherForecastIcons #weatherForecastDescription {
   font-size: 5pt;
 }
