@@ -3,14 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.initLayer = void 0;
 const tslib_1 = require("tslib");
 const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
-// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 const ParkRideSymbol_1 = tslib_1.__importDefault(require("@/symbols/ParkRideSymbol"));
 const Field_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/Field"));
-// import SpatialReference from "@arcgis/core/geometry/SpatialReference";
-// import Graphic from "@arcgis/core/Graphic";
-// import { getConfig } from "@/utils/appConfigUtil";
 const layerUtil = tslib_1.__importStar(require("@/utils/layerUtil"));
-// import layer from "./ZoomExtentLayer";
 const renderer = new SimpleRenderer_1.default({ symbol: ParkRideSymbol_1.default });
 const fields = [
     new Field_1.default({

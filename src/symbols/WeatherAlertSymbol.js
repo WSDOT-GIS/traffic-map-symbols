@@ -165,8 +165,8 @@ const weatherStationSymbol = new CIMSymbol_1.default({
                                         "enable": true,
                                         "color": [
                                             0,
-                                            57,
-                                            142,
+                                            81,
+                                            81,
                                             255
                                         ]
                                     }
@@ -321,8 +321,8 @@ const weatherStationSymbol = new CIMSymbol_1.default({
                                         "enable": true,
                                         "color": [
                                             0,
-                                            57,
-                                            142,
+                                            81,
+                                            81,
                                             255
                                         ]
                                     }
@@ -746,8 +746,8 @@ const weatherStationSymbol = new CIMSymbol_1.default({
                                         "enable": true,
                                         "color": [
                                             0,
-                                            57,
-                                            142,
+                                            81,
+                                            81,
                                             255
                                         ]
                                     }
@@ -814,8 +814,8 @@ const weatherStationSymbol = new CIMSymbol_1.default({
                                         "enable": true,
                                         "color": [
                                             0,
-                                            57,
-                                            142,
+                                            81,
+                                            81,
                                             255
                                         ]
                                     }

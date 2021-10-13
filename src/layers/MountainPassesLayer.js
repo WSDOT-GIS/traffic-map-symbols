@@ -46,23 +46,6 @@ const fields = [
 ];
 let layer;
 const initLayer = (jsonUrl) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    // let graphics: Graphic[] = [];
-    // const config = await getConfig();
-    // if (visible) {
-    //     graphics = await layerUtil.fetchJsonData(config.mountainPasses);
-    // }
-    // layer = new FeatureLayer({
-    //     id: "mountain-passes-layer",
-    //     title: "Mountain Pass Reports",
-    //     objectIdField: "MountainPassId",
-    //     renderer: mountainPassRenderer,
-    //     visible: visible,
-    //     fields: fields,
-    //     source: graphics,
-    //     geometryType: "point",
-    //     spatialReference: SpatialReference.WebMercator,
-    // });
-    // layerUtil.setLayerEvent(layer, config.mountainPasses);
     layer = yield layerUtil.initLayer(jsonUrl, "mountain-passes-layer", "Mountain Pass Reports", renderer, fields, "point", false);
     return layer;
 });

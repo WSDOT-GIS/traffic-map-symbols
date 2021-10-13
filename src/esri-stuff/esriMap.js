@@ -20,7 +20,7 @@ const LineRestrictionsLayer = tslib_1.__importStar(require("@/layers/LineRestric
 const RoadAlertsLayer = tslib_1.__importStar(require("@/layers/RoadAlertsLayer"));
 const WeatherLayer = tslib_1.__importStar(require("@/layers/WeatherStationsLayer"));
 const MountainLayer = tslib_1.__importStar(require("@/layers/MountainPassesLayer"));
-const TravelTimesLayer = tslib_1.__importStar(require("@/layers/TravelTimeLayer"));
+// import * as TravelTimesLayer from "@/layers/TravelTimeLayer"
 const FireIncidentsLayer = tslib_1.__importStar(require("@/layers/FireIncidentLayer"));
 const FirePerimetersLayer = tslib_1.__importStar(require("@/layers/FirePerimeterLayer"));
 const MileMakersLayer = tslib_1.__importStar(require("@/layers/MileMarkersLayer"));
@@ -85,7 +85,7 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     const parkRideLyr = yield ParkRideLayer.initLayer(config.parkAndRides);
     const weatherLyr = yield WeatherLayer.initLayer(config.weatherStations);
     const mtLyr = yield MountainLayer.initLayer(config.mountainPasses);
-    const travelTimesLyr = yield TravelTimesLayer.initLayer(config.travelTimes);
+    // const travelTimesLyr = await TravelTimesLayer.initLayer(config.travelTimes);
     const lineRestrictionLyr = yield LineRestrictionsLayer.initLayer(config.lineRestrictions);
     const pointRestrictionLyr = yield PointRestrictionsLayer.initLayer(config.pointRestrictions);
     const cameraLyr = yield CameraLayer.initLayer(config.cameras);
@@ -111,7 +111,7 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     const borderCrossingsLayer = yield BorderCrossingsLayer.initLayer(config.borderCrossings);
     exports.webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, ferryRoutesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
         firePerimetersLayer, fireIncidentLayer,
-        restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
+        restAreasLyr, parkRideLyr, weatherLyr, mtLyr, /*travelTimesLyr,*/ lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertLyrs.priority, roadAlertLyrs.closure,
         mileMarkersLayer, borderCrossingsLayer, ferryRouteLinesLayer, ferryRoutePointsLayer]);
     // Store the default visibility...
@@ -137,7 +137,7 @@ const refreshLayerData = () => tslib_1.__awaiter(void 0, void 0, void 0, functio
     RegionalAlertLayer.reloadData(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
     layerUtil.reloadData(config.pointRestrictions, PointRestrictionsLayer.default());
     layerUtil.reloadData(config.lineRestrictions, LineRestrictionsLayer.default());
-    layerUtil.reloadData(config.travelTimes, TravelTimesLayer.default());
+    // layerUtil.reloadData(config.travelTimes, TravelTimesLayer.default());
     layerUtil.reloadData(config.mountainPasses, MountainLayer.default());
     layerUtil.reloadData(config.weatherStations, WeatherLayer.default());
     layerUtil.reloadData(config.borderCrossings, BorderCrossingsLayer.default());

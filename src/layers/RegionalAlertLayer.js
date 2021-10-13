@@ -177,7 +177,6 @@ const fetchData = (alertUrl, countyUrl, regionUrl) => tslib_1.__awaiter(void 0, 
             const areaGeom = Polygon_1.default.fromJSON(areaFeature.geometry);
             areaGeom.spatialReference = SpatialReference_1.default.fromJSON(json.spatialReference);
             // Add an alert feature...
-            //each.attributes.ExtendedMessage = "Sit laborum qui sunt nostrud nulla sint laboris ullamco dolore fugiat aute adipisicing ad cupidatat. Deserunt non velit adipisicing in duis et exercitation esse amet consequat pariatur. Qui nulla commodo labore pariatur dolore enim ipsum aute nulla nisi ullamco fugiat et. Lorem ut ea dolore commodo esse quis sunt incididunt. Cillum irure velit occaecat est cupidatat nisi in pariatur sint. Sunt laboris officia ad qui enim do Lorem. Consequat sint aliquip incididunt dolor et nulla consequat aute sint.";
             pointGraphics.push(new Graphic_1.default({
                 geometry: areaGeom.centroid,
                 attributes: each.attributes
