@@ -3,7 +3,7 @@
     :IconSvg="layerIcons.find((x) => x.id === 'road-alert')?.paths"
     LightThemeColor="#FFC1074D"
     DarkThemeColor="#FFC107"
-    :Features="[feature]"
+    :Features="features"
     :Config="{
       bannerText: { text: 'Ferries' },
       title: {
@@ -34,7 +34,7 @@
 import { defineComponent, PropType, ref, watch } from "vue";
 import PopupBase from "./PopupBase.vue";
 import FeatureLayer from "@/layers/PointFerryRoutesLayer";
-import { getFeatureInfoById } from "@/utils/featureInfoUtil";
+import { getFeatureInfosByIds } from "@/utils/featureInfoUtil";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
@@ -52,12 +52,11 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const feature = ref<FeatureInfo>();
+    const features = ref<FeatureInfo[]>();
     const layerIcons = layerListIcons;
 
     watch(props, () => {
       if (props.Featureset.layerId === "ferry-routes-points-layer") {
-        //FeatureLayer().id) {
         show();
       } else {
         close();
@@ -66,13 +65,13 @@ export default defineComponent({
 
     const show = () => {
       const setVal = () => {
-        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then((result) => {
+        getFeatureInfosByIds(props.Featureset.ids, FeatureLayer()).then((result) => {
           if (result) {
-            feature.value = result;
+            features.value = result;
           }
         });
       };
-      if (feature.value) {
+      if (features.value) {
         // Clean up the previous data...
         close();
         setVal();
@@ -82,7 +81,7 @@ export default defineComponent({
     };
     // Setting features to undefined closes the popup...
     const close = () => {
-      feature.value = undefined;
+      features.value = undefined;
     };
     const getDescription = (feature: FeatureInfo): string | undefined => {
       let descriptionText: string | undefined = undefined;
@@ -107,7 +106,7 @@ export default defineComponent({
       }
     };
     return {
-      feature,
+      features,
       layerIcons,
       close,
       getTitle,

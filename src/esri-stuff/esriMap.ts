@@ -103,19 +103,11 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const esriRoadsReferenceLayer = RoadsReferenceLayer.initLayer(config.esriRoadsReferenceLayer)
     const esriPlacesReferenceLayer = BoundariesPlacesReferenceLayer.initLayer(config.esriPlacesReferenceLayer)
     const stateRouteShieldsLayer = StateRouteShieldsLayer.initLayer(config.stateRouteShieldsLayer)
-    // const regionalAlertLayer = await initRegionalAlertLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
-    // The first one in the array will be displayed at the bottom of the map... 
-    // const borderCrossingsLayer = initBorderCrossingsLayer(config.borderCrossings)
-    
     const ferryRoutesReferenceLayer = FerryRoutesReferenceLayer.initLayer(config.ferryRoutesReferenceLayer)
     const ferryRouteLinesLayer = initLineFerryRoutesLayer(config.ferryRouteLines)
     const ferryRoutePointsLayer = FerryRoutePointsLayer.initLayer(config.ferryRoutePoints)
-    // webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
-    //     firePerimetersLayer, fireIncidentLayer,
-    //     restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
-    //     pointRestrictionLyr, cameraLyr, roadAlertsLyr, roadClosuresLyr,
-    //     mileMarkersLayer, borderCrossingsLayer, ferryRoutesLayer]);
     const borderCrossingsLayer = await BorderCrossingsLayer.initLayer(config.borderCrossings)
+    // The first one in the array will be displayed at the bottom of the map... 
     webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, ferryRoutesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
         firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
