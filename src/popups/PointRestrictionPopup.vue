@@ -91,7 +91,7 @@ export default defineComponent({
           direction = "Westbound";
           break;
       }
-      const title = `SR ${feature.attributes.route_nr} ${feature.attributes.bridge_name}, ${direction}`
+      const title = `SR ${feature.attributes.route_nr}${feature.attributes.bridge_name?` ${feature.attributes.bridge_name}`:""}, ${direction}`
       return title
     }
     const getMoreInfoURL=(feature: FeatureInfo): MoreInfoURLInfo=>{
