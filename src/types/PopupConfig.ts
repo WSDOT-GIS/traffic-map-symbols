@@ -1,6 +1,7 @@
 import FeatureInfo from "./FeatureInfo";
 import MoreInfoURLInfo from "./MoreInfoURLInfo";
 import PopupRowConfig from "./PopupRowConfig";
+import RowInfo from "./RowInfo";
 
 interface PopupConfig {
     // Text for the banner
@@ -9,11 +10,6 @@ interface PopupConfig {
         fieldName?: string; // display field value
         custom?: (feature: FeatureInfo) => string; // Function that takes feature
     };
-    moreInfoURL:{
-        text?: string; // display hard coded string
-        fieldName?: string; // display field value
-        custom?:(feature: FeatureInfo) => MoreInfoURLInfo;
-    }
     // Optional: Badge shown next to the banner
     badgeText?: {
         text?: string; // display hard coded string
@@ -24,11 +20,16 @@ interface PopupConfig {
         text?: string; // display hard coded string
         fieldName?: string; // Display field value
         isHTML?: boolean; // Determines whether or not title contains HTML
-        custom?: (feature: FeatureInfo) => string; // Function that takes feature
+        custom?: (feature: FeatureInfo | RowInfo) => string; // Function that takes feature
     };
+    subtitle?: PopupRowConfig;// display hard coded subtitle string
     imageFieldName?: string;
     content: PopupRowConfig[];
-    subtitle?: PopupRowConfig;// display hard coded subtitle string
+    moreInfoURL: {
+        text?: string; // display hard coded string
+        fieldName?: string; // display field value
+        custom?: (feature: FeatureInfo) => MoreInfoURLInfo;
+    };
 }
 
 export default PopupConfig;

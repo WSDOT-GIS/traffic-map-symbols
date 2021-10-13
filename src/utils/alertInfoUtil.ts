@@ -1,9 +1,18 @@
 import AlertInfo from "@/types/AlertInfo";
 import FerryAlertInfo from "@/types/FerryAlertInfo";
 
-export const getAlerts = async (url: string): Promise<AlertInfo[]> => {
+/*** Statewide alerts *******************/
+let startAlertUrl: string;
+export const initStateAlerts = (url: string): void => {
+    startAlertUrl = url;
+}
+
+export const getStateAlerts = async (): Promise<AlertInfo[]> => {
+    if (!startAlertUrl) {
+        throw "State alert URL is not set yet."
+    }
     const alerts: AlertInfo[] = [];
-    const fetchResponse = await fetch(url);
+    const fetchResponse = await fetch(startAlertUrl);
     const json = await fetchResponse.json();
     json.features.forEach((each: { attributes: AlertInfo; }) => {
         alerts.push(each.attributes);
@@ -24,12 +33,42 @@ export const getAlerts = async (url: string): Promise<AlertInfo[]> => {
     return alerts;
 }
 
-export const getFerryAlerts = async (url: string): Promise<FerryAlertInfo[]> => {
-    const ferryAlerts: FerryAlertInfo[] = [];
-    const fetchResponse = await fetch(url);
+/*** Ferry Alerts ***************/
+let ferryAlerts: FerryAlertInfo[] | undefined;
+let ferryAlertUrl: string;
+
+export const initFerryAlerts = (url: string): void => {
+    ferryAlertUrl = url;
+}
+
+export const getFerryAlerts = async (routeId: number): Promise<FerryAlertInfo[]> => {
+    if (!ferryAlertUrl) {
+        throw "Ferry Alerts URL is not set yet.";
+    }
+    if (!ferryAlerts) {
+        await reloadFerryAlerts(true);
+    }
+    let alerts: FerryAlertInfo[];
+    if (ferryAlerts) {
+        alerts = ferryAlerts.filter((each) => {
+            return each.FerryRouteId === routeId;
+        }).sort((a, b) => {
+            return a.SortOrder - b.SortOrder;
+        })
+    } else {
+        alerts = [];
+    }
+    return alerts;
+}
+
+export const reloadFerryAlerts = async (force?: boolean): Promise<void> => {
+    if (!force && !ferryAlerts) {
+        return;
+    }
+    const fetchResponse = await fetch(ferryAlertUrl);
     const json = await fetchResponse.json();
+    ferryAlerts = [];
     json.features.forEach((each: { attributes: FerryAlertInfo; }) => {
-        ferryAlerts.push(each.attributes);
+        ferryAlerts?.push(each.attributes);
     });
-    return ferryAlerts;
 }

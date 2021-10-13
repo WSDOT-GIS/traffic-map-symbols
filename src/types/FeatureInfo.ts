@@ -1,3 +1,6 @@
+import RowInfo from "./RowInfo";
+
+
 interface FeatureInfo {
     layerId: string;
     id: number; // Object ID. Can be used as v-for key.
@@ -7,8 +10,12 @@ interface FeatureInfo {
      * No index signature with a parameter of type 'string' was found on type 'Object'."
      */
     attributes: { [key: string]: string | number | undefined };
+    /** Attributes from the related table. */
+    relatedInfos?: RowInfo[];
     mapPoint: { x: number; y: number };
 }
 
 export default FeatureInfo;
+
+
 

@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, ref } from "vue";
 import EsriMapView from "./components/EsriMapView.vue";
 import HeaderView from "./components/HeaderView.vue";
 import FooterView from "./components/FooterView.vue";
@@ -25,23 +25,21 @@ export default defineComponent({
   setup() {
     const mapHeight = ref("500px");
     const store = useStore();
-    onMounted(() => {
-      //resizeMapContainer();
-    });
+    // onMounted(() => {
+    //   //resizeMapContainer();
+    // });
     // Make map fill the screen below the header...
     const resizeMapContainer = () => {
       const headDiv = document.querySelector("#header") as HTMLElement;
       // The menu button has some extra height that is not reflected in the container height, so measure the menu button's height.
       //const menuDiv = document.querySelector(".we-mega-menu-li") as HTMLElement;
       const navDiv = document.querySelector(".nav-outer-wrapper") as HTMLElement;
-      //console.log("*** resizeMapContainer() headDiv: " + headDiv.offsetHeight + ", menu: " + menuDiv.offsetHeight);
       let navH = 0;
       if (navDiv && navDiv.offsetHeight) {
         navH = navDiv.offsetHeight;
       }
       const h = window.innerHeight - headDiv.offsetHeight - navH;
       mapHeight.value = h + "px";
-      //console.log("*** resizeMapContainer() " + mapHeight.value + " navH:" + navH + " head:" + headDiv.offsetHeight);
     };
     window.addEventListener("resize", resizeMapContainer);
 
@@ -68,9 +66,9 @@ body,
   height: 100%;
   /** Got these from internal website */
   font-family: "Lato", sans-serif;
-  font-size: var(--type-scale-base2);
+  /* font-size: var(--type-scale-base2);
   font-weight: var(--font-weight-normal);
-  line-height: var(--type-scale-base4);
+  line-height: var(--type-scale-base4); */
 }
 hr.horizontal-divider {
   border-top: 1px solid #bbb;

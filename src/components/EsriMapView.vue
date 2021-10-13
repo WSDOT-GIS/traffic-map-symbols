@@ -80,7 +80,7 @@ import { clusterMaxScale, getClusterExtent } from "@/utils/clusterUtil";
 import LayerInfo from "@/types/LayerInfo";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import XY from "@/types/XY";
-import { getAlerts, getFerryAlerts } from "@/utils/alertInfoUtil";
+import * as alertInfoUtil from "@/utils/alertInfoUtil";
 import AlertInfo from "@/types/AlertInfo";
 import FerryAlertInfo from "@/types/FerryAlertInfo";
 import { getFeatureInfoById } from "@/utils/featureInfoUtil";
@@ -157,12 +157,14 @@ export default defineComponent({
     const alerts = ref<AlertInfo[]>([]);
     const ferryAlerts = ref<FerryAlertInfo[]>([]);
     getConfig().then((config) => {
-      getAlerts(config.stateAlerts).then((result) => {
+      alertInfoUtil.initStateAlerts(config.stateAlerts);
+      alertInfoUtil.getStateAlerts().then((result) => {
         alerts.value = result;
       });
-      getFerryAlerts(config.ferryAlerts).then((result) => {
-        ferryAlerts.value = result;
-      });
+      alertInfoUtil.initFerryAlerts(config.ferryAlerts);
+      // getFerryAlerts(config.ferryAlerts).then((result) => {
+      //   ferryAlerts.value = result;
+      // });
       // Build the list used by the URL query...
       createLayerGroupInfos(config);
     });
@@ -335,14 +337,14 @@ export default defineComponent({
                     }
                   });
                 } else if (g.layer.id === "ferry-routes-points-layer") {
-                  // Get all overlapping features...
+                  // Display line...
                   getFeatureInfoById(id, g.layer as FeatureLayer).then((result) => {
                     displayPointInteractionGraphics(
                       LineFerryRoutesLayer(),
                       "FerryRouteID",
                       result?.attributes.FerryRouteID
                     );
-                    showPopup(results2Show.layer.id, [id]);
+                    showPopup(g.layer.id, [id]);
                   });
                 } else {
                   showPopup(results2Show.layer.id, [id]);
@@ -383,12 +385,13 @@ export default defineComponent({
       await esriMap.loadRegionalAlert();
       // Update the layer list with regional alert layers.
       store.commit("setLayerList");
-      // Set refresh interval for layers...
+      // Set refresh interval for layers & alerts...
       setInterval(() => {
         esriMap.refreshLayerData();
-        getAlerts(appConfig.stateAlerts).then((result) => {
+        alertInfoUtil.getStateAlerts().then((result) => {
           alerts.value = result;
         });
+        alertInfoUtil.reloadFerryAlerts();
       }, appConfig.layerRefreshMinute * 60000); //60000
       // Setup events on the operational layers...
       initOperationalLayerEvents(mapDiv, esriMap);

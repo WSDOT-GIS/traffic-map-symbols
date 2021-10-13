@@ -3,7 +3,7 @@
     :IconSvg="layerIcons.find((x) => x.id === 'road-alert')?.paths"
     LightThemeColor="#FFC1074D"
     DarkThemeColor="#FFC107"
-    :Features="features"
+    :Features="[feature]"
     :Config="{
       bannerText: { text: 'Ferries' },
       title: {
@@ -34,11 +34,11 @@
 import { defineComponent, PropType, ref, watch } from "vue";
 import PopupBase from "./PopupBase.vue";
 import FeatureLayer from "@/layers/PointFerryRoutesLayer";
-import { getFeatureInfosByIds } from "@/utils/featureInfoUtil";
+import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
-import FerryAlertInfo from "@/types/FerryAlertInfo";
+import { getFerryAlerts } from "@/utils/alertInfoUtil";
 export default defineComponent({
   components: { PopupBase },
   props: {
@@ -46,13 +46,13 @@ export default defineComponent({
       type: Object as PropType<FeaturesetInfo>,
       required: true,
     },
-    Alerts: {
-      type: Object as PropType<Array<FerryAlertInfo>>,
-      required: true,
-    },
+    // Alerts: {
+    //   type: Object as PropType<Array<FerryAlertInfo>>,
+    //   required: true,
+    // },
   },
   setup(props) {
-    const features = ref<FeatureInfo[]>([]);
+    const feature = ref<FeatureInfo>();
     const layerIcons = layerListIcons;
 
     watch(props, () => {
@@ -65,13 +65,26 @@ export default defineComponent({
 
     const show = () => {
       const setVal = () => {
-        getFeatureInfosByIds(props.Featureset.ids, FeatureLayer()).then((result) => {
-          if (result) {
-            features.value = result;
+        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then((ftr) => {
+          if (ftr) {
+            getFerryAlerts(ftr.attributes.FerryRouteID as number).then((alerts) => {
+              console.log(JSON.stringify(alerts));
+              ftr.relatedInfos = [];
+              alerts.forEach((each) => {
+                ftr.relatedInfos?.push({
+                  tableId: "ferry-alerts-table",
+                  attributes: {
+                    AlertFullTitle: each.AlertFullTitle,
+                    HomepageAlertText: each.HomepageAlertText,
+                    SortOrder: each.SortOrder,
+                  },
+                });
+              });
+            });
           }
         });
       };
-      if (features.value) {
+      if (feature.value) {
         // Clean up the previous data...
         close();
         setVal();
@@ -81,32 +94,34 @@ export default defineComponent({
     };
     // Setting features to undefined closes the popup...
     const close = () => {
-      features.value = [];
+      feature.value = undefined;
     };
     const getDescription = (feature: FeatureInfo): string | undefined => {
-      let descriptionText: string | undefined = undefined;
-      props.Alerts.map((x) => {
-        if ((x.FerryRouteId as number) == feature.attributes.FerryRouteID) {
-          descriptionText = x.HomepageAlertText;
-        }
-      });
-      if (descriptionText) {
-        return descriptionText;
-      }
+      return "test";
+      // let descriptionText: string | undefined = undefined;
+      // props.Alerts.map((x) => {
+      //   if ((x.FerryRouteId as number) == feature.attributes.FerryRouteID) {
+      //     descriptionText = x.HomepageAlertText;
+      //   }
+      // });
+      // if (descriptionText) {
+      //   return descriptionText;
+      // }
     };
     const getTitle = (feature: FeatureInfo): string | undefined => {
-      let titleText: string | undefined = undefined;
-      props.Alerts.map((x) => {
-        if ((x.FerryRouteId as number) == feature.attributes.FerryRouteID) {
-          titleText = x.AlertFullTitle;
-        }
-      });
-      if (titleText) {
-        return titleText;
-      }
+      // let titleText: string | undefined = undefined;
+      return "test";
+      // props.Alerts.map((x) => {
+      //   if ((x.FerryRouteId as number) == feature.attributes.FerryRouteID) {
+      //     titleText = x.AlertFullTitle;
+      //   }
+      // });
+      // if (titleText) {
+      //   return titleText;
+      // }
     };
     return {
-      features,
+      feature,
       layerIcons,
       close,
       getTitle,
