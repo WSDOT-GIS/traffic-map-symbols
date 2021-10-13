@@ -1,8 +1,9 @@
 <template>
   <PopupBase
+    :IconSvg="layerIcons.find((x) => x.id === 'traffic-camera-layer')?.paths"
     :MapXY="mapXY"
     Width="w"
-    LightThemeColor="#cce5df"
+    LightThemeColor="#007b5f33"
     DarkThemeColor="#007b5f"
     :Features="features"
     :Config="{
@@ -14,7 +15,10 @@
       imageFieldName: 'ImageURL',
       content: [
         { label: 'Camera Direction', value: { custom: getDirection } },
-        { label: 'Refresh Rate', value: { text: 'Approximately every 5 minutes' } },
+        {
+          label: 'Refresh Rate',
+          value: { text: 'Approximately every 5 minutes' },
+        },
       ],
     }"
     @close="close"

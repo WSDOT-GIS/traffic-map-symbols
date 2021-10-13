@@ -75,15 +75,6 @@ let layer: FeatureLayer | undefined;
 export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
     layer = await layerUtil.initLayer(jsonUrl, "traffic-camera-layer", "Cameras", renderer, fields, "point", false);
     layer.featureReduction = clusterConfig;
-    // layer = new GeoJSONLayer({
-    //     id: "traffic-camera-layer",
-    //     url: url,
-    //     title: "Cameras",
-    //     renderer: renderer,
-    //     featureReduction: clusterConfig,
-    //     fields: fields,
-    //     visible: false,
-    // });
     return layer;
 }
 

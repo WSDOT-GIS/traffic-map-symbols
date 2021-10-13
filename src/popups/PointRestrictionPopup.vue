@@ -1,10 +1,11 @@
 <template>
   <PopupBase
-    LightThemeColor="#f5d2eb"
+    :IconSvg="layerIcons.find((x) => x.id === 'point-restrictions-layer')?.paths"
+    LightThemeColor="#CC209C33"
     DarkThemeColor="#cc209c"
     :Features="[feature]"
     :Config="{
-      bannerText: { text: 'Truck Restriction' },
+      bannerText: { text: 'Truck restriction' },
       badgeText: { custom: getBadgeText },
       title: { custom: getTitle },
       content: [
@@ -27,19 +28,12 @@
           },
         },
       ],
-      moreInfoURL:{
-        custom: getMoreInfoURL
+      moreInfoURL: {
+        custom: getMoreInfoURL,
       },
     }"
     @close="close"
   >
-    <template v-slot:icon>
-      <div
-        v-html="layerIcons.find((x) => x.id == feature?.layerId)?.paths"
-        width="24"
-        height="24"
-      ></div>
-    </template>
   </PopupBase>
 </template>
 <script lang="ts">
@@ -74,9 +68,9 @@ export default defineComponent({
     const getTitle = (feature: FeatureInfo): string => {
       //console.log(feature)
       let direction;
-      switch(feature.attributes.cardinal_direction){
+      switch (feature.attributes.cardinal_direction) {
         case "B":
-          direction="Both Directions";
+          direction = "Both Directions";
           break;
         case "N":
           direction = "Northbound";
@@ -94,24 +88,22 @@ export default defineComponent({
       const title = `SR ${feature.attributes.route_nr}${feature.attributes.bridge_name?` ${feature.attributes.bridge_name}`:""}, ${direction}`
       return title
     }
-    const getMoreInfoURL=(feature: FeatureInfo): MoreInfoURLInfo=>{
+    const getMoreInfoURL = (): MoreInfoURLInfo => {
       //console.log(feature)
-      const moreInfoObject =new Object({
+      const moreInfoObject = new Object({
         url: `https://wsdot.wa.gov/data/tools/bridgeclearance/`,
         text: "Be sure to check out your route in the",
-        linkText: "Bridge Vertical Trip Planner"
-      }) as MoreInfoURLInfo
-      return moreInfoObject
-    }
+        linkText: "Bridge Vertical Trip Planner",
+      }) as MoreInfoURLInfo;
+      return moreInfoObject;
+    };
     const show = () => {
       const setVal = () => {
-        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(
-          (result) => {
-            if (result) {
-              feature.value = result;
-            }
+        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then((result) => {
+          if (result) {
+            feature.value = result;
           }
-        );
+        });
       };
       if (feature.value) {
         // Clean up the previous data...
@@ -146,7 +138,7 @@ export default defineComponent({
       close,
       getBadgeText,
       getTitle,
-      getMoreInfoURL
+      getMoreInfoURL,
     };
   },
 });

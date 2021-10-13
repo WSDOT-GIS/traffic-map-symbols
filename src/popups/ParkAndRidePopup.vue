@@ -1,10 +1,11 @@
 <template>
   <PopupBase
-    LightThemeColor="#eaf7cc"
+    :IconSvg="layerIcons.find((x) => x.id === 'park-ride-layer')?.paths"
+    LightThemeColor="#97D70033"
     DarkThemeColor="#97D700"
     :Features="[feature]"
     :Config="{
-      bannerText: { text: 'Park and Ride' },
+      bannerText: { text: 'Park & Ride' },
       title: { fieldName: 'Lot_Name' },
       content: [
         {
@@ -36,13 +37,6 @@
     }"
     @close="close"
   >
-    <template v-slot:icon>
-      <div
-        v-html="layerIcons.find((x) => x.id === feature?.layerId)?.paths"
-        width="24"
-        height="24"
-      ></div>
-    </template>
   </PopupBase>
 </template>
 <script lang="ts">
@@ -75,13 +69,11 @@ export default defineComponent({
 
     const show = () => {
       const setVal = () => {
-        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(
-          (result) => {
-            if (result) {
-              feature.value = result;
-            }
+        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then((result) => {
+          if (result) {
+            feature.value = result;
           }
-        );
+        });
       };
       if (feature.value) {
         // Clean up the previous data...

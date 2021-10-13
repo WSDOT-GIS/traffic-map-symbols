@@ -1,22 +1,19 @@
 <template>
   <PopupBase
-    LightThemeColor="#c7deff"
-    DarkThemeColor="#00398e"
+    :IconSvg="layerIcons.find((x) => x.id === 'weather-stations-layer')?.paths"
+    LightThemeColor="#00515133"
+    DarkThemeColor="#005151"
     :WeatherForecast="forecastList"
     :Features="[feature]"
     :Config="{
-      bannerText: { text: 'Weather Station' },
+      bannerText: { text: 'Weather station' },
       title: { custom: getTitle },
-      subtitle:
-        {
-          label:'Location',
-          value:{
-            custom: getSubtitle
-          }
-        }
-      ,
-      moreInfoURL:{
-        custom: getMoreInfoURL
+      subtitle: {
+        label: 'Location',
+        value: { custom: getSubtitle },
+      },
+      moreInfoURL: {
+        custom: getMoreInfoURL,
       },
       content: [
         { label: 'Surface temp', value: { custom: getSurfTemp } },
@@ -49,13 +46,6 @@
     }"
     @close="close"
   >
-    <template v-slot:icon>
-      <div
-        v-html="layerIcons.find((x) => x.id == feature?.layerId)?.paths"
-        width="24"
-        height="24"
-      ></div>
-    </template>
   </PopupBase>
 </template>
 <script lang="ts">
@@ -67,7 +57,7 @@ import FeaturesetInfo from "@/types/FeaturesetInfo";
 import FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
 import { getConfig } from "@/utils/appConfigUtil";
-import ForecastListInfo from "@/types/ForecastListInfo"
+import ForecastListInfo from "@/types/ForecastListInfo";
 import MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
 export default defineComponent({
   components: { PopupBase },
@@ -80,11 +70,11 @@ export default defineComponent({
   setup(props) {
     const feature = ref<FeatureInfo>();
     const layerIcons = layerListIcons;
-    const forecastList=ref<ForecastListInfo>();
+    const forecastList = ref<ForecastListInfo>();
     watch(props, () => {
-      if (props.Featureset.layerId === FeatureLayer().id) {//if clicked feature belongs to WeatherStations layer
+      if (props.Featureset.layerId === FeatureLayer().id) {
+        //if clicked feature belongs to WeatherStations layer
         show();
-        
       } else {
         close();
       }
@@ -95,11 +85,12 @@ export default defineComponent({
     };
     const show = () => {
       const setVal = () => {
-        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(//query feature layer for feature
-          async(result) => {
+        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(
+          //query feature layer for feature
+          async (result) => {
             if (result) {
-              forecastList.value=undefined
-              getWeatherForecast(result)
+              forecastList.value = undefined;
+              getWeatherForecast(result);
             }
           }
         );
@@ -116,51 +107,56 @@ export default defineComponent({
     };
     // Setting features to undefined closes the popup...
     const close = () => {
-      console.log("closed")
-      forecastList.value=undefined
+      console.log("closed");
+      forecastList.value = undefined;
       feature.value = undefined;
     };
-    const getWeatherForecast = async(featureresult:FeatureInfo)=>{
-      getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(//query feature layer for feature
+    const getWeatherForecast = async (featureresult: FeatureInfo) => {
+      getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(
+        //query feature layer for feature
         async (response) => {
           if (response) {
-            const featureNWSZoneId = response?.attributes?.NWSZoneId?.toString().replace(/\s/g, "")
+            const featureNWSZoneId = response?.attributes?.NWSZoneId?.toString().replace(/\s/g, "");
             const config = await getConfig();
             //fetch(config.forecastSummaryAPI+featureNWSZoneId).then((result)=>{ ~~summary call
-            fetch(config.forecastExtendedAPI+featureNWSZoneId).then((result)=>{
-              result.json().then((response)=>{
+            fetch(config.forecastExtendedAPI + featureNWSZoneId).then((result) => {
+              result.json().then((response) => {
                 //console.log(response.forecastData)
-                forecastList.value={
-                  nwsZoneId:response.nwsZoneId,
-                  forecastDateTime:response.forecastDateTime,
-                  forecastExpirationDateTime:response.forecastExpirationDateTime,
-                  nwsZoneRegionName:response.nwsZoneRegionName,
-                  forecasts:response.forecastData
-                }
-                feature.value = featureresult
-              })
-            })
+                forecastList.value = {
+                  nwsZoneId: response.nwsZoneId,
+                  forecastDateTime: response.forecastDateTime,
+                  forecastExpirationDateTime: response.forecastExpirationDateTime,
+                  nwsZoneRegionName: response.nwsZoneRegionName,
+                  forecasts: response.forecastData,
+                };
+                feature.value = featureresult;
+              });
+            });
           }
         }
-      );      
-    }
+      );
+    };
     const naText = "N/A";
     const getSubtitle = (feature: FeatureInfo) => {
       let text = naText;
-      if(feature){
-        text = `on ${feature.attributes["WeatherStationDescription"]?.toString().split(" on ")[1]}`
+      if (feature) {
+        const desc = feature.attributes["WeatherStationDescription"]?.toString().split(" on ")[1];
+        if (desc) {
+          text = "on " + desc;
+        }
+        //text = `on ${feature.attributes["WeatherStationDescription"]?.toString().split(" on ")[1]}`;
       }
-      return text
-    }
+      return text;
+    };
     const getMoreInfoURL = (feature: FeatureInfo) => {
       //console.log(feature)
-      const moreInfoObject =new Object({
+      const moreInfoObject = new Object({
         url: `https://wsdotappsqa.wsdot.wa.gov/travel/center/Weather/${feature.attributes.WeatherStationId}`,
         text: "Learn more about the weather and forecast at ",
-        linkText: `${feature.attributes["WeatherStationDescription"]?.toString().split(" on ")[0]} station`
-      }) as MoreInfoURLInfo
-      return moreInfoObject
-    }
+        linkText: `${feature.attributes["WeatherStationDescription"]?.toString().split(" on ")[0]} station`,
+      }) as MoreInfoURLInfo;
+      return moreInfoObject;
+    };
     const getSurfTemp = (feature: FeatureInfo) => {
       let text = naText;
       if (feature) {
@@ -189,11 +185,7 @@ export default defineComponent({
       return formatNum(feature, "WindSpeed", "mph");
     };
 
-    const formatNum = (
-      feature: FeatureInfo,
-      fieldName: string,
-      unit: string
-    ) => {
+    const formatNum = (feature: FeatureInfo, fieldName: string, unit: string) => {
       let text = naText;
       if (feature) {
         const num = Number(feature.attributes[fieldName]);
@@ -202,12 +194,7 @@ export default defineComponent({
       return text;
     };
 
-    const combineNums = (
-      num1: number,
-      num2: number,
-      unit1: string,
-      unit2: string
-    ) => {
+    const combineNums = (num1: number, num2: number, unit1: string, unit2: string) => {
       let text = "";
       if (num1 && !isNaN(num1)) {
         text = `${num1}${unit1}`;
@@ -223,7 +210,7 @@ export default defineComponent({
       }
       return text;
     };
-    
+
     return {
       feature,
       layerIcons,
@@ -235,7 +222,7 @@ export default defineComponent({
       getTitle,
       getSubtitle,
       getMoreInfoURL,
-      forecastList
+      forecastList,
     };
   },
 });

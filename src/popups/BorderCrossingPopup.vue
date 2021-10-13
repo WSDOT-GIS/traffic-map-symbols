@@ -1,10 +1,11 @@
 <template>
   <PopupBase
-    LightThemeColor="#f8ddea"
+    :IconSvg="layerIcons.find((x) => x.id == 'border-crossing')?.paths"
+    LightThemeColor="#e885b433"
     DarkThemeColor="#e885b4"
     :Features="[feature]"
     :Config="{
-      bannerText: { text: 'Border Crossing' },
+      bannerText: { text: 'Border crossing' },
       title: { fieldName: 'BorderCrossingDescription' },
       content: [
         { label: 'Northbound wait time', value: { fieldName: 'WaitTimeText' } },
