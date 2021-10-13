@@ -42,7 +42,7 @@
   <WeatherStationsPopup :Featureset="popupFeatureset" />
   <RestAreaPopup :Featureset="popupFeatureset" />
   <RoadAlertPopup :Featureset="popupFeatureset" />
-  <TravelTimesPopup :Featureset="popupFeatureset" />
+  <!-- <TravelTimesPopup :Featureset="popupFeatureset" /> -->
   <WildfirePointsPopup :Featureset="popupFeatureset" />
   <BorderCrossingPopup :Featureset="popupFeatureset" />
   <RegionalAlertPopup :Featureset="popupFeatureset" />
@@ -94,7 +94,7 @@ import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
 import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
 import MountainPassesLayer from "@/layers/MountainPassesLayer";
 import RoadAlertsLayer from "@/layers/RoadAlertsLayer";
-import TravelTimeLayer from "@/layers/TravelTimeLayer";
+// import TravelTimeLayer from "@/layers/TravelTimeLayer";
 import RestAreasLayer from "@/layers/RestAreasLayer";
 import FireIncidentLayer from "@/layers/FireIncidentLayer";
 import RoadsReferenceLayer from "@/layers/RoadsReferenceLayer";
@@ -112,7 +112,7 @@ import MountainPassPopup from "@/popups/MountainPassPopup.vue";
 import WeatherStationsPopup from "@/popups/WeatherStationPopup.vue";
 import RestAreaPopup from "@/popups/RestAreaPopup.vue";
 import RoadAlertPopup from "@/popups/RoadAlertPopup.vue";
-import TravelTimesPopup from "@/popups/TravelTimesPopup.vue";
+// import TravelTimesPopup from "@/popups/TravelTimesPopup.vue";
 import WildfirePointsPopup from "@/popups/WildfirePointsPopup.vue";
 import BorderCrossingPopup from "@/popups/BorderCrossingPopup.vue";
 import RegionalAlertPopup from "@/popups/RegionalAlertPopup.vue";
@@ -138,7 +138,7 @@ export default defineComponent({
     WeatherStationsPopup,
     RestAreaPopup,
     RoadAlertPopup,
-    TravelTimesPopup,
+    // TravelTimesPopup,
     WildfirePointsPopup,
     BorderCrossingPopup,
     RegionalAlertPopup,
@@ -218,7 +218,7 @@ export default defineComponent({
           RestAreasLayer(),
           RoadAlertsLayer("road-closures-layer"),
           RoadAlertsLayer("road-alerts-layer"),
-          TravelTimeLayer(),
+          // TravelTimeLayer(),
           FireIncidentLayer(),
           RoadsReferenceLayer(),
           BoundariesPlacesReferenceLayer(),

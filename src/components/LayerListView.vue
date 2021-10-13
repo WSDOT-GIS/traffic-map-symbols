@@ -285,7 +285,7 @@
         </ToggleSwitchView>
       </li>
       <!-- Travel Times -->
-      <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
+      <!-- <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
         <ToggleSwitchView
           @toggle="clickEvent"
           :Enabled="true"
@@ -307,7 +307,7 @@
             >
           </template>
         </ToggleSwitchView>
-      </li>
+      </li> -->
       <!--Border Crossings-->
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
         <ToggleSwitchView

@@ -22,7 +22,7 @@ import * as LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
 import * as RoadAlertsLayer from "@/layers/RoadAlertsLayer";
 import * as WeatherLayer from "@/layers/WeatherStationsLayer";
 import * as MountainLayer from "@/layers/MountainPassesLayer";
-import * as TravelTimesLayer from "@/layers/TravelTimeLayer"
+// import * as TravelTimesLayer from "@/layers/TravelTimeLayer"
 import * as FireIncidentsLayer from "@/layers/FireIncidentLayer";
 import * as FirePerimetersLayer from "@/layers/FirePerimeterLayer";
 import * as MileMakersLayer from "@/layers/MileMarkersLayer";
@@ -91,7 +91,7 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const parkRideLyr = await ParkRideLayer.initLayer(config.parkAndRides);
     const weatherLyr = await WeatherLayer.initLayer(config.weatherStations);
     const mtLyr = await MountainLayer.initLayer(config.mountainPasses);
-    const travelTimesLyr = await TravelTimesLayer.initLayer(config.travelTimes);
+    // const travelTimesLyr = await TravelTimesLayer.initLayer(config.travelTimes);
     const lineRestrictionLyr = await LineRestrictionsLayer.initLayer(config.lineRestrictions);
     const pointRestrictionLyr = await PointRestrictionsLayer.initLayer(config.pointRestrictions);
     const cameraLyr = await CameraLayer.initLayer(config.cameras);
@@ -110,7 +110,7 @@ export const loadOperationalLayers = async (): Promise<void> => {
     // The first one in the array will be displayed at the bottom of the map... 
     webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, ferryRoutesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
         firePerimetersLayer, fireIncidentLayer,
-        restAreasLyr, parkRideLyr, weatherLyr, mtLyr, travelTimesLyr, lineRestrictionLyr,
+        restAreasLyr, parkRideLyr, weatherLyr, mtLyr, /*travelTimesLyr,*/ lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, roadAlertLyrs.priority, roadAlertLyrs.closure,
         mileMarkersLayer, borderCrossingsLayer, ferryRouteLinesLayer, ferryRoutePointsLayer]);
     // Store the default visibility...
@@ -134,7 +134,7 @@ export const refreshLayerData = async (): Promise<void> => {
     RegionalAlertLayer.reloadData(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
     layerUtil.reloadData(config.pointRestrictions, PointRestrictionsLayer.default());
     layerUtil.reloadData(config.lineRestrictions, LineRestrictionsLayer.default());
-    layerUtil.reloadData(config.travelTimes, TravelTimesLayer.default());
+    // layerUtil.reloadData(config.travelTimes, TravelTimesLayer.default());
     layerUtil.reloadData(config.mountainPasses, MountainLayer.default());
     layerUtil.reloadData(config.weatherStations, WeatherLayer.default());
     layerUtil.reloadData(config.borderCrossings, BorderCrossingsLayer.default());
