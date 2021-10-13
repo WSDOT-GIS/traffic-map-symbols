@@ -1,38 +1,38 @@
 <template>
   <PopupBase
-    LightThemeColor="#f5c4c7"
-    DarkThemeColor="#c40009"
+    :IconSvg="layerIcons.find((x) => x.id === 'fire-incidents-layer')?.paths"
+    LightThemeColor="#D23D004D"
+    DarkThemeColor="#D23D00"
     :Features="[feature]"
     :Config="{
-      bannerText: { text: 'Fire' },
+      bannerText: { text: 'Wildland fire' },
       title: { fieldName: 'IncidentName' },
       content: [
-        {label: 'Type',value: {fieldName: 'IncidentTypeCategory'}},
-        {label: 'Cause', value: {fieldName: 'FireCause' }},
-        {label: 'Daily acres',value: {custom:getDailyAcres}},
-        {label: 'Total acres burned',value: {custom:getTotalAcres}},
-        {label: 'Percentage contained',value:{ custom:getPercentContained}},
-        {label: 'Discovery Date',value: {
+        { label: 'Type', value: { fieldName: 'IncidentTypeCategory' } },
+        { label: 'Cause', value: { fieldName: 'FireCause' } },
+        { label: 'Daily acres', value: { custom: getDailyAcres } },
+        { label: 'Total acres burned', value: { custom: getTotalAcres } },
+        { label: 'Percentage contained', value: { custom: getPercentContained } },
+        {
+          label: 'Discovery Date',
+          value: {
             fieldName: 'FireDiscoveryDateTime',
             isDate: true,
             isTime: true,
-            },
+          },
         },
-        {label: 'Last Updated',value:{ 
-            fieldName:'ModifiedOnDateTime',
+        {
+          label: 'Last Updated',
+          value: {
+            fieldName: 'ModifiedOnDateTime',
             isDate: true,
-            isTime: true,}},
+            isTime: true,
+          },
+        },
       ],
     }"
     @close="close"
   >
-    <template v-slot:icon>
-      <div
-        v-html="layerIcons.find((x) => x.id == feature?.layerId)?.paths"
-        width="24"
-        height="24"
-      ></div>
-    </template>
   </PopupBase>
 </template>
 <script lang="ts">
@@ -55,36 +55,38 @@ export default defineComponent({
     const feature = ref<FeatureInfo>();
     const layerIcons = layerListIcons;
     watch(props, () => {
-      if (props.Featureset.layerId === FeatureLayer().id) {//if clicked feature belongs to WeatherStations layer
+      if (props.Featureset.layerId === FeatureLayer().id) {
+        //if clicked feature belongs to WeatherStations layer
         show();
       } else {
         close();
       }
     });
-    const getPercentContained=(feature:FeatureInfo)=>{
-      let formattedPercent = ""
-      if(feature.attributes["PercentContained"]){
-        formattedPercent=`${feature.attributes["PercentContained"]}%`
+    const getPercentContained = (feature: FeatureInfo) => {
+      let formattedPercent = "";
+      if (feature.attributes["PercentContained"]) {
+        formattedPercent = `${feature.attributes["PercentContained"]}%`;
       }
-      return formattedPercent
-    }
-    const getDailyAcres = (feature:FeatureInfo)=>{
-       let formattedAcres = ""
-      if(feature.attributes["DailyAcres"]){
-        formattedAcres=`${(parseFloat(feature.attributes["DailyAcres"] as string)).toLocaleString()}`
+      return formattedPercent;
+    };
+    const getDailyAcres = (feature: FeatureInfo) => {
+      let formattedAcres = "";
+      if (feature.attributes["DailyAcres"]) {
+        formattedAcres = `${parseFloat(feature.attributes["DailyAcres"] as string).toLocaleString()}`;
       }
-      return formattedAcres
-    }
-    const getTotalAcres = (feature:FeatureInfo)=>{
-      let formattedAcres = ""
-      if(feature.attributes["CalculatedAcres"]){
-        formattedAcres=`${(parseFloat(feature.attributes["CalculatedAcres"] as string)).toLocaleString()}`
+      return formattedAcres;
+    };
+    const getTotalAcres = (feature: FeatureInfo) => {
+      let formattedAcres = "";
+      if (feature.attributes["CalculatedAcres"]) {
+        formattedAcres = `${parseFloat(feature.attributes["CalculatedAcres"] as string).toLocaleString()}`;
       }
-      return formattedAcres
-    }
+      return formattedAcres;
+    };
     const show = () => {
       const setVal = () => {
-        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(//query feature layer for feature
+        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(
+          //query feature layer for feature
           (result) => {
             if (result) {
               // console.log(result)
@@ -113,7 +115,7 @@ export default defineComponent({
       close,
       getPercentContained,
       getDailyAcres,
-      getTotalAcres
+      getTotalAcres,
     };
   },
 });

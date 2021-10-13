@@ -4,10 +4,8 @@
     class="popup-modal-container"
     :class="{
       'w3-modal': smallMedia,
-      'popup-modal-container-show':
-        smallMedia && propFeatures.length > 0 && propFeatures[0],
-      'popup-modal-container-hide':
-        smallMedia && (!propFeatures || propFeatures.length == 0),
+      'popup-modal-container-show': smallMedia && propFeatures.length > 0 && propFeatures[0],
+      'popup-modal-container-hide': smallMedia && (!propFeatures || propFeatures.length == 0),
     }"
   >
     <div
@@ -22,10 +20,7 @@
       :style="popupTopLeft"
     >
       <!-- container without the pointer -->
-      <div
-        :style="{ maxHeight: maxHeight + 'px' }"
-        class="popup-inner-container"
-      >
+      <div :style="{ maxHeight: maxHeight + 'px' }" class="popup-inner-container w3-display-container">
         <div class="popup-header w3-left-align">
           <div
             class="popup-banner"
@@ -34,9 +29,7 @@
               borderColor: DarkThemeColor,
             }"
           >
-            <div class="popup-banner-icon">
-              <slot name="icon"></slot>
-            </div>
+            <div class="popup-banner-icon" v-html="IconSvg"></div>
             <span class="popup-banner-text"> {{ getBannerText() }}</span>
           </div>
           <div
@@ -50,32 +43,19 @@
           >
             {{ badgeText }}
           </div>
-
-          <button
-            class="popup-close-button w3-button w3-display-right"
-            @click="close"
-          >
-            &times;
-          </button>
         </div>
+        <button class="popup-close-button w3-button w3-display-topright" @click="close">&times;</button>
         <h4 v-if="Config.title.isHTML != true" class="popup-title w3-container">
           {{ getTitle() }}
         </h4>
-        <h4
-          v-if="Config.title.isHTML == true"
-          v-html="getTitle()"
-          class="popup-title w3-container"
-        ></h4>
-        <div v-if="Config.subtitle && Config.subtitle != 'on Undefined'">
+        <h4 v-if="Config.title.isHTML == true" v-html="getTitle()" class="popup-title w3-container"></h4>
+        <div v-if="Config.subtitle" class="popup-content w3-container" >
           <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
         </div>
         <div v-if="propWeatherForecast != undefined">
           <table class="weatherForecastTable">
             <tr id="weatherPeriodText">
-              <td
-                v-for="eachFeature in propWeatherForecast.forecasts"
-                :key="eachFeature.forecastNumber"
-              >
+              <td v-for="eachFeature in propWeatherForecast.forecasts" :key="eachFeature.forecastNumber">
                 {{ eachFeature.periodText }}
               </td>
             </tr>
@@ -85,19 +65,11 @@
                 v-for="eachFeature in propWeatherForecast.forecasts"
                 :key="eachFeature.forecastNumber"
               >
-                <img
-                  :src="
-                    'https://images.wsdot.wa.gov/traffic/weaicons/' +
-                    eachFeature.weatherIconFileName
-                  "
-                />
+                <img :src="'https://images.wsdot.wa.gov/traffic/weaicons/' + eachFeature.weatherIconFileName" />
               </td>
             </tr>
             <tr id="weatherForecastDescription">
-              <td
-                v-for="eachFeature in propWeatherForecast.forecasts"
-                :key="eachFeature.forecastNumber"
-              >
+              <td v-for="eachFeature in propWeatherForecast.forecasts" :key="eachFeature.forecastNumber">
                 {{ eachFeature.weatherDescription }}
               </td>
             </tr>
@@ -127,46 +99,26 @@
             <pagination v-if="slidesCount > 1" />
           </template>
         </Carousel>
-        <div class="travelDelayTime" v-if="propTravelDelay > 0">
+        <div class="travelDelayTime" v-if="propTravelDelay && propTravelDelay > 0">
           {{ `${propTravelDelay} minute delay` }}
         </div>
-        <div
-          v-for="eachConfig in Config.content"
-          :key="eachConfig.label"
-          class="popup-content w3-container"
-        >
-          <PopupRow
-            v-if="Config.content"
-            :Config="eachConfig"
-            :Feature="Features[currentIdx]"
-          />
+        <div v-for="eachConfig in Config.content" :key="eachConfig.label" class="popup-content w3-container">
+          <PopupRow v-if="Config.content" :Config="eachConfig" :Feature="Features[currentIdx]" />
         </div>
-      </div>
-      <div v-if="Config.moreInfoURL">
-        <div
-          v-if="!Config.moreInfoURL.text == ''"
-          class="popup-title w3-container"
-        >
-          {{ getMoreInfoURL() }}
+        <div v-if="Config.moreInfoURL">
+          <div v-if="Config.moreInfoURL.text && Config.moreInfoURL.text !== ''" class="popup-content w3-container">
+            {{ getMoreInfoURL() }}
+          </div>
+          <div v-if="Config.moreInfoURL.custom" class="popup-content w3-container">
+            <div v-html="getMoreInfoURL()"></div>
+          </div>
         </div>
-        <div v-if="Config.moreInfoURL.custom" class="popup-title w3-container">
-          <div v-html="getMoreInfoURL()"></div>
-        </div>
-      </div>
-    </div>
-  </div>
+      </div><!-- Inner container -->
+    </div><!-- Popup container -->
+  </div><!-- Modal container -->
 </template>
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  nextTick,
-  onUpdated,
-  PropType,
-  ref,
-  toRefs,
-  watch,
-} from "vue";
+import { computed, defineComponent, nextTick, onUpdated, PropType, ref, toRefs, watch } from "vue";
 import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
 import { useStore } from "@/store";
@@ -213,6 +165,10 @@ export default defineComponent({
       required: false,
     },
     LightBadgeColor: {
+      type: String,
+      required: false,
+    },
+    IconSvg: {
       type: String,
       required: false,
     },
@@ -338,12 +294,7 @@ export default defineComponent({
     });
     // Watch map moving...
     watch(mapCenter, (newValue, oldValue) => {
-      if (
-        !props.Features ||
-        props.Features.length === 0 ||
-        !props.Features[0] ||
-        !oldValue
-      ) {
+      if (!props.Features || props.Features.length === 0 || !props.Features[0] || !oldValue) {
         return;
       }
       if (oldValue.x !== 0 && oldValue.y !== 0) {
@@ -374,9 +325,7 @@ export default defineComponent({
            even though the w3-modal class is disabled. So need to move the popup out of the container. */
         if (!smallMedia.value) {
           if (modalContainerRef.value.contains(containerRef.value)) {
-            document
-              .getElementById("map-container")
-              ?.appendChild(containerRef.value);
+            document.getElementById("map-container")?.appendChild(containerRef.value);
             // console.log("...Removed popup div from the modal div.");
           }
         }
@@ -427,11 +376,7 @@ export default defineComponent({
         // Not everything is loaded yet.
         return;
       }
-      if (
-        !props.Features ||
-        props.Features.length === 0 ||
-        !props.Features[0]
-      ) {
+      if (!props.Features || props.Features.length === 0 || !props.Features[0]) {
         // Nothing to show...
         return;
       }
@@ -489,10 +434,8 @@ export default defineComponent({
             let shiftXY = calcShiftXY(newTopLeft, h, w);
             const outOfBoundDir = checkPannedExtent(shiftXY.x, shiftXY.y);
             if (
-              (relativePosition.value === relativePositions.above &&
-                outOfBoundDir[0] === "n") ||
-              (relativePosition.value === relativePositions.below &&
-                outOfBoundDir[0] === "s")
+              (relativePosition.value === relativePositions.above && outOfBoundDir[0] === "n") ||
+              (relativePosition.value === relativePositions.below && outOfBoundDir[0] === "s")
             ) {
               const bestPosition = getBestRelativePosition(h);
               relativePosition.value = bestPosition;
@@ -571,10 +514,7 @@ export default defineComponent({
      * Figure out the top and left position of the popup.
      * NOTE: Make sure to set the relativePosition before calling this.
      */
-    const calcTopLeft = (
-      height: number,
-      width: number
-    ): { top: number; left: number } => {
+    const calcTopLeft = (height: number, width: number): { top: number; left: number } => {
       let newTop = 0;
       switch (relativePosition.value) {
         case relativePositions.below:
@@ -597,11 +537,7 @@ export default defineComponent({
     /**
      * Calulate how far map need to be moved so the top of the popup is visible within the map view.
      */
-    const calcShiftXY = (
-      topLeft: { top: number; left: number },
-      height: number,
-      width: number
-    ): XY => {
+    const calcShiftXY = (topLeft: { top: number; left: number }, height: number, width: number): XY => {
       let shiftY = 0;
       let shiftX = 0;
       const top = topLeft.top;
@@ -656,11 +592,7 @@ export default defineComponent({
       // console.log(JSON.stringify(popupTopLeft.value));
     };
     const getMoreInfoURL = () => {
-      if (
-        !props.Features ||
-        props.Features.length === 0 ||
-        !props.Features[currentIdx.value]
-      ) {
+      if (!props.Features || props.Features.length === 0 || !props.Features[currentIdx.value]) {
         // "Nothing to show...
         return;
       }
@@ -669,13 +601,9 @@ export default defineComponent({
       if (props.Config.moreInfoURL.text) {
         text = props.Config.moreInfoURL.text;
       } else if (props.Config.moreInfoURL.fieldName) {
-        text = props.Features[currentIdx.value].attributes[
-          props.Config.moreInfoURL.fieldName
-        ] as string;
+        text = props.Features[currentIdx.value].attributes[props.Config.moreInfoURL.fieldName] as string;
       } else if (props.Config.moreInfoURL.custom) {
-        const func = props.Config.moreInfoURL.custom as (
-          f: FeatureInfo
-        ) => MoreInfoURLInfo;
+        const func = props.Config.moreInfoURL.custom as (f: FeatureInfo) => MoreInfoURLInfo;
         moreInfoObject = func(props.Features[currentIdx.value]);
       }
       if (!text) {
@@ -690,11 +618,7 @@ export default defineComponent({
       }
     };
     const getBannerText = () => {
-      if (
-        !props.Features ||
-        props.Features.length === 0 ||
-        !props.Features[currentIdx.value]
-      ) {
+      if (!props.Features || props.Features.length === 0 || !props.Features[currentIdx.value]) {
         // "Nothing to show...
         return;
       }
@@ -702,13 +626,9 @@ export default defineComponent({
       if (props.Config.bannerText.text) {
         text = props.Config.bannerText.text;
       } else if (props.Config.bannerText.fieldName) {
-        text = props.Features[currentIdx.value].attributes[
-          props.Config.bannerText.fieldName
-        ] as string;
+        text = props.Features[currentIdx.value].attributes[props.Config.bannerText.fieldName] as string;
       } else if (props.Config.bannerText.custom) {
-        const func = props.Config.bannerText.custom as (
-          f: FeatureInfo
-        ) => string;
+        const func = props.Config.bannerText.custom as (f: FeatureInfo) => string;
         text = func(props.Features[currentIdx.value]);
       }
       if (!text) {
@@ -717,11 +637,7 @@ export default defineComponent({
       return text;
     };
     const getTitle = () => {
-      if (
-        !props.Features ||
-        props.Features.length === 0 ||
-        !props.Features[currentIdx.value]
-      ) {
+      if (!props.Features || props.Features.length === 0 || !props.Features[currentIdx.value]) {
         // "Nothing to show...
         return;
       }
@@ -729,9 +645,7 @@ export default defineComponent({
       if (props.Config.title.text) {
         text = props.Config.title.text;
       } else if (props.Config.title.fieldName) {
-        text = props.Features[currentIdx.value].attributes[
-          props.Config.title.fieldName
-        ] as string;
+        text = props.Features[currentIdx.value].attributes[props.Config.title.fieldName] as string;
       } else if (props.Config.title.custom) {
         const func = props.Config.title.custom as (f: FeatureInfo) => string;
         text = func(props.Features[currentIdx.value]);
@@ -769,13 +683,9 @@ export default defineComponent({
       if (props.Config.badgeText.text) {
         text = props.Config.badgeText.text;
       } else if (props.Config.badgeText.fieldName) {
-        text = props.Features[currentIdx.value].attributes[
-          props.Config.badgeText.fieldName
-        ] as string;
+        text = props.Features[currentIdx.value].attributes[props.Config.badgeText.fieldName] as string;
       } else if (props.Config.badgeText.custom) {
-        const func = props.Config.badgeText.custom as (
-          f: FeatureInfo
-        ) => string;
+        const func = props.Config.badgeText.custom as (f: FeatureInfo) => string;
         text = func(props.Features[currentIdx.value]);
       }
       if (!text) {
@@ -787,8 +697,7 @@ export default defineComponent({
       let url = "";
       if (props.Config.imageFieldName) {
         const d = new Date();
-        url =
-          feature.attributes[props.Config.imageFieldName] + "?a=" + d.getTime();
+        url = feature.attributes[props.Config.imageFieldName] + "?a=" + d.getTime();
       }
       return url;
     };
@@ -918,7 +827,6 @@ export default defineComponent({
 
 .popup-header {
   position: relative;
-  /* margin: 8px 0; */
   padding-right: 10px;
   width: 100%;
 }
@@ -926,51 +834,67 @@ export default defineComponent({
   left: 0;
   display: inline-block;
   width: auto;
-  padding: 5px 10px;
+  padding: 2px 8px;
   color: #000;
   text-align: left;
   border-style: solid;
-  border-width: 2px;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
+  border-width: 1px;
+  border-radius: 0 4px 4px 0;
 }
 .popup-banner-icon {
-  vertical-align: middle;
-  display: inline-block;
-  height: 24px;
-  width: 24px;
+  float: left;
+  display: flex;
+  align-items: center;
+  height: auto;
+  width: 18px;
 }
+.popup-banner-icon svg {
+  height: 100%;
+  width: 100%;
+}
+
 .popup-banner-text {
   padding: 0 5px;
-  vertical-align: middle;
-  font-weight: 700;
+  font-size: var(--type-scale-base2);
+  line-height: var(--type-scale-base4);
+  font-weight: var(--font-weight-bold);
 }
 .popup-badge {
   display: inline-block;
-  font-weight: 700;
-  font-size: small;
+  font-size: var(--type-scale-base2);
+  line-height: var(--type-scale-base4);
+  font-weight: var(--font-weight-bold);
   padding: 3px;
   border-radius: 5px;
-  border-width: 2px;
+  border-width: 1px;
   border-style: solid;
   margin: 3px 1em 0 1em;
 }
 .popup-title {
-  margin: 5px 0;
+  margin: 10px 0;
   text-align: left;
+  font-size: var(--type-scale-base6);
+  line-height: var(--type-scale-base8);
+  font-weight: var(--font-weight-bold);
 }
-/* .popup-content {
-  text-align: left;
-  margin-bottom: 8px;
-} */
+
 .popup-close-button {
-  position: absolute;
-  /* top: 0; */
-  /* right: 0; */
   border-style: none;
   background-color: transparent;
-  font-size: 1.5em;
+  font-size: var(--type-scale-base6);
+  line-height: var(--type-scale-base8);
+  font-weight: var(--font-weight-normal);
   vertical-align: top;
+}
+.popup-content {
+  text-align: left;
+  font-size: var(--type-scale-base1);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--type-scale-base3);
+}
+
+.popup-content-section {
+  margin-bottom: 8px;
 }
 
 /* Picture stylings ******/
@@ -984,53 +908,6 @@ export default defineComponent({
 /* Hide the 1/3 of circle behind right & left arrow. */
 .carousel {
   overflow: hidden;
-}
-</style>
-<style>
-.popup-inner-container {
-  color: #000;
-}
-/* Right and left arrows to scroll the pictures. */
-/* .carousel__prev,
-.carousel__next {
-  background-color: transparent !important;
-}*/
-.carousel__prev {
-  left: 16px;
-  top: 40%;
-}
-.carousel__next {
-  right: 16px;
-  top: 40%;
-}
-.carousel__prev:hover {
-  filter: drop-shadow(2px 2px 3px rgb(0 0 0 / 0.5));
-  left: 17px;
-  top: 39%;
-}
-.carousel__next:hover {
-  filter: drop-shadow(-2px 2px 3px rgb(0 0 0 / 0.5));
-  right: 17px;
-  top: 39%;
-}
-.carousel__prev svg path {
-  d: path(
-    "M 16.500785,17.692215 10.752113,11.931001 16.500785,6.169785 14.731001,4.4 7.2,11.931001 14.731001,19.462 Z"
-  );
-}
-.carousel__next svg path {
-  d: path(
-    "M 7.8,6.1697845 13.548671,11.930999 7.8,17.692215 9.569783,19.462 17.100784,11.930999 9.569783,4.3999995 Z"
-  );
-}
-.carousel__pagination-button {
-  width: 10px;
-  height: 10px;
-  border-radius: 10px;
-}
-.carousel__pagination {
-  margin: 5px;
-  padding-left: 0;
 }
 #weatherForecastIcons #weatherForecastDescription {
   font-size: 5pt;
@@ -1064,7 +941,10 @@ export default defineComponent({
 .weatherForecastTable {
   margin: auto;
   width: 95%;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+  font-size: var(--type-scale-base2);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--type-scale-base4);
 }
 .travelDelayTime {
   font-size: 20px;
@@ -1072,4 +952,52 @@ export default defineComponent({
   text-align: left;
   margin: 0px 0px 5px 16px;
 }
+</style>
+
+
+<style>
+.popup-inner-container {
+  color: #000;
+}
+/* Right and left arrows to scroll the pictures. */
+/* .carousel__prev,
+.carousel__next {
+  background-color: transparent !important;
+}*/
+.carousel__prev {
+  left: 16px;
+  top: 40%;
+}
+.carousel__next {
+  right: 16px;
+  top: 40%;
+}
+.carousel__prev:hover {
+  filter: drop-shadow(2px 2px 3px rgb(0 0 0 / 0.5));
+  left: 17px;
+  top: 39%;
+}
+.carousel__next:hover {
+  filter: drop-shadow(-2px 2px 3px rgb(0 0 0 / 0.5));
+  right: 17px;
+  top: 39%;
+}
+.carousel__prev svg path {
+  d: path(
+    "M 16.500785,17.692215 10.752113,11.931001 16.500785,6.169785 14.731001,4.4 7.2,11.931001 14.731001,19.462 Z"
+  );
+}
+.carousel__next svg path {
+  d: path("M 7.8,6.1697845 13.548671,11.930999 7.8,17.692215 9.569783,19.462 17.100784,11.930999 9.569783,4.3999995 Z");
+}
+.carousel__pagination-button {
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+}
+.carousel__pagination {
+  margin: 5px;
+  padding-left: 0;
+}
+
 </style>

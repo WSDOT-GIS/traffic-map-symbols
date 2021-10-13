@@ -1,44 +1,39 @@
 <template>
   <PopupBase
-    LightThemeColor="#fcdeff"
+    :IconSvg="layerIcons.find((x) => x.id == 'travel-times-layer')?.paths"
+    LightThemeColor="#96359f33"
     DarkThemeColor="#96359f"
     :Features="[feature]"
     :TravelDelay="TravelDelay"
     :Config="{
-      bannerText: { text:'Travel Time' },
+      bannerText: { text: 'Travel time' },
       badgeText: { custom: getDelayStatus },
       title: { custom: getTitle },
       content: [
-        { 
-          label: 'Average Time (Min.)', 
-          value: { fieldName: 'AverageTime' }, 
+        {
+          label: 'Average Time (Min.)',
+          value: { fieldName: 'AverageTime' },
         },
-        { 
-          label: 'Current Time (Min.)', 
-          value: { custom: getCurrentTime},
-        },{ 
-          label: 'HOV Lane Time (Min.)', 
-          value: { custom: getHOVTime},
+        {
+          label: 'Current Time (Min.)',
+          value: { custom: getCurrentTime },
         },
-        { 
-          label:'Last Updated', 
-          value: { 
+        {
+          label: 'HOV Lane Time (Min.)',
+          value: { custom: getHOVTime },
+        },
+        {
+          label: 'Last Updated',
+          value: {
             fieldName: 'TimeUpdated',
             isDate: true,
-            isTime: true
-          }
-        }
+            isTime: true,
+          },
+        },
       ],
     }"
     @close="close"
   >
-    <template v-slot:icon>
-      <div
-        v-html="layerIcons.find((x) => x.id == feature?.layerId)?.paths"
-        width="24"
-        height="24"
-      ></div>
-    </template>
   </PopupBase>
 </template>
 <script lang="ts">
@@ -72,15 +67,11 @@ export default defineComponent({
 
     const show = () => {
       const setVal = () => {
-        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(
-          (result) => {
-            if (result) {
-              // console.log(result)
-              //console.log(result)
-              feature.value = result;
-            }
+        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then((result) => {
+          if (result) {
+            feature.value = result;
           }
-        );
+        });
       };
       if (feature.value) {
         // Clean up the previous data...
@@ -94,16 +85,16 @@ export default defineComponent({
     const close = () => {
       feature.value = undefined;
     };
-    const getDelayStatus = () =>{
+    const getDelayStatus = () => {
       let delayStatus = undefined;
-      TravelDelay.value>0?delayStatus="Delayed":delayStatus=undefined
-      return delayStatus
-    }
+      TravelDelay.value > 0 ? (delayStatus = "Delayed") : (delayStatus = undefined);
+      return delayStatus;
+    };
     const getTime = (feature: FeatureInfo): string => {
       const title = feature.attributes["Title"];
       return `${title}`;
     };
-    const getHOVTime = (feature: FeatureInfo): string  => {
+    const getHOVTime = (feature: FeatureInfo): string => {
       let HOVTime;
       var now = new Date;
       var utc_timestamp = Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate(),now.getUTCHours(),now.getUTCMinutes(),now.getUTCSeconds(),now.getUTCMilliseconds());
@@ -117,7 +108,7 @@ export default defineComponent({
       }
       return HOVTime as string;
     };
-    const getCurrentTime = (feature: FeatureInfo): string  => {
+    const getCurrentTime = (feature: FeatureInfo): string => {
       let currentTime;
       var now = new Date;
       var utc_timestamp = Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate(),now.getUTCHours(),now.getUTCMinutes(),now.getUTCSeconds(),now.getUTCMilliseconds());
@@ -133,7 +124,7 @@ export default defineComponent({
         ((feature.attributes.CurrentTime as number) - (feature.attributes.AverageTime as number))>0?TravelDelay.value=((feature.attributes.CurrentTime as number) - (feature.attributes.AverageTime as number)):TravelDelay.value=0
       }
       return currentTime as string;
-    }
+    };
     const getTitle = (feature: FeatureInfo): string => {
       const title = feature.attributes["Title"];
       return `${title}`;
@@ -147,7 +138,7 @@ export default defineComponent({
       getDelayStatus,
       TravelDelay,
       getHOVTime,
-      getCurrentTime
+      getCurrentTime,
     };
   },
 });

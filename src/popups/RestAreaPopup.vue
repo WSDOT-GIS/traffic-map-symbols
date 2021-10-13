@@ -1,10 +1,11 @@
 <template>
   <PopupBase
-    LightThemeColor="#d8e8eb"
-    DarkThemeColor="#63a4ad"
+  :IconSvg="layerIcons.find((x) => x.id === 'rest-areas-layer')?.paths"
+    LightThemeColor="#00AEC733"
+    DarkThemeColor="#00AEC7"
     :Features="[feature]"
     :Config="{
-      bannerText: { text: 'Rest Area' },
+      bannerText: { text: 'Rest area' },
       title: { text: 'Location' },
       content: [
          {

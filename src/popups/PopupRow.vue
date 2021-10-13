@@ -1,8 +1,8 @@
 <template>
-  <div v-if="visible" class="popup-content w3-container">
-    <span class="popup-key">{{ getLabel() }}</span>
-    <span v-if="propIsHTML!=true" class="popup-value">{{ getText() }}</span>
-    <span v-if="propIsHTML==true" class="popup-value" v-html="getText()"></span>
+  <div v-if="visible" class="popup-row-container">
+    <span class="popup-row-label">{{ getLabel() }}</span>
+    <span v-if="!propIsHTML" class="popup-row-value">{{ getText() }}</span>
+    <span v-if="propIsHTML" class="popup-row-value" v-html="getText()"></span>
   </div>
 </template>
 <script lang="ts">
@@ -26,25 +26,25 @@ export default defineComponent({
     watch(props, () => {
       getText();
     });
-    const propIsHTML = ref<boolean>(false)
+    const propIsHTML = ref<boolean>(false);
     const getLabel = () => {
-      if(props.Config.label){
+      if (props.Config.label) {
         if (!props.Feature) {
-        return;
-      }
-      let label = "";
-      if (typeof props.Config.label === "string") {
-        label = props.Config.label;
-      } else {
-        const func = props.Config.label as (f: FeatureInfo) => string;
-        label = func(props.Feature);
-      }
-      if (label) {
-        label += ": ";
-      } else {
-        label = "";
-      }
-      return label;
+          return;
+        }
+        let label = "";
+        if (typeof props.Config.label === "string") {
+          label = props.Config.label;
+        } else {
+          const func = props.Config.label as (f: FeatureInfo) => string;
+          label = func(props.Feature);
+        }
+        if (label) {
+          label += ": ";
+        } else {
+          label = "";
+        }
+        return label;
       }
     };
 
@@ -57,22 +57,20 @@ export default defineComponent({
         text = props.Config.value.text;
       } else if (props.Config.value.fieldName) {
         let value = props.Feature.attributes[props.Config.value.fieldName];
-        
+
         if (value) {
           if (props.Config.value.isDate) {
+            /* IT said date will be in UTC, so removed the workaround below. If necessary simply
+               change all the methods to UTC... methods. */
             /* The date value is in local time, so do not let JS do time conversion.
                By using the UTC... functions, we can get the date as is without conversion. */
             const date = new Date(value);
-            let hrs = date.getUTCHours()+9
-            console.log(hrs)
-            console.log(date.getMinutes)
-            text = `${
-              formatDateTimePart(date.getUTCMonth() + 1)
-            }/${formatDateTimePart(date.getUTCDate())
-            }/${date.getUTCFullYear()}`;
+            text = `${formatDateTimePart(date.getMonth() + 1)}/${formatDateTimePart(
+              date.getDate()
+            )}/${date.getFullYear()}`;
             if (props.Config.value.isTime) {
-              let hours = date.getUTCHours();
-              let minutes = date.getUTCMinutes();
+              let hours = date.getHours();
+              let minutes = date.getMinutes();
               // Check whether AM or PM
               const ampm = hours >= 12 ? "PM" : "AM";
               // Find current hour in AM-PM Format
@@ -81,21 +79,20 @@ export default defineComponent({
               hours = hours ? hours : 12;
               text += ` ${formatDateTimePart(hours)}:${formatDateTimePart(minutes)} ${ampm}`;
             }
-          }
-          else if(props.Config.value.isHTML==true){
-            propIsHTML.value=true
+          } else if (props.Config.value.isHTML == true) {
+            propIsHTML.value = true;
             text = value.toString();
           } else {
             text = value.toString();
           }
         }
       } else if (props.Config.value.custom) {
-         if(props.Config.value.isHTML==true){
-            propIsHTML.value=true
-            text =props.Config.value.custom(props.Feature);
-          } else {
-            text =props.Config.value.custom(props.Feature);
-          }
+        if (props.Config.value.isHTML == true) {
+          propIsHTML.value = true;
+          text = props.Config.value.custom(props.Feature);
+        } else {
+          text = props.Config.value.custom(props.Feature);
+        }
       }
       // Do not show when data is not available...
       if (!text) {
@@ -120,21 +117,32 @@ export default defineComponent({
       visible,
       getLabel,
       getText,
-      propIsHTML
+      propIsHTML,
     };
   },
 });
 </script>
 <style scoped>
-.popup-content {
-  text-align: left;
+.popup-row-container {
   margin-bottom: 8px;
+  font-size: var(--type-scale-base1);
+  line-height: var(--type-scale-base3);
 }
-.popup-key {
-  font-weight: bold;
+
+.popup-row-label {
+  font-weight: var(--font-weight-bold);
   text-align: left;
 }
-.popup-value {
+.popup-row-value {
+  font-weight: var(--font-weight-normal);
   text-align: left;
+}
+</style>
+
+<style>
+/** Override style in the WATECH theme for P tag since text includes p tags. Scoped style could not override the style. */
+.popup-row-container p {
+  font-size: var(--type-scale-base1);
+  line-height: var(--type-scale-base3);
 }
 </style>

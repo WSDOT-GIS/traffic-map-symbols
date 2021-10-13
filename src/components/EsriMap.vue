@@ -119,7 +119,6 @@ import PointFerryRoutesLayer from "@/layers/PointFerryRoutesLayer";
 import RegionalAlertLayer, {
   centerFeatures as centerRegionalAlerts,
 } from "@/layers/RegionalAlertLayer";
-// import FirePerimeterLayer from "@/layers/FirePerimeterLayer"
 /* Popups */
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
 import CameraPopup from "@/popups/CameraPopup.vue";
@@ -367,8 +366,6 @@ export default defineComponent({
                 hidePointInteractionGraphics(LineFerryRoutesLayer());
                 // Not aggregate...
                 const id = g.getObjectId();
-                console.log(id);
-                console.log(g.layer.id);
                 //get lines for restriciton point click
                 if (g.layer.id === "point-restrictions-layer") {
                   getFeatureInfoById(id, g.layer as FeatureLayer).then(
