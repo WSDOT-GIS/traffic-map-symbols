@@ -98,20 +98,20 @@ export default defineComponent({
           case 1:
             badgeText = "Highest";
             badgeIcon.value = layerListIcons.find((x) => x.id == "road-alert-highest")?.paths as string;
-            lightBadgeColor.value = "#da9793";
+            lightBadgeColor.value = "#B30B0066";
             darkBadgeColor.value = "#B30B00";
 
             break;
           case 2:
             badgeText = "High";
             badgeIcon.value = layerListIcons.find((x) => x.id == "road-alert-high")?.paths as string;
-            lightBadgeColor.value = "#e6818b";
-            darkBadgeColor.value = "#DC354599";
+            lightBadgeColor.value = "#DC354599";
+            darkBadgeColor.value = "#DC3545";
             break;
           case 3:
             badgeText = "Medium";
             badgeIcon.value = layerListIcons.find((x) => x.id == "road-alert-medium")?.paths as string;
-            lightBadgeColor.value = "#f7cbb1";
+            lightBadgeColor.value = "#FF6A134D";
             darkBadgeColor.value = "#FF6A13";
             break;
           case 4:

@@ -5,7 +5,7 @@
     DarkThemeColor="#FFC107"
     :Features="[feature]"
     :Config="{
-      bannerText: { text: 'Ferry' },
+      bannerText: { text: 'Ferries' },
       title: {
         custom: getTitle,
         isHTML: true,
