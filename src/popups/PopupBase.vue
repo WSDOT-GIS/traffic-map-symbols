@@ -20,7 +20,7 @@
       :style="popupTopLeft"
     >
       <!-- container without the pointer -->
-      <div :style="{ maxHeight: maxHeight + 'px' }" class="popup-inner-container w3-display-container">
+      <div class="popup-inner-container w3-display-container">
         <div class="popup-header w3-left-align">
           <div
             class="popup-banner"
@@ -44,75 +44,103 @@
             {{ badgeText }}
           </div>
         </div>
-        <button class="popup-close-button w3-button w3-display-topright" @click="close">&times;</button>
-        <h4 v-if="Config.title && !Config.title.isHTML" class="popup-title w3-container">
-          {{ getTitle() }}
-        </h4>
-        <h4 v-if="Config.title && Config.title.isHTML" v-html="getTitle()" class="popup-title w3-container"></h4>
-        <div v-if="Config.subtitle" class="popup-content w3-container">
-          <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
-        </div>
-        <div v-if="propWeatherForecast != undefined">
-          <table class="weatherForecastTable">
-            <tr id="weatherPeriodText">
-              <td v-for="eachFeature in propWeatherForecast.forecasts" :key="eachFeature.forecastNumber">
-                {{ eachFeature.periodText }}
-              </td>
-            </tr>
-            <tr id="weatherForecastIcons">
-              <td
-                class="weatherForecastIcon"
-                v-for="eachFeature in propWeatherForecast.forecasts"
-                :key="eachFeature.forecastNumber"
-              >
-                <img :src="'https://images.wsdot.wa.gov/traffic/weaicons/' + eachFeature.weatherIconFileName" />
-              </td>
-            </tr>
-            <tr id="weatherForecastDescription">
-              <td v-for="eachFeature in propWeatherForecast.forecasts" :key="eachFeature.forecastNumber">
-                {{ eachFeature.weatherDescription }}
-              </td>
-            </tr>
-          </table>
-        </div>
+        <button class="popup-close-button w3-button w3-display-topright" @click="close">
+          &times;
+        </button>
+        <!-- Content (below the header) container -->
+        <div :style="{ maxHeight: maxHeight + 'px' }" class="popup-content-container">
+          <h4 v-if="Config.title && !Config.title.isHTML" class="popup-title w3-container">
+            {{ getTitle() }}
+          </h4>
+          <h4
+            v-if="Config.title && Config.title.isHTML"
+            v-html="getTitle()"
+            class="popup-title w3-container"
+          ></h4>
+          <div v-if="Config.subtitle" class="popup-content w3-container">
+            <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
+          </div>
+          <div v-if="propWeatherForecast != undefined">
+            <table class="weatherForecastTable">
+              <tr id="weatherPeriodText">
+                <td
+                  v-for="eachFeature in propWeatherForecast.forecasts"
+                  :key="eachFeature.forecastNumber"
+                >
+                  {{ eachFeature.periodText }}
+                </td>
+              </tr>
+              <tr id="weatherForecastIcons">
+                <td
+                  class="weatherForecastIcon"
+                  v-for="eachFeature in propWeatherForecast.forecasts"
+                  :key="eachFeature.forecastNumber"
+                >
+                  <img
+                    :src="
+                      'https://images.wsdot.wa.gov/traffic/weaicons/' +
+                      eachFeature.weatherIconFileName
+                    "
+                  />
+                </td>
+              </tr>
+              <tr id="weatherForecastDescription">
+                <td
+                  v-for="eachFeature in propWeatherForecast.forecasts"
+                  :key="eachFeature.forecastNumber"
+                >
+                  {{ eachFeature.weatherDescription }}
+                </td>
+              </tr>
+            </table>
+          </div>
 
-        <Carousel
-          v-if="Config.imageFieldName"
-          :items-to-show="1"
-          :wrapAround="true"
-          @update:modelValue="currentIdx = $event"
-          :style="pagenationStyle"
-        >
-          <Slide v-for="eachFeature in Features" :key="eachFeature.id">
-            <div class="carousel-item-container">
-              <img
-                class="popup-img"
-                :src="getImgUrl(eachFeature)"
-                :alt="eachFeature.id"
-                @load="onImgLoad()"
-                @error="$event.target.src = require('@/assets/no-image.png')"
-              />
+          <Carousel
+            v-if="Config.imageFieldName"
+            :items-to-show="1"
+            :wrapAround="true"
+            @update:modelValue="currentIdx = $event"
+            :style="pagenationStyle"
+          >
+            <Slide v-for="eachFeature in Features" :key="eachFeature.id">
+              <div class="carousel-item-container">
+                <img
+                  class="popup-img"
+                  :src="getImgUrl(eachFeature)"
+                  :alt="eachFeature.id"
+                  @load="onImgLoad()"
+                  @error="$event.target.src = require('@/assets/no-image.png')"
+                />
+              </div>
+            </Slide>
+            <template #addons="{ slidesCount }">
+              <navigation v-if="slidesCount > 1" />
+              <pagination v-if="slidesCount > 1" />
+            </template>
+          </Carousel>
+          <div class="travelDelayTime" v-if="propTravelDelay && propTravelDelay > 0">
+            {{ `${propTravelDelay} minute delay` }}
+          </div>
+          <div
+            v-for="eachConfig in Config.content"
+            :key="eachConfig.label"
+            class="popup-content w3-container"
+          >
+            <PopupRow v-if="Config.content" :Config="eachConfig" :Feature="Features[currentIdx]" />
+          </div>
+          <div v-if="Config.moreInfoURL">
+            <div
+              v-if="Config.moreInfoURL.text && Config.moreInfoURL.text !== ''"
+              class="popup-content w3-container"
+            >
+              {{ getMoreInfoURL() }}
             </div>
-          </Slide>
-          <template #addons="{ slidesCount }">
-            <navigation v-if="slidesCount > 1" />
-            <pagination v-if="slidesCount > 1" />
-          </template>
-        </Carousel>
-        <div class="travelDelayTime" v-if="propTravelDelay && propTravelDelay > 0">
-          {{ `${propTravelDelay} minute delay` }}
-        </div>
-        <div v-for="eachConfig in Config.content" :key="eachConfig.label" class="popup-content w3-container">
-          <PopupRow v-if="Config.content" :Config="eachConfig" :Feature="Features[currentIdx]" />
-        </div>
-        <div v-if="Config.moreInfoURL">
-          <div v-if="Config.moreInfoURL.text && Config.moreInfoURL.text !== ''" class="popup-content w3-container">
-            {{ getMoreInfoURL() }}
-          </div>
-          <div v-if="Config.moreInfoURL.custom" class="popup-content w3-container">
-            <div v-html="getMoreInfoURL()"></div>
+            <div v-if="Config.moreInfoURL.custom" class="popup-content w3-container">
+              <div v-html="getMoreInfoURL()"></div>
+            </div>
           </div>
         </div>
+        <!-- Content (below the header) container -->
       </div>
       <!-- Inner container -->
     </div>
@@ -212,8 +240,13 @@ export default defineComponent({
     const smallMedia = ref(isSmallMedia());
     const minTop = 60; // Space needed at the top so the icon and arrow is visible.
     watch(mapSize, (size) => {
-      maxHeight.value = size.height - minTop;
+      maxHeight.value = size.height - minTop - 30 /* height of header */;
       smallMedia.value = isSmallMedia();
+      if (!smallMedia.value) {
+        /* On desktop, subtract more so it leaves a bit more of space under or above the icon. 
+           Otherwise long popups (Ferry) pushes icon too much to the edge. */
+        maxHeight.value -= 80;
+      }
       if (mapX.value < 0 && mapY.value > 0) {
         setScreenXY();
       }
@@ -540,7 +573,11 @@ export default defineComponent({
     /**
      * Calulate how far map need to be moved so the top of the popup is visible within the map view.
      */
-    const calcShiftXY = (topLeft: { top: number; left: number }, height: number, width: number): XY => {
+    const calcShiftXY = (
+      topLeft: { top: number; left: number },
+      height: number,
+      width: number
+    ): XY => {
       let shiftY = 0;
       let shiftX = 0;
       const top = topLeft.top;
@@ -609,7 +646,9 @@ export default defineComponent({
       if (props.Config.moreInfoURL.text) {
         text = props.Config.moreInfoURL.text;
       } else if (props.Config.moreInfoURL.fieldName) {
-        text = props.Features[currentIdx.value].attributes[props.Config.moreInfoURL.fieldName] as string;
+        text = props.Features[currentIdx.value].attributes[
+          props.Config.moreInfoURL.fieldName
+        ] as string;
       } else if (props.Config.moreInfoURL.custom) {
         const func = props.Config.moreInfoURL.custom as (f: FeatureInfo) => MoreInfoURLInfo;
         moreInfoObject = func(props.Features[currentIdx.value]);
@@ -634,7 +673,9 @@ export default defineComponent({
       if (props.Config.bannerText.text) {
         text = props.Config.bannerText.text;
       } else if (props.Config.bannerText.fieldName) {
-        text = props.Features[currentIdx.value].attributes[props.Config.bannerText.fieldName] as string;
+        text = props.Features[currentIdx.value].attributes[
+          props.Config.bannerText.fieldName
+        ] as string;
       } else if (props.Config.bannerText.custom) {
         const func = props.Config.bannerText.custom as (f: FeatureInfo) => string;
         text = func(props.Features[currentIdx.value]);
@@ -645,7 +686,12 @@ export default defineComponent({
       return text;
     };
     const getTitle = () => {
-      if (!props.Features || props.Features.length === 0 || !props.Features[currentIdx.value] || !props.Config.title) {
+      if (
+        !props.Features ||
+        props.Features.length === 0 ||
+        !props.Features[currentIdx.value] ||
+        !props.Config.title
+      ) {
         // Nothing to show...
         return;
       }
@@ -691,7 +737,9 @@ export default defineComponent({
       if (props.Config.badgeText.text) {
         text = props.Config.badgeText.text;
       } else if (props.Config.badgeText.fieldName) {
-        text = props.Features[currentIdx.value].attributes[props.Config.badgeText.fieldName] as string;
+        text = props.Features[currentIdx.value].attributes[
+          props.Config.badgeText.fieldName
+        ] as string;
       } else if (props.Config.badgeText.custom) {
         const func = props.Config.badgeText.custom as (f: FeatureInfo) => string;
         text = func(props.Features[currentIdx.value]);
@@ -814,7 +862,7 @@ export default defineComponent({
   box-shadow: 3px -3px 3px 0 rgba(0, 0, 0, 0.2);
 }
 .popup-inner-container {
-  overflow-y: auto;
+  /* overflow-y: auto; */
   padding: 16px 0;
 }
 @media screen and (max-width: 600px), screen and (max-height: 400px) {
@@ -877,6 +925,9 @@ export default defineComponent({
   border-width: 1px;
   border-style: solid;
   margin: 3px 1em 0 1em;
+}
+.popup-content-container {
+  overflow-y: auto;
 }
 .popup-title {
   margin: 10px 0;
@@ -996,7 +1047,9 @@ export default defineComponent({
   );
 }
 .carousel__next svg path {
-  d: path("M 7.8,6.1697845 13.548671,11.930999 7.8,17.692215 9.569783,19.462 17.100784,11.930999 9.569783,4.3999995 Z");
+  d: path(
+    "M 7.8,6.1697845 13.548671,11.930999 7.8,17.692215 9.569783,19.462 17.100784,11.930999 9.569783,4.3999995 Z"
+  );
 }
 .carousel__pagination-button {
   width: 10px;
