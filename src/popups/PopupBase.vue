@@ -45,11 +45,11 @@
           </div>
         </div>
         <button class="popup-close-button w3-button w3-display-topright" @click="close">&times;</button>
-        <h4 v-if="Config.title.isHTML != true" class="popup-title w3-container">
+        <h4 v-if="Config.title && !Config.title.isHTML" class="popup-title w3-container">
           {{ getTitle() }}
         </h4>
-        <h4 v-if="Config.title.isHTML == true" v-html="getTitle()" class="popup-title w3-container"></h4>
-        <div v-if="Config.subtitle" class="popup-content w3-container" >
+        <h4 v-if="Config.title && Config.title.isHTML" v-html="getTitle()" class="popup-title w3-container"></h4>
+        <div v-if="Config.subtitle" class="popup-content w3-container">
           <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
         </div>
         <div v-if="propWeatherForecast != undefined">
@@ -113,9 +113,12 @@
             <div v-html="getMoreInfoURL()"></div>
           </div>
         </div>
-      </div><!-- Inner container -->
-    </div><!-- Popup container -->
-  </div><!-- Modal container -->
+      </div>
+      <!-- Inner container -->
+    </div>
+    <!-- Popup container -->
+  </div>
+  <!-- Modal container -->
 </template>
 <script lang="ts">
 import { computed, defineComponent, nextTick, onUpdated, PropType, ref, toRefs, watch } from "vue";
@@ -592,7 +595,12 @@ export default defineComponent({
       // console.log(JSON.stringify(popupTopLeft.value));
     };
     const getMoreInfoURL = () => {
-      if (!props.Features || props.Features.length === 0 || !props.Features[currentIdx.value]) {
+      if (
+        !props.Features ||
+        props.Features.length === 0 ||
+        !props.Features[currentIdx.value] ||
+        !props.Config.moreInfoURL
+      ) {
         // "Nothing to show...
         return;
       }
@@ -637,7 +645,7 @@ export default defineComponent({
       return text;
     };
     const getTitle = () => {
-      if (!props.Features || props.Features.length === 0 || !props.Features[currentIdx.value]) {
+      if (!props.Features || props.Features.length === 0 || !props.Features[currentIdx.value] || !props.Config.title) {
         // Nothing to show...
         return;
       }
@@ -999,5 +1007,4 @@ export default defineComponent({
   margin: 5px;
   padding-left: 0;
 }
-
 </style>

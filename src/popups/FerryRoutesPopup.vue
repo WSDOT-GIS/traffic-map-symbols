@@ -4,28 +4,7 @@
     LightThemeColor="#FFC1074D"
     DarkThemeColor="#FFC107"
     :Features="[feature]"
-    :Config="{
-      bannerText: { text: 'Ferries' },
-      title: {
-        custom: getTitle,
-        isHTML: true,
-      },
-      content: [
-        {
-          label: 'Description',
-          value: {
-            custom: getDescription,
-            isHTML: true,
-          },
-        },
-        {
-          label: 'Last updated',
-          value: {
-            text: '*coming soon*',
-          },
-        },
-      ],
-    }"
+    :Config="popupConfig"
     @close="close"
   >
   </PopupBase>
@@ -39,6 +18,7 @@ import FeaturesetInfo from "@/types/FeaturesetInfo";
 import FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
 import { getFerryAlerts } from "@/utils/alertInfoUtil";
+import PopupConfig from "@/types/PopupConfig";
 export default defineComponent({
   components: { PopupBase },
   props: {
@@ -54,6 +34,10 @@ export default defineComponent({
   setup(props) {
     const feature = ref<FeatureInfo>();
     const layerIcons = layerListIcons;
+    const popupConfig = ref<PopupConfig>({
+      bannerText: { text: "Ferries" },
+      content: [],
+    });
 
     watch(props, () => {
       if (props.Featureset.layerId === "ferry-routes-points-layer") {
@@ -64,22 +48,34 @@ export default defineComponent({
     });
 
     const show = () => {
+      popupConfig.value.content = [];
       const setVal = () => {
         getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then((ftr) => {
           if (ftr) {
             getFerryAlerts(ftr.attributes.FerryRouteID as number).then((alerts) => {
-              console.log(JSON.stringify(alerts));
-              ftr.relatedInfos = [];
+              // console.log(JSON.stringify(alerts));
               alerts.forEach((each) => {
-                ftr.relatedInfos?.push({
-                  tableId: "ferry-alerts-table",
-                  attributes: {
-                    AlertFullTitle: each.AlertFullTitle,
-                    HomepageAlertText: each.HomepageAlertText,
-                    SortOrder: each.SortOrder,
+                popupConfig.value.content.push({
+                  label: "",
+                  value: {
+                    text: `<h4 class="popup-title">${each.AlertFullTitle}</h4>`,
+                    isHTML: true,
                   },
                 });
+                popupConfig.value.content.push({
+                  label: "Description",
+                  value: {
+                    text: each.HomepageAlertText,
+                    isHTML: true,
+                  },
+                });
+                popupConfig.value.content.push({
+                  label: "Sort Order",
+                  value: { text: each.SortOrder.toString() },
+                });
               });
+              console.log(JSON.stringify(popupConfig.value));
+              feature.value = ftr;
             });
           }
         });
@@ -96,36 +92,12 @@ export default defineComponent({
     const close = () => {
       feature.value = undefined;
     };
-    const getDescription = (feature: FeatureInfo): string | undefined => {
-      return "test";
-      // let descriptionText: string | undefined = undefined;
-      // props.Alerts.map((x) => {
-      //   if ((x.FerryRouteId as number) == feature.attributes.FerryRouteID) {
-      //     descriptionText = x.HomepageAlertText;
-      //   }
-      // });
-      // if (descriptionText) {
-      //   return descriptionText;
-      // }
-    };
-    const getTitle = (feature: FeatureInfo): string | undefined => {
-      // let titleText: string | undefined = undefined;
-      return "test";
-      // props.Alerts.map((x) => {
-      //   if ((x.FerryRouteId as number) == feature.attributes.FerryRouteID) {
-      //     titleText = x.AlertFullTitle;
-      //   }
-      // });
-      // if (titleText) {
-      //   return titleText;
-      // }
-    };
+
     return {
+      popupConfig,
       feature,
       layerIcons,
       close,
-      getTitle,
-      getDescription,
     };
   },
 });
