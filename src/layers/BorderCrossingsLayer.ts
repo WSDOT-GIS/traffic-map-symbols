@@ -19,6 +19,11 @@ const fields = [
         "name": "WaitTimeText",
         "type": "string",
         "alias": "WaitTimeText",
+    }),
+    new Field({
+        "name": "HTMLTable",
+        "type": "string",
+        "alias": "HTMLTable",
     })
 ]
 

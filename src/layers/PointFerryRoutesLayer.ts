@@ -62,6 +62,11 @@ const fields = [
         type: "string",
         alias: "Display",
     }),
+    new Field({
+        name:"PublishDate",
+        type: "date",
+        alias: "Last Update Date"
+    })
 ]
 
 export const initLayer = (url: string): FeatureLayer => {

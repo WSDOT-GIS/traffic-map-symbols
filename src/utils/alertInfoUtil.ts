@@ -14,9 +14,12 @@ export const getAlerts = async (url: string):Promise<AlertInfo[]> => {
 
 export const getFerryAlerts = async (url: string):Promise<FerryAlertInfo[]> => {
     const ferryAlerts: FerryAlertInfo[] = [];
-    const fetchResponse = await fetch(url);
+    const myHeaders = new Headers();
+    myHeaders.append('Content-Type','text/plain; charset=unicode');
+    const fetchResponse = await fetch(url, {headers: myHeaders});
     const json = await fetchResponse.json();
     json.features.forEach((each: { attributes: FerryAlertInfo; }) => {
+        console.log(each.attributes)
         ferryAlerts.push(each.attributes);
     });
     return ferryAlerts;

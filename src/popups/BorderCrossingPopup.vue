@@ -8,7 +8,7 @@
       bannerText: { text: 'Border crossing' },
       title: { fieldName: 'BorderCrossingDescription' },
       content: [
-        { label: 'Northbound wait time', value: { fieldName: 'WaitTimeText' } },
+        { label: 'Northbound wait time', value: { fieldName: 'HTMLTable',isHTML: true } },
       ],
        moreInfoURL:{
         custom: getMoreInfoURL
@@ -55,6 +55,7 @@ export default defineComponent({
     });
     const getMoreInfoURL=(feature: FeatureInfo): MoreInfoURLInfo=>{
       //console.log(feature)
+      console.log(feature.attributes)
       const moreInfoObject =new Object({
         url: `https://www.th.gov.bc.ca/ATIS/index.htm`,
         text: "Get the",
@@ -95,4 +96,6 @@ export default defineComponent({
   },
 });
 </script>
+<style scoped>
 
+</style>

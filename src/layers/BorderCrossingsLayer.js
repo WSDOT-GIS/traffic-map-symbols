@@ -20,6 +20,11 @@ const fields = [
         "name": "WaitTimeText",
         "type": "string",
         "alias": "WaitTimeText",
+    }),
+    new Field_1.default({
+        "name": "HTMLTable",
+        "type": "string",
+        "alias": "HTMLTable",
     })
 ];
 let layer;

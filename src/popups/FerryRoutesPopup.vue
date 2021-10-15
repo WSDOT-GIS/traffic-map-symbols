@@ -21,7 +21,9 @@
         {
           label: 'Last updated',
           value: {
-            text: '*coming soon*',
+            fieldName:'PublishDate',
+            isDate:true,
+            isTime:true
           },
         },
       ],

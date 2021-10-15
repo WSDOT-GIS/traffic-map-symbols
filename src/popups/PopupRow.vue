@@ -145,4 +145,17 @@ export default defineComponent({
   font-size: var(--type-scale-base1);
   line-height: var(--type-scale-base3);
 }
+.waitTimeCell{
+  font-size: smaller;
+  display: table-cell;
+  text-align: left;
+  padding: 0px 3px 0px 3px;
+}
+.waitTimeTitleCell{
+  font-size: small;
+  font-weight: bold;
+  display: table-cell;
+  text-align: left;
+  padding: 0px 3px 0px 3px;
+}
 </style>

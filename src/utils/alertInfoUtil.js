@@ -14,9 +14,12 @@ const getAlerts = (url) => tslib_1.__awaiter(void 0, void 0, void 0, function* (
 exports.getAlerts = getAlerts;
 const getFerryAlerts = (url) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     const ferryAlerts = [];
-    const fetchResponse = yield fetch(url);
+    const myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'text/plain; charset=unicode');
+    const fetchResponse = yield fetch(url, { headers: myHeaders });
     const json = yield fetchResponse.json();
     json.features.forEach((each) => {
+        console.log(each.attributes);
         ferryAlerts.push(each.attributes);
     });
     return ferryAlerts;
