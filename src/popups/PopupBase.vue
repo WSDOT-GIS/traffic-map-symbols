@@ -43,12 +43,19 @@
           >
             {{ badgeText }}
           </div>
+          <div v-if="Config.paging && Config.paging.maxPage > 1" class="popup-page-tracker">
+            {{ currentPage }} of {{ Config.paging.maxPage }}
+          </div>
         </div>
         <button class="popup-close-button w3-button w3-display-topright" @click="close">
           &times;
         </button>
         <!-- Content (below the header) container -->
-        <div :style="{ maxHeight: maxHeight + 'px' }" class="popup-content-container">
+        <div
+          :style="{ maxHeight: maxHeight + 'px' }"
+          class="popup-content-container"
+          ref="contentContainerRef"
+        >
           <h4 v-if="Config.title && !Config.title.isHTML" class="popup-title w3-container">
             {{ getTitle() }}
           </h4>
@@ -225,6 +232,7 @@ export default defineComponent({
     const propWeatherForecast = ref<ForecastListInfo>();
     const modalContainerRef = ref<HTMLDivElement>();
     const containerRef = ref<HTMLDivElement>();
+    const contentContainerRef = ref<HTMLDivElement>();
     const enum relativePositions {
       above = "above",
       below = "below",
@@ -262,6 +270,10 @@ export default defineComponent({
     let wasUpdatedOnce = false;
     let doPanMap = true;
     let isPanning = false;
+    // Used to keep track of pages...
+    const currentPage = ref(1);
+    let pagePositions: { page: number; position: "above" | "inside" | "below" }[] = [];
+    let pageObserver: IntersectionObserver | undefined;
     // Index of the currently shown feature.
     const currentIdx = ref(0);
     const badgeText = ref("");
@@ -294,6 +306,7 @@ export default defineComponent({
       wasUpdatedOnce = false;
       doPanMap = true;
     });
+    // Picture carousel colors.
     const pagenationStyle = computed(() => {
       return {
         "--carousel-color-primary": props.DarkThemeColor,
@@ -304,6 +317,10 @@ export default defineComponent({
       // Let the parent handle the close event.
       // Parent should empty the feature array to close the popup.
       context.emit("close");
+      if (pageObserver) {
+        pageObserver.disconnect();
+        pageObserver = undefined;
+      }
     };
     // Adjust popup position when the props change...
     watch([mapX, mapY], () => {
@@ -356,21 +373,68 @@ export default defineComponent({
     };
     // Adjust position after the container DIV is available...
     onUpdated(() => {
-      if (modalContainerRef.value && containerRef.value) {
+      if (!containerRef.value || !contentContainerRef.value) {
+        return;
+      }
+      if (modalContainerRef.value) {
         /* On the large screen, the modal container does not allow user to click on the map
            even though the w3-modal class is disabled. So need to move the popup out of the container. */
         if (!smallMedia.value) {
           if (modalContainerRef.value.contains(containerRef.value)) {
             document.getElementById("map-container")?.appendChild(containerRef.value);
-            // console.log("...Removed popup div from the modal div.");
           }
         }
-        // else {
-        //    if (!modalContainerRef.value.contains(containerRef.value)) {
-        //     modalContainerRef.value.appendChild(containerRef.value);
-        //     console.log("...Appended popup div to the modal div.");
-        //   }
-        // }
+      }
+      /* if the vertical paging is enabled, setup the observer to watch page scrolling so we know
+         which page is currently visible... */
+      if (props.Config.paging && props.Config.paging.direction === "vertical" && !wasUpdatedOnce) {
+        if (pageObserver) {
+          pageObserver.disconnect();
+          pageObserver = undefined;
+        }
+        currentPage.value = 1;
+        pagePositions = [];
+        pageObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((each) => {
+              const elem = each.target as HTMLElement;
+              /* NOTE: The element need to have the data property with name, data-page-num, 
+                     and page number is assigned to it. */
+              const pageNum = Number(elem.dataset.pageNum);
+              let pos: "above" | "inside" | "below";
+              if (each.isIntersecting) {
+                pos = "inside";
+              } else if (each.rootBounds && each.boundingClientRect.top > each.rootBounds.bottom) {
+                pos = "below";
+              } else {
+                pos = "above";
+              }
+              const found = pagePositions.find((x) => {
+                return x.page === pageNum;
+              });
+              if (found) {
+                found.position = pos;
+              } else {
+                pagePositions.push({ page: pageNum, position: pos });
+              }
+            });
+            console.log(JSON.stringify(pages));
+            // visiblePages = visiblePages.sort((a, b) => {
+            //   return a - b;
+            // });
+            // if (visiblePages.length > 0) {
+            //   currentPage.value = visiblePages[-1];
+            // }
+            // console.log("Visible pages: " + visiblePages);
+          },
+          { threshold: [0], root: contentContainerRef.value }
+        );
+        // Register the elements that are used to track the current page
+        // The element used should have the class, popup-paging-entry, assigned to it.
+        const pages = contentContainerRef.value.querySelectorAll(".popup-page-break");
+        pages.forEach((each) => {
+          pageObserver?.observe(each);
+        });
       }
       wasUpdatedOnce = true;
       adjustPositionSize();
@@ -790,6 +854,7 @@ export default defineComponent({
     return {
       modalContainerRef,
       containerRef,
+      contentContainerRef,
       relativePosition,
       popupTopLeft,
       maxHeight,
@@ -810,6 +875,7 @@ export default defineComponent({
       propTravelDelay,
       propFeatures,
       smallMedia,
+      currentPage,
     };
   },
 });
@@ -926,6 +992,14 @@ export default defineComponent({
   border-style: solid;
   margin: 3px 1em 0 1em;
 }
+.popup-page-tracker {
+  display: inline-block;
+  font-size: var(--type-scale-base2);
+  line-height: var(--type-scale-base4);
+  font-weight: var(--font-weight-normal);
+  padding: 3px;
+  margin: 3px 1em 0 1em;
+}
 .popup-content-container {
   overflow-y: auto;
 }
@@ -1015,6 +1089,11 @@ export default defineComponent({
 
 
 <style>
+.popup-page-break {
+  width: 1px;
+  height: 1px;
+  background-color: #dc3545;
+}
 .popup-inner-container {
   color: #000;
 }

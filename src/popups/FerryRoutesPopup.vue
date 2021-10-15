@@ -37,6 +37,7 @@ export default defineComponent({
     const popupConfig = ref<PopupConfig>({
       bannerText: { text: "Ferries" },
       content: [],
+      paging: { direction: "vertical", maxPage: 0 },
     });
 
     watch(props, () => {
@@ -53,19 +54,23 @@ export default defineComponent({
         getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then((ftr) => {
           if (ftr) {
             getFerryAlerts(ftr.attributes.FerryRouteID as number).then((alerts) => {
-              // console.log(JSON.stringify(alerts));
-              alerts.forEach((each) => {
+              if (popupConfig.value.paging) {
+                popupConfig.value.paging.maxPage = alerts.length;
+              }
+              alerts.forEach((each, idx) => {
                 popupConfig.value.content.push({
                   label: "",
                   value: {
-                    text: `<h4 class="popup-title">${each.AlertFullTitle}</h4>`,
+                    text: `<div class="popup-page-break" data-page-num="${idx + 1}"></div><h4 class="popup-title popup-paging-entry" data-page-num="${idx + 1}">${
+                      each.AlertFullTitle
+                    }</h4>`,
                     isHTML: true,
                   },
                 });
                 popupConfig.value.content.push({
                   label: "Description",
                   value: {
-                    text: each.HomepageAlertText,
+                    text: each.HomepageAlertText,//`<div class="popup-paging-entry" data-page-num="${idx + 1}">${each.HomepageAlertText}</div>`,
                     isHTML: true,
                   },
                 });
@@ -74,7 +79,6 @@ export default defineComponent({
                   value: { text: each.SortOrder.toString() },
                 });
               });
-              console.log(JSON.stringify(popupConfig.value));
               feature.value = ftr;
             });
           }

@@ -29,6 +29,10 @@ interface PopupConfig {
         fieldName?: string; // display field value
         custom?: (feature: FeatureInfo) => MoreInfoURLInfo;
     };
+    paging?: {
+        direction: "vertical" | "horizontal";
+        maxPage: number;
+    }
 }
 
 export default PopupConfig;
