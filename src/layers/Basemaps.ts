@@ -1,12 +1,12 @@
 import Basemap from "@arcgis/core/Basemap";
 import TileLayer from "@arcgis/core/layers/TileLayer";
 import BasemapInfo from "@/types/BasemapInfo";
-import { getConfig } from "@/utils/appConfigUtil";
+
 export const getDefaultBasemapInfo = (): BasemapInfo => { return basemaps[0] }
 // Array of basemaps. The first one is the default.
-let basemaps: BasemapInfo[]=[]
-export const initBasemap = async(basemapString:string)=>{
-    basemaps =  [
+let basemaps: BasemapInfo[] = []
+export const initBasemap = async (basemapString: string): Promise<void> => {
+    basemaps = [
         {
             name: "wsdot",
             basemap: new Basemap({
@@ -22,7 +22,7 @@ export const initBasemap = async(basemapString:string)=>{
             name: "satellite",
             basemap: Basemap.fromId("satellite")
         }
-    ]   
+    ]
 }
 export const getBasemapInfo = (name: string): BasemapInfo => {
     const results = basemaps.filter((x) => {

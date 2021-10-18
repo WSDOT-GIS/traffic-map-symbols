@@ -1,13 +1,14 @@
 <template>
   <div v-if="visible" class="popup-row-container">
     <span class="popup-row-label">{{ getLabel() }}</span>
-    <span v-if="!propIsHTML" class="popup-row-value">{{ getText() }}</span>
-    <span v-if="propIsHTML" class="popup-row-value" v-html="getText()"></span>
+    <span v-if="!Config.value.isHTML" class="popup-row-value">{{ getText() }}</span>
+    <span v-if="Config.value.isHTML" class="popup-row-value" v-html="getText()"></span>
   </div>
 </template>
 <script lang="ts">
 import FeatureInfo from "@/types/FeatureInfo";
 import PopupRowConfig from "@/types/PopupRowConfig";
+import { formatEpoch } from "@/utils/miscUtil";
 import { defineComponent, PropType, ref, watch } from "vue";
 
 export default defineComponent({
@@ -26,7 +27,6 @@ export default defineComponent({
     watch(props, () => {
       getText();
     });
-    const propIsHTML = ref<boolean>(false);
     const getLabel = () => {
       if (props.Config.label) {
         if (!props.Feature) {
@@ -56,49 +56,23 @@ export default defineComponent({
       if (props.Config.value.text) {
         text = props.Config.value.text;
       } 
-      else{let value
+      else{
+        let value
         if (props.Config.value.fieldName) {
           value = props.Feature.attributes[props.Config.value.fieldName];
         }
         if(props.Config.value.custom){
           value = props.Config.value
+          //props.Config.value.custom(props.Feature);
         }
         if (value) {
           if (props.Config.value.isDate) {
-            /* IT said date will be in UTC, so removed the workaround below. If necessary simply
-               change all the methods to UTC... methods. */
-            /* The date value is in local time, so do not let JS do time conversion.
-               By using the UTC... functions, we can get the date as is without conversion. */
-            const date = new Date(value as Date);
-            text = `${formatDateTimePart(date.getMonth() + 1)}/${formatDateTimePart(
-              date.getDate()
-            )}/${date.getFullYear()}`;
-            if (props.Config.value.isTime) {
-              let hours = date.getHours();
-              let minutes = date.getMinutes();
-              // Check whether AM or PM
-              const ampm = hours >= 12 ? "PM" : "AM";
-              // Find current hour in AM-PM Format
-              hours = hours % 12;
-              // To display "0" as "12"
-              hours = hours ? hours : 12;
-              text += ` ${formatDateTimePart(hours)}:${formatDateTimePart(minutes)} ${ampm}`;
+            text = formatEpoch(Number(value), props.Config.value.isTime);
             }
-          } else if (props.Config.value.isHTML == true) {
-            propIsHTML.value = true;
-            text = value.toString();
-          } else {
+          else {
             text = value.toString();
           }
         }
-     // } else if (props.Config.value.custom) {
-        
-     //   if (props.Config.value.isHTML == true) {
-     ////     propIsHTML.value = true;
-      //    text = props.Config.value.custom(props.Feature);
-     //   } else {
-     //     text = props.Config.value.custom(props.Feature);
-     //   }
       }
       // Do not show when data is not available...
       if (!text) {
@@ -115,15 +89,14 @@ export default defineComponent({
       return text;
     };
 
-    const formatDateTimePart = (part: number) => {
-      return ("0" + part).slice(-2);
-    };
+    // const formatDateTimePart = (part: number) => {
+    //   return ("0" + part).slice(-2);
+    // };
 
     return {
       visible,
       getLabel,
       getText,
-      propIsHTML,
     };
   },
 });
@@ -151,13 +124,13 @@ export default defineComponent({
   font-size: var(--type-scale-base1);
   line-height: var(--type-scale-base3);
 }
-.waitTimeCell{
+.waitTimeCell {
   font-size: smaller;
   display: table-cell;
   text-align: left;
   padding: 0px 3px 0px 3px;
 }
-.waitTimeTitleCell{
+.waitTimeTitleCell {
   font-size: small;
   font-weight: bold;
   display: table-cell;

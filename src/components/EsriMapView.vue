@@ -9,11 +9,7 @@
   >
     <CoordinatesView />
   </div>
-  <div
-    id="map-bottom-center-container"
-    class="w3-display-bottommiddle"
-    ref="bottomCtrDiv"
-  >
+  <div id="map-bottom-center-container" class="w3-display-bottommiddle" ref="bottomCtrDiv">
     <AdView @onResize="adjustBottomControls" />
   </div>
   <div
@@ -63,7 +59,6 @@ import { Geometry } from "@arcgis/core/geometry";
 import Graphic from "@arcgis/core/Graphic";
 import Layer from "@arcgis/core/layers/Layer";
 import Point from "@arcgis/core/geometry/Point";
-// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import Extent from "@arcgis/core/geometry/Extent";
 import { getConfig } from "@/utils/appConfigUtil";
 import { mapView, zoomToMetroArea } from "@/esri-stuff/esriMap";
@@ -74,32 +69,23 @@ import {
   getFeatureIdFromUrl,
   getFeatureTypeFromUrl,
 } from "@/utils/urlParamUtil";
-import {
-  createLayerGroupInfos,
-  getFeature,
-  setLayerVisibility,
-} from "@/utils/layerUtil";
+import { createLayerGroupInfos, getFeature, setLayerVisibility } from "@/utils/layerUtil";
 import {
   removeGraphicsByType,
   hidePointInteractionGraphics,
   displayPointInteractionGraphics,
 } from "@/utils/graphicLayerUtil";
-import ZoomExtentLayer, {
-  getFeatureById as getZoomFeatureById,
-} from "@/layers/ZoomExtentLayer";
+import ZoomExtentLayer, { getFeatureById as getZoomFeatureById } from "@/layers/ZoomExtentLayer";
 import { clusterMaxScale, getClusterExtent } from "@/utils/clusterUtil";
 import LayerInfo from "@/types/LayerInfo";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import XY from "@/types/XY";
-import { getAlerts, getFerryAlerts } from "@/utils/alertInfoUtil";
+import * as alertInfoUtil from "@/utils/alertInfoUtil";
 import AlertInfo from "@/types/AlertInfo";
 import FerryAlertInfo from "@/types/FerryAlertInfo";
-import {
-  getFeatureInfoById,
-  getLineFromPointId,
-} from "@/utils/featureInfoUtil";
+import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 /*Basemap*/
-import {initBasemap} from "@/layers/Basemaps"
+import { initBasemap } from "@/layers/Basemaps";
 /* Layers for popup */
 import ParkRideLayer from "@/layers/ParkRideLayer";
 import CameraLayer, { toggleCluster } from "@/layers/CameraLayer";
@@ -116,9 +102,7 @@ import BoundariesPlacesReferenceLayer from "@/layers/BoundariesPlacesReferenceLa
 import BorderCrossingLayer from "@/layers/BorderCrossingsLayer";
 import LineFerryRoutesLayer from "@/layers/LineFerryRoutesLayer";
 import PointFerryRoutesLayer from "@/layers/PointFerryRoutesLayer";
-import RegionalAlertLayer, {
-  centerFeatures as centerRegionalAlerts,
-} from "@/layers/RegionalAlertLayer";
+import RegionalAlertLayer, { centerFeatures as centerRegionalAlerts } from "@/layers/RegionalAlertLayer";
 /* Popups */
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
 import CameraPopup from "@/popups/CameraPopup.vue";
@@ -173,25 +157,14 @@ export default defineComponent({
     const alerts = ref<AlertInfo[]>([]);
     const ferryAlerts = ref<FerryAlertInfo[]>([]);
     getConfig().then((config) => {
-      // console.log(config)
-      getAlerts(config.stateAlerts).then((result) => {
-        // quadrupling one alert for testing...
-        // result.push(...result);
-        // result.push(...result);
-        // result = JSON.parse(JSON.stringify(result));
-        // // Testing long text...
-        // result[0].ExtendedMessage =
-        //   "300 Lorem ipsum dolor sit amet consectetur adipiscing, elit nibh facilisi mauris montes, feugiat dictum ante ad et. Habitasse facilisis venenatis hac hendrerit senectus leo convallis viverra pellentesque, montes congue nec efficitur lobortis himenaeos vel condimentum, torquent libero velit in accums";
-        // result[1].ExtendedMessage =
-        //   "2000 Lorem ipsum dolor sit amet consectetur adipiscing, elit nibh facilisi mauris montes, feugiat dictum ante ad et. Habitasse facilisis venenatis hac hendrerit senectus leo convallis viverra pellentesque, montes congue nec efficitur lobortis himenaeos vel condimentum, torquent libero velit in accumsan finibus at nascetur. Quam aptent porta penatibus ullamcorper a quis curabitur class quisque netus tempor eget, lacus ut etiam sollicitudin vulputate nullam purus hac mollis mattis egestas tortor, orci dictumst consequat lorem efficitur duis gravida non pharetra faucibus euismod. Viverra consectetur himenaeos magna laoreet nunc interdum nam, faucibus nascetur dolor pretium amet urna nisi, arcu integer penatibus pulvinar convallis parturient. Accumsan sit hendrerit leo dapibus varius congue bibendum vestibulum, amet ornare suspendisse lectus a parturient semper euismod, eros eleifend aenean erat venenatis vel molestie. Dapibus pulvinar magna torquent blandit nulla curae ut accumsan, phasellus natoque tortor gravida sit diam tempor, hendrerit penatibus sagittis mollis vitae vestibulum rhoncus. Quisque in magnis eleifend dui erat viverra ullamcorper, vivamus ligula commodo ex sagittis dis mattis vel, facilisi vulputate dignissim interdum adipiscing leo. Lorem ipsum dolor sit amet consectetur adipiscing, elit nibh facilisi mauris montes, feugiat dictum ante ad et. Habitasse facilisis venenatis hac hendrerit senectus leo convallis viverra pellentesque, montes congue nec efficitur lobortis himenaeos vel condimentum, torquent libero velit in accumsan finibus at nascetur. Quam aptent porta penatibus ullamcorper a quis curabitur class quisque netus tempor eget, lacus ut etiam sollicitudin vulputate nullam purus hac mollis mattis egestas tortor, orci dictumst consequat lorem efficitur duis gravida non pharetra faucibus euismod. Viverra consectetur himenaeos magna laoreet nunc interdum nam, faucibus nascetur dolor pretium amet urna nisi, arcu integer penatibus pulvinar convalliss";
-        // result[2].ExtendedMessage = "";
-        // result[3].ExtendedMessage =
-        //   "5000 Lorem ipsum dolor sit amet consectetur adipiscing, elit nibh facilisi mauris montes, feugiat dictum ante ad et. Habitasse facilisis venenatis hac hendrerit senectus leo convallis viverra pellentesque, montes congue nec efficitur lobortis himenaeos vel condimentum, torquent libero velit in accumsan finibus at nascetur. Quam aptent porta penatibus ullamcorper a quis curabitur class quisque netus tempor eget, lacus ut etiam sollicitudin vulputate nullam purus hac mollis mattis egestas tortor, orci dictumst consequat lorem efficitur duis gravida non pharetra faucibus euismod. Viverra consectetur himenaeos magna laoreet nunc interdum nam, faucibus nascetur dolor pretium amet urna nisi, arcu integer penatibus pulvinar convallis parturient. Accumsan sit hendrerit leo dapibus varius congue bibendum vestibulum, amet ornare suspendisse lectus a parturient semper euismod, eros eleifend aenean erat venenatis vel molestie. Dapibus pulvinar magna torquent blandit nulla curae ut accumsan, phasellus natoque tortor gravida sit diam tempor, hendrerit penatibus sagittis mollis vitae vestibulum rhoncus. Quisque in magnis eleifend dui erat viverra ullamcorper, vivamus ligula commodo ex sagittis dis mattis vel, facilisi vulputate dignissim interdum adipiscing leo. Lorem ipsum dolor sit amet consectetur adipiscing, elit nibh facilisi mauris montes, feugiat dictum ante ad et. Habitasse facilisis venenatis hac hendrerit senectus leo convallis viverra pellentesque, montes congue nec efficitur lobortis himenaeos vel condimentum, torquent libero velit in accumsan finibus at nascetur. Quam aptent porta penatibus ullamcorper a quis curabitur class quisque netus tempor eget, lacus ut etiam sollicitudin vulputate nullam purus hac mollis mattis egestas tortor, orci dictumst consequat lorem efficitur duis gravida non pharetra faucibus euismod. Viverra consectetur himenaeos magna laoreet nunc interdum nam, faucibus nascetur dolor pretium amet urna nisi, arcu integer penatibus pulvinar convallis parturient. Accumsan sit hendrerit leo dapibus varius congue bibendum vestibulum, amet ornare suspendisse lectus a parturient semper euismod, eros eleifend aenean erat venenatis vel molestie. Dapibus pulvinar magna torquent blandit nulla curae ut accumsan, phasellus natoque tortor gravida sit diam tempor, hendrerit penatibus sagittis mollis vitae vestibulum rhoncus. Quisque in magnis eleifend dui erat viverra ullamcorper, vivamus ligula commodo ex sagittis dis mattis vel, facilisi vulputate dignissim interdum adipiscing leo. Lorem ipsum dolor sit amet consectetur adipiscing, elit nibh facilisi mauris montes, feugiat dictum ante ad et. Habitasse facilisis venenatis hac hendrerit senectus leo convallis viverra pellentesque, montes congue nec efficitur lobortis himenaeos vel condimentum, torquent libero velit in accumsan finibus at nascetur. Quam aptent porta penatibus ullamcorper a quis curabitur class quisque netus tempor eget, lacus ut etiam sollicitudin vulputate nullam purus hac mollis mattis egestas tortor, orci dictumst consequat lorem efficitur duis gravida non pharetra faucibus euismod. Viverra consectetur himenaeos magna laoreet nunc interdum nam, faucibus nascetur dolor pretium amet urna nisi, arcu integer penatibus pulvinar convallis parturient. Accumsan sit hendrerit leo dapibus varius congue bibendum vestibulum, amet ornare suspendisse lectus a parturient semper euismod, eros eleifend aenean erat venenatis vel molestie. Dapibus pulvinar magna torquent blandit nulla curae ut accumsan, phasellus natoque tortor gravida sit diam tempor, hendrerit penatibus sagittis mollis vitae vestibulum rhoncus. Quisque in magnis eleifend dui erat viverra ullamcorper, vivamus ligula commodo ex sagittis dis mattis vel, facilisi vulputate dignissim interdum adipiscing leo. Lorem ipsum dolor sit amet consectetur adipiscing, elit nibh facilisi mauris montes, feugiat dictum ante ad et. Habitasse facilisis venenatis hac hendrerit senectus leo convallis viverra pellentesque, montes congue nec efficitur lobortis himenaeos vel condimentum, torquent libero velit in accumsan finibus at nascetur. Quam aptent porta penatibus ullamcorper a quis curabitur class quisque netus tempor eget, lacus ut etiam sollicitudin vulputate nullam purus hac mollis mattis egestas tortor, orci dictumst consequat lorem efficitur duis gravida non pharetra faucibus euismod. Viverra consectetur himenaeos magna laoreet nunc interdum nam, faucibus nascetur dolor pretium amet urna nisi, arcu integer penatibus pulvinar convallis parturient. Accumsan sit hendrerit leo dapibus varius congue bibendum vestibulum, amet ornare suspendisse lectus a parturient semper euismod, eros eleifend aenean erat venenatis vel molestie. Dapibus pulvinar magna torquent blandit nulla curae ut accumsan, phasellus natoque tortor gravida sit diam tempor, hendrerit penatibus sagittis mollis vitae vestibulum rhoncus. Quisque in magnis eleifend dui erat viverra ullamcorper, vivamus ligula commodo ex sagittis dis mattis ve";
+      alertInfoUtil.initStateAlerts(config.stateAlerts);
+      alertInfoUtil.getStateAlerts().then((result) => {
         alerts.value = result;
       });
-      getFerryAlerts(config.ferryAlerts).then((result) => {
-        ferryAlerts.value = result;
-      });
+      alertInfoUtil.initFerryAlerts(config.ferryAlerts);
+      // getFerryAlerts(config.ferryAlerts).then((result) => {
+      //   ferryAlerts.value = result;
+      // });
       // Build the list used by the URL query...
       createLayerGroupInfos(config);
     });
@@ -236,10 +209,7 @@ export default defineComponent({
     // Setup events on the operational layers...
     let pointerMoveHandle: { remove: () => void } | undefined;
     let clickHandle: { remove: () => void } | undefined;
-    const initOperationalLayerEvents = (
-      mapDiv: HTMLDivElement,
-      esriMap: typeof import("../esri-stuff/esriMap")
-    ) => {
+    const initOperationalLayerEvents = (mapDiv: HTMLDivElement, esriMap: typeof import("../esri-stuff/esriMap")) => {
       const opLayerOpts = {
         include: [
           ParkRideLayer(),
@@ -301,9 +271,7 @@ export default defineComponent({
               results: { graphic: Graphic; mapPoint: Point }[];
             }[] = [];
             response.results.forEach((eachResult) => {
-              const arrayFound = resultsByLayer.find(
-                (eachArray) => eachArray.layer === eachResult.graphic.layer
-              );
+              const arrayFound = resultsByLayer.find((eachArray) => eachArray.layer === eachResult.graphic.layer);
               if (arrayFound) {
                 arrayFound.results.push(eachResult);
               } else {
@@ -326,9 +294,7 @@ export default defineComponent({
                 maxIdx = eachResultSet.info.index;
               }
             });
-            const results2Show = resultsByLayer.find(
-              (eachResultSet) => eachResultSet.info.index === maxIdx
-            );
+            const results2Show = resultsByLayer.find((eachResultSet) => eachResultSet.info.index === maxIdx);
             if (results2Show) {
               const g = results2Show.results[0].graphic;
               const layer = g.layer as FeatureLayer;
@@ -340,11 +306,7 @@ export default defineComponent({
                 // If zoomed more than cluster max scale, and features are still overlapping, then show multiple features...
                 const query = layer.createQuery();
                 // Select all features within the set pixels...
-                query.geometry = esriMap.bufferByPixels(
-                  10,
-                  undefined,
-                  g.geometry as Point
-                );
+                query.geometry = esriMap.bufferByPixels(10, undefined, g.geometry as Point);
                 layer.queryFeatures(query).then((results) => {
                   const ids = results.features.map((eachFeature) => {
                     return eachFeature.getObjectId();
@@ -354,11 +316,7 @@ export default defineComponent({
               }
               // Deal with cluster...
               else if (g.isAggregate) {
-                getClusterExtent(
-                  g,
-                  results2Show.layer as FeatureLayer,
-                  esriMap.mapView
-                ).then((clusterExtent) => {
+                getClusterExtent(g, results2Show.layer as FeatureLayer, esriMap.mapView).then((clusterExtent) => {
                   esriMap.zoomToExtent(clusterExtent.expand(1.5));
                 });
               } else {
@@ -368,36 +326,26 @@ export default defineComponent({
                 const id = g.getObjectId();
                 //get lines for restriciton point click
                 if (g.layer.id === "point-restrictions-layer") {
-                  getFeatureInfoById(id, g.layer as FeatureLayer).then(
-                    (result) => {
-                      console.log(result);
-                      if (
-                        result?.attributes.lineMarker == "true" ||
-                        result?.attributes.lineMarker == "True"
-                      ) {
-                        displayPointInteractionGraphics(
-                          LineRestrictionsLayer(),
-                          "UniqueId",
-                          result?.attributes.UniqueId
-                        );
-                        //LineRestrictionsLayer().definitionExpression = `UniqueId = '${result?.attributes.UniqueId}'`;
-                        showPopup(results2Show.layer.id, [id]);
-                      } else {
-                        showPopup(results2Show.layer.id, [id]);
-                      }
-                    }
-                  );
-                } else if (g.layer.id === "ferry-routes-points-layer") {
-                  getFeatureInfoById(id, g.layer as FeatureLayer).then(
-                    (result) => {
-                      displayPointInteractionGraphics(
-                        LineFerryRoutesLayer(),
-                        "FerryRouteID",
-                        result?.attributes.FerryRouteID
-                      );
+                  getFeatureInfoById(id, g.layer as FeatureLayer).then((result) => {
+                    console.log(result);
+                    if (result?.attributes.lineMarker == "true" || result?.attributes.lineMarker == "True") {
+                      displayPointInteractionGraphics(LineRestrictionsLayer(), "UniqueId", result?.attributes.UniqueId);
+                      //LineRestrictionsLayer().definitionExpression = `UniqueId = '${result?.attributes.UniqueId}'`;
+                      showPopup(results2Show.layer.id, [id]);
+                    } else {
                       showPopup(results2Show.layer.id, [id]);
                     }
-                  );
+                  });
+                } else if (g.layer.id === "ferry-routes-points-layer") {
+                  // Display line...
+                  getFeatureInfoById(id, g.layer as FeatureLayer).then((result) => {
+                    displayPointInteractionGraphics(
+                      LineFerryRoutesLayer(),
+                      "FerryRouteID",
+                      result?.attributes.FerryRouteID
+                    );
+                    showPopup(g.layer.id, [id]);
+                  });
                 } else {
                   showPopup(results2Show.layer.id, [id]);
                 }
@@ -417,15 +365,15 @@ export default defineComponent({
     onMounted(async () => {
       const appConfig = await getConfig();
       const esriMap = await import("../esri-stuff/esriMap");
-      const basemap = await import("../layers/Basemaps")
+      // const basemap = await import("../layers/Basemaps");
       mapDiv = document.getElementById("esri-map-view") as HTMLDivElement;
       esriMap.init(mapDiv);
-      basemap.initBasemap(appConfig.basemap)
       store.commit("setMapSize", {
         width: esriMap.mapView.width,
         height: esriMap.mapView.height,
       });
       // Set basemap based on URL query parameter or display default...
+      await initBasemap(appConfig.basemap);
       const basemapInfo = getBasemapFromUrl();
       store.commit("setBasemap", basemapInfo.name);
       // Read config, then load operational layers...
@@ -437,12 +385,13 @@ export default defineComponent({
       await esriMap.loadRegionalAlert();
       // Update the layer list with regional alert layers.
       store.commit("setLayerList");
-      // Set refresh interval for layers...
+      // Set refresh interval for layers & alerts...
       setInterval(() => {
         esriMap.refreshLayerData();
-        getAlerts(appConfig.stateAlerts).then((result) => {
+        alertInfoUtil.getStateAlerts().then((result) => {
           alerts.value = result;
         });
+        alertInfoUtil.reloadFerryAlerts();
       }, appConfig.layerRefreshMinute * 60000); //60000
       // Setup events on the operational layers...
       initOperationalLayerEvents(mapDiv, esriMap);
@@ -473,11 +422,7 @@ export default defineComponent({
               }
               // If the layer is not visible, turn it on...
               if (!result.layer.visible) {
-                const layerList = setLayerVisibility(
-                  result.layer.id,
-                  true,
-                  store.state.layerList
-                );
+                const layerList = setLayerVisibility(result.layer.id, true, store.state.layerList);
                 store.commit("setLayerList", layerList);
               }
               // Zoom in...
@@ -509,10 +454,7 @@ export default defineComponent({
             // Set zoom popup properties...
             const id = zoomGraphic.attributes["ObjectID"];
             getZoomFeatureById(id).then((response) => {
-              const geom = project(
-                response.geometry,
-                SpatialReference.WebMercator
-              ) as Geometry;
+              const geom = project(response.geometry, SpatialReference.WebMercator) as Geometry;
               // Users get lost zooming in too tight, so zoom to larger area...
               zoomExtent = geom.extent;
               zoomPopupLabel.value = response.attributes.Label;
@@ -525,7 +467,6 @@ export default defineComponent({
           } else {
             // Resume normal map operation...
             zoomPopupVisible.value = false;
-            //mapDiv.style.cursor = "auto";
             if (zoomEventIsOn) {
               mapDiv.removeEventListener("click", zoomMetroEventHandler);
               zoomEventIsOn = false;
@@ -539,7 +480,6 @@ export default defineComponent({
         if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
           store.commit("setCurrentExtent", newValue);
         }
-        // centerRegionalAlerts(newValue as Extent);
       });
       // Watch scale change...
       esriMap.mapView.watch("scale", (newValue, oldValue) => {
@@ -551,7 +491,7 @@ export default defineComponent({
       });
       // Watch map view size...
       esriMap.mapView.on("resize", (event) => {
-        console.log("Map resize...")
+        console.log("Map resize...");
         store.commit("setMapSize", {
           width: event.width,
           height: event.height,
@@ -577,10 +517,7 @@ export default defineComponent({
     const bottomCtrDiv = ref<HTMLDivElement>();
     const marginBottomContainer = ref("0 px");
     //
-    const adjustBottomControls = (event?: {
-      width: number;
-      height: number;
-    }) => {
+    const adjustBottomControls = (event?: { width: number; height: number }) => {
       let ctrWidth: number;
       let ctrHeight: number;
       if (event) {
@@ -592,17 +529,8 @@ export default defineComponent({
       } else {
         return;
       }
-      if (
-        bottomRightDiv.value &&
-        bottomLeftDiv.value &&
-        store.state.mapSize.width
-      ) {
-        if (
-          ctrWidth +
-            bottomRightDiv.value.offsetWidth +
-            bottomLeftDiv.value.offsetWidth >
-          store.state.mapSize.width
-        ) {
+      if (bottomRightDiv.value && bottomLeftDiv.value && store.state.mapSize.width) {
+        if (ctrWidth + bottomRightDiv.value.offsetWidth + bottomLeftDiv.value.offsetWidth > store.state.mapSize.width) {
           marginBottomContainer.value = ctrHeight + 16 + "px";
         } else {
           marginBottomContainer.value = "16px";

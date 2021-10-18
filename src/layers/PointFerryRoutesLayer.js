@@ -10,18 +10,6 @@ const renderer = new SimpleRenderer_1.default({
     symbol: AlertSymbol_1.alertSymbol
 });
 let layer;
-/*export const initLayer = (url: string): FeatureLayer => {
-    layer = new FeatureLayer({
-        id: "ferry-routes-points-layer",
-        url: url,
-        title: "ferryRoutesPoints",
-        renderer: ferryRoutesPointsRenderer,
-        visible: true,
-        labelsVisible: false
-    });
-    console.log(layer)
-    return layer;
-}*/
 const fields = [
     new Field_1.default({
         name: "OBJECTID",
@@ -74,12 +62,11 @@ const initLayer = (url) => {
         id: "ferry-routes-points-layer",
         url: url,
         title: "ferryRoutesPoints",
-        //fields: fields,
+        fields: fields,
         renderer: renderer,
         visible: true,
         labelsVisible: false
     });
-    // console.log(layer.id + " was initialized.");
     return layer;
 };
 exports.initLayer = initLayer;

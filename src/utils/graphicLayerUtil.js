@@ -24,7 +24,6 @@ const addGraphicsByType = (type, featureGeometry) => {
             });
             break;
     }
-    //mapView.graphics.add(pointGraphic);
     esriMap_1.mapView.graphics.add(graphic);
 };
 exports.addGraphicsByType = addGraphicsByType;
