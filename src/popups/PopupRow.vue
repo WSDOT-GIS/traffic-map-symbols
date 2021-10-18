@@ -62,8 +62,7 @@ export default defineComponent({
           value = props.Feature.attributes[props.Config.value.fieldName];
         }
         if(props.Config.value.custom){
-          value = props.Config.value
-          //props.Config.value.custom(props.Feature);
+          value = props.Config.value.custom(props.Feature)
         }
         if (value) {
           if (props.Config.value.isDate) {
