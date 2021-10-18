@@ -26,10 +26,6 @@ export default defineComponent({
       type: Object as PropType<FeaturesetInfo>,
       required: true,
     },
-    // Alerts: {
-    //   type: Object as PropType<Array<FerryAlertInfo>>,
-    //   required: true,
-    // },
   },
   setup(props) {
     const feature = ref<FeatureInfo>();
@@ -61,7 +57,8 @@ export default defineComponent({
                 popupConfig.value.content.push({
                   label: "",
                   value: {
-                    text: `<div class="popup-page-break" data-page-num="${idx + 1}"></div><h4 class="popup-title popup-paging-entry" data-page-num="${idx + 1}">${
+                    text: `<div class="popup-page-break" data-page-num="${idx + 1}"></div>
+                    <h4 class="popup-title popup-paging-entry" data-page-num="${idx + 1}">${
                       each.AlertFullTitle
                     }</h4>`,
                     isHTML: true,
@@ -70,14 +67,14 @@ export default defineComponent({
                 popupConfig.value.content.push({
                   label: "Description",
                   value: {
-                    text: each.HomepageAlertText,//`<div class="popup-paging-entry" data-page-num="${idx + 1}">${each.HomepageAlertText}</div>`,
+                    text: each.HomepageAlertText,
                     isHTML: true,
                   },
                 });
-                popupConfig.value.content.push({
-                  label: "Sort Order",
-                  value: { text: each.SortOrder.toString() },
-                });
+                // popupConfig.value.content.push({
+                //   label: "Sort Order",
+                //   value: { text: each.SortOrder.toString() },
+                // });
               });
               feature.value = ftr;
             });

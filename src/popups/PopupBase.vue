@@ -272,7 +272,11 @@ export default defineComponent({
     let isPanning = false;
     // Used to keep track of pages...
     const currentPage = ref(1);
-    let pagePositions: { page: number; position: "above" | "inside" | "below" }[] = [];
+    let pagePositions: {
+      page: number;
+      position: "above" | "inside" | "below";
+      prev: "above" | "inside" | "below" | "";
+    }[] = [];
     let pageObserver: IntersectionObserver | undefined;
     // Index of the currently shown feature.
     const currentIdx = ref(0);
@@ -394,6 +398,7 @@ export default defineComponent({
         }
         currentPage.value = 1;
         pagePositions = [];
+        // TODO: IE is not supported.
         pageObserver = new IntersectionObserver(
           (entries) => {
             entries.forEach((each) => {
@@ -413,19 +418,19 @@ export default defineComponent({
                 return x.page === pageNum;
               });
               if (found) {
+                found.prev = found.position;
                 found.position = pos;
+                if (found.prev === "below") {
+                  // Made visible while scrolling down
+                  currentPage.value = found.page;
+                } else if (found.prev === "inside" && found.position === "below") {
+                  // Made hidden while scrolling up
+                  currentPage.value = found.page - 1;
+                }
               } else {
-                pagePositions.push({ page: pageNum, position: pos });
+                pagePositions.push({ page: pageNum, position: pos, prev: "" });
               }
             });
-            console.log(JSON.stringify(pages));
-            // visiblePages = visiblePages.sort((a, b) => {
-            //   return a - b;
-            // });
-            // if (visiblePages.length > 0) {
-            //   currentPage.value = visiblePages[-1];
-            // }
-            // console.log("Visible pages: " + visiblePages);
           },
           { threshold: [0], root: contentContainerRef.value }
         );
@@ -480,16 +485,6 @@ export default defineComponent({
         // Nothing to show...
         return;
       }
-      // if (smallMedia.value) {
-      //   // Do not set these here. With w3-modal-content, the carousel cannot position picture correctly.
-      //   // Positioning in modal mode need to happen earlier.
-      //   // Small screen mode...
-      //   setPosition(0, 0);
-      //   setPosition(
-      //     0,
-      //     (mapSize.value.width - containerRef.value.offsetWidth) / 2
-      //   );
-      // } else {
       if (!smallMedia.value) {
         // Large screen mode...
         const h = containerRef.value.offsetHeight;
@@ -1089,10 +1084,11 @@ export default defineComponent({
 
 
 <style>
+/* The hidden pixel to indicate the vertical page breaks. */
 .popup-page-break {
   width: 1px;
   height: 1px;
-  background-color: #dc3545;
+  background-color: #ffffff00;
 }
 .popup-inner-container {
   color: #000;
