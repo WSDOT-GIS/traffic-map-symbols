@@ -8,6 +8,7 @@
 <script lang="ts">
 import FeatureInfo from "@/types/FeatureInfo";
 import PopupRowConfig from "@/types/PopupRowConfig";
+import { formatEpoch } from "@/utils/miscUtil";
 import { defineComponent, PropType, ref, watch } from "vue";
 
 export default defineComponent({
@@ -59,25 +60,7 @@ export default defineComponent({
 
         if (value) {
           if (props.Config.value.isDate) {
-            /* IT said date will be in UTC, so removed the workaround below. If necessary simply
-               change all the methods to UTC... methods. */
-            /* The date value is in local time, so do not let JS do time conversion.
-               By using the UTC... functions, we can get the date as is without conversion. */
-            const date = new Date(value);
-            text = `${formatDateTimePart(date.getMonth() + 1)}/${formatDateTimePart(
-              date.getDate()
-            )}/${date.getFullYear()}`;
-            if (props.Config.value.isTime) {
-              let hours = date.getHours();
-              let minutes = date.getMinutes();
-              // Check whether AM or PM
-              const ampm = hours >= 12 ? "PM" : "AM";
-              // Find current hour in AM-PM Format
-              hours = hours % 12;
-              // To display "0" as "12"
-              hours = hours ? hours : 12;
-              text += ` ${formatDateTimePart(hours)}:${formatDateTimePart(minutes)} ${ampm}`;
-            }
+            text = formatEpoch(Number(value), props.Config.value.isTime);
           } else {
             text = value.toString();
           }
@@ -100,9 +83,9 @@ export default defineComponent({
       return text;
     };
 
-    const formatDateTimePart = (part: number) => {
-      return ("0" + part).slice(-2);
-    };
+    // const formatDateTimePart = (part: number) => {
+    //   return ("0" + part).slice(-2);
+    // };
 
     return {
       visible,
@@ -135,13 +118,13 @@ export default defineComponent({
   font-size: var(--type-scale-base1);
   line-height: var(--type-scale-base3);
 }
-.waitTimeCell{
+.waitTimeCell {
   font-size: smaller;
   display: table-cell;
   text-align: left;
   padding: 0px 3px 0px 3px;
 }
-.waitTimeTitleCell{
+.waitTimeTitleCell {
   font-size: small;
   font-weight: bold;
   display: table-cell;

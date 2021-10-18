@@ -19,6 +19,8 @@ import FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
 import { getFerryAlerts } from "@/utils/alertInfoUtil";
 import PopupConfig from "@/types/PopupConfig";
+import { formatEpoch } from "@/utils/miscUtil";
+
 export default defineComponent({
   components: { PopupBase },
   props: {
@@ -70,6 +72,10 @@ export default defineComponent({
                     text: each.HomepageAlertText,
                     isHTML: true,
                   },
+                });
+                popupConfig.value.content.push({
+                  label: "Publish Date",
+                  value: { text: formatEpoch(each.PublishDate, true) },
                 });
                 // popupConfig.value.content.push({
                 //   label: "Sort Order",
