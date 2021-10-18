@@ -120,10 +120,19 @@ const initLayer = (url) => tslib_1.__awaiter(void 0, void 0, void 0, function* (
         geometryType: "point",
         spatialReference: SpatialReference_1.default.WebMercator,
     });
+    setLayerEvent(priorityLayer, url);
+    setLayerEvent(closureLayer, url);
     // console.log(JSON.stringify(cGraphics));
     return { priority: priorityLayer, closure: closureLayer };
 });
 exports.initLayer = initLayer;
+const setLayerEvent = (layer, jsonUrl) => {
+    layer.watch("visible", (newValue) => {
+        if (newValue) {
+            exports.reloadData(jsonUrl);
+        }
+    });
+};
 const getLayer = (id) => {
     let layerToReturn;
     if (id == "road-alerts-layer") {

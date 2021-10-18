@@ -124,11 +124,19 @@ export const initLayer = async (url?: string): Promise<{ priority: FeatureLayer,
         geometryType: "point",
         spatialReference: SpatialReference.WebMercator,
     });
-
+    setLayerEvent(priorityLayer,url as string)
+    setLayerEvent(closureLayer,url as string)
     // console.log(JSON.stringify(cGraphics));
     return { priority: priorityLayer, closure: closureLayer };
 }
 
+const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
+    layer.watch("visible", (newValue) => {
+        if (newValue) {
+            reloadData(jsonUrl);
+        }
+    });
+}
 const getLayer = (id: string): FeatureLayer => {
     let layerToReturn;
     if (id == "road-alerts-layer") {
