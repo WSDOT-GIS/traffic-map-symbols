@@ -65,8 +65,16 @@ export const reloadFerryAlerts = async (force?: boolean): Promise<void> => {
     if (!force && !ferryAlerts) {
         return;
     }
-    const fetchResponse = await fetch(ferryAlertUrl);
-    const json = await fetchResponse.json();
+    const response = await fetch(ferryAlertUrl);
+    console.log(response.headers.get('Content-Type'));
+    const buffer = await response.arrayBuffer();
+    /* I think the data is in Windows-1252 (or ISO-8859-1). 
+       The method: response.json() by always encode everything in UTF-8, so that mess up some characters.
+       To avoid this, decode the buffer with specific encoding instead. */
+    const decoder = new TextDecoder('windows-1252');
+    const text = decoder.decode(buffer);
+    const json = JSON.parse(text);
+    // const json = await response.json();
     ferryAlerts = [];
     json.features.forEach((each: { attributes: FerryAlertInfo; }) => {
         ferryAlerts?.push(each.attributes);
