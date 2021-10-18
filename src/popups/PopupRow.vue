@@ -55,16 +55,21 @@ export default defineComponent({
       let text = "";
       if (props.Config.value.text) {
         text = props.Config.value.text;
-      } else if (props.Config.value.fieldName) {
-        let value = props.Feature.attributes[props.Config.value.fieldName];
-
+      } 
+      else{let value
+        if (props.Config.value.fieldName) {
+          value = props.Feature.attributes[props.Config.value.fieldName];
+        }
+        if(props.Config.value.custom){
+          value = props.Config.value
+        }
         if (value) {
           if (props.Config.value.isDate) {
             /* IT said date will be in UTC, so removed the workaround below. If necessary simply
                change all the methods to UTC... methods. */
             /* The date value is in local time, so do not let JS do time conversion.
                By using the UTC... functions, we can get the date as is without conversion. */
-            const date = new Date(value);
+            const date = new Date(value as Date);
             text = `${formatDateTimePart(date.getMonth() + 1)}/${formatDateTimePart(
               date.getDate()
             )}/${date.getFullYear()}`;
@@ -86,13 +91,14 @@ export default defineComponent({
             text = value.toString();
           }
         }
-      } else if (props.Config.value.custom) {
-        if (props.Config.value.isHTML == true) {
-          propIsHTML.value = true;
-          text = props.Config.value.custom(props.Feature);
-        } else {
-          text = props.Config.value.custom(props.Feature);
-        }
+     // } else if (props.Config.value.custom) {
+        
+     //   if (props.Config.value.isHTML == true) {
+     ////     propIsHTML.value = true;
+      //    text = props.Config.value.custom(props.Feature);
+     //   } else {
+     //     text = props.Config.value.custom(props.Feature);
+     //   }
       }
       // Do not show when data is not available...
       if (!text) {

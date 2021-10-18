@@ -21,7 +21,7 @@
         {
           label: 'Last updated',
           value: {
-            fieldName:'PublishDate',
+            custom: getPublishDate,
             isDate:true,
             isTime:true
           },
@@ -97,6 +97,17 @@ export default defineComponent({
         return descriptionText;
       }
     };
+    const getPublishDate = (feature: FeatureInfo): string | undefined => {
+      let publishDate: number | undefined = undefined;
+      props.Alerts.map((x) => {
+        if ((x.FerryRouteId as number) == feature.attributes.FerryRouteID) {
+          publishDate = x.PublishDate;
+        }
+      });
+      if (publishDate) {
+        return publishDate
+      }
+    };
     const getTitle = (feature: FeatureInfo): string | undefined => {
       let titleText: string | undefined = undefined;
       props.Alerts.map((x) => {
@@ -114,6 +125,7 @@ export default defineComponent({
       close,
       getTitle,
       getDescription,
+      getPublishDate
     };
   },
 });
