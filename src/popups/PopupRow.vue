@@ -55,18 +55,23 @@ export default defineComponent({
       let text = "";
       if (props.Config.value.text) {
         text = props.Config.value.text;
-      } else if (props.Config.value.fieldName) {
-        let value = props.Feature.attributes[props.Config.value.fieldName];
-
+      } 
+      else{
+        let value
+        if (props.Config.value.fieldName) {
+          value = props.Feature.attributes[props.Config.value.fieldName];
+        }
+        if(props.Config.value.custom){
+          value = props.Config.value.custom(props.Feature)
+        }
         if (value) {
           if (props.Config.value.isDate) {
             text = formatEpoch(Number(value), props.Config.value.isTime);
-          } else {
+            }
+          else {
             text = value.toString();
           }
         }
-      } else if (props.Config.value.custom) {
-        text = props.Config.value.custom(props.Feature);
       }
       // Do not show when data is not available...
       if (!text) {

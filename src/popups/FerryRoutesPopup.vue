@@ -95,7 +95,6 @@ export default defineComponent({
     const close = () => {
       feature.value = undefined;
     };
-
     return {
       popupConfig,
       feature,
