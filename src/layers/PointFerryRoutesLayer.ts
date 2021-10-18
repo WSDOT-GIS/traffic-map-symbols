@@ -9,18 +9,6 @@ const renderer = new simpleRenderer({
 
 let layer: FeatureLayer | undefined;
 
-/*export const initLayer = (url: string): FeatureLayer => {
-    layer = new FeatureLayer({
-        id: "ferry-routes-points-layer",
-        url: url,
-        title: "ferryRoutesPoints",
-        renderer: ferryRoutesPointsRenderer,
-        visible: true,
-        labelsVisible: false
-    });
-    console.log(layer)
-    return layer;
-}*/
 const fields = [
     new Field({
         name: "OBJECTID",
@@ -74,12 +62,11 @@ export const initLayer = (url: string): FeatureLayer => {
         id: "ferry-routes-points-layer",
         url: url,
         title: "ferryRoutesPoints",
-        //fields: fields,
+        fields: fields,
         renderer: renderer,
         visible: true,
         labelsVisible: false
     });
-    // console.log(layer.id + " was initialized.");
     return layer;
 }
 

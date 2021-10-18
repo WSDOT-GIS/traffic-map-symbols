@@ -1,8 +1,8 @@
 <template>
   <div v-if="visible" class="popup-row-container">
     <span class="popup-row-label">{{ getLabel() }}</span>
-    <span v-if="!propIsHTML" class="popup-row-value">{{ getText() }}</span>
-    <span v-if="propIsHTML" class="popup-row-value" v-html="getText()"></span>
+    <span v-if="!Config.value.isHTML" class="popup-row-value">{{ getText() }}</span>
+    <span v-if="Config.value.isHTML" class="popup-row-value" v-html="getText()"></span>
   </div>
 </template>
 <script lang="ts">
@@ -26,7 +26,6 @@ export default defineComponent({
     watch(props, () => {
       getText();
     });
-    const propIsHTML = ref<boolean>(false);
     const getLabel = () => {
       if (props.Config.label) {
         if (!props.Feature) {
@@ -79,20 +78,12 @@ export default defineComponent({
               hours = hours ? hours : 12;
               text += ` ${formatDateTimePart(hours)}:${formatDateTimePart(minutes)} ${ampm}`;
             }
-          } else if (props.Config.value.isHTML == true) {
-            propIsHTML.value = true;
-            text = value.toString();
           } else {
             text = value.toString();
           }
         }
       } else if (props.Config.value.custom) {
-        if (props.Config.value.isHTML == true) {
-          propIsHTML.value = true;
-          text = props.Config.value.custom(props.Feature);
-        } else {
-          text = props.Config.value.custom(props.Feature);
-        }
+        text = props.Config.value.custom(props.Feature);
       }
       // Do not show when data is not available...
       if (!text) {
@@ -117,7 +108,6 @@ export default defineComponent({
       visible,
       getLabel,
       getText,
-      propIsHTML,
     };
   },
 });

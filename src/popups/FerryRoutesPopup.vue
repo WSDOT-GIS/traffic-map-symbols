@@ -4,30 +4,7 @@
     LightThemeColor="#FFC1074D"
     DarkThemeColor="#FFC107"
     :Features="[feature]"
-    :Config="{
-      bannerText: { text: 'Ferries' },
-      title: {
-        custom: getTitle,
-        isHTML: true,
-      },
-      content: [
-        {
-          label: 'Description',
-          value: {
-            custom: getDescription,
-            isHTML: true,
-          },
-        },
-        {
-          label: 'Last updated',
-          value: {
-            fieldName:'PublishDate',
-            isDate:true,
-            isTime:true
-          },
-        },
-      ],
-    }"
+    :Config="popupConfig"
     @close="close"
   >
   </PopupBase>
@@ -40,7 +17,8 @@ import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
-import FerryAlertInfo from "@/types/FerryAlertInfo";
+import { getFerryAlerts } from "@/utils/alertInfoUtil";
+import PopupConfig from "@/types/PopupConfig";
 export default defineComponent({
   components: { PopupBase },
   props: {
@@ -48,18 +26,18 @@ export default defineComponent({
       type: Object as PropType<FeaturesetInfo>,
       required: true,
     },
-    Alerts: {
-      type: Object as PropType<Array<FerryAlertInfo>>,
-      required: true,
-    },
   },
   setup(props) {
     const feature = ref<FeatureInfo>();
     const layerIcons = layerListIcons;
+    const popupConfig = ref<PopupConfig>({
+      bannerText: { text: "Ferries" },
+      content: [],
+      paging: { direction: "vertical", maxPage: 0 },
+    });
 
     watch(props, () => {
       if (props.Featureset.layerId === "ferry-routes-points-layer") {
-        //FeatureLayer().id) {
         show();
       } else {
         close();
@@ -67,10 +45,39 @@ export default defineComponent({
     });
 
     const show = () => {
+      popupConfig.value.content = [];
       const setVal = () => {
-        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then((result) => {
-          if (result) {
-            feature.value = result;
+        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then((ftr) => {
+          if (ftr) {
+            getFerryAlerts(ftr.attributes.FerryRouteID as number).then((alerts) => {
+              if (popupConfig.value.paging) {
+                popupConfig.value.paging.maxPage = alerts.length;
+              }
+              alerts.forEach((each, idx) => {
+                popupConfig.value.content.push({
+                  label: "",
+                  value: {
+                    text: `<div class="popup-page-break" data-page-num="${idx + 1}"></div>
+                    <h4 class="popup-title popup-paging-entry" data-page-num="${idx + 1}">${
+                      each.AlertFullTitle
+                    }</h4>`,
+                    isHTML: true,
+                  },
+                });
+                popupConfig.value.content.push({
+                  label: "Description",
+                  value: {
+                    text: each.HomepageAlertText,
+                    isHTML: true,
+                  },
+                });
+                // popupConfig.value.content.push({
+                //   label: "Sort Order",
+                //   value: { text: each.SortOrder.toString() },
+                // });
+              });
+              feature.value = ftr;
+            });
           }
         });
       };
@@ -86,34 +93,12 @@ export default defineComponent({
     const close = () => {
       feature.value = undefined;
     };
-    const getDescription = (feature: FeatureInfo): string | undefined => {
-      let descriptionText: string | undefined = undefined;
-      props.Alerts.map((x) => {
-        if ((x.FerryRouteId as number) == feature.attributes.FerryRouteID) {
-          descriptionText = x.HomepageAlertText;
-        }
-      });
-      if (descriptionText) {
-        return descriptionText;
-      }
-    };
-    const getTitle = (feature: FeatureInfo): string | undefined => {
-      let titleText: string | undefined = undefined;
-      props.Alerts.map((x) => {
-        if ((x.FerryRouteId as number) == feature.attributes.FerryRouteID) {
-          titleText = x.AlertFullTitle;
-        }
-      });
-      if (titleText) {
-        return titleText;
-      }
-    };
+
     return {
+      popupConfig,
       feature,
       layerIcons,
       close,
-      getTitle,
-      getDescription,
     };
   },
 });

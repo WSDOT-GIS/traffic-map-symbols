@@ -1,20 +1,16 @@
 <template>
   <HeaderView @onLoadComplete="resizeMapContainer()" />
   <main>
-    <div
-      id="map-container"
-      :style="{ height: mapHeight }"
-      class="w3-display-container"
-    >
-      <EsriMap />
+    <div id="map-container" :style="{ height: mapHeight }" class="w3-display-container">
+      <EsriMapView />
     </div>
   </main>
   <FooterView />
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
-import EsriMap from "./components/EsriMap.vue";
+import { defineComponent, ref } from "vue";
+import EsriMapView from "./components/EsriMapView.vue";
 import HeaderView from "./components/HeaderView.vue";
 import FooterView from "./components/FooterView.vue";
 import { useStore } from "@/store";
@@ -22,32 +18,28 @@ import { useStore } from "@/store";
 export default defineComponent({
   name: "App",
   components: {
-    EsriMap,
+    EsriMapView,
     HeaderView,
     FooterView,
   },
   setup() {
     const mapHeight = ref("500px");
     const store = useStore();
-    onMounted(() => {
-      //resizeMapContainer();
-    });
+    // onMounted(() => {
+    //   //resizeMapContainer();
+    // });
     // Make map fill the screen below the header...
     const resizeMapContainer = () => {
       const headDiv = document.querySelector("#header") as HTMLElement;
       // The menu button has some extra height that is not reflected in the container height, so measure the menu button's height.
       //const menuDiv = document.querySelector(".we-mega-menu-li") as HTMLElement;
-      const navDiv = document.querySelector(
-        ".nav-outer-wrapper"
-      ) as HTMLElement;
-      //console.log("*** resizeMapContainer() headDiv: " + headDiv.offsetHeight + ", menu: " + menuDiv.offsetHeight);
+      const navDiv = document.querySelector(".nav-outer-wrapper") as HTMLElement;
       let navH = 0;
       if (navDiv && navDiv.offsetHeight) {
         navH = navDiv.offsetHeight;
       }
       const h = window.innerHeight - headDiv.offsetHeight - navH;
       mapHeight.value = h + "px";
-      //console.log("*** resizeMapContainer() " + mapHeight.value + " navH:" + navH + " head:" + headDiv.offsetHeight);
     };
     window.addEventListener("resize", resizeMapContainer);
 
@@ -73,9 +65,10 @@ body,
   width: 100%;
   height: 100%;
   /** Got these from internal website */
-  line-height: 1.6;
   font-family: "Lato", sans-serif;
-  font-weight: 400;
+  /* font-size: var(--type-scale-base2);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--type-scale-base4); */
 }
 hr.horizontal-divider {
   border-top: 1px solid #bbb;
