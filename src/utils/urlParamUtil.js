@@ -41,16 +41,19 @@ const params = new URLSearchParams(window.location.search);
  * @param layerList
  */
 const setVisibleLayersFromUrl = (layerList) => {
-    const param = params.get("layer");
+    const param = params.get("featuretype");
     if (param) {
         const layers = param.split(',');
         const layerIds = [];
+        console.log(layers);
         layers.forEach((each) => {
+            console.log(each);
             layerIds.push(...layerUtil_1.getLayerIds(each));
         });
         layerList.forEach((eachLyr) => {
             if (layerIds.includes(eachLyr.id)) {
                 eachLyr.visible = true;
+                console.log(eachLyr);
             }
         });
     }

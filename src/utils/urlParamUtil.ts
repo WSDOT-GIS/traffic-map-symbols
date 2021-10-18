@@ -35,7 +35,6 @@ import { getBasemapInfo } from "@/layers/Basemaps";
 import BasemapInfo from "@/types/BasemapInfo";
 import { getLayerIds } from "./layerUtil";
 
-
 // Read the URL query parameters...
 const params = new URLSearchParams(window.location.search);
 /**
@@ -43,21 +42,25 @@ const params = new URLSearchParams(window.location.search);
  * @param layerList 
  */
 export const setVisibleLayersFromUrl = (layerList: LayerInfo[]): LayerInfo[] => {
-    const param = params.get("layer");
+    const param = params.get("featuretype");
     if (param) {
         const layers = param.split(',');
         const layerIds: string[] = [];
+        console.log(layers)
         layers.forEach((each) => {
+            console.log(each)
             layerIds.push(...getLayerIds(each));
         })
         layerList.forEach((eachLyr) => {
             if (layerIds.includes(eachLyr.id)) {
                 eachLyr.visible = true;
+                console.log(eachLyr)
             }
         });
     }
     return layerList;
 }
+
 /**
  * Get feature ID.
  */
