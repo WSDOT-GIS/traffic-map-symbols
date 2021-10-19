@@ -129,7 +129,7 @@ export const initLayer = async (url?: string): Promise<{ priority: FeatureLayer,
     // console.log(JSON.stringify(cGraphics));
     return { priority: priorityLayer, closure: closureLayer };
 }
-
+//**This happens here instead of in the layerutils because of the source distinciton. TODO: fix this**
 const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
     layer.watch("visible", (newValue) => {
         if (newValue) {
