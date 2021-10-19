@@ -19,7 +19,7 @@ import FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
 import { getFerryAlerts } from "@/utils/alertInfoUtil";
 import PopupConfig from "@/types/PopupConfig";
-import { formatEpoch } from "@/utils/miscUtil";
+import { formatEpoch, htmlEncode } from "@/utils/miscUtil";
 
 export default defineComponent({
   components: { PopupBase },
@@ -77,10 +77,6 @@ export default defineComponent({
                   label: "Publish Date",
                   value: { text: formatEpoch(each.PublishDate, true) },
                 });
-                // popupConfig.value.content.push({
-                //   label: "Sort Order",
-                //   value: { text: each.SortOrder.toString() },
-                // });
               });
               feature.value = ftr;
             });

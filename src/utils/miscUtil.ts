@@ -25,24 +25,31 @@ const formatDateTimePart = (part: number) => {
     return ("0" + part).slice(-2);
 };
 
-// export const formatEpoch = (epoch: number, isTime?: boolean): string => {
-//     const date = new Date(epoch);
-//     let text = `${date.getMonth() + 1
-//         }/${date.getDate()}/${date.getFullYear()}`;
-//     if (isTime) {
-//         let hours = date.getHours();
-//         const minutes = date.getMinutes();
-//         // Check whether AM or PM
-//         const ampm = hours >= 12 ? "PM" : "AM";
-//         // Find current hour in AM-PM Format
-//         hours = hours % 12;
-//         // To display "0" as "12"
-//         hours = hours ? hours : 12;
-//         text += ` ${hours}:${formatTimePart(minutes)}${ampm}`;
-//     }
-//     return text;
-// }
+export const htmlEncode = (text: string): string => {
+    // Can find unicode and HTML entity values in https://www.unicodepedia.com/
+    let s = text.replace(/\u2019/g, "&rsquo;");
+    s = s.replace(/\u2018/g, "&lsquo;");
+    s = s.replace(/\u201A/g, "&sbquo;");
+    s = s.replace(/\uFFFD/g, ""); // Replacement character (usually question mark in diamond).
+    s = s.replace(/\u201c/g, '&ldquo;');
+    s = s.replace(/\u201d/g, '&rdquo;');
+    s = s.replace(/\u201e/g, '&bdquo; ');
+    s = s.replace(/\u02C6/g, '&circ;');
+    s = s.replace(/\u2039/g, '&lt;');
+    s = s.replace(/\u203A/g, '&gt;');
+    s = s.replace(/\u2013/g, '&ndash;');
+    s = s.replace(/\u2014/g, '&mdash;');
+    s = s.replace(/\u2026/g, '&hellip;');
+    s = s.replace(/\u00A9/g, '&copy;');
+    s = s.replace(/\u00AE/g, '&reg;');
+    s = s.replace(/\u2122/g, '&trade;');
+    s = s.replace(/\u00BC/g, '&frac14;');
+    s = s.replace(/\u00BD/g, '&frac12;');
+    s = s.replace(/\u00BE/g, '&frac34;');
+    s = s.replace(/\u02DC/g, "&tilde;");
+    s = s.replace(/\u00A0/g, "&nbsp;");
+    s = s.replace(/\u2022/g, "&bull;");
 
-// const formatTimePart = (part: number) => {
-//     return ("0" + part).slice(-2);
-// };
+    return s;
+
+}

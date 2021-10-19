@@ -429,6 +429,9 @@ export default defineComponent({
                 }
               } else {
                 pagePositions.push({ page: pageNum, position: pos, prev: "" });
+                if (pos === "inside" && pageNum > currentPage.value) {
+                  currentPage.value = pageNum;
+                }
               }
             });
           },
