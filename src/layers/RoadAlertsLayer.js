@@ -126,6 +126,7 @@ const initLayer = (url) => tslib_1.__awaiter(void 0, void 0, void 0, function* (
     return { priority: priorityLayer, closure: closureLayer };
 });
 exports.initLayer = initLayer;
+//**This happens here instead of in the layerutils because of the source distinciton. TODO: fix this**
 const setLayerEvent = (layer, jsonUrl) => {
     layer.watch("visible", (newValue) => {
         if (newValue) {
