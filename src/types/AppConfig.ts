@@ -18,8 +18,8 @@ interface AppConfig {
     // JSON data...
     regionalAlerts: string;
     stateAlerts: string;
-    // ESRI API Key...
-    apiKey: string;
+    // ESRI API Key... Do not need this right now...
+    // apiKey: string;
     // Weather forecast API...
     forecastSummaryAPI: string;
     forecastExtendedAPI: string,
@@ -30,7 +30,7 @@ interface AppConfig {
     esriRoadsReferenceLayer: string,
     stateRouteShieldsLayer: string,
     ferryRoutesReferenceLayer: string,
-    ferryRouteLines: string, 
+    ferryRouteLines: string,
     ferryRoutePoints: string,
     ferryAlerts: string,
     // Layer refresh interval in minutes...
