@@ -1,9 +1,5 @@
 <template>
-  <div
-    id="div-gpt-ad-1632317155034-0"
-    class="w3-content ad-container"
-    ref="containerDiv"
-  ></div>
+  <div id="div-gpt-ad-1632317155034-0" class="w3-content ad-container" ref="containerDiv"></div>
 </template>
 
 <script lang="ts">
@@ -34,24 +30,10 @@ export default defineComponent({
         // a viewport size, while the second is a list of allowed ad sizes.
         var mapping = googletag
           .sizeMapping()
-          .addSize([100, 100], [88, 31])
-          .addSize(
-            [320, 200],
-            [
-              [320, 50],
-              [300, 50],
-              [320, 100],
-              [300, 75],
-            ]
-          )
+          .addSize([0, 0], [])
+          .addSize([320, 200], [320, 50])
           .addSize([730, 200], [728, 90])
-          .addSize(
-            [1000, 200],
-            [
-              [970, 90],
-              [728, 90],
-            ]
-          )
+          .addSize([1000, 200], [728, 90])
           .build();
         // Define the GPT slot
         gptAdSlots[0] = googletag
@@ -83,10 +65,7 @@ export default defineComponent({
           width: containerDiv.value.offsetWidth,
           height: containerDiv.value.offsetHeight,
         };
-        if (
-          newSize.width !== prevSize.width ||
-          newSize.height !== prevSize.height
-        ) {
+        if (newSize.width !== prevSize.width || newSize.height !== prevSize.height) {
           context.emit("onResize", newSize);
           prevSize.width = newSize.width;
           prevSize.height = newSize.height;
