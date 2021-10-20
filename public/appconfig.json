@@ -26,5 +26,6 @@
     "regionBoundaries": "https://services.arcgis.com/IYrj3otxNjPsrTRD/arcgis/rest/services/Travel_Center_Boundaries/FeatureServer/1",
     "ferryRouteLines": "https://services.arcgis.com/IYrj3otxNjPsrTRD/ArcGIS/rest/services/Travel_Center_Ferry_Routes/FeatureServer/1",
     "ferryRoutePoints": "https://services.arcgis.com/IYrj3otxNjPsrTRD/ArcGIS/rest/services/Travel_Center_Ferry_Routes/FeatureServer/2",
+    "ferryRoutesReferenceLayer": "https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/FerryRoutes_Final/MapServer",
     "layerRefreshMinute": 5
 }

@@ -318,7 +318,7 @@ export default defineComponent({
                 });
               } else {
                 hidePointInteractionGraphics(LineRestrictionsLayer());
-                hidePointInteractionGraphics(LineFerryRoutesLayer());
+               // hidePointInteractionGraphics(LineFerryRoutesLayer());
                 // Not aggregate...
                 const id = g.getObjectId();
                 //get lines for restriciton point click
@@ -336,11 +336,11 @@ export default defineComponent({
                 } else if (g.layer.id === "ferry-routes-points-layer") {
                   // Display line...
                   getFeatureInfoById(id, g.layer as FeatureLayer).then((result) => {
-                    displayPointInteractionGraphics(
+                    /*displayPointInteractionGraphics(
                       LineFerryRoutesLayer(),
                       "FerryRouteID",
                       result?.attributes.FerryRouteID
-                    );
+                    );*/
                     showPopup(g.layer.id, [id]);
                   });
                 } else {
