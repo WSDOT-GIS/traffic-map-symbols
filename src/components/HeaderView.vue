@@ -13,7 +13,7 @@
         The original:
           <a id="main-menu" href="#menu-schmenu" class="sidr-trigger"><span class="sidr-trigger__icon"><i class="fa fa-bars"></i></span></a>
         After the change:
-          <a id="burger-menu" href="#menu-schmenu" class="sidr-trigger"><BurgerView /></a>
+          <a id="burger-menu" href="#menu-schmenu"><BurgerView /></a>
     4. Add the SidebarView component.
     5. Copy the list with the links from id="sidr-existing-content" in the WATECH template. Then remove all the classes.
 -->
@@ -68,7 +68,7 @@
           <!-- <a id="main-menu" href="#menu-schmenu" class="sidr-trigger"
             ><span class="sidr-trigger__icon"><i class="fa fa-bars"></i></span
           ></a> -->
-          <a id="burger-menu" href="#menu-schmenu" class="sidr-trigger"><BurgerView /></a>
+          <a id="burger-menu" href="#menu-schmenu"><BurgerView /></a>
         </div>
       </div>
     </div>

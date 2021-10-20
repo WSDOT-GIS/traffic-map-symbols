@@ -42,18 +42,8 @@ export default defineComponent({
 }
 
 .sidebar {
-  display: block;
-  position: fixed;
-  top: 0;
-  height: 100%;
-  z-index: 999999;
-  width: 260px;
-  overflow-x: hidden;
-  overflow-y: auto;
   font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
   font-size: 15px;
-  box-shadow: none;
-  color: #fff;
 }
 
 .right {
