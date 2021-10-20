@@ -19,7 +19,7 @@ import FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
 import { getFerryAlerts } from "@/utils/alertInfoUtil";
 import PopupConfig from "@/types/PopupConfig";
-import { formatEpoch, htmlEncode } from "@/utils/miscUtil";
+import { formatEpoch } from "@/utils/miscUtil";
 
 export default defineComponent({
   components: { PopupBase },

@@ -13,7 +13,7 @@
     "traffic": "https://utility.arcgis.com/usrsvcs/appservices/G9CkczziK8rxtWpL/rest/services/World/Traffic/MapServer",
     "travelTimes": "https://data.wsdot.wa.gov/travelcenter/TravelTimes.json",
     "weatherStations": "https://data.wsdot.wa.gov/travelcenter/WeatherStations.json",
-    "ferryAlerts": "https://data.wsdot.wa.gov/travelcenter/FerryRouteAlerts.json",    
+    "ferryAlerts": "https://data.wsdot.wa.gov/travelcenter/FerryRouteAlerts.json",
     "forecastSummaryAPI": "https://wsdotappsqa.wsdot.wa.gov/travel/service/api/ForecastSummary/",
     "forecastExtendedAPI": "https://wsdotappsqa.wsdot.wa.gov/travel/service/api/Forecast/",
     "fireIncidents": "https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/USA_Wildfires_v1/FeatureServer/0/",
@@ -26,5 +26,6 @@
     "regionBoundaries": "https://services.arcgis.com/IYrj3otxNjPsrTRD/arcgis/rest/services/Travel_Center_Boundaries/FeatureServer/1",
     "ferryRouteLines": "https://services.arcgis.com/IYrj3otxNjPsrTRD/ArcGIS/rest/services/Travel_Center_Ferry_Routes/FeatureServer/1",
     "ferryRoutePoints": "https://services.arcgis.com/IYrj3otxNjPsrTRD/ArcGIS/rest/services/Travel_Center_Ferry_Routes/FeatureServer/2",
+    "ferryRoutesReferenceLayer": "https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/FerryRoutes_Final/MapServer",
     "layerRefreshMinute": 5
 }
