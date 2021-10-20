@@ -67,7 +67,7 @@ export default defineComponent({
   color: #fff;
   font-size: var(--type-scale-base9);
   line-height: 30px;
-  font-weight: var(--font-weight-heavy);
+  font-weight: var(--font-weight-normal);
   text-align: center;
   /* Circle */
   width: 34px;
