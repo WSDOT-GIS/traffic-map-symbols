@@ -1,6 +1,8 @@
 <template>
   <div class="sidebar">
-    <div class="sidebar-backdrop" @click="close" v-if="isOpen"></div>
+    <div class="sidebar-backdrop" @click="close" v-if="isOpen">
+      <div class="sidebar-close-icon">&times;</div>
+    </div>
     <transition name="slide">
       <div v-if="isOpen" class="sidebar-panel">
         <slot></slot>
@@ -27,7 +29,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style>
 .slide-enter-active,
 .slide-leave-active {
   transition: transform 0.25s ease;
@@ -68,6 +70,22 @@ export default defineComponent({
   cursor: pointer;
 }
 
+.sidebar-close-icon {
+  position: absolute;
+  top: 10px;
+  right: 310px;
+  color: #fff;
+  font-size: var(--type-scale-base9);
+  line-height: 30px;
+  font-weight: var(--font-weight-heavy);
+  text-align: center;
+  /* Circle */
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: #000;
+}
+
 .sidebar-panel {
   overflow-y: auto;
   background: #97d700;
@@ -76,8 +94,56 @@ export default defineComponent({
   top: 0;
   height: 100vh;
   z-index: 999;
-  padding: 3rem 20px 2rem 20px;
+  padding: 0;
   width: 300px;
   text-align: left;
+}
+
+.sidebar-panel ul {
+  border-bottom: none;
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.sidebar-panel ul li {
+  border-top: none;
+  border-bottom: 1px solid #1a1a1a;
+  padding: 8px 0 4px 0;
+}
+
+.sidebar-panel ul li a {
+  color: #1d252d;
+  font-weight: 600;
+  line-height: 1.8rem;
+  padding: 3px 10px 5px 10px;
+  border-bottom: none;
+}
+
+.sidebar-panel ul li a .caret {
+  display: none;
+}
+
+.sidebar-panel ul li a:focus,
+.sidebar-panel ul li a:hover {
+  background-color: transparent;
+  padding: 0;
+  text-decoration: underline;
+  border: none;
+  outline-color: none;
+  box-shadow: 0 0 15px 3px #222 inset;
+}
+
+.sidebar-panel ul li.active a {
+  box-shadow: none !important;
+}
+
+.sidebar-panel ul li ul li {
+  border: none;
+  list-style-type: none;
+  padding: 5px 0;
+}
+
+.sidebar-panel ul li ul li a {
+  border: none;
 }
 </style>

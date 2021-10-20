@@ -9,6 +9,13 @@
           <a class="logo navbar-btn pull-left" href="https://live-wsdot-wsdot.pantheonsite.io/" title="Home" rel="home">
           <a class="name navbar-brand" href="https://live-wsdot-wsdot.pantheonsite.io/" title="Home" rel="home">
     2. Copy the navigation bar section.
+    3. Replace the burger menu with the BurgerView component. Import the BurgerView component and change the line below in the template.
+        The original:
+          <a id="main-menu" href="#menu-schmenu" class="sidr-trigger"><span class="sidr-trigger__icon"><i class="fa fa-bars"></i></span></a>
+        After the change:
+          <a id="burger-menu" href="#menu-schmenu" class="sidr-trigger"><BurgerView /></a>
+    4. Add the SidebarView component.
+    5. Copy the list with the links from id="sidr-existing-content" in the WATECH template. Then remove all the classes.
 -->
   <header id="header">
     <div class="header-wrapper">
@@ -114,9 +121,11 @@
       </div>
     </div>
   </div>
+  <!-- Mobile menu opened by the burger button -->
   <SidebarView>
-    <ul class="sidr-class-menu sidr-class-menu--main sidr-class-nav">
-      <li class="sidr-class-first">
+    <!-- Links from id="sidr-existing-content". Removed the classes. -->
+    <ul>
+      <li>
         <a
           href="https://live-wsdot-wsdot.pantheonsite.io/travel"
           data-drupal-link-system-path="node/403"
@@ -176,22 +185,21 @@ export default defineComponent({
 
 <style>
 #burger-menu {
-    display: none;
+  display: none;
 }
 
 @media screen and (max-width: 991px) {
-    #burger-menu {
-        display: block;
-    }
-    #burger-menu {
-        position: absolute;
-        right: 10px;
-        top: 10px;
-        height: 34px;
-        width: 33px;
-        font-size: 2rem;
-    }
+  #burger-menu {
+    display: block;
+  }
+  #burger-menu {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    height: 34px;
+    width: 33px;
+    font-size: 2rem;
+  }
 }
-
 </style>
 
