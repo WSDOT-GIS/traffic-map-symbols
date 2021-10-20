@@ -2,7 +2,7 @@
   <div class="sidebar">
     <div class="sidebar-backdrop" @click="close" v-if="isOpen"></div>
     <transition name="slide">
-      <div v-if="isOpen" class="sidr right">
+      <div v-if="isOpen" class="sidebar-panel">
         <slot></slot>
       </div>
     </transition>
@@ -30,12 +30,12 @@ export default defineComponent({
 <style scoped>
 .slide-enter-active,
 .slide-leave-active {
-  transition: transform 0.2s ease;
+  transition: transform 0.25s ease;
 }
 
-.slide-enter,
+.slide-enter-from,
 .slide-leave-to {
-  transform: translateX(-100%);
+  transform: translateX(100%);
   transition: all 150ms ease-in 0s;
 }
 
@@ -58,7 +58,7 @@ export default defineComponent({
   transition: right 0.2s ease 0s;
   right: 0px;
 }
-/* .sidebar-backdrop {
+.sidebar-backdrop {
   background-color: rgba(0, 0, 0, 0.5);
   width: 100vw;
   height: 100vh;
@@ -66,7 +66,7 @@ export default defineComponent({
   top: 0;
   right: 0;
   cursor: pointer;
-} */
+}
 
 .sidebar-panel {
   overflow-y: auto;
