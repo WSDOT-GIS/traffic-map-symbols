@@ -14,11 +14,12 @@
     <div class="header-wrapper">
       <div class="logo-container">
         <div class="region region-header">
-          <a class="logo navbar-btn pull-left" href="https://live-wsdot-wsdot.pantheonsite.io/" title="Home" rel="home"
-            ><img
-              src="@/assets/wsdot-logo-white.svg"
-              alt="Home"
-              @load="onImgLoad()"
+          <a
+            class="logo navbar-btn pull-left"
+            href="https://live-wsdot-wsdot.pantheonsite.io/"
+            title="Home"
+            rel="home"
+            ><img src="@/assets/wsdot-logo-white.svg" alt="Home" @load="onImgLoad()"
           /></a>
           <a
             class="name navbar-brand"
@@ -31,9 +32,7 @@
             id="block-externalsearchsearchformblock"
             class="
               contextual-region
-              block
-              block-wsdot-external-search-forms
-              block-external-search-form-block
+              block block-wsdot-external-search-forms block-external-search-form-block
               clearfix
             "
           >
@@ -59,9 +58,10 @@
               </div>
             </form>
           </section>
-          <a id="main-menu" href="#menu-schmenu" class="sidr-trigger"
+          <!-- <a id="main-menu" href="#menu-schmenu" class="sidr-trigger"
             ><span class="sidr-trigger__icon"><i class="fa fa-bars"></i></span
-          ></a>
+          ></a> -->
+          <a id="burger-menu" href="#menu-schmenu" class="sidr-trigger"><BurgerView /></a>
         </div>
       </div>
     </div>
@@ -70,9 +70,7 @@
     <div class="navbar navbar-default container" id="navbar" role="nav">
       <div class="nav-tabs break-lg-control" aria-hidden="false">
         <nav aria-describedby="block-mainnavigation-8-menu">
-          <h2 class="sr-only menu-heading" id="block-mainnavigation-8-menu">
-            Main navigation
-          </h2>
+          <h2 class="sr-only menu-heading" id="block-mainnavigation-8-menu">Main navigation</h2>
           <div class="container-fluid" id="menu-schmenu">
             <ul class="menu menu--main nav">
               <li class="first">
@@ -116,11 +114,54 @@
       </div>
     </div>
   </div>
+  <SidebarView>
+    <ul class="sidr-class-menu sidr-class-menu--main sidr-class-nav">
+      <li class="sidr-class-first">
+        <a
+          href="https://live-wsdot-wsdot.pantheonsite.io/travel"
+          data-drupal-link-system-path="node/403"
+          >Travel</a
+        >
+      </li>
+      <li>
+        <a
+          href="https://live-wsdot-wsdot.pantheonsite.io/construction-planning"
+          data-drupal-link-system-path="node/404"
+          >Construction &amp; planning</a
+        >
+      </li>
+      <li>
+        <a
+          href="https://live-wsdot-wsdot.pantheonsite.io/business-wsdot"
+          data-drupal-link-system-path="node/405"
+          >Business with WSDOT</a
+        >
+      </li>
+      <li>
+        <a
+          href="https://live-wsdot-wsdot.pantheonsite.io/engineering-standards"
+          data-drupal-link-system-path="node/406"
+          >Engineering &amp; standards</a
+        >
+      </li>
+      <li class="sidr-class-last">
+        <a
+          href="https://live-wsdot-wsdot.pantheonsite.io/about"
+          data-drupal-link-system-path="node/53"
+          >About</a
+        >
+      </li>
+    </ul>
+  </SidebarView>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import BurgerView from "./BurgerView.vue";
+import SidebarView from "./SidebarView.vue";
+
 export default defineComponent({
+  components: { BurgerView, SidebarView },
   // https://v3.vuejs.org/guide/component-custom-events.html#defining-custom-events
   emits: ["onLoadComplete"],
   setup(props, context) {
@@ -132,4 +173,25 @@ export default defineComponent({
   },
 });
 </script>
+
+<style>
+#burger-menu {
+    display: none;
+}
+
+@media screen and (max-width: 991px) {
+    #burger-menu {
+        display: block;
+    }
+    #burger-menu {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        height: 34px;
+        width: 33px;
+        font-size: 2rem;
+    }
+}
+
+</style>
 
