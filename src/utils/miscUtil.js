@@ -25,6 +25,7 @@ exports.formatEpoch = formatEpoch;
 const formatDateTimePart = (part) => {
     return ("0" + part).slice(-2);
 };
+// Not used currently, but might need to use it to convert special chars...
 const htmlEncode = (text) => {
     // Can find unicode and HTML entity values in https://www.unicodepedia.com/
     let s = text.replace(/\u2019/g, "&rsquo;");
