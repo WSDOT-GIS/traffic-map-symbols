@@ -25,32 +25,22 @@ const formatDateTimePart = (part: number) => {
     return ("0" + part).slice(-2);
 };
 
-// Not used currently, but might need to use it to convert special chars...
-export const htmlEncode = (text: string): string => {
-    // Can find unicode and HTML entity values in https://www.unicodepedia.com/
-    let s = text.replace(/\u2019/g, "&rsquo;");
-    s = s.replace(/\u2018/g, "&lsquo;");
-    s = s.replace(/\u201A/g, "&sbquo;");
-    s = s.replace(/\uFFFD/g, ""); // Replacement character (usually question mark in diamond).
-    s = s.replace(/\u201c/g, '&ldquo;');
-    s = s.replace(/\u201d/g, '&rdquo;');
-    s = s.replace(/\u201e/g, '&bdquo; ');
-    s = s.replace(/\u02C6/g, '&circ;');
-    s = s.replace(/\u2039/g, '&lt;');
-    s = s.replace(/\u203A/g, '&gt;');
-    s = s.replace(/\u2013/g, '&ndash;');
-    s = s.replace(/\u2014/g, '&mdash;');
-    s = s.replace(/\u2026/g, '&hellip;');
-    s = s.replace(/\u00A9/g, '&copy;');
-    s = s.replace(/\u00AE/g, '&reg;');
-    s = s.replace(/\u2122/g, '&trade;');
-    s = s.replace(/\u00BC/g, '&frac14;');
-    s = s.replace(/\u00BD/g, '&frac12;');
-    s = s.replace(/\u00BE/g, '&frac34;');
-    s = s.replace(/\u02DC/g, "&tilde;");
-    s = s.replace(/\u00A0/g, "&nbsp;");
-    s = s.replace(/\u2022/g, "&bull;");
-
-    return s;
-
+export const fetchJson = async (url: string, isUnicode?: boolean): Promise<unknown> => {
+    const response = await fetch(url);
+    let json: unknown;
+    if (isUnicode) {
+        json = await response.json();
+    }
+    else {
+        const buffer = await response.arrayBuffer();
+        /* I think the data is in Windows-1252 (or ISO-8859-1). 
+           The method: response.json() by always encode everything in UTF-8, so that mess up some characters.
+           To avoid this, decode the buffer with specific encoding instead. */
+        const decoder = new TextDecoder('windows-1252');
+        const text = decoder.decode(buffer);
+        json = JSON.parse(text);
+    }
+    return json;
 }
+
+

@@ -162,9 +162,6 @@ export default defineComponent({
         alerts.value = result;
       });
       alertInfoUtil.initFerryAlerts(config.ferryAlerts);
-      // getFerryAlerts(config.ferryAlerts).then((result) => {
-      //   ferryAlerts.value = result;
-      // });
       // Build the list used by the URL query...
       createLayerGroupInfos(config);
     });

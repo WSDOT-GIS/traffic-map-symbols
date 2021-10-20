@@ -1,22 +1,27 @@
 import AlertInfo from "@/types/AlertInfo";
 import FerryAlertInfo from "@/types/FerryAlertInfo";
+import { fetchJson } from "@/utils/miscUtil"
+import { isEsriFeatures } from "@/utils/typeChecker"
 
 /*** Statewide alerts *******************/
-let startAlertUrl: string;
+let stateAlertUrl: string;
 export const initStateAlerts = (url: string): void => {
-    startAlertUrl = url;
+    stateAlertUrl = url;
 }
 
 export const getStateAlerts = async (): Promise<AlertInfo[]> => {
-    if (!startAlertUrl) {
+    if (!stateAlertUrl) {
         throw "State alert URL is not set yet."
     }
+    const json = await fetchJson(stateAlertUrl);
     const alerts: AlertInfo[] = [];
-    const fetchResponse = await fetch(startAlertUrl);
-    const json = await fetchResponse.json();
-    json.features.forEach((each: { attributes: AlertInfo; }) => {
-        alerts.push(each.attributes);
-    });
+    // const fetchResponse = await fetch(stateAlertUrl);
+    //const json = await fetchResponse.json();
+    if (isEsriFeatures(json)) {
+        json.features.forEach((each: { attributes: unknown }) => {
+            alerts.push(each.attributes as AlertInfo);
+        });
+    }
     // quadrupling one alert for testing...
     // result.push(...result);
     // result.push(...result);
@@ -65,18 +70,11 @@ export const reloadFerryAlerts = async (force?: boolean): Promise<void> => {
     if (!force && !ferryAlerts) {
         return;
     }
-    const response = await fetch(ferryAlertUrl);
-    console.log(response.headers.get('Content-Type'));
-    const buffer = await response.arrayBuffer();
-    /* I think the data is in Windows-1252 (or ISO-8859-1). 
-       The method: response.json() by always encode everything in UTF-8, so that mess up some characters.
-       To avoid this, decode the buffer with specific encoding instead. */
-    const decoder = new TextDecoder('windows-1252');
-    const text = decoder.decode(buffer);
-    const json = JSON.parse(text);
-    // const json = await response.json();
+    const json = await fetchJson(ferryAlertUrl);
     ferryAlerts = [];
-    json.features.forEach((each: { attributes: FerryAlertInfo; }) => {
-        ferryAlerts?.push(each.attributes);
-    });
+    if (isEsriFeatures(json)) {
+        json.features.forEach((each: { attributes: unknown; }) => {
+            ferryAlerts?.push(each.attributes as FerryAlertInfo);
+        });
+    }
 }

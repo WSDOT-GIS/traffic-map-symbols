@@ -13,7 +13,7 @@
     "traffic": "https://utility.arcgis.com/usrsvcs/appservices/G9CkczziK8rxtWpL/rest/services/World/Traffic/MapServer",
     "travelTimes": "https://data.wsdot.wa.gov/travelcenter/TravelTimes.json",
     "weatherStations": "https://data.wsdot.wa.gov/travelcenter/WeatherStations.json",
-    "ferryAlerts": "https://data.wsdot.wa.gov/travelcenter/FerryRouteAlerts.json",    
+    "ferryAlerts": "https://data.wsdot.wa.gov/travelcenter/FerryRouteAlerts.json",
     "forecastSummaryAPI": "https://wsdotappsqa.wsdot.wa.gov/travel/service/api/ForecastSummary/",
     "forecastExtendedAPI": "https://wsdotappsqa.wsdot.wa.gov/travel/service/api/Forecast/",
     "fireIncidents": "https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/USA_Wildfires_v1/FeatureServer/0/",
