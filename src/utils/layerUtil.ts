@@ -1,19 +1,15 @@
 import LayerInfo from "@/types/LayerInfo";
-// import Point from "@arcgis/core/geometry/Point";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Graphic from "@arcgis/core/Graphic";
-// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import WebMap from "@arcgis/core/WebMap";
-// import { geographicToWebMercator } from "@arcgis/core/geometry/support/webMercatorUtils";
-// import Geometry from "@arcgis/core/geometry/Geometry";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as geomJsonUtils from "@arcgis/core/geometry/support/jsonUtils";
 import Renderer from "@arcgis/core/renderers/Renderer";
 import Field from "@arcgis/core/layers/support/Field";
-// import { registerRuntimeCompiler } from "@vue/runtime-core";
-// import { getConfig } from "./appConfigUtil";
 import GroupLayerInfo from "@/types/GroupLayerInfo";
 import AppConfig from "@/types/AppConfig";
+import { fetchJson } from "@/utils/miscUtil";
+import { isEsriFeatures } from "@/utils/typeUtil";
 /**  Mapping between layer groups (type in URL query param) and layer IDs...
  *   * id
  *      ID for the layer group (type).
@@ -45,16 +41,6 @@ export const createLayerGroupInfos = (config: AppConfig): void => {
     layerGroups.push({ id: "parkride", layers: [{ id: "park-ride-layer", uniqueField: "", jsonUrl: config.parkAndRides }] }); // TODO: need unique field
     layerGroups.push({ id: "restarea", layers: [{ id: "rest-areas-layer", uniqueField: "", jsonUrl: config.restAreas }] }); // TODO: need unique field
 };
-//     { id: "camera", layerIds: ["traffic-camera-layer"], uniqueField: "CameraID" },
-//     { id: "alert", layerIds: ["road-alerts-layer"], uniqueField: "EventID" },
-//     { id: "restriction", layerIds: ["point-restrictions-layer", "line-restrictions-layer"], uniqueField: "UniqueId" },
-//     { id: "fire", layerIds: ["fire-incidents-layer", "fire-perimeters-layer"], uniqueField: "UniqueFireIdentifier" },
-//     { id: "time", layerIds: ["travel-times-layer"], uniqueField: "TravelTimesID" },
-//     { id: "mountain", layerIds: ["mountain-passes-layer"], uniqueField: "MountainPassId" },
-//     { id: "weather", layerIds: ["weather-stations-layer"], uniqueField: "WeatherStationId" },
-//     { id: "parkride", layerIds: ["park-ride-layer"], uniqueField: "" }, // TODO: need unique field
-//     { id: "restarea", layerIds: ["rest-areas-layer"], uniqueField: "" } // TODO: need unique field
-// ]
 
 const getGroupLayerInfo = (groupId: string): GroupLayerInfo => {
     const result = layerGroups.find((item) => {
@@ -79,18 +65,6 @@ export const getLayerIds = (groupId: string): string[] => {
     }
 }
 
-// export const getUniqueField = (groupId: string): string => {
-//     const result = layerGroups.find((item) => {
-//         return item.id === groupId;
-//     });
-//     if (result) {
-//         return result.layers.map((each) => {
-//             return each.uniqueField;
-//         })
-//     } else {
-//         throw "Failed to find ID field for " + groupId + ".";
-//     }
-// }
 /**
  * Set the visibility of the specified layer in the layer list.
  * NOTE: The layer list need to be committed to the state store.
@@ -151,17 +125,8 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
     } else {
         query.where += uniqueValue
     }
-    // console.log(fLayer.id + ", query: " + query.where);
     query.outFields = [fLayer.objectIdField]
-    // console.log("querying...")
     const response = await fLayer.queryFeatures(query);
-    // console.log("query end...")
-    // console.log("getFeature(): " + JSON.stringify(response));
-    // const count = await fLayer.queryFeatureCount();
-    // console.log("Feature count: " + count);
-
-    // const fs = await fLayer.queryFeatures();
-    // console.log("First feature: " + JSON.stringify(fs.features[10]));
     if (response.features.length > 0) {
         return response.features[0];
     }
@@ -169,7 +134,7 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
 
 export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: string,
     renderer: Renderer, fields: Field[], geometryType: "point" | "multipoint" | "polyline" | "polygon",
-    visible: boolean/*, oidField?: string*/): Promise<FeatureLayer> => {
+    visible: boolean): Promise<FeatureLayer> => {
     // Create Graphics from JSON...
     let graphics: Graphic[] = [];
     if (visible) {
@@ -226,22 +191,20 @@ export const reloadData = async (jsonUrl: string, layer: FeatureLayer): Promise<
 
 export const replaceFeatures = async (layer: FeatureLayer, newFeatures: Graphic[]): Promise<void> => {
     // Delete existing features...
-    // let msg = `Refreshed ${layer.id}, feature count before: `;
     const fs = await layer.queryFeatures();
-    // msg += fs.features.length;
     await layer.applyEdits({ deleteFeatures: fs.features });
     // Load features...
     await layer.applyEdits({ addFeatures: newFeatures });
-    // const fCount = await layer.queryFeatureCount();
-    // msg += `, after: ${fCount}`;
-    //console.log(msg);
     layer.refresh();
 }
 
 export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
     // Fetch all features from JSON...
-    const response = await fetch(jsonUrl);
-    const json = await response.json();
+    const json = await fetchJson(jsonUrl);
+    //const json = await response.json();
+    if (!isEsriFeatures(json)) {
+        throw "Invalid JSON format. It is not ESRI Features JSON."
+    }
     const sr = SpatialReference.fromJSON(json.spatialReference);
     // Create graphic out of each feature...
     const graphics: Graphic[] = [];
@@ -254,36 +217,9 @@ export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
             geom.spatialReference = sr;
             graphics.push(new Graphic({
                 geometry: geom,
-                attributes: each.attributes ? each.attributes : each.properties,
+                attributes: each.attributes,
             }));
         }
     }
     return graphics;
 }
-
-// export const fetchGeoJsonData = async (geojsonUrl: string, layer: GeoJSONLayer): Promise<Graphic[]> => {
-//     // Fetch all features from JSON...
-//     const response = await fetch(geojsonUrl);
-//     const json = await response.json();
-//     // Create graphic out of each feature...
-//     const graphics: Graphic[] = [];
-//     for (const each of json.features) {
-//         let geom: Geometry;
-//         if (layer.geometryType === "point") {
-//             const pt4326 = new Point({
-//                 x: each.geometry.coordinates[0],
-//                 y: each.geometry.coordinates[1],
-//                 spatialReference: SpatialReference.WGS84
-//             });
-//             geom = geographicToWebMercator(pt4326);
-//         }
-//         else {
-//             throw "Not implemented yet."
-//         }
-//         graphics.push(new Graphic({
-//             geometry: geom,
-//             attributes: each.properties,
-//         }));
-//     }
-//     return graphics;
-// }

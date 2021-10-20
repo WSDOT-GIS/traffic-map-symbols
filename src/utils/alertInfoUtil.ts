@@ -1,7 +1,7 @@
 import AlertInfo from "@/types/AlertInfo";
 import FerryAlertInfo from "@/types/FerryAlertInfo";
 import { fetchJson } from "@/utils/miscUtil"
-import { isEsriFeatures } from "@/utils/typeChecker"
+import { isEsriRows } from "@/utils/typeUtil"
 
 /*** Statewide alerts *******************/
 let stateAlertUrl: string;
@@ -17,7 +17,7 @@ export const getStateAlerts = async (): Promise<AlertInfo[]> => {
     const alerts: AlertInfo[] = [];
     // const fetchResponse = await fetch(stateAlertUrl);
     //const json = await fetchResponse.json();
-    if (isEsriFeatures(json)) {
+    if (isEsriRows(json)) {
         json.features.forEach((each: { attributes: unknown }) => {
             alerts.push(each.attributes as AlertInfo);
         });
@@ -72,7 +72,7 @@ export const reloadFerryAlerts = async (force?: boolean): Promise<void> => {
     }
     const json = await fetchJson(ferryAlertUrl);
     ferryAlerts = [];
-    if (isEsriFeatures(json)) {
+    if (isEsriRows(json)) {
         json.features.forEach((each: { attributes: unknown; }) => {
             ferryAlerts?.push(each.attributes as FerryAlertInfo);
         });
