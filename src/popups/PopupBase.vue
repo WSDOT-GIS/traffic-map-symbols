@@ -1012,8 +1012,8 @@ export default defineComponent({
 .popup-close-button {
   border-style: none;
   background-color: transparent;
-  font-size: var(--type-scale-base6);
-  line-height: var(--type-scale-base8);
+  font-size: var(--type-scale-base9);
+  line-height: var(--type-scale-base11);
   font-weight: var(--font-weight-normal);
   vertical-align: top;
 }
