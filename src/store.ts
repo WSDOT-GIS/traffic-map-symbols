@@ -19,6 +19,7 @@ export interface State {
     layerList: LayerInfo[];
     currentExtent: ExtentInfo;
     userLocation: number[] | null;
+    isMobileMenuOpen: boolean;
 }
 
 // define injection key...
@@ -41,6 +42,7 @@ export const store = createStore<State>({
             },
             layerList: [],
             userLocation: null,
+            isMobileMenuOpen: false,
         }
     },
     getters: {
@@ -118,6 +120,9 @@ export const store = createStore<State>({
                 mapView.extent = extent;
             }
         },
+        toggleIsMobileMenuOpen(state) {
+            state.isMobileMenuOpen = !state.isMobileMenuOpen;
+        }
     },
 })
 // Clone the target of proxy (i.e. removing the reactivity)
