@@ -9,6 +9,7 @@ const Field_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/Fie
 const ferryRoutesRenderer = new SimpleRenderer_1.default({
     symbol: FerryRoutesSymbol_1.ferryRoutesSymbol
 });
+let layer;
 const fields = [
     new Field_1.default({
         name: "OBJECTID",
@@ -16,18 +17,14 @@ const fields = [
         type: "oid"
     }),
 ];
-let layer;
 const initLayer = (url) => {
     layer = new FeatureLayer_1.default({
         id: "ferry-routes-lines-layer",
         url: url,
         title: "ferryRoutes",
-        objectIdField: 'OBJECTID',
-        geometryType: "polyline",
         renderer: ferryRoutesRenderer,
         visible: true,
         labelsVisible: false,
-        fields: fields
     });
     return layer;
 };
