@@ -84,13 +84,8 @@ export default defineComponent({
   left: 0;
   width: 300px;
   overflow-y: none;
+  border: 1px solid var(--color-gray20);
 }
-@media screen and (max-width: 601px) {
-  #map-top-left-container {
-    width: 100%;
-  }
-}
-
 #map-top-left-container-closed {
   position: absolute;
   top: 0;
@@ -131,6 +126,14 @@ export default defineComponent({
   font-size: var(--type-scale-base4);
   line-height: var(--type-scale-base6);
   font-weight: var(--font-weight-heavy);
+}
+@media screen and (max-width: 601px) {
+  #map-top-left-container {
+    width: 100%;
+  }
+  .map-left-panel-close-btn {
+    transform: translate(30%, -50%);
+  }
 }
 </style>
 
