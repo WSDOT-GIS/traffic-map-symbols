@@ -317,6 +317,7 @@ export default defineComponent({
         "--carousel-color-secondary": props.LightThemeColor,
       };
     });
+    
     const close = () => {
       // Let the parent handle the close event.
       // Parent should empty the feature array to close the popup.

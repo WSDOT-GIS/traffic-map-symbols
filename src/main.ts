@@ -11,4 +11,5 @@ import { getConfig } from "./utils/appConfigUtil";
 getConfig().then(() => {
     // adding store as a plugin while creating an app...
     createApp(App).use(store, key).mount('#app');
+
 });
