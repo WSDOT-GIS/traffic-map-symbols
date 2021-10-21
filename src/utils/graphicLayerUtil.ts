@@ -1,15 +1,12 @@
 //A set of functions to deal with the display of graphics that aren't intended to persist in the map.
 
-import { roadRestrictionLine, bridgeRestrictionLine } from "@/symbols/LineRestrictionsSymbol";
 import Point from "@arcgis/core/geometry/Point";
-import Polyline from "@arcgis/core/geometry/Polyline"
-import Geometry from "@arcgis/core/geometry/Geometry"
 import Graphic from "@arcgis/core/Graphic";
-import { webmap, mapView } from "../esri-stuff/esriMap";
+import { mapView } from "../esri-stuff/esriMap";
 import { MyLocationSymbol } from "@/symbols/MyLocationSymbol";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import { def } from "@vue/runtime-core/node_modules/@vue/shared";
 import { getLineFromPointId } from "./featureInfoUtil";
+
 export const addGraphicsByType = (type: string, featureGeometry: any):void => {
     let graphic;
     switch (type) {
