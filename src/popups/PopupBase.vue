@@ -18,6 +18,7 @@
       }"
       v-if="propFeatures.length > 0 && propFeatures[0]"
       :style="popupTopLeft"
+      v-click-away="close"
     >
       <!-- container without the pointer -->
       <div class="popup-inner-container w3-display-container">
