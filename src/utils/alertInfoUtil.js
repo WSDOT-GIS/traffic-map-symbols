@@ -2,22 +2,27 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.reloadFerryAlerts = exports.getFerryAlerts = exports.initFerryAlerts = exports.getStateAlerts = exports.initStateAlerts = void 0;
 const tslib_1 = require("tslib");
+const miscUtil_1 = require("@/utils/miscUtil");
+const typeUtil_1 = require("@/utils/typeUtil");
 /*** Statewide alerts *******************/
-let startAlertUrl;
+let stateAlertUrl;
 const initStateAlerts = (url) => {
-    startAlertUrl = url;
+    stateAlertUrl = url;
 };
 exports.initStateAlerts = initStateAlerts;
 const getStateAlerts = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    if (!startAlertUrl) {
+    if (!stateAlertUrl) {
         throw "State alert URL is not set yet.";
     }
+    const json = yield miscUtil_1.fetchJson(stateAlertUrl);
     const alerts = [];
-    const fetchResponse = yield fetch(startAlertUrl);
-    const json = yield fetchResponse.json();
-    json.features.forEach((each) => {
-        alerts.push(each.attributes);
-    });
+    // const fetchResponse = await fetch(stateAlertUrl);
+    //const json = await fetchResponse.json();
+    if (typeUtil_1.isEsriRows(json)) {
+        json.features.forEach((each) => {
+            alerts.push(each.attributes);
+        });
+    }
     // quadrupling one alert for testing...
     // result.push(...result);
     // result.push(...result);
@@ -65,20 +70,13 @@ const reloadFerryAlerts = (force) => tslib_1.__awaiter(void 0, void 0, void 0, f
     if (!force && !ferryAlerts) {
         return;
     }
-    const response = yield fetch(ferryAlertUrl);
-    console.log(response.headers.get('Content-Type'));
-    const buffer = yield response.arrayBuffer();
-    /* I think the data is in Windows-1252 (or ISO-8859-1).
-       The method: response.json() by always encode everything in UTF-8, so that mess up some characters.
-       To avoid this, decode the buffer with specific encoding instead. */
-    const decoder = new TextDecoder('windows-1252');
-    const text = decoder.decode(buffer);
-    const json = JSON.parse(text);
-    // const json = await response.json();
+    const json = yield miscUtil_1.fetchJson(ferryAlertUrl);
     ferryAlerts = [];
-    json.features.forEach((each) => {
-        ferryAlerts === null || ferryAlerts === void 0 ? void 0 : ferryAlerts.push(each.attributes);
-    });
+    if (typeUtil_1.isEsriRows(json)) {
+        json.features.forEach((each) => {
+            ferryAlerts === null || ferryAlerts === void 0 ? void 0 : ferryAlerts.push(each.attributes);
+        });
+    }
 });
 exports.reloadFerryAlerts = reloadFerryAlerts;
 //# sourceMappingURL=alertInfoUtil.js.map
