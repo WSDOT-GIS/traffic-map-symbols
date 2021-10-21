@@ -106,7 +106,7 @@ export default defineComponent({
 }
 .map-left-panel-close-btn {
   position: absolute;
-  top: 5px;
+  top: 10px;
   right: 0;
   transform: translate(60%, -50%);
   padding: 1px 8px;
@@ -133,6 +133,7 @@ export default defineComponent({
   }
   .map-left-panel-close-btn {
     transform: translate(30%, -50%);
+    top: 5px;
   }
 }
 </style>

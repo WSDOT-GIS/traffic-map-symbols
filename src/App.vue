@@ -5,14 +5,14 @@
       <EsriMapView />
     </div>
   </main>
-  <FooterView />
+  <!-- <FooterView /> -->
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import EsriMapView from "./components/EsriMapView.vue";
 import HeaderView from "./components/HeaderView.vue";
-import FooterView from "./components/FooterView.vue";
+// import FooterView from "./components/FooterView.vue";
 import { useStore } from "@/store";
 
 export default defineComponent({
@@ -20,14 +20,11 @@ export default defineComponent({
   components: {
     EsriMapView,
     HeaderView,
-    FooterView,
+    // FooterView,
   },
   setup() {
     const mapHeight = ref("500px");
     const store = useStore();
-    // onMounted(() => {
-    //   //resizeMapContainer();
-    // });
     // Make map fill the screen below the header...
     const resizeMapContainer = () => {
       const headDiv = document.querySelector("#header") as HTMLElement;
@@ -66,9 +63,6 @@ body,
   height: 100%;
   /** Got these from internal website */
   font-family: "Lato", sans-serif;
-  /* font-size: var(--type-scale-base2);
-  font-weight: var(--font-weight-normal);
-  line-height: var(--type-scale-base4); */
 }
 hr.horizontal-divider {
   border-top: 1px solid #bbb;
