@@ -39,22 +39,5 @@ const getLayer = () => {
     }
     return layer;
 };
-// let layer: GeoJSONLayer | undefined;
-// export const initLayer = (url: string): GeoJSONLayer => {
-//     layer = new GeoJSONLayer({
-//         id: "border-crossings-layer",
-//         url: url,
-//         title: "Border Crossing Points",
-//         renderer: renderer,
-//         visible: false,
-//     });
-//     return layer;
-// }
-// const getLayer = (): GeoJSONLayer => {
-//     if (!layer) {
-//         throw "Border Crossings Layer is not ready yet!";
-//     }
-//     return layer;
-// }
 exports.default = getLayer;
 //# sourceMappingURL=BorderCrossingsLayer.js.map
