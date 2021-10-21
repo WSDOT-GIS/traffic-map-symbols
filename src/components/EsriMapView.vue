@@ -102,7 +102,9 @@ import BoundariesPlacesReferenceLayer from "@/layers/BoundariesPlacesReferenceLa
 import BorderCrossingLayer from "@/layers/BorderCrossingsLayer";
 import LineFerryRoutesLayer from "@/layers/LineFerryRoutesLayer";
 import PointFerryRoutesLayer from "@/layers/PointFerryRoutesLayer";
-import RegionalAlertLayer, { centerFeatures as centerRegionalAlerts } from "@/layers/RegionalAlertLayer";
+import RegionalAlertLayer, {
+  centerFeatures as centerRegionalAlerts,
+} from "@/layers/RegionalAlertLayer";
 /* Popups */
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
 import CameraPopup from "@/popups/CameraPopup.vue";
@@ -206,7 +208,10 @@ export default defineComponent({
     // Setup events on the operational layers...
     let pointerMoveHandle: { remove: () => void } | undefined;
     let clickHandle: { remove: () => void } | undefined;
-    const initOperationalLayerEvents = (mapDiv: HTMLDivElement, esriMap: typeof import("../esri-stuff/esriMap")) => {
+    const initOperationalLayerEvents = (
+      mapDiv: HTMLDivElement,
+      esriMap: typeof import("../esri-stuff/esriMap")
+    ) => {
       const opLayerOpts = {
         include: [
           ParkRideLayer(),
@@ -268,8 +273,10 @@ export default defineComponent({
               results: { graphic: Graphic; mapPoint: Point }[];
             }[] = [];
             response.results.forEach((eachResult) => {
-              console.log(eachResult)
-              const arrayFound = resultsByLayer.find((eachArray) => eachArray.layer === eachResult.graphic.layer);
+              console.log(eachResult);
+              const arrayFound = resultsByLayer.find(
+                (eachArray) => eachArray.layer === eachResult.graphic.layer
+              );
               if (arrayFound) {
                 arrayFound.results.push(eachResult);
               } else {
@@ -292,10 +299,12 @@ export default defineComponent({
                 maxIdx = eachResultSet.info.index;
               }
             });
-            const results2Show = resultsByLayer.find((eachResultSet) => eachResultSet.info.index === maxIdx);
+            const results2Show = resultsByLayer.find(
+              (eachResultSet) => eachResultSet.info.index === maxIdx
+            );
             if (results2Show) {
               const g = results2Show.results[0].graphic;
-              console.log(g)
+              console.log(g);
               const layer = g.layer as FeatureLayer;
               if (
                 layer.id === "traffic-camera-layer" &&
@@ -315,9 +324,11 @@ export default defineComponent({
               }
               // Deal with cluster...
               else if (g.isAggregate) {
-                getClusterExtent(g, results2Show.layer as FeatureLayer, esriMap.mapView).then((clusterExtent) => {
-                  esriMap.zoomToExtent(clusterExtent.expand(1.5));
-                });
+                getClusterExtent(g, results2Show.layer as FeatureLayer, esriMap.mapView).then(
+                  (clusterExtent) => {
+                    esriMap.zoomToExtent(clusterExtent.expand(1.5));
+                  }
+                );
               } else {
                 hidePointInteractionGraphics(LineRestrictionsLayer());
                 hidePointInteractionGraphics(LineFerryRoutesLayer());
@@ -326,15 +337,23 @@ export default defineComponent({
                 //get lines for restriciton point click
                 if (g.layer.id === "point-restrictions-layer") {
                   getFeatureInfoById(id, g.layer as FeatureLayer).then((result) => {
-                    if (result?.attributes.lineMarker == "true" || result?.attributes.lineMarker == "True") {
-                      displayPointInteractionGraphics(LineRestrictionsLayer(), "UniqueId", result?.attributes.UniqueId);
+                    if (
+                      result?.attributes.lineMarker == "true" ||
+                      result?.attributes.lineMarker == "True"
+                    ) {
+                      displayPointInteractionGraphics(
+                        LineRestrictionsLayer(),
+                        "UniqueId",
+                        result?.attributes.UniqueId
+                      );
                       //LineRestrictionsLayer().definitionExpression = `UniqueId = '${result?.attributes.UniqueId}'`;
                       showPopup(results2Show.layer.id, [id]);
                     } else {
                       showPopup(results2Show.layer.id, [id]);
                     }
                   });
-                } if (g.layer.id === "ferry-routes-points-layer") {
+                }
+                if (g.layer.id === "ferry-routes-points-layer") {
                   // Display line...
                   getFeatureInfoById(id, g.layer as FeatureLayer).then((result) => {
                     displayPointInteractionGraphics(
@@ -363,7 +382,6 @@ export default defineComponent({
     onMounted(async () => {
       const appConfig = await getConfig();
       const esriMap = await import("../esri-stuff/esriMap");
-      // const basemap = await import("../layers/Basemaps");
       mapDiv = document.getElementById("esri-map-view") as HTMLDivElement;
       esriMap.init(mapDiv);
       store.commit("setMapSize", {
@@ -406,7 +424,7 @@ export default defineComponent({
         height: mapView.height,
       });
       // Set extent based on the URL query parameter...
-      esriMap.mapView.extent = getExtentFromUrl();
+      esriMap.mapView.extent = await getExtentFromUrl();
       // Zoom, turn on layer and open popup if specified in URL query parameter...
       const featureType = getFeatureTypeFromUrl();
       const featureId = getFeatureIdFromUrl();
@@ -424,7 +442,7 @@ export default defineComponent({
                 store.commit("setLayerList", layerList);
               }
               // Zoom in...
-              esriMap.zoomToMax(result.geometry as Point).then(() => {
+              esriMap.tryZoomToPointAsync(result.geometry as Point, 4).then(() => {
                 showPopup(result.layer.id, [result.getObjectId()]);
               });
             }
@@ -528,7 +546,10 @@ export default defineComponent({
         return;
       }
       if (bottomRightDiv.value && bottomLeftDiv.value && store.state.mapSize.width) {
-        if (ctrWidth + bottomRightDiv.value.offsetWidth + bottomLeftDiv.value.offsetWidth > store.state.mapSize.width) {
+        if (
+          ctrWidth + bottomRightDiv.value.offsetWidth + bottomLeftDiv.value.offsetWidth >
+          store.state.mapSize.width
+        ) {
           marginBottomContainer.value = ctrHeight + 16 + "px";
         } else {
           marginBottomContainer.value = "16px";

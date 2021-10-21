@@ -33,6 +33,7 @@ const graphics = [
         },
         attributes: {
             "ObjectID": 1,
+            "Name": "Seattle",
             "Label": "Seattle",
             "Note": ""
         }
@@ -52,6 +53,7 @@ const graphics = [
         },
         attributes: {
             "ObjectID": 2,
+            "Name": "Spokane",
             "Label": "Spokane",
             "Note": ""
         }
@@ -71,6 +73,7 @@ const graphics = [
         },
         attributes: {
             "ObjectID": 3,
+            "Name": "Vancouver",
             "Label": "Vancouver",
             "Note": ""
         }
@@ -85,6 +88,11 @@ const layer = new FeatureLayer({
             name: "ObjectID",
             alias: "ObjectID",
             type: "oid"
+        }),
+        new Field({
+            name: "Name",
+            alias: "Name",
+            type: "string"
         }),
         new Field({
             name: "Label",
@@ -110,7 +118,22 @@ export default layer;
 export const getFeatureById = async (id: number): Promise<Graphic> => {
     const query = layer.createQuery();
     query.where = "ObjectID =" + id;
-    query.outFields = ["ObjectID", "Label", "Note"];
+    query.outFields = ["ObjectID", "Name", "Label", "Note"];
     const response = await layer.queryFeatures(query);
+    if (response.features.length === 0) {
+        throw "Failed to find the zoom extent with the specified ID: " + id + ".";
+    }
+    return response.features[0];
+}
+
+export const getFeatureByName = async (name: string): Promise<Graphic> => {
+    const query = layer.createQuery();
+    const nameFormatted = name[0].toUpperCase() + name.slice(1).toLowerCase();
+    query.where = `Name = '${nameFormatted}'`;
+    query.outFields = ["ObjectID", "Name", "Label", "Note"];
+    const response = await layer.queryFeatures(query);
+    if (response.features.length === 0) {
+        throw "Failed to find the zoom extent with the specified name: '" + name + "'. Please make sure the spelling is correct.";
+    }
     return response.features[0];
 }
