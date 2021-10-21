@@ -60,8 +60,8 @@ export const mapView = new MapView({
         geometry: fullExtent,
     },
     highlightOptions: {
-        color: "#00ffff",
-        haloColor: "#0000ff",
+        color: "#00ffff", // Fill color
+        haloColor: "#0000ff", // Outline color
         fillOpacity: 0.25,
         haloOpacity: 1
     }
