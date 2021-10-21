@@ -977,13 +977,13 @@ export default defineComponent({
   padding: 0 5px;
   font-size: var(--type-scale-base2);
   line-height: var(--type-scale-base4);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-heavy);
 }
 .popup-badge {
   display: inline-block;
   font-size: var(--type-scale-base2);
   line-height: var(--type-scale-base4);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-heavy);
   padding: 3px;
   border-radius: 5px;
   border-width: 1px;
@@ -1006,7 +1006,7 @@ export default defineComponent({
   text-align: left;
   font-size: var(--type-scale-base6);
   line-height: var(--type-scale-base8);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-heavy);
 }
 
 .popup-close-button {
