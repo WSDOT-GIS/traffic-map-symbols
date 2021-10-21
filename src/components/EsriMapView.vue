@@ -273,7 +273,6 @@ export default defineComponent({
               results: { graphic: Graphic; mapPoint: Point }[];
             }[] = [];
             response.results.forEach((eachResult) => {
-              console.log(eachResult);
               const arrayFound = resultsByLayer.find(
                 (eachArray) => eachArray.layer === eachResult.graphic.layer
               );
@@ -304,7 +303,6 @@ export default defineComponent({
             );
             if (results2Show) {
               const g = results2Show.results[0].graphic;
-              console.log(g);
               const layer = g.layer as FeatureLayer;
               if (
                 layer.id === "traffic-camera-layer" &&
@@ -507,7 +505,6 @@ export default defineComponent({
       });
       // Watch map view size...
       esriMap.mapView.on("resize", (event) => {
-        console.log("Map resize...");
         store.commit("setMapSize", {
           width: event.width,
           height: event.height,

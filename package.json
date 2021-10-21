@@ -16,6 +16,7 @@
     "vue": "^3.0.0",
     "vue-responsive-components": "^0.2.3",
     "vue3-carousel": "^0.1.23",
+    "vue3-click-away": "^1.2.1",
     "vuex": "^4.0.2"
   },
   "devDependencies": {
