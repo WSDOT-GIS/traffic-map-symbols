@@ -100,7 +100,7 @@ import FireIncidentLayer from "@/layers/FireIncidentLayer";
 import RoadsReferenceLayer from "@/layers/RoadsReferenceLayer";
 import BoundariesPlacesReferenceLayer from "@/layers/BoundariesPlacesReferenceLayer";
 import BorderCrossingLayer from "@/layers/BorderCrossingsLayer";
-import LineFerryRoutesLayer from "@/layers/LineFerryRoutesLayer";
+//import LineFerryRoutesLayer from "@/layers/LineFerryRoutesLayer";
 import PointFerryRoutesLayer from "@/layers/PointFerryRoutesLayer";
 import RegionalAlertLayer, { centerFeatures as centerRegionalAlerts } from "@/layers/RegionalAlertLayer";
 /* Popups */
@@ -271,6 +271,7 @@ export default defineComponent({
               results: { graphic: Graphic; mapPoint: Point }[];
             }[] = [];
             response.results.forEach((eachResult) => {
+              console.log(eachResult)
               const arrayFound = resultsByLayer.find((eachArray) => eachArray.layer === eachResult.graphic.layer);
               if (arrayFound) {
                 arrayFound.results.push(eachResult);
@@ -297,6 +298,7 @@ export default defineComponent({
             const results2Show = resultsByLayer.find((eachResultSet) => eachResultSet.info.index === maxIdx);
             if (results2Show) {
               const g = results2Show.results[0].graphic;
+              console.log(g)
               const layer = g.layer as FeatureLayer;
               if (
                 layer.id === "traffic-camera-layer" &&
@@ -327,7 +329,6 @@ export default defineComponent({
                 //get lines for restriciton point click
                 if (g.layer.id === "point-restrictions-layer") {
                   getFeatureInfoById(id, g.layer as FeatureLayer).then((result) => {
-                    console.log(result);
                     if (result?.attributes.lineMarker == "true" || result?.attributes.lineMarker == "True") {
                       displayPointInteractionGraphics(LineRestrictionsLayer(), "UniqueId", result?.attributes.UniqueId);
                       //LineRestrictionsLayer().definitionExpression = `UniqueId = '${result?.attributes.UniqueId}'`;
@@ -336,7 +337,7 @@ export default defineComponent({
                       showPopup(results2Show.layer.id, [id]);
                     }
                   });
-                } else if (g.layer.id === "ferry-routes-points-layer") {
+                } if (g.layer.id === "ferry-routes-points-layer") {
                   // Display line...
                   getFeatureInfoById(id, g.layer as FeatureLayer).then((result) => {
                     /*displayPointInteractionGraphics(
@@ -353,7 +354,7 @@ export default defineComponent({
             }
           } else {
             hidePointInteractionGraphics(LineRestrictionsLayer());
-            hidePointInteractionGraphics(LineFerryRoutesLayer());
+            //hidePointInteractionGraphics(LineFerryRoutesLayer());
             removeGraphicsByType("myLocation"); //remove "my location" graphic
             //No feature exist...
             closePopup();

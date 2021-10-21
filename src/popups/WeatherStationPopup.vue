@@ -120,22 +120,26 @@ export default defineComponent({
             const config = await getConfig();
             //fetch(config.forecastSummaryAPI+featureNWSZoneId).then((result)=>{ ~~summary call
             fetch(config.forecastExtendedAPI + featureNWSZoneId).then((result) => {
-              result.json().then((response) => {
-                console.log(response.forecastData)
-                function mycomparator(a:any,b:any) {
-                  return parseInt(a.forecastNumber, 10) - parseInt(b.forecastNumber, 10);
-                }
-                const sortedForecasts = response.forecastData.sort(mycomparator);
-                forecastList.value = {
-                  nwsZoneId: response.nwsZoneId,
-                  forecastDateTime: response.forecastDateTime,
-                  forecastExpirationDateTime: response.forecastExpirationDateTime,
-                  nwsZoneRegionName: response.nwsZoneRegionName,
-                  forecasts: sortedForecasts,
-                  //forecasts: response.forecastData,
-                };
-                feature.value = featureresult;
-              });
+              if(result.status==200){
+                console.log(result)
+                result.json().then((response) => {
+                  console.log(response.forecastData)
+                  function mycomparator(a:any,b:any) {
+                    return parseInt(a.forecastNumber, 10) - parseInt(b.forecastNumber, 10);
+                  }
+                  const sortedForecasts = response.forecastData.sort(mycomparator);
+                  forecastList.value = {
+                    nwsZoneId: response.nwsZoneId,
+                    forecastDateTime: response.forecastDateTime,
+                    forecastExpirationDateTime: response.forecastExpirationDateTime,
+                    nwsZoneRegionName: response.nwsZoneRegionName,
+                    forecasts: sortedForecasts,
+                    //forecasts: response.forecastData,
+                  };
+                  
+                });
+              }
+              feature.value = featureresult;
             });
           }
         }
@@ -187,6 +191,7 @@ export default defineComponent({
       return formatNum(feature, "Visibility", "Mile");
     };
     const getWindSpeed = (feature: FeatureInfo) => {
+      console.log(feature)
       return formatNum(feature, "WindSpeed", "mph");
     };
 
