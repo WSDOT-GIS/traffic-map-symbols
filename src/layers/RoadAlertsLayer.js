@@ -108,6 +108,10 @@ const initLayer = (url) => tslib_1.__awaiter(void 0, void 0, void 0, function* (
         source: pGraphics,
         geometryType: "point",
         spatialReference: SpatialReference_1.default.WebMercator,
+        orderBy: [{
+                field: "EventPriorityID",
+                order: "ascending"
+            }]
     });
     closureLayer = new FeatureLayer_1.default({
         id: "road-closures-layer",
@@ -183,50 +187,4 @@ const getFeatures = (url) => tslib_1.__awaiter(void 0, void 0, void 0, function*
     });
     return { priority: pGraphics, closure: cGraphics };
 });
-// let priorityLayer: GeoJSONLayer | undefined;
-// let closureLayer: GeoJSONLayer | undefined;
-// export const initPriorityLayer = (url: string): GeoJSONLayer => {
-//     priorityLayer = new GeoJSONLayer({
-//         id: "road-alerts-layer",
-//         url: url,
-//         title: "Travel Alerts",
-//         renderer: roadAlertsPriorityRenderer,
-//         visible: true,
-//         fields: fields,
-//         definitionExpression: "EventCategoryDescription<>'Closure'"
-//     });
-//     return priorityLayer;
-// }
-// export const initClosureLayer = (url: string): GeoJSONLayer => {
-//     closureLayer = new GeoJSONLayer({
-//         id: "road-closures-layer",
-//         url: url,
-//         title: "Travel Closure Alerts",
-//         renderer: roadAlertsClosureRenderer,
-//         visible: true,
-//         fields: fields,
-//         definitionExpression: "EventCategoryDescription='Closure'"
-//     });
-//     return closureLayer;
-// }
-// const getLayer = (id: string): GeoJSONLayer => {
-//     let layerToReturn;
-//     if (id == "road-alerts-layer") {
-//         if (!priorityLayer) {
-//             throw "RoadAlertsLayer is not ready yet!"
-//         }
-//         else {
-//             layerToReturn = priorityLayer
-//         }
-//     }
-//     if (id == "road-closures-layer") {
-//         if (!closureLayer) {
-//             throw "RoadAlertsLayer is not ready yet!"
-//         }
-//         else {
-//             layerToReturn = closureLayer
-//         }
-//     }
-//     return layerToReturn as GeoJSONLayer;
-// }
 //# sourceMappingURL=RoadAlertsLayer.js.map

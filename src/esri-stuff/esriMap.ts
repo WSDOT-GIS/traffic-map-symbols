@@ -46,6 +46,7 @@ import { getBasemapInfo, initBasemap } from "@/layers/Basemaps";
 import XY from "@/types/XY";
 import * as layerUtil from "@/utils/layerUtil";
 import EsriConfig from "@arcgis/core/config"
+import { viewHide16 } from "@esri/calcite-ui-icons";
 const fullExtent = getEsriExtent("full");
 
 // Initialize empty map, and load layers later...
@@ -73,6 +74,7 @@ export const init = (container: HTMLDivElement): void => {
             console.log("Map is ready.");
             // Somehow map does not zoom enough, so set extent again here...
             mapView.extent = fullExtent;
+            
         })
         .catch(error => {
             console.warn("Failed to initialize map. Error: ", error);
@@ -90,7 +92,7 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const trafficLyr = TrafficLayer.initLayer(config.traffic, config.layerRefreshMinute);
     const restAreasLyr = await RestAreasLayer.initLayer(config.restAreas);
     const parkRideLyr = await ParkRideLayer.initLayer(config.parkAndRides);
-    const weatherLyr = await WeatherLayer.initLayer(config.weatherStations);
+    const weatherLyr = await WeatherLayer.initLayer(config.weatherStations, mapView);
     const mtLyr = await MountainLayer.initLayer(config.mountainPasses);
     // const travelTimesLyr = await TravelTimesLayer.initLayer(config.travelTimes);
     const lineRestrictionLyr = await LineRestrictionsLayer.initLayer(config.lineRestrictions);
@@ -118,6 +120,7 @@ export const loadOperationalLayers = async (): Promise<void> => {
     webmap.layers.forEach((eachLyr) => {
         defaultLayerProps.push({ id: eachLyr.id, visible: eachLyr.visible });
     });
+    
 }
 /** Load regional alert point and polygon layers separately from the other operation layers. */
 export const loadRegionalAlert = async (): Promise<void> => {
