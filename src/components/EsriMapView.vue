@@ -100,7 +100,7 @@ import FireIncidentLayer from "@/layers/FireIncidentLayer";
 import RoadsReferenceLayer from "@/layers/RoadsReferenceLayer";
 import BoundariesPlacesReferenceLayer from "@/layers/BoundariesPlacesReferenceLayer";
 import BorderCrossingLayer from "@/layers/BorderCrossingsLayer";
-//import LineFerryRoutesLayer from "@/layers/LineFerryRoutesLayer";
+import LineFerryRoutesLayer from "@/layers/LineFerryRoutesLayer";
 import PointFerryRoutesLayer from "@/layers/PointFerryRoutesLayer";
 import RegionalAlertLayer, { centerFeatures as centerRegionalAlerts } from "@/layers/RegionalAlertLayer";
 /* Popups */
@@ -320,7 +320,7 @@ export default defineComponent({
                 });
               } else {
                 hidePointInteractionGraphics(LineRestrictionsLayer());
-               // hidePointInteractionGraphics(LineFerryRoutesLayer());
+                hidePointInteractionGraphics(LineFerryRoutesLayer());
                 // Not aggregate...
                 const id = g.getObjectId();
                 //get lines for restriciton point click
@@ -337,11 +337,11 @@ export default defineComponent({
                 } if (g.layer.id === "ferry-routes-points-layer") {
                   // Display line...
                   getFeatureInfoById(id, g.layer as FeatureLayer).then((result) => {
-                    /*displayPointInteractionGraphics(
+                    displayPointInteractionGraphics(
                       LineFerryRoutesLayer(),
                       "FerryRouteID",
                       result?.attributes.FerryRouteID
-                    );*/
+                    );
                     showPopup(g.layer.id, [id]);
                   });
                 } else {
@@ -351,7 +351,7 @@ export default defineComponent({
             }
           } else {
             hidePointInteractionGraphics(LineRestrictionsLayer());
-            //hidePointInteractionGraphics(LineFerryRoutesLayer());
+            hidePointInteractionGraphics(LineFerryRoutesLayer());
             removeGraphicsByType("myLocation"); //remove "my location" graphic
             //No feature exist...
             closePopup();

@@ -29,6 +29,7 @@ export const addGraphicsByType = (type: string, featureGeometry: any):void => {
     mapView.graphics.add(graphic as Graphic)
 }
 export const displayPointInteractionGraphics = (layer: FeatureLayer, targetField: string, targetValue: string | number | undefined): void => {
+    layer.visible = true
     layer.definitionExpression = `${targetField} = '${targetValue}'`
     getLineFromPointId(
         targetField,
@@ -42,6 +43,7 @@ export const displayPointInteractionGraphics = (layer: FeatureLayer, targetField
 }
 export const hidePointInteractionGraphics = (layer?: FeatureLayer): void => {
     const targetLayer = layer as FeatureLayer
+    targetLayer.visible = false
     if (targetLayer) {
         targetLayer.definitionExpression = "1=0"; //remove line restriction symbol
     }

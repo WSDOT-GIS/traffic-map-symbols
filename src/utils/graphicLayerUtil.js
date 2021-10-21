@@ -28,6 +28,7 @@ const addGraphicsByType = (type, featureGeometry) => {
 };
 exports.addGraphicsByType = addGraphicsByType;
 const displayPointInteractionGraphics = (layer, targetField, targetValue) => {
+    layer.visible = true;
     layer.definitionExpression = `${targetField} = '${targetValue}'`;
     featureInfoUtil_1.getLineFromPointId(targetField, targetValue, layer); /*.then((lines) => {// zoom to the graphic after it displays
         mapView
@@ -37,6 +38,7 @@ const displayPointInteractionGraphics = (layer, targetField, targetValue) => {
 exports.displayPointInteractionGraphics = displayPointInteractionGraphics;
 const hidePointInteractionGraphics = (layer) => {
     const targetLayer = layer;
+    targetLayer.visible = false;
     if (targetLayer) {
         targetLayer.definitionExpression = "1=0"; //remove line restriction symbol
     }

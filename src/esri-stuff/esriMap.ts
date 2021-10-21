@@ -105,7 +105,7 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const esriPlacesReferenceLayer = BoundariesPlacesReferenceLayer.initLayer(config.esriPlacesReferenceLayer)
     const stateRouteShieldsLayer = StateRouteShieldsLayer.initLayer(config.stateRouteShieldsLayer)
     const ferryRoutesReferenceLayer = FerryRoutesReferenceLayer.initLayer(config.ferryRoutesReferenceLayer)
-    const ferryRouteLinesLayer = LineFerryRoutesLayer.initLayer(config.ferryRouteLines)
+    const ferryRouteLinesLayer = await LineFerryRoutesLayer.initLayer(config.ferryRouteLines)
     const ferryRoutePointsLayer = FerryRoutePointsLayer.initLayer(config.ferryRoutePoints)
     const borderCrossingsLayer = await BorderCrossingsLayer.initLayer(config.borderCrossings)
     // The first one in the array will be displayed at the bottom of the map... 
