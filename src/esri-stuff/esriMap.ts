@@ -58,6 +58,12 @@ export const mapView = new MapView({
         // Limit the map navigation. 
         // Note: This still allows navigation beyond the extent, but not infinitely.
         geometry: fullExtent,
+    },
+    highlightOptions: {
+        color: "#00ffff",
+        haloColor: "#0000ff",
+        fillOpacity: 0.25,
+        haloOpacity: 1
     }
 });
 // Zoom buttons are replaced with the custom Vue components.
