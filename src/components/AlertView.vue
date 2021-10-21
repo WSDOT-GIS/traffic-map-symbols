@@ -1,14 +1,7 @@
 <template>
-  <div
-    id="alert-container-open"
-    :style="{ display: displayStyle }"
-    class="w3-modal"
-  >
+  <div id="alert-container-open" :style="{ display: displayStyle }" class="w3-modal">
     <div
-      class="
-        w3-modal-content w3-animate-right w3-card w3-left-align
-        alert-content
-      "
+      class="w3-modal-content w3-animate-right w3-card w3-left-align alert-content"
       :style="{ maxHeight: height }"
       ref="containerRef"
     >
@@ -23,10 +16,7 @@
             }}</span
           >
         </div>
-        <button
-          class="alert-close-button w3-button w3-display-right"
-          @click="toggleDisplay"
-        >
+        <button class="alert-close-button w3-button w3-display-right" @click="toggleDisplay">
           &times;
         </button>
       </div>
@@ -38,15 +28,13 @@
         <div class="alert-title">{{ item.EventCategoryDescription }}</div>
         <div>{{ item.HeadlineMessage }}</div>
         <div v-if="item.ExtendedMessage">
-          <br>
+          <br />
           <div>{{ item.ExtendedMessage }}</div>
-          <br>
+          <br />
         </div>
         <div>
           <span class="alert-row-key">Last updated: </span>
-          <span class="popup-value">{{
-            formatEpoch(item.LastModifiedDate, true)
-          }}</span>
+          <span class="popup-value">{{ formatEpoch(item.LastModifiedDate, true) }}</span>
         </div>
       </div>
     </div>
@@ -54,7 +42,7 @@
   <div
     v-if="!isOpen"
     id="alert-container-closed"
-    class="w3-transparent w3-button"
+    class="w3-transparent w3-button w3-circle"
     @click="toggleDisplay"
   >
     <div v-html="iconButton?.paths" class="alert-button"></div>
@@ -62,14 +50,7 @@
 </template>
 
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  onUpdated,
-  PropType,
-  ref,
-  watch,
-} from "vue";
+import { computed, defineComponent, onUpdated, PropType, ref, watch } from "vue";
 import { useStore } from "@/store";
 import AlertInfo from "@/types/AlertInfo";
 import { formatEpoch } from "@/utils/miscUtil";
@@ -94,9 +75,7 @@ export default defineComponent({
     const iconBanner = otherIcons.find((item) => {
       return item.id === "statewide-alert-banner";
     });
-    const iconName = isSmallMedia()
-      ? "statewide-alert-button-small"
-      : "statewide-alert-button";
+    const iconName = isSmallMedia() ? "statewide-alert-button-small" : "statewide-alert-button";
     const iconButton = otherIcons.find((item) => {
       return item.id === iconName;
     });
@@ -130,9 +109,7 @@ export default defineComponent({
     };
     const setDisplayStyle = () => {
       displayStyle.value =
-        isOpen.value && props.Alerts.length > 0 && props.Alerts[0]
-          ? "block"
-          : "none";
+        isOpen.value && props.Alerts.length > 0 && props.Alerts[0] ? "block" : "none";
     };
     return {
       containerRef,

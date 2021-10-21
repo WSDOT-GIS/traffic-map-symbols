@@ -111,6 +111,10 @@ export const initLayer = async (url?: string): Promise<{ priority: FeatureLayer,
         source: pGraphics,
         geometryType: "point",
         spatialReference: SpatialReference.WebMercator,
+        orderBy: [{
+            field: "EventPriorityID",
+            order: "ascending"
+        }]
     });
 
     closureLayer = new FeatureLayer({
@@ -124,8 +128,8 @@ export const initLayer = async (url?: string): Promise<{ priority: FeatureLayer,
         geometryType: "point",
         spatialReference: SpatialReference.WebMercator,
     });
-    setLayerEvent(priorityLayer,url as string)
-    setLayerEvent(closureLayer,url as string)
+    setLayerEvent(priorityLayer, url as string)
+    setLayerEvent(closureLayer, url as string)
     // console.log(JSON.stringify(cGraphics));
     return { priority: priorityLayer, closure: closureLayer };
 }
@@ -188,54 +192,3 @@ const getFeatures = async (url: string): Promise<{ priority: Graphic[], closure:
     })
     return { priority: pGraphics, closure: cGraphics };
 }
-
-// let priorityLayer: GeoJSONLayer | undefined;
-// let closureLayer: GeoJSONLayer | undefined;
-// export const initPriorityLayer = (url: string): GeoJSONLayer => {
-//     priorityLayer = new GeoJSONLayer({
-//         id: "road-alerts-layer",
-//         url: url,
-//         title: "Travel Alerts",
-//         renderer: roadAlertsPriorityRenderer,
-//         visible: true,
-//         fields: fields,
-//         definitionExpression: "EventCategoryDescription<>'Closure'"
-//     });
-//     return priorityLayer;
-// }
-
-// export const initClosureLayer = (url: string): GeoJSONLayer => {
-//     closureLayer = new GeoJSONLayer({
-//         id: "road-closures-layer",
-//         url: url,
-//         title: "Travel Closure Alerts",
-//         renderer: roadAlertsClosureRenderer,
-//         visible: true,
-//         fields: fields,
-//         definitionExpression: "EventCategoryDescription='Closure'"
-//     });
-//     return closureLayer;
-// }
-// const getLayer = (id: string): GeoJSONLayer => {
-//     let layerToReturn;
-//     if (id == "road-alerts-layer") {
-//         if (!priorityLayer) {
-//             throw "RoadAlertsLayer is not ready yet!"
-//         }
-//         else {
-//             layerToReturn = priorityLayer
-//         }
-//     }
-//     if (id == "road-closures-layer") {
-//         if (!closureLayer) {
-//             throw "RoadAlertsLayer is not ready yet!"
-//         }
-//         else {
-//             layerToReturn = closureLayer
-//         }
-//     }
-//     return layerToReturn as GeoJSONLayer;
-// }
-
-
-
