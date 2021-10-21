@@ -6,22 +6,19 @@
       class="w3-container w3-padding-small w3-card w3-white w3-col"
       :style="{ maxHeight: maxHeight + 'px' }"
     >
-      <div class="w3-display-container w3-padding-small w3-border-0">
-        <label class="w3-large">Map Features</label>
-        <div
-          class="w3-button w3-transparent w3-display-right"
-          @click="toggleDisplay"
-        >
+      <div class="w3-display-container w3-border-0">
+        <div class="map-left-panel-title"><h5>Map Legend</h5></div>
+        <div class="map-left-panel-close-btn w3-button" @click="toggleDisplay">
           <svg
             id="expand"
             xmlns="http://www.w3.org/2000/svg"
-            width="10"
-            height="10"
+            width="12"
+            height="12"
             viewBox="0 0 32 32"
             class="svg-icon"
           >
             <path
-              d="M31.047 28h-5l-12-12 12-12h5l-12 12 12 12zm-26-12l12-12h-5l-12 12 12 12h5l-12-12z"
+              d="M31.047 28h-5l-12-12 12-12h5l-12 12 12 12zm-26-12l12-12h-5l-12 12 12 12h5l-12-12z" style="fill:#4a5157"
             />
           </svg>
         </div>
@@ -38,18 +35,17 @@
     class="w3-container w3-padding-small w3-card w3-white w3-button"
     @click="toggleDisplay"
   >
-    <label class="w3-medium">Map Features</label>
+    <label class="map-left-panel-title-closed">Map Legend</label>
     <svg
       id="expand"
       xmlns="http://www.w3.org/2000/svg"
-      width="10"
-      height="10"
+      width="12"
+      height="12"
       viewBox="0 0 32 32"
       class="svg-icon"
+      
     >
-      <path
-        d="M1.047 4h5l12 12-12 12h-5l12-12-12-12zm26 12l-12 12h5l12-12-12-12h-5l12 12z"
-      />
+      <path d="M1.047 4h5l12 12-12 12h-5l12-12-12-12zm26 12l-12 12h5l12-12-12-12h-5l12 12z" style="fill:#4a5157" />
     </svg>
   </div>
 </template>
@@ -87,18 +83,17 @@ export default defineComponent({
   top: 0;
   left: 0;
   width: 300px;
-  overflow-y: auto;
+  overflow-y: none;
+  border: 1px solid var(--color-gray20);
 }
-@media screen and (max-width: 601px) {
-  #map-top-left-container {
-    width: 100%;
-  }
-}
-
 #map-top-left-container-closed {
   position: absolute;
   top: 0;
   left: 0;
+  overflow-y: none;
+  border-radius: 4px;
+  border: 1px solid var(--color-gray20);
+  background-color: #fff;
 }
 .left-pane-slide-enter-active,
 .left-pane-slide-leave-active {
@@ -109,8 +104,36 @@ export default defineComponent({
   transform: translateX(-100%);
   transition: all 150ms ease-in 0s;
 }
-label {
+.map-left-panel-close-btn {
+  position: absolute;
+  top: 5px;
+  right: 0;
+  transform: translate(60%, -50%);
+  padding: 1px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--color-gray20);
+  background-color: #fff;  
+}
+.map-left-panel-title {
   margin-right: 20px;
+  font-size: var(--type-scale-base4);
+  line-height: var(--type-scale-base6);
+  font-weight: var(--font-weight-heavy);
+  margin-bottom: 0;
+}
+.map-left-panel-title-closed {
+  margin-right: 20px;
+  font-size: var(--type-scale-base4);
+  line-height: var(--type-scale-base6);
+  font-weight: var(--font-weight-heavy);
+}
+@media screen and (max-width: 601px) {
+  #map-top-left-container {
+    width: 100%;
+  }
+  .map-left-panel-close-btn {
+    transform: translate(30%, -50%);
+  }
 }
 </style>
 

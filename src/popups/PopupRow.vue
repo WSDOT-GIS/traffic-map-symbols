@@ -55,20 +55,18 @@ export default defineComponent({
       let text = "";
       if (props.Config.value.text) {
         text = props.Config.value.text;
-      } 
-      else{
-        let value
+      } else {
+        let value;
         if (props.Config.value.fieldName) {
           value = props.Feature.attributes[props.Config.value.fieldName];
         }
-        if(props.Config.value.custom){
-          value = props.Config.value.custom(props.Feature)
+        if (props.Config.value.custom) {
+          value = props.Config.value.custom(props.Feature);
         }
         if (value) {
           if (props.Config.value.isDate) {
             text = formatEpoch(Number(value), props.Config.value.isTime);
-            }
-          else {
+          } else {
             text = value.toString();
           }
         }
@@ -108,7 +106,7 @@ export default defineComponent({
 }
 
 .popup-row-label {
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-heavy);
   text-align: left;
 }
 .popup-row-value {
