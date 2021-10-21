@@ -442,7 +442,7 @@ export default defineComponent({
                 store.commit("setLayerList", layerList);
               }
               // Zoom in...
-              esriMap.zoomToMax(result.geometry as Point).then(() => {
+              esriMap.tryZoomToPointAsync(result.geometry as Point, 4).then(() => {
                 showPopup(result.layer.id, [result.getObjectId()]);
               });
             }

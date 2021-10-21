@@ -9,7 +9,6 @@ import Extent from "@arcgis/core/geometry/Extent";
 import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol";
 import Layer from "@arcgis/core/layers/Layer";
 import Graphic from "@arcgis/core/Graphic";
-// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import { difference } from "@arcgis/core/geometry/geometryEngine";
@@ -40,12 +39,10 @@ import { getEsriExtent, getOutOfBoundDirection } from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 import FeatureInfo from "@/types/FeatureInfo";
 import { getConfig } from "@/utils/appConfigUtil";
-// import LayerInfo from "@/types/LayerInfo";
 import firePerimeterFeatureIDs from "@/utils/firePerimeterQuery"
-import { getBasemapInfo, initBasemap } from "@/layers/Basemaps";
+import { getBasemapInfo } from "@/layers/Basemaps";
 import XY from "@/types/XY";
 import * as layerUtil from "@/utils/layerUtil";
-import EsriConfig from "@arcgis/core/config"
 const fullExtent = getEsriExtent("full");
 
 // Initialize empty map, and load layers later...
@@ -164,7 +161,7 @@ export const tryZoomToPointAsync = async (point: Point, numLevels?: number): Pro
     const orgLevel = mapView.zoom;
     await mapView.goTo({
         target: point,
-        zoom: mapView.zoom += 1
+        zoom: mapView.zoom += numLevels
     }, {
         duration: 300,
         easing: "ease-in"

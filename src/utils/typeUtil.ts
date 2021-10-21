@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 type EsriRows = {
     features: { attributes: Record<string, unknown> }[]
 }
@@ -10,7 +11,7 @@ type EsriFeatures = {
     }[]
 }
 
-export const isEsriRows = (obj: any): obj is EsriFeatures => {
+export const isEsriRows = (obj: any): obj is EsriRows => {
     return "features" in obj && Array.isArray(obj.features)
         && obj.features.every((x: any) => { return "attributes" in x });
 }
