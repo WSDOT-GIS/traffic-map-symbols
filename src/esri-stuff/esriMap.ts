@@ -76,7 +76,7 @@ export const init = (container: HTMLDivElement): void => {
             console.log("Map is ready.");
             // Somehow map does not zoom enough, so set extent again here...
             mapView.extent = fullExtent;
-            
+
         })
         .catch(error => {
             console.warn("Failed to initialize map. Error: ", error);
@@ -122,7 +122,7 @@ export const loadOperationalLayers = async (): Promise<void> => {
     webmap.layers.forEach((eachLyr) => {
         defaultLayerProps.push({ id: eachLyr.id, visible: eachLyr.visible });
     });
-    
+
 }
 /** Load regional alert point and polygon layers separately from the other operation layers. */
 export const loadRegionalAlert = async (): Promise<void> => {
@@ -424,7 +424,7 @@ export const updateOutOfExtentLayer = (): void => {
     outOfExtentLayer.removeAll();
     const symbol = new SimpleFillSymbol({
         style: "solid",
-        color: [128, 128, 128, 0.5],
+        color: [256, 256, 256, 0.95],
         outline: {
             style: "none"
         }
