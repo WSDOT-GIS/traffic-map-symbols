@@ -18,7 +18,7 @@
       }"
       v-if="propFeatures.length > 0 && propFeatures[0]"
       :style="popupTopLeft"
-      v-click-away="close"
+      v-click-away="onClickAway"
     >
       <!-- container without the pointer -->
       <div class="popup-inner-container w3-display-container">
@@ -318,7 +318,22 @@ export default defineComponent({
         "--carousel-color-secondary": props.LightThemeColor,
       };
     });
-    
+
+    const onClickAway = (event: PointerEvent) => {
+      console.log(event);
+      if (smallMedia.value) {
+        close();
+      } else {
+        /* On Desktop
+           - If user clicks on something other than the map (e.g. TOC, header, ...), then close the popup.
+           - If user clicks on map, then do not do anything here. */
+        const target = event.target as HTMLElement;
+        if (!target.classList.contains("esri-view-surface")) {
+          close();
+        }
+      }
+    };
+
     const close = () => {
       // Let the parent handle the close event.
       // Parent should empty the feature array to close the popup.
@@ -345,11 +360,12 @@ export default defineComponent({
     watch(mapScale, () => {
       // While map is being panned to show the popup, map sometimes zoom out as well resulting in scale change, so do not close popup.
       // Only close if user intentionally change scales.
-      if (!isPanning) {
-        close();
-      } else {
-        setScreenXY();
-      }
+      // if (!isPanning) {
+      //   close();
+      // } else {
+      //   setScreenXY();
+      // }
+      setScreenXY();
     });
     // Watch map moving...
     watch(mapCenter, (newValue, oldValue) => {
@@ -876,6 +892,7 @@ export default defineComponent({
       propFeatures,
       smallMedia,
       currentPage,
+      onClickAway,
     };
   },
 });
