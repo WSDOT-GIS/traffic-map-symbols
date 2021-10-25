@@ -355,37 +355,50 @@ export default defineComponent({
       highlightMap();
       setMapXY();
     });
-    // Watch scale change...
-    watch(mapScale, () => {
-      // While map is being panned to show the popup, map sometimes zoom out as well resulting in scale change, so do not close popup.
-      // Only close if user intentionally change scales.
-      // if (!isPanning) {
-      //   close();
-      // } else {
-      //   setScreenXY();
-      // }
+    //
+    mapView.watch("stationary", (newValue) => {
+      if (!newValue) {
+        return;
+      }
       setScreenXY();
     });
+    // Watch scale change...
+    // watch(mapScale, () => {
+    //   // While map is being panned to show the popup, map sometimes zoom out as well resulting in scale change, so do not close popup.
+    //   // Only close if user intentionally change scales.
+    //   // if (!isPanning) {
+    //   //   close();
+    //   // } else {
+    //   //   setScreenXY();
+    //   // }
+    //   setScreenXY();
+    // });
+    // Store the previous scale so it can detect if the center is moving due to zooming or panning.
+    let prevScale = 0;
     // Watch map moving...
     watch(mapCenter, (newValue, oldValue) => {
       if (!props.Features || props.Features.length === 0 || !props.Features[0] || !oldValue) {
         return;
       }
-      if (oldValue.x !== 0 && oldValue.y !== 0) {
-        const newCenter = toScreenXY(newValue.x, newValue.y);
-        const oldCenter = toScreenXY(oldValue.x, oldValue.y);
-        const diffX = oldCenter.x - newCenter.x;
-        const diffY = oldCenter.y - newCenter.y;
-        screenX.value += diffX;
-        screenY.value += diffY;
-      } else {
-        // The very first time, the oldValue's x and y are 0. So cannot calculate the difference from the previous.
-        const mapPt = props.Features[currentIdx.value].mapPoint;
-        const screenXY = toScreenXY(mapPt.x, mapPt.y);
-        screenX.value = screenXY.x;
-        screenY.value = screenXY.y;
+      // Only do this if it is panning (not zooming).
+      if (prevScale == mapScale.value) {
+        if (oldValue.x !== 0 && oldValue.y !== 0) {
+          const newCenter = toScreenXY(newValue.x, newValue.y);
+          const oldCenter = toScreenXY(oldValue.x, oldValue.y);
+          const diffX = oldCenter.x - newCenter.x;
+          const diffY = oldCenter.y - newCenter.y;
+          screenX.value += diffX;
+          screenY.value += diffY;
+        } else {
+          // The very first time, the oldValue's x and y are 0. So cannot calculate the difference from the previous.
+          const mapPt = props.Features[currentIdx.value].mapPoint;
+          const screenXY = toScreenXY(mapPt.x, mapPt.y);
+          screenX.value = screenXY.x;
+          screenY.value = screenXY.y;
+        }
+        adjustPositionSize();
       }
-      adjustPositionSize();
+      prevScale = mapScale.value;
     });
     // Image load happens later and change the size of the popup, so need to make adjustment after that...
     const onImgLoad = () => {
