@@ -356,7 +356,6 @@ export default defineComponent({
       setMapXY();
     });
     // Watch scale change...
-    // On touch screen, after pinch zoom, panning map also changes the scale, so commented this out so popup does not close when that happens.
     watch(mapScale, () => {
       // While map is being panned to show the popup, map sometimes zoom out as well resulting in scale change, so do not close popup.
       // Only close if user intentionally change scales.
