@@ -103,6 +103,7 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
     fLayer.visible = true;
     const ftrCount = await fLayer.queryFeatureCount();
     if (groupInfo.layers[0].jsonUrl && ftrCount === 0) {
+        console.log("getFeature: " + layer.title)
         await reloadData(groupInfo.layers[0].jsonUrl, fLayer);
         if (groupInfo.layers.length > 1) {
             for (const eachLyr of groupInfo.layers) {
@@ -176,17 +177,35 @@ export const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
     layer.watch("visible", (newValue, oldValue, propName, target) => {
         const lyr = target as FeatureLayer;
         if (newValue) {
+            console.log("Became visible: " + layer.title)
             reloadData(jsonUrl, lyr);
         }
     });
 }
+// Keep track if what is loading, so prevent loading the same layer at the same time.
+let loadManager: { id: string, promise: Promise<void> }[] = [];
 
 export const reloadData = async (jsonUrl: string, layer: FeatureLayer): Promise<void> => {
-    if (!layer.visible) { return; }
-    // Fetch all features from JSON...
-    const graphics = await fetchJsonData(jsonUrl);
-    // Replace old with new features...
-    await replaceFeatures(layer, graphics);
+    const reload = async (jsonUrl: string, layer: FeatureLayer): Promise<void> => {
+        if (!layer.visible) { return; }
+        console.log("Reload data: " + layer.id);
+        // Fetch all features from JSON...
+        const graphics = await fetchJsonData(jsonUrl);
+        // Replace old with new features...
+        await replaceFeatures(layer, graphics);
+    }
+    // Check if the layer is already being loaded currently or not...
+    const runningProc = loadManager.find(x => x.id === layer.id);
+    if (runningProc) {
+        // It is loading currently already, so wait until that finishes.
+        await runningProc.promise;
+    } else {
+        // It is not loading now, so start loading.
+        const promise = reload(jsonUrl, layer);
+        loadManager.push({id: layer.id, promise: promise});
+        await promise;
+        loadManager = loadManager.filter(x => x.id !== layer.id);
+    }
 }
 
 export const replaceFeatures = async (layer: FeatureLayer, newFeatures: Graphic[]): Promise<void> => {
