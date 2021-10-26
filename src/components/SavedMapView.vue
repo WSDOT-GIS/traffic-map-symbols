@@ -67,7 +67,7 @@ export default defineComponent({
     const store = useStore();
     const itemContainerRef = ref<HTMLElement>();
     const closeButtonRef = ref<HTMLElement>();
-    const itemTitleWidth = ref("0");
+    const itemTitleWidth = ref("80%");
     const formVisible = ref(false);
     const cookieName = "savedmaps";
     const cookieText = getCookie(cookieName);
