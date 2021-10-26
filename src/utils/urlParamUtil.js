@@ -4,6 +4,8 @@ URL query parameters:
 * extent
     Comma separated list of xmin, xmax, ymin, ymax in DD format.
     The sequence does not matter.
+* namedextent
+    seattle, spokane, vancouver
 * base
     Name of the basemap
 * layer
@@ -34,6 +36,7 @@ const Extent_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/Extent")
 const extentUtil_1 = require("./extentUtil");
 const Basemaps_1 = require("@/layers/Basemaps");
 const layerUtil_1 = require("./layerUtil");
+const ZoomExtentLayer_1 = require("@/layers/ZoomExtentLayer");
 // Read the URL query parameters...
 const params = new URLSearchParams(window.location.search);
 /**
@@ -45,15 +48,12 @@ const setVisibleLayersFromUrl = (layerList) => {
     if (param) {
         const layers = param.split(',');
         const layerIds = [];
-        console.log(layers);
         layers.forEach((each) => {
-            console.log(each);
             layerIds.push(...layerUtil_1.getLayerIds(each));
         });
         layerList.forEach((eachLyr) => {
             if (layerIds.includes(eachLyr.id)) {
                 eachLyr.visible = true;
-                console.log(eachLyr);
             }
         });
     }
@@ -76,9 +76,10 @@ const getFeatureTypeFromUrl = () => {
     return type;
 };
 exports.getFeatureTypeFromUrl = getFeatureTypeFromUrl;
-// Assign extent if it is specified.
-// If not specified or value is not valid, return full state.
-const getExtentFromUrl = () => {
+/**  Assign extent if it is specified.
+     Check the extent property first, then check namedextent property, if nothing or invalid, return full state.
+*/
+const getExtentFromUrl = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     const extentParam = params.get("extent");
     let extent;
     if (extentParam) {
@@ -108,12 +109,30 @@ const getExtentFromUrl = () => {
             }
         }
     }
-    if (extent === undefined) {
+    if (!extent) {
+        //extent = getEsriExtent("full");
+        extent = yield getNamedExtentFromUrl();
+    }
+    return extent;
+});
+exports.getExtentFromUrl = getExtentFromUrl;
+const getNamedExtentFromUrl = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+    const param = params.get("namedextent");
+    let extent;
+    if (param) {
+        try {
+            const ftr = yield ZoomExtentLayer_1.getFeatureByName(param);
+            extent = ftr.geometry.extent.expand(2);
+        }
+        catch (ex) {
+            console.error(ex);
+        }
+    }
+    if (!extent) {
         extent = extentUtil_1.getEsriExtent("full");
     }
     return extent;
-};
-exports.getExtentFromUrl = getExtentFromUrl;
+});
 const getBasemapFromUrl = () => {
     const param = params.get("base");
     const name = param ? param : "";

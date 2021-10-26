@@ -61,10 +61,27 @@ const fields = [
         "type": "date",
         "alias": "WeatherReportDateTime",
     }),
+    new Field_1.default({
+        "name": "WeatherNetworkPriority",
+        "type": "double",
+        "alias": "WeatherNetworkPriority",
+    }),
 ];
 let layer;
-const initLayer = (jsonUrl) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+const initLayer = (jsonUrl, view) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     layer = yield layerUtil.initLayer(jsonUrl, "weather-stations-layer", "Weather Stations", renderer, fields, "point", false);
+    layer.definitionExpression = "WeatherNetworkPriority = 0";
+    view.watch("scale", (scale) => {
+        console.log(scale);
+        if (scale > 577790.554289) {
+            layer.definitionExpression = "WeatherNetworkPriority = 0";
+            layer.refresh();
+        }
+        else {
+            layer.definitionExpression = "1=1";
+            layer.refresh();
+        }
+    });
     return layer;
 });
 exports.initLayer = initLayer;

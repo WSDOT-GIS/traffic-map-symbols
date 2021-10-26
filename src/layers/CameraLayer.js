@@ -3,12 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.setCluster = exports.toggleCluster = exports.initLayer = void 0;
 const tslib_1 = require("tslib");
 const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
-// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 const Field_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/Field"));
 const CameraSymbol_1 = tslib_1.__importDefault(require("@/symbols/CameraSymbol"));
 const clusterUtil_1 = require("@/utils/clusterUtil");
 const layerUtil = tslib_1.__importStar(require("@/utils/layerUtil"));
-// import LayerInfo from "@/types/LayerInfo";
 const renderer = new SimpleRenderer_1.default({ symbol: CameraSymbol_1.default });
 const fields = [
     new Field_1.default({
@@ -80,25 +78,6 @@ const getLayer = () => {
     }
     return layer;
 };
-// let layer: GeoJSONLayer | undefined;
-// export const initLayer = (url: string): GeoJSONLayer => {
-//     layer = new GeoJSONLayer({
-//         id: "traffic-camera-layer",
-//         url: url,
-//         title: "Cameras",
-//         renderer: renderer,
-//         featureReduction: clusterConfig,
-//         fields: fields,
-//         visible: false,
-//     });
-//     return layer;
-// }
-// const getLayer = (): GeoJSONLayer => {
-//     if (!layer) {
-//         throw "CameraLayer is not ready yet!";
-//     }
-//     return layer;
-// }
 exports.default = getLayer;
 /*** Helper functions **************/
 // Watch scale change...
@@ -109,11 +88,9 @@ const toggleCluster = (newScale, oldScale) => {
     // Turn off clustering at max scale...
     if (newScale > clusterUtil_1.clusterMaxScale && oldScale < clusterUtil_1.clusterMaxScale) {
         layer.featureReduction = clusterUtil_1.clusterConfig;
-        //console.log("Turn on cluster: " + clusterConfig.clusterRadius + " scale: " + oldScale + " > " + newScale);
     }
     else if (newScale < clusterUtil_1.clusterMaxScale && oldScale > clusterUtil_1.clusterMaxScale) {
         layer.set("featureReduction", undefined);
-        //console.log("Turn off cluster: " + clusterConfig.clusterRadius + " scale: " + oldScale + " > " + newScale);
     }
 };
 exports.toggleCluster = toggleCluster;

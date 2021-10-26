@@ -7,6 +7,9 @@
     :Config="{
       bannerText: { text: 'Wildland fire' },
       title: { fieldName: 'IncidentName' },
+      moreInfoURL: {
+        custom: getMoreInfoURL,
+      },
       content: [
         { label: 'Type', value: { fieldName: 'IncidentTypeCategory' } },
         { label: 'Cause', value: { fieldName: 'FireCause' } },
@@ -43,6 +46,7 @@ import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
+import MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
 export default defineComponent({
   components: { PopupBase },
   props: {
@@ -68,6 +72,15 @@ export default defineComponent({
         formattedPercent = `${feature.attributes["PercentContained"]}%`;
       }
       return formattedPercent;
+    };
+    const getMoreInfoURL = (feature: FeatureInfo) => {
+      //console.log(feature)
+      const moreInfoObject = new Object({
+        url: `https://wsdot.maps.arcgis.com/home/item.html?id=d957997ccee7408287a963600a77f61f`,
+        text: "Wildfire points and perimeters are sourced from ",
+        linkText: `ArcGIS Online USA Current Wildfires.`,
+      }) as MoreInfoURLInfo;
+      return moreInfoObject;
     };
     const getDailyAcres = (feature: FeatureInfo) => {
       let formattedAcres = "";
@@ -116,6 +129,7 @@ export default defineComponent({
       getPercentContained,
       getDailyAcres,
       getTotalAcres,
+      getMoreInfoURL
     };
   },
 });

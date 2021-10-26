@@ -102,6 +102,7 @@ const getFeature = (uniqueValue, groupId, map) => tslib_1.__awaiter(void 0, void
     fLayer.visible = true;
     const ftrCount = yield fLayer.queryFeatureCount();
     if (groupInfo.layers[0].jsonUrl && ftrCount === 0) {
+        console.log("getFeature: " + layer.title);
         yield exports.reloadData(groupInfo.layers[0].jsonUrl, fLayer);
         if (groupInfo.layers.length > 1) {
             for (const eachLyr of groupInfo.layers) {
@@ -174,19 +175,38 @@ const setLayerEvent = (layer, jsonUrl) => {
     layer.watch("visible", (newValue, oldValue, propName, target) => {
         const lyr = target;
         if (newValue) {
+            console.log("Became visible: " + layer.title);
             exports.reloadData(jsonUrl, lyr);
         }
     });
 };
 exports.setLayerEvent = setLayerEvent;
+// Keep track if what is loading, so prevent loading the same layer at the same time.
+let loadManager = [];
 const reloadData = (jsonUrl, layer) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    if (!layer.visible) {
-        return;
+    const reload = (jsonUrl, layer) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+        if (!layer.visible) {
+            return;
+        }
+        console.log("Reload data: " + layer.id);
+        // Fetch all features from JSON...
+        const graphics = yield exports.fetchJsonData(jsonUrl);
+        // Replace old with new features...
+        yield exports.replaceFeatures(layer, graphics);
+    });
+    // Check if the layer is already being loaded currently or not...
+    const runningProc = loadManager.find(x => x.id === layer.id);
+    if (runningProc) {
+        // It is loading currently already, so wait until that finishes.
+        yield runningProc.promise;
     }
-    // Fetch all features from JSON...
-    const graphics = yield exports.fetchJsonData(jsonUrl);
-    // Replace old with new features...
-    yield exports.replaceFeatures(layer, graphics);
+    else {
+        // It is not loading now, so start loading.
+        const promise = reload(jsonUrl, layer);
+        loadManager.push({ id: layer.id, promise: promise });
+        yield promise;
+        loadManager = loadManager.filter(x => x.id !== layer.id);
+    }
 });
 exports.reloadData = reloadData;
 const replaceFeatures = (layer, newFeatures) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {

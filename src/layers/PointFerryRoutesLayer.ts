@@ -65,7 +65,8 @@ export const initLayer = (url: string): FeatureLayer => {
         fields: fields,
         renderer: renderer,
         visible: true,
-        labelsVisible: false
+        labelsVisible: false,
+        definitionExpression: "Display <> 'Keller South to Keller North'"
     });
     return layer;
 }

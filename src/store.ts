@@ -6,6 +6,7 @@ import { getBasemapInfo, toggleBasemapInfo } from "./layers/Basemaps";
 import ExtentInfo from "./types/ExtentInfo";
 import { convert2EsriExtent, convert2ExtentInfo } from "./utils/extentUtil";
 import LayerInfo from "./types/LayerInfo";
+import LoadingStateInfo from "./types/LoadingStateInfo";
 
 // Reference - https://next.vuex.vuejs.org/guide/typescript-support.html#typing-usestore-composition-function
 // define typings for the store state...
@@ -20,6 +21,8 @@ export interface State {
     currentExtent: ExtentInfo;
     userLocation: number[] | null;
     isMobileMenuOpen: boolean;
+    isLoading: boolean;
+    loadingMessage: string;
 }
 
 // define injection key...
@@ -43,6 +46,8 @@ export const store = createStore<State>({
             layerList: [],
             userLocation: null,
             isMobileMenuOpen: false,
+            isLoading: false,
+            loadingMessage: "",
         }
     },
     getters: {
@@ -122,6 +127,10 @@ export const store = createStore<State>({
         },
         toggleIsMobileMenuOpen(state) {
             state.isMobileMenuOpen = !state.isMobileMenuOpen;
+        },
+        setIsLoading(state, payload: LoadingStateInfo){
+            state.isLoading=payload.loading
+            state.loadingMessage = payload.message as string
         }
     },
 })
