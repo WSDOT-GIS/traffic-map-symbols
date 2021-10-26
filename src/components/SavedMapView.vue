@@ -1,6 +1,6 @@
 <template>
   <div id="savedMapWidget" class="w3-left-align">
-    <div id="saved-map-list-title w3-medium">My saved maps</div>
+    <h6 id="saved-map-list-title">My saved maps</h6>
     <ul id="saved-map-list-container" class="w3-ul">
       <li
         v-for="(item, index) in mapList"
@@ -13,8 +13,7 @@
           :title="'Show ' + item.t"
           class="saved-map-title w3-btn w3-transparent"
           :class="{
-            'w3-text-blue': item.s,
-            'w3-text-dark-grey': !item.s,
+            'saved-map-title-selected': item.s,
           }"
           :style="{ width: itemTitleWidth }"
           @click="selectItem($event, item)"
@@ -24,7 +23,7 @@
         <button
           :title="'Delete ' + item.t"
           :aria-label="'Delete ' + item.t"
-          class="w3-right w3-button w3-transparent"
+          class="w3-right w3-button saved-map-remove-btn"
           @click="removeItem($event, item)"
           ref="closeButtonRef"
         >
@@ -42,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, nextTick, onMounted, onUpdated, ref, toRefs, watch } from "vue";
+import { computed, defineComponent, nextTick, onMounted, onUpdated, ref, watch } from "vue";
 
 import SavedMapInfo from "@/types/SavedMapInfo";
 import { setCookie, getCookie } from "@/utils/cookieUtil";
@@ -212,22 +211,49 @@ export default defineComponent({
 </script>
 
 <style scoped>
+#savedMapWidget {
+  margin: 16px 0 50px 0;
+}
+#savedMapWidget h6 {
+  font-size: var(--type-scale-base2);
+  line-height: var(--type-scale-base4);
+  font-weight: var(--font-weight-heavy);
+  text-align: left;
+}
 a {
   cursor: pointer;
 }
 button {
-  padding: 1px 1em;
+  padding: 1px 0;
 }
 .saved-map-item {
   width: 100%;
 }
 .saved-map-title {
+  font-size: var(--type-scale-base3);
+  line-height: var(--type-scale-base7);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-primaryBrand100);
+  text-decoration: underline var(--color-primaryBrand100);
   text-align: left;
 }
-.remove-saved-map-button {
-  height: 100%;
-  display: flex;
-  align-items: center;
+.saved-map-title-selected {
+  color: var(--color-secondaryBrandDark);
+  text-decoration-color: var(--color-secondaryBrandDark);
+}
+.saved-map-remove-btn {
+  background-color: var(--color-gray20);
+  border:none;
+  color: var(--color-gray100);
+  font-size: var(--type-scale-base0);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--type-scale-base-2);
+  text-align: center;
+  border-radius: 50%;
+  width:  var(--type-scale-base0);
+  height:  var(--type-scale-base0);
+  padding:0.1rem;
+
 }
 </style>
 

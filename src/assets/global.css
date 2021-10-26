@@ -22,6 +22,12 @@
     --color-warning: #ffc107;
     --color-visited: #59315F;
     --color-camera: #33957f;
+    --type-scale-base-6: 0.524rem;
+    --type-scale-base-5: 0.59rem;
+    --type-scale-base-4: 0.655rem;
+    --type-scale-base-3: 0.737rem;
+    --type-scale-base-2: 0.819rem;
+    --type-scale-base-1: 0.922rem;
     --type-scale-base0: 1rem;
     --type-scale-base1: 1.152rem;
     --type-scale-base2: 1.28rem;

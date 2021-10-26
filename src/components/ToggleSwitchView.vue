@@ -69,8 +69,8 @@ export default defineComponent({
 }
 
 .Toggle__display {
-  --offset: 0.05em;
-  --diameter: 0.9em;
+  --offset: 0.1rem;
+  --diameter: 1.7rem;
 
   display: inline-flex;
   align-items: center;
@@ -78,7 +78,7 @@ export default defineComponent({
   box-sizing: content-box;
   width: calc(var(--diameter) * 1.5 + var(--offset) * 4);
   height: calc(var(--diameter) + var(--offset) * 0);
-  border: 0.1em solid rgb(0 0 0 / 0.2);
+  border: 0.1em solid var(--color-primaryBrand100);
   position: relative;
   border-radius: 100vw;
   background-color: var(--color-gray20);
@@ -94,7 +94,7 @@ export default defineComponent({
   box-sizing: border-box;
   width: var(--diameter);
   height: var(--diameter);
-  border: 0.1em solid rgb(0 0 0 / 0.2);
+  border: 0.1em solid var(--color-primaryBrand100);
   border-radius: 50%;
   background-color: white;
   transform: translate(0, -50%);
