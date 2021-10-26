@@ -415,7 +415,7 @@ export default defineComponent({
 .trafficLegendTable,
 .roadAlertsLegendTable {
   margin-left: 14px;
-  width: 70%;
+  width: 80%;
   margin-bottom: 5px;
 }
 .trafficLegendCell {
@@ -436,8 +436,8 @@ export default defineComponent({
   background-color: white;
   border: none;
   box-shadow: none;
-  font-size: 8px;
-  line-height: 22.5px;
+  font-size: var(--type-scale-base0);
+  line-height: var(--type-scale-base7);
   font-weight: var(--font-weight-normal);
   vertical-align: text-top;
 }

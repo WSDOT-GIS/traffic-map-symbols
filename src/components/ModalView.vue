@@ -10,7 +10,7 @@
             >&times;</span
           >
         </header>
-        <div class="w3-panel">
+        <div class="w3-panel w3-left-align">
           <slot></slot>
           <div
             class="w3-panel w3-pale-red w3-text-red"
@@ -89,5 +89,6 @@ button {
 }
 .modal-content-container {
   padding-bottom: 1px;
+  text-align: left;
 }
 </style>

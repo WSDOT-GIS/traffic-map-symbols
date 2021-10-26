@@ -1,36 +1,38 @@
 <template>
-  <div id="savedMapWidget" class="w3-left-align">
+  <div id="savedMapWidget">
     <h6 id="saved-map-list-title">My saved maps</h6>
-    <ul id="saved-map-list-container" class="w3-ul">
-      <li
+    <div id="saved-map-list-container">
+      <div
         v-for="(item, index) in mapList"
         :key="index"
-        class="w3-border-0"
-        style="padding: 0"
+        class="saved-map-list-row"
         ref="itemContainerRef"
       >
-        <button
-          :title="'Show ' + item.t"
-          class="saved-map-title w3-btn w3-transparent"
-          :class="{
-            'saved-map-title-selected': item.s,
-          }"
-          :style="{ width: itemTitleWidth }"
-          @click="selectItem($event, item)"
-        >
-          {{ item.t }}
-        </button>
-        <button
-          :title="'Delete ' + item.t"
-          :aria-label="'Delete ' + item.t"
-          class="w3-right w3-button saved-map-remove-btn"
-          @click="removeItem($event, item)"
-          ref="closeButtonRef"
-        >
-          &times;
-        </button>
-      </li>
-    </ul>
+        <div class="saved-map-list-col-0">
+          <div
+            :title="'Show ' + item.t"
+            class="saved-map-title w3-btn w3-transparent"
+            :class="{
+              'saved-map-title-selected': item.s,
+            }"
+            @click="selectItem($event, item)"
+          >
+            {{ item.t }}
+          </div>
+        </div>
+        <div class="saved-map-list-col-1">
+          <button
+            :title="'Delete ' + item.t"
+            :aria-label="'Delete ' + item.t"
+            class="saved-map-remove-btn w3-button"
+            @click="removeItem($event, item)"
+            ref="closeButtonRef"
+          >
+            &times;
+          </button>
+        </div>
+      </div>
+    </div>
     <WsdotButtonView Caption="Save this map" @click="showForm" />
     <SaveMapFormView
       :Visible="formVisible"
@@ -213,21 +215,32 @@ export default defineComponent({
 <style scoped>
 #savedMapWidget {
   margin: 16px 0 50px 0;
+  box-sizing: border-box;
 }
 #savedMapWidget h6 {
   font-size: var(--type-scale-base2);
   line-height: var(--type-scale-base4);
   font-weight: var(--font-weight-heavy);
   text-align: left;
+  margin-bottom: 0;
 }
 a {
   cursor: pointer;
 }
-button {
-  padding: 1px 0;
+#saved-map-list-container {
+  margin: 0 0 8px 0;
 }
-.saved-map-item {
-  width: 100%;
+.saved-map-list-row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  padding: 0;
+}
+.saved-map-list-col-0 {
+  width: 80%;
+}
+.saved-map-list-col-1 {
+  width: 20%;
 }
 .saved-map-title {
   font-size: var(--type-scale-base3);
@@ -235,6 +248,8 @@ button {
   font-weight: var(--font-weight-normal);
   color: var(--color-primaryBrand100);
   text-decoration: underline var(--color-primaryBrand100);
+  padding: 0;
+  width: 100%;
   text-align: left;
 }
 .saved-map-title-selected {
@@ -243,17 +258,16 @@ button {
 }
 .saved-map-remove-btn {
   background-color: var(--color-gray20);
-  border:none;
+  border: none;
   color: var(--color-gray100);
   font-size: var(--type-scale-base0);
   font-weight: var(--font-weight-normal);
   line-height: var(--type-scale-base-2);
   text-align: center;
   border-radius: 50%;
-  width:  var(--type-scale-base0);
-  height:  var(--type-scale-base0);
-  padding:0.1rem;
-
+  width: var(--type-scale-base0);
+  height: var(--type-scale-base0);
+  padding: 0.1rem;
 }
 </style>
 

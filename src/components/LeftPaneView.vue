@@ -95,6 +95,7 @@ export default defineComponent({
 }
 #map-top-left-inner-container {
   padding-right: 31px;
+  padding-bottom: 8px;
 }
 #map-top-left-container-closed {
   position: absolute;
