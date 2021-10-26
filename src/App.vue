@@ -2,10 +2,10 @@
   <HeaderView @onLoadComplete="resizeMapContainer()" />
   <main>
     <div class="w3-display-container map-container" @mousedown="handleMouseEvent">
-      <div @click="handleMouseEvent" @mousedown="handleMouseEvent" :style="{ height: mapHeight, opacity: isLoading?.5:1}" >
-        <EsriMapView :disabled="isLoading" />
+      <div :class="[isLoading?disabledClass:activeClass]" :style="{ height: mapHeight, opacity: isLoading?.5:1}" >
+        <EsriMapView />
       </div>
-       <div :style="{ height: mapHeight }" class="w3-display-middle" v-if="isLoading">
+       <div :style="{ height: mapHeight}" class="w3-display-middle" v-if="isLoading">
         <LoadingSpinnerModal/>
       </div>
     </div>
@@ -33,6 +33,8 @@ export default defineComponent({
   setup() {
     const mapHeight = ref("500px");
     const store = useStore();
+    const activeClass='active'
+    const disabledClass='disabled'
     store.commit("setIsLoading",{loading: true, message: "Map is loading..."})
     // Make map fill the screen below the header...
     const resizeMapContainer = () => {
@@ -54,18 +56,11 @@ export default defineComponent({
       mapHeight,
       store,
       resizeMapContainer,
+      activeClass,
+      disabledClass
     };
   },
-  methods:{
-    handleMouseEvent(evt: MouseEvent){
-      if(this.isLoading){
-        evt.stopPropagation()
-      }
-      else{
-        return
-      }
-    }
-  },
+ 
   computed: mapState(["isLoading"]),
 });
 </script>
@@ -91,6 +86,9 @@ hr.horizontal-divider {
 }
 .loadingSpinnerBackground{
   background-color: red;
+}
+.disabled{
+  pointer-events: none;
 }
 #app {
   position: absolute;
