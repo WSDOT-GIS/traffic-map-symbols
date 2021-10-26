@@ -3,7 +3,7 @@
     <div
       id="map-top-left-container"
       v-if="isOpen"
-      class="w3-container w3-padding-small w3-card w3-white w3-col"
+      class="w3-container w3-card w3-white w3-col"
       :style="{ maxHeight: maxHeight + 'px' }"
     >
       <div class="w3-display-container w3-border-0">
@@ -24,10 +24,12 @@
           </svg>
         </div>
       </div>
+      <div id="map-top-left-inner-container">
       <!-- <hr class="horizontal-divider" /> -->
       <LayerListView />
       <!-- <hr class="horizontal-divider" /> -->
       <SavedMapView :IsOpen="isOpen" />
+      </div>
     </div>
   </transition>
   <div
@@ -90,6 +92,9 @@ export default defineComponent({
   width: 300px;
   overflow-y: auto;
   border: 1px solid var(--color-gray20);
+}
+#map-top-left-inner-container {
+  padding-right: 31px;
 }
 #map-top-left-container-closed {
   position: absolute;

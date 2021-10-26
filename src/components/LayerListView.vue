@@ -1,24 +1,22 @@
 <template>
-  <!-- Traffic Flow -->
   <div id="layerListWidget" title="Map Features" v-if="layerList.length > 0">
-    <ul class="w3-ul" style="padding: 1px 0">
-      <li class="w3-border-0 mapFeaturesLI" style="padding: 0">
-        <ToggleSwitchView
-          @toggle="clickEvent"
-          :Enabled="true"
-          :Checked="layerList[getLayerIndex('traffic-flow-layer')].visible"
-          :Value="getLayerIndex('traffic-flow-layer').toString()"
-          :Title="
-            'Toggle ' + layerList[getLayerIndex('traffic-flow-layer')].title
-          "
-        >
-          <template v-slot>
-            <!-- <div class="mapFeaturesIcon"></div> -->
-            <span>Traffic flow</span>
-          </template>
-        </ToggleSwitchView>
-      </li>
-    </ul>
+    <!-- Column headers -->
+    <div class="layer-list-row">
+      <div class="layer-list-header-0"><h6>Data layers</h6></div>
+      <div><h6>Turn on/off</h6></div>
+    </div>
+    <!-- Traffic Flow -->
+    <ToggleSwitchView
+      @toggle="clickEvent"
+      :Enabled="true"
+      :Checked="layerList[getLayerIndex('traffic-flow-layer')].visible"
+      :Value="getLayerIndex('traffic-flow-layer').toString()"
+      :Title="'Toggle ' + layerList[getLayerIndex('traffic-flow-layer')].title"
+    >
+      <template v-slot>
+        <span class="layer-list-item-label">Traffic flow</span>
+      </template>
+    </ToggleSwitchView>
     <!-- Traffic Flow Legend -->
     <!-- https://www.emailonacid.com/blog/article/email-development/why-should-i-set-my-table-role-as-presentation/ -->
     <table class="trafficLegendTable" role="presentation">
@@ -27,14 +25,10 @@
           <div class="trafficLegendSymbolDiv" id="fastLegendCell">&nbsp;</div>
         </td>
         <td class="trafficLegendCell">
-          <div class="trafficLegendSymbolDiv" id="mediumFastLegendCell">
-            &nbsp;
-          </div>
+          <div class="trafficLegendSymbolDiv" id="mediumFastLegendCell">&nbsp;</div>
         </td>
         <td class="trafficLegendCell">
-          <div class="trafficLegendSymbolDiv" id="slowMediumLegendCell">
-            &nbsp;
-          </div>
+          <div class="trafficLegendSymbolDiv" id="slowMediumLegendCell">&nbsp;</div>
         </td>
         <td class="trafficLegendCell">
           <div class="trafficLegendSymbolDiv" id="slowLegendCell">&nbsp;</div>
@@ -47,93 +41,62 @@
         <td class="trafficLegendLabelCell">Stop &#38; Go</td>
       </tr>
     </table>
-    <ul class="w3-ul">
-      <!-- Travel Alerts -->
-      <li class="w3-border-0 mapFeaturesLI" style="padding: 0">
-        <ToggleSwitchView
-          @toggle="clickEvent"
-          :Enabled="true"
-          :Checked="layerList[getLayerIndex('road-alerts-layer')].visible"
-          :Value="
-            getLayerIndex('road-alerts-layer').toString()+
-            ',' +
-            getLayerIndex('road-closures-layer').toString()+
-            ',' +
-            getLayerIndex('ferry-routes-points-layer').toString()"
-          :Title="
-            'Toggle ' + layerList[getLayerIndex('road-alerts-layer')].title
-          "
-        >
-          <template v-slot>
-            <!-- <div class="mapFeaturesIcon"></div> -->
-            <span>Alerts</span>
-          </template>
-        </ToggleSwitchView>
-      </li>
-    </ul>
+    <!-- Travel Alerts -->
+    <ToggleSwitchView
+      @toggle="clickEvent"
+      :Enabled="true"
+      :Checked="layerList[getLayerIndex('road-alerts-layer')].visible"
+      :Value="
+        getLayerIndex('road-alerts-layer').toString() +
+        ',' +
+        getLayerIndex('road-closures-layer').toString() +
+        ',' +
+        getLayerIndex('ferry-routes-points-layer').toString()
+      "
+      :Title="'Toggle ' + layerList[getLayerIndex('road-alerts-layer')].title"
+    >
+      <template v-slot>
+        <span class="layer-list-item-label">Alerts</span>
+      </template>
+    </ToggleSwitchView>
     <table class="roadAlertsLegendTable" role="presentation">
       <tr class="roadAlertsLegendRow">
         <td class="roadAlertsLegendCell">
-           <div
-              class="roadAlertsIcon"
-              v-html="
-                layerIcons.find(
-                  (x) =>
-                    x.id == 'road-alert'
-                )?.paths
-              "
-            ></div>
+          <div
+            class="roadAlertsIcon"
+            v-html="layerIcons.find((x) => x.id == 'road-alert')?.paths"
+          ></div>
         </td>
         <td class="roadAlertsLegendCell">
           <div
-              class="roadAlertsIcon"
-              v-html="
-                layerIcons.find(
-                  (x) =>
-                    x.id == 'road-alert-medium'
-                )?.paths
-              "
-            ></div>
+            class="roadAlertsIcon"
+            v-html="layerIcons.find((x) => x.id == 'road-alert-medium')?.paths"
+          ></div>
         </td>
+        <!-- <td class="roadAlertsLegendCell">
+          <div
+            class="roadAlertsIcon"
+            v-html="layerIcons.find((x) => x.id == 'road-alert-high')?.paths"
+          ></div>
+        </td> -->
         <td class="roadAlertsLegendCell">
-         <div
-              class="roadAlertsIcon"
-              v-html="
-                layerIcons.find(
-                  (x) =>
-                    x.id == 'road-alert-high'
-                )?.paths
-              "
-            ></div>
-        </td>
-        <td class="roadAlertsLegendCell">
-         <div
-              class="roadAlertsIcon"
-              v-html="
-                layerIcons.find(
-                  (x) =>
-                    x.id == 'road-alert-highest'
-                )?.paths
-              "
-            ></div>
+          <div
+            class="roadAlertsIcon"
+            v-html="layerIcons.find((x) => x.id == 'road-alert-highest')?.paths"
+          ></div>
         </td>
         <td class="roadAlertsLegendCell">
           <div
-              class="roadAlertsIcon"
-              v-html="
-                layerIcons.find(
-                  (x) =>
-                    x.id == 'road-closed'
-                )?.paths
-              "
-            ></div>
+            class="roadAlertsIcon"
+            v-html="layerIcons.find((x) => x.id == 'road-closed')?.paths"
+          ></div>
         </td>
       </tr>
       <tr>
         <td class="roadAlertsLegendLabelCell">Alert</td>
         <td class="roadAlertsLegendLabelCell">Medium</td>
         <td class="roadAlertsLegendLabelCell">High</td>
-        <td class="roadAlertsLegendLabelCell">Highest</td>
+        <!-- <td class="roadAlertsLegendLabelCell">Highest</td> -->
         <td class="roadAlertsLegendLabelCell">Closed</td>
       </tr>
     </table>
@@ -144,24 +107,18 @@
           @toggle="clickEvent"
           :Enabled="true"
           :Checked="layerList[getLayerIndex('traffic-camera-layer')].visible"
-          :Value="
-            getLayerIndex('traffic-camera-layer').toString()
-          "
-          :Title="
-            'Toggle ' + layerList[getLayerIndex('traffic-camera-layer')].title
-          "
+          :Value="getLayerIndex('traffic-camera-layer').toString()"
+          :Title="'Toggle ' + layerList[getLayerIndex('traffic-camera-layer')].title"
         >
           <template v-slot>
             <div
               class="mapFeaturesIcon"
               v-html="
-                layerIcons.find(
-                  (x) =>
-                    x.id == layerList[getLayerIndex('traffic-camera-layer')].id
-                )?.paths
+                layerIcons.find((x) => x.id == layerList[getLayerIndex('traffic-camera-layer')].id)
+                  ?.paths
               "
             ></div>
-            <span class="listLabel">
+            <span class="layer-list-item-label">
               {{ layerList[getLayerIndex("traffic-camera-layer")].title }}</span
             >
           </template>
@@ -183,12 +140,9 @@
           <template v-slot>
             <div
               class="mapFeaturesIcon"
-              v-html="
-                layerIcons.find((x) => x.id == 'point-restrictions-layer')
-                  ?.paths
-              "
+              v-html="layerIcons.find((x) => x.id == 'point-restrictions-layer')?.paths"
             ></div>
-            <span class="listLabel" id="CommercialVehicleLabel"
+            <span class="layer-list-item-label" id="CommercialVehicleLabel"
               >Truck restrictions</span
             >
           </template>
@@ -201,20 +155,14 @@
           :Enabled="true"
           :Checked="layerList[getLayerIndex('mountain-passes-layer')].visible"
           :Value="getLayerIndex('mountain-passes-layer').toString()"
-          :Title="
-            'Toggle ' + layerList[getLayerIndex('mountain-passes-layer')].title
-          "
+          :Title="'Toggle ' + layerList[getLayerIndex('mountain-passes-layer')].title"
         >
           <template v-slot>
             <div
               class="mapFeaturesIcon"
-              v-html="
-                layerIcons.find((x) => x.id == 'mountain-passes-layer')?.paths
-              "
+              v-html="layerIcons.find((x) => x.id == 'mountain-passes-layer')?.paths"
             ></div>
-            <span class="listLabel">
-              Mountain pass reports</span
-            >
+            <span class="layer-list-item-label"> Mountain pass reports</span>
           </template>
         </ToggleSwitchView>
       </li>
@@ -225,20 +173,14 @@
           :Enabled="true"
           :Checked="layerList[getLayerIndex('weather-stations-layer')].visible"
           :Value="getLayerIndex('weather-stations-layer').toString()"
-          :Title="
-            'Toggle ' + layerList[getLayerIndex('weather-stations-layer')].title
-          "
+          :Title="'Toggle ' + layerList[getLayerIndex('weather-stations-layer')].title"
         >
           <template v-slot>
             <div
               class="mapFeaturesIcon"
-              v-html="
-                layerIcons.find((x) => x.id == 'weather-stations-layer')?.paths
-              "
+              v-html="layerIcons.find((x) => x.id == 'weather-stations-layer')?.paths"
             ></div>
-            <span class="listLabel">
-              Weather stations</span
-            >
+            <span class="layer-list-item-label"> Weather stations</span>
           </template>
         </ToggleSwitchView>
       </li>
@@ -249,18 +191,14 @@
           :Enabled="true"
           :Checked="layerList[getLayerIndex('rest-areas-layer')].visible"
           :Value="getLayerIndex('rest-areas-layer').toString()"
-          :Title="
-            'Toggle ' + layerList[getLayerIndex('rest-areas-layer')].title
-          "
+          :Title="'Toggle ' + layerList[getLayerIndex('rest-areas-layer')].title"
         >
           <template v-slot>
             <div
               class="mapFeaturesIcon"
               v-html="layerIcons.find((x) => x.id == 'rest-areas-layer')?.paths"
             ></div>
-            <span class="listLabel">
-              Rest areas</span
-            >
+            <span class="layer-list-item-label"> Rest areas</span>
           </template>
         </ToggleSwitchView>
       </li>
@@ -278,9 +216,7 @@
               class="mapFeaturesIcon"
               v-html="layerIcons.find((x) => x.id == 'park-ride-layer')?.paths"
             ></div>
-            <span class="listLabel">
-              {{`Park & Rides`}}</span
-            >
+            <span class="layer-list-item-label"> {{ `Park & Rides` }}</span>
           </template>
         </ToggleSwitchView>
       </li>
@@ -302,7 +238,7 @@
                 layerIcons.find((x) => x.id == 'travel-times-layer')?.paths
               "
             ></div>
-            <span class="listLabel">
+            <span class="layer-list-item-label">
               Travel times</span
             >
           </template>
@@ -314,22 +250,15 @@
           @toggle="clickEvent"
           :Enabled="true"
           :Checked="layerList[getLayerIndex('border-crossings-layer')].visible"
-          :Value="
-            getLayerIndex('border-crossings-layer').toString()
-          "
+          :Value="getLayerIndex('border-crossings-layer').toString()"
           Title="Toggle Border Crossings"
         >
           <template v-slot>
             <div
               class="mapFeaturesIcon"
-              v-html="
-                layerIcons.find((x) => x.id == 'border-crossing')
-                  ?.paths
-              "
+              v-html="layerIcons.find((x) => x.id == 'border-crossing')?.paths"
             ></div>
-            <span class="listLabel" id="CommercialVehicleLabel"
-              >Border crossings</span
-            >
+            <span class="layer-list-item-label" id="CommercialVehicleLabel">Border crossings</span>
           </template>
         </ToggleSwitchView>
       </li>
@@ -349,19 +278,15 @@
           <template v-slot>
             <div
               class="mapFeaturesIcon"
-              v-html="
-                layerIcons.find((x) => x.id == 'fire-incidents-layer')?.paths
-              "
+              v-html="layerIcons.find((x) => x.id == 'fire-incidents-layer')?.paths"
             ></div>
-            <span class="listLabel" id="WildlandFireeLabel"
-              >Wildland fires</span
-            >
+            <span class="layer-list-item-label" id="WildlandFireeLabel">Wildland fires</span>
           </template>
         </ToggleSwitchView>
       </li>
       <!-- Mile Markers -->
       <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
-       <!-- <ToggleSwitchView
+        <!-- <ToggleSwitchView
           @toggle="clickEvent"
           :Enabled="mileMarkerToggleEnabled"
           :Checked="layerList[getLayerIndex('mile-markers')].visible"
@@ -378,13 +303,9 @@
           <template v-slot>
             <div
               class="mapFeaturesIcon"
-              v-html="
-                layerIcons.find((x) => x.id == 'mile-markers-layer')?.paths
-              "
+              v-html="layerIcons.find((x) => x.id == 'mile-markers-layer')?.paths"
             ></div>
-            <span class="listLabel" id="mileMarkersLabel"
-              >Mileposts</span
-            >
+            <span class="layer-list-item-label" id="mileMarkersLabel">Mileposts</span>
           </template>
         </ToggleSwitchView>
       </li>
@@ -393,10 +314,9 @@
 </template>
 <script lang="ts">
 import { store, useStore } from "@/store";
-import { defineComponent, ref} from "vue";
+import { defineComponent } from "vue";
 import { layerListIcons } from "@/symbols/IconDefinitions";
 import ToggleSwitchView from "./ToggleSwitchView.vue";
-import { mapView } from "@/esri-stuff/esriMap";
 
 export default defineComponent({
   components: { ToggleSwitchView },
@@ -430,7 +350,7 @@ export default defineComponent({
       let layerIndex = -1;
       // console.log(store.state.layerList)
       //console.log(id)
-     // console.log(store.state.layerList)
+      // console.log(store.state.layerList)
       store.state.layerList.map((val, index) => {
         if (val.id == id) {
           layerIndex = index;
@@ -444,15 +364,33 @@ export default defineComponent({
 });
 </script>
 <style scoped>
-.listLabel-trafficFlow {
-  font-size: small;
+.layer-list-row {
+  display: flex;
 }
-.listLabel {
+.layer-list-row h6 {
+  font-size: var(--type-scale-base2);
+  line-height: var(--type-scale-base4);
+  font-weight: var(--font-weight-heavy);
+  text-align: left;
+}
+.layer-list-header-0 {
+  width: 70%;
+}
+.layer-list-item-label {
+  font-size: var(--type-scale-base3);
+  line-height: var(--type-scale-base5);
+  font-weight: var(--font-weight-normal);
+  text-align: left;
+}
+/* .layer-list-item-label-trafficFlow {
+  font-size: small;
+} */
+/* .layer-list-item-label {
   position: absolute;
   font-size: small;
   margin-left: 30px;
   text-align: left;
-}
+} */
 #slowLegendCell {
   background-color: #c80000;
 }
@@ -466,42 +404,41 @@ export default defineComponent({
   background-color: #00d700;
 }
 .trafficLegendSymbolDiv {
-  height: 10px;
-  margin: 1px;
-  border-style: solid;
-  border-width: 1px;
-  border-color: var(--color-gray20);
+  height: 8px;
+  margin: 0;
+  border-style: none;
 }
 .mapFeaturesLI {
   margin-bottom: 5px;
 }
-.trafficLegendTable, .roadAlertsLegendTable {
-  margin: auto;
-  width: 95%;
-  /* border-radius: 5px;
-  border-style: solid;
-  border-width: 1px;
-  border-color: var(--color-gray40); */
+.trafficLegendTable,
+.roadAlertsLegendTable {
+  margin-left: 14px;
+  width: 70%;
   margin-bottom: 5px;
 }
-.trafficLegendCell{
+.trafficLegendCell {
   width: 25%;
-  padding: 2px 0px 2px 0px;
+  padding: 0;
   border: 0px;
 }
 .roadAlertsLegendCell {
-  width: 25%;;
+  width: 25%;
   border: 0px;
 }
-.trafficLegendRow, .roadAlertsLegendRow{
+.trafficLegendRow,
+.roadAlertsLegendRow {
   height: 10px;
 }
-.trafficLegendLabelCell,.roadAlertsLegendLabelCell {
+.trafficLegendLabelCell,
+.roadAlertsLegendLabelCell {
   background-color: white;
   border: none;
   box-shadow: none;
-  font-size: small;
-  vertical-align:text-top;
+  font-size: 8px;
+  line-height: 22.5px;
+  font-weight: var(--font-weight-normal);
+  vertical-align: text-top;
 }
 #CommercialVehicleLabel {
   font-size: 9pt;
