@@ -10,14 +10,14 @@
       </div>
     </div>
   </main>
-  <!-- <FooterView /> -->
+  <FooterView />
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import EsriMapView from "./components/EsriMapView.vue";
 import HeaderView from "./components/HeaderView.vue";
-// import FooterView from "./components/FooterView.vue";
+import FooterView from "./components/FooterView.vue";
 import { useStore } from "@/store";
 import { mapState } from "vuex";
 import LoadingSpinnerModal from "@/components/LoadingSpinnerModal.vue"
@@ -26,8 +26,9 @@ export default defineComponent({
   components: {
     EsriMapView,
     HeaderView,
-    LoadingSpinnerModal
+    LoadingSpinnerModal,
     // FooterView,
+    FooterView,
   },
   setup() {
     const mapHeight = ref("500px");
@@ -36,6 +37,7 @@ export default defineComponent({
     // Make map fill the screen below the header...
     const resizeMapContainer = () => {
       const headDiv = document.querySelector("#header") as HTMLElement;
+      const footDiv = document.querySelector("footer") as HTMLElement;
       // The menu button has some extra height that is not reflected in the container height, so measure the menu button's height.
       //const menuDiv = document.querySelector(".we-mega-menu-li") as HTMLElement;
       const navDiv = document.querySelector(".nav-outer-wrapper") as HTMLElement;
@@ -43,7 +45,7 @@ export default defineComponent({
       if (navDiv && navDiv.offsetHeight) {
         navH = navDiv.offsetHeight;
       }
-      const h = window.innerHeight - headDiv.offsetHeight - navH;
+      const h = window.innerHeight - headDiv.offsetHeight - navH - footDiv.offsetHeight;
       mapHeight.value = h + "px";
     };
     window.addEventListener("resize", resizeMapContainer);

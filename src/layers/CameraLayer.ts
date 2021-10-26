@@ -1,14 +1,10 @@
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
-// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import Field from "@arcgis/core/layers/support/Field";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 import Symbol from "@/symbols/CameraSymbol";
 import { clusterConfig, clusterMaxScale } from "@/utils/clusterUtil";
 import * as layerUtil from "@/utils/layerUtil";
-// import LayerInfo from "@/types/LayerInfo";
-
-
 
 const renderer = new SimpleRenderer({ symbol: Symbol });
 
@@ -85,29 +81,6 @@ const getLayer = (): FeatureLayer => {
     return layer;
 }
 
-// let layer: GeoJSONLayer | undefined;
-
-// export const initLayer = (url: string): GeoJSONLayer => {
-//     layer = new GeoJSONLayer({
-//         id: "traffic-camera-layer",
-//         url: url,
-//         title: "Cameras",
-//         renderer: renderer,
-//         featureReduction: clusterConfig,
-//         fields: fields,
-//         visible: false,
-//     });
-//     return layer;
-// }
-
-// const getLayer = (): GeoJSONLayer => {
-//     if (!layer) {
-//         throw "CameraLayer is not ready yet!";
-//     }
-//     return layer;
-// }
-
-
 export default getLayer
 
 /*** Helper functions **************/
@@ -117,11 +90,9 @@ export const toggleCluster = (newScale: number, oldScale: number): void => {
     // Turn off clustering at max scale...
     if (newScale > clusterMaxScale && oldScale < clusterMaxScale) {
         layer.featureReduction = clusterConfig;
-        //console.log("Turn on cluster: " + clusterConfig.clusterRadius + " scale: " + oldScale + " > " + newScale);
     }
     else if (newScale < clusterMaxScale && oldScale > clusterMaxScale) {
         layer.set("featureReduction", undefined);
-        //console.log("Turn off cluster: " + clusterConfig.clusterRadius + " scale: " + oldScale + " > " + newScale);
     }
 }
 

@@ -49,15 +49,12 @@ export const setVisibleLayersFromUrl = (layerList: LayerInfo[]): LayerInfo[] => 
     if (param) {
         const layers = param.split(',');
         const layerIds: string[] = [];
-        console.log(layers)
         layers.forEach((each) => {
-            console.log(each)
             layerIds.push(...getLayerIds(each));
         })
         layerList.forEach((eachLyr) => {
             if (layerIds.includes(eachLyr.id)) {
                 eachLyr.visible = true;
-                console.log(eachLyr)
             }
         });
     }

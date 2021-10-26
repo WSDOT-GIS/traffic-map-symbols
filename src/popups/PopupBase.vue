@@ -18,6 +18,7 @@
       }"
       v-if="propFeatures.length > 0 && propFeatures[0]"
       :style="popupTopLeft"
+      v-click-away="onClickAway"
     >
       <!-- container without the pointer -->
       <div class="popup-inner-container w3-display-container">
@@ -317,6 +318,22 @@ export default defineComponent({
         "--carousel-color-secondary": props.LightThemeColor,
       };
     });
+
+    const onClickAway = (event: PointerEvent) => {
+      console.log(event);
+      if (smallMedia.value) {
+        close();
+      } else {
+        /* On Desktop
+           - If user clicks on something other than the map (e.g. TOC, header, ...), then close the popup.
+           - If user clicks on map, then do not do anything here. */
+        const target = event.target as HTMLElement;
+        if (!target.classList.contains("esri-view-surface")) {
+          close();
+        }
+      }
+    };
+
     const close = () => {
       // Let the parent handle the close event.
       // Parent should empty the feature array to close the popup.
@@ -338,37 +355,50 @@ export default defineComponent({
       highlightMap();
       setMapXY();
     });
-    // Watch scale change...
-    // On touch screen, after pinch zoom, panning map also changes the scale, so commented this out so popup does not close when that happens.
-    watch(mapScale, () => {
-      // While map is being panned to show the popup, map sometimes zoom out as well resulting in scale change, so do not close popup.
-      // Only close if user intentionally change scales.
-      if (!isPanning) {
-        close();
-      } else {
-        setScreenXY();
+    //
+    mapView.watch("stationary", (newValue) => {
+      if (!newValue) {
+        return;
       }
+      setScreenXY();
     });
+    // Watch scale change...
+    // watch(mapScale, () => {
+    //   // While map is being panned to show the popup, map sometimes zoom out as well resulting in scale change, so do not close popup.
+    //   // Only close if user intentionally change scales.
+    //   // if (!isPanning) {
+    //   //   close();
+    //   // } else {
+    //   //   setScreenXY();
+    //   // }
+    //   setScreenXY();
+    // });
+    // Store the previous scale so it can detect if the center is moving due to zooming or panning.
+    let prevScale = 0;
     // Watch map moving...
     watch(mapCenter, (newValue, oldValue) => {
       if (!props.Features || props.Features.length === 0 || !props.Features[0] || !oldValue) {
         return;
       }
-      if (oldValue.x !== 0 && oldValue.y !== 0) {
-        const newCenter = toScreenXY(newValue.x, newValue.y);
-        const oldCenter = toScreenXY(oldValue.x, oldValue.y);
-        const diffX = oldCenter.x - newCenter.x;
-        const diffY = oldCenter.y - newCenter.y;
-        screenX.value += diffX;
-        screenY.value += diffY;
-      } else {
-        // The very first time, the oldValue's x and y are 0. So cannot calculate the difference from the previous.
-        const mapPt = props.Features[currentIdx.value].mapPoint;
-        const screenXY = toScreenXY(mapPt.x, mapPt.y);
-        screenX.value = screenXY.x;
-        screenY.value = screenXY.y;
+      // Only do this if it is panning (not zooming).
+      if (prevScale == mapScale.value) {
+        if (oldValue.x !== 0 && oldValue.y !== 0) {
+          const newCenter = toScreenXY(newValue.x, newValue.y);
+          const oldCenter = toScreenXY(oldValue.x, oldValue.y);
+          const diffX = oldCenter.x - newCenter.x;
+          const diffY = oldCenter.y - newCenter.y;
+          screenX.value += diffX;
+          screenY.value += diffY;
+        } else {
+          // The very first time, the oldValue's x and y are 0. So cannot calculate the difference from the previous.
+          const mapPt = props.Features[currentIdx.value].mapPoint;
+          const screenXY = toScreenXY(mapPt.x, mapPt.y);
+          screenX.value = screenXY.x;
+          screenY.value = screenXY.y;
+        }
+        adjustPositionSize();
       }
-      adjustPositionSize();
+      prevScale = mapScale.value;
     });
     // Image load happens later and change the size of the popup, so need to make adjustment after that...
     const onImgLoad = () => {
@@ -874,6 +904,7 @@ export default defineComponent({
       propFeatures,
       smallMedia,
       currentPage,
+      onClickAway,
     };
   },
 });
