@@ -52,6 +52,12 @@ exports.mapView = new MapView_1.default({
         // Limit the map navigation. 
         // Note: This still allows navigation beyond the extent, but not infinitely.
         geometry: fullExtent,
+    },
+    highlightOptions: {
+        color: "#00ffff",
+        haloColor: "#0000ff",
+        fillOpacity: 0.25,
+        haloOpacity: 1
     }
 });
 // Zoom buttons are replaced with the custom Vue components.
@@ -422,7 +428,7 @@ const updateOutOfExtentLayer = () => {
     outOfExtentLayer.removeAll();
     const symbol = new SimpleFillSymbol_1.default({
         style: "solid",
-        color: [128, 128, 128, 0.5],
+        color: [256, 256, 256, 0.95],
         outline: {
             style: "none"
         }
