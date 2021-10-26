@@ -6,6 +6,7 @@ import { geodesicBuffer } from "@arcgis/core/geometry/geometryEngine";
 import { whenTrue } from "@arcgis/core/core/watchUtils";
 import TileLayer from "@arcgis/core/layers/TileLayer";
 import Extent from "@arcgis/core/geometry/Extent";
+import Collection from "@arcgis/core/core/Collection";
 import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol";
 import Layer from "@arcgis/core/layers/Layer";
 import Graphic from "@arcgis/core/Graphic";
@@ -321,6 +322,9 @@ export const panMap = async (shiftX: number, shiftY: number): Promise<{ actualSh
 
 export const getLayer = (id: string): Layer => {
     return webmap.findLayerById(id);
+}
+export const getLayers = (): Collection<Layer> => {
+    return webmap.layers;
 }
 /**  
 NOTE: This function only returns each feature if one of the following coditions is met:

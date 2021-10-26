@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateOutOfExtentLayer = exports.addOutOfExtentLayer = exports.removeHighlight = exports.highlightFeature = exports.bufferByPixels = exports.getIdsFromCluster = exports.getLayer = exports.panMap = exports.checkPannedExtent = exports.toPoint = exports.toScreenXY = exports.getMaxScale = exports.zoomToExtent = exports.zoomToMetroArea = exports.zoomToMax = exports.tryZoomToPointAsync = exports.tryZoomToPoint = exports.refreshLayerData = exports.loadRegionalAlert = exports.loadOperationalLayers = exports.defaultLayerProps = exports.init = exports.mapView = exports.webmap = void 0;
+exports.updateOutOfExtentLayer = exports.addOutOfExtentLayer = exports.removeHighlight = exports.highlightFeature = exports.bufferByPixels = exports.getIdsFromCluster = exports.getLayers = exports.getLayer = exports.panMap = exports.checkPannedExtent = exports.toPoint = exports.toScreenXY = exports.getMaxScale = exports.zoomToExtent = exports.zoomToMetroArea = exports.zoomToMax = exports.tryZoomToPointAsync = exports.tryZoomToPoint = exports.refreshLayerData = exports.loadRegionalAlert = exports.loadOperationalLayers = exports.defaultLayerProps = exports.init = exports.mapView = exports.webmap = void 0;
 const tslib_1 = require("tslib");
 const WebMap_1 = tslib_1.__importDefault(require("@arcgis/core/WebMap"));
 const MapView_1 = tslib_1.__importDefault(require("@arcgis/core/views/MapView"));
@@ -37,7 +37,6 @@ const FerryRoutePointsLayer = tslib_1.__importStar(require("@/layers/PointFerryR
 const extentUtil_1 = require("@/utils/extentUtil");
 const ZoomExtentLayer_1 = tslib_1.__importDefault(require("@/layers/ZoomExtentLayer"));
 const appConfigUtil_1 = require("@/utils/appConfigUtil");
-// import LayerInfo from "@/types/LayerInfo";
 const firePerimeterQuery_1 = tslib_1.__importDefault(require("@/utils/firePerimeterQuery"));
 const Basemaps_1 = require("@/layers/Basemaps");
 const layerUtil = tslib_1.__importStar(require("@/utils/layerUtil"));
@@ -83,7 +82,7 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     const trafficLyr = TrafficLayer.initLayer(config.traffic, config.layerRefreshMinute);
     const restAreasLyr = yield RestAreasLayer.initLayer(config.restAreas);
     const parkRideLyr = yield ParkRideLayer.initLayer(config.parkAndRides);
-    const weatherLyr = yield WeatherLayer.initLayer(config.weatherStations);
+    const weatherLyr = yield WeatherLayer.initLayer(config.weatherStations, exports.mapView);
     const mtLyr = yield MountainLayer.initLayer(config.mountainPasses);
     // const travelTimesLyr = await TravelTimesLayer.initLayer(config.travelTimes);
     const lineRestrictionLyr = yield LineRestrictionsLayer.initLayer(config.lineRestrictions);
@@ -159,7 +158,7 @@ const tryZoomToPointAsync = (point, numLevels) => tslib_1.__awaiter(void 0, void
     const orgLevel = exports.mapView.zoom;
     yield exports.mapView.goTo({
         target: point,
-        zoom: exports.mapView.zoom += 1
+        zoom: exports.mapView.zoom += numLevels
     }, {
         duration: 300,
         easing: "ease-in"
@@ -324,6 +323,10 @@ const getLayer = (id) => {
     return exports.webmap.findLayerById(id);
 };
 exports.getLayer = getLayer;
+const getLayers = () => {
+    return exports.webmap.layers;
+};
+exports.getLayers = getLayers;
 /**
 NOTE: This function only returns each feature if one of the following coditions is met:
 - maxCount is not set

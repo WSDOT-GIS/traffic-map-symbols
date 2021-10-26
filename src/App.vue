@@ -1,8 +1,13 @@
 <template>
   <HeaderView @onLoadComplete="resizeMapContainer()" />
   <main>
-    <div id="map-container" :style="{ height: mapHeight }" class="w3-display-container">
-      <EsriMapView />
+    <div class="w3-display-container map-container" @mousedown="handleMouseEvent">
+      <div @click="handleMouseEvent" @mousedown="handleMouseEvent" :style="{ height: mapHeight, opacity: isLoading?.5:1}" >
+        <EsriMapView :disabled="isLoading" />
+      </div>
+       <div :style="{ height: mapHeight }" class="w3-display-middle" v-if="isLoading">
+        <LoadingSpinnerModal/>
+      </div>
     </div>
   </main>
   <!-- <FooterView /> -->
@@ -14,17 +19,20 @@ import EsriMapView from "./components/EsriMapView.vue";
 import HeaderView from "./components/HeaderView.vue";
 // import FooterView from "./components/FooterView.vue";
 import { useStore } from "@/store";
-
+import { mapState } from "vuex";
+import LoadingSpinnerModal from "@/components/LoadingSpinnerModal.vue"
 export default defineComponent({
   name: "App",
   components: {
     EsriMapView,
     HeaderView,
+    LoadingSpinnerModal
     // FooterView,
   },
   setup() {
     const mapHeight = ref("500px");
     const store = useStore();
+    store.commit("setIsLoading",{loading: true, message: "Map is loading..."})
     // Make map fill the screen below the header...
     const resizeMapContainer = () => {
       const headDiv = document.querySelector("#header") as HTMLElement;
@@ -46,6 +54,17 @@ export default defineComponent({
       resizeMapContainer,
     };
   },
+  methods:{
+    handleMouseEvent(evt: MouseEvent){
+      if(this.isLoading){
+        evt.stopPropagation()
+      }
+      else{
+        return
+      }
+    }
+  },
+  computed: mapState(["isLoading"]),
 });
 </script>
 
@@ -68,13 +87,14 @@ hr.horizontal-divider {
   border-top: 1px solid #bbb;
   margin: 1vh 1vw;
 }
-
+.loadingSpinnerBackground{
+  background-color: red;
+}
 #app {
   position: absolute;
   z-index: 0;
 }
-
-#map-container {
+#map-container{
   padding: 0;
   margin: 0;
   position: relative;

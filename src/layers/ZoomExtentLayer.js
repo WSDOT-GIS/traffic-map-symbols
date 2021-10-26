@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFeatureById = void 0;
+exports.getFeatureByName = exports.getFeatureById = void 0;
 const tslib_1 = require("tslib");
 const FeatureLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/FeatureLayer"));
 const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
@@ -33,6 +33,7 @@ const graphics = [
         },
         attributes: {
             "ObjectID": 1,
+            "Name": "Seattle",
             "Label": "Seattle",
             "Note": ""
         }
@@ -52,6 +53,7 @@ const graphics = [
         },
         attributes: {
             "ObjectID": 2,
+            "Name": "Spokane",
             "Label": "Spokane",
             "Note": ""
         }
@@ -71,6 +73,7 @@ const graphics = [
         },
         attributes: {
             "ObjectID": 3,
+            "Name": "Vancouver",
             "Label": "Vancouver",
             "Note": ""
         }
@@ -84,6 +87,11 @@ const layer = new FeatureLayer_1.default({
             name: "ObjectID",
             alias: "ObjectID",
             type: "oid"
+        }),
+        new Field_1.default({
+            name: "Name",
+            alias: "Name",
+            type: "string"
         }),
         new Field_1.default({
             name: "Label",
@@ -107,9 +115,24 @@ exports.default = layer;
 const getFeatureById = (id) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     const query = layer.createQuery();
     query.where = "ObjectID =" + id;
-    query.outFields = ["ObjectID", "Label", "Note"];
+    query.outFields = ["ObjectID", "Name", "Label", "Note"];
     const response = yield layer.queryFeatures(query);
+    if (response.features.length === 0) {
+        throw "Failed to find the zoom extent with the specified ID: " + id + ".";
+    }
     return response.features[0];
 });
 exports.getFeatureById = getFeatureById;
+const getFeatureByName = (name) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+    const query = layer.createQuery();
+    const nameFormatted = name[0].toUpperCase() + name.slice(1).toLowerCase();
+    query.where = `Name = '${nameFormatted}'`;
+    query.outFields = ["ObjectID", "Name", "Label", "Note"];
+    const response = yield layer.queryFeatures(query);
+    if (response.features.length === 0) {
+        throw "Failed to find the zoom extent with the specified name: '" + name + "'. Please make sure the spelling is correct.";
+    }
+    return response.features[0];
+});
+exports.getFeatureByName = getFeatureByName;
 //# sourceMappingURL=ZoomExtentLayer.js.map
