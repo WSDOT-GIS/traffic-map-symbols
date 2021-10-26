@@ -32,7 +32,7 @@
         </button>
       </li>
     </ul>
-    <WsdotButtonView Caption="Save This Map" @click="showForm" />
+    <WsdotButtonView Caption="Save this map" @click="showForm" />
     <SaveMapFormView
       :Visible="formVisible"
       @ok-save-map-form="addItem($event)"
@@ -42,29 +42,28 @@
 </template>
 
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  nextTick,
-  onMounted,
-  onUpdated,
-  ref,
-  watch,
-} from "vue";
+import { computed, defineComponent, nextTick, onMounted, onUpdated, ref, toRefs, watch } from "vue";
 
 import SavedMapInfo from "@/types/SavedMapInfo";
 import { setCookie, getCookie } from "@/utils/cookieUtil";
 import { cloneProxyTarget, useStore } from "@/store";
 import WsdotButtonView from "@/components/WsdotButtonView.vue";
 import SaveMapFormView from "@/components/SaveMapFormView.vue";
-// import LayerInfo from "@/types/LayerInfo";
+
 import { validateBasemapName } from "@/layers/Basemaps";
 import { isMobile } from "@/utils/mediaUtil";
 import { defaultLayerProps } from "@/esri-stuff/esriMap";
 
 export default defineComponent({
   components: { WsdotButtonView, SaveMapFormView },
-  setup() {
+  props: {
+    IsOpen: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  setup(props) {
+    console.log("** Top ** " + props.IsOpen);
     const store = useStore();
     const itemContainerRef = ref<HTMLElement>();
     const closeButtonRef = ref<HTMLElement>();
@@ -107,10 +106,7 @@ export default defineComponent({
     // Set the width of the item title button so the remove button won't wrap.
     const resizeItemTitle = () => {
       if (itemContainerRef.value && closeButtonRef.value) {
-        const w =
-          itemContainerRef.value.offsetWidth -
-          closeButtonRef.value.offsetWidth -
-          3; // Without this the close button will still wrap. 1 works too, but made it 3 to make sure.
+        const w = itemContainerRef.value.offsetWidth - closeButtonRef.value.offsetWidth - 3; // Without this the close button will still wrap. 1 works too, but made it 3 to make sure.
         itemTitleWidth.value = w + "px";
       }
     };
@@ -130,7 +126,7 @@ export default defineComponent({
         // Check cookie...
         const lyrCookie = layerListCookie.find((eachCookie) => {
           return eachInfo.id === eachCookie.i;
-        })
+        });
         if (lyrCookie) {
           eachInfo.visible = lyrCookie.v;
         } else {
@@ -148,7 +144,7 @@ export default defineComponent({
       if (validateBasemapName(item.b)) {
         store.commit("setBasemap", item.b);
       }
-      // Set the "selected" property... 
+      // Set the "selected" property...
       mapList.value.forEach((each) => {
         each.s = false;
       });
