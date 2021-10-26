@@ -15,7 +15,7 @@ const roadAlertsPriorityRenderer = new uniqueValueRenderer({
         {
             label: "HIGHEST IMPACT",
             value: 1,
-            symbol: alertSymbolHighest
+            symbol: alertSymbolHigh
         },
         {
             label: "HIGH IMPACT",

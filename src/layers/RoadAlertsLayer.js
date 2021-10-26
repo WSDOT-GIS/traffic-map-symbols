@@ -16,7 +16,7 @@ const roadAlertsPriorityRenderer = new UniqueValueRenderer_1.default({
         {
             label: "HIGHEST IMPACT",
             value: 1,
-            symbol: AlertSymbol_1.alertSymbolHighest
+            symbol: AlertSymbol_1.alertSymbolHigh
         },
         {
             label: "HIGH IMPACT",
