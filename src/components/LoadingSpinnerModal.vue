@@ -8,7 +8,7 @@
           <td><img class="loadingSpinner" src="@/assets/loadingSpinner.gif"></td>
         </tr>
         <tr>
-          <td><label class="loadingLabel">Map Loading...</label></td>
+          <td><label class="loadingLabel">{{loadingMessage}}</label></td>
         </tr>
       </table>
     </div> 
@@ -17,7 +17,7 @@
 <script lang="ts">
 import { computed, defineComponent, onUpdated, ref, watch } from "vue";
 import { useStore } from "@/store";
-
+import {mapState} from "vuex"
 export default defineComponent({
   props: {
     MapHeight: {
@@ -54,6 +54,7 @@ export default defineComponent({
       displayStyle,
     };
   },
+  computed: mapState(["loadingMessage"]),
 });
 </script>
 
