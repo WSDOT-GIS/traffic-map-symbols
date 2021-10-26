@@ -65,7 +65,8 @@ const initLayer = (url) => {
         fields: fields,
         renderer: renderer,
         visible: true,
-        labelsVisible: false
+        labelsVisible: false,
+        definitionExpression: "Display <> 'Keller South to Keller North'"
     });
     return layer;
 };
