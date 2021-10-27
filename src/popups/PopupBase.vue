@@ -319,8 +319,7 @@ export default defineComponent({
       };
     });
 
-    const onClickAway = (event: PointerEvent) => {
-      console.log(event);
+    const onClickAway = (event: PointerEvent | TouchEvent) => {
       if (smallMedia.value) {
         close();
       } else {
@@ -328,8 +327,18 @@ export default defineComponent({
            - If user clicks on something other than the map (e.g. TOC, header, ...), then close the popup.
            - If user clicks on map, then do not do anything here. */
         const target = event.target as HTMLElement;
-        if (!target.classList.contains("esri-view-surface")) {
+        if (event.type === "click" && !target.classList.contains("esri-view-surface")) {
           close();
+        }
+        else if (event.type === "touchstart") {
+          // Touch event is handled here...
+          if (
+            !target.classList.contains("esri-view-surface") &&
+            !(target.nodeName === "CANVAS" &&
+            target.parentElement?.classList.contains("esri-view-surface"))
+          ) {
+            close();
+          }
         }
       }
     };
