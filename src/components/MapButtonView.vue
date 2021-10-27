@@ -1,7 +1,7 @@
 <template>
-  <button
-    class="w3-button w3-border w3-round w3-card-2"
-    :style="{ width: Width, height: Height }"
+  <button @mousedown="toggleDark" @mouseup="toggleLight"
+    class="w3-btn w3-border w3-round w3-card-2"
+    :style="{ width: Width, height: Height, 'background-color':bgColor }"
     :aria-label="AriaLabel"
     :title="AriaLabel"
   >
@@ -9,9 +9,23 @@
   </button>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 
 export default defineComponent({
+  setup(){
+    const bgColor = ref<string>("#fff")
+    const toggleDark=()=>{
+      bgColor.value='#CCCCCC'
+    }
+    const toggleLight=()=>{
+      bgColor.value="#fff"
+    }
+    return{
+      bgColor,
+      toggleDark,
+      toggleLight
+    }
+  },
   props: {
     Height: {
       type: String,
