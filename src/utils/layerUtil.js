@@ -1,14 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchJsonData = exports.replaceFeatures = exports.reloadData = exports.setLayerEvent = exports.initLayer = exports.getFeature = exports.setLayerVisibility = exports.getLayerIds = exports.createLayerGroupInfos = void 0;
+exports.fetchJsonData = exports.replaceFeatures = exports.reloadData = exports.setLayerEvent = exports.initLayer = exports.getFeature = exports.setLayerVisibility = exports.resizeFeature = exports.getLayerIds = exports.createLayerGroupInfos = void 0;
 const tslib_1 = require("tslib");
 const SpatialReference_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/SpatialReference"));
 const Graphic_1 = tslib_1.__importDefault(require("@arcgis/core/Graphic"));
+const graphicLayerUtil_1 = require("./graphicLayerUtil");
 const FeatureLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/FeatureLayer"));
 const geomJsonUtils = tslib_1.__importStar(require("@arcgis/core/geometry/support/jsonUtils"));
 const Field_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/Field"));
 const miscUtil_1 = require("@/utils/miscUtil");
 const typeUtil_1 = require("@/utils/typeUtil");
+const CIMSymbol_1 = tslib_1.__importDefault(require("@arcgis/core/symbols/CIMSymbol"));
 /**  Mapping between layer groups (type in URL query param) and layer IDs...
  *   * id
  *      ID for the layer group (type).
@@ -63,6 +65,30 @@ const getLayerIds = (groupId) => {
     }
 };
 exports.getLayerIds = getLayerIds;
+const resizeFeature = (graphic, mapView) => {
+    const layer = graphic.layer;
+    let selectedSymbol = new CIMSymbol_1.default;
+    if (layer.renderer.type == "unique-value") {
+        const renderer = layer.renderer;
+        const field = renderer.field;
+        renderer.uniqueValueInfos.forEach(uniqueValueInfo => {
+            if (uniqueValueInfo.value == graphic.attributes[field]) {
+                selectedSymbol = uniqueValueInfo.symbol;
+            }
+        });
+    }
+    if (layer.renderer.type == "simple") {
+        const renderer = layer.renderer;
+        selectedSymbol = renderer.symbol;
+    }
+    console.log(selectedSymbol);
+    const jsonSymbol = selectedSymbol.toJSON();
+    jsonSymbol.symbol.symbolLayers[0].size = 30;
+    jsonSymbol.symbol.symbolLayers[0].offsetY = 15;
+    const newSymbol = CIMSymbol_1.default.fromJSON(jsonSymbol);
+    graphicLayerUtil_1.addGraphicsByType("selectedGraphic", newSymbol);
+};
+exports.resizeFeature = resizeFeature;
 /**
  * Set the visibility of the specified layer in the layer list.
  * NOTE: The layer list need to be committed to the state store.

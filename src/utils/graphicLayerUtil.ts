@@ -7,22 +7,29 @@ import { MyLocationSymbol } from "@/symbols/MyLocationSymbol";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import { getLineFromPointId } from "./featureInfoUtil";
 
-export const addGraphicsByType = (type: string, featureGeometry: any):void => {
+export const buildGraphicsByType = (type: string, data: any):Graphic =>{//type is the type of data being passed, data is the data object
     let graphic;
+    let symbol;
     switch (type) {
-        case "myLocation":
+        case "coordinates":
             graphic = new Graphic({
                 geometry: new Point({
-                    longitude: featureGeometry.longitude,
-                    latitude: featureGeometry.latitude,
+                    longitude: data.longitude,
+                    latitude: data.latitude,
                 }),
-                attributes: {
-                    graphicType: "myLocation"
-                },
                 symbol: MyLocationSymbol
             })
             break;
+        case "CIMSymbol":
+            symbol = data  
+              
+            graphic = data
+                console.log(graphic)
     }
+    return graphic
+}
+export const addGraphicsByType = ( graphicType:string, graphic: Graphic):void => {
+    graphic.attributes.graphicType = graphicType
     mapView.graphics.add(graphic as Graphic)
 }
 export const displayPointInteractionGraphics = (layer: FeatureLayer, targetField: string, targetValue: string | number | undefined): void => {

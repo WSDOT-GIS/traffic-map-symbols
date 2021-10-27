@@ -94,7 +94,7 @@ export default defineComponent({
   border: 1px solid var(--color-gray20);
 }
 #map-top-left-inner-container {
-  padding-right: 31px;
+  padding-right: 0px;
   padding-bottom: 8px;
 }
 #map-top-left-container-closed {

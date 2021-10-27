@@ -23,6 +23,8 @@ const addGraphicsByType = (type, featureGeometry) => {
                 symbol: MyLocationSymbol_1.MyLocationSymbol
             });
             break;
+        case "selectedGraphic":
+            graphic = featureGeometry;
     }
     esriMap_1.mapView.graphics.add(graphic);
 };
