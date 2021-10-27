@@ -262,11 +262,11 @@ a {
   color: var(--color-gray100);
   font-size: var(--type-scale-base6);
   font-weight: var(--font-weight-normal);
-  line-height: var(--type-scale-base-2);
+  line-height: var(--type-scale-base-6);
   text-align: center;
   border-radius: 50%;
-  width: var(--type-scale-base6);
-  height: var(--type-scale-base6);
+  width: 2.2rem;
+  height: 2.2rem;
   padding: 0.1rem;
 }
 </style>

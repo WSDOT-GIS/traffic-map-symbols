@@ -2,8 +2,8 @@
   <div id="layerListWidget" title="Map Features" v-if="layerList.length > 0">
     <!-- Column headers -->
     <div class="layer-list-header-row">
-      <div class="layer-list-header-0"><h6>Data layers</h6></div>
-      <div><h6>Turn on/off</h6></div>
+      <h6>Data layers</h6>
+      <h6>Turn on/off</h6>
     </div>
     <!-- Traffic Flow -->
     <ToggleSwitchView
@@ -366,15 +366,12 @@ export default defineComponent({
 <style scoped>
 .layer-list-header-row {
   display: flex;
+  justify-content: space-between;
 }
 .layer-list-header-row h6 {
   font-size: var(--type-scale-base2);
   line-height: var(--type-scale-base4);
   font-weight: var(--font-weight-heavy);
-  text-align: left;
-}
-.layer-list-header-0 {
-  width: 70%;
 }
 .layer-list-row {
   margin: 10px 0;
@@ -385,8 +382,8 @@ export default defineComponent({
 }
 .layer-list-item-icon {
   margin-right: 1rem;
-  height: 20px;
-  width: 20px;
+  height: 2rem;
+  width: 2rem;
 }
 .layer-list-item-text {
   font-size: var(--type-scale-base3);

@@ -94,7 +94,7 @@ export default defineComponent({
   border: 1px solid var(--color-gray20);
 }
 #map-top-left-inner-container {
-  padding-right: 0px;
+  padding-right: 8px;
   padding-bottom: 8px;
 }
 #map-top-left-container-closed {
@@ -139,7 +139,7 @@ export default defineComponent({
   -webkit-transform: skewX(-10deg);
   -moz-transform: skewX(-10deg);
   -ms-transform: skewX(-10deg);
-  transform: skewX(-10deg);
+  transform: skewX(-10deg) translateX(4px);
 }
 .map-left-panel-close-btn {
   position: absolute;
@@ -173,10 +173,6 @@ export default defineComponent({
     position: relative;
     top: -3px;
   }
-  /* .map-left-panel-close-btn {
-    transform: translate(30%, -50%);
-    top: 5px;
-  } */
 }
 </style>
 
