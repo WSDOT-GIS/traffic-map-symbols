@@ -37,7 +37,6 @@ const getLayer = () => {
     if (!layer) {
         throw "Ferry Routes is not ready yet!";
     }
-    console.log(layer);
     return layer;
 };
 exports.default = getLayer;

@@ -92,7 +92,7 @@ export default defineComponent({
       //console.log(feature)
       const moreInfoObject = new Object({
         url: `https://wsdot.wa.gov/data/tools/bridgeclearance/`,
-        text: "Be sure to check out your route in the",
+        text: "Check your overhead clearances in the",
         linkText: "Bridge Vertical Clearance Trip Planner",
       }) as MoreInfoURLInfo;
       return moreInfoObject;

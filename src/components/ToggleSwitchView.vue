@@ -1,6 +1,8 @@
 <template>
   <label class="Toggle" :title="Title">
+    <div>
     <slot></slot>
+    </div>
     <input :disabled='!Enabled'
       type="checkbox"
       name="toggle"
@@ -52,7 +54,7 @@ export default defineComponent({
 
 .Toggle {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: space-between;
   align-items: center;
   position: relative;
@@ -76,7 +78,7 @@ export default defineComponent({
   align-items: center;
   justify-content: space-around;
   box-sizing: content-box;
-  width: calc(var(--diameter) * 1.5 + var(--offset) * 4);
+  min-width: calc(var(--diameter) * 1.5 + var(--offset) * 4);
   height: calc(var(--diameter) + var(--offset) * 0);
   border: 0.1em solid var(--color-primaryBrand100);
   position: relative;

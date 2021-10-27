@@ -4,10 +4,10 @@
       - Update WSDOT logo image path to src="@/assets/wsdot-logo-white.svg"
       - Add @load="onImgLoad()" to the WSDOT logo
           <img src="@/assets/wsdot-logo-white.svg" alt="Home" @load="onImgLoad()" />
-      - Update the link to the home page https://live-wsdot-wsdot.pantheonsite.io/
+      - Update the link to the home page https://wsdot.wa.gov/
         Two places to update:
-          <a class="logo navbar-btn pull-left" href="https://live-wsdot-wsdot.pantheonsite.io/" title="Home" rel="home">
-          <a class="name navbar-brand" href="https://live-wsdot-wsdot.pantheonsite.io/" title="Home" rel="home">
+          <a class="logo navbar-btn pull-left" href="https://wsdot.wa.gov/" title="Home" rel="home">
+          <a class="name navbar-brand" href="https://wsdot.wa.gov/" title="Home" rel="home">
     2. Copy the navigation bar section.
     3. Replace the burger menu with the BurgerView component. Import the BurgerView component and change the line below in the template.
         The original:
@@ -21,21 +21,13 @@
     <div class="header-wrapper">
       <div class="logo-container">
         <div class="region region-header">
-          <a
-            class="logo navbar-btn pull-left"
-            href="https://live-wsdot-wsdot.pantheonsite.io/"
-            title="Home"
-            rel="home"
+          <a class="logo navbar-btn pull-left" href="https://wsdot.wa.gov/" title="Home" rel="home"
             ><img src="@/assets/wsdot-logo-white.svg" alt="Home" @load="onImgLoad()"
           /></a>
-          <a
-            class="name navbar-brand"
-            href="https://live-wsdot-wsdot.pantheonsite.io/"
-            title="Home"
-            rel="home"
+          <a class="name navbar-brand" href="https://wsdot.wa.gov/" title="Home" rel="home"
             >WSDOT</a
           >
-          
+
           <!-- <a id="main-menu" href="#menu-schmenu" class="sidr-trigger"
             ><span class="sidr-trigger__icon"><i class="fa fa-bars"></i></span
           ></a> -->
@@ -52,37 +44,33 @@
           <div class="container-fluid" id="menu-schmenu">
             <ul class="menu menu--main nav">
               <li class="first">
-                <a
-                  href="https://live-wsdot-wsdot.pantheonsite.io/travel"
-                  data-drupal-link-system-path="node/403"
+                <a href="https://wsdot.wa.gov/travel" data-drupal-link-system-path="node/403"
                   >Travel</a
                 >
               </li>
               <li>
                 <a
-                  href="https://live-wsdot-wsdot.pantheonsite.io/construction-planning"
+                  href="https://wsdot.wa.gov/construction-planning"
                   data-drupal-link-system-path="node/404"
                   >Construction &amp; planning</a
                 >
               </li>
               <li>
                 <a
-                  href="https://live-wsdot-wsdot.pantheonsite.io/business-wsdot"
+                  href="https://wsdot.wa.gov/business-wsdot"
                   data-drupal-link-system-path="node/405"
                   >Business with WSDOT</a
                 >
               </li>
               <li>
                 <a
-                  href="https://live-wsdot-wsdot.pantheonsite.io/engineering-standards"
+                  href="https://wsdot.wa.gov/engineering-standards"
                   data-drupal-link-system-path="node/406"
                   >Engineering &amp; standards</a
                 >
               </li>
               <li class="last">
-                <a
-                  href="https://live-wsdot-wsdot.pantheonsite.io/about"
-                  data-drupal-link-system-path="node/53"
+                <a href="https://wsdot.wa.gov/about" data-drupal-link-system-path="node/53"
                   >About</a
                 >
               </li>
@@ -97,39 +85,25 @@
     <!-- Links from id="sidr-existing-content". Removed the classes. -->
     <ul>
       <li>
-        <a
-          href="https://live-wsdot-wsdot.pantheonsite.io/travel"
-          data-drupal-link-system-path="node/403"
-          >Travel</a
-        >
+        <a href="https://wsdot.wa.gov/travel" data-drupal-link-system-path="node/403">Travel</a>
       </li>
       <li>
-        <a
-          href="https://live-wsdot-wsdot.pantheonsite.io/construction-planning"
-          data-drupal-link-system-path="node/404"
+        <a href="https://wsdot.wa.gov/construction-planning" data-drupal-link-system-path="node/404"
           >Construction &amp; planning</a
         >
       </li>
       <li>
-        <a
-          href="https://live-wsdot-wsdot.pantheonsite.io/business-wsdot"
-          data-drupal-link-system-path="node/405"
+        <a href="https://wsdot.wa.gov/business-wsdot" data-drupal-link-system-path="node/405"
           >Business with WSDOT</a
         >
       </li>
       <li>
-        <a
-          href="https://live-wsdot-wsdot.pantheonsite.io/engineering-standards"
-          data-drupal-link-system-path="node/406"
+        <a href="https://wsdot.wa.gov/engineering-standards" data-drupal-link-system-path="node/406"
           >Engineering &amp; standards</a
         >
       </li>
       <li class="sidr-class-last">
-        <a
-          href="https://live-wsdot-wsdot.pantheonsite.io/about"
-          data-drupal-link-system-path="node/53"
-          >About</a
-        >
+        <a href="https://wsdot.wa.gov/about" data-drupal-link-system-path="node/53">About</a>
       </li>
     </ul>
   </SidebarView>

@@ -73,7 +73,7 @@ import {
   getFeatureIdFromUrl,
   getFeatureTypeFromUrl,
 } from "@/utils/urlParamUtil";
-import { createLayerGroupInfos, getFeature, setLayerVisibility } from "@/utils/layerUtil";
+import { createLayerGroupInfos, getFeature, setLayerVisibility, resizeFeature } from "@/utils/layerUtil";
 import {
   removeGraphicsByType,
   hidePointInteractionGraphics,
@@ -133,6 +133,8 @@ import AlertView from "@/components/AlertView.vue";
 import AdView from "@/components/AdView.vue";
 // import WebMap from "@arcgis/core/WebMap";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import WebMap from "@arcgis/core/WebMap";
+import MapView from "@arcgis/core/views/MapView";
 
 export default defineComponent({
   components: {
@@ -206,6 +208,7 @@ export default defineComponent({
       } else {
         popupXY.value = undefined;
       }
+      store.commit("setIsLoading",{loading: false, message: ""})
     };
     const closePopup = () => {
       popupFeatureset.value = { layerId: "", ids: [] };
@@ -340,6 +343,7 @@ export default defineComponent({
                 const id = g.getObjectId();
                 //get lines for restriciton point click
                 if (g.layer.id === "point-restrictions-layer") {
+                  
                   getFeatureInfoById(id, g.layer as FeatureLayer).then((result) => {
                     if (
                       result?.attributes.lineMarker == "true" ||
@@ -370,6 +374,7 @@ export default defineComponent({
                 } else {
                   showPopup(results2Show.layer.id, [id]);
                 }
+                resizeFeature(g,mapView as MapView)
               }
             }
           } else {
@@ -386,7 +391,6 @@ export default defineComponent({
     onMounted(async () => {
       const appConfig = await getConfig();
       const esriMap = await import("../esri-stuff/esriMap");
-      console.log("mounted")
       mapDiv = document.getElementById("esri-map-view") as HTMLDivElement;
       esriMap.init(mapDiv);
       store.commit("setMapSize", {
@@ -404,7 +408,6 @@ export default defineComponent({
       let vlPromises = [] as Array<Promise<LayerView>>
       let loadedPromises = [] as Array<Promise<any>>
       mapLayers.forEach((layer)=>{
-        console.log(layer.type)
         if (layer.type=="feature"){
           vlPromises.push(mapView.whenLayerView(layer))
         }
@@ -415,7 +418,6 @@ export default defineComponent({
         })
         return Promise.all(loadedPromises).then(
           ()=>{
-            console.log("loaded")
             store.commit("setIsLoading",{loading: false, message: ""})/***TODO: use this to wait until non-feature layers are also ready***/
           }
         )
@@ -469,7 +471,7 @@ export default defineComponent({
               }
               // Zoom in...
               esriMap.tryZoomToPointAsync(result.geometry as Point, 4).then(() => {
-                showPopup(result.layer.id, [result.getObjectId()]);
+                showPopup(result.layer.id, [result.getObjectId()])
               });
             }
           });

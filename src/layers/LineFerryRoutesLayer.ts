@@ -37,7 +37,6 @@ const getLayer = (): FeatureLayer => {
     if (!layer) {
         throw "Ferry Routes is not ready yet!";
     }
-    console.log(layer)
     return layer;
 }
 
