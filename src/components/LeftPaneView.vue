@@ -3,12 +3,12 @@
     <div
       id="map-top-left-container"
       v-if="isOpen"
-      class="w3-container w3-padding-small w3-card w3-white w3-col"
+      class="w3-container w3-card w3-white w3-col"
       :style="{ maxHeight: maxHeight + 'px' }"
     >
       <div class="w3-display-container w3-border-0">
-        <div class="map-left-panel-title"><h5>Map Legend</h5></div>
-        <div class="map-left-panel-close-btn w3-button" @click="toggleDisplay">
+        <div class="map-left-panel-title">Map Legend</div>
+        <div class="map-left-panel-btn map-left-panel-close-btn w3-button" @click="toggleDisplay">
           <svg
             id="expand"
             xmlns="http://www.w3.org/2000/svg"
@@ -18,15 +18,18 @@
             class="svg-icon"
           >
             <path
-              d="M31.047 28h-5l-12-12 12-12h5l-12 12 12 12zm-26-12l12-12h-5l-12 12 12 12h5l-12-12z" style="fill:#4a5157"
+              d="M31.047 28h-5l-12-12 12-12h5l-12 12 12 12zm-26-12l12-12h-5l-12 12 12 12h5l-12-12z"
+              style="fill: #007b5f"
             />
           </svg>
         </div>
       </div>
-      <hr class="horizontal-divider" />
+      <div id="map-top-left-inner-container">
+      <!-- <hr class="horizontal-divider" /> -->
       <LayerListView />
-      <hr class="horizontal-divider" />
-      <SavedMapView />
+      <!-- <hr class="horizontal-divider" /> -->
+      <SavedMapView :IsOpen="isOpen" />
+      </div>
     </div>
   </transition>
   <div
@@ -36,17 +39,21 @@
     @click="toggleDisplay"
   >
     <label class="map-left-panel-title-closed">Map Legend</label>
-    <svg
-      id="expand"
-      xmlns="http://www.w3.org/2000/svg"
-      width="12"
-      height="12"
-      viewBox="0 0 32 32"
-      class="svg-icon"
-      
-    >
-      <path d="M1.047 4h5l12 12-12 12h-5l12-12-12-12zm26 12l-12 12h5l12-12-12-12h-5l12 12z" style="fill:#4a5157" />
-    </svg>
+    <div class="map-left-panel-btn map-left-panel-open-btn w3-button">
+      <svg
+        id="expand"
+        xmlns="http://www.w3.org/2000/svg"
+        width="12"
+        height="12"
+        viewBox="0 0 32 32"
+        class="svg-icon"
+      >
+        <path
+          d="M1.047 4h5l12 12-12 12h-5l12-12-12-12zm26 12l-12 12h5l12-12-12-12h-5l12 12z"
+          style="fill: #fff"
+        />
+      </svg>
+    </div>
   </div>
 </template>
 
@@ -83,16 +90,20 @@ export default defineComponent({
   top: 0;
   left: 0;
   width: 300px;
-  overflow-y: none;
+  overflow-y: auto;
   border: 1px solid var(--color-gray20);
+}
+#map-top-left-inner-container {
+  padding-right: 31px;
+  padding-bottom: 8px;
 }
 #map-top-left-container-closed {
   position: absolute;
   top: 0;
   left: 0;
-  overflow-y: none;
+  overflow-y: visible;
   border-radius: 4px;
-  border: 1px solid var(--color-gray20);
+  border: 1px solid var(--color-primaryBrand100);
   background-color: #fff;
 }
 .left-pane-slide-enter-active,
@@ -104,37 +115,68 @@ export default defineComponent({
   transform: translateX(-100%);
   transition: all 150ms ease-in 0s;
 }
+.map-left-panel-title {
+  text-align: left;
+  margin-right: 20px;
+  font-size: var(--type-scale-base8);
+  line-height: var(--type-scale-base14);
+  font-weight: var(--font-weight-light);
+  margin-bottom: 0;
+}
+.map-left-panel-title-closed {
+  text-align: left;
+  margin-right: 20px;
+  margin-bottom: 0;
+  font-size: var(--type-scale-base8);
+  line-height: var(--type-scale-base10);
+  font-weight: var(--font-weight-light);
+}
+.map-left-panel-btn {
+  padding: 0 8px;
+  border: 1px solid var(--color-primaryBrand100);
+  background-color: #fff;
+  border-radius: 6px;
+  -webkit-transform: skewX(-10deg);
+  -moz-transform: skewX(-10deg);
+  -ms-transform: skewX(-10deg);
+  transform: skewX(-10deg);
+}
 .map-left-panel-close-btn {
   position: absolute;
   top: 10px;
   right: 0;
-  transform: translate(60%, -50%);
-  padding: 1px 8px;
-  border-radius: 4px;
-  border: 1px solid var(--color-gray20);
-  background-color: #fff;  
 }
-.map-left-panel-title {
-  margin-right: 20px;
-  font-size: var(--type-scale-base4);
-  line-height: var(--type-scale-base6);
-  font-weight: var(--font-weight-heavy);
-  margin-bottom: 0;
+.map-left-panel-open-btn {
+  position: relative;
+  top: -5px;
+  background-color: var(--color-primaryBrand100);
 }
-.map-left-panel-title-closed {
-  margin-right: 20px;
-  font-size: var(--type-scale-base4);
-  line-height: var(--type-scale-base6);
-  font-weight: var(--font-weight-heavy);
-}
+
 @media screen and (max-width: 601px) {
   #map-top-left-container {
     width: 100%;
   }
+  .map-left-panel-title {
+    font-size: var(--type-scale-base6);
+    line-height: var(--type-scale-base12);
+  }
+  .map-left-panel-title-closed {
+    margin-right: 10px;
+    font-size: var(--type-scale-base4);
+    line-height: var(--type-scale-base6);
+  }
   .map-left-panel-close-btn {
-    transform: translate(30%, -50%);
+    position: absolute;
     top: 5px;
   }
+  .map-left-panel-open-btn {
+    position: relative;
+    top: -3px;
+  }
+  /* .map-left-panel-close-btn {
+    transform: translate(30%, -50%);
+    top: 5px;
+  } */
 }
 </style>
 

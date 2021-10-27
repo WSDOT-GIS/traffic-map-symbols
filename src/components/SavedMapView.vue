@@ -1,38 +1,39 @@
 <template>
-  <div id="savedMapWidget" class="w3-left-align">
-    <div id="saved-map-list-title w3-medium">My saved maps</div>
-    <ul id="saved-map-list-container" class="w3-ul">
-      <li
+  <div id="savedMapWidget">
+    <h6 id="saved-map-list-title">My saved maps</h6>
+    <div id="saved-map-list-container">
+      <div
         v-for="(item, index) in mapList"
         :key="index"
-        class="w3-border-0"
-        style="padding: 0"
+        class="saved-map-list-row"
         ref="itemContainerRef"
       >
-        <button
-          :title="'Show ' + item.t"
-          class="saved-map-title w3-btn w3-transparent"
-          :class="{
-            'w3-text-blue': item.s,
-            'w3-text-dark-grey': !item.s,
-          }"
-          :style="{ width: itemTitleWidth }"
-          @click="selectItem($event, item)"
-        >
-          {{ item.t }}
-        </button>
-        <button
-          :title="'Delete ' + item.t"
-          :aria-label="'Delete ' + item.t"
-          class="w3-right w3-button w3-transparent"
-          @click="removeItem($event, item)"
-          ref="closeButtonRef"
-        >
-          &times;
-        </button>
-      </li>
-    </ul>
-    <WsdotButtonView Caption="Save This Map" @click="showForm" />
+        <div class="saved-map-list-col-0">
+          <div
+            :title="'Show ' + item.t"
+            class="saved-map-title w3-btn w3-transparent"
+            :class="{
+              'saved-map-title-selected': item.s,
+            }"
+            @click="selectItem($event, item)"
+          >
+            {{ item.t }}
+          </div>
+        </div>
+        <div class="saved-map-list-col-1">
+          <button
+            :title="'Delete ' + item.t"
+            :aria-label="'Delete ' + item.t"
+            class="saved-map-remove-btn w3-button"
+            @click="removeItem($event, item)"
+            ref="closeButtonRef"
+          >
+            &times;
+          </button>
+        </div>
+      </div>
+    </div>
+    <WsdotButtonView Caption="Save this map" @click="showForm" />
     <SaveMapFormView
       :Visible="formVisible"
       @ok-save-map-form="addItem($event)"
@@ -42,33 +43,32 @@
 </template>
 
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  nextTick,
-  onMounted,
-  onUpdated,
-  ref,
-  watch,
-} from "vue";
+import { computed, defineComponent, nextTick, onMounted, onUpdated, ref, watch } from "vue";
 
 import SavedMapInfo from "@/types/SavedMapInfo";
 import { setCookie, getCookie } from "@/utils/cookieUtil";
 import { cloneProxyTarget, useStore } from "@/store";
 import WsdotButtonView from "@/components/WsdotButtonView.vue";
 import SaveMapFormView from "@/components/SaveMapFormView.vue";
-// import LayerInfo from "@/types/LayerInfo";
+
 import { validateBasemapName } from "@/layers/Basemaps";
 import { isMobile } from "@/utils/mediaUtil";
 import { defaultLayerProps } from "@/esri-stuff/esriMap";
 
 export default defineComponent({
   components: { WsdotButtonView, SaveMapFormView },
-  setup() {
+  props: {
+    IsOpen: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  setup(props) {
+    console.log("** Top ** " + props.IsOpen);
     const store = useStore();
     const itemContainerRef = ref<HTMLElement>();
     const closeButtonRef = ref<HTMLElement>();
-    const itemTitleWidth = ref("0");
+    const itemTitleWidth = ref("80%");
     const formVisible = ref(false);
     const cookieName = "savedmaps";
     const cookieText = getCookie(cookieName);
@@ -107,10 +107,7 @@ export default defineComponent({
     // Set the width of the item title button so the remove button won't wrap.
     const resizeItemTitle = () => {
       if (itemContainerRef.value && closeButtonRef.value) {
-        const w =
-          itemContainerRef.value.offsetWidth -
-          closeButtonRef.value.offsetWidth -
-          3; // Without this the close button will still wrap. 1 works too, but made it 3 to make sure.
+        const w = itemContainerRef.value.offsetWidth - closeButtonRef.value.offsetWidth - 3; // Without this the close button will still wrap. 1 works too, but made it 3 to make sure.
         itemTitleWidth.value = w + "px";
       }
     };
@@ -130,7 +127,7 @@ export default defineComponent({
         // Check cookie...
         const lyrCookie = layerListCookie.find((eachCookie) => {
           return eachInfo.id === eachCookie.i;
-        })
+        });
         if (lyrCookie) {
           eachInfo.visible = lyrCookie.v;
         } else {
@@ -148,7 +145,7 @@ export default defineComponent({
       if (validateBasemapName(item.b)) {
         store.commit("setBasemap", item.b);
       }
-      // Set the "selected" property... 
+      // Set the "selected" property...
       mapList.value.forEach((each) => {
         each.s = false;
       });
@@ -216,22 +213,61 @@ export default defineComponent({
 </script>
 
 <style scoped>
+#savedMapWidget {
+  margin: 16px 0 50px 0;
+  box-sizing: border-box;
+}
+#savedMapWidget h6 {
+  font-size: var(--type-scale-base2);
+  line-height: var(--type-scale-base4);
+  font-weight: var(--font-weight-heavy);
+  text-align: left;
+  margin-bottom: 0;
+}
 a {
   cursor: pointer;
 }
-button {
-  padding: 1px 1em;
+#saved-map-list-container {
+  margin: 0 0 8px 0;
 }
-.saved-map-item {
-  width: 100%;
+.saved-map-list-row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  padding: 0;
+}
+.saved-map-list-col-0 {
+  width: 80%;
+}
+.saved-map-list-col-1 {
+  width: 20%;
 }
 .saved-map-title {
+  font-size: var(--type-scale-base3);
+  line-height: var(--type-scale-base7);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-primaryBrand100);
+  text-decoration: underline var(--color-primaryBrand100);
+  padding: 0;
+  width: 100%;
   text-align: left;
 }
-.remove-saved-map-button {
-  height: 100%;
-  display: flex;
-  align-items: center;
+.saved-map-title-selected {
+  color: var(--color-secondaryBrandDark);
+  text-decoration-color: var(--color-secondaryBrandDark);
+}
+.saved-map-remove-btn {
+  background-color: var(--color-gray20);
+  border: none;
+  color: var(--color-gray100);
+  font-size: var(--type-scale-base0);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--type-scale-base-2);
+  text-align: center;
+  border-radius: 50%;
+  width: var(--type-scale-base0);
+  height: var(--type-scale-base0);
+  padding: 0.1rem;
 }
 </style>
 

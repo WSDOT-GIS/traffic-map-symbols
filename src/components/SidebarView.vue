@@ -58,12 +58,13 @@ export default defineComponent({
   top: 0;
   right: 0;
   cursor: pointer;
+  z-index: 998;
 }
 
 .sidebar-close-icon {
   position: absolute;
   top: 10px;
-  right: 310px;
+  right: 85vw;
   color: #fff;
   font-size: var(--type-scale-base9);
   line-height: 30px;
@@ -85,7 +86,7 @@ export default defineComponent({
   height: 100vh;
   z-index: 999;
   padding: 0;
-  width: 300px;
+  width: 80vw;
   text-align: left;
 }
 
@@ -135,5 +136,13 @@ export default defineComponent({
 
 .sidebar-panel ul li ul li a {
   border: none;
+}
+@media screen and (min-width: 401px) {
+  .sidebar-panel {
+    width: 300px;
+  }
+  .sidebar-close-icon {
+    right: 320px;
+  }
 }
 </style>
