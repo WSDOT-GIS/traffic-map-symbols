@@ -2,6 +2,7 @@ import LayerInfo from "@/types/LayerInfo";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Graphic from "@arcgis/core/Graphic";
 import WebMap from "@arcgis/core/WebMap";
+import { addGraphicsByType, buildGraphicsByType, removeGraphicsByType } from "./graphicLayerUtil";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as geomJsonUtils from "@arcgis/core/geometry/support/jsonUtils";
 import Renderer from "@arcgis/core/renderers/Renderer";
@@ -10,6 +11,10 @@ import GroupLayerInfo from "@/types/GroupLayerInfo";
 import AppConfig from "@/types/AppConfig";
 import { fetchJson } from "@/utils/miscUtil";
 import { isEsriFeatures } from "@/utils/typeUtil";
+import MapView from "@arcgis/core/views/MapView";
+import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
+import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
+import CIMSymbol from "@arcgis/core/symbols/CIMSymbol";
 /**  Mapping between layer groups (type in URL query param) and layer IDs...
  *   * id
  *      ID for the layer group (type).
@@ -65,6 +70,30 @@ export const getLayerIds = (groupId: string): string[] => {
     }
 }
 
+export const resizeFeature = (graphic: Graphic,mapView: MapView)=>{
+    const layer = graphic.layer as FeatureLayer;
+    let selectedSymbol= new CIMSymbol;
+    if(layer.renderer.type == "unique-value"){
+        const renderer = layer.renderer as UniqueValueRenderer
+        const field = renderer.field
+        renderer.uniqueValueInfos.forEach(uniqueValueInfo => {
+            if(uniqueValueInfo.value==graphic.attributes[field]){
+                selectedSymbol=uniqueValueInfo.symbol as CIMSymbol
+            }
+        });
+    }
+    if(layer.renderer.type=="simple"){
+        const renderer = layer.renderer as SimpleRenderer
+        selectedSymbol = renderer.symbol as CIMSymbol
+    }
+    console.log(selectedSymbol)
+    const jsonSymbol = selectedSymbol.toJSON()
+    jsonSymbol.symbol.symbolLayers[0].size = 30
+    jsonSymbol.symbol.symbolLayers[0].offsetY = 15
+    const newSymbol = CIMSymbol.fromJSON(jsonSymbol)
+    const mapGraphic = buildGraphicsByType("CIMSymbol",newSymbol)
+    addGraphicsByType("selectedGraphic",mapGraphic)
+}
 /**
  * Set the visibility of the specified layer in the layer list.
  * NOTE: The layer list need to be committed to the state store.
