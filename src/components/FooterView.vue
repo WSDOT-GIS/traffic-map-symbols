@@ -37,6 +37,10 @@ footer, footer ul li a {
   color: #fff;
   background-color: var(--color-primaryBrand100);
 }
+footer ul li a:hover {
+  color: var(--color-linkActive);
+  text-decoration: unset;
+}
 footer ul {
   display: flex;
   justify-content: center;
