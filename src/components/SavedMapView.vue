@@ -260,13 +260,13 @@ a {
   background-color: var(--color-gray20);
   border: none;
   color: var(--color-gray100);
-  font-size: var(--type-scale-base0);
+  font-size: var(--type-scale-base6);
   font-weight: var(--font-weight-normal);
   line-height: var(--type-scale-base-2);
   text-align: center;
   border-radius: 50%;
-  width: var(--type-scale-base0);
-  height: var(--type-scale-base0);
+  width: var(--type-scale-base6);
+  height: var(--type-scale-base6);
   padding: 0.1rem;
 }
 </style>

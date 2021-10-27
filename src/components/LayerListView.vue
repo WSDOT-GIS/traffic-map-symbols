@@ -265,7 +265,7 @@
               class="layer-list-item-icon"
               v-html="layerIcons.find((x) => x.id == 'border-crossing')?.paths"
             ></div>
-            <span class="layer-list-item-text">Border crossings</span>
+            <span class="layer-list-item-text">Border crossing wait times</span>
           </div>
         </template>
       </ToggleSwitchView>
