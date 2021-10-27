@@ -33,7 +33,7 @@ export default defineComponent({
 </script>
 
 <style>
-footer {
+footer, footer ul li a {
   color: #fff;
   background-color: var(--color-primaryBrand100);
 }
