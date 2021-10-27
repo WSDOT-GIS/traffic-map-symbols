@@ -7,7 +7,7 @@
     :DarkBadgeColor="darkBadgeColor"
     :Features="[feature]"
     :Config="{
-      bannerText: { fieldName: 'EventCategoryTypeDescription' },
+      bannerText: { fieldName: 'EventCategoryDescription' },
       badgeText: { custom: getEventPriority },
       title: { custom: getTitle },
       content: [
