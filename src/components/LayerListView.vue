@@ -141,7 +141,7 @@
               class="layer-list-item-icon"
               v-html="layerIcons.find((x) => x.id == 'point-restrictions-layer')?.paths"
             ></div>
-            <span class="layer-list-item-text">Truck restrictions</span>
+            <span class="layer-list-item-text">Truck restrictions (over size/weight)</span>
           </div>
         </template>
       </ToggleSwitchView>
