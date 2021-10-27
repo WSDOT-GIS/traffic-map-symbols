@@ -122,7 +122,7 @@
         <td class="roadAlertsLegendLabelCell">Alert</td>
         <td class="roadAlertsLegendLabelCell">Medium</td>
         <td class="roadAlertsLegendLabelCell">High</td>
-        <td class="roadAlertsLegendLabelCell">Highest</td>
+        <td class="roadAlertsLegendLabelCell">Closure</td>
       </tr>
     </table>
     <ul class="w3-ul">
