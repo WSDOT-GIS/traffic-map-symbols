@@ -121,8 +121,11 @@ export default defineComponent({
   font-size: var(--type-scale-base1);
   line-height: var(--type-scale-base3);
 }
+.waitTimeTable{
+  margin: auto;
+}
 .waitTimeCell {
-  font-size: smaller;
+  font-size: small;
   display: table-cell;
   text-align: left;
   padding: 0px 3px 0px 3px;
