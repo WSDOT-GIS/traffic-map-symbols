@@ -319,7 +319,7 @@ export default defineComponent({
       };
     });
 
-    const onClickAway = (event: PointerEvent) => {
+    const onClickAway = (event: PointerEvent | TouchEvent) => {
       console.log(event);
       if (smallMedia.value) {
         close();
@@ -328,6 +328,7 @@ export default defineComponent({
            - If user clicks on something other than the map (e.g. TOC, header, ...), then close the popup.
            - If user clicks on map, then do not do anything here. */
         const target = event.target as HTMLElement;
+        console.log(target.classList);
         if (!target.classList.contains("esri-view-surface")) {
           close();
         }
