@@ -374,7 +374,7 @@ export default defineComponent({
                 } else {
                   showPopup(results2Show.layer.id, [id]);
                 }
-                resizeFeature(g,mapView as MapView)
+               // resizeFeature(g,mapView as MapView)
               }
             }
           } else {
