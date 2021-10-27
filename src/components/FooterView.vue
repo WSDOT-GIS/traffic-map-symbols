@@ -9,13 +9,13 @@
           data-entity-substitution="canonical"
           data-entity-type="node"
           data-entity-uuid="695c71b2-1d46-4c46-8254-43c89acc6a97"
-          href="/about/policies/web-privacy-notice"
+          href="https://wsdot.wa.gov/about/policies/web-privacy-notice"
           title="Privacy Policy"
           >Privacy Policy</a
         >
       </li>
       <li>
-        <a href="/about/policies/traveler-information-disclaimer">Disclaimer</a>
+        <a href="https://wsdot.wa.gov/about/policies/traveler-information-disclaimer">Disclaimer</a>
       </li>
     </ul>
   </footer>
