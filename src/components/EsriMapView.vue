@@ -208,6 +208,7 @@ export default defineComponent({
       } else {
         popupXY.value = undefined;
       }
+      store.commit("setIsLoading",{loading: false, message: ""})
     };
     const closePopup = () => {
       popupFeatureset.value = { layerId: "", ids: [] };
@@ -470,7 +471,7 @@ export default defineComponent({
               }
               // Zoom in...
               esriMap.tryZoomToPointAsync(result.geometry as Point, 4).then(() => {
-                showPopup(result.layer.id, [result.getObjectId()]);
+                showPopup(result.layer.id, [result.getObjectId()])
               });
             }
           });
