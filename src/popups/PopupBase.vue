@@ -320,7 +320,6 @@ export default defineComponent({
     });
 
     const onClickAway = (event: PointerEvent | TouchEvent) => {
-      console.log(event);
       if (smallMedia.value) {
         close();
       } else {

@@ -19,12 +19,6 @@ import { computed, defineComponent, onUpdated, ref, watch } from "vue";
 import { useStore } from "@/store";
 import {mapState} from "vuex"
 export default defineComponent({
-  props: {
-    MapHeight: {
-      required: true,
-      type: String,
-    },
-  },
   setup() {
     const store = useStore();
     const containerRef = ref<HTMLDivElement>();
