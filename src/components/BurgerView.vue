@@ -73,7 +73,8 @@ button:focus {
   font-variant: normal;
   text-rendering: auto;
   line-height: 1;
-  text-align: center;
+  display:flex;
+  justify-content:center;
 }
 
 .burger-bar::before {

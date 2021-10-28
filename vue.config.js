@@ -5,6 +5,10 @@ const { SourceMapConsumer, SourceMapGenerator } = require('source-map');
 const sourceMaps = {};
 
 module.exports = {
+    // Uncomment this to test localhost on Browser Stack
+    // devServer: {
+    //     disableHostCheck: true
+    // },
     publicPath: process.env.NODE_ENV === 'production' ? '/Travel/Map/' : '/',
     configureWebpack() {
         return {
