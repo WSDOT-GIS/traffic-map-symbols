@@ -21,7 +21,7 @@
           value: { fieldName: 'CountyName' },
         },
         {
-          label: 'Approx. number of spaces',
+          label: 'Approx. total number of spaces',
           value: { fieldName: 'Approx_Numb_Spaces' },
         },
         { label: 'Transit organization', value: { text: '???' } },
