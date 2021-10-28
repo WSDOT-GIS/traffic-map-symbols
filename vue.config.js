@@ -9,7 +9,7 @@ module.exports = {
     // devServer: {
     //     disableHostCheck: true
     // },
-    publicPath: process.env.NODE_ENV === 'production' ? '/Travel/Real-time/' : '/',
+    publicPath: process.env.NODE_ENV === 'production' ? '/Travel/Real-time/Map/' : '/',
     configureWebpack() {
         return {
             devtool: 'source-map',
