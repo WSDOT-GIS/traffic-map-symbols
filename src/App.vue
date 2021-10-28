@@ -11,7 +11,7 @@
     </div>
     <LoadingSpinnerModal v-if="isLoading" />
   </main>
-  <FooterView />
+  <FooterView :WsdotRootUrl="config.wsdotGovRoot" />
 </template>
 
 <script lang="ts">

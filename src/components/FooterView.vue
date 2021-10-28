@@ -9,13 +9,13 @@
           data-entity-substitution="canonical"
           data-entity-type="node"
           data-entity-uuid="695c71b2-1d46-4c46-8254-43c89acc6a97"
-          href="https://wsdot.wa.gov/about/policies/web-privacy-notice"
+          :href="WsdotRootUrl + '/about/policies/web-privacy-notice'"
           title="Privacy Policy"
           >Privacy Policy</a
         >
       </li>
       <li>
-        <a href="https://wsdot.wa.gov/about/policies/traveler-information-disclaimer">Disclaimer</a>
+        <a :href="WsdotRootUrl + '/about/policies/traveler-information-disclaimer'">Disclaimer</a>
       </li>
     </ul>
   </footer>
@@ -26,6 +26,12 @@ import { defineComponent } from "vue";
 import { isSmallMedia } from "@/utils/mediaUtil";
 
 export default defineComponent({
+   props: {
+    WsdotRootUrl: {
+      type: String,
+      required: true,
+    },
+  },
   setup() {
     return { isSmallMedia };
   },
