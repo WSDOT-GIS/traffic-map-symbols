@@ -1,12 +1,7 @@
 <template>
   <transition name="left-pane-slide">
-    <div
-      id="map-top-left-container"
-      v-if="isOpen"
-      class="w3-container w3-card w3-white w3-col"
-      :style="{ maxHeight: maxHeight + 'px' }"
-    >
-      <div class="w3-display-container w3-border-0">
+    <div id="map-top-left-container" v-if="isOpen" class="w3-card w3-white w3-col">
+      <div class="w3-container w3-border-0" ref="headerRef">
         <div class="map-left-panel-title">Map Legend</div>
         <div class="map-left-panel-btn map-left-panel-close-btn w3-button" @click="toggleDisplay">
           <svg
@@ -24,11 +19,11 @@
           </svg>
         </div>
       </div>
-      <div id="map-top-left-inner-container">
-      <!-- <hr class="horizontal-divider" /> -->
-      <LayerListView />
-      <!-- <hr class="horizontal-divider" /> -->
-      <SavedMapView :IsOpen="isOpen" />
+      <div id="map-top-left-inner-container" class="w3-container" :style="{ maxHeight: maxHeight + 'px' }">
+        <!-- <hr class="horizontal-divider" /> -->
+        <LayerListView />
+        <!-- <hr class="horizontal-divider" /> -->
+        <SavedMapView :IsOpen="isOpen" />
       </div>
     </div>
   </transition>
@@ -68,10 +63,12 @@ export default defineComponent({
   components: { LayerListView, SavedMapView },
   setup() {
     const store = useStore();
+    const headerRef = ref<HTMLDivElement>();
     const mapSize = computed(() => store.state.mapSize);
     const maxHeight = ref(mapSize.value.height);
     watch(mapSize, (size) => {
-      maxHeight.value = size.height;
+      const headHeight = headerRef.value ? headerRef.value.offsetHeight : 50;
+      maxHeight.value = size.height - headHeight;
     });
     // If it is on small device, close it by default.
     const isOpen = ref(!isMobile());
@@ -79,7 +76,7 @@ export default defineComponent({
     const toggleDisplay = () => {
       isOpen.value = !isOpen.value;
     };
-    return { isOpen, maxHeight, toggleDisplay };
+    return { isOpen, maxHeight, toggleDisplay, headerRef };
   },
 });
 </script>
@@ -90,13 +87,10 @@ export default defineComponent({
   top: 0;
   left: 0;
   width: 300px;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   border: 1px solid var(--color-gray20);
 }
-#map-top-left-inner-container {
-  padding-right: 8px;
-  padding-bottom: 8px;
-}
+
 #map-top-left-container-closed {
   position: absolute;
   top: 0;
@@ -139,17 +133,22 @@ export default defineComponent({
   -webkit-transform: skewX(-10deg);
   -moz-transform: skewX(-10deg);
   -ms-transform: skewX(-10deg);
-  transform: skewX(-10deg) translateX(4px);
+  transform: skewX(-10deg)
 }
 .map-left-panel-close-btn {
   position: absolute;
   top: 10px;
-  right: 0;
+  right: 8px;
 }
 .map-left-panel-open-btn {
   position: relative;
   top: -5px;
   background-color: var(--color-primaryBrand100);
+}
+#map-top-left-inner-container {
+  padding-right: 24px;
+  padding-bottom: 8px;
+  overflow-y: auto;
 }
 
 @media screen and (max-width: 601px) {
