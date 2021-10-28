@@ -160,7 +160,7 @@ export default defineComponent({
     const getMoreInfoURL = (feature: FeatureInfo) => {
       //console.log(feature)
       const moreInfoObject = new Object({
-        url: `https://wsdotappsqa.wsdot.wa.gov/travel/center/Weather/${feature.attributes.WeatherStationId}`,
+        url: `/travel/real-time/Weather/${feature.attributes.WeatherStationId}`,
         text: "Learn more about the weather and forecast at ",
         linkText: `${feature.attributes["WeatherStationDescription"]?.toString().split(" on ")[0]} station`,
       }) as MoreInfoURLInfo;
