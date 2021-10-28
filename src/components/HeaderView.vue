@@ -102,7 +102,7 @@
           >Engineering &amp; standards</a
         >
       </li>
-      <li class="sidr-class-last">
+      <li>
         <a href="https://wsdot.wa.gov/about" data-drupal-link-system-path="node/53">About</a>
       </li>
     </ul>
