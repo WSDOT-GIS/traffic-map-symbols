@@ -7,6 +7,7 @@ import ExtentInfo from "./types/ExtentInfo";
 import { convert2EsriExtent, convert2ExtentInfo } from "./utils/extentUtil";
 import LayerInfo from "./types/LayerInfo";
 import LoadingStateInfo from "./types/LoadingStateInfo";
+import { isSmallMedia } from "./utils/mediaUtil";
 
 // Reference - https://next.vuex.vuejs.org/guide/typescript-support.html#typing-usestore-composition-function
 // define typings for the store state...
@@ -23,6 +24,7 @@ export interface State {
     isMobileMenuOpen: boolean;
     isLoading: boolean;
     loadingMessage: string;
+    leftPaneIsOpen: boolean;
 }
 
 // define injection key...
@@ -48,6 +50,7 @@ export const store = createStore<State>({
             isMobileMenuOpen: false,
             isLoading: false,
             loadingMessage: "",
+            leftPaneIsOpen: isSmallMedia() ? false : true,
         }
     },
     getters: {
@@ -128,9 +131,12 @@ export const store = createStore<State>({
         toggleIsMobileMenuOpen(state) {
             state.isMobileMenuOpen = !state.isMobileMenuOpen;
         },
-        setIsLoading(state, payload: LoadingStateInfo){
-            state.isLoading=payload.loading
+        setIsLoading(state, payload: LoadingStateInfo) {
+            state.isLoading = payload.loading
             state.loadingMessage = payload.message as string
+        },
+        setLeftPaneIsOpen(state, payload) {
+            state.leftPaneIsOpen = payload;
         }
     },
 })

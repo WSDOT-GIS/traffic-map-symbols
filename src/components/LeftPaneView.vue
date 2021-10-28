@@ -57,7 +57,7 @@ import { computed, defineComponent, ref, watch } from "vue";
 import { useStore } from "@/store";
 import LayerListView from "./LayerListView.vue";
 import SavedMapView from "./SavedMapView.vue";
-import { isMobile } from "@/utils/mediaUtil";
+// import { isMobile } from "@/utils/mediaUtil";
 
 export default defineComponent({
   components: { LayerListView, SavedMapView },
@@ -71,10 +71,11 @@ export default defineComponent({
       maxHeight.value = size.height - headHeight;
     });
     // If it is on small device, close it by default.
-    const isOpen = ref(!isMobile());
+    const isOpen = computed(() => store.state.leftPaneIsOpen);
 
     const toggleDisplay = () => {
-      isOpen.value = !isOpen.value;
+      store.commit("setLeftPaneIsOpen", !store.state.leftPaneIsOpen);
+      //isOpen.value = !isOpen.value;
     };
     return { isOpen, maxHeight, toggleDisplay, headerRef };
   },
