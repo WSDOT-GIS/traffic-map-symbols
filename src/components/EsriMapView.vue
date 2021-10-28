@@ -374,12 +374,15 @@ export default defineComponent({
                 } else {
                   showPopup(results2Show.layer.id, [id]);
                 }
-               // resizeFeature(g,mapView as MapView)
+                removeGraphicsByType("selectedGraphic")
+                //Add larger marker to map
+                //resizeFeature(g,mapView as MapView)
               }
             }
           } else {
             hidePointInteractionGraphics(LineRestrictionsLayer());
             hidePointInteractionGraphics(LineFerryRoutesLayer());
+            removeGraphicsByType("selectedGraphic")
             removeGraphicsByType("myLocation"); //remove "my location" graphic
             //No feature exist...
             closePopup();

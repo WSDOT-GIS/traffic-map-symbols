@@ -70,28 +70,9 @@ export const getLayerIds = (groupId: string): string[] => {
     }
 }
 
-export const resizeFeature = (graphic: Graphic,mapView: MapView)=>{
-    const layer = graphic.layer as FeatureLayer;
-    let selectedSymbol= new CIMSymbol;
-    if(layer.renderer.type == "unique-value"){
-        const renderer = layer.renderer as UniqueValueRenderer
-        const field = renderer.field
-        renderer.uniqueValueInfos.forEach(uniqueValueInfo => {
-            if(uniqueValueInfo.value==graphic.attributes[field]){
-                selectedSymbol=uniqueValueInfo.symbol as CIMSymbol
-            }
-        });
-    }
-    if(layer.renderer.type=="simple"){
-        const renderer = layer.renderer as SimpleRenderer
-        selectedSymbol = renderer.symbol as CIMSymbol
-    }
-    console.log(selectedSymbol)
-    const jsonSymbol = selectedSymbol.toJSON()
-    jsonSymbol.symbol.symbolLayers[0].size = 30
-    jsonSymbol.symbol.symbolLayers[0].offsetY = 15
-    const newSymbol = CIMSymbol.fromJSON(jsonSymbol)
-    const mapGraphic = buildGraphicsByType("CIMSymbol",newSymbol)
+export const resizeFeature = (graphic: Graphic,mapView: MapView):void=>{
+    console.log(graphic)
+    const mapGraphic = buildGraphicsByType("CIMSymbol",graphic)
     addGraphicsByType("selectedGraphic",mapGraphic)
 }
 /**
