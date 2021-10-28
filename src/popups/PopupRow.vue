@@ -101,8 +101,8 @@ export default defineComponent({
 <style scoped>
 .popup-row-container {
   margin-bottom: 8px;
-  font-size: var(--type-scale-base1);
-  line-height: var(--type-scale-base3);
+  font-size: var(--type-scale-base2);
+  line-height: var(--type-scale-base5);
 }
 
 .popup-row-label {
@@ -118,8 +118,8 @@ export default defineComponent({
 <style>
 /** Override style in the WATECH theme for P tag since text includes p tags. Scoped style could not override the style. */
 .popup-row-container p {
-  font-size: var(--type-scale-base1);
-  line-height: var(--type-scale-base3);
+  font-size: var(--type-scale-base2);
+  line-height: var(--type-scale-base5);
 }
 .waitTimeTable{
   margin: auto;
