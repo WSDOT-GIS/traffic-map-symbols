@@ -117,7 +117,7 @@ export default defineComponent({
         async (response) => {
           if (response) {
             const featureNWSZoneId = response?.attributes?.NWSZoneId?.toString().replace(/\s/g, "");
-            const config = await getConfig();
+            const config = getConfig();
             //fetch(config.forecastSummaryAPI+featureNWSZoneId).then((result)=>{ ~~summary call
             fetch(config.forecastExtendedAPI + featureNWSZoneId).then((result) => {
               if(result.status==200){

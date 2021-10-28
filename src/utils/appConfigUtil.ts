@@ -2,7 +2,7 @@ import AppConfig from "@/types/AppConfig"
 
 let appConfig: AppConfig | undefined;
 
-export const getConfig = async (): Promise<AppConfig> => {
+export const loadConfig = async (): Promise<AppConfig> => {
     if (!appConfig) {
         //include path where application was loaded from.  QA/Prod will be different than local dev.
         const href = window.location.pathname;
@@ -13,4 +13,11 @@ export const getConfig = async (): Promise<AppConfig> => {
     }
     return appConfig;
 
+}
+
+export const getConfig = (): AppConfig => {
+    if (!appConfig) {
+        throw "App.config is not loaded yet.";
+    }
+    return appConfig;
 }
