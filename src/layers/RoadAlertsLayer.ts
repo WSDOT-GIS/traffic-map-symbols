@@ -55,6 +55,7 @@ const fields = [
         name: "EventID", type: "integer", alias: "EventID"
     }),
     new Field({ name: "EventCategoryDescription", type: "string", alias: "EventCategoryDescription", length: 400 }),
+    new Field({ name: "EventCategoryTypeDescription", type: "string", alias: "EventCategoryTypeDescription", length: 400 }),
     new Field({ name: "EventCategoryID", type: "integer", alias: "EventCategoryID" }),
     new Field({ name: "CriticalEventIndicator", type: "small-integer", alias: "CriticalEventIndicator" }),
     new Field({ name: "LastModifiedDate", type: "date", alias: "LastModifiedDate" }),
