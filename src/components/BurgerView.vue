@@ -46,7 +46,6 @@ button:focus {
   height: 34px;
   width: 33px;
   display: block;
-  z-index: 999;
   border: 0;
   border-radius: 4px;
   text-align: center;

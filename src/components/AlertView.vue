@@ -129,7 +129,7 @@ export default defineComponent({
 <style scoped>
 #alert-container-open {
   /* This needs to be higher than the popup's z-index, so popup is displayed under the gray background. */
-  z-index: 11;
+  z-index: 10;
 }
 
 #alert-container-closed {
