@@ -1,5 +1,5 @@
 <template>
-  <HeaderView @onLoadComplete="resizeMapContainer()" />
+  <HeaderView @onLoadComplete="resizeMapContainer()" :WsdotRootUrl="config.wsdotRoot" />
   <main>
     <div
       id="map-container"
@@ -11,7 +11,7 @@
     </div>
     <LoadingSpinnerModal v-if="isLoading" />
   </main>
-  <FooterView />
+  <FooterView :WsdotRootUrl="config.wsdotRoot" />
 </template>
 
 <script lang="ts">
@@ -22,6 +22,8 @@ import FooterView from "./components/FooterView.vue";
 import { useStore } from "@/store";
 import { mapState } from "vuex";
 import LoadingSpinnerModal from "@/components/LoadingSpinnerModal.vue";
+import { getConfig } from "@/utils/appConfigUtil";
+
 export default defineComponent({
   name: "App",
   components: {
@@ -33,6 +35,7 @@ export default defineComponent({
   setup() {
     const mapHeight = ref("500px");
     const store = useStore();
+    const config = getConfig();
     const activeClass = "active";
     const disabledClass = "disabled";
     store.commit("setIsLoading", { loading: true, message: "Map is loading..." });
@@ -53,6 +56,7 @@ export default defineComponent({
     window.addEventListener("resize", resizeMapContainer);
 
     return {
+      config,
       mapHeight,
       store,
       resizeMapContainer,

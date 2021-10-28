@@ -1,4 +1,7 @@
 interface AppConfig {
+    // DOT root URL
+    wsdotRoot: string;
+    // DOT basemap URL
     basemap: string;
     // Operation layer URLs...
     cameras: string;

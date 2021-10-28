@@ -6,8 +6,8 @@
           <img src="@/assets/wsdot-logo-white.svg" alt="Home" @load="onImgLoad()" />
       - Update the link to the home page https://wsdot.wa.gov/
         Two places to update:
-          <a class="logo navbar-btn pull-left" href="https://wsdot.wa.gov/" title="Home" rel="home">
-          <a class="name navbar-brand" href="https://wsdot.wa.gov/" title="Home" rel="home">
+          <a class="logo navbar-btn pull-left" href="--link--" title="Home" rel="home">
+          <a class="name navbar-brand" href="--link--" title="Home" rel="home">
     2. Copy the navigation bar section.
     3. Replace the burger menu with the BurgerView component. Import the BurgerView component and change the line below in the template.
         The original:
@@ -21,12 +21,10 @@
     <div class="header-wrapper">
       <div class="logo-container">
         <div class="region region-header">
-          <a class="logo navbar-btn pull-left" href="https://wsdot.wa.gov/" title="Home" rel="home"
+          <a class="logo navbar-btn pull-left" :href="WsdotRootUrl" title="Home" rel="home"
             ><img src="@/assets/wsdot-logo-white.svg" alt="Home" @load="onImgLoad()"
           /></a>
-          <a class="name navbar-brand" href="https://wsdot.wa.gov/" title="Home" rel="home"
-            >WSDOT</a
-          >
+          <a class="name navbar-brand" :href="WsdotRootUrl" title="Home" rel="home">WSDOT</a>
 
           <!-- <a id="main-menu" href="#menu-schmenu" class="sidr-trigger"
             ><span class="sidr-trigger__icon"><i class="fa fa-bars"></i></span
@@ -44,35 +42,31 @@
           <div class="container-fluid" id="menu-schmenu">
             <ul class="menu menu--main nav">
               <li class="first">
-                <a href="https://wsdot.wa.gov/travel" data-drupal-link-system-path="node/403"
+                <a :href="WsdotRootUrl + '/travel'" data-drupal-link-system-path="node/403"
                   >Travel</a
                 >
               </li>
               <li>
                 <a
-                  href="https://wsdot.wa.gov/construction-planning"
+                  :href="WsdotRootUrl + '/construction-planning'"
                   data-drupal-link-system-path="node/404"
                   >Construction &amp; planning</a
                 >
               </li>
               <li>
-                <a
-                  href="https://wsdot.wa.gov/business-wsdot"
-                  data-drupal-link-system-path="node/405"
+                <a :href="WsdotRootUrl + '/business-wsdot'" data-drupal-link-system-path="node/405"
                   >Business with WSDOT</a
                 >
               </li>
               <li>
                 <a
-                  href="https://wsdot.wa.gov/engineering-standards"
+                  :href="WsdotRootUrl + '/engineering-standards'"
                   data-drupal-link-system-path="node/406"
                   >Engineering &amp; standards</a
                 >
               </li>
               <li class="last">
-                <a href="https://wsdot.wa.gov/about" data-drupal-link-system-path="node/53"
-                  >About</a
-                >
+                <a :href="WsdotRootUrl + '/about'" data-drupal-link-system-path="node/53">About</a>
               </li>
             </ul>
           </div>
@@ -85,25 +79,25 @@
     <!-- Links from id="sidr-existing-content". Removed the classes. -->
     <ul>
       <li>
-        <a href="https://wsdot.wa.gov/travel" data-drupal-link-system-path="node/403">Travel</a>
+        <a :href="WsdotRootUrl + '/travel'" data-drupal-link-system-path="node/403">Travel</a>
       </li>
       <li>
-        <a href="https://wsdot.wa.gov/construction-planning" data-drupal-link-system-path="node/404"
+        <a :href="WsdotRootUrl + '/construction-planning'" data-drupal-link-system-path="node/404"
           >Construction &amp; planning</a
         >
       </li>
       <li>
-        <a href="https://wsdot.wa.gov/business-wsdot" data-drupal-link-system-path="node/405"
+        <a :href="WsdotRootUrl + '/business-wsdot'" data-drupal-link-system-path="node/405"
           >Business with WSDOT</a
         >
       </li>
       <li>
-        <a href="https://wsdot.wa.gov/engineering-standards" data-drupal-link-system-path="node/406"
+        <a :href="WsdotRootUrl + '/engineering-standards'" data-drupal-link-system-path="node/406"
           >Engineering &amp; standards</a
         >
       </li>
       <li>
-        <a href="https://wsdot.wa.gov/about" data-drupal-link-system-path="node/53">About</a>
+        <a :href="WsdotRootUrl + '/about'" data-drupal-link-system-path="node/53">About</a>
       </li>
     </ul>
   </SidebarView>
@@ -115,6 +109,12 @@ import BurgerView from "./BurgerView.vue";
 import SidebarView from "./SidebarView.vue";
 
 export default defineComponent({
+  props: {
+    WsdotRootUrl: {
+      type: String,
+      required: true,
+    },
+  },
   components: { BurgerView, SidebarView },
   // https://v3.vuejs.org/guide/component-custom-events.html#defining-custom-events
   emits: ["onLoadComplete"],
