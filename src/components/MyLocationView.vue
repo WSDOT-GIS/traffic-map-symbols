@@ -89,6 +89,7 @@ export default defineComponent({
         )
         .then(() => {
           const graphic = buildGraphicsByType("coordinates",location.coords)
+          console.log(graphic)
           addGraphicsByType("myLocation", graphic)
         });
     },
