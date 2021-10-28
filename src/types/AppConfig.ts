@@ -1,6 +1,6 @@
 interface AppConfig {
     // DOT root URL
-    wsdotGovRoot: string;
+    wsdotRoot: string;
     // DOT basemap URL
     basemap: string;
     // Operation layer URLs...

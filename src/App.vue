@@ -1,5 +1,5 @@
 <template>
-  <HeaderView @onLoadComplete="resizeMapContainer()" :WsdotRootUrl="config.wsdotGovRoot" />
+  <HeaderView @onLoadComplete="resizeMapContainer()" :WsdotRootUrl="config.wsdotRoot" />
   <main>
     <div
       id="map-container"
@@ -11,7 +11,7 @@
     </div>
     <LoadingSpinnerModal v-if="isLoading" />
   </main>
-  <FooterView :WsdotRootUrl="config.wsdotGovRoot" />
+  <FooterView :WsdotRootUrl="config.wsdotRoot" />
 </template>
 
 <script lang="ts">
