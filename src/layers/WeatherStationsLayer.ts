@@ -5,7 +5,7 @@ import Field from "@arcgis/core/layers/support/Field";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 import * as layerUtil from "@/utils/layerUtil";
-import { viewHide16 } from "@esri/calcite-ui-icons";
+// import { viewHide16 } from "@esri/calcite-ui-icons";
 import MapView from "@arcgis/core/views/MapView";
 
 const renderer = new SimpleRenderer({

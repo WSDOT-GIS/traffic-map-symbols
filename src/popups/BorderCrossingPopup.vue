@@ -20,8 +20,7 @@
       <div class="mapFeaturesIcon"
               v-html="
                 layerIcons.find((x) => x.id == 'border-crossing')
-                  ?.paths
-              ">
+                  ?.paths">
       </div>
     </template>
   </PopupBase>

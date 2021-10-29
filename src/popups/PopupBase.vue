@@ -270,7 +270,7 @@ export default defineComponent({
     let numImgLoaded = 0;
     let wasUpdatedOnce = false;
     let doPanMap = true;
-    let isPanning = false;
+    // let isPanning = false;
     // Used to keep track of pages...
     const currentPage = ref(1);
     let pagePositions: {
@@ -329,13 +329,14 @@ export default defineComponent({
         const target = event.target as HTMLElement;
         if (event.type === "click" && !target.classList.contains("esri-view-surface")) {
           close();
-        }
-        else if (event.type === "touchstart") {
+        } else if (event.type === "touchstart") {
           // Touch event is handled here...
           if (
             !target.classList.contains("esri-view-surface") &&
-            !(target.nodeName === "CANVAS" &&
-            target.parentElement?.classList.contains("esri-view-surface"))
+            !(
+              target.nodeName === "CANVAS" &&
+              target.parentElement?.classList.contains("esri-view-surface")
+            )
           ) {
             close();
           }
@@ -582,9 +583,9 @@ export default defineComponent({
 
             setPosition(newTopLeft.top, newTopLeft.left);
             if (Math.abs(shiftXY.x) >= 1 || Math.abs(shiftXY.y) >= 1) {
-              isPanning = true;
+              // isPanning = true;
               panMap(shiftXY.x, shiftXY.y).then(() => {
-                isPanning = false;
+                // isPanning = false;
                 setScreenXY();
                 // Check the popup position again and pan map more if necessary.
                 shiftXY = calcShiftXY(
@@ -597,9 +598,9 @@ export default defineComponent({
                   w
                 );
                 if (shiftXY.x !== 0 || shiftXY.y !== 0) {
-                  isPanning = true;
+                  // isPanning = true;
                   panMap(shiftXY.x, shiftXY.y).then(() => {
-                    isPanning = false;
+                    // isPanning = false;
                     setScreenXY();
                   });
                 }

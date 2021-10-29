@@ -413,7 +413,7 @@ export default defineComponent({
       //set watcher to turn off initial loader screen
       const mapLayers = esriMap.getLayers() as Collection<Layer>;
       let vlPromises = [] as Array<Promise<LayerView>>;
-      let loadedPromises = [] as Array<Promise<any>>;
+      let loadedPromises = [] as Array<Promise<unknown>>;
       mapLayers.forEach((layer) => {
         if (layer.type == "feature") {
           vlPromises.push(mapView.whenLayerView(layer));
