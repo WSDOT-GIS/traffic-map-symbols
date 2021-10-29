@@ -114,14 +114,15 @@ export default defineComponent({
   display: none;
 }
 
-.sidebar-panel ul li a:focus,
-.sidebar-panel ul li a:hover {
+.sidebar-panel ul li:focus,
+.sidebar-panel ul li:hover {
   background-color: transparent;
-  padding: 0;
+  /* padding: 0; */
   text-decoration: underline;
   border: none;
   outline-color: none;
-  box-shadow: 0 0 15px 3px #222 inset;
+  box-shadow: 0 0 15px 3px var(--color-gray60) inset;
+  width: 100%;
 }
 
 .sidebar-panel ul li.active a {
