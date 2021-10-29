@@ -1059,9 +1059,9 @@ export default defineComponent({
 }
 .popup-content {
   text-align: left;
-  font-size: var(--type-scale-base1);
+  font-size: var(--type-scale-base3);
   font-weight: var(--font-weight-normal);
-  line-height: var(--type-scale-base3);
+  line-height: var(--type-scale-base5);
 }
 
 .popup-content-section {
