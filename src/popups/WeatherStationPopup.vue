@@ -107,7 +107,7 @@ export default defineComponent({
     };
     // Setting features to undefined closes the popup...
     const close = () => {
-      console.log("closed");
+      // console.log("closed");
       forecastList.value = undefined;
       feature.value = undefined;
     };
@@ -121,9 +121,9 @@ export default defineComponent({
             //fetch(config.forecastSummaryAPI+featureNWSZoneId).then((result)=>{ ~~summary call
             fetch(config.forecastExtendedAPI + featureNWSZoneId).then((result) => {
               if(result.status==200){
-                console.log(result)
+                // console.log(result)
                 result.json().then((response) => {
-                  console.log(response.forecastData)
+                  // console.log(response.forecastData)
                   function mycomparator(a:any,b:any) {
                     return parseInt(a.forecastNumber, 10) - parseInt(b.forecastNumber, 10);
                   }
@@ -191,7 +191,7 @@ export default defineComponent({
       return formatNum(feature, "Visibility", "Mile");
     };
     const getWindSpeed = (feature: FeatureInfo) => {
-      console.log(feature)
+      // console.log(feature)
       return formatNum(feature, "WindSpeed", "mph");
     };
 

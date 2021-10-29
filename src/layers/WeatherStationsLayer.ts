@@ -84,7 +84,7 @@ export const initLayer = async (jsonUrl: string, view: MapView): Promise<Feature
     );
     layer.definitionExpression = "WeatherNetworkPriority = 0"
     view.watch("scale",(scale)=>{
-        console.log(scale)
+        // console.log(scale)
         if(scale>577790.554289){
             (layer as FeatureLayer).definitionExpression="WeatherNetworkPriority = 0";
             (layer as FeatureLayer).refresh()

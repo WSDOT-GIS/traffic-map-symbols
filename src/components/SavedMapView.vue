@@ -63,8 +63,7 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
-    console.log("** Top ** " + props.IsOpen);
+  setup() {
     const store = useStore();
     const itemContainerRef = ref<HTMLElement>();
     const closeButtonRef = ref<HTMLElement>();

@@ -165,8 +165,8 @@ export default defineComponent({
       //console.log(feature)
       const num = feature.attributes["Elevation"] as number;
       const unit = feature.attributes["ElevationUnit"] as string;
-      console.log(feature.attributes["Elevation"]);
-      console.log(feature.attributes["ElevationUnit"]);
+      // console.log(feature.attributes["Elevation"]);
+      // console.log(feature.attributes["ElevationUnit"]);
       let ftNum;
       let meterNum;
       if (num) {

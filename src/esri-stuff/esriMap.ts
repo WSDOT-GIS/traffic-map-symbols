@@ -74,7 +74,7 @@ export const init = (container: HTMLDivElement): void => {
     mapView.container = container;
     mapView.when()
         .then(() => {
-            console.log("Map is ready.");
+            // console.log("Map is ready.");
             // Somehow map does not zoom enough, so set extent again here...
             mapView.extent = fullExtent;
 
@@ -317,7 +317,7 @@ export const panMap = async (shiftX: number, shiftY: number): Promise<{ actualSh
             //console.log("panMap: success " + JSON.stringify(diffShift));
             return true;
         } else {
-            console.log("panMap: fail " + JSON.stringify(diffShift));
+            console.warn("panMap: fail " + JSON.stringify(diffShift));
             return { actualShift: actualShift };
         }
     } catch (err) {
