@@ -15,7 +15,7 @@
         >
       </li>
       <li>
-        <a :href="WsdotRootUrl + '/about/policies/traveler-information-disclaimer'">Disclaimer</a>
+        <a :href="WsdotRootUrl + '/about/policies/travel-information-disclaimer'">Disclaimer</a>
       </li>
     </ul>
   </footer>
