@@ -114,11 +114,13 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const ferryRoutePointsLayer = FerryRoutePointsLayer.initLayer(config.ferryRoutePoints)
     const borderCrossingsLayer = await BorderCrossingsLayer.initLayer(config.borderCrossings)
     // The first one in the array will be displayed at the bottom of the map... 
-    webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, ferryRoutesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
+    webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, ferryRoutesReferenceLayer, trafficLyr, 
+        ferryRouteLinesLayer, stateRouteShieldsLayer,
         firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, /*travelTimesLyr,*/ lineRestrictionLyr,
-        pointRestrictionLyr, cameraLyr, roadAlertLyrs.priority, roadAlertLyrs.closure,
-        mileMarkersLayer, borderCrossingsLayer, ferryRouteLinesLayer, ferryRoutePointsLayer]);
+        pointRestrictionLyr, cameraLyr, 
+        ferryRoutePointsLayer, roadAlertLyrs.priority, roadAlertLyrs.closure,
+        mileMarkersLayer, borderCrossingsLayer]);
     // Store the default visibility...
     webmap.layers.forEach((eachLyr) => {
         defaultLayerProps.push({ id: eachLyr.id, visible: eachLyr.visible });

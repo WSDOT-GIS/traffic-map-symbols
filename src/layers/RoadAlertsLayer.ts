@@ -1,6 +1,6 @@
 // import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer"
 import uniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer"
-import { alertSymbol, alertSymbolMedium, alertSymbolHigh, alertSymbolHighest, roadClosedSymbol } from "@/symbols/AlertSymbol"
+import { alertSymbol, alertSymbolMedium, alertSymbolHigh, roadClosedSymbol } from "@/symbols/AlertSymbol"
 import Field from "@arcgis/core/layers/support/Field"
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 
