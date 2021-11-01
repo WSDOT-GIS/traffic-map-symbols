@@ -9,6 +9,7 @@
       title: { fieldName: 'BorderCrossingDescription' },
       content: [
         { label: 'Northbound wait time', value: { fieldName: 'HTMLTable',isHTML: true } },
+        { label: 'Border reading time', value: { fieldName: 'BorderReadingTime', isTime: true, isDate: true}}
       ],
        moreInfoURL:{
         custom: getMoreInfoURL

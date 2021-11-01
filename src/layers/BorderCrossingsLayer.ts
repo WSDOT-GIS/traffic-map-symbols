@@ -24,6 +24,11 @@ const fields = [
         "name": "HTMLTable",
         "type": "string",
         "alias": "HTMLTable",
+    }),
+    new Field({
+        "name": "BorderReadingTime",
+        "type": "string",
+        "alias": "Border Reading Time",
     })
 ]
 
