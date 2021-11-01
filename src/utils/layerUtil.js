@@ -10,7 +10,6 @@ const geomJsonUtils = tslib_1.__importStar(require("@arcgis/core/geometry/suppor
 const Field_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/Field"));
 const miscUtil_1 = require("@/utils/miscUtil");
 const typeUtil_1 = require("@/utils/typeUtil");
-const CIMSymbol_1 = tslib_1.__importDefault(require("@arcgis/core/symbols/CIMSymbol"));
 /**  Mapping between layer groups (type in URL query param) and layer IDs...
  *   * id
  *      ID for the layer group (type).
@@ -66,27 +65,9 @@ const getLayerIds = (groupId) => {
 };
 exports.getLayerIds = getLayerIds;
 const resizeFeature = (graphic, mapView) => {
-    const layer = graphic.layer;
-    let selectedSymbol = new CIMSymbol_1.default;
-    if (layer.renderer.type == "unique-value") {
-        const renderer = layer.renderer;
-        const field = renderer.field;
-        renderer.uniqueValueInfos.forEach(uniqueValueInfo => {
-            if (uniqueValueInfo.value == graphic.attributes[field]) {
-                selectedSymbol = uniqueValueInfo.symbol;
-            }
-        });
-    }
-    if (layer.renderer.type == "simple") {
-        const renderer = layer.renderer;
-        selectedSymbol = renderer.symbol;
-    }
-    console.log(selectedSymbol);
-    const jsonSymbol = selectedSymbol.toJSON();
-    jsonSymbol.symbol.symbolLayers[0].size = 30;
-    jsonSymbol.symbol.symbolLayers[0].offsetY = 15;
-    const newSymbol = CIMSymbol_1.default.fromJSON(jsonSymbol);
-    graphicLayerUtil_1.addGraphicsByType("selectedGraphic", newSymbol);
+    // console.log(graphic)
+    const mapGraphic = graphicLayerUtil_1.buildGraphicsByType("CIMSymbol", graphic);
+    graphicLayerUtil_1.addGraphicsByType("selectedGraphic", mapGraphic);
 };
 exports.resizeFeature = resizeFeature;
 /**
@@ -128,7 +109,7 @@ const getFeature = (uniqueValue, groupId, map) => tslib_1.__awaiter(void 0, void
     fLayer.visible = true;
     const ftrCount = yield fLayer.queryFeatureCount();
     if (groupInfo.layers[0].jsonUrl && ftrCount === 0) {
-        console.log("getFeature: " + layer.title);
+        // console.log("getFeature: " + layer.title)
         yield exports.reloadData(groupInfo.layers[0].jsonUrl, fLayer);
         if (groupInfo.layers.length > 1) {
             for (const eachLyr of groupInfo.layers) {
@@ -201,7 +182,7 @@ const setLayerEvent = (layer, jsonUrl) => {
     layer.watch("visible", (newValue, oldValue, propName, target) => {
         const lyr = target;
         if (newValue) {
-            console.log("Became visible: " + layer.title);
+            // console.log("Became visible: " + layer.title)
             exports.reloadData(jsonUrl, lyr);
         }
     });
@@ -214,7 +195,7 @@ const reloadData = (jsonUrl, layer) => tslib_1.__awaiter(void 0, void 0, void 0,
         if (!layer.visible) {
             return;
         }
-        console.log("Reload data: " + layer.id);
+        // console.log("Reload data: " + layer.id);
         // Fetch all features from JSON...
         const graphics = yield exports.fetchJsonData(jsonUrl);
         // Replace old with new features...

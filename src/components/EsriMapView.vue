@@ -62,7 +62,6 @@ import Point from "@arcgis/core/geometry/Point";
 import Extent from "@arcgis/core/geometry/Extent";
 import LayerView from "@arcgis/core/views/layers/LayerView";
 import * as WatchUtils from "@arcgis/core/core/watchUtils.js";
-// import PromisedWatchHandle from "@arcgis/core/core/watchUtils";
 import Collection from "@arcgis/core/core/Collection";
 import { getConfig } from "@/utils/appConfigUtil";
 import { mapView, zoomToMetroArea } from "@/esri-stuff/esriMap";
@@ -135,10 +134,7 @@ import MyLocationView from "@/components/MyLocationView.vue";
 import ZoomButtonView from "@/components/ZoomButtonView.vue";
 import AlertView from "@/components/AlertView.vue";
 import AdView from "@/components/AdView.vue";
-// import WebMap from "@arcgis/core/WebMap";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-// import WebMap from "@arcgis/core/WebMap";
-// import MapView from "@arcgis/core/views/MapView";
 
 export default defineComponent({
   components: {
@@ -567,7 +563,6 @@ export default defineComponent({
     const bottomLeftDiv = ref<HTMLDivElement>();
     const bottomCtrDiv = ref<HTMLDivElement>();
     const marginBottomContainer = ref("0 px");
-    //
     const adjustBottomControls = (event?: { width: number; height: number }) => {
       let ctrWidth: number;
       let ctrHeight: number;

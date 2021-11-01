@@ -67,7 +67,7 @@ const init = (container) => {
     exports.mapView.container = container;
     exports.mapView.when()
         .then(() => {
-        console.log("Map is ready.");
+        // console.log("Map is ready.");
         // Somehow map does not zoom enough, so set extent again here...
         exports.mapView.extent = fullExtent;
     })
@@ -82,7 +82,7 @@ exports.defaultLayerProps = [];
  * Get config and get apiKey and URL, then initialize layers and add to map...
  */
 const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    const config = yield appConfigUtil_1.getConfig();
+    const config = appConfigUtil_1.getConfig();
     // Removed since do not need API Key for now...
     // EsriConfig.apiKey = config.apiKey;
     const trafficLyr = TrafficLayer.initLayer(config.traffic, config.layerRefreshMinute);
@@ -107,11 +107,13 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     const ferryRoutePointsLayer = FerryRoutePointsLayer.initLayer(config.ferryRoutePoints);
     const borderCrossingsLayer = yield BorderCrossingsLayer.initLayer(config.borderCrossings);
     // The first one in the array will be displayed at the bottom of the map... 
-    exports.webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, ferryRoutesReferenceLayer, trafficLyr, stateRouteShieldsLayer,
+    exports.webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, ferryRoutesReferenceLayer, trafficLyr,
+        ferryRouteLinesLayer, stateRouteShieldsLayer,
         firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, /*travelTimesLyr,*/ lineRestrictionLyr,
-        pointRestrictionLyr, cameraLyr, roadAlertLyrs.priority, roadAlertLyrs.closure,
-        mileMarkersLayer, borderCrossingsLayer, ferryRouteLinesLayer, ferryRoutePointsLayer]);
+        pointRestrictionLyr, cameraLyr,
+        ferryRoutePointsLayer, roadAlertLyrs.priority, roadAlertLyrs.closure,
+        mileMarkersLayer, borderCrossingsLayer]);
     // Store the default visibility...
     exports.webmap.layers.forEach((eachLyr) => {
         exports.defaultLayerProps.push({ id: eachLyr.id, visible: eachLyr.visible });
@@ -120,7 +122,7 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
 exports.loadOperationalLayers = loadOperationalLayers;
 /** Load regional alert point and polygon layers separately from the other operation layers. */
 const loadRegionalAlert = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    const config = yield appConfigUtil_1.getConfig();
+    const config = appConfigUtil_1.getConfig();
     const layers = yield RegionalAlertLayer.initLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
     exports.webmap.add(layers.point);
     exports.webmap.add(layers.polygon, 0);
@@ -130,7 +132,7 @@ exports.loadRegionalAlert = loadRegionalAlert;
  * Reload data for some layers.
  */
 const refreshLayerData = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    const config = yield appConfigUtil_1.getConfig();
+    const config = appConfigUtil_1.getConfig();
     RoadAlertsLayer.reloadData(config.roadAlerts);
     RegionalAlertLayer.reloadData(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
     layerUtil.reloadData(config.pointRestrictions, PointRestrictionsLayer.default());
@@ -315,7 +317,7 @@ const panMap = (shiftX, shiftY) => tslib_1.__awaiter(void 0, void 0, void 0, fun
             return true;
         }
         else {
-            console.log("panMap: fail " + JSON.stringify(diffShift));
+            console.warn("panMap: fail " + JSON.stringify(diffShift));
             return { actualShift: actualShift };
         }
     }

@@ -6,7 +6,10 @@ const tslib_1 = require("tslib");
 const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
 const MountainPassSymbol_1 = tslib_1.__importDefault(require("@/symbols/MountainPassSymbol"));
 const Field_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/Field"));
+// import SpatialReference from "@arcgis/core/geometry/SpatialReference"
 const layerUtil = tslib_1.__importStar(require("@/utils/layerUtil"));
+// import Graphic from "@arcgis/core/Graphic"
+// import { getConfig } from "@/utils/appConfigUtil"
 const renderer = new SimpleRenderer_1.default({
     symbol: MountainPassSymbol_1.default
 });
