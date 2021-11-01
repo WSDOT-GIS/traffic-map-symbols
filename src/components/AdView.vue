@@ -1,9 +1,19 @@
 <template>
-  <div id="div-gpt-ad-1632317155034-0" class="w3-content ad-container" ref="containerDiv"></div>
+  <div id="div-gpt-ad-1632317155034-0" class="w3-content ad-container" ref="containerDiv">
+    <button
+      title="Close advertisement"
+      aria-label="Close advertisement"
+      class="ad-close-btn w3-button"
+      @click="close"
+    >
+      &times;
+    </button>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
+import {} from "doubleclick-gpt";
 
 export default defineComponent({
   emits: ["onResize"],
@@ -15,16 +25,22 @@ export default defineComponent({
   },
   setup(props, context) {
     const containerDiv = ref<HTMLDivElement>();
+    // GPT slots
+    const gptAdSlots: Slot[] = [];
+    //
+    window.googletag = window.googletag || { cmd: [] };
+    const googletag = window.googletag;
+    
     onMounted(() => {
       // To make this code working, make sure to setup the followings...
       //  1. Import the gpt.js in the index.html
       //   script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"
       //  2. Install doubleclick-gpt NPM package for type definitions.
       //  3. Declare the window extension in the globals.d.ts
-      window.googletag = window.googletag || { cmd: [] };
+      //window.googletag = window.googletag || { cmd: [] };
       // GPT slots
-      const gptAdSlots = [];
-      const googletag = window.googletag;
+      //const gptAdSlots = [];
+      // const googletag = window.googletag;
       /* Use googletag.cmd to queue callbacks for when GPT is ready. 
         These callbacks do not have to check googletag.apiReady as they are guaranteed to execute once the API is set up.*/
       googletag.cmd.push(() => {
@@ -92,7 +108,10 @@ export default defineComponent({
         }
       }
     };
-    return { containerDiv, onResize };
+    const close = () => {
+      window.googletag.destroySlots(gptAdSlots);
+    };
+    return { containerDiv, onResize, close };
   },
 });
 </script>
@@ -103,6 +122,19 @@ export default defineComponent({
   background-color: var(--color-gray40);
   min-height: 50px;
   min-width: 300px;
+}
+#ad-close-btn {
+  background-color: #000;
+  border: none;
+  color: #fff;
+  font-size: var(--type-scale-base2);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--type-scale-base-2);
+  text-align: center;
+  border-radius: 50%;
+  width: 1rem;
+  height: 1rem;
+  padding: 0.1rem;
 }
 @media screen and (min-width: 730px) {
   .ad_container {
