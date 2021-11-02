@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { SourceMapConsumer, SourceMapGenerator } = require('source-map');
 // This gets rid of the warning, but build says "Syntax error", so changed back to the original.
 //import { SourceMapConsumer, SourceMapGenerator } from './node_modules/source-map/source-map';
