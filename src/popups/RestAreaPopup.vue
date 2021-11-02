@@ -6,16 +6,10 @@
     :Features="[feature]"
     :Config="{
       bannerText: { text: 'Rest area' },
-      title: { text: 'Location' },
+      title: { fieldName: 'RestAreaName' },
       content: [
-         {
-          label: 'Name',
-          value: {
-            fieldName: 'RestAreaName',
-          },
-        },
         {
-          label: 'Place',
+          label: 'Location',
           value: {
             fieldName: 'LocationName',
           },
