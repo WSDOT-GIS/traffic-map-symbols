@@ -1,5 +1,5 @@
 {
-    "wsdotRoot": "https://wsdot.wa.gov",
+    "wsdotRoot": "https://testweb.wsdot.wa.gov",
     "basemap": "https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/TravelCenterBasemap/MapServer",
     "cameras": "https://data.wsdot.wa.gov/travelcenter/Cameras.json",
     "lineRestrictions": "https://data.wsdot.wa.gov/travelcenter/LineRestrictions.json",
