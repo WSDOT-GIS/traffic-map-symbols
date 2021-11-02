@@ -65,26 +65,6 @@ export default defineComponent({
         googletag.pubads().addEventListener("slotVisibilityChanged", () => {
           onResize();
         });
-        // Debug - The event properties should be populated, otherwise the ad did not return probably.
-        // googletag.pubads().addEventListener("slotRenderEnded", function (event) {
-        //   var slot = event.slot;
-        //   console.group("Slot", slot.getSlotElementId(), "finished rendering.");
-        //   // Log details of the rendered ad.
-        //   console.log("Advertiser ID:", event.advertiserId);
-        //   console.log("Campaign ID: ", event.campaignId);
-        //   console.log("Creative ID: ", event.creativeId);
-        //   console.log("Is empty?:", event.isEmpty);
-        //   console.log("Line Item ID:", event.lineItemId);
-        //   console.log("Size:", event.size);
-        //   console.log("Source Agnostic Creative ID:", event.sourceAgnosticCreativeId);
-        //   console.log("Source Agnostic Line Item ID:", event.sourceAgnosticLineItemId);
-        //   console.groupEnd();
-        // });
-        // This should get triggered after the ad was rendered.
-        // googletag.pubads().addEventListener("slotOnload", function (event) {
-        //   var slot = event.slot;
-        //   console.log("Creative iframe for slot", slot.getSlotElementId(), "has loaded.");
-        // });
         // Start ad fetching
         googletag.enableServices();
         //
