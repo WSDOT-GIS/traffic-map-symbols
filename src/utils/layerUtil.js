@@ -195,6 +195,7 @@ const reloadData = (jsonUrl, layer) => tslib_1.__awaiter(void 0, void 0, void 0,
         if (!layer.visible) {
             return;
         }
+        console.log("failed to return");
         // console.log("Reload data: " + layer.id);
         // Fetch all features from JSON...
         const graphics = yield exports.fetchJsonData(jsonUrl);

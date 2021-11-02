@@ -164,7 +164,7 @@ const weatherStationSymbol = new CIMSymbol_1.default({
                                         "type": "CIMSolidFill",
                                         "enable": true,
                                         "color": [
-                                            11, 131, 139, 255
+                                            0, 81, 81, 255
                                         ]
                                     }
                                 ]
@@ -333,7 +333,7 @@ const weatherStationSymbol = new CIMSymbol_1.default({
                                         "type": "CIMSolidFill",
                                         "enable": true,
                                         "color": [
-                                            11, 131, 139, 255
+                                            0, 81, 81, 255
                                         ]
                                     }
                                 ]
