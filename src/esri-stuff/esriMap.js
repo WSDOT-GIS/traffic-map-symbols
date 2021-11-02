@@ -112,7 +112,7 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
         firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, /*travelTimesLyr,*/ lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr,
-        ferryRoutePointsLayer, roadAlertLyrs.priority, roadAlertLyrs.closure,
+        ferryRoutePointsLayer, roadAlertLyrs,
         mileMarkersLayer, borderCrossingsLayer]);
     // Store the default visibility...
     exports.webmap.layers.forEach((eachLyr) => {

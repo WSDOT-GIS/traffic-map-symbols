@@ -119,7 +119,7 @@ export const loadOperationalLayers = async (): Promise<void> => {
         firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, /*travelTimesLyr,*/ lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr, 
-        ferryRoutePointsLayer, roadAlertLyrs.priority, roadAlertLyrs.closure,
+        ferryRoutePointsLayer, roadAlertLyrs,
         mileMarkersLayer, borderCrossingsLayer]);
     // Store the default visibility...
     webmap.layers.forEach((eachLyr) => {

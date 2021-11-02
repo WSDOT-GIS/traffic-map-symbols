@@ -8,15 +8,13 @@ const AlertSymbol_1 = require("@/symbols/AlertSymbol");
 const Field_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/Field"));
 const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
 const layerUtil = tslib_1.__importStar(require("@/utils/layerUtil"));
-const FeatureLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/FeatureLayer"));
-const SpatialReference_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/SpatialReference"));
-const roadAlertsPriorityRenderer = new UniqueValueRenderer_1.default({
+const renderer = new UniqueValueRenderer_1.default({
     field: "EventPriorityID",
     uniqueValueInfos: [
         {
             label: "HIGHEST IMPACT",
             value: 1,
-            symbol: AlertSymbol_1.alertSymbolHigh
+            symbol: AlertSymbol_1.roadClosedSymbol
         },
         {
             label: "HIGH IMPACT",
@@ -91,76 +89,30 @@ let closureLayer;
  * Specify this if data should be loaded at start up. Otherwise not necessary.
  * @returns
  */
-const initLayer = (url) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    let pGraphics = [];
-    let cGraphics = [];
-    if (url) {
-        const features = yield getFeatures(url);
-        pGraphics = features.priority;
-        cGraphics = features.closure;
-    }
-    priorityLayer = new FeatureLayer_1.default({
-        id: "road-alerts-layer",
-        title: "Travel Alerts",
-        objectIdField: "AppGenId",
-        renderer: roadAlertsPriorityRenderer,
-        visible: true,
-        fields: fields,
-        source: pGraphics,
-        geometryType: "point",
-        spatialReference: SpatialReference_1.default.WebMercator,
-        orderBy: [{
-                field: "EventPriorityID",
-                order: "ascending"
-            }]
-    });
-    closureLayer = new FeatureLayer_1.default({
-        id: "road-closures-layer",
-        title: "Travel Closure Alerts",
-        objectIdField: "AppGenId",
-        renderer: roadAlertsClosureRenderer,
-        visible: true,
-        fields: fields,
-        source: cGraphics,
-        geometryType: "point",
-        spatialReference: SpatialReference_1.default.WebMercator,
-    });
-    setLayerEvent(priorityLayer, url);
-    setLayerEvent(closureLayer, url);
-    // console.log(JSON.stringify(cGraphics));
-    return { priority: priorityLayer, closure: closureLayer };
+let layer;
+const initLayer = (jsonUrl) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+    layer = yield layerUtil.initLayer(jsonUrl, "road-alerts-layer", "Road Alerts", renderer, fields, "point", true);
+    layer.orderBy = [{
+            field: "EventPriorityID",
+            order: "ascending"
+        }];
+    return layer;
 });
 exports.initLayer = initLayer;
 //**This happens here instead of in the layerutils because of the source distinciton. TODO: fix this**
-const setLayerEvent = (layer, jsonUrl) => {
+/** This is fixed now? **/
+/*const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
     layer.watch("visible", (newValue) => {
         if (newValue) {
-            exports.reloadData(jsonUrl);
+            reloadData(jsonUrl);
         }
     });
-};
-const getLayer = (id) => {
-    let layerToReturn;
-    if (id == "road-alerts-layer") {
-        if (!priorityLayer) {
-            throw "RoadAlertsLayer is not ready yet!";
-        }
-        else {
-            layerToReturn = priorityLayer;
-        }
+}*/
+const getLayer = () => {
+    if (!layer) {
+        throw "ParkRideLayer is not ready yet!";
     }
-    else if (id == "road-closures-layer") {
-        if (!closureLayer) {
-            throw "RoadAlertsLayer is not ready yet!";
-        }
-        else {
-            layerToReturn = closureLayer;
-        }
-    }
-    else {
-        throw `Invalid layer ID, ${id}, was specified.`;
-    }
-    return layerToReturn;
+    return layer;
 };
 // export default RoadAlertsLayer
 exports.default = getLayer;

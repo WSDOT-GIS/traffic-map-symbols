@@ -9,13 +9,13 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
 import SpatialReference from "@arcgis/core/geometry/SpatialReference"
 import Graphic from "@arcgis/core/Graphic";
 
-const roadAlertsPriorityRenderer = new uniqueValueRenderer({
+const renderer = new uniqueValueRenderer({
     field: "EventPriorityID",
     uniqueValueInfos: [
         {
             label: "HIGHEST IMPACT",
             value: 1,
-            symbol: alertSymbolHigh
+            symbol: roadClosedSymbol
         },
         {
             label: "HIGH IMPACT",
@@ -94,76 +94,29 @@ let closureLayer: FeatureLayer | undefined;
  * Specify this if data should be loaded at start up. Otherwise not necessary.
  * @returns 
  */
-export const initLayer = async (url?: string): Promise<{ priority: FeatureLayer, closure: FeatureLayer }> => {
-    let pGraphics: Graphic[] = [];
-    let cGraphics: Graphic[] = [];
-    if (url) {
-        const features = await getFeatures(url);
-        pGraphics = features.priority;
-        cGraphics = features.closure;
-    }
-    priorityLayer = new FeatureLayer({
-        id: "road-alerts-layer",
-        title: "Travel Alerts",
-        objectIdField: "AppGenId",
-        renderer: roadAlertsPriorityRenderer,
-        visible: true,
-        fields: fields,
-        source: pGraphics,
-        geometryType: "point",
-        spatialReference: SpatialReference.WebMercator,
-        orderBy: [{
-            field: "EventPriorityID",
-            order: "ascending"
-        }]
-    });
-
-    closureLayer = new FeatureLayer({
-        id: "road-closures-layer",
-        title: "Travel Closure Alerts",
-        objectIdField: "AppGenId",
-        renderer: roadAlertsClosureRenderer,
-        visible: true,
-        fields: fields,
-        source: cGraphics,
-        geometryType: "point",
-        spatialReference: SpatialReference.WebMercator,
-    });
-    setLayerEvent(priorityLayer, url as string)
-    setLayerEvent(closureLayer, url as string)
-    // console.log(JSON.stringify(cGraphics));
-    return { priority: priorityLayer, closure: closureLayer };
+ let layer: FeatureLayer | undefined;
+ export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
+    layer = await layerUtil.initLayer(jsonUrl, "road-alerts-layer", "Road Alerts", renderer, fields, "point", true);
+    layer.orderBy = [{
+        field: "EventPriorityID",
+        order: "ascending"
+    }]
+    return layer;
 }
 //**This happens here instead of in the layerutils because of the source distinciton. TODO: fix this**
-const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
+/** This is fixed now? **/
+/*const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
     layer.watch("visible", (newValue) => {
         if (newValue) {
             reloadData(jsonUrl);
         }
     });
-}
-const getLayer = (id: string): FeatureLayer => {
-    let layerToReturn;
-    if (id == "road-alerts-layer") {
-        if (!priorityLayer) {
-            throw "RoadAlertsLayer is not ready yet!"
-        }
-        else {
-            layerToReturn = priorityLayer
-        }
+}*/
+const getLayer = (): FeatureLayer => {
+    if (!layer) {
+        throw "ParkRideLayer is not ready yet!";
     }
-    else if (id == "road-closures-layer") {
-        if (!closureLayer) {
-            throw "RoadAlertsLayer is not ready yet!"
-        }
-        else {
-            layerToReturn = closureLayer
-        }
-    }
-    else {
-        throw `Invalid layer ID, ${id}, was specified.`
-    }
-    return layerToReturn;
+    return layer;
 }
 
 // export default RoadAlertsLayer
