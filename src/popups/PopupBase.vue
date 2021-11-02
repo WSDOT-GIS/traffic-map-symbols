@@ -314,8 +314,9 @@ export default defineComponent({
     // Picture carousel colors.
     const pagenationStyle = computed(() => {
       return {
-        "--carousel-color-primary": props.DarkThemeColor,
-        "--carousel-color-secondary": props.LightThemeColor,
+        "--vc-nav-background-color": props.DarkThemeColor,
+        "--vc-pgn-active-color": props.DarkThemeColor,
+        "--vc-pgn-background-color": props.LightThemeColor,
       };
     });
 
@@ -1179,4 +1180,8 @@ export default defineComponent({
   margin: 5px;
   padding-left: 0;
 }
+/*https://github.com/ismail9k/vue3-carousel/issues/22 */
+/* .carousel__slide--visible {
+transform: rotateY(0);
+} */
 </style>
