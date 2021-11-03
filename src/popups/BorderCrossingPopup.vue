@@ -59,7 +59,7 @@ export default defineComponent({
       const moreInfoObject =new Object({
         url: `https://www.th.gov.bc.ca/ATIS/index.htm`,
         text: "Get the",
-        linkText: "Southbound wait time here"
+        linkText: "Southbound wait time"
       }) as MoreInfoURLInfo
       return moreInfoObject
     }
