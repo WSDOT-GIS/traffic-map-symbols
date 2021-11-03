@@ -5,7 +5,34 @@
     </div>
     <transition name="slide">
       <div v-if="isOpen" class="sidebar-panel">
-        <slot></slot>
+        <!-- Links from id="sidr-existing-content". Removed the classes. -->
+            <div>
+            <a :href="WsdotRootUrl + '/travel'" data-drupal-link-system-path="node/403"
+              >Travel<span class="caret"></span
+            ></a></div>
+            <div>
+            <a
+              :href="WsdotRootUrl + '/construction-planning'"
+              data-drupal-link-system-path="node/404"
+              >Construction &amp; planning<span class="caret"></span
+            ></a></div>
+          <div>
+            <a :href="WsdotRootUrl + '/business-wsdot'" data-drupal-link-system-path="node/405"
+              >Business with WSDOT<span class="caret"></span
+            ></a>
+          </div>
+          <div>
+            <a
+              :href="WsdotRootUrl + '/engineering-standards'"
+              data-drupal-link-system-path="node/406"
+              >Engineering &amp; standards<span class="caret"></span
+            ></a>
+          </div>
+          <div>
+            <a :href="WsdotRootUrl + '/about'" data-drupal-link-system-path="node/53"
+              >About<span class="caret"></span
+            ></a>
+          </div>
       </div>
     </transition>
   </div>
@@ -16,6 +43,12 @@ import { computed, defineComponent } from "vue";
 import { useStore } from "@/store";
 
 export default defineComponent({
+  props: {
+    WsdotRootUrl: {
+      type: String,
+      required: true,
+    },
+  },
   setup() {
     const store = useStore();
     const isOpen = computed(() => {
@@ -42,7 +75,6 @@ export default defineComponent({
 }
 
 .sidebar {
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
   font-size: 15px;
 }
 
@@ -79,7 +111,7 @@ export default defineComponent({
 
 .sidebar-panel {
   overflow-y: auto;
-  background: #97d700;
+  background: #fff;
   position: fixed;
   right: 0;
   top: 0;
@@ -90,19 +122,21 @@ export default defineComponent({
   text-align: left;
 }
 
-.sidebar-panel ul {
+.sidebar-panel {
   border-bottom: none;
   list-style-type: none;
   padding-left: 0;
 }
 
-.sidebar-panel ul li {
+.sidebar-panel div {
   border-top: none;
-  border-bottom: 1px solid #1a1a1a;
-  padding: 8px 0 4px 0;
+  border-bottom: 2px solid #f4f4f5;
+  padding: 14px 15px;
+  line-height: 1.3em;
+  position: relative;
 }
 
-.sidebar-panel ul li a {
+.sidebar-panel div a {
   color: #1d252d;
   font-weight: 600;
   line-height: 1.8rem;
@@ -110,26 +144,34 @@ export default defineComponent({
   border-bottom: none;
 }
 
-.sidebar-panel ul li a .caret {
-  display: none;
+.sidebar-panel div a:visited {
+  color: #1d252d;
 }
 
-.sidebar-panel ul li:focus,
-.sidebar-panel ul li:hover {
-  background-color: transparent;
-  /* padding: 0; */
-  text-decoration: underline;
+.sidebar-panel div a .caret {
+  /*display: none; */
   border: none;
-  outline-color: none;
-  box-shadow: 0 0 15px 3px var(--color-gray60) inset;
-  width: 100%;
+}
+.sidebar-panel div a .caret:after {
+  content: '\f078';
+  font-family: "Font Awesome 5 Pro";
+  position: absolute;
+  color: #007B5F;
+  right: 5px;
+  font-weight: 600;
+  top: 12px;
 }
 
-.sidebar-panel ul li.active a {
+.sidebar-panel div:focus,
+.sidebar-panel div:hover {
+  text-decoration: underline;
+}
+
+.sidebar-panel div.active a {
   box-shadow: none !important;
 }
 
-.sidebar-panel ul li ul li {
+/* .sidebar-panel ul li ul li {
   border: none;
   list-style-type: none;
   padding: 5px 0;
@@ -137,7 +179,7 @@ export default defineComponent({
 
 .sidebar-panel ul li ul li a {
   border: none;
-}
+} */
 @media screen and (min-width: 401px) {
   .sidebar-panel {
     width: 300px;
