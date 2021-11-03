@@ -202,7 +202,6 @@ export const reloadData = async (jsonUrl: string, layer: FeatureLayer): Promise<
             console.log(layer)
         }
         if (!layer.visible) { return; }
-        console.log("failed to return")
         // console.log("Reload data: " + layer.id);
         // Fetch all features from JSON...
         await fetchJsonData(jsonUrl).then(async(graphics)=>{
