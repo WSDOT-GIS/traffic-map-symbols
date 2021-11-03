@@ -15,6 +15,7 @@ import MapView from "@arcgis/core/views/MapView";
 import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import CIMSymbol from "@arcgis/core/symbols/CIMSymbol";
+import { graphMovingAverage16 } from "@esri/calcite-ui-icons";
 /**  Mapping between layer groups (type in URL query param) and layer IDs...
  *   * id
  *      ID for the layer group (type).
@@ -177,9 +178,9 @@ export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: st
         spatialReference: SpatialReference.WebMercator,
     });
     // Set event to load layer when it becomes visible...
-    if (!visible) {
+    //if (!visible) {
         setLayerEvent(layer, jsonUrl);
-    }
+    //}
     return layer;
 }
 
@@ -197,13 +198,23 @@ let loadManager: { id: string, promise: Promise<void> }[] = [];
 
 export const reloadData = async (jsonUrl: string, layer: FeatureLayer): Promise<void> => {
     const reload = async (jsonUrl: string, layer: FeatureLayer): Promise<void> => {
+        if(layer.title=="Road Alerts"){
+            console.log(layer)
+        }
         if (!layer.visible) { return; }
         console.log("failed to return")
         // console.log("Reload data: " + layer.id);
         // Fetch all features from JSON...
-        const graphics = await fetchJsonData(jsonUrl);
+        await fetchJsonData(jsonUrl).then(async(graphics)=>{
+            console.log(jsonUrl)
+            console.log(graphics)
+            if(graphics.length>0){
+                await replaceFeatures(layer, graphics);
+            }
         // Replace old with new features...
-        await replaceFeatures(layer, graphics);
+        })
+        
+        
     }
     // Check if the layer is already being loaded currently or not...
     const runningProc = loadManager.find(x => x.id === layer.id);

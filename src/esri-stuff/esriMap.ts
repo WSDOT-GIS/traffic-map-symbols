@@ -139,8 +139,9 @@ export const loadRegionalAlert = async (): Promise<void> => {
  */
 export const refreshLayerData = async (): Promise<void> => {
     const config = getConfig();
-    RoadAlertsLayer.reloadData(config.roadAlerts);
+   // RoadAlertsLayer.reloadData(config.roadAlerts);
     RegionalAlertLayer.reloadData(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
+    layerUtil.reloadData(config.roadAlerts, RoadAlertsLayer.default())
     layerUtil.reloadData(config.pointRestrictions, PointRestrictionsLayer.default());
     layerUtil.reloadData(config.lineRestrictions, LineRestrictionsLayer.default());
     // layerUtil.reloadData(config.travelTimes, TravelTimesLayer.default());

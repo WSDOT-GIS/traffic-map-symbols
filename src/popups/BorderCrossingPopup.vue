@@ -5,8 +5,8 @@
     DarkThemeColor="#e885b4"
     :Features="[feature]"
     :Config="{
-      bannerText: { text: 'Border crossing' },
-      title: { fieldName: 'BorderCrossingDescription' },
+      bannerText: { text: 'Border crossing wait times' },
+      title: { custom: getTitle},
       content: [
         { label: 'Northbound wait time', value: { fieldName: 'HTMLTable',isHTML: true } },
         { label: 'Border reading time', value: { fieldName: 'BorderReadingTime', isTime: true, isDate: true}}
@@ -63,6 +63,9 @@ export default defineComponent({
       }) as MoreInfoURLInfo
       return moreInfoObject
     }
+    const getTitle = (feature: FeatureInfo): string=>{
+      return `SR ${feature.attributes["StateRouteID"] as string}`
+    }
     const show = () => {
       const setVal = () => {
         getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(
@@ -91,7 +94,8 @@ export default defineComponent({
       feature,
       close,
       getMoreInfoURL,
-      layerIcons
+      layerIcons,
+      getTitle
     };
   },
 });
