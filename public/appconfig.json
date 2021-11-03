@@ -8,7 +8,7 @@
     "pointRestrictions": "https://data.wsdot.wa.gov/travelcenter/PointRestrictions.json",
     "restAreas": "https://data.wsdot.wa.gov/travelcenter/RestAreas.json",
     "borderCrossings": "https://data.wsdot.wa.gov/travelcenter/BorderCrossingTimes.json",
-    "roadAlerts": "https://data.wsdot.wa.gov/travelcenter/Dev/RoadAlerts.json",
+    "roadAlerts": "https://data.wsdot.wa.gov/travelcenter/RoadAlerts.json",
     "regionalAlerts": "https://data.wsdot.wa.gov/travelcenter/CountyAlerts.json",
     "stateAlerts": "https://data.wsdot.wa.gov/travelcenter/StatewideAlerts.json",
     "traffic": "https://utility.arcgis.com/usrsvcs/appservices/G9CkczziK8rxtWpL/rest/services/World/Traffic/MapServer",
