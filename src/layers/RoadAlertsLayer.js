@@ -101,13 +101,13 @@ const initLayer = (jsonUrl) => tslib_1.__awaiter(void 0, void 0, void 0, functio
 exports.initLayer = initLayer;
 //**This happens here instead of in the layerutils because of the source distinciton. TODO: fix this**
 /** This is fixed now? **/
-/*const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
+const setLayerEvent = (layer, jsonUrl) => {
     layer.watch("visible", (newValue) => {
         if (newValue) {
-            reloadData(jsonUrl);
+            exports.reloadData(jsonUrl);
         }
     });
-}*/
+};
 const getLayer = () => {
     if (!layer) {
         throw "ParkRideLayer is not ready yet!";
