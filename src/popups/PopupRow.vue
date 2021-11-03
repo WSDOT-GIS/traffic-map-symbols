@@ -128,7 +128,7 @@ export default defineComponent({
   font-size: small;
   display: table-cell;
   text-align: left;
-  padding: 0px 3px 0px 3px;
+  padding: 5px 5px 5px 5px;
 }
 .waitTimeTitleCell {
   font-size: small;

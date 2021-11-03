@@ -9,7 +9,7 @@
       title: { custom: getTitle},
       content: [
         { label: 'Northbound wait time', value: { fieldName: 'HTMLTable',isHTML: true } },
-        { label: 'Border reading time', value: { fieldName: 'BorderReadingTime', isTime: true, isDate: true}}
+        { label: 'Last updated', value: { fieldName: 'BorderReadingTime', isTime: true, isDate: true}}
       ],
        moreInfoURL:{
         custom: getMoreInfoURL
