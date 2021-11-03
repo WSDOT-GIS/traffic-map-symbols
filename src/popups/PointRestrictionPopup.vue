@@ -72,19 +72,19 @@ export default defineComponent({
       let direction;
       switch (feature.attributes.cardinal_direction) {
         case "B":
-          direction = "Both Directions";
+          direction = "both directions";
           break;
         case "N":
-          direction = "Northbound";
+          direction = "northbound";
           break;
         case "S":
-          direction = "Southbound";
+          direction = "southbound";
           break;
         case "E":
-          direction = "Eastbound";
+          direction = "eastbound";
           break;
         case "W":
-          direction = "Westbound";
+          direction = "westbound";
           break;
       }
       const title = `SR ${feature.attributes.route_nr}${
