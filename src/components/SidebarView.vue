@@ -5,7 +5,40 @@
     </div>
     <transition name="slide">
       <div v-if="isOpen" class="sidebar-panel">
-        <slot></slot>
+        <!-- Links from id="sidr-existing-content". Removed the classes. -->
+        <!-- <ul>
+          <li> -->
+            <div>
+            <a :href="WsdotRootUrl + '/travel'" data-drupal-link-system-path="node/403"
+              >Travel<span class="caret"></span
+            ></a></div>
+          <!-- </li>
+          <li> -->
+            <div>
+            <a
+              :href="WsdotRootUrl + '/construction-planning'"
+              data-drupal-link-system-path="node/404"
+              >Construction &amp; planning<span class="caret"></span
+            ></a></div>
+          <!-- </li> -->
+          <!-- <li>
+            <a :href="WsdotRootUrl + '/business-wsdot'" data-drupal-link-system-path="node/405"
+              >Business with WSDOT<span class="caret"></span
+            ></a>
+          </li>
+          <li>
+            <a
+              :href="WsdotRootUrl + '/engineering-standards'"
+              data-drupal-link-system-path="node/406"
+              >Engineering &amp; standards<span class="caret"></span
+            ></a>
+          </li>
+          <li>
+            <a :href="WsdotRootUrl + '/about'" data-drupal-link-system-path="node/53"
+              >About<span class="caret"></span
+            ></a>
+          </li>
+        </ul> -->
       </div>
     </transition>
   </div>
@@ -16,6 +49,12 @@ import { computed, defineComponent } from "vue";
 import { useStore } from "@/store";
 
 export default defineComponent({
+  props: {
+    WsdotRootUrl: {
+      type: String,
+      required: true,
+    },
+  },
   setup() {
     const store = useStore();
     const isOpen = computed(() => {
@@ -79,7 +118,7 @@ export default defineComponent({
 
 .sidebar-panel {
   overflow-y: auto;
-  background: #97d700;
+  background: #fff;
   position: fixed;
   right: 0;
   top: 0;
@@ -90,19 +129,20 @@ export default defineComponent({
   text-align: left;
 }
 
-.sidebar-panel ul {
+.sidebar-panel {
   border-bottom: none;
   list-style-type: none;
   padding-left: 0;
 }
 
-.sidebar-panel ul li {
+.sidebar-panel div {
   border-top: none;
-  border-bottom: 1px solid #1a1a1a;
-  padding: 8px 0 4px 0;
+  border-bottom: 2px solid #f4f4f5;
+  padding: 14px 15px;
+  line-height: 1.3em;
 }
 
-.sidebar-panel ul li a {
+.sidebar-panel div a {
   color: #1d252d;
   font-weight: 600;
   line-height: 1.8rem;
@@ -110,8 +150,18 @@ export default defineComponent({
   border-bottom: none;
 }
 
-.sidebar-panel ul li a .caret {
-  display: none;
+.sidebar-panel div a .caret {
+  /*display: none; */
+  border: none;
+}
+.sidebar-panel div a .caret:after {
+  content: '\f078';
+  font-family: "Font Awesome 5 Pro";
+  position: absolute;
+  color: #007B5F;
+  right: 5px;
+  font-weight: 600;
+  top: 12px;
 }
 
 .sidebar-panel ul li:focus,
