@@ -6,39 +6,33 @@
     <transition name="slide">
       <div v-if="isOpen" class="sidebar-panel">
         <!-- Links from id="sidr-existing-content". Removed the classes. -->
-        <!-- <ul>
-          <li> -->
             <div>
             <a :href="WsdotRootUrl + '/travel'" data-drupal-link-system-path="node/403"
               >Travel<span class="caret"></span
             ></a></div>
-          <!-- </li>
-          <li> -->
             <div>
             <a
               :href="WsdotRootUrl + '/construction-planning'"
               data-drupal-link-system-path="node/404"
               >Construction &amp; planning<span class="caret"></span
             ></a></div>
-          <!-- </li> -->
-          <!-- <li>
+          <div>
             <a :href="WsdotRootUrl + '/business-wsdot'" data-drupal-link-system-path="node/405"
               >Business with WSDOT<span class="caret"></span
             ></a>
-          </li>
-          <li>
+          </div>
+          <div>
             <a
               :href="WsdotRootUrl + '/engineering-standards'"
               data-drupal-link-system-path="node/406"
               >Engineering &amp; standards<span class="caret"></span
             ></a>
-          </li>
-          <li>
+          </div>
+          <div>
             <a :href="WsdotRootUrl + '/about'" data-drupal-link-system-path="node/53"
               >About<span class="caret"></span
             ></a>
-          </li>
-        </ul> -->
+          </div>
       </div>
     </transition>
   </div>
@@ -81,7 +75,6 @@ export default defineComponent({
 }
 
 .sidebar {
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
   font-size: 15px;
 }
 
@@ -140,6 +133,7 @@ export default defineComponent({
   border-bottom: 2px solid #f4f4f5;
   padding: 14px 15px;
   line-height: 1.3em;
+  position: relative;
 }
 
 .sidebar-panel div a {
@@ -148,6 +142,10 @@ export default defineComponent({
   line-height: 1.8rem;
   padding: 3px 10px 5px 10px;
   border-bottom: none;
+}
+
+.sidebar-panel div a:visited {
+  color: #1d252d;
 }
 
 .sidebar-panel div a .caret {
@@ -164,22 +162,16 @@ export default defineComponent({
   top: 12px;
 }
 
-.sidebar-panel ul li:focus,
-.sidebar-panel ul li:hover {
-  background-color: transparent;
-  /* padding: 0; */
+.sidebar-panel div:focus,
+.sidebar-panel div:hover {
   text-decoration: underline;
-  border: none;
-  outline-color: none;
-  box-shadow: 0 0 15px 3px var(--color-gray60) inset;
-  width: 100%;
 }
 
-.sidebar-panel ul li.active a {
+.sidebar-panel div.active a {
   box-shadow: none !important;
 }
 
-.sidebar-panel ul li ul li {
+/* .sidebar-panel ul li ul li {
   border: none;
   list-style-type: none;
   padding: 5px 0;
@@ -187,7 +179,7 @@ export default defineComponent({
 
 .sidebar-panel ul li ul li a {
   border: none;
-}
+} */
 @media screen and (min-width: 401px) {
   .sidebar-panel {
     width: 300px;
