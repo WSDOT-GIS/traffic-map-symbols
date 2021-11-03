@@ -3,6 +3,8 @@
     :IconSvg="layerIcons.find((x) => x.id === 'point-restrictions-layer')?.paths"
     LightThemeColor="#CC209C33"
     DarkThemeColor="#cc209c"
+    LightBadgeColor="#CC209C33"
+    DarkBadgeColor="#cc209c"
     :Features="[feature]"
     :Config="{
       bannerText: { text: 'Truck restriction' },
@@ -85,9 +87,11 @@ export default defineComponent({
           direction = "Westbound";
           break;
       }
-      const title = `SR ${feature.attributes.route_nr}${feature.attributes.bridge_name?` ${feature.attributes.bridge_name}`:""}, ${direction}`
-      return title
-    }
+      const title = `SR ${feature.attributes.route_nr}${
+        feature.attributes.bridge_name ? ` ${feature.attributes.bridge_name}` : ""
+      }, ${direction}`;
+      return title;
+    };
     const getMoreInfoURL = (): MoreInfoURLInfo => {
       //console.log(feature)
       const moreInfoObject = new Object({
