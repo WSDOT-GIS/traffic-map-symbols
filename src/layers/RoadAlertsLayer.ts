@@ -105,13 +105,13 @@ let closureLayer: FeatureLayer | undefined;
 }
 //**This happens here instead of in the layerutils because of the source distinciton. TODO: fix this**
 /** This is fixed now? **/
-/*const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
+const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
     layer.watch("visible", (newValue) => {
         if (newValue) {
             reloadData(jsonUrl);
         }
     });
-}*/
+}
 const getLayer = (): FeatureLayer => {
     if (!layer) {
         throw "ParkRideLayer is not ready yet!";
