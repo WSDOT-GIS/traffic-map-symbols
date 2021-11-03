@@ -198,6 +198,7 @@ let loadManager: { id: string, promise: Promise<void> }[] = [];
 export const reloadData = async (jsonUrl: string, layer: FeatureLayer): Promise<void> => {
     const reload = async (jsonUrl: string, layer: FeatureLayer): Promise<void> => {
         if (!layer.visible) { return; }
+        console.log("failed to return")
         // console.log("Reload data: " + layer.id);
         // Fetch all features from JSON...
         const graphics = await fetchJsonData(jsonUrl);
