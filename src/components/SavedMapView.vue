@@ -217,7 +217,7 @@ export default defineComponent({
 
 <style scoped>
 #savedMapWidget {
-  margin: 16px 0 50px 0;
+  padding-bottom: 16px;
   box-sizing: border-box;
 }
 #savedMapWidget h6 {

@@ -1,5 +1,5 @@
 <template>
-  <div id="layerListWidget" title="Map Features" v-if="layerList.length > 0">
+  <div id="layer-list-widget" title="Map Features" v-if="layerList.length > 0">
     <!-- Column headers -->
     <div class="layer-list-header-row">
       <h6>Data layers</h6>
@@ -356,6 +356,9 @@ export default defineComponent({
 });
 </script>
 <style scoped>
+#layer-list-widget {
+  padding-bottom: 16px;
+}
 .layer-list-header-row {
   display: flex;
   justify-content: space-between;
@@ -437,7 +440,7 @@ tr {
   flex-direction: row;
   justify-content: space-between;
   width: 70%;
-  max-width:80%;
+  max-width: 80%;
   margin-left: 14px;
   margin-bottom: 14px;
 }
