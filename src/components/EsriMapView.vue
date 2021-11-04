@@ -353,7 +353,6 @@ export default defineComponent({
                         "UniqueId",
                         result?.attributes.UniqueId
                       );
-                      //LineRestrictionsLayer().definitionExpression = `UniqueId = '${result?.attributes.UniqueId}'`;
                       showPopup(results2Show.layer.id, [id]);
                     } else {
                       showPopup(results2Show.layer.id, [id]);
@@ -374,8 +373,6 @@ export default defineComponent({
                   showPopup(results2Show.layer.id, [id]);
                 }
                 removeGraphicsByType("selectedGraphic");
-                //Add larger marker to map
-                //resizeFeature(g,mapView as MapView)
               }
             }
           } else {
