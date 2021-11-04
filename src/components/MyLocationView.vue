@@ -38,8 +38,6 @@ import { defineComponent, ref } from "vue";
 import { mapView } from "../esri-stuff/esriMap";
 import { useStore } from "@/store";
 import MapButtonView from "@/components/MapButtonView.vue";
-import Point from "@arcgis/core/geometry/Point";
-import Graphic from "@arcgis/core/Graphic";
 import {addGraphicsByType, removeGraphicsByType, buildGraphicsByType} from "../utils/graphicLayerUtil"
 export default defineComponent({
   components: { MapButtonView },
@@ -75,7 +73,6 @@ export default defineComponent({
       }
     },
     success: function (location: any) {
-      // console.log(location)
       this.store.commit("setUserLocation", location);
       this.warningDisplayClass = "warningOff";
       this.errorMessage = "";
@@ -89,7 +86,6 @@ export default defineComponent({
         )
         .then(() => {
           const graphic = buildGraphicsByType("coordinates",location.coords)
-          // console.log(graphic)
           addGraphicsByType("myLocation", graphic)
         });
     },

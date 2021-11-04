@@ -70,7 +70,6 @@ export default defineComponent({
           //query feature layer for feature
           (result) => {
             if (result) {
-              // console.log(result)
               feature.value = result;
             }
           }

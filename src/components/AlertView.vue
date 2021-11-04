@@ -125,7 +125,6 @@ export default defineComponent({
       // If the button is clicked on non-touch device, the window will be opened, then onClickAway is called, so it will close it again.
       // To prevent that, the justOpened flag is set to true when that happens.
       if (justOpened) {
-        console.log("justOpened");
         justOpened = false;
         return;
       }

@@ -188,7 +188,6 @@ export default defineComponent({
     };
 
     const removeItem = (event: Event, item: SavedMapInfo) => {
-      //console.log(item.title);
       const idx = mapList.value.findIndex((eachItem) => {
         if (eachItem == item) {
           return true;

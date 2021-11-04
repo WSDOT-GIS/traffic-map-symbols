@@ -73,7 +73,6 @@ export default defineComponent({
       }
       // Do not show when data is not available...
       if (!text) {
-        //text = "N/A";
         visible.value = false;
       }
       // Temporarily hide...
@@ -82,13 +81,8 @@ export default defineComponent({
       } else {
         visible.value = true;
       }
-      // console.log("...text: " + text);
       return text;
     };
-
-    // const formatDateTimePart = (part: number) => {
-    //   return ("0" + part).slice(-2);
-    // };
 
     return {
       visible,

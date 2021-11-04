@@ -65,7 +65,6 @@ export default defineComponent({
           (result) => {
             if (result) {
               feature.value = result;
-              //console.log(feature.value.attributes.Amenties as string)
             }
           }
         );

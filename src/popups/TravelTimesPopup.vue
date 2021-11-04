@@ -112,9 +112,7 @@ export default defineComponent({
       let currentTime;
       var now = new Date;
       var utc_timestamp = Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate(),now.getUTCHours(),now.getUTCMinutes(),now.getUTCSeconds(),now.getUTCMilliseconds());
-      //console.log(`feature time ${formattedTime2}`);
       var difference = utc_timestamp - ((feature.attributes.TimeUpdated as number)+ 1000*7*60*60);//converts feature time from PST to GMT
-      // console.log(difference/1000/60)
       if((difference/1000/60)>60){
         currentTime="Not Available"
         TravelDelay.value=0

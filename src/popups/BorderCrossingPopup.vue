@@ -56,8 +56,6 @@ export default defineComponent({
       }
     });
     const getMoreInfoURL = (feature: FeatureInfo): MoreInfoURLInfo => {
-      //console.log(feature)
-      //console.log(feature.attributes)
       const moreInfoObject = new Object({
         url: `https://www.th.gov.bc.ca/ATIS/index.htm`,
         text: "Get the",
@@ -73,7 +71,6 @@ export default defineComponent({
         getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then((result) => {
           if (result) {
             feature.value = result;
-            //console.log(result)
           }
         });
       };

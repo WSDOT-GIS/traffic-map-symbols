@@ -78,11 +78,9 @@ export const store = createStore<State>({
             state.pointerY = payload.toFixed(6);
         },
         setMapSize(state, payload) {
-            //console.log("setMapSize: " + JSON.stringify(payload))
             state.mapSize = payload;
         },
         setCenter(state, payload) {
-            // console.log("setCenter: " + JSON.stringify(payload))
             state.center = payload;
         },
         setScale(state, payload) {
@@ -143,7 +141,6 @@ export const store = createStore<State>({
 // Clone the target of proxy (i.e. removing the reactivity)
 export const cloneProxyTarget = <T>(proxy: T): T => {
     const copy = JSON.parse(JSON.stringify(proxy));
-    //console.log(JSON.stringify(proxy) + "\n" + JSON.stringify(copy));
     return copy;
 }
 
