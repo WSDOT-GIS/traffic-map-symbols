@@ -75,9 +75,9 @@
     </div>
   </div>
   <!-- Mobile menu opened by the burger button -->
-  <SidebarView>
+  <SidebarView :WsdotRootUrl="WsdotRootUrl">
     <!-- Links from id="sidr-existing-content". Removed the classes. -->
-    <ul>
+    <!-- <ul>
       <li>
         <a :href="WsdotRootUrl + '/travel'" data-drupal-link-system-path="node/403">Travel</a>
       </li>
@@ -99,7 +99,7 @@
       <li>
         <a :href="WsdotRootUrl + '/about'" data-drupal-link-system-path="node/53">About</a>
       </li>
-    </ul>
+    </ul> -->
   </SidebarView>
 </template>
 
