@@ -69,6 +69,9 @@
             <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
           </div>
           <div v-if="propWeatherForecast != undefined">
+            <div class="popup-content w3-container">
+              <label class="popup-row-label">Forecast</label>
+            </div>
             <table class="weatherForecastTable">
               <tr id="weatherPeriodText">
                 <td

@@ -69,7 +69,7 @@ export default defineComponent({
     });
     const getTitle = (feature: FeatureInfo): string => {
       //console.log(feature)
-      let direction;
+      /*let direction;
       switch (feature.attributes.cardinal_direction) {
         case "B":
           direction = "both directions";
@@ -86,10 +86,8 @@ export default defineComponent({
         case "W":
           direction = "westbound";
           break;
-      }
-      const title = `SR ${feature.attributes.route_nr}${
-        feature.attributes.bridge_name ? ` ${feature.attributes.bridge_name}` : ""
-      }, ${direction}`;
+      }*/
+      const title = `${feature.attributes.location_description}`;
       return title;
     };
     const getMoreInfoURL = (): MoreInfoURLInfo => {
