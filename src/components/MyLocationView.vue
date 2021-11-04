@@ -38,7 +38,11 @@ import { defineComponent, ref } from "vue";
 import { mapView } from "../esri-stuff/esriMap";
 import { useStore } from "@/store";
 import MapButtonView from "@/components/MapButtonView.vue";
-import {addGraphicsByType, removeGraphicsByType, buildGraphicsByType} from "../utils/graphicLayerUtil"
+import {
+  addGraphicsByType,
+  removeGraphicsByType,
+  buildGraphicsByType,
+} from "../utils/graphicLayerUtil";
 export default defineComponent({
   components: { MapButtonView },
   setup() {
@@ -53,29 +57,19 @@ export default defineComponent({
       "testing error message Locating failed for the following reason"
     );
     const warningDisplayClass = ref<string>("warningOff");
-    return { location, options, errorMessage, warningDisplayClass, store };
-    //#endregion
-  },
-  methods: {
-    //#region toggle layer on and off
-
-    getLocation: function () {
-      removeGraphicsByType("myLocation")
-      this.warningDisplayClass = "warningOff";
-      if (this.store.state.userLocation == null) {
-        navigator.geolocation.getCurrentPosition(
-          this.success,
-          this.error,
-          this.options
-        );
+    const getLocation = () => {
+      removeGraphicsByType("myLocation");
+      warningDisplayClass.value = "warningOff";
+      if (store.state.userLocation == null) {
+        navigator.geolocation.getCurrentPosition(success, error, options);
       } else {
-        this.success(this.store.state.userLocation);
+        success(store.state.userLocation);
       }
-    },
-    success: function (location: any) {
-      this.store.commit("setUserLocation", location);
-      this.warningDisplayClass = "warningOff";
-      this.errorMessage = "";
+    };
+    const success = (location: any) => {
+      store.commit("setUserLocation", location);
+      warningDisplayClass.value = "warningOff";
+      errorMessage.value = "";
       mapView
         .goTo(
           {
@@ -85,15 +79,15 @@ export default defineComponent({
           { duration: 1000, easing: "ease-in-out" }
         )
         .then(() => {
-          const graphic = buildGraphicsByType("coordinates",location.coords)
-          addGraphicsByType("myLocation", graphic)
+          const graphic = buildGraphicsByType("coordinates", location.coords);
+          addGraphicsByType("myLocation", graphic);
         });
-    },
-    error: function (error: any) {
-      this.warningDisplayClass = "warningOn";
-      this.errorMessage = `Locating failed for the following reason: ${error.message}`;
-    },
-    //#endregion
+    };
+    const error = (error: any) => {
+      warningDisplayClass.value = "warningOn";
+      errorMessage.value = `Locating failed for the following reason: ${error.message}`;
+    };
+    return { location, options, errorMessage, warningDisplayClass, getLocation };
   },
 });
 </script>
@@ -104,13 +98,6 @@ export default defineComponent({
 .warningOn {
   display: block;
 }
-/* .locateIcon {
-  width: 30px;
-  height: 30px;
-  border-radius: 30px / 30px;
-  padding: 0px;
-  background-color: white;
-} */
 svg {
   fill: grey;
 }
@@ -121,7 +108,6 @@ svg {
   right: 10px;
   top: -22px;
   border-radius: 20px / 20px;
-  /* z-index: 9; */
   margin: 2px;
   background-color: white;
   fill: red;
