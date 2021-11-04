@@ -45,7 +45,6 @@
     id="alert-container-closed"
     class="w3-transparent w3-button w3-circle"
     @click="toggleDisplay"
-    
   >
     <div v-html="iconButton?.paths" class="alert-button" ref="btnContainerRef"></div>
   </div>
@@ -117,12 +116,16 @@ export default defineComponent({
     const setDisplayStyle = () => {
       displayStyle.value =
         isOpen.value && props.Alerts.length > 0 && props.Alerts[0] ? "block" : "none";
-        console.log("setDisplayStyle: " + btnContainerRef.value)
     };
-    const onClickAway = () => {
-      // If the button is clicked, the window will be opened, then onClickAway is called, so it will close it again.
+    const onClickAway = (event: PointerEvent | TouchEvent) => {
+      // On the touch device, ignore the justOpened flag.
+      if (event.type === "touchstart") {
+        justOpened = false;
+      }
+      // If the button is clicked on non-touch device, the window will be opened, then onClickAway is called, so it will close it again.
       // To prevent that, the justOpened flag is set to true when that happens.
       if (justOpened) {
+        console.log("justOpened");
         justOpened = false;
         return;
       }
