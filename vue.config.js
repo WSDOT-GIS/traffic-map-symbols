@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { SourceMapConsumer, SourceMapGenerator } = require('source-map');
 // This gets rid of the warning, but build says "Syntax error", so changed back to the original.
 //import { SourceMapConsumer, SourceMapGenerator } from './node_modules/source-map/source-map';
@@ -5,6 +6,11 @@ const { SourceMapConsumer, SourceMapGenerator } = require('source-map');
 const sourceMaps = {};
 
 module.exports = {
+    // Uncomment this to test localhost on Browser Stack
+    // devServer: {
+    //     disableHostCheck: true
+    // },
+    publicPath: process.env.NODE_ENV === 'production' ? '/Travel/Real-time/Map/' : '/',
     configureWebpack() {
         return {
             devtool: 'source-map',

@@ -1,0 +1,98 @@
+import { roadRestrictionLine, bridgeRestrictionLine } from "../symbols/LineRestrictionsSymbol"
+// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
+import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
+import Field from "@arcgis/core/layers/support/Field";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+
+import * as layerUtil from "@/utils/layerUtil";
+
+const renderer = new UniqueValueRenderer({
+    field: "TType",
+    uniqueValueInfos: [{
+        // All features with value of "North" will be blue
+        value: "R",
+        symbol: roadRestrictionLine
+    }, {
+        // All features with value of "East" will be green
+        value: "B",
+        symbol: bridgeRestrictionLine
+    }],
+    defaultSymbol: bridgeRestrictionLine
+})
+
+const fields = [
+    new Field({
+        "name": "restriction_comment",
+        "type": "string",
+        "alias": "restriction_comment",
+    }),
+    new Field({
+        "name": "TType",
+        "type": "string",
+        "alias": "TType",
+    }),
+    new Field({
+        "name": "date_effective",
+        "type": "date",
+        "alias": "date_effective",
+    }),
+    new Field({
+        "name": "RecordUpdateDate",
+        "type": "date",
+        "alias": "RecordUpdateDate",
+    }),
+    new Field({
+        "name": "route_nr",
+        "type": "string",
+        "alias": "route_nr",
+    }),
+    new Field({
+        "name": "bridge_name",
+        "type": "string",
+        "alias": "bridge_name",
+    }),
+    new Field({
+        "name": "cardinal_direction",
+        "type": "string",
+        "alias": "cardinal_direction",
+    }),
+    new Field({
+        "name": "UniqueId",
+        "type": "string",
+        "alias": "UniqueId",
+    })
+]
+
+let layer: FeatureLayer | undefined;
+
+export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
+    layer = await layerUtil.initLayer(jsonUrl,
+        "line-restrictions-layer",
+        "Restriction Lines",
+        renderer,
+        fields,
+        "polyline",
+        false,
+    );
+    // hide all features... Show only when the corresponding point was selected.
+    layer.definitionExpression = "1=0" 
+    return layer;
+}
+
+const getLayer = (): FeatureLayer => {
+    if (!layer) {
+        throw "LineRestrictionLayer is not ready yet!";
+    }
+    return layer;
+}
+
+// const LineRestrictionsLayer = new GeoJSONLayer({
+//     id: "line-restrictions-layer",
+//     url: "https://data.wsdot.wa.gov/travelcenter/LineRestrictions.json",
+//     title: "Restriction Lines",
+//     renderer: lineRestrictionsRenderer,
+//     visible: false,
+//     fields: fields
+// });
+
+export default getLayer

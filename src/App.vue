@@ -1,54 +1,74 @@
 <template>
-  <!-- <div class="app"> -->
-  <HeaderView :text="headerText" />
-  <AlertView :alert="alert" />
-  <div id="map_container">
-    <BasemapView />
-    <CoordinatesView />
-    <LayerListView/>
-    <EsriMap />
-  </div>
-  <AdView :text="adText" />
-  <FooterView :text="footerText" />
-  <!-- </div> -->
+  <HeaderView @onLoadComplete="resizeMapContainer()" :WsdotRootUrl="config.wsdotRoot" />
+  <main>
+    <div
+      id="map-container"
+      class="w3-display-container"
+      :class="[isLoading ? disabledClass : activeClass]"
+      :style="{ height: mapHeight, opacity: isLoading ? 0.5 : 1 }"
+    >
+      <EsriMapView />
+    </div>
+    <LoadingSpinnerModal v-if="isLoading" />
+  </main>
+  <FooterView :WsdotRootUrl="config.wsdotRoot" />
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import EsriMap from "./components/EsriMap.vue";
-import BasemapView from "./components/BasemapView.vue";
-import CoordinatesView from "./components/CoordinatesView.vue";
+import { defineComponent, onBeforeUnmount, ref } from "vue";
+import EsriMapView from "./components/EsriMapView.vue";
 import HeaderView from "./components/HeaderView.vue";
-import AlertView from "./components/AlertView.vue";
-import AdView from "./components/AdView.vue";
 import FooterView from "./components/FooterView.vue";
-import Alert from "./types/AlertInfo";
-import LayerListView from "./components/LayerListView.vue"
+import { useStore } from "@/store";
+import { mapState } from "vuex";
+import LoadingSpinnerModal from "@/components/LoadingSpinnerModal.vue";
+import { getConfig } from "@/utils/appConfigUtil";
 
 export default defineComponent({
   name: "App",
   components: {
-    EsriMap,
-    BasemapView,
-    CoordinatesView,
+    EsriMapView,
     HeaderView,
-    AlertView,
-    AdView,
+    LoadingSpinnerModal,
     FooterView,
-    LayerListView
   },
   setup() {
-    const headerText = "This is the header";
-    const alert = ref<Alert>({
-      title: "Tsunami!",
-      description: "description",
-      x: 1,
-      y: 1,
+    const mapHeight = ref("500px");
+    const store = useStore();
+    const config = getConfig();
+    const activeClass = "active";
+    const disabledClass = "disabled";
+    store.commit("setIsLoading", { loading: true, message: "Map is loading..." });
+    // Make map fill the screen between the header and footer...
+    const resizeMapContainer = () => {
+      const headDiv = document.querySelector("#header") as HTMLElement;
+      const footDiv = document.querySelector("footer") as HTMLElement;
+      // The menu button has some extra height that is not reflected in the container height, so measure the menu button's height.
+      const navDiv = document.querySelector(".nav-outer-wrapper") as HTMLElement;
+      let navH = 0;
+      if (navDiv && navDiv.offsetHeight) {
+        navH = navDiv.offsetHeight;
+      }
+      const h = window.innerHeight - headDiv.offsetHeight - navH - footDiv.offsetHeight;
+      mapHeight.value = h + "px";
+    };
+    window.addEventListener("resize", resizeMapContainer);
+    // Prevent memory leak...https://nolanlawson.com/2020/02/19/fixing-memory-leaks-in-web-applications/
+    onBeforeUnmount(() => {
+      window.removeEventListener("resize", resizeMapContainer);
     });
-    const adText = "This is advertisement";
-    const footerText = "This is the footer";
-    return { headerText, alert, adText, footerText };
+
+    return {
+      config,
+      mapHeight,
+      store,
+      resizeMapContainer,
+      activeClass,
+      disabledClass,
+    };
   },
+
+  computed: mapState(["isLoading"]),
 });
 </script>
 
@@ -56,7 +76,6 @@ export default defineComponent({
 html,
 body,
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -65,5 +84,33 @@ body,
   margin: 0;
   width: 100%;
   height: 100%;
+  /** Got these from internal website */
+  font-family: "Lato", sans-serif;
+}
+hr.horizontal-divider {
+  border-top: 1px solid #bbb;
+  margin: 1vh 1vw;
+}
+.loadingSpinnerBackground {
+  background-color: red;
+}
+.disabled {
+  pointer-events: none;
+}
+#app {
+  position: absolute;
+  z-index: 0;
+}
+#map-container {
+  padding: 0;
+  margin: 0;
+  position: relative;
+  width: 100%;
+  height: 80%;
+  overflow: hidden;
+}
+
+#map-container > * {
+  position: absolute;
 }
 </style>
