@@ -41,24 +41,20 @@ const buildGraphicsByType = (type, data) => {
                 const renderer = layer.renderer;
                 selectedSymbol = renderer.symbol;
             }
-            // console.log(selectedSymbol)
             jsonSymbol = selectedSymbol.toJSON();
             jsonSymbol.symbol.symbolLayers[0].size = 30;
             jsonSymbol.symbol.symbolLayers[0].offsetY = 15;
             newSymbol = CIMSymbol_1.default.fromJSON(jsonSymbol);
-            // console.log(data)
             graphic = new Graphic_1.default({
                 geometry: data.geometry,
                 symbol: newSymbol
             });
-            // console.log(graphic)
             break;
     }
     return graphic;
 };
 exports.buildGraphicsByType = buildGraphicsByType;
 const addGraphicsByType = (graphicType, graphic) => {
-    // console.log(graphic)
     graphic.attributes = { graphicType: graphicType };
     esriMap_1.mapView.graphics.add(graphic);
 };
@@ -66,10 +62,7 @@ exports.addGraphicsByType = addGraphicsByType;
 const displayPointInteractionGraphics = (layer, targetField, targetValue) => {
     layer.visible = true;
     layer.definitionExpression = `${targetField} = '${targetValue}'`;
-    featureInfoUtil_1.getLineFromPointId(targetField, targetValue, layer); /*.then((lines) => {// zoom to the graphic after it displays
-        mapView
-        .goTo(lines.features[0].geometry)
-    });*/
+    featureInfoUtil_1.getLineFromPointId(targetField, targetValue, layer);
 };
 exports.displayPointInteractionGraphics = displayPointInteractionGraphics;
 const hidePointInteractionGraphics = (layer) => {

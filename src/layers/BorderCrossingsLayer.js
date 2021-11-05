@@ -17,6 +17,11 @@ const fields = [
         "alias": "BorderCrossingDescription",
     }),
     new Field_1.default({
+        "name": "StateRouteID",
+        "type": "string",
+        "alias": "State Route ID",
+    }),
+    new Field_1.default({
         "name": "WaitTimeText",
         "type": "string",
         "alias": "WaitTimeText",

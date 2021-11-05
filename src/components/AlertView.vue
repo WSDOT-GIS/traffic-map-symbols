@@ -41,7 +41,7 @@
     </div>
   </div>
   <div
-    v-if="!isOpen"
+    v-if="!isOpen && Alerts.length"
     id="alert-container-closed"
     class="w3-transparent w3-button w3-circle"
     @click="toggleDisplay"
@@ -68,7 +68,6 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
     const containerRef = ref<HTMLDivElement>();
-    const btnContainerRef = ref<HTMLDivElement>();
     const mapSize = computed(() => store.state.mapSize);
     const isOpen = ref(true);
     const sortedAlerts = ref<AlertInfo[]>([]);
@@ -118,6 +117,7 @@ export default defineComponent({
         isOpen.value && props.Alerts.length > 0 && props.Alerts[0] ? "block" : "none";
     };
     const onClickAway = (event: PointerEvent | TouchEvent) => {
+      if (!props.Alerts.length) { return; }
       // On the touch device, ignore the justOpened flag.
       if (event.type === "touchstart") {
         justOpened = false;
@@ -133,7 +133,6 @@ export default defineComponent({
     };
     return {
       containerRef,
-      btnContainerRef,
       height,
       isOpen,
       sortedAlerts,

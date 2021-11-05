@@ -72,7 +72,6 @@ const getOutOfBoundDirection = (mapXY, extent) => {
         dir = "s";
     }
     // Check horizontal...
-    // console.log("X:" + mapXY.x + " Min:" +extent.xmin + " Max:" + extent.xmax)
     // Note: the values are negative...
     if (mapXY.x < extent.xmin) {
         dir += "w";
@@ -83,7 +82,6 @@ const getOutOfBoundDirection = (mapXY, extent) => {
     else {
         dir += "i";
     }
-    // console.log("getOutOfBoundDirection: " + dir);
     return dir;
 };
 exports.getOutOfBoundDirection = getOutOfBoundDirection;

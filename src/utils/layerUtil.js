@@ -65,7 +65,6 @@ const getLayerIds = (groupId) => {
 };
 exports.getLayerIds = getLayerIds;
 const resizeFeature = (graphic, mapView) => {
-    // console.log(graphic)
     const mapGraphic = graphicLayerUtil_1.buildGraphicsByType("CIMSymbol", graphic);
     graphicLayerUtil_1.addGraphicsByType("selectedGraphic", mapGraphic);
 };
@@ -109,7 +108,6 @@ const getFeature = (uniqueValue, groupId, map) => tslib_1.__awaiter(void 0, void
     fLayer.visible = true;
     const ftrCount = yield fLayer.queryFeatureCount();
     if (groupInfo.layers[0].jsonUrl && ftrCount === 0) {
-        // console.log("getFeature: " + layer.title)
         yield exports.reloadData(groupInfo.layers[0].jsonUrl, fLayer);
         if (groupInfo.layers.length > 1) {
             for (const eachLyr of groupInfo.layers) {
@@ -172,9 +170,7 @@ const initLayer = (jsonUrl, layerId, layerTitle, renderer, fields, geometryType,
         spatialReference: SpatialReference_1.default.WebMercator,
     });
     // Set event to load layer when it becomes visible...
-    if (!visible) {
-        exports.setLayerEvent(layer, jsonUrl);
-    }
+    exports.setLayerEvent(layer, jsonUrl);
     return layer;
 });
 exports.initLayer = initLayer;
@@ -182,7 +178,6 @@ const setLayerEvent = (layer, jsonUrl) => {
     layer.watch("visible", (newValue, oldValue, propName, target) => {
         const lyr = target;
         if (newValue) {
-            // console.log("Became visible: " + layer.title)
             exports.reloadData(jsonUrl, lyr);
         }
     });
@@ -195,12 +190,13 @@ const reloadData = (jsonUrl, layer) => tslib_1.__awaiter(void 0, void 0, void 0,
         if (!layer.visible) {
             return;
         }
-        console.log("failed to return");
-        // console.log("Reload data: " + layer.id);
         // Fetch all features from JSON...
-        const graphics = yield exports.fetchJsonData(jsonUrl);
-        // Replace old with new features...
-        yield exports.replaceFeatures(layer, graphics);
+        yield exports.fetchJsonData(jsonUrl).then((graphics) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+            if (graphics.length > 0) {
+                yield exports.replaceFeatures(layer, graphics);
+            }
+            // Replace old with new features...
+        }));
     });
     // Check if the layer is already being loaded currently or not...
     const runningProc = loadManager.find(x => x.id === layer.id);
@@ -237,7 +233,6 @@ const fetchJsonData = (jsonUrl) => tslib_1.__awaiter(void 0, void 0, void 0, fun
     // Create graphic out of each feature...
     const graphics = [];
     for (const each of json.features) {
-        // console.log(each)
         const geom = geomJsonUtils.fromJSON(each.geometry);
         if (!geom) {
             console.warn("Failed to get geometry. " + JSON.stringify(each));

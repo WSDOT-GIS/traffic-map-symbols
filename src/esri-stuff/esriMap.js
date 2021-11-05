@@ -20,7 +20,6 @@ const LineRestrictionsLayer = tslib_1.__importStar(require("@/layers/LineRestric
 const RoadAlertsLayer = tslib_1.__importStar(require("@/layers/RoadAlertsLayer"));
 const WeatherLayer = tslib_1.__importStar(require("@/layers/WeatherStationsLayer"));
 const MountainLayer = tslib_1.__importStar(require("@/layers/MountainPassesLayer"));
-// import * as TravelTimesLayer from "@/layers/TravelTimeLayer"
 const FireIncidentsLayer = tslib_1.__importStar(require("@/layers/FireIncidentLayer"));
 const FirePerimetersLayer = tslib_1.__importStar(require("@/layers/FirePerimeterLayer"));
 const MileMakersLayer = tslib_1.__importStar(require("@/layers/MileMarkersLayer"));
@@ -67,7 +66,6 @@ const init = (container) => {
     exports.mapView.container = container;
     exports.mapView.when()
         .then(() => {
-        // console.log("Map is ready.");
         // Somehow map does not zoom enough, so set extent again here...
         exports.mapView.extent = fullExtent;
     })
@@ -84,13 +82,11 @@ exports.defaultLayerProps = [];
 const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     const config = appConfigUtil_1.getConfig();
     // Removed since do not need API Key for now...
-    // EsriConfig.apiKey = config.apiKey;
     const trafficLyr = TrafficLayer.initLayer(config.traffic, config.layerRefreshMinute);
     const restAreasLyr = yield RestAreasLayer.initLayer(config.restAreas);
     const parkRideLyr = yield ParkRideLayer.initLayer(config.parkAndRides);
     const weatherLyr = yield WeatherLayer.initLayer(config.weatherStations, exports.mapView);
     const mtLyr = yield MountainLayer.initLayer(config.mountainPasses);
-    // const travelTimesLyr = await TravelTimesLayer.initLayer(config.travelTimes);
     const lineRestrictionLyr = yield LineRestrictionsLayer.initLayer(config.lineRestrictions);
     const pointRestrictionLyr = yield PointRestrictionsLayer.initLayer(config.pointRestrictions);
     const cameraLyr = yield CameraLayer.initLayer(config.cameras);
@@ -110,7 +106,7 @@ const loadOperationalLayers = () => tslib_1.__awaiter(void 0, void 0, void 0, fu
     exports.webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, ferryRoutesReferenceLayer, trafficLyr,
         ferryRouteLinesLayer, stateRouteShieldsLayer,
         firePerimetersLayer, fireIncidentLayer,
-        restAreasLyr, parkRideLyr, weatherLyr, mtLyr, /*travelTimesLyr,*/ lineRestrictionLyr,
+        restAreasLyr, parkRideLyr, weatherLyr, mtLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr,
         ferryRoutePointsLayer, roadAlertLyrs,
         mileMarkersLayer, borderCrossingsLayer]);
@@ -133,11 +129,10 @@ exports.loadRegionalAlert = loadRegionalAlert;
  */
 const refreshLayerData = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     const config = appConfigUtil_1.getConfig();
-    RoadAlertsLayer.reloadData(config.roadAlerts);
     RegionalAlertLayer.reloadData(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
+    layerUtil.reloadData(config.roadAlerts, RoadAlertsLayer.default());
     layerUtil.reloadData(config.pointRestrictions, PointRestrictionsLayer.default());
     layerUtil.reloadData(config.lineRestrictions, LineRestrictionsLayer.default());
-    // layerUtil.reloadData(config.travelTimes, TravelTimesLayer.default());
     layerUtil.reloadData(config.mountainPasses, MountainLayer.default());
     layerUtil.reloadData(config.weatherStations, WeatherLayer.default());
     layerUtil.reloadData(config.borderCrossings, BorderCrossingsLayer.default());
@@ -232,15 +227,13 @@ const getMaxScale = () => {
 };
 exports.getMaxScale = getMaxScale;
 const toScreenXY = (mapX, mapY) => {
-    //const pt = new Point({ x: mapX, y: mapY, spatialReference: SpatialReference.WebMercator });
     const pt = exports.toPoint(mapX, mapY);
     const screenPt = exports.mapView.toScreen(pt);
     return { x: screenPt.x, y: screenPt.y };
 };
 exports.toScreenXY = toScreenXY;
 const toPoint = (mapX, mapY) => {
-    const pt = new Point_1.default({ x: mapX, y: mapY, spatialReference: exports.mapView.spatialReference }); //SpatialReference.WebMercator });
-    // console.log(JSON.stringify(pt));
+    const pt = new Point_1.default({ x: mapX, y: mapY, spatialReference: exports.mapView.spatialReference });
     return pt;
 };
 exports.toPoint = toPoint;
@@ -255,15 +248,12 @@ exports.toPoint = toPoint;
 const checkPannedExtent = (shiftX, shiftY) => {
     const topLeft = exports.mapView.toMap({ x: -1 * shiftX, y: -1 * shiftY });
     const bottomRight = exports.mapView.toMap({ x: exports.mapView.width - shiftX, y: exports.mapView.height - shiftY });
-    // console.log("Top left...");
     const topLeftDir = extentUtil_1.getOutOfBoundDirection(topLeft, fullExtent);
-    // console.log("Bottom right...");
     const bottomRightDir = extentUtil_1.getOutOfBoundDirection(bottomRight, fullExtent);
     // Positive = panning down/south => check the top, otherwise check the bottom...
     let outOfBoundsDir = shiftY > 0 ? topLeftDir[0] : bottomRightDir[0];
     // Positive = panning east/right => check the left, otherwise check the right side...
     outOfBoundsDir += shiftX > 0 ? topLeftDir[1] : bottomRightDir[1];
-    // console.log("checkPannedExtent " + outOfBoundsDir);
     return outOfBoundsDir;
 };
 exports.checkPannedExtent = checkPannedExtent;
@@ -277,7 +267,6 @@ exports.checkPannedExtent = checkPannedExtent;
  * If successful or exception, return true/false. Otherwise return the actual amount pan was panned.
  */
 const panMap = (shiftX, shiftY) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    // console.log("***Pan Map X:" + shiftX + ", Y:" + shiftY);
     const screenCenter = exports.mapView.toScreen(exports.mapView.center);
     const newCenter = exports.mapView.toMap({
         x: screenCenter.x - shiftX,
@@ -289,7 +278,6 @@ const panMap = (shiftX, shiftY) => tslib_1.__awaiter(void 0, void 0, void 0, fun
     const actualShift = { x: 0, y: 0 };
     try {
         while (tryCount < 4 && (Math.abs(diffShift.x) >= 1 || Math.abs(diffShift.y) >= 1)) {
-            // console.log("Try " + tryCount + " pan start");
             tryCount++;
             // GoTo() does not work as expected for various reasons, so try it a few times if not successful.
             try {
@@ -301,19 +289,15 @@ const panMap = (shiftX, shiftY) => tslib_1.__awaiter(void 0, void 0, void 0, fun
             catch (err) {
                 console.error("mapView.goTo failed: " + err);
             }
-            // console.log("Try " + tryCount + " pan finished");
             // Figure out the amount moved in reality...
             const newScreen = exports.mapView.toScreen(exports.mapView.center);
             const oldScreen = exports.mapView.toScreen(oldCenter);
-            // console.log("Try " + tryCount + " converted to screen");
             actualShift.x = oldScreen.x - newScreen.x;
             actualShift.y = oldScreen.y - newScreen.y;
-            // console.log("Try " + tryCount + " Actual shift " + JSON.stringify(actualShift));
             diffShift.x = shiftX - actualShift.x;
             diffShift.y = shiftY - actualShift.y;
         }
         if (Math.abs(diffShift.x) < 1 && Math.abs(diffShift.y) < 1) {
-            //console.log("panMap: success " + JSON.stringify(diffShift));
             return true;
         }
         else {
@@ -369,7 +353,6 @@ const getIdsFromCluster = (clusterGraphic, layer, maxCount) => tslib_1.__awaiter
             // All points are located on the same spot!
             doReturn = true;
         }
-        //else { //console.log("Points are not identical."); }
     }
     if (doReturn) {
         const ids = result.features.map((feature) => { return feature.attributes[lyr.objectIdField]; });
@@ -398,9 +381,7 @@ exports.bufferByPixels = bufferByPixels;
 /** Highlight feature */
 let highlight;
 const highlightFeature = (featureInfo) => {
-    //console.log("layer id: " + featureInfo.layerId);
     const layer = exports.getLayer(featureInfo.layerId);
-    //console.log("highlight layer: " + layer.title);
     exports.mapView.whenLayerView(layer).then((layerView) => {
         const query = layer.createQuery();
         query.where = `${layer.objectIdField} = ${featureInfo.id}`;
