@@ -42,7 +42,6 @@
   <WeatherStationsPopup :Featureset="popupFeatureset" />
   <RestAreaPopup :Featureset="popupFeatureset" />
   <RoadAlertPopup :Featureset="popupFeatureset" />
-  <!-- <TravelTimesPopup :Featureset="popupFeatureset" /> -->
   <WildfirePointsPopup :Featureset="popupFeatureset" />
   <BorderCrossingPopup :Featureset="popupFeatureset" />
   <RegionalAlertPopup :Featureset="popupFeatureset" />
@@ -75,7 +74,7 @@ import {
 import {
   createLayerGroupInfos,
   getFeature,
-  setLayerVisibility /*, resizeFeature*/,
+  setLayerVisibility,
 } from "@/utils/layerUtil";
 import {
   removeGraphicsByType,
@@ -91,7 +90,7 @@ import * as alertInfoUtil from "@/utils/alertInfoUtil";
 import AlertInfo from "@/types/AlertInfo";
 import FerryAlertInfo from "@/types/FerryAlertInfo";
 import { getFeatureInfoById } from "@/utils/featureInfoUtil";
-/*Basemap*/
+/* Basemap */
 import { initBasemap } from "@/layers/Basemaps";
 /* Layers for popup */
 import ParkRideLayer from "@/layers/ParkRideLayer";
@@ -101,7 +100,6 @@ import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
 import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
 import MountainPassesLayer from "@/layers/MountainPassesLayer";
 import RoadAlertsLayer from "@/layers/RoadAlertsLayer";
-// import TravelTimeLayer from "@/layers/TravelTimeLayer";
 import RestAreasLayer from "@/layers/RestAreasLayer";
 import FireIncidentLayer from "@/layers/FireIncidentLayer";
 import RoadsReferenceLayer from "@/layers/RoadsReferenceLayer";
@@ -121,7 +119,6 @@ import MountainPassPopup from "@/popups/MountainPassPopup.vue";
 import WeatherStationsPopup from "@/popups/WeatherStationPopup.vue";
 import RestAreaPopup from "@/popups/RestAreaPopup.vue";
 import RoadAlertPopup from "@/popups/RoadAlertPopup.vue";
-// import TravelTimesPopup from "@/popups/TravelTimesPopup.vue";
 import WildfirePointsPopup from "@/popups/WildfirePointsPopup.vue";
 import BorderCrossingPopup from "@/popups/BorderCrossingPopup.vue";
 import RegionalAlertPopup from "@/popups/RegionalAlertPopup.vue";
@@ -146,7 +143,6 @@ export default defineComponent({
     WeatherStationsPopup,
     RestAreaPopup,
     RoadAlertPopup,
-    // TravelTimesPopup,
     WildfirePointsPopup,
     BorderCrossingPopup,
     RegionalAlertPopup,
@@ -176,7 +172,6 @@ export default defineComponent({
     alertInfoUtil.initFerryAlerts(config.ferryAlerts);
     // Build the list used by the URL query...
     createLayerGroupInfos(config);
-
     // Zoom popup...
     const zoomPopupVisible = ref(false);
     const zoomPopupLabel = ref("");
@@ -231,7 +226,6 @@ export default defineComponent({
           MountainPassesLayer(),
           RestAreasLayer(),
           RoadAlertsLayer(),
-          // TravelTimeLayer(),
           FireIncidentLayer(),
           RoadsReferenceLayer(),
           BoundariesPlacesReferenceLayer(),
@@ -341,7 +335,7 @@ export default defineComponent({
                 hidePointInteractionGraphics(LineFerryRoutesLayer());
                 // Not aggregate...
                 const id = g.getObjectId();
-                //get lines for restriciton point click
+                // get lines for restriciton point click
                 if (g.layer.id === "point-restrictions-layer") {
                   getFeatureInfoById(id, g.layer as FeatureLayer).then((result) => {
                     if (
@@ -353,7 +347,6 @@ export default defineComponent({
                         "UniqueId",
                         result?.attributes.UniqueId
                       );
-                      //LineRestrictionsLayer().definitionExpression = `UniqueId = '${result?.attributes.UniqueId}'`;
                       showPopup(results2Show.layer.id, [id]);
                     } else {
                       showPopup(results2Show.layer.id, [id]);
@@ -374,8 +367,6 @@ export default defineComponent({
                   showPopup(results2Show.layer.id, [id]);
                 }
                 removeGraphicsByType("selectedGraphic");
-                //Add larger marker to map
-                //resizeFeature(g,mapView as MapView)
               }
             }
           } else {
@@ -621,15 +612,6 @@ export default defineComponent({
   display: inline-flex;
   margin-bottom: 16px;
 }
-
-/* @media screen and (max-width: 900px) {
-  #map-bottom-right-container {
-    margin-bottom: 66px;
-  }
-  #map-bottom-left-container {
-    margin-bottom: 66px;
-  }
-} */
 
 .map-bottom-right-container-row {
   display: flex;

@@ -7,7 +7,7 @@
   >
     <p>
       <span class="esri-icon-zoom-in-magnifying-glass"></span>
-      Click to zoom to {{Label}} metro area
+      Click to zoom to {{ Label }} metro area
     </p>
   </div>
 </template>
@@ -15,6 +15,7 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
+  emits: ["clicked"],
   props: {
     Visible: {
       type: Boolean,
@@ -33,10 +34,11 @@ export default defineComponent({
       required: true,
     },
   },
-  methods: {
-    onClick() {
-      this.$emit("clicked");
-    },
+  setup(props, context) {
+    const onClick = () => {
+      context.emit("clicked");
+    };
+    return { onClick };
   },
 });
 </script>

@@ -68,30 +68,10 @@ export default defineComponent({
       }
     });
     const getTitle = (feature: FeatureInfo): string => {
-      //console.log(feature)
-      /*let direction;
-      switch (feature.attributes.cardinal_direction) {
-        case "B":
-          direction = "both directions";
-          break;
-        case "N":
-          direction = "northbound";
-          break;
-        case "S":
-          direction = "southbound";
-          break;
-        case "E":
-          direction = "eastbound";
-          break;
-        case "W":
-          direction = "westbound";
-          break;
-      }*/
       const title = `${feature.attributes.location_description}`;
       return title;
     };
     const getMoreInfoURL = (): MoreInfoURLInfo => {
-      //console.log(feature)
       const moreInfoObject = new Object({
         url: `https://wsdot.wa.gov/data/tools/bridgeclearance/`,
         text: "Check your overhead clearances in the",

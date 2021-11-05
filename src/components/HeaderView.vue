@@ -75,32 +75,7 @@
     </div>
   </div>
   <!-- Mobile menu opened by the burger button -->
-  <SidebarView :WsdotRootUrl="WsdotRootUrl">
-    <!-- Links from id="sidr-existing-content". Removed the classes. -->
-    <!-- <ul>
-      <li>
-        <a :href="WsdotRootUrl + '/travel'" data-drupal-link-system-path="node/403">Travel</a>
-      </li>
-      <li>
-        <a :href="WsdotRootUrl + '/construction-planning'" data-drupal-link-system-path="node/404"
-          >Construction &amp; planning</a
-        >
-      </li>
-      <li>
-        <a :href="WsdotRootUrl + '/business-wsdot'" data-drupal-link-system-path="node/405"
-          >Business with WSDOT</a
-        >
-      </li>
-      <li>
-        <a :href="WsdotRootUrl + '/engineering-standards'" data-drupal-link-system-path="node/406"
-          >Engineering &amp; standards</a
-        >
-      </li>
-      <li>
-        <a :href="WsdotRootUrl + '/about'" data-drupal-link-system-path="node/53">About</a>
-      </li>
-    </ul> -->
-  </SidebarView>
+  <SidebarView :WsdotRootUrl="WsdotRootUrl" />
 </template>
 
 <script lang="ts">
@@ -132,7 +107,9 @@ export default defineComponent({
 #burger-menu {
   display: none;
 }
-
+.logo.navbar-btn.pull-left {
+  text-align: left;
+}
 @media screen and (max-width: 991px) {
   #burger-menu {
     display: block;
@@ -144,6 +121,11 @@ export default defineComponent({
     height: 34px;
     width: 33px;
     font-size: 2rem;
+  }
+}
+@media screen and (max-width: 1263px) {
+  html body header .logo-container .region-header .logo {
+    padding-left: 2%;
   }
 }
 </style>

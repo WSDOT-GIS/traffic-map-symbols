@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, onBeforeUnmount, ref } from "vue";
 import EsriMapView from "./components/EsriMapView.vue";
 import HeaderView from "./components/HeaderView.vue";
 import FooterView from "./components/FooterView.vue";
@@ -39,12 +39,11 @@ export default defineComponent({
     const activeClass = "active";
     const disabledClass = "disabled";
     store.commit("setIsLoading", { loading: true, message: "Map is loading..." });
-    // Make map fill the screen below the header...
+    // Make map fill the screen between the header and footer...
     const resizeMapContainer = () => {
       const headDiv = document.querySelector("#header") as HTMLElement;
       const footDiv = document.querySelector("footer") as HTMLElement;
       // The menu button has some extra height that is not reflected in the container height, so measure the menu button's height.
-      //const menuDiv = document.querySelector(".we-mega-menu-li") as HTMLElement;
       const navDiv = document.querySelector(".nav-outer-wrapper") as HTMLElement;
       let navH = 0;
       if (navDiv && navDiv.offsetHeight) {
@@ -54,6 +53,10 @@ export default defineComponent({
       mapHeight.value = h + "px";
     };
     window.addEventListener("resize", resizeMapContainer);
+    // Prevent memory leak...https://nolanlawson.com/2020/02/19/fixing-memory-leaks-in-web-applications/
+    onBeforeUnmount(() => {
+      window.removeEventListener("resize", resizeMapContainer);
+    });
 
     return {
       config,

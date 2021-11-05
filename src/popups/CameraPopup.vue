@@ -83,10 +83,8 @@ export default defineComponent({
       const setVal = () => {
         getFeatureInfosByIds(props.Featureset.ids, FeatureLayer()).then(
           (results) => {
-            // console.log(JSON.stringify(results));
             features.value = results;
             mapXY.value = props.MapXY;
-            // console.log(mapX.value + ", " + mapY.value);
           }
         );
       };

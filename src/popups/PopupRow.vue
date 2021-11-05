@@ -73,7 +73,6 @@ export default defineComponent({
       }
       // Do not show when data is not available...
       if (!text) {
-        //text = "N/A";
         visible.value = false;
       }
       // Temporarily hide...
@@ -82,13 +81,8 @@ export default defineComponent({
       } else {
         visible.value = true;
       }
-      // console.log("...text: " + text);
       return text;
     };
-
-    // const formatDateTimePart = (part: number) => {
-    //   return ("0" + part).slice(-2);
-    // };
 
     return {
       visible,
@@ -121,20 +115,5 @@ export default defineComponent({
   font-size: var(--type-scale-base3);
   line-height: var(--type-scale-base5);
 }
-.waitTimeTable{
-  margin: auto;
-}
-.waitTimeCell {
-  font-size: small;
-  display: table-cell;
-  text-align: left;
-  padding: 5px 5px 5px 5px;
-}
-.waitTimeTitleCell {
-  font-size: small;
-  font-weight: bold;
-  display: table-cell;
-  text-align: left;
-  padding: 0px 3px 0px 3px;
-}
+
 </style>

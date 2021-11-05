@@ -6,23 +6,25 @@
     :Features="[feature]"
     :Config="{
       bannerText: { text: 'Border crossing wait times' },
-      title: { custom: getTitle},
+      title: { custom: getTitle },
       content: [
-        { label: 'Northbound wait time', value: { fieldName: 'HTMLTable',isHTML: true } },
-        { label: 'Last updated', value: { fieldName: 'BorderReadingTime', isTime: true, isDate: true}}
+        { label: 'Northbound wait time', value: { fieldName: 'HTMLTable', isHTML: true } },
+        {
+          label: 'Last updated',
+          value: { fieldName: 'BorderReadingTime', isTime: true, isDate: true },
+        },
       ],
-       moreInfoURL:{
-        custom: getMoreInfoURL
-      }
+      moreInfoURL: {
+        custom: getMoreInfoURL,
+      },
     }"
     @close="close"
   >
     <template v-slot:icon>
-      <div class="mapFeaturesIcon"
-              v-html="
-                layerIcons.find((x) => x.id == 'border-crossing')
-                  ?.paths">
-      </div>
+      <div
+        class="mapFeaturesIcon"
+        v-html="layerIcons.find((x) => x.id == 'border-crossing')?.paths"
+      ></div>
     </template>
   </PopupBase>
 </template>
@@ -53,29 +55,24 @@ export default defineComponent({
         close();
       }
     });
-    const getMoreInfoURL=(feature: FeatureInfo): MoreInfoURLInfo=>{
-      //console.log(feature)
-      //console.log(feature.attributes)
-      const moreInfoObject =new Object({
+    const getMoreInfoURL = (feature: FeatureInfo): MoreInfoURLInfo => {
+      const moreInfoObject = new Object({
         url: `https://www.th.gov.bc.ca/ATIS/index.htm`,
         text: "Get the",
-        linkText: "Southbound wait time"
-      }) as MoreInfoURLInfo
-      return moreInfoObject
-    }
-    const getTitle = (feature: FeatureInfo): string=>{
-      return `SR ${feature.attributes["StateRouteID"] as string}`
-    }
+        linkText: "Southbound wait time",
+      }) as MoreInfoURLInfo;
+      return moreInfoObject;
+    };
+    const getTitle = (feature: FeatureInfo): string => {
+      return `SR ${feature.attributes["StateRouteID"] as string}`;
+    };
     const show = () => {
       const setVal = () => {
-        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(
-          (result) => {
-            if (result) {
-              feature.value = result;
-              //console.log(result)
-            }
+        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then((result) => {
+          if (result) {
+            feature.value = result;
           }
-        );
+        });
       };
       if (feature.value) {
         // Clean up the previous data...
@@ -95,11 +92,26 @@ export default defineComponent({
       close,
       getMoreInfoURL,
       layerIcons,
-      getTitle
+      getTitle,
     };
   },
 });
 </script>
-<style scoped>
-
+<style>
+table.waitTimeTable {
+  margin: 8px 16px 16px 16px;
+}
+td.waitTimeTitleCell {
+  font-size: small;
+  font-weight: bold;
+  display: table-cell;
+  text-align: left;
+  padding: 0px 3px 4px 3px;
+}
+td.waitTimeCell {
+  font-size: small;
+  display: table-cell;
+  text-align: left;
+  padding: 5px 5px 5px 5px;
+}
 </style>
