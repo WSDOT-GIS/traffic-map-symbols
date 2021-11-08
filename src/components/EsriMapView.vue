@@ -455,8 +455,19 @@ export default defineComponent({
         esriMap.mapView.when().then(() => {
           getFeature(featureId, featureType, esriMap.webmap).then((result) => {
             if (result) {
+              console.log(result)
               if (result.geometry.type !== "point") {
                 throw "The parameter, featuretype, only supports point feature type currently.";
+              }
+              else{
+                if(featureType=="restriction"){
+                  console.log(result.attributes)
+                  displayPointInteractionGraphics(
+                    LineRestrictionsLayer(),
+                    "UniqueId",
+                    result?.attributes.UniqueId
+                  );
+                }
               }
               // If the layer is not visible, turn it on...
               if (!result.layer.visible) {
