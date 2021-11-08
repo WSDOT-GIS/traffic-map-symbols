@@ -1,16 +1,8 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { SourceMapConsumer, SourceMapGenerator } = require('source-map');
-// This gets rid of the warning, but build says "Syntax error", so changed back to the original.
-//import { SourceMapConsumer, SourceMapGenerator } from './node_modules/source-map/source-map';
 
 const sourceMaps = {};
 
 module.exports = {
-    // Uncomment this to test localhost on Browser Stack
-    // devServer: {
-    //     disableHostCheck: true
-    // },
-    publicPath: process.env.NODE_ENV === 'production' ? '/Travel/Real-time/Map/' : '/',
     configureWebpack() {
         return {
             devtool: 'source-map',
@@ -31,77 +23,79 @@ module.exports = {
                             sourceMaps[pathWithoutQuery] = module['_source']['_sourceMap'];
                         });
 
-                        compilation.hooks.finishModules.tapPromise('All Modules Built', async (modules) => {
-                            for (const module of modules) {
-                                const { resource } = module;
+                        // compilation.hooks.finishModules.tapPromise('All Modules Built', async (modules) => {
+                        //     for (const module of modules) {
+                        //         const { resource } = module;
 
-                                if (!resource) continue;
-                                if (/node_modules/.test(resource)) continue;
-                                if (!/\.vue/.test(resource)) continue;
-                                if (!/type=script/.test(resource)) continue;
-                                if (!/lang=ts/.test(resource)) continue;
-                                if (!module['_source'] || !module['_source']['_sourceMap']) continue;
+                        //         if (!resource) continue;
+                        //         if (/node_modules/.test(resource)) continue;
+                        //         if (!/\.vue/.test(resource)) continue;
+                        //         // targeting the modules with the "script" type
+                        //         if (!/type=script/.test(resource)) continue;
+                        //         // leave JavaScript Single File Components alone
+                        //         if (!/lang=ts/.test(resource)) continue;
+                        //         if (!module['_source'] || !module['_source']['_sourceMap']) continue;
 
-                                const pathWithoutQuery = module.resource.replace(/\?.*$/, '');
-                                const templateSourceMap = sourceMaps[pathWithoutQuery];
+                        //         const pathWithoutQuery = module.resource.replace(/\?.*$/, '');
+                        //         const templateSourceMap = sourceMaps[pathWithoutQuery];
+                        //         // Skip this module if it doesn't have a corresponding template Source Map
+                        //         if (!templateSourceMap) continue;
+                        //         // Store the source map for the current module
+                        //         const scriptSourceMap = module['_source']['_sourceMap'];
+                        //         scriptSourceMap.sourcesContent = [...templateSourceMap.sourcesContent];
+                        //         scriptSourceMap.sources = [...templateSourceMap.sources];
 
-                                if (!templateSourceMap) continue;
+                        //         // const lines = (templateSourceMap.sourcesContent[0] || '').match(/.+/g);
 
-                                const scriptSourceMap = module['_source']['_sourceMap'];
-                                scriptSourceMap.sourcesContent = [...templateSourceMap.sourcesContent];
-                                scriptSourceMap.sources = [...templateSourceMap.sources];
+                        //         // let indexOfScriptTag = 0;
 
-                                const lines = (templateSourceMap.sourcesContent[0] || '').match(/.+/g);
+                        //         // for (const line of lines) {
+                        //         //     ++indexOfScriptTag;
+                        //         //     if (/<script/.test(line)) break;
+                        //         // }
 
-                                let indexOfScriptTag = 0;
+                        //         // const shiftedSourceMap = await SourceMapConsumer.with(scriptSourceMap, null, async (consumer) => {
+                        //         //     const generator = new SourceMapGenerator();
 
-                                for (const line of lines) {
-                                    ++indexOfScriptTag;
-                                    if (/<script/.test(line)) break;
-                                }
+                        //         //     consumer.eachMapping((mapping) => {
+                        //         //         const {
+                        //         //             generatedColumn,
+                        //         //             generatedLine,
+                        //         //             originalColumn,
+                        //         //             originalLine
+                        //         //         } = mapping;
 
-                                const shiftedSourceMap = await SourceMapConsumer.with(scriptSourceMap, null, async (consumer) => {
-                                    const generator = new SourceMapGenerator();
+                        //         //         let name = mapping.name;
+                        //         //         let source = templateSourceMap.sources[0] || null;
 
-                                    consumer.eachMapping((mapping) => {
-                                        const {
-                                            generatedColumn,
-                                            generatedLine,
-                                            originalColumn,
-                                            originalLine
-                                        } = mapping;
+                        //         //         if (originalLine === null || originalColumn === null) {
+                        //         //             name = null;
+                        //         //             source = null;
+                        //         //         }
+                        //         //         else {
+                        //         //             original = {
+                        //         //                 column: originalColumn,
+                        //         //                 line: originalLine + indexOfScriptTag,
+                        //         //             };
+                        //         //         }
 
-                                        let name = mapping.name;
-                                        let source = templateSourceMap.sources[0] || null;
-                                        let original = null; // Masao: Added this line to fix "Invalid mapping" error
-                                        if (originalLine === null || originalColumn === null) {
-                                            name = null;
-                                            source = null;
-                                        }
-                                        else {
-                                            original = {
-                                                column: originalColumn,
-                                                line: originalLine + indexOfScriptTag,
-                                            };
-                                        }
+                        //         //         generator.addMapping({
+                        //         //             generated: {
+                        //         //                 column: generatedColumn,
+                        //         //                 line: generatedLine,
+                        //         //             },
+                        //         //             original,
+                        //         //             source,
+                        //         //             name
+                        //         //         });
+                        //         //     });
 
-                                        generator.addMapping({
-                                            generated: {
-                                                column: generatedColumn,
-                                                line: generatedLine,
-                                            },
-                                            original,
-                                            source,
-                                            name
-                                        });
-                                    });
+                        //         //     return generator.toJSON();
+                        //         // });
 
-                                    return generator.toJSON();
-                                });
-
-                                scriptSourceMap.mappings = shiftedSourceMap.mappings;
-                            }
-                        });
+                        //         // scriptSourceMap.mappings = shiftedSourceMap.mappings;
+                        //     }
+                        // });
                     });
                 }
             }]
