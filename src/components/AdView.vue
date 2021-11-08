@@ -105,7 +105,7 @@ export default defineComponent({
 #map-ad-close-btn {
   position: absolute;
   top: 0;
-  right: 0;
+  right: -.7rem;
   background-color: #000;
   border: none;
   color: var(--color-gray20);
@@ -126,7 +126,7 @@ export default defineComponent({
   #map-ad-close-btn {
     position: absolute;
     top: -0.2rem;
-    right: -0.3rem;
+    right: -1.2rem;
   }
 }
 p {
