@@ -72,7 +72,7 @@ const initLayer = (jsonUrl, view) => tslib_1.__awaiter(void 0, void 0, void 0, f
     layer = yield layerUtil.initLayer(jsonUrl, "weather-stations-layer", "Weather Stations", renderer, fields, "point", false);
     layer.definitionExpression = "WeatherNetworkPriority = 0";
     view.watch("scale", (scale) => {
-        console.log(scale);
+        // console.log(scale)
         if (scale > 577790.554289) {
             layer.definitionExpression = "WeatherNetworkPriority = 0";
             layer.refresh();

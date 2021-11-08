@@ -8,7 +8,7 @@
       bannerText: { text: 'Mountain pass report' },
       title: { fieldName: 'PassName' },
       content: [
-       /* {
+        /* {
           label: 'Temperature',
           value: {
             custom: getTemp,
@@ -109,7 +109,7 @@ export default defineComponent({
         linkText = feature.attributes["PassName"] as string;
       }
       const moreInfoObject = new Object({
-        url: ` https://wsdotappsqa.wsdot.wa.gov/travel/center/mountainpasses/${feature.attributes.MountainPassId}`,
+        url: `/travel/real-time/mountainpasses/${feature.attributes.MountainPassId}`,
         text: "Learn more about ",
         linkText: linkText,
       }) as MoreInfoURLInfo;
@@ -165,8 +165,8 @@ export default defineComponent({
       //console.log(feature)
       const num = feature.attributes["Elevation"] as number;
       const unit = feature.attributes["ElevationUnit"] as string;
-      console.log(feature.attributes["Elevation"])
-      console.log(feature.attributes["ElevationUnit"])
+      // console.log(feature.attributes["Elevation"]);
+      // console.log(feature.attributes["ElevationUnit"]);
       let ftNum;
       let meterNum;
       if (num) {

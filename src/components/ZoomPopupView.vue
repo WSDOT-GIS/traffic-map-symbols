@@ -46,7 +46,7 @@ export default defineComponent({
   position: absolute;
   margin-top: 0;
   margin-left: 0;
-  z-index: 99;
+  z-index: 8;
   background-color: #fff;
   border-radius: 10px;
   border: 1px solid #808080;

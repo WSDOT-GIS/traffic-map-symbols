@@ -1,31 +1,65 @@
 "use strict";
 //A set of functions to deal with the display of graphics that aren't intended to persist in the map.
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeGraphicsByType = exports.hidePointInteractionGraphics = exports.displayPointInteractionGraphics = exports.addGraphicsByType = void 0;
+exports.removeGraphicsByType = exports.hidePointInteractionGraphics = exports.displayPointInteractionGraphics = exports.addGraphicsByType = exports.buildGraphicsByType = void 0;
 const tslib_1 = require("tslib");
 const Point_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/Point"));
 const Graphic_1 = tslib_1.__importDefault(require("@arcgis/core/Graphic"));
 const esriMap_1 = require("../esri-stuff/esriMap");
 const MyLocationSymbol_1 = require("@/symbols/MyLocationSymbol");
 const featureInfoUtil_1 = require("./featureInfoUtil");
-const addGraphicsByType = (type, featureGeometry) => {
+const CIMSymbol_1 = tslib_1.__importDefault(require("@arcgis/core/symbols/CIMSymbol"));
+const buildGraphicsByType = (type, data) => {
     let graphic;
+    let selectedSymbol;
+    let layer;
+    let jsonSymbol;
+    let newSymbol;
     switch (type) {
-        case "myLocation":
+        case "coordinates":
             graphic = new Graphic_1.default({
                 geometry: new Point_1.default({
-                    longitude: featureGeometry.longitude,
-                    latitude: featureGeometry.latitude,
+                    longitude: data.longitude,
+                    latitude: data.latitude,
                 }),
-                attributes: {
-                    graphicType: "myLocation"
-                },
                 symbol: MyLocationSymbol_1.MyLocationSymbol
             });
             break;
-        case "selectedGraphic":
-            graphic = featureGeometry;
+        case "CIMSymbol":
+            layer = data.layer;
+            selectedSymbol = new CIMSymbol_1.default();
+            if (layer.renderer.type == "unique-value") {
+                const renderer = layer.renderer;
+                const field = renderer.field;
+                renderer.uniqueValueInfos.forEach(uniqueValueInfo => {
+                    if (uniqueValueInfo.value == data.attributes[field]) {
+                        selectedSymbol = uniqueValueInfo.symbol;
+                    }
+                });
+            }
+            if (layer.renderer.type == "simple") {
+                const renderer = layer.renderer;
+                selectedSymbol = renderer.symbol;
+            }
+            // console.log(selectedSymbol)
+            jsonSymbol = selectedSymbol.toJSON();
+            jsonSymbol.symbol.symbolLayers[0].size = 30;
+            jsonSymbol.symbol.symbolLayers[0].offsetY = 15;
+            newSymbol = CIMSymbol_1.default.fromJSON(jsonSymbol);
+            // console.log(data)
+            graphic = new Graphic_1.default({
+                geometry: data.geometry,
+                symbol: newSymbol
+            });
+            // console.log(graphic)
+            break;
     }
+    return graphic;
+};
+exports.buildGraphicsByType = buildGraphicsByType;
+const addGraphicsByType = (graphicType, graphic) => {
+    // console.log(graphic)
+    graphic.attributes = { graphicType: graphicType };
     esriMap_1.mapView.graphics.add(graphic);
 };
 exports.addGraphicsByType = addGraphicsByType;

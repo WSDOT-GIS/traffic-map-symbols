@@ -71,7 +71,7 @@ export const getLayerIds = (groupId: string): string[] => {
 }
 
 export const resizeFeature = (graphic: Graphic,mapView: MapView):void=>{
-    console.log(graphic)
+    // console.log(graphic)
     const mapGraphic = buildGraphicsByType("CIMSymbol",graphic)
     addGraphicsByType("selectedGraphic",mapGraphic)
 }
@@ -113,7 +113,7 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
     fLayer.visible = true;
     const ftrCount = await fLayer.queryFeatureCount();
     if (groupInfo.layers[0].jsonUrl && ftrCount === 0) {
-        console.log("getFeature: " + layer.title)
+        // console.log("getFeature: " + layer.title)
         await reloadData(groupInfo.layers[0].jsonUrl, fLayer);
         if (groupInfo.layers.length > 1) {
             for (const eachLyr of groupInfo.layers) {
@@ -187,7 +187,7 @@ export const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
     layer.watch("visible", (newValue, oldValue, propName, target) => {
         const lyr = target as FeatureLayer;
         if (newValue) {
-            console.log("Became visible: " + layer.title)
+            // console.log("Became visible: " + layer.title)
             reloadData(jsonUrl, lyr);
         }
     });
@@ -198,7 +198,8 @@ let loadManager: { id: string, promise: Promise<void> }[] = [];
 export const reloadData = async (jsonUrl: string, layer: FeatureLayer): Promise<void> => {
     const reload = async (jsonUrl: string, layer: FeatureLayer): Promise<void> => {
         if (!layer.visible) { return; }
-        console.log("Reload data: " + layer.id);
+        console.log("failed to return")
+        // console.log("Reload data: " + layer.id);
         // Fetch all features from JSON...
         const graphics = await fetchJsonData(jsonUrl);
         // Replace old with new features...

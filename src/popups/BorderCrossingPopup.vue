@@ -9,6 +9,7 @@
       title: { fieldName: 'BorderCrossingDescription' },
       content: [
         { label: 'Northbound wait time', value: { fieldName: 'HTMLTable',isHTML: true } },
+        { label: 'Border reading time', value: { fieldName: 'BorderReadingTime', isTime: true, isDate: true}}
       ],
        moreInfoURL:{
         custom: getMoreInfoURL
@@ -20,8 +21,7 @@
       <div class="mapFeaturesIcon"
               v-html="
                 layerIcons.find((x) => x.id == 'border-crossing')
-                  ?.paths
-              ">
+                  ?.paths">
       </div>
     </template>
   </PopupBase>
@@ -55,7 +55,7 @@ export default defineComponent({
     });
     const getMoreInfoURL=(feature: FeatureInfo): MoreInfoURLInfo=>{
       //console.log(feature)
-      console.log(feature.attributes)
+      //console.log(feature.attributes)
       const moreInfoObject =new Object({
         url: `https://www.th.gov.bc.ca/ATIS/index.htm`,
         text: "Get the",

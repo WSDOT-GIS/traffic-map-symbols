@@ -1,53 +1,53 @@
 <template>
-    <div id="esri-map-view"></div>
-    <AlertView :Alerts="alerts" />
-    <div
-      id="map-bottom-left-container"
-      class="w3-display-bottomleft w3-container"
-      ref="bottomLeftDiv"
-      :style="{ marginBottom: marginBottomContainer }"
-    >
-      <CoordinatesView />
-    </div>
-    <div id="map-bottom-center-container" class="w3-display-bottommiddle" ref="bottomCtrDiv">
-      <AdView @onResize="adjustBottomControls" />
-    </div>
-    <div
-      id="map-bottom-right-container"
-      class="w3-display-bottomright"
-      ref="bottomRightDiv"
-      :style="{ marginBottom: marginBottomContainer }"
-    >
-      <div class="map-bottom-right-container-row flex-row">
-        <div class="map-bottom-right-container-column flex-column">
-          <BasemapView />
-        </div>
-        <div class="map-bottom-right-container-column flex-column">
-          <MyLocationView />
-          <ZoomButtonView />
-        </div>
+  <div id="esri-map-view"></div>
+  <AlertView :Alerts="alerts" />
+  <div
+    id="map-bottom-left-container"
+    class="w3-display-bottomleft w3-container"
+    ref="bottomLeftDiv"
+    :style="{ marginBottom: marginBottomContainer }"
+  >
+    <CoordinatesView />
+  </div>
+  <div id="map-bottom-center-container" class="w3-display-bottommiddle" ref="bottomCtrDiv">
+    <AdView @onResize="adjustBottomControls" />
+  </div>
+  <div
+    id="map-bottom-right-container"
+    class="w3-display-bottomright"
+    ref="bottomRightDiv"
+    :style="{ marginBottom: marginBottomContainer }"
+  >
+    <div class="map-bottom-right-container-row flex-row">
+      <div class="map-bottom-right-container-column flex-column">
+        <BasemapView />
+      </div>
+      <div class="map-bottom-right-container-column flex-column">
+        <MyLocationView />
+        <ZoomButtonView />
       </div>
     </div>
-    <ZoomPopupView
-      :Visible="zoomPopupVisible"
-      :PositionX="zoomPopupX"
-      :PositionY="zoomPopupY"
-      :Label="zoomPopupLabel"
-      @clicked="zoomMetroEventHandler"
-    ></ZoomPopupView>
-    <CameraPopup :MapXY="popupXY" :Featureset="popupFeatureset" />
-    <ParkRidePopup :Featureset="popupFeatureset" />
-    <PointRestrictionPopup :Featureset="popupFeatureset" />
-    <MountainPassPopup :Featureset="popupFeatureset" />
-    <WeatherStationsPopup :Featureset="popupFeatureset" />
-    <RestAreaPopup :Featureset="popupFeatureset" />
-    <RoadAlertPopup :Featureset="popupFeatureset" />
-    <!-- <TravelTimesPopup :Featureset="popupFeatureset" /> -->
-    <WildfirePointsPopup :Featureset="popupFeatureset" />
-    <BorderCrossingPopup :Featureset="popupFeatureset" />
-    <RegionalAlertPopup :Featureset="popupFeatureset" />
-    <FerryRoutesPopup :Featureset="popupFeatureset" :Alerts="ferryAlerts" />
-    <LeftPaneView />
+  </div>
+  <ZoomPopupView
+    :Visible="zoomPopupVisible"
+    :PositionX="zoomPopupX"
+    :PositionY="zoomPopupY"
+    :Label="zoomPopupLabel"
+    @clicked="zoomMetroEventHandler"
+  ></ZoomPopupView>
+  <CameraPopup :MapXY="popupXY" :Featureset="popupFeatureset" />
+  <ParkRidePopup :Featureset="popupFeatureset" />
+  <PointRestrictionPopup :Featureset="popupFeatureset" />
+  <MountainPassPopup :Featureset="popupFeatureset" />
+  <WeatherStationsPopup :Featureset="popupFeatureset" />
+  <RestAreaPopup :Featureset="popupFeatureset" />
+  <RoadAlertPopup :Featureset="popupFeatureset" />
+  <!-- <TravelTimesPopup :Featureset="popupFeatureset" /> -->
+  <WildfirePointsPopup :Featureset="popupFeatureset" />
+  <BorderCrossingPopup :Featureset="popupFeatureset" />
+  <RegionalAlertPopup :Featureset="popupFeatureset" />
+  <FerryRoutesPopup :Featureset="popupFeatureset" :Alerts="ferryAlerts" />
+  <LeftPaneView />
 </template>
 
 <script lang="ts">
@@ -61,8 +61,7 @@ import Layer from "@arcgis/core/layers/Layer";
 import Point from "@arcgis/core/geometry/Point";
 import Extent from "@arcgis/core/geometry/Extent";
 import LayerView from "@arcgis/core/views/layers/LayerView";
-import * as WatchUtils from '@arcgis/core/core/watchUtils.js'
-import PromisedWatchHandle from "@arcgis/core/core/watchUtils";
+import * as WatchUtils from "@arcgis/core/core/watchUtils.js";
 import Collection from "@arcgis/core/core/Collection";
 import { getConfig } from "@/utils/appConfigUtil";
 import { mapView, zoomToMetroArea } from "@/esri-stuff/esriMap";
@@ -73,7 +72,11 @@ import {
   getFeatureIdFromUrl,
   getFeatureTypeFromUrl,
 } from "@/utils/urlParamUtil";
-import { createLayerGroupInfos, getFeature, setLayerVisibility, resizeFeature } from "@/utils/layerUtil";
+import {
+  createLayerGroupInfos,
+  getFeature,
+  setLayerVisibility /*, resizeFeature*/,
+} from "@/utils/layerUtil";
 import {
   removeGraphicsByType,
   hidePointInteractionGraphics,
@@ -131,10 +134,7 @@ import MyLocationView from "@/components/MyLocationView.vue";
 import ZoomButtonView from "@/components/ZoomButtonView.vue";
 import AlertView from "@/components/AlertView.vue";
 import AdView from "@/components/AdView.vue";
-// import WebMap from "@arcgis/core/WebMap";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import WebMap from "@arcgis/core/WebMap";
-import MapView from "@arcgis/core/views/MapView";
 
 export default defineComponent({
   components: {
@@ -160,21 +160,22 @@ export default defineComponent({
     AdView,
   },
   setup() {
-    const mapLoaded = ref<boolean>(false)
-    setTimeout(()=>{mapLoaded.value=true},9000);
+    const mapLoaded = ref<boolean>(false);
+    setTimeout(() => {
+      mapLoaded.value = true;
+    }, 9000);
     const store = useStore();
     // Statewide alerts...
     const alerts = ref<AlertInfo[]>([]);
     const ferryAlerts = ref<FerryAlertInfo[]>([]);
-    getConfig().then((config) => {
-      alertInfoUtil.initStateAlerts(config.stateAlerts);
-      alertInfoUtil.getStateAlerts().then((result) => {
-        alerts.value = result;
-      });
-      alertInfoUtil.initFerryAlerts(config.ferryAlerts);
-      // Build the list used by the URL query...
-      createLayerGroupInfos(config);
+    const config = getConfig();
+    alertInfoUtil.initStateAlerts(config.stateAlerts);
+    alertInfoUtil.getStateAlerts().then((result) => {
+      alerts.value = result;
     });
+    alertInfoUtil.initFerryAlerts(config.ferryAlerts);
+    // Build the list used by the URL query...
+    createLayerGroupInfos(config);
 
     // Zoom popup...
     const zoomPopupVisible = ref(false);
@@ -208,7 +209,7 @@ export default defineComponent({
       } else {
         popupXY.value = undefined;
       }
-      store.commit("setIsLoading",{loading: false, message: ""})
+      store.commit("setIsLoading", { loading: false, message: "" });
     };
     const closePopup = () => {
       popupFeatureset.value = { layerId: "", ids: [] };
@@ -229,8 +230,7 @@ export default defineComponent({
           WeatherStationsLayer(),
           MountainPassesLayer(),
           RestAreasLayer(),
-          RoadAlertsLayer("road-closures-layer"),
-          RoadAlertsLayer("road-alerts-layer"),
+          RoadAlertsLayer(),
           // TravelTimeLayer(),
           FireIncidentLayer(),
           RoadsReferenceLayer(),
@@ -343,7 +343,6 @@ export default defineComponent({
                 const id = g.getObjectId();
                 //get lines for restriciton point click
                 if (g.layer.id === "point-restrictions-layer") {
-                  
                   getFeatureInfoById(id, g.layer as FeatureLayer).then((result) => {
                     if (
                       result?.attributes.lineMarker == "true" ||
@@ -374,7 +373,7 @@ export default defineComponent({
                 } else {
                   showPopup(results2Show.layer.id, [id]);
                 }
-                removeGraphicsByType("selectedGraphic")
+                removeGraphicsByType("selectedGraphic");
                 //Add larger marker to map
                 //resizeFeature(g,mapView as MapView)
               }
@@ -382,7 +381,7 @@ export default defineComponent({
           } else {
             hidePointInteractionGraphics(LineRestrictionsLayer());
             hidePointInteractionGraphics(LineFerryRoutesLayer());
-            removeGraphicsByType("selectedGraphic")
+            removeGraphicsByType("selectedGraphic");
             removeGraphicsByType("myLocation"); //remove "my location" graphic
             //No feature exist...
             closePopup();
@@ -405,25 +404,26 @@ export default defineComponent({
       const basemapInfo = getBasemapFromUrl();
       store.commit("setBasemap", basemapInfo.name);
       // Read config, then load operational layers...
-      await esriMap.loadOperationalLayers()
+      await esriMap.loadOperationalLayers();
       //set watcher to turn off initial loader screen
-      const mapLayers = esriMap.getLayers() as Collection<Layer>
-      let vlPromises = [] as Array<Promise<LayerView>>
-      let loadedPromises = [] as Array<Promise<any>>
-      mapLayers.forEach((layer)=>{
-        if (layer.type=="feature"){
-          vlPromises.push(mapView.whenLayerView(layer))
+      const mapLayers = esriMap.getLayers() as Collection<Layer>;
+      let vlPromises = [] as Array<Promise<LayerView>>;
+      let loadedPromises = [] as Array<Promise<unknown>>;
+      mapLayers.forEach((layer) => {
+        if (layer.type == "feature") {
+          vlPromises.push(mapView.whenLayerView(layer));
         }
-      })
-      Promise.all(vlPromises).then((layerViews)=>{
-        layerViews.forEach((layerView)=>{
-          loadedPromises.push(WatchUtils.whenFalseOnce(layerView,"updating"))
-        })
-        return Promise.all(loadedPromises).then(
-          ()=>{
-            store.commit("setIsLoading",{loading: false, message: ""})/***TODO: use this to wait until non-feature layers are also ready***/
-          }
-        )
+      });
+      Promise.all(vlPromises).then((layerViews) => {
+        layerViews.forEach((layerView) => {
+          loadedPromises.push(WatchUtils.whenFalseOnce(layerView, "updating"));
+        });
+        return Promise.all(loadedPromises).then(() => {
+          store.commit("setIsLoading", {
+            loading: false,
+            message: "",
+          }); /***TODO: use this to wait until non-feature layers are also ready***/
+        });
       });
       /* Set layer list here before the rest of the map is ready, so we can show the layer list UI early.
        * Otherwise user will see a map without layer list until everything is ready. */
@@ -474,7 +474,7 @@ export default defineComponent({
               }
               // Zoom in...
               esriMap.tryZoomToPointAsync(result.geometry as Point, 4).then(() => {
-                showPopup(result.layer.id, [result.getObjectId()])
+                showPopup(result.layer.id, [result.getObjectId()]);
               });
             }
           });
@@ -562,7 +562,6 @@ export default defineComponent({
     const bottomLeftDiv = ref<HTMLDivElement>();
     const bottomCtrDiv = ref<HTMLDivElement>();
     const marginBottomContainer = ref("0 px");
-    //
     const adjustBottomControls = (event?: { width: number; height: number }) => {
       let ctrWidth: number;
       let ctrHeight: number;
@@ -603,7 +602,7 @@ export default defineComponent({
       ferryAlerts,
       adjustBottomControls,
       marginBottomContainer,
-      mapLoaded
+      mapLoaded,
     };
   },
 });

@@ -25,6 +25,11 @@ const fields = [
         "name": "HTMLTable",
         "type": "string",
         "alias": "HTMLTable",
+    }),
+    new Field_1.default({
+        "name": "BorderReadingTime",
+        "type": "string",
+        "alias": "Border Reading Time",
     })
 ];
 let layer;

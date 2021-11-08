@@ -89,7 +89,7 @@ export default defineComponent({
         )
         .then(() => {
           const graphic = buildGraphicsByType("coordinates",location.coords)
-          console.log(graphic)
+          // console.log(graphic)
           addGraphicsByType("myLocation", graphic)
         });
     },
@@ -125,7 +125,7 @@ svg {
   right: 10px;
   top: -22px;
   border-radius: 20px / 20px;
-  z-index: 9;
+  /* z-index: 9; */
   margin: 2px;
   background-color: white;
   fill: red;

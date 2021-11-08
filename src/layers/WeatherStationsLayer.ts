@@ -5,7 +5,7 @@ import Field from "@arcgis/core/layers/support/Field";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 import * as layerUtil from "@/utils/layerUtil";
-import { viewHide16 } from "@esri/calcite-ui-icons";
+// import { viewHide16 } from "@esri/calcite-ui-icons";
 import MapView from "@arcgis/core/views/MapView";
 
 const renderer = new SimpleRenderer({
@@ -84,7 +84,7 @@ export const initLayer = async (jsonUrl: string, view: MapView): Promise<Feature
     );
     layer.definitionExpression = "WeatherNetworkPriority = 0"
     view.watch("scale",(scale)=>{
-        console.log(scale)
+        // console.log(scale)
         if(scale>577790.554289){
             (layer as FeatureLayer).definitionExpression="WeatherNetworkPriority = 0";
             (layer as FeatureLayer).refresh()

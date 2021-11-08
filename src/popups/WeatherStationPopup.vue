@@ -107,7 +107,7 @@ export default defineComponent({
     };
     // Setting features to undefined closes the popup...
     const close = () => {
-      console.log("closed");
+      // console.log("closed");
       forecastList.value = undefined;
       feature.value = undefined;
     };
@@ -117,13 +117,13 @@ export default defineComponent({
         async (response) => {
           if (response) {
             const featureNWSZoneId = response?.attributes?.NWSZoneId?.toString().replace(/\s/g, "");
-            const config = await getConfig();
+            const config = getConfig();
             //fetch(config.forecastSummaryAPI+featureNWSZoneId).then((result)=>{ ~~summary call
             fetch(config.forecastExtendedAPI + featureNWSZoneId).then((result) => {
               if(result.status==200){
-                console.log(result)
+                // console.log(result)
                 result.json().then((response) => {
-                  console.log(response.forecastData)
+                  // console.log(response.forecastData)
                   function mycomparator(a:any,b:any) {
                     return parseInt(a.forecastNumber, 10) - parseInt(b.forecastNumber, 10);
                   }
@@ -160,7 +160,7 @@ export default defineComponent({
     const getMoreInfoURL = (feature: FeatureInfo) => {
       //console.log(feature)
       const moreInfoObject = new Object({
-        url: `https://wsdotappsqa.wsdot.wa.gov/travel/center/Weather/${feature.attributes.WeatherStationId}`,
+        url: `/travel/real-time/Weather/${feature.attributes.WeatherStationId}`,
         text: "Learn more about the weather and forecast at ",
         linkText: `${feature.attributes["WeatherStationDescription"]?.toString().split(" on ")[0]} station`,
       }) as MoreInfoURLInfo;
@@ -191,7 +191,7 @@ export default defineComponent({
       return formatNum(feature, "Visibility", "Mile");
     };
     const getWindSpeed = (feature: FeatureInfo) => {
-      console.log(feature)
+      // console.log(feature)
       return formatNum(feature, "WindSpeed", "mph");
     };
 

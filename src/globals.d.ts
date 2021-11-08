@@ -30,3 +30,4 @@ declare var noTrafficImpactLayer: any
 interface Window {
     googletag: googletag.Googletag;
 }
+
