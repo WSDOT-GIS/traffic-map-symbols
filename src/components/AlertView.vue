@@ -4,6 +4,7 @@
       class="w3-modal-content w3-animate-right w3-card w3-left-align alert-content"
       :style="{ maxHeight: height }"
       ref="containerRef"
+      v-click-away="onClickAway"
     >
       <div class="alert-header">
         <div class="alert-banner">
@@ -40,12 +41,12 @@
     </div>
   </div>
   <div
-    v-if="!isOpen"
+    v-if="!isOpen && Alerts.length"
     id="alert-container-closed"
     class="w3-transparent w3-button w3-circle"
     @click="toggleDisplay"
   >
-    <div v-html="iconButton?.paths" class="alert-button"></div>
+    <div v-html="iconButton?.paths" class="alert-button" ref="btnContainerRef"></div>
   </div>
 </template>
 
@@ -103,13 +104,32 @@ export default defineComponent({
       const h = mapSize.value.height - top * 2;
       height.value = h + "px";
     };
+    let justOpened: boolean | undefined;
     const toggleDisplay = () => {
       isOpen.value = !isOpen.value;
       setDisplayStyle();
+      if (isOpen.value) {
+        justOpened = true;
+      }
     };
     const setDisplayStyle = () => {
       displayStyle.value =
         isOpen.value && props.Alerts.length > 0 && props.Alerts[0] ? "block" : "none";
+    };
+    const onClickAway = (event: PointerEvent | TouchEvent) => {
+      if (!props.Alerts.length) { return; }
+      // On the touch device, ignore the justOpened flag.
+      if (event.type === "touchstart") {
+        justOpened = false;
+      }
+      // If the button is clicked on non-touch device, the window will be opened, then onClickAway is called, so it will close it again.
+      // To prevent that, the justOpened flag is set to true when that happens.
+      if (justOpened) {
+        justOpened = false;
+        return;
+      }
+      isOpen.value = false;
+      setDisplayStyle();
     };
     return {
       containerRef,
@@ -121,6 +141,7 @@ export default defineComponent({
       formatEpoch,
       iconBanner,
       iconButton,
+      onClickAway,
     };
   },
 });

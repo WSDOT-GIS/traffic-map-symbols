@@ -2,7 +2,7 @@ import LayerInfo from "@/types/LayerInfo";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Graphic from "@arcgis/core/Graphic";
 import WebMap from "@arcgis/core/WebMap";
-import { addGraphicsByType, buildGraphicsByType, removeGraphicsByType } from "./graphicLayerUtil";
+import { addGraphicsByType, buildGraphicsByType } from "./graphicLayerUtil";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as geomJsonUtils from "@arcgis/core/geometry/support/jsonUtils";
 import Renderer from "@arcgis/core/renderers/Renderer";
@@ -12,9 +12,6 @@ import AppConfig from "@/types/AppConfig";
 import { fetchJson } from "@/utils/miscUtil";
 import { isEsriFeatures } from "@/utils/typeUtil";
 import MapView from "@arcgis/core/views/MapView";
-import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
-import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
-import CIMSymbol from "@arcgis/core/symbols/CIMSymbol";
 /**  Mapping between layer groups (type in URL query param) and layer IDs...
  *   * id
  *      ID for the layer group (type).
@@ -70,10 +67,9 @@ export const getLayerIds = (groupId: string): string[] => {
     }
 }
 
-export const resizeFeature = (graphic: Graphic,mapView: MapView):void=>{
-    // console.log(graphic)
-    const mapGraphic = buildGraphicsByType("CIMSymbol",graphic)
-    addGraphicsByType("selectedGraphic",mapGraphic)
+export const resizeFeature = (graphic: Graphic, mapView: MapView): void => {
+    const mapGraphic = buildGraphicsByType("CIMSymbol", graphic)
+    addGraphicsByType("selectedGraphic", mapGraphic)
 }
 /**
  * Set the visibility of the specified layer in the layer list.
@@ -113,7 +109,6 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
     fLayer.visible = true;
     const ftrCount = await fLayer.queryFeatureCount();
     if (groupInfo.layers[0].jsonUrl && ftrCount === 0) {
-        // console.log("getFeature: " + layer.title)
         await reloadData(groupInfo.layers[0].jsonUrl, fLayer);
         if (groupInfo.layers.length > 1) {
             for (const eachLyr of groupInfo.layers) {
@@ -177,9 +172,7 @@ export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: st
         spatialReference: SpatialReference.WebMercator,
     });
     // Set event to load layer when it becomes visible...
-    if (!visible) {
-        setLayerEvent(layer, jsonUrl);
-    }
+    setLayerEvent(layer, jsonUrl);
     return layer;
 }
 
@@ -187,7 +180,6 @@ export const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
     layer.watch("visible", (newValue, oldValue, propName, target) => {
         const lyr = target as FeatureLayer;
         if (newValue) {
-            // console.log("Became visible: " + layer.title)
             reloadData(jsonUrl, lyr);
         }
     });
@@ -198,12 +190,15 @@ let loadManager: { id: string, promise: Promise<void> }[] = [];
 export const reloadData = async (jsonUrl: string, layer: FeatureLayer): Promise<void> => {
     const reload = async (jsonUrl: string, layer: FeatureLayer): Promise<void> => {
         if (!layer.visible) { return; }
-        console.log("failed to return")
-        // console.log("Reload data: " + layer.id);
         // Fetch all features from JSON...
-        const graphics = await fetchJsonData(jsonUrl);
-        // Replace old with new features...
-        await replaceFeatures(layer, graphics);
+        await fetchJsonData(jsonUrl).then(async (graphics) => {
+            if (graphics.length > 0) {
+                await replaceFeatures(layer, graphics);
+            }
+            // Replace old with new features...
+        })
+
+
     }
     // Check if the layer is already being loaded currently or not...
     const runningProc = loadManager.find(x => x.id === layer.id);
@@ -213,7 +208,7 @@ export const reloadData = async (jsonUrl: string, layer: FeatureLayer): Promise<
     } else {
         // It is not loading now, so start loading.
         const promise = reload(jsonUrl, layer);
-        loadManager.push({id: layer.id, promise: promise});
+        loadManager.push({ id: layer.id, promise: promise });
         await promise;
         loadManager = loadManager.filter(x => x.id !== layer.id);
     }
@@ -239,7 +234,6 @@ export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
     // Create graphic out of each feature...
     const graphics: Graphic[] = [];
     for (const each of json.features) {
-        // console.log(each)
         const geom = geomJsonUtils.fromJSON(each.geometry);
         if (!geom) {
             console.warn("Failed to get geometry. " + JSON.stringify(each));

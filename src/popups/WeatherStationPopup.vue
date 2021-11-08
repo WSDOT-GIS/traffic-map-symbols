@@ -107,7 +107,6 @@ export default defineComponent({
     };
     // Setting features to undefined closes the popup...
     const close = () => {
-      // console.log("closed");
       forecastList.value = undefined;
       feature.value = undefined;
     };
@@ -118,12 +117,9 @@ export default defineComponent({
           if (response) {
             const featureNWSZoneId = response?.attributes?.NWSZoneId?.toString().replace(/\s/g, "");
             const config = getConfig();
-            //fetch(config.forecastSummaryAPI+featureNWSZoneId).then((result)=>{ ~~summary call
             fetch(config.forecastExtendedAPI + featureNWSZoneId).then((result) => {
               if(result.status==200){
-                // console.log(result)
                 result.json().then((response) => {
-                  // console.log(response.forecastData)
                   function mycomparator(a:any,b:any) {
                     return parseInt(a.forecastNumber, 10) - parseInt(b.forecastNumber, 10);
                   }
@@ -134,7 +130,6 @@ export default defineComponent({
                     forecastExpirationDateTime: response.forecastExpirationDateTime,
                     nwsZoneRegionName: response.nwsZoneRegionName,
                     forecasts: sortedForecasts,
-                    //forecasts: response.forecastData,
                   };
                   
                 });
@@ -153,12 +148,10 @@ export default defineComponent({
         if (desc) {
           text = "on " + desc;
         }
-        //text = `on ${feature.attributes["WeatherStationDescription"]?.toString().split(" on ")[1]}`;
       }
       return text;
     };
     const getMoreInfoURL = (feature: FeatureInfo) => {
-      //console.log(feature)
       const moreInfoObject = new Object({
         url: `/travel/real-time/Weather/${feature.attributes.WeatherStationId}`,
         text: "Learn more about the weather and forecast at ",
@@ -191,7 +184,6 @@ export default defineComponent({
       return formatNum(feature, "Visibility", "Mile");
     };
     const getWindSpeed = (feature: FeatureInfo) => {
-      // console.log(feature)
       return formatNum(feature, "WindSpeed", "mph");
     };
 

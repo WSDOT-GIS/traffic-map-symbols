@@ -1,11 +1,9 @@
-// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer"
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import weatherStationSymbol from "@/symbols/WeatherStationSymbol"
 import Field from "@arcgis/core/layers/support/Field";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 import * as layerUtil from "@/utils/layerUtil";
-// import { viewHide16 } from "@esri/calcite-ui-icons";
 import MapView from "@arcgis/core/views/MapView";
 
 const renderer = new SimpleRenderer({
@@ -80,17 +78,15 @@ export const initLayer = async (jsonUrl: string, view: MapView): Promise<Feature
         fields,
         "point",
         false,
-        //"WeatherStationId"
     );
     layer.definitionExpression = "WeatherNetworkPriority = 0"
-    view.watch("scale",(scale)=>{
-        // console.log(scale)
-        if(scale>577790.554289){
-            (layer as FeatureLayer).definitionExpression="WeatherNetworkPriority = 0";
+    view.watch("scale", (scale) => {
+        if (scale > 577790.554289) {
+            (layer as FeatureLayer).definitionExpression = "WeatherNetworkPriority = 0";
             (layer as FeatureLayer).refresh()
         }
-        else{
-            (layer as FeatureLayer).definitionExpression="1=1";
+        else {
+            (layer as FeatureLayer).definitionExpression = "1=1";
             (layer as FeatureLayer).refresh()
         }
     })
@@ -103,25 +99,5 @@ const getLayer = (): FeatureLayer => {
     }
     return layer;
 }
-
-// let layer: GeoJSONLayer | undefined;
-
-// export const initLayer = (url: string): GeoJSONLayer => {
-//     layer = new GeoJSONLayer({
-//         id: "weather-stations-layer",
-//         url: url,
-//         title: "Weather Stations",
-//         renderer: weatherStationRenderer,
-//         visible: false
-//     });
-//     return layer;
-// }
-
-// const getLayer = (): GeoJSONLayer => {
-//     if (!layer) {
-//         throw "WeatherStationsLayer is not ready yet!";
-//     }
-//     return layer;
-// }
 
 export default getLayer

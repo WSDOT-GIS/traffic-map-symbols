@@ -54,6 +54,11 @@ const fields = [
         "name": "lineMarker",
         "type": "string",
         "alias": "lineMarker",
+    }),
+    new Field({
+        "name": "location_description",
+        "type": "string",
+        "alias": "location_description",
     })
 ]
 

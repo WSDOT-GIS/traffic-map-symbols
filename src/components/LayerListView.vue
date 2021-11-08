@@ -1,5 +1,5 @@
 <template>
-  <div id="layerListWidget" title="Map Features" v-if="layerList.length > 0">
+  <div id="layer-list-widget" title="Map Features" v-if="layerList.length > 0">
     <!-- Column headers -->
     <div class="layer-list-header-row">
       <h6>Data layers</h6>
@@ -41,7 +41,7 @@
         <td class="trafficLegendLabelCell">Stop &#38; Go</td>
       </tr>
     </table>
-    <!-- Travel Alerts -->
+    <!-- Road Alerts -->
     <ToggleSwitchView
       @toggle="clickEvent"
       :Enabled="true"
@@ -59,46 +59,38 @@
         <span class="layer-list-item-text">Alerts</span>
       </template>
     </ToggleSwitchView>
-    <table class="roadAlertsLegendTable" role="presentation">
-      <tr class="roadAlertsLegendRow">
-        <td class="roadAlertsLegendCell">
-          <div
-            class="roadAlertsIcon"
-            v-html="layerIcons.find((x) => x.id == 'road-alert')?.paths"
-          ></div>
-        </td>
-        <td class="roadAlertsLegendCell">
-          <div
-            class="roadAlertsIcon"
-            v-html="layerIcons.find((x) => x.id == 'road-alert-medium')?.paths"
-          ></div>
-        </td>
-        <!-- <td class="roadAlertsLegendCell">
-          <div
-            class="roadAlertsIcon"
-            v-html="layerIcons.find((x) => x.id == 'road-alert-high')?.paths"
-          ></div>
-        </td> -->
-        <td class="roadAlertsLegendCell">
-          <div
-            class="roadAlertsIcon"
-            v-html="layerIcons.find((x) => x.id == 'road-alert-highest')?.paths"
-          ></div>
-        </td>
-        <td class="roadAlertsLegendCell">
-          <div
-            class="roadAlertsIcon"
-            v-html="layerIcons.find((x) => x.id == 'road-closed')?.paths"
-          ></div>
-        </td>
-      </tr>
-      <tr>
-        <td class="roadAlertsLegendLabelCell">Alert</td>
-        <td class="roadAlertsLegendLabelCell">Medium</td>
-        <td class="roadAlertsLegendLabelCell">High</td>
-        <td class="roadAlertsLegendLabelCell">Closure</td>
-      </tr>
-    </table>
+    <!-- Road alerts legend -->
+    <div class="alerts-legend-container">
+      <div class="alerts-legend-item">
+        <div
+          class="alerts-legend-icon"
+          v-html="layerIcons.find((x) => x.id == 'road-alert')?.paths"
+        ></div>
+        <div class="alerts-legend-label">Alert</div>
+      </div>
+      <div class="alerts-legend-item">
+        <div
+          class="alerts-legend-icon"
+          v-html="layerIcons.find((x) => x.id == 'road-alert-medium')?.paths"
+        ></div>
+        <div class="alerts-legend-label">Medium</div>
+      </div>
+      <div class="alerts-legend-item">
+        <div
+          class="alerts-legend-icon"
+          v-html="layerIcons.find((x) => x.id == 'road-alert-highest')?.paths"
+        ></div>
+        <div class="alerts-legend-label">High</div>
+      </div>
+      <div class="alerts-legend-item">
+        <div
+          class="alerts-legend-icon"
+          v-html="layerIcons.find((x) => x.id == 'road-closed')?.paths"
+        ></div>
+        <div class="alerts-legend-label">Closure</div>
+      </div>
+    </div>
+
     <!-- Traffic Cameras -->
     <div class="layer-list-row">
       <ToggleSwitchView
@@ -364,6 +356,9 @@ export default defineComponent({
 });
 </script>
 <style scoped>
+#layer-list-widget {
+  padding-bottom: 16px;
+}
 .layer-list-header-row {
   display: flex;
   justify-content: space-between;
@@ -439,5 +434,24 @@ export default defineComponent({
 }
 tr {
   border: none;
+}
+.alerts-legend-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 70%;
+  max-width: 80%;
+  margin-left: 14px;
+  margin-bottom: 14px;
+}
+.alerts-legend-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.alerts-legend-label {
+  font-size: var(--type-scale-base0);
+  line-height: var(--type-scale-base2);
+  font-weight: var(--font-weight-normal);
 }
 </style>

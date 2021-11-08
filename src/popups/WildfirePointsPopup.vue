@@ -74,7 +74,6 @@ export default defineComponent({
       return formattedPercent;
     };
     const getMoreInfoURL = (feature: FeatureInfo) => {
-      //console.log(feature)
       const moreInfoObject = new Object({
         url: `https://wsdot.maps.arcgis.com/home/item.html?id=d957997ccee7408287a963600a77f61f`,
         text: "Wildfire points and perimeters are sourced from ",
@@ -102,7 +101,6 @@ export default defineComponent({
           //query feature layer for feature
           (result) => {
             if (result) {
-              // console.log(result)
               feature.value = result;
             }
           }

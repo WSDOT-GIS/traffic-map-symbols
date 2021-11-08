@@ -27,7 +27,7 @@ const formatDateTimePart = (part) => {
     return ("0" + part).slice(-2);
 };
 const fetchJson = (url, isUnicode) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    const response = yield fetch(url);
+    const response = yield fetch(url, { cache: "no-store" });
     let json;
     if (isUnicode) {
         json = yield response.json();

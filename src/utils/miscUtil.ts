@@ -26,7 +26,7 @@ const formatDateTimePart = (part: number) => {
 };
 
 export const fetchJson = async (url: string, isUnicode?: boolean): Promise<unknown> => {
-    const response = await fetch(url);
+    const response = await fetch(url,{cache:"no-store" });
     let json: unknown;
     if (isUnicode) {
         json = await response.json();

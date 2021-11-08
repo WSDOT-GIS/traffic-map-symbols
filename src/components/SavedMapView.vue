@@ -188,7 +188,6 @@ export default defineComponent({
     };
 
     const removeItem = (event: Event, item: SavedMapInfo) => {
-      //console.log(item.title);
       const idx = mapList.value.findIndex((eachItem) => {
         if (eachItem == item) {
           return true;
@@ -217,7 +216,7 @@ export default defineComponent({
 
 <style scoped>
 #savedMapWidget {
-  margin: 16px 0 50px 0;
+  padding-bottom: 16px;
   box-sizing: border-box;
 }
 #savedMapWidget h6 {

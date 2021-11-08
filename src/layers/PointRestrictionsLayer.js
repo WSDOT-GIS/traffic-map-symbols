@@ -55,6 +55,11 @@ const fields = [
         "name": "lineMarker",
         "type": "string",
         "alias": "lineMarker",
+    }),
+    new Field_1.default({
+        "name": "location_description",
+        "type": "string",
+        "alias": "location_description",
     })
 ];
 let layer;

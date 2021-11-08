@@ -41,24 +41,20 @@ export const buildGraphicsByType = (type: string, data: any): Graphic => {//type
                 const renderer = layer.renderer as SimpleRenderer
                 selectedSymbol = renderer.symbol as CIMSymbol
             }
-            // console.log(selectedSymbol)
             jsonSymbol = selectedSymbol.toJSON()
             jsonSymbol.symbol.symbolLayers[0].size = 30
             jsonSymbol.symbol.symbolLayers[0].offsetY = 15
             newSymbol = CIMSymbol.fromJSON(jsonSymbol)
-            // console.log(data)
             graphic = new Graphic({
                 geometry: data.geometry,
                 symbol: newSymbol
             });
-            // console.log(graphic)
             break;
     }
     return graphic as Graphic
 
 }
 export const addGraphicsByType = (graphicType: string, graphic: Graphic): void => {
-    // console.log(graphic)
     graphic.attributes = { graphicType: graphicType }
     mapView.graphics.add(graphic as Graphic)
 }
@@ -69,11 +65,7 @@ export const displayPointInteractionGraphics = (layer: FeatureLayer, targetField
         targetField,
         targetValue as string,
         layer
-    )/*.then((lines) => {// zoom to the graphic after it displays
-        mapView
-        .goTo(lines.features[0].geometry)
-    });*/
-
+    )
 }
 export const hidePointInteractionGraphics = (layer?: FeatureLayer): void => {
     const targetLayer = layer as FeatureLayer

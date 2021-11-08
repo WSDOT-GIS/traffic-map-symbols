@@ -86,7 +86,7 @@ export default defineComponent({
     };
     const getEventPriority = (feature: FeatureInfo): string => {
       let badgeText = "";
-      switch (feature.attributes.EventPriorityID) {
+      switch (feature.attributes.TravelCenterPriorityId) {
         case 1:
           badgeText = "Closed";
           badgeIcon.value = layerListIcons.find((x) => x.id == "road-closed")?.paths as string;
@@ -106,12 +106,6 @@ export default defineComponent({
           darkBadgeColor.value = "#FF6A13";
           break;
         case 4:
-          badgeText = "Low";
-          badgeIcon.value = layerListIcons.find((x) => x.id == "road-alert")?.paths as string;
-          lightBadgeColor.value = "#fffaec";
-          darkBadgeColor.value = "#ffc107";
-          break;
-        case 5:
           badgeText = "Low";
           badgeIcon.value = layerListIcons.find((x) => x.id == "road-alert")?.paths as string;
           lightBadgeColor.value = "#fffaec";

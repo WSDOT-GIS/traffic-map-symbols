@@ -6,7 +6,6 @@ export const setCookie = (name: string, val: string): void => {
     date.setTime(date.getTime() + (maxDays * 24 * 60 * 60 * 1000));
     // Set it
     document.cookie = name + "=" + val + "; expires=" + date.toUTCString() + "; path=/";
-    // console.log("Bytes: " + getBytes(val));
     
 }
 

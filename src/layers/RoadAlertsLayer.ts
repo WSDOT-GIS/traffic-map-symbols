@@ -10,10 +10,10 @@ import SpatialReference from "@arcgis/core/geometry/SpatialReference"
 import Graphic from "@arcgis/core/Graphic";
 
 const renderer = new uniqueValueRenderer({
-    field: "EventPriorityID",
+    field: "TravelCenterPriorityId",
     uniqueValueInfos: [
         {
-            label: "HIGHEST IMPACT",
+            label: "CLOSURE",
             value: 1,
             symbol: roadClosedSymbol
         },
@@ -32,12 +32,6 @@ const renderer = new uniqueValueRenderer({
             value: 4,
             symbol: alertSymbol
         },
-        {
-            label: "LOWEST IMPACT",
-            value: 5,
-            symbol: alertSymbol
-        }
-
     ]
 })
 
@@ -84,6 +78,7 @@ const fields = [
     new Field({ name: "SourceSystemEventID", type: "string", alias: "SourceSystemEventID", length: 50 }),
     new Field({ name: "TMSOverlap", type: "integer", alias: "TMSOverlap" }),
     new Field({ name: "RegionID", type: "small-integer", alias: "RegionID" }),
+    new Field({ name: "TravelCenterPriorityId", type: "small-integer", alias: "TravelCenterPriorityId" }),
 ]
 
 let priorityLayer: FeatureLayer | undefined;
@@ -98,7 +93,7 @@ let closureLayer: FeatureLayer | undefined;
  export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
     layer = await layerUtil.initLayer(jsonUrl, "road-alerts-layer", "Road Alerts", renderer, fields, "point", true);
     layer.orderBy = [{
-        field: "EventPriorityID",
+        field: "TravelCenterPriorityId",
         order: "ascending"
     }]
     return layer;

@@ -3,6 +3,8 @@
     :IconSvg="layerIcons.find((x) => x.id === 'point-restrictions-layer')?.paths"
     LightThemeColor="#CC209C33"
     DarkThemeColor="#cc209c"
+    LightBadgeColor="#CC209C33"
+    DarkBadgeColor="#cc209c"
     :Features="[feature]"
     :Config="{
       bannerText: { text: 'Truck restriction' },
@@ -66,30 +68,10 @@ export default defineComponent({
       }
     });
     const getTitle = (feature: FeatureInfo): string => {
-      //console.log(feature)
-      let direction;
-      switch (feature.attributes.cardinal_direction) {
-        case "B":
-          direction = "Both Directions";
-          break;
-        case "N":
-          direction = "Northbound";
-          break;
-        case "S":
-          direction = "Southbound";
-          break;
-        case "E":
-          direction = "Eastbound";
-          break;
-        case "W":
-          direction = "Westbound";
-          break;
-      }
-      const title = `SR ${feature.attributes.route_nr}${feature.attributes.bridge_name?` ${feature.attributes.bridge_name}`:""}, ${direction}`
-      return title
-    }
+      const title = `${feature.attributes.location_description}`;
+      return title;
+    };
     const getMoreInfoURL = (): MoreInfoURLInfo => {
-      //console.log(feature)
       const moreInfoObject = new Object({
         url: `https://wsdot.wa.gov/data/tools/bridgeclearance/`,
         text: "Check your overhead clearances in the",

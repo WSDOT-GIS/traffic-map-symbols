@@ -69,6 +69,9 @@
             <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
           </div>
           <div v-if="propWeatherForecast != undefined">
+            <div class="popup-content w3-container">
+              <label class="popup-row-label">Forecast</label>
+            </div>
             <table class="weatherForecastTable">
               <tr id="weatherPeriodText">
                 <td
@@ -547,7 +550,6 @@ export default defineComponent({
           prevWidth = w;
           prevHeight = h;
         }
-        // console.log("*** Adjust " + JSON.stringify(props.Features)); //props.Features[0].layerId);
         // If this is not the initial load, then move popup along with map.
         if (!doPanMap) {
           // Recalculate top and let position...
@@ -732,7 +734,6 @@ export default defineComponent({
       } else {
         popupTopLeft.value.marginLeft = "";
       }
-      // console.log(JSON.stringify(popupTopLeft.value));
     };
     const getMoreInfoURL = () => {
       if (
@@ -996,7 +997,7 @@ export default defineComponent({
   left: 0;
   display: inline-block;
   width: auto;
-  padding: 2px 8px;
+  padding: 1px 8px;
   color: #000;
   text-align: left;
   border-style: solid;
@@ -1026,11 +1027,11 @@ export default defineComponent({
   font-size: var(--type-scale-base2);
   line-height: var(--type-scale-base4);
   font-weight: var(--font-weight-heavy);
-  padding: 3px;
-  border-radius: 5px;
+  padding: 6px 3px 4px 3px;
+  border-radius: 4px;
   border-width: 1px;
   border-style: solid;
-  margin: 3px 1em 0 1em;
+  margin: 0 1em 0 1em;
 }
 .popup-page-tracker {
   display: inline-block;

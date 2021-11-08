@@ -1,11 +1,11 @@
 <template>
   <div>
     <button
-      class="w3-button"
+      class="w3-button wsdot-btn"
       :class="btnClass"
       :style="{ width: Width, height: Height }"
     >
-      {{ Caption }}
+      <div>{{ Caption }}</div>
     </button>
   </div>
 </template>
@@ -55,6 +55,16 @@ button {
   transform: skewX(-10deg);
   float: left;
   margin: 3px;
+  
+}
+.wsdot-btn div {
+  -webkit-transform: skewX(10deg);
+  -moz-transform: skewX(10deg);
+  -ms-transform: skewX(10deg);
+  transform: skewX(10deg);
+  font-size: var(--type-scale-base4);
+  line-height: var(--type-scale-base6);
+  font-weight: var(--font-weight-normal);
 }
 .filled-button {
   background-color: var(--color-primaryBrand100);
