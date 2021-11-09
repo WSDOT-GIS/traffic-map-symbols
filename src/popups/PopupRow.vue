@@ -1,10 +1,3 @@
-<template>
-  <div v-if="visible" class="popup-row-container">
-    <span class="popup-row-label">{{ getLabel() }}</span>
-    <span v-if="!Config.value.isHTML" class="popup-row-value">{{ getText() }}</span>
-    <span v-if="Config.value.isHTML" class="popup-row-value" v-html="getText()"></span>
-  </div>
-</template>
 <script lang="ts">
 import FeatureInfo from "@/types/FeatureInfo";
 import PopupRowConfig from "@/types/PopupRowConfig";
@@ -92,6 +85,15 @@ export default defineComponent({
   },
 });
 </script>
+
+<template>
+  <div v-if="visible" class="popup-row-container">
+    <span class="popup-row-label">{{ getLabel() }}</span>
+    <span v-if="!Config.value.isHTML" class="popup-row-value">{{ getText() }}</span>
+    <span v-if="Config.value.isHTML" class="popup-row-value" v-html="getText()"></span>
+  </div>
+</template>
+
 <style scoped>
 .popup-row-container {
   margin-bottom: 8px;
@@ -115,5 +117,4 @@ export default defineComponent({
   font-size: var(--type-scale-base3);
   line-height: var(--type-scale-base5);
 }
-
 </style>
