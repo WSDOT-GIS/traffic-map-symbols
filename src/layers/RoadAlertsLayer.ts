@@ -1,12 +1,9 @@
-// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer"
 import uniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer"
 import { alertSymbol, alertSymbolMedium, alertSymbolHigh, roadClosedSymbol } from "@/symbols/AlertSymbol"
 import Field from "@arcgis/core/layers/support/Field"
-import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 
 import * as layerUtil from "@/utils/layerUtil";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
-import SpatialReference from "@arcgis/core/geometry/SpatialReference"
 import Graphic from "@arcgis/core/Graphic";
 
 const renderer = new uniqueValueRenderer({
@@ -35,9 +32,9 @@ const renderer = new uniqueValueRenderer({
     ]
 })
 
-const roadAlertsClosureRenderer = new SimpleRenderer({
-    symbol: roadClosedSymbol,
-})
+// const roadAlertsClosureRenderer = new SimpleRenderer({
+//     symbol: roadClosedSymbol,
+// })
 
 const fields = [
     new Field({
@@ -100,13 +97,13 @@ let closureLayer: FeatureLayer | undefined;
 }
 //**This happens here instead of in the layerutils because of the source distinciton. TODO: fix this**
 /** This is fixed now? **/
-const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
-    layer.watch("visible", (newValue) => {
-        if (newValue) {
-            reloadData(jsonUrl);
-        }
-    });
-}
+// const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
+//     layer.watch("visible", (newValue) => {
+//         if (newValue) {
+//             reloadData(jsonUrl);
+//         }
+//     });
+// }
 const getLayer = (): FeatureLayer => {
     if (!layer) {
         throw "ParkRideLayer is not ready yet!";

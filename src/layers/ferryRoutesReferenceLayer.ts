@@ -1,4 +1,3 @@
-import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 import TileLayer from "@arcgis/core/layers/TileLayer";
 let layer: TileLayer | undefined;
 

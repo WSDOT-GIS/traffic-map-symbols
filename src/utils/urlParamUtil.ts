@@ -37,7 +37,6 @@ import { getBasemapInfo } from "@/layers/Basemaps";
 import BasemapInfo from "@/types/BasemapInfo";
 import { getLayerIds } from "./layerUtil";
 import { getFeatureByName } from "@/layers/ZoomExtentLayer";
-import { store } from "@/store";
 
 // Read the URL query parameters...
 const params = new URLSearchParams(window.location.search);

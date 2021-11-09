@@ -38,19 +38,19 @@ export const deleteCookie = (name: string): void => {
     document.cookie = name + "=; expires=" + date.toUTCString() + "; path=/";
 }
 
-const getBytes = (val: string): number => {
-    const escaped_string = encodeURI(val);
-    let count: number;
-    if (escaped_string.indexOf("%") != -1) {
-        count = escaped_string.split("%").length - 1;
-        count = count == 0 ? 1 : count;
-        count = count + (escaped_string.length - (count * 3));
-    }
-    else {
-        count = escaped_string.length;
-    }
+// const getBytes = (val: string): number => {
+//     const escaped_string = encodeURI(val);
+//     let count: number;
+//     if (escaped_string.indexOf("%") != -1) {
+//         count = escaped_string.split("%").length - 1;
+//         count = count == 0 ? 1 : count;
+//         count = count + (escaped_string.length - (count * 3));
+//     }
+//     else {
+//         count = escaped_string.length;
+//     }
 
-    return count;
+//     return count;
 
 
-}
+// }

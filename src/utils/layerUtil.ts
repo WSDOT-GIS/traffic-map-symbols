@@ -11,7 +11,6 @@ import GroupLayerInfo from "@/types/GroupLayerInfo";
 import AppConfig from "@/types/AppConfig";
 import { fetchJson } from "@/utils/miscUtil";
 import { isEsriFeatures } from "@/utils/typeUtil";
-import MapView from "@arcgis/core/views/MapView";
 /**  Mapping between layer groups (type in URL query param) and layer IDs...
  *   * id
  *      ID for the layer group (type).
@@ -67,7 +66,7 @@ export const getLayerIds = (groupId: string): string[] => {
     }
 }
 
-export const resizeFeature = (graphic: Graphic, mapView: MapView): void => {
+export const resizeFeature = (graphic: Graphic): void => {
     const mapGraphic = buildGraphicsByType("CIMSymbol", graphic)
     addGraphicsByType("selectedGraphic", mapGraphic)
 }
