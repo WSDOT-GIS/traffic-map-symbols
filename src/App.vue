@@ -1,19 +1,3 @@
-<template>
-  <HeaderView @onLoadComplete="resizeMapContainer()" :WsdotRootUrl="config.wsdotRoot" />
-  <main>
-    <div
-      id="map-container"
-      class="w3-display-container"
-      :class="[isLoading ? disabledClass : activeClass]"
-      :style="{ height: mapHeight, opacity: isLoading ? 0.5 : 1 }"
-    >
-      <EsriMapView />
-    </div>
-    <LoadingSpinnerModal v-if="isLoading" />
-  </main>
-  <FooterView :WsdotRootUrl="config.wsdotRoot" />
-</template>
-
 <script lang="ts">
 import { defineComponent, onBeforeUnmount, ref } from "vue";
 import EsriMapView from "./components/EsriMapView.vue";
@@ -71,6 +55,22 @@ export default defineComponent({
   computed: mapState(["isLoading"]),
 });
 </script>
+
+<template>
+  <HeaderView @onLoadComplete="resizeMapContainer()" :WsdotRootUrl="config.wsdotRoot" />
+  <main>
+    <div
+      id="map-container"
+      class="w3-display-container"
+      :class="[isLoading ? disabledClass : activeClass]"
+      :style="{ height: mapHeight, opacity: isLoading ? 0.5 : 1 }"
+    >
+      <EsriMapView />
+    </div>
+    <LoadingSpinnerModal v-if="isLoading" />
+  </main>
+  <FooterView :WsdotRootUrl="config.wsdotRoot" />
+</template>
 
 <style>
 html,
