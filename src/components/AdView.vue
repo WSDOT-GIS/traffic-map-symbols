@@ -125,7 +125,7 @@ export default defineComponent({
   }
   #map-ad-close-btn {
     position: absolute;
-    right: -1rem;
+    right: -1.3rem;
   }
 }
 p {
