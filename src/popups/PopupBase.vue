@@ -974,6 +974,11 @@ export default defineComponent({
   padding: 16px 0;
 }
 @media screen and (max-width: 600px), screen and (max-height: 400px) {
+  .popup-container {
+    width: 94vw !important;
+    margin-right: 3vw;
+    margin-left: 3vw;
+  }
   /* Hide the arrow */
   .popup-container::after {
     display: none;
@@ -1141,17 +1146,16 @@ export default defineComponent({
   color: #000;
 }
 /* Right and left arrows to scroll the pictures. */
-/* .carousel__prev,
+.carousel__prev,
 .carousel__next {
-  background-color: transparent !important;
-}*/
-.carousel__prev {
-  left: 16px;
   top: 40%;
+  opacity: 0.7;
+}
+.carousel__prev {
+  left: 20px;
 }
 .carousel__next {
-  right: 16px;
-  top: 40%;
+  right: 20px;
 }
 .carousel__prev:hover {
   filter: drop-shadow(2px 2px 3px rgb(0 0 0 / 0.5));
