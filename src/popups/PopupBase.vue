@@ -975,7 +975,9 @@ export default defineComponent({
 }
 @media screen and (max-width: 600px), screen and (max-height: 400px) {
   .popup-container {
+    /* Carousel won't get sized correctly because W3.CSS sets width to auto on small screens. So overriding that.  */
     width: 94vw !important;
+    /* Center the modal popup on the screen. */
     margin-right: 3vw;
     margin-left: 3vw;
   }
