@@ -131,7 +131,7 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
     } else {
         query.where += uniqueValue
     }
-    query.outFields = [fLayer.objectIdField]
+    query.outFields = [fLayer.objectIdField, 'UniqueId']
     const response = await fLayer.queryFeatures(query);
     if (response.features.length > 0) {
         return response.features[0];

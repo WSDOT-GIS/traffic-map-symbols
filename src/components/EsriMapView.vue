@@ -458,6 +458,16 @@ export default defineComponent({
               if (result.geometry.type !== "point") {
                 throw "The parameter, featuretype, only supports point feature type currently.";
               }
+              else{
+                if(featureType=="restriction"){
+                  console.log(result.attributes)
+                  displayPointInteractionGraphics(
+                    LineRestrictionsLayer(),
+                    "UniqueId",
+                    result?.attributes.UniqueId
+                  );
+                }
+              }
               // If the layer is not visible, turn it on...
               if (!result.layer.visible) {
                 const layerList = setLayerVisibility(result.layer.id, true, store.state.layerList);
