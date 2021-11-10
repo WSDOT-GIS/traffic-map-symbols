@@ -1,54 +1,3 @@
-<template>
-  <div id="esri-map-view"></div>
-  <AlertView :Alerts="alerts" />
-  <div
-    id="map-bottom-left-container"
-    class="w3-display-bottomleft w3-container"
-    ref="bottomLeftDiv"
-    :style="{ marginBottom: marginBottomContainer }"
-  >
-    <CoordinatesView />
-  </div>
-  <div id="map-bottom-center-container" class="w3-display-bottommiddle" ref="bottomCtrDiv">
-    <AdView @onResize="adjustBottomControls" />
-  </div>
-  <div
-    id="map-bottom-right-container"
-    class="w3-display-bottomright"
-    ref="bottomRightDiv"
-    :style="{ marginBottom: marginBottomContainer }"
-  >
-    <div class="map-bottom-right-container-row flex-row">
-      <div class="map-bottom-right-container-column flex-column">
-        <BasemapView />
-      </div>
-      <div class="map-bottom-right-container-column flex-column">
-        <MyLocationView />
-        <ZoomButtonView />
-      </div>
-    </div>
-  </div>
-  <ZoomPopupView
-    :Visible="zoomPopupVisible"
-    :PositionX="zoomPopupX"
-    :PositionY="zoomPopupY"
-    :Label="zoomPopupLabel"
-    @clicked="zoomMetroEventHandler"
-  ></ZoomPopupView>
-  <CameraPopup :MapXY="popupXY" :Featureset="popupFeatureset" />
-  <ParkRidePopup :Featureset="popupFeatureset" />
-  <PointRestrictionPopup :Featureset="popupFeatureset" />
-  <MountainPassPopup :Featureset="popupFeatureset" />
-  <WeatherStationsPopup :Featureset="popupFeatureset" />
-  <RestAreaPopup :Featureset="popupFeatureset" />
-  <RoadAlertPopup :Featureset="popupFeatureset" />
-  <WildfirePointsPopup :Featureset="popupFeatureset" />
-  <BorderCrossingPopup :Featureset="popupFeatureset" />
-  <RegionalAlertPopup :Featureset="popupFeatureset" />
-  <FerryRoutesPopup :Featureset="popupFeatureset" :Alerts="ferryAlerts" />
-  <LeftPaneView />
-</template>
-
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
 import { useStore } from "@/store";
@@ -609,6 +558,57 @@ export default defineComponent({
   },
 });
 </script>
+
+<template>
+  <div id="esri-map-view"></div>
+  <AlertView :Alerts="alerts" />
+  <div
+    id="map-bottom-left-container"
+    class="w3-display-bottomleft w3-container"
+    ref="bottomLeftDiv"
+    :style="{ marginBottom: marginBottomContainer }"
+  >
+    <CoordinatesView />
+  </div>
+  <div id="map-bottom-center-container" class="w3-display-bottommiddle" ref="bottomCtrDiv">
+    <AdView @onResize="adjustBottomControls" />
+  </div>
+  <div
+    id="map-bottom-right-container"
+    class="w3-display-bottomright"
+    ref="bottomRightDiv"
+    :style="{ marginBottom: marginBottomContainer }"
+  >
+    <div class="map-bottom-right-container-row flex-row">
+      <div class="map-bottom-right-container-column flex-column">
+        <BasemapView />
+      </div>
+      <div class="map-bottom-right-container-column flex-column">
+        <MyLocationView />
+        <ZoomButtonView />
+      </div>
+    </div>
+  </div>
+  <ZoomPopupView
+    :Visible="zoomPopupVisible"
+    :PositionX="zoomPopupX"
+    :PositionY="zoomPopupY"
+    :Label="zoomPopupLabel"
+    @clicked="zoomMetroEventHandler"
+  ></ZoomPopupView>
+  <CameraPopup :MapXY="popupXY" :Featureset="popupFeatureset" />
+  <ParkRidePopup :Featureset="popupFeatureset" />
+  <PointRestrictionPopup :Featureset="popupFeatureset" />
+  <MountainPassPopup :Featureset="popupFeatureset" />
+  <WeatherStationsPopup :Featureset="popupFeatureset" />
+  <RestAreaPopup :Featureset="popupFeatureset" />
+  <RoadAlertPopup :Featureset="popupFeatureset" />
+  <WildfirePointsPopup :Featureset="popupFeatureset" />
+  <BorderCrossingPopup :Featureset="popupFeatureset" />
+  <RegionalAlertPopup :Featureset="popupFeatureset" />
+  <FerryRoutesPopup :Featureset="popupFeatureset" :Alerts="ferryAlerts" />
+  <LeftPaneView />
+</template>
 
 <style scoped>
 @import "https://js.arcgis.com/4.19/@arcgis/core/assets/esri/themes/light/main.css";
