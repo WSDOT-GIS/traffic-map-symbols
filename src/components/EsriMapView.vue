@@ -71,11 +71,7 @@ import {
   getFeatureIdFromUrl,
   getFeatureTypeFromUrl,
 } from "@/utils/urlParamUtil";
-import {
-  createLayerGroupInfos,
-  getFeature,
-  setLayerVisibility,
-} from "@/utils/layerUtil";
+import { createLayerGroupInfos, getFeature, setLayerVisibility } from "@/utils/layerUtil";
 import {
   removeGraphicsByType,
   hidePointInteractionGraphics,
@@ -401,7 +397,7 @@ export default defineComponent({
       let vlPromises = [] as Array<Promise<LayerView>>;
       let loadedPromises = [] as Array<Promise<unknown>>;
       mapLayers.forEach((layer) => {
-        if (layer.type == "feature") {
+        if (layer.type == "feature" && layer.id !== "ferry-routes-points-layer") {
           vlPromises.push(mapView.whenLayerView(layer));
         }
       });
@@ -457,10 +453,9 @@ export default defineComponent({
             if (result) {
               if (result.geometry.type !== "point") {
                 throw "The parameter, featuretype, only supports point feature type currently.";
-              }
-              else{
-                if(featureType=="restriction"){
-                  console.log(result.attributes)
+              } else {
+                if (featureType == "restriction") {
+                  console.log(result.attributes);
                   displayPointInteractionGraphics(
                     LineRestrictionsLayer(),
                     "UniqueId",
