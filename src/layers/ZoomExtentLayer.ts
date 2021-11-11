@@ -10,7 +10,7 @@ import Field from "@arcgis/core/layers/support/Field";
 const renderer = new SimpleRenderer({
     symbol: new SimpleFillSymbol({
         style: "none",
-        outline: {  // autocasts as new SimpleLineSymbol()
+        outline: {  
             width: 2,
             color: "blue"
         }
@@ -35,7 +35,7 @@ const graphics = [
             "ObjectID": 1,
             "Name": "Seattle",
             "Label": "Seattle",
-            "Note": ""
+            "Visible": 1
         }
     },
     // Spokane Metro...
@@ -55,7 +55,7 @@ const graphics = [
             "ObjectID": 2,
             "Name": "Spokane",
             "Label": "Spokane",
-            "Note": ""
+            "Visible": 1
         }
     },
     // Vancouver Metro...
@@ -75,7 +75,27 @@ const graphics = [
             "ObjectID": 3,
             "Name": "Vancouver",
             "Label": "Vancouver",
-            "Note": ""
+            "Visible": 1
+        }
+    },
+    // Tacoma Metro...
+    {
+        geometry: {
+            type: "polygon",
+            rings: [[
+                [-13652280.94, 5964648.36],
+                [-13613227.59, 5964648.36],
+                [-13613227.59, 5993905.72],
+                [-13652280.94, 5993905.72],
+                [-13652280.94, 5964648.36]
+            ]],
+            spatialReference: { wkid: 102100 }
+        },
+        attributes: {
+            "ObjectID": 4,
+            "Name": "Tacoma",
+            "Label": "Tacoma",
+            "Visible": 0
         }
     },
 ]
@@ -100,9 +120,9 @@ const layer = new FeatureLayer({
             alias: "Label"
         }),
         new Field({
-            name: "Note",
-            type: "string",
-            alias: "Note"
+            name: "Visible",
+            type: "small-integer",
+            alias: "Visible"
         })
     ],
     objectIdField: "ObjectID",
@@ -110,6 +130,7 @@ const layer = new FeatureLayer({
     spatialReference: SpatialReference.WebMercator,
     renderer: renderer,
     source: graphics,
+    definitionExpression: "Visible = 1",
     maxScale: 300000
 });
 
@@ -118,7 +139,7 @@ export default layer;
 export const getFeatureById = async (id: number): Promise<Graphic> => {
     const query = layer.createQuery();
     query.where = "ObjectID =" + id;
-    query.outFields = ["ObjectID", "Name", "Label", "Note"];
+    query.outFields = ["ObjectID", "Name", "Label", "Visible"];
     const response = await layer.queryFeatures(query);
     if (response.features.length === 0) {
         throw "Failed to find the zoom extent with the specified ID: " + id + ".";
@@ -130,7 +151,7 @@ export const getFeatureByName = async (name: string): Promise<Graphic> => {
     const query = layer.createQuery();
     const nameFormatted = name[0].toUpperCase() + name.slice(1).toLowerCase();
     query.where = `Name = '${nameFormatted}'`;
-    query.outFields = ["ObjectID", "Name", "Label", "Note"];
+    query.outFields = ["ObjectID", "Name", "Label", "Visible"];
     const response = await layer.queryFeatures(query);
     if (response.features.length === 0) {
         throw "Failed to find the zoom extent with the specified name: '" + name + "'. Please make sure the spelling is correct.";
