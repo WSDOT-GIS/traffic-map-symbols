@@ -4,7 +4,7 @@ URL query parameters:
     Comma separated list of xmin, xmax, ymin, ymax in DD format.
     The sequence does not matter.
 * namedextent
-    seattle, spokane, vancouver
+    seattle, spokane, vancouver, tacoma
 * base
     Name of the basemap
 * layer
@@ -20,7 +20,8 @@ Sample URLs:
 ?extent=-122.4489756,47.7741882,-122.1102255,47.5032113&layer=camera,parkride&base=satellite
 * Open camera popup with ID
 ?featuretype=camera&featureid=1001
-?featuretype=restriction&featureid=R-WA-290-2
+?featuretype=restriction&featureid=R-WA-290-2 (point)
+?featuretype=restriction&featureid=R-WA-101-5 (line)
 ?featuretype=alert&featureid=464389
 ?featuretype=weather&featureid=1909
 ?featuretype=mountain&featureid=2
