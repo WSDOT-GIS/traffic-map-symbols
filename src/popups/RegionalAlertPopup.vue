@@ -106,13 +106,16 @@ export default defineComponent({
       esriHandles.removeAll();
     };
     const getExtendedMessage = (feature: FeatureInfo): string => {
-      return (`
+      let html = "";
+      if (feature.attributes["ExtendedMessage"]) {
+        html = `
         <br>
           <div>
             ${feature.attributes["ExtendedMessage"]}
           </div>
         <br>`
-      );
+      }
+      return html;
     }
     const getTitle = (feature: FeatureInfo): string => {
       return (
