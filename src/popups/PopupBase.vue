@@ -708,7 +708,9 @@ export default defineComponent({
           highlightFeature(feature);
         }
       } else {
-        removeHighlight();
+        if (!smallMedia.value) {
+          removeHighlight();
+        }
       }
     };
     /** If MapX and Y are provided, those values supersede the feature x/y.
