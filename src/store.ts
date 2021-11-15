@@ -25,6 +25,8 @@ export interface State {
     isLoading: boolean;
     loadingMessage: string;
     leftPaneIsOpen: boolean;
+    /** s: small, l:large */
+    mediaSize: "s" | "l"; // TODO: add more as needed
 }
 
 // define injection key...
@@ -51,6 +53,7 @@ export const store = createStore<State>({
             isLoading: false,
             loadingMessage: "",
             leftPaneIsOpen: isSmallMedia() ? false : true,
+            mediaSize: isSmallMedia() ? "s" : "l",
         }
     },
     getters: {
@@ -79,6 +82,7 @@ export const store = createStore<State>({
         },
         setMapSize(state, payload) {
             state.mapSize = payload;
+            state.mediaSize = isSmallMedia() ? "s" : "l";
         },
         setCenter(state, payload) {
             state.center = payload;

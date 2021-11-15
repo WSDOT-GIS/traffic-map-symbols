@@ -354,7 +354,8 @@ export default defineComponent({
         layerViews.forEach((layerView) => {
           loadedPromises.push(WatchUtils.whenFalseOnce(layerView, "updating"));
         });
-        return Promise.all(loadedPromises).then(() => {
+        return Promise.all(loadedPromises)
+          .then(() => {
             store.commit("setIsLoading", {
               loading: false,
               message: "",
@@ -403,7 +404,6 @@ export default defineComponent({
         esriMap.mapView.when().then(() => {
           getFeature(featureId, featureType, esriMap.webmap).then((result) => {
             if (result) {
-              console.log(result);
               if (result.geometry.type !== "point") {
                 throw "The parameter, featuretype, only supports point feature type currently.";
               } else {
@@ -422,9 +422,15 @@ export default defineComponent({
                 store.commit("setLayerList", layerList);
               }
               // Zoom in...
-              esriMap.tryZoomToPointAsync(result.geometry as Point, 4).then(() => {
-                showPopup(result.layer.id, [result.getObjectId()]);
-              });
+              if (store.state.mediaSize === "s") {
+                esriMap.zoomToMax(result.geometry as Point).then(() => {
+                  showPopup(result.layer.id, [result.getObjectId()]);
+                });
+              } else {
+                esriMap.tryZoomToPointAsync(result.geometry as Point, 4).then(() => {
+                  showPopup(result.layer.id, [result.getObjectId()]);
+                });
+              }
             }
           });
         });
