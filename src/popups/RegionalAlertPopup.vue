@@ -1,36 +1,3 @@
-<template>
-  <PopupBase
-    :IconSvg="layerIcons.find((x) => x.id === 'regional-alert-layer')?.paths"
-    LightThemeColor="#8E09004D"
-    DarkThemeColor="#8E0900"
-    :Features="[feature]"
-    :Config="{
-      bannerText: { text: 'Emergency' },
-      title: { custom: getTitle },
-      content: [
-        { label: 'Description', value: { fieldName: 'HeadlineMessage' } },
-        { label: '', value: { fieldName: 'ExtendedMessage' } },
-        {
-          label:'',
-          value:{
-            custom: getExtendedMessage,
-            isHTML: true
-          }
-        },
-        {
-          label: 'Last Updated',
-          value: {
-            fieldName: 'LastModifiedDate',
-            isDate: true,
-            isTime: true,
-          },
-        },
-      ],
-    }"
-    @close="close"
-  >
-  </PopupBase>
-</template>
 <script lang="ts">
 import { defineComponent, nextTick, PropType, ref, watch } from "vue";
 import Handles from "@arcgis/core/core/Handles";
@@ -106,13 +73,16 @@ export default defineComponent({
       esriHandles.removeAll();
     };
     const getExtendedMessage = (feature: FeatureInfo): string => {
-      return (`
+      let html = "";
+      if (feature.attributes["ExtendedMessage"]) {
+        html = `
         <br>
           <div>
             ${feature.attributes["ExtendedMessage"]}
           </div>
         <br>`
-      );
+      }
+      return html;
     }
     const getTitle = (feature: FeatureInfo): string => {
       return (
@@ -133,4 +103,38 @@ export default defineComponent({
   },
 });
 </script>
+
+<template>
+  <PopupBase
+    :IconSvg="layerIcons.find((x) => x.id === 'regional-alert-layer')?.paths"
+    LightThemeColor="#8E09004D"
+    DarkThemeColor="#8E0900"
+    :Features="[feature]"
+    :Config="{
+      bannerText: { text: 'Emergency' },
+      title: { custom: getTitle },
+      content: [
+        { label: 'Description', value: { fieldName: 'HeadlineMessage' } },
+        { label: '', value: { fieldName: 'ExtendedMessage' } },
+        {
+          label:'',
+          value:{
+            custom: getExtendedMessage,
+            isHTML: true
+          }
+        },
+        {
+          label: 'Last Updated',
+          value: {
+            fieldName: 'LastModifiedDate',
+            isDate: true,
+            isTime: true,
+          },
+        },
+      ],
+    }"
+    @close="close"
+  >
+  </PopupBase>
+</template>
 
