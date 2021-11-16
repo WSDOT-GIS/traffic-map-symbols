@@ -110,11 +110,11 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const ferryRoutePointsLayer = FerryRoutePointsLayer.initLayer(config.ferryRoutePoints)
     const borderCrossingsLayer = await BorderCrossingsLayer.initLayer(config.borderCrossings)
     // The first one in the array will be displayed at the bottom of the map... 
-    webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, ferryRoutesReferenceLayer, trafficLyr, 
+    webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, ferryRoutesReferenceLayer, trafficLyr,
         ferryRouteLinesLayer, stateRouteShieldsLayer,
         firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, lineRestrictionLyr,
-        pointRestrictionLyr, cameraLyr, 
+        pointRestrictionLyr, cameraLyr,
         ferryRoutePointsLayer, roadAlertLyrs,
         mileMarkersLayer, borderCrossingsLayer]);
     // Store the default visibility...
@@ -158,16 +158,19 @@ export const tryZoomToPoint = (point: Point, numLevels?: number): boolean => {
     }
     return isSuccess;
 }
-
-export const tryZoomToPointAsync = async (point: Point, numLevels?: number): Promise<boolean> => {
+/**
+ * Zoom centered at the specified location
+ * @param point The center location
+ * @param zoomLevel The zoom level to zoom into.
+ * If numLevels is also specified, that will take precedence over this value.
+ * @returns 
+ */
+export const tryZoomToPointAsync = async (point: Point, zoomLevel: number): Promise<boolean> => {
     let isSuccess = true;
-    if (!numLevels) {
-        numLevels = 1;
-    }
     const orgLevel = mapView.zoom;
     await mapView.goTo({
         target: point,
-        zoom: mapView.zoom += numLevels
+        zoom: zoomLevel
     }, {
         duration: 300,
         easing: "ease-in"
@@ -184,7 +187,7 @@ export const tryZoomToPointAsync = async (point: Point, numLevels?: number): Pro
 export const zoomToMax = async (point: Point): Promise<void> => {
     await mapView.goTo({
         target: point,
-        scale: getMaxScale()
+        scale: getZoomLevel(-1).scale
     }, {
         duration: 300,
         easing: "ease-in"
@@ -229,6 +232,35 @@ export const getMaxScale = (): number => {
         const tile = lyr as TileLayer;
         maxScale = tile.maxScale;
         return maxScale;
+    }
+}
+/** Zoom levels and corresponding scales */
+let zoomLevels: { level: number, scale: number }[];
+/**
+ * Get the scale by the number levels from the minimum scale.
+ * @param numLevelsFromMin Number of levels from the minimum scale. 
+ * For example, 0 is the min scale. 3 is the fourth level from the min scale.
+ * You can also specify number of levels from the maximum scale by using the negative value.
+ * For example -1 is the max scale. -2 is the second level from the max scale.
+ */
+export const getZoomLevel = (numLevelsFromMin: number): { level: number, scale: number } => {
+    if (!zoomLevels) {
+        const info = getBasemapInfo("wsdot");
+        const lyr = info.basemap.baseLayers.getItemAt(0);
+        const tile = lyr as TileLayer;
+        const lods = tile.tileInfo.lods;
+        zoomLevels = lods.map((x) => {
+            return { level: x.level, scale: x.scale };
+        })
+        zoomLevels.sort((a, b) => a.level - b.level);
+    }
+    const item = zoomLevels.slice(numLevelsFromMin);
+    if (item) {
+        return item[0];
+    } else if (numLevelsFromMin < 0) {
+        return zoomLevels[0];
+    } else {
+        return zoomLevels.slice(-1)[0];
     }
 }
 

@@ -408,7 +408,6 @@ export default defineComponent({
                 throw "The parameter, featuretype, only supports point feature type currently.";
               } else {
                 if (featureType == "restriction") {
-                  console.log(result.attributes);
                   displayPointInteractionGraphics(
                     LineRestrictionsLayer(),
                     "UniqueId",
@@ -422,15 +421,15 @@ export default defineComponent({
                 store.commit("setLayerList", layerList);
               }
               // Zoom in...
+              let zoomLevel: number;
               if (store.state.mediaSize === "s") {
-                esriMap.zoomToMax(result.geometry as Point).then(() => {
-                  showPopup(result.layer.id, [result.getObjectId()]);
-                });
+                zoomLevel = esriMap.getZoomLevel(-2).level;
               } else {
-                esriMap.tryZoomToPointAsync(result.geometry as Point, 4).then(() => {
-                  showPopup(result.layer.id, [result.getObjectId()]);
-                });
+                zoomLevel = esriMap.mapView.zoom + 4;
               }
+              esriMap.tryZoomToPointAsync(result.geometry as Point, zoomLevel).then(() => {
+                showPopup(result.layer.id, [result.getObjectId()]);
+              });
             }
           });
         });
