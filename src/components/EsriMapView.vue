@@ -420,7 +420,7 @@ export default defineComponent({
                 const layerList = setLayerVisibility(result.layer.id, true, store.state.layerList);
                 store.commit("setLayerList", layerList);
               }
-              // Zoom in...
+              // Zoom in (zoom level differs depends on the device)...
               let zoomLevel: number;
               if (store.state.mediaSize === "s") {
                 zoomLevel = esriMap.getZoomLevel(-2).level;
