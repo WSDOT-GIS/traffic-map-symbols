@@ -1,5 +1,5 @@
 import uniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer"
-import { alertSymbol, alertSymbolMedium, alertSymbolHigh, roadClosedSymbol } from "@/symbols/AlertSymbol"
+import { alertSymbol, alertSymbolMedium, alertSymbolHigh, roadClosedSymbol, alertSymbolHighest } from "@/symbols/AlertSymbol"
 import Field from "@arcgis/core/layers/support/Field"
 
 import * as layerUtil from "@/utils/layerUtil";
@@ -17,7 +17,7 @@ const renderer = new uniqueValueRenderer({
         {
             label: "HIGH IMPACT",
             value: 2,
-            symbol: alertSymbolHigh
+            symbol: alertSymbolHighest
         },
         {
             label: "MODERATE IMPACT",
