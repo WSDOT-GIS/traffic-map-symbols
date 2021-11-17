@@ -68,16 +68,16 @@ export default defineComponent({
     const store = useStore();
     const containerRef = ref<HTMLDivElement>();
     const mapSize = computed(() => store.state.mapSize);
+    const iconButton = computed(() => {
+      const iconName = store.state.mediaSize === "s" ? "statewide-alert-button-small" : "statewide-alert-button";
+      return otherIcons.find((x) => x.id === iconName);
+    });
     const isOpen = ref(true);
     const sortedAlerts = ref<AlertInfo[]>([]);
     const displayStyle = ref("none");
     const height = ref("auto");
     const iconBanner = otherIcons.find((item) => {
       return item.id === "statewide-alert-banner";
-    });
-    const iconName = store.state.mediaSize === "s" ? "statewide-alert-button-small" : "statewide-alert-button";
-    const iconButton = otherIcons.find((item) => {
-      return item.id === iconName;
     });
 
     watch(props, () => {
@@ -94,6 +94,7 @@ export default defineComponent({
 
     watch(mapSize, () => {
       resizeContainer();
+      store.state.mediaSize === "s" ? "statewide-alert-button-small" : "statewide-alert-button";
     });
     const resizeContainer = () => {
       if (!containerRef.value) {
