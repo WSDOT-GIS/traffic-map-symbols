@@ -7,7 +7,7 @@ import ExtentInfo from "./types/ExtentInfo";
 import { convert2EsriExtent, convert2ExtentInfo } from "./utils/extentUtil";
 import LayerInfo from "./types/LayerInfo";
 import LoadingStateInfo from "./types/LoadingStateInfo";
-import { isSmallMedia } from "./utils/mediaUtil";
+import { getMediaSize } from "./utils/miscUtil";
 
 // Reference - https://next.vuex.vuejs.org/guide/typescript-support.html#typing-usestore-composition-function
 // define typings for the store state...
@@ -52,8 +52,8 @@ export const store = createStore<State>({
             isMobileMenuOpen: false,
             isLoading: false,
             loadingMessage: "",
-            leftPaneIsOpen: isSmallMedia() ? false : true,
-            mediaSize: isSmallMedia() ? "s" : "l",
+            leftPaneIsOpen: getMediaSize() !== "s",
+            mediaSize: getMediaSize(),
         }
     },
     getters: {
@@ -82,7 +82,7 @@ export const store = createStore<State>({
         },
         setMapSize(state, payload) {
             state.mapSize = payload;
-            state.mediaSize = isSmallMedia() ? "s" : "l";
+            state.mediaSize = getMediaSize();
         },
         setCenter(state, payload) {
             state.center = payload;
@@ -142,13 +142,20 @@ export const store = createStore<State>({
         }
     },
 })
-// Clone the target of proxy (i.e. removing the reactivity)
+/**
+ * Clone the target of proxy (i.e. removing the reactivity)
+ * @param proxy The reactive object
+ * @returns Non-reactive copy of the object
+ */
 export const cloneProxyTarget = <T>(proxy: T): T => {
     const copy = JSON.parse(JSON.stringify(proxy));
     return copy;
 }
 
-// define custom useStore that supply key so do not have to do this in each component...
+/**
+ * define custom useStore that supply key so do not have to do this in each component...
+ * */
 export const useStore = (): Store<State> => {
     return baseUseStore(key);
 }
+

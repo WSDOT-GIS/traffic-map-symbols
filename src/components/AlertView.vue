@@ -56,7 +56,6 @@ import { useStore } from "@/store";
 import AlertInfo from "@/types/AlertInfo";
 import { formatEpoch } from "@/utils/miscUtil";
 import { otherIcons } from "@/symbols/IconDefinitions";
-import { isSmallMedia } from "@/utils/mediaUtil";
 
 export default defineComponent({
   props: {
@@ -76,7 +75,7 @@ export default defineComponent({
     const iconBanner = otherIcons.find((item) => {
       return item.id === "statewide-alert-banner";
     });
-    const iconName = isSmallMedia() ? "statewide-alert-button-small" : "statewide-alert-button";
+    const iconName = store.state.mediaSize === "s" ? "statewide-alert-button-small" : "statewide-alert-button";
     const iconButton = otherIcons.find((item) => {
       return item.id === iconName;
     });

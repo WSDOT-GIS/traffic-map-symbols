@@ -52,7 +52,6 @@ import WsdotButtonView from "@/components/WsdotButtonView.vue";
 import SaveMapFormView from "@/components/SaveMapFormView.vue";
 
 import { validateBasemapName } from "@/layers/Basemaps";
-import { isSmallMedia } from "@/utils/mediaUtil";
 import { defaultLayerProps } from "@/esri-stuff/esriMap";
 
 export default defineComponent({
@@ -90,7 +89,7 @@ export default defineComponent({
     onMounted(() => {
       // On the mobile, onUpdated is not triggered initially since the left pane is closed by default.
       // On the big screen, onMounted seems to happen too early and it does not size correctly, so do not handle this.
-      if (isSmallMedia()) {
+      if (store.state.mediaSize === "s") {
         if (mapList.value.length > 0) {
           nextTick(() => {
             resizeItemTitle();
@@ -150,7 +149,7 @@ export default defineComponent({
       });
       item.s = true;
       // On a small device, close the left pane...
-      if (isSmallMedia()) {
+      if (store.state.mediaSize === "s") {
         store.commit("setLeftPaneIsOpen", false);
       }
     };

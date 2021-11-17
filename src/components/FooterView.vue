@@ -23,7 +23,6 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { isSmallMedia } from "@/utils/mediaUtil";
 
 export default defineComponent({
    props: {
@@ -31,9 +30,6 @@ export default defineComponent({
       type: String,
       required: true,
     },
-  },
-  setup() {
-    return { isSmallMedia };
   },
 });
 </script>
