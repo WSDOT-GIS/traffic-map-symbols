@@ -1,4 +1,4 @@
-import WebMap from "@arcgis/core/WebMap";
+import WebMap from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
 import Point from "@arcgis/core/geometry/Point";
 import Polygon from "@arcgis/core/geometry/Polygon";

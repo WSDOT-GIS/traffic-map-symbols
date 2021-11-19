@@ -1,5 +1,5 @@
 import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
-import VectorTileLayer from "@arcgis/core/layers/VectorTileLayer"
+
 let layer: MapImageLayer | undefined;
 
 export const initLayer = (url: string): MapImageLayer => {
