@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@arcgis/core": "^4.21.2",
-    "@esri/calcite-ui-icons": "^3.17.5",
     "@types/arcgis-js-api": "^4.21.0",
     "core-js": "^3.19.1",
     "vue": "^3.2.21",
