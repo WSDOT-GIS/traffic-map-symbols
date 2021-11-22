@@ -11,10 +11,12 @@ module.exports = {
             new ArcGISPlugin({
                 copyAssets: false,
                 features: {
-                    "3d": true
+                    "3d": false
                 },
                 userDefinedExcludes: [
-                    "@arcgis/core/layers/AreaMeasurementLayer",
+                    "@arcgis/core/WebMap",
+                    "@arcgis/core/widgets/Popup",
+                    "@arcgis/core/PopupTemplate",
                     "@arcgis/core/layers/BingMapsLayer",
                     "@arcgis/core/layers/CSVLayer",
                     "@arcgis/core/layers/GeoRSSLayer",
@@ -32,14 +34,16 @@ module.exports = {
                     "@arcgis/core/layers/WMSLayer",
                     "@arcgis/core/layers/WMTSLayer",
                     "@arcgis/core/layers/WebTileLayer",
-                    "@arcgis/core/WebMap",
-                    "@arcgis/core/popup",
-                    "@arcgis/core/PopupTemplate",
                     "@arcgis/core/portal/Portal",
                     "@arcgis/core/support/popupUtils",
-                    "@arcgis/core/widgets/Popup",
                     "@arcgis/core/widgets/support/widgetUtils",
                     "@arcgis/core/widgets/Widget",
+                    "@arcgis/core/popup/content/FieldsContent",
+                    "@arcgis/core/popup/content/ImageMediaInfo",
+                    "@arcgis/core/popup/content/MediaContent",
+                    "@arcgis/core/popup/content/mixins/ChartMediaInfo",
+                    "@arcgis/core/popup/FieldInfo",
+                    "@arcgis/core/popup/support/FieldInfoFormat",
                 ]
             }),
         ]
