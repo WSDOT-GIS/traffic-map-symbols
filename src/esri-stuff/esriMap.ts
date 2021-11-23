@@ -13,6 +13,7 @@ import Graphic from "@arcgis/core/Graphic";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import { difference } from "@arcgis/core/geometry/geometryEngine";
+import esriConfig from "@arcgis/core/config";
 // Layers
 import * as TrafficLayer from "@/layers/TrafficLayer";
 import * as ParkRideLayer from "@/layers/ParkRideLayer";
@@ -43,6 +44,8 @@ import firePerimeterFeatureIDs from "@/utils/firePerimeterQuery"
 import { getBasemapInfo } from "@/layers/Basemaps";
 import XY from "@/types/XY";
 import * as layerUtil from "@/utils/layerUtil";
+
+esriConfig.request.useIdentity = false
 const fullExtent = getEsriExtent("full");
 
 // Initialize empty map, and load layers later...
