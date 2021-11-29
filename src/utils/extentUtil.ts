@@ -3,13 +3,14 @@ import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 
 import ExtentInfo from "@/types/ExtentInfo";
 import XY from "@/types/XY";
+import { WebMercator } from "./miscUtil";
 
 const defaultExtents: ExtentInfo[] = [
     {
         id: "full",
         title: "Full extent",
-        xmin: -13899444.6466, 
-        xmax: -13014945.794, 
+        xmin: -13899444.6466,
+        xmax: -13014945.794,
         ymin: 5667345.69, // Includes Wilsonville, OR - The southern most camera & travel time are located around there.
         ymax: 6329128.62 // Includes Vancouver, BC
     },
@@ -80,4 +81,41 @@ export const getOutOfBoundDirection = (mapXY: XY, extent?: ExtentInfo | Extent):
         dir += "i";
     }
     return dir;
+}
+
+export const getOutOfExtentPolygons = (): Extent[] => {
+    const displayExtent = getEsriExtent("full").expand(1.2);
+    const xMin = -20000000;
+    const xMax = -1000000;
+    const yMin = 0;
+    const yMax = 20000000;
+    const extentW = new Extent({
+        xmin: xMin,
+        xmax: displayExtent.xmin,
+        ymin: yMin,
+        ymax: yMax,
+        spatialReference: WebMercator
+    });
+    const extentN = new Extent({
+        xmin: displayExtent.xmin,
+        xmax: displayExtent.xmax,
+        ymin: displayExtent.ymax,
+        ymax: yMax,
+        spatialReference: WebMercator
+    });
+    const extentE = new Extent({
+        xmin: displayExtent.xmax,
+        xmax: xMax,
+        ymin: yMin,
+        ymax: yMax,
+        spatialReference: WebMercator
+    });
+    const extentS = new Extent({
+        xmin: displayExtent.xmin,
+        xmax: displayExtent.xmax,
+        ymin: yMin,
+        ymax: displayExtent.ymin,
+        spatialReference: WebMercator
+    });
+    return [extentW, extentN, extentE, extentS];
 }

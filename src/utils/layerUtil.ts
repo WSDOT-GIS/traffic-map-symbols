@@ -246,3 +246,4 @@ export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
     }
     return graphics;
 }
+
