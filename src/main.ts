@@ -14,7 +14,7 @@ loadConfig().then(() => {
     const appInsights = new ApplicationInsights(
     {
         config:{
-            //instrumentationKey: '3f639dd2-45dd-4de8-afc2-3e6bc599e381',
+            instrumentationKey: '3f639dd2-45dd-4de8-afc2-3e6bc599e381',
             enableAutoRouteTracking: true,
             enableUnhandledPromiseRejectionTracking: true,
             autoTrackPageVisitTime: true,
