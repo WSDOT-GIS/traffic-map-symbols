@@ -16,6 +16,9 @@
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
+import Analytics from 'analytics'
+import googleAnalytics from '@analytics/google-analytics'
+
 export default defineComponent({
   props: {
     Checked: {
@@ -36,8 +39,32 @@ export default defineComponent({
     }
   },
   setup(props, context) {
+    const analytics = Analytics({
+      app: 'WSDOT',
+      plugins: [
+        googleAnalytics({
+          trackingId: 'UA-970887-21',
+        })
+      ]
+    })
+    console.log(analytics)
     const onToggle = (evt: Event) => {
       const target = evt.currentTarget as HTMLInputElement;
+      console.log(props.Title +" "+target.checked)
+      const sendToggleOn = ()=>{analytics.track('toggle', {
+          category: 'Layer',
+          label: props.Title+"-"+"On",
+          value: 1
+        })
+        console.log(analytics)
+      }
+      const sendToggleOff = ()=>{analytics.track('toggle', {
+          category: 'Layer',
+          label: props.Title+"-"+"Off",
+          value: 1
+        })
+      }
+      target.checked==true?sendToggleOn():sendToggleOff()
       context.emit("toggle", { checked: target.checked, value: target.value });
     };
     
