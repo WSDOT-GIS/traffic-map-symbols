@@ -4,10 +4,11 @@ import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol";
 import Graphic from "@arcgis/core/Graphic";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Field from "@arcgis/core/layers/support/Field";
-import Polygon from "@arcgis/core/geometry/Polygon";
 import Extent from "@arcgis/core/geometry/Extent";
-import { clip } from "@arcgis/core/geometry/geometryEngine";
+import Point from "@arcgis/core/geometry/Point";
+import Polygon from "@arcgis/core/geometry/Polygon";
 
+import * as pc from "polygon-clipping";
 
 // Create a symbol for rendering the graphic
 const renderer = new SimpleRenderer({
@@ -25,11 +26,11 @@ const fields = [
         type: "oid"
     }),
     new Field(
-    {
-        name: "EventID",
-        alias: "EventID",
-        type: "integer"
-    }),
+        {
+            name: "EventID",
+            alias: "EventID",
+            type: "integer"
+        }),
     new Field({
         name: "Name",
         alias: "Name",
@@ -70,9 +71,28 @@ export const getFeatureById = async (eventId: number): Promise<Graphic> => {
     const response = await layer.queryFeatures(query);
     return response.features[0];
 }
-
-export const getVisibleArea = async (eventId: number, mapExtent: Extent): Promise<Polygon> => {
+/**
+ * Get the center of the visible part of the alert polygon.
+ * NOTE: Using polygon-cripping package instead of ESRI to reduce the initial file size.
+ * @param eventId 
+ * @param visibleExtent 
+ * @returns 
+ */
+export const getVisibleCenter = async (eventId: number, visibleExtent: Extent): Promise<Point> => {
     const g = await getFeatureById(eventId);
-    return clip(g.geometry, mapExtent) as Polygon;
+    const eventPoly = g.geometry as Polygon;
+    const extentVertices: number[][][] = [[
+        [visibleExtent.xmin, visibleExtent.ymax],
+        [visibleExtent.xmax, visibleExtent.ymax],
+        [visibleExtent.xmax, visibleExtent.ymin],
+        [visibleExtent.xmin, visibleExtent.ymin],
+        [visibleExtent.xmin, visibleExtent.ymax]
+    ]];
+    const intersection = pc.intersection(eventPoly.rings as pc.Geom, extentVertices as pc.Geom);
+    const intPoly = new Polygon({
+        rings: intersection[0],
+        spatialReference: { wkid: 3857 }
+    });
+    return intPoly.centroid;
 }
 

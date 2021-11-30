@@ -1,5 +1,5 @@
-import Graphic from "@arcgis/core/Graphic";
-import CIMSymbol from "@arcgis/core/symbols/CIMSymbol";
+// import Graphic from "@arcgis/core/Graphic";
+// import CIMSymbol from "@arcgis/core/symbols/CIMSymbol";
 import RowInfo from "./RowInfo";
 
 

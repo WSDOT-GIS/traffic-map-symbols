@@ -511,7 +511,6 @@ export default defineComponent({
         if (!newValue) {
           return;
         }
-        // esriMap.updateOutOfExtentLayer();
         centerRegionalAlerts(esriMap.mapView.extent);
       });
     });

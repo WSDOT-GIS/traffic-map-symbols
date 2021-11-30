@@ -6,7 +6,7 @@ module.exports = {
     // devServer: {
     //     disableHostCheck: true
     // },
-    //publicPath: process.env.NODE_ENV === 'production' ? '/Travel/Real-time/Map/' : '/',
+    publicPath: process.env.NODE_ENV === 'production' ? '/Travel/Real-time/Map/' : '/',
     configureWebpack: {
         devtool: "source-map",
         plugins: [
@@ -40,7 +40,8 @@ module.exports = {
                     "@arcgis/core/layers/WMTSLayer",
                     "@arcgis/core/layers/WebTileLayer",
                     // identity
-                    "@arcgis/core/identity"
+                    "@arcgis/core/identity",
+                    //"@arcgis/core/geometry/geometryEngine"
                 ]
             }),
         ]
