@@ -16,8 +16,9 @@
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
-import Analytics from 'analytics'
-import googleAnalytics from '@analytics/google-analytics'
+import Analytics from 'analytics';
+import googleAnalytics from '@analytics/google-analytics';
+import { getConfig } from "@/utils/appConfigUtil";
 
 export default defineComponent({
   props: {
@@ -39,11 +40,12 @@ export default defineComponent({
     }
   },
   setup(props, context) {
+    const config = getConfig();
     const analytics = Analytics({
       app: 'WSDOT',
       plugins: [
         googleAnalytics({
-          trackingId: 'UA-970887-21',
+          trackingId: config.googleAnalyticsID,
         })
       ]
     })
