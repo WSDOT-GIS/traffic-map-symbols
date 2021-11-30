@@ -58,8 +58,7 @@ export const getMediaSize = (): "s" | "l" => {
 }
 
 export const WebMercator = {
-    "wkid": 102100,
-    "latestWkid": 3857
+    "wkid": 3857
 }
 
 

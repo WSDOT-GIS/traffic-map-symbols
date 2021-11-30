@@ -41,7 +41,6 @@ module.exports = {
                     "@arcgis/core/layers/WebTileLayer",
                     // identity
                     "@arcgis/core/identity",
-                    //"@arcgis/core/geometry/geometryEngine"
                 ]
             }),
         ]
