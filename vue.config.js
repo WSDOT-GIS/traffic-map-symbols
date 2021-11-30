@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const ArcGISPlugin = require("@arcgis/webpack-plugin");
+const zlib = require("zlib");
 
 module.exports = {
     // Uncomment below for testing Local Host on BrowserStack
     // devServer: {
     //     disableHostCheck: true
     // },
-    publicPath: process.env.NODE_ENV === 'production' ? '/Travel/Real-time/Map/' : '/',
+    //publicPath: process.env.NODE_ENV === 'production' ? '/Travel/Real-time/Map/' : '/',
     configureWebpack: {
         devtool: "source-map",
         plugins: [
@@ -48,6 +49,25 @@ module.exports = {
     pluginOptions: {
         webpackBundleAnalyzer: {
             openAnalyzer: true
+        },
+        compression: {
+            brotli: {
+                filename: '[file].br[query]',
+                algorithm: 'brotliCompress',
+                include: /\.(js|css|html|svg|json)(\?.*)?$/i,
+                compressionOptions: {
+                    params: {
+                        [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
+                    },
+                },
+                minRatio: 0.8,
+            },
+            gzip: {
+                filename: '[file].gz[query]',
+                algorithm: 'gzip',
+                include: /\.(js|css|html|svg|json)(\?.*)?$/i,
+                minRatio: 0.8,
+            }
         }
     }
 };
