@@ -60,13 +60,13 @@ module.exports = {
                         [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
                     },
                 },
-                minRatio: 0.8,
+                minRatio: 0.9,
             },
             gzip: {
                 filename: '[file].gz[query]',
                 algorithm: 'gzip',
                 include: /\.(js|css|svg)(\?.*)?$/i,
-                minRatio: 0.8,
+                minRatio: 0.9,
             }
         }
     }
