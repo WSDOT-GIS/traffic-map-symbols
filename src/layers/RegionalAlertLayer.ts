@@ -8,7 +8,7 @@ import Extent from "@arcgis/core/geometry/Extent";
 import Point from "@arcgis/core/geometry/Point";
 import Polygon from "@arcgis/core/geometry/Polygon";
 
-import AlertAreaLayer, { getVisibleArea, getFeatureById as getAreaById } from "./AlertAreaLayer";
+import AlertAreaLayer, { getVisibleCenter, getFeatureById as getAreaById } from "./AlertAreaLayer";
 import { initLayer as initAreaLayer } from "@/layers/AlertAreaLayer";
 
 
@@ -18,13 +18,13 @@ const renderer = new SimpleRenderer({
 });
 
 const fields = [
-    new Field({
-        name: "AppGenId", type: "oid", alias: "AppGenId"
-    }),
+    // new Field({
+    //     name: "AppGenId", type: "oid", alias: "AppGenId"
+    // }),
     new Field({
         name: "EventID",
         alias: "EventID",
-        type: "integer"
+        type: "oid"
     }),
     new Field({
         name: "CriticalEventIndicator",
@@ -100,7 +100,7 @@ export const initLayer = async (alertUrl: string, countyUrl: string, regionUrl: 
         title: "Regional Alerts",
         source: fetchResults.point,
         fields: fields,
-        objectIdField: "AppGenId",
+        objectIdField: "EventID",//"AppGenId",
         geometryType: "point",
         spatialReference: SpatialReference.WebMercator,
         renderer: renderer,
@@ -210,12 +210,15 @@ const fetchData = async (alertUrl: string, countyUrl: string, regionUrl: string)
 //     const response = await layer.queryFeatures(query);
 //     return response.features[0];
 // }
+// const debugX = -13669225.4615;
+// const debugY = 5938652.26065;
+// let debugCnt = 0;
 /**
  * Center the alert icon in the center of the region that is visible.
  * @param mapExtent 
  * If specified, it will only consider the visible part of the polygon.
  */
-export const centerFeatures = async (mapExtent?: Extent): Promise<void> => {
+export const centerFeatures = async (visibleExtent?: Extent): Promise<void> => {
     const layer = getLayer();
     const query = layer.createQuery();
     query.where = "1=1";
@@ -227,9 +230,8 @@ export const centerFeatures = async (mapExtent?: Extent): Promise<void> => {
         const feature = result.features[i];
         let newPt: Point | undefined;
         const regionId = feature.attributes["EventID"];
-        if (mapExtent) {
-            const visibleArea = await getVisibleArea(regionId, mapExtent);
-            newPt = visibleArea?.centroid;
+        if (visibleExtent) {
+            newPt = await getVisibleCenter(regionId, visibleExtent);
         } else {
             const regionFtr = await getAreaById(regionId)
             newPt = (regionFtr.geometry as Polygon).centroid;
@@ -239,5 +241,7 @@ export const centerFeatures = async (mapExtent?: Extent): Promise<void> => {
             updatedFtrs.push(feature);
         }
     }
-    await layer.applyEdits({ updateFeatures: updatedFtrs });
+    if (updatedFtrs.length > 0) {
+        layer.applyEdits({ updateFeatures: updatedFtrs });
+    }
 }
