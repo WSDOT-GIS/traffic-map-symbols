@@ -40,7 +40,7 @@ export const createLayerGroupInfos = (config: AppConfig): void => {
     layerGroups.push({ id: "mountain", layers: [{ id: "mountain-passes-layer", uniqueField: "MountainPassId", jsonUrl: config.mountainPasses }] });
     layerGroups.push({ id: "weather", layers: [{ id: "weather-stations-layer", uniqueField: "WeatherStationId", jsonUrl: config.weatherStations }] });
     layerGroups.push({ id: "parkride", layers: [{ id: "park-ride-layer", uniqueField: "", jsonUrl: config.parkAndRides }] }); // TODO: need unique field
-    layerGroups.push({ id: "restarea", layers: [{ id: "rest-areas-layer", uniqueField: "", jsonUrl: config.restAreas }] }); // TODO: need unique field
+    layerGroups.push({ id: "restarea", layers: [{ id: "rest-areas-layer", uniqueField: "RestAreaId", jsonUrl: config.restAreas }] });
 };
 
 const getGroupLayerInfo = (groupId: string): GroupLayerInfo => {
