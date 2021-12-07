@@ -402,7 +402,9 @@ export default defineComponent({
       esriMap.mapView.extent = await getExtentFromUrl();
       // Zoom, turn on layer and open popup if specified in URL query parameter...
       const featureType = getFeatureTypeFromUrl();
+      console.log(featureType)
       const featureId = getFeatureIdFromUrl();
+      console.log(featureId)
       if (featureType && featureId) {
         // Make sure the map is ready, then search for the feature...
         esriMap.mapView.when().then(() => {
