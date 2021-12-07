@@ -149,7 +149,7 @@ export default defineComponent({
       } else {
         popupXY.value = undefined;
       }
-      store.commit("setIsLoading", { loading: false, message: "" });
+      store.commit("setInitializing", { isInitializing: false });
     };
     const closePopup = () => {
       popupFeatureset.value = { layerId: "", ids: [] };
@@ -360,9 +360,8 @@ export default defineComponent({
         });
         return Promise.all(loadedPromises)
           .then(() => {
-            store.commit("setIsLoading", {
-              loading: false,
-              message: "",
+            store.commit("setInitializing", {
+              isInitializing: false
             }); /***TODO: use this to wait until non-feature layers are also ready***/
           })
           .catch((err) => {
@@ -438,6 +437,15 @@ export default defineComponent({
               });
             }
           });
+        }).catch(error => {
+          if (error.name.includes("webgl")) {
+              store.commit("setInitializing", { isInitializing: true, isLoading: false, initializingMessage: "WebGL error" });
+              console.warn("WebGL error");
+            }
+          else{
+            console.warn("Failed to initialize map. Error: ", error)
+            store.commit("setInitializing", { isInitializing: true, isLoading: false, initializingMessage: "Failed to initialize map. Error: "+error });
+          }
         });
       }
       // Pointer move event handler...
