@@ -117,7 +117,7 @@ export default defineComponent({
           if (response) {
             const featureNWSZoneId = response?.attributes?.NWSZoneId?.toString().replace(/\s/g, "");
             const config = getConfig();
-            fetch(config.forecastExtendedAPI + featureNWSZoneId).then((result) => {
+            fetch(config.forecastExtendedAPI + featureNWSZoneId + "/").then((result) => {
               if(result.status==200){
                 result.json().then((response) => {
                   function mycomparator(a:any,b:any) {
