@@ -260,7 +260,11 @@ export default defineComponent({
                 // If zoomed more than cluster max scale, and features are still overlapping, then show multiple features...
                 const query = layer.createQuery();
                 // Select all features within the set pixels...
-                query.geometry = esriMap.bufferByPixels(10, undefined, g.geometry as Point);
+                // query.geometry = esriMap.bufferByPixels(10, undefined, g.geometry as Point);
+                query.geometry = g.geometry;
+                query.distance = esriMap.pixel2meter(10, undefined, g.geometry as Point);
+                query.units = "meters";
+                query.spatialRelationship = "intersects";
                 layer.queryFeatures(query).then((results) => {
                   const ids = results.features.map((eachFeature) => {
                     return eachFeature.getObjectId();
@@ -517,7 +521,6 @@ export default defineComponent({
         if (!newValue) {
           return;
         }
-        esriMap.updateOutOfExtentLayer();
         centerRegionalAlerts(esriMap.mapView.extent);
       });
     });

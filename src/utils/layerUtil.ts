@@ -1,7 +1,7 @@
 import LayerInfo from "@/types/LayerInfo";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Graphic from "@arcgis/core/Graphic";
-import WebMap from "@arcgis/core/WebMap";
+import WebMap from "@arcgis/core/Map";
 import { addGraphicsByType, buildGraphicsByType } from "./graphicLayerUtil";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as geomJsonUtils from "@arcgis/core/geometry/support/jsonUtils";
@@ -246,3 +246,4 @@ export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
     }
     return graphics;
 }
+
