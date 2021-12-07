@@ -6,7 +6,7 @@ import { getBasemapInfo, toggleBasemapInfo } from "./layers/Basemaps";
 import ExtentInfo from "./types/ExtentInfo";
 import { convert2EsriExtent, convert2ExtentInfo } from "./utils/extentUtil";
 import LayerInfo from "./types/LayerInfo";
-import LoadingStateInfo from "./types/LoadingStateInfo";
+import {InitializingInfo} from "./types/InitializingInfo";
 import { getMediaSize } from "./utils/miscUtil";
 
 // Reference - https://next.vuex.vuejs.org/guide/typescript-support.html#typing-usestore-composition-function
@@ -22,8 +22,9 @@ export interface State {
     currentExtent: ExtentInfo;
     userLocation: number[] | null;
     isMobileMenuOpen: boolean;
+    isInitializing: boolean;
     isLoading: boolean;
-    loadingMessage: string;
+    initiaizingMessage: string;
     leftPaneIsOpen: boolean;
     /** s: small, l:large */
     mediaSize: "s" | "l"; // TODO: add more as needed
@@ -50,8 +51,9 @@ export const store = createStore<State>({
             layerList: [],
             userLocation: null,
             isMobileMenuOpen: false,
+            isInitializing: false,
             isLoading: false,
-            loadingMessage: "",
+            initiaizingMessage: "",
             leftPaneIsOpen: getMediaSize() !== "s",
             mediaSize: getMediaSize(),
         }
@@ -133,9 +135,10 @@ export const store = createStore<State>({
         toggleIsMobileMenuOpen(state) {
             state.isMobileMenuOpen = !state.isMobileMenuOpen;
         },
-        setIsLoading(state, payload: LoadingStateInfo) {
-            state.isLoading = payload.loading
-            state.loadingMessage = payload.message as string
+        setInitializing(state, payload: InitializingInfo) {
+            payload.isInitializing!=undefined?state.isInitializing = payload.isInitializing:null
+            payload.isLoading!=undefined?state.isLoading = payload.isLoading:null
+            payload.initializingMessage? state.initiaizingMessage = payload.initializingMessage:null
         },
         setLeftPaneIsOpen(state, payload) {
             state.leftPaneIsOpen = payload;

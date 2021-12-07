@@ -2,13 +2,13 @@
   <div class ='w3-display-middle modalContainer'>
     <div class="w3-padding w3-display-middle modalBackground">
     </div>
-    <div class="w3-padding w3-display-middle loadingModal">
+    <div class="w3-padding w3-display-middle setupModal">
       <table>
         <tr>
           <td><img class="loadingSpinner" src="@/assets/loadingSpinner.gif"></td>
         </tr>
         <tr>
-          <td><label class="loadingLabel">{{loadingMessage}}</label></td>
+          <td><label class="setupLabel">{{initiaizingMessage}}</label></td>
         </tr>
       </table>
     </div> 
@@ -19,6 +19,7 @@ import { computed, defineComponent, onUpdated, ref, watch } from "vue";
 import { useStore } from "@/store";
 import {mapState} from "vuex"
 export default defineComponent({
+  //component that loads overtop the rest of the app to display the loading spinner and any initialization errors.
   setup() {
     const store = useStore();
     const containerRef = ref<HTMLDivElement>();
@@ -48,18 +49,18 @@ export default defineComponent({
       displayStyle,
     };
   },
-  computed: mapState(["loadingMessage"]),
+  computed: mapState(["initiaizingMessage"]),
 });
 </script>
 
 <style scoped>
-.loadingModal{
+.setupModal{
     background-color: white;
 }
 .loadingSpinner{
   width: 50px;height:50px;
 }
-.loadingLabel{
+.setupLabel{
   text-align: center;
 }
 .modalContainer {
