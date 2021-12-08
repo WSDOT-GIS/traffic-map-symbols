@@ -1,7 +1,7 @@
 import LayerInfo from "@/types/LayerInfo";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Graphic from "@arcgis/core/Graphic";
-import WebMap from "@arcgis/core/WebMap";
+import WebMap from "@arcgis/core/Map";
 import { addGraphicsByType, buildGraphicsByType } from "./graphicLayerUtil";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as geomJsonUtils from "@arcgis/core/geometry/support/jsonUtils";
@@ -11,7 +11,6 @@ import GroupLayerInfo from "@/types/GroupLayerInfo";
 import AppConfig from "@/types/AppConfig";
 import { fetchJson } from "@/utils/miscUtil";
 import { isEsriFeatures } from "@/utils/typeUtil";
-import MapView from "@arcgis/core/views/MapView";
 /**  Mapping between layer groups (type in URL query param) and layer IDs...
  *   * id
  *      ID for the layer group (type).
@@ -41,7 +40,7 @@ export const createLayerGroupInfos = (config: AppConfig): void => {
     layerGroups.push({ id: "mountain", layers: [{ id: "mountain-passes-layer", uniqueField: "MountainPassId", jsonUrl: config.mountainPasses }] });
     layerGroups.push({ id: "weather", layers: [{ id: "weather-stations-layer", uniqueField: "WeatherStationId", jsonUrl: config.weatherStations }] });
     layerGroups.push({ id: "parkride", layers: [{ id: "park-ride-layer", uniqueField: "", jsonUrl: config.parkAndRides }] }); // TODO: need unique field
-    layerGroups.push({ id: "restarea", layers: [{ id: "rest-areas-layer", uniqueField: "", jsonUrl: config.restAreas }] }); // TODO: need unique field
+    layerGroups.push({ id: "restarea", layers: [{ id: "rest-areas-layer", uniqueField: "RestAreaId", jsonUrl: config.restAreas }] });
 };
 
 const getGroupLayerInfo = (groupId: string): GroupLayerInfo => {
@@ -67,7 +66,7 @@ export const getLayerIds = (groupId: string): string[] => {
     }
 }
 
-export const resizeFeature = (graphic: Graphic, mapView: MapView): void => {
+export const resizeFeature = (graphic: Graphic): void => {
     const mapGraphic = buildGraphicsByType("CIMSymbol", graphic)
     addGraphicsByType("selectedGraphic", mapGraphic)
 }
@@ -247,3 +246,4 @@ export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
     }
     return graphics;
 }
+

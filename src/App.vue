@@ -1,19 +1,3 @@
-<template>
-  <HeaderView @onLoadComplete="resizeMapContainer()" :WsdotRootUrl="config.wsdotRoot" />
-  <main>
-    <div
-      id="map-container"
-      class="w3-display-container"
-      :class="[isLoading ? disabledClass : activeClass]"
-      :style="{ height: mapHeight, opacity: isLoading ? 0.5 : 1 }"
-    >
-      <EsriMapView />
-    </div>
-    <LoadingSpinnerModal v-if="isLoading" />
-  </main>
-  <FooterView :WsdotRootUrl="config.wsdotRoot" />
-</template>
-
 <script lang="ts">
 import { defineComponent, onBeforeUnmount, ref } from "vue";
 import EsriMapView from "./components/EsriMapView.vue";
@@ -21,7 +5,7 @@ import HeaderView from "./components/HeaderView.vue";
 import FooterView from "./components/FooterView.vue";
 import { useStore } from "@/store";
 import { mapState } from "vuex";
-import LoadingSpinnerModal from "@/components/LoadingSpinnerModal.vue";
+import SetupModal from "@/components/SetupModal.vue";
 import { getConfig } from "@/utils/appConfigUtil";
 
 export default defineComponent({
@@ -29,7 +13,7 @@ export default defineComponent({
   components: {
     EsriMapView,
     HeaderView,
-    LoadingSpinnerModal,
+    SetupModal,
     FooterView,
   },
   setup() {
@@ -38,7 +22,7 @@ export default defineComponent({
     const config = getConfig();
     const activeClass = "active";
     const disabledClass = "disabled";
-    store.commit("setIsLoading", { loading: true, message: "Map is loading..." });
+    store.commit("setInitializing", { isInitializing: true, isLoading: true, initializingMessage: "Map is loading..." });
     // Make map fill the screen between the header and footer...
     const resizeMapContainer = () => {
       const headDiv = document.querySelector("#header") as HTMLElement;
@@ -67,10 +51,25 @@ export default defineComponent({
       disabledClass,
     };
   },
-
-  computed: mapState(["isLoading"]),
+  computed: mapState(["isInitializing"]),
 });
 </script>
+
+<template>
+  <HeaderView @onLoadComplete="resizeMapContainer()" :WsdotRootUrl="config.wsdotRoot" />
+  <main>
+    <div
+      id="map-container"
+      class="w3-display-container"
+      :class="[isInitializing ? disabledClass : activeClass]"
+      :style="{ height: mapHeight, opacity: isInitializing ? 0.5 : 1 }"
+    >
+      <EsriMapView />
+    </div>
+    <SetupModal v-if="isInitializing" />
+  </main>
+  <FooterView :WsdotRootUrl="config.wsdotRoot" />
+</template>
 
 <style>
 html,
@@ -90,9 +89,6 @@ body,
 hr.horizontal-divider {
   border-top: 1px solid #bbb;
   margin: 1vh 1vw;
-}
-.loadingSpinnerBackground {
-  background-color: red;
 }
 .disabled {
   pointer-events: none;

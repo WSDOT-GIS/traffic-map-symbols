@@ -10,7 +10,7 @@ import Field from "@arcgis/core/layers/support/Field";
 const renderer = new SimpleRenderer({
     symbol: new SimpleFillSymbol({
         style: "none",
-        outline: {  
+        outline: { 
             width: 2,
             color: "blue"
         }

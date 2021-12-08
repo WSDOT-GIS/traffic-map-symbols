@@ -38,6 +38,7 @@ interface AppConfig {
     ferryAlerts: string,
     // Layer refresh interval in minutes...
     layerRefreshMinute: number;
+    googleAnalyticsID: string
 }
 
 export default AppConfig;

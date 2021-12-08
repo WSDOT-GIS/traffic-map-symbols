@@ -8,20 +8,15 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
+import { computed, defineComponent } from "vue";
 import { mapState } from "vuex";
 import { useStore } from "@/store";
-import { isSmallMedia } from "@/utils/mediaUtil";
 
 export default defineComponent({
   computed: mapState(["pointerX", "pointerY"]),
   setup() {
     const store = useStore();
-    const smallMedia = ref(isSmallMedia());
-    const mapSize = computed(() => store.state.mapSize);
-    watch(mapSize, () => {
-      smallMedia.value = isSmallMedia();
-    });
+    const smallMedia = computed(() => store.state.mediaSize === "s");
     return {
       smallMedia,
     };

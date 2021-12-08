@@ -1,54 +1,3 @@
-<template>
-  <div id="esri-map-view"></div>
-  <AlertView :Alerts="alerts" />
-  <div
-    id="map-bottom-left-container"
-    class="w3-display-bottomleft w3-container"
-    ref="bottomLeftDiv"
-    :style="{ marginBottom: marginBottomContainer }"
-  >
-    <CoordinatesView />
-  </div>
-  <div id="map-bottom-center-container" class="w3-display-bottommiddle" ref="bottomCtrDiv">
-    <AdView @onResize="adjustBottomControls" />
-  </div>
-  <div
-    id="map-bottom-right-container"
-    class="w3-display-bottomright"
-    ref="bottomRightDiv"
-    :style="{ marginBottom: marginBottomContainer }"
-  >
-    <div class="map-bottom-right-container-row flex-row">
-      <div class="map-bottom-right-container-column flex-column">
-        <BasemapView />
-      </div>
-      <div class="map-bottom-right-container-column flex-column">
-        <MyLocationView />
-        <ZoomButtonView />
-      </div>
-    </div>
-  </div>
-  <ZoomPopupView
-    :Visible="zoomPopupVisible"
-    :PositionX="zoomPopupX"
-    :PositionY="zoomPopupY"
-    :Label="zoomPopupLabel"
-    @clicked="zoomMetroEventHandler"
-  ></ZoomPopupView>
-  <CameraPopup :MapXY="popupXY" :Featureset="popupFeatureset" />
-  <ParkRidePopup :Featureset="popupFeatureset" />
-  <PointRestrictionPopup :Featureset="popupFeatureset" />
-  <MountainPassPopup :Featureset="popupFeatureset" />
-  <WeatherStationsPopup :Featureset="popupFeatureset" />
-  <RestAreaPopup :Featureset="popupFeatureset" />
-  <RoadAlertPopup :Featureset="popupFeatureset" />
-  <WildfirePointsPopup :Featureset="popupFeatureset" />
-  <BorderCrossingPopup :Featureset="popupFeatureset" />
-  <RegionalAlertPopup :Featureset="popupFeatureset" />
-  <FerryRoutesPopup :Featureset="popupFeatureset" :Alerts="ferryAlerts" />
-  <LeftPaneView />
-</template>
-
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
 import { useStore } from "@/store";
@@ -200,7 +149,7 @@ export default defineComponent({
       } else {
         popupXY.value = undefined;
       }
-      store.commit("setIsLoading", { loading: false, message: "" });
+      store.commit("setInitializing", { isInitializing: false });
     };
     const closePopup = () => {
       popupFeatureset.value = { layerId: "", ids: [] };
@@ -311,7 +260,11 @@ export default defineComponent({
                 // If zoomed more than cluster max scale, and features are still overlapping, then show multiple features...
                 const query = layer.createQuery();
                 // Select all features within the set pixels...
-                query.geometry = esriMap.bufferByPixels(10, undefined, g.geometry as Point);
+                // query.geometry = esriMap.bufferByPixels(10, undefined, g.geometry as Point);
+                query.geometry = g.geometry;
+                query.distance = esriMap.pixel2meter(10, undefined, g.geometry as Point);
+                query.units = "meters";
+                query.spatialRelationship = "intersects";
                 layer.queryFeatures(query).then((results) => {
                   const ids = results.features.map((eachFeature) => {
                     return eachFeature.getObjectId();
@@ -405,12 +358,15 @@ export default defineComponent({
         layerViews.forEach((layerView) => {
           loadedPromises.push(WatchUtils.whenFalseOnce(layerView, "updating"));
         });
-        return Promise.all(loadedPromises).then(() => {
-          store.commit("setIsLoading", {
-            loading: false,
-            message: "",
-          }); /***TODO: use this to wait until non-feature layers are also ready***/
-        });
+        return Promise.all(loadedPromises)
+          .then(() => {
+            store.commit("setInitializing", {
+              isInitializing: false
+            }); /***TODO: use this to wait until non-feature layers are also ready***/
+          })
+          .catch((err) => {
+            console.error(err.message);
+          });
       });
       /* Set layer list here before the rest of the map is ready, so we can show the layer list UI early.
        * Otherwise user will see a map without layer list until everything is ready. */
@@ -445,7 +401,9 @@ export default defineComponent({
       esriMap.mapView.extent = await getExtentFromUrl();
       // Zoom, turn on layer and open popup if specified in URL query parameter...
       const featureType = getFeatureTypeFromUrl();
+      console.log(featureType)
       const featureId = getFeatureIdFromUrl();
+      console.log(featureId)
       if (featureType && featureId) {
         // Make sure the map is ready, then search for the feature...
         esriMap.mapView.when().then(() => {
@@ -455,7 +413,6 @@ export default defineComponent({
                 throw "The parameter, featuretype, only supports point feature type currently.";
               } else {
                 if (featureType == "restriction") {
-                  console.log(result.attributes);
                   displayPointInteractionGraphics(
                     LineRestrictionsLayer(),
                     "UniqueId",
@@ -468,12 +425,27 @@ export default defineComponent({
                 const layerList = setLayerVisibility(result.layer.id, true, store.state.layerList);
                 store.commit("setLayerList", layerList);
               }
-              // Zoom in...
-              esriMap.tryZoomToPointAsync(result.geometry as Point, 4).then(() => {
+              // Zoom in (zoom level differs depends on the device)...
+              let zoomLevel: number;
+              if (store.state.mediaSize === "s") {
+                zoomLevel = esriMap.getZoomLevel(-2).level;
+              } else {
+                zoomLevel = esriMap.mapView.zoom + 4;
+              }
+              esriMap.tryZoomToPointAsync(result.geometry as Point, zoomLevel).then(() => {
                 showPopup(result.layer.id, [result.getObjectId()]);
               });
             }
           });
+        }).catch(error => {
+          if (error.name.includes("webgl")) {
+              store.commit("setInitializing", { isInitializing: true, isLoading: false, initializingMessage: "WebGL error" });
+              console.warn("WebGL error");
+            }
+          else{
+            console.warn("Failed to initialize map. Error: ", error)
+            store.commit("setInitializing", { isInitializing: true, isLoading: false, initializingMessage: "Failed to initialize map. Error: "+error });
+          }
         });
       }
       // Pointer move event handler...
@@ -549,7 +521,6 @@ export default defineComponent({
         if (!newValue) {
           return;
         }
-        esriMap.updateOutOfExtentLayer();
         centerRegionalAlerts(esriMap.mapView.extent);
       });
     });
@@ -603,6 +574,57 @@ export default defineComponent({
   },
 });
 </script>
+
+<template>
+  <div id="esri-map-view"></div>
+  <AlertView :Alerts="alerts" />
+  <div
+    id="map-bottom-left-container"
+    class="w3-display-bottomleft w3-container"
+    ref="bottomLeftDiv"
+    :style="{ marginBottom: marginBottomContainer }"
+  >
+    <CoordinatesView />
+  </div>
+  <div id="map-bottom-center-container" class="w3-display-bottommiddle" ref="bottomCtrDiv">
+    <AdView @onResize="adjustBottomControls" />
+  </div>
+  <div
+    id="map-bottom-right-container"
+    class="w3-display-bottomright"
+    ref="bottomRightDiv"
+    :style="{ marginBottom: marginBottomContainer }"
+  >
+    <div class="map-bottom-right-container-row flex-row">
+      <div class="map-bottom-right-container-column flex-column">
+        <BasemapView />
+      </div>
+      <div class="map-bottom-right-container-column flex-column">
+        <MyLocationView />
+        <ZoomButtonView />
+      </div>
+    </div>
+  </div>
+  <ZoomPopupView
+    :Visible="zoomPopupVisible"
+    :PositionX="zoomPopupX"
+    :PositionY="zoomPopupY"
+    :Label="zoomPopupLabel"
+    @clicked="zoomMetroEventHandler"
+  ></ZoomPopupView>
+  <CameraPopup :MapXY="popupXY" :Featureset="popupFeatureset" />
+  <ParkRidePopup :Featureset="popupFeatureset" />
+  <PointRestrictionPopup :Featureset="popupFeatureset" />
+  <MountainPassPopup :Featureset="popupFeatureset" />
+  <WeatherStationsPopup :Featureset="popupFeatureset" />
+  <RestAreaPopup :Featureset="popupFeatureset" />
+  <RoadAlertPopup :Featureset="popupFeatureset" />
+  <WildfirePointsPopup :Featureset="popupFeatureset" />
+  <BorderCrossingPopup :Featureset="popupFeatureset" />
+  <RegionalAlertPopup :Featureset="popupFeatureset" />
+  <FerryRoutesPopup :Featureset="popupFeatureset" :Alerts="ferryAlerts" />
+  <LeftPaneView />
+</template>
 
 <style scoped>
 @import "https://js.arcgis.com/4.19/@arcgis/core/assets/esri/themes/light/main.css";

@@ -1,6 +1,6 @@
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
-const firePerimeterFeatureIDs = async (fireIncidentLayer:FeatureLayer)=>{ 
+const firePerimeterFeatureIDs = async (fireIncidentLayer:FeatureLayer):Promise<string>=>{ 
     const fireIncidentQuery = fireIncidentLayer.createQuery();
     fireIncidentQuery.outFields = ["IncidentName"];
     const response = await fireIncidentLayer.queryFeatures(fireIncidentQuery)

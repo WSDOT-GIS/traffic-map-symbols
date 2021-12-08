@@ -26,7 +26,7 @@ const formatDateTimePart = (part: number) => {
 };
 
 export const fetchJson = async (url: string, isUnicode?: boolean): Promise<unknown> => {
-    const response = await fetch(url,{cache:"no-store" });
+    const response = await fetch(url, { cache: "no-store" });
     let json: unknown;
     if (isUnicode) {
         json = await response.json();
@@ -41,6 +41,24 @@ export const fetchJson = async (url: string, isUnicode?: boolean): Promise<unkno
         json = JSON.parse(text);
     }
     return json;
+}
+
+/**
+ * Determines the media size
+ * @returns s: small, l:large (add more as needed)
+ */
+export const getMediaSize = (): "s" | "l" => {
+    if (window.matchMedia("(max-width: 600px)").matches
+        || window.matchMedia("(max-height: 400px)").matches) {
+        return "s"
+    }
+    else {
+        return "l"
+    }
+}
+
+export const WebMercator = {
+    "wkid": 3857
 }
 
 

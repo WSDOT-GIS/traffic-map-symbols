@@ -15,7 +15,6 @@
 <script lang="ts">
 import { useStore } from "@/store";
 import { computed, defineComponent, ref, watch } from "vue";
-import { isSmallMedia } from "@/utils/mediaUtil";
 import MapButtonView from "@/components/MapButtonView.vue";
 import { webmap } from "@/esri-stuff/esriMap";
 /* eslint @typescript-eslint/no-var-requires: "off" */
@@ -67,8 +66,7 @@ export default defineComponent({
       updateBasemapIcon();
     };
     const setStyle = () => {
-      const smallMedia = isSmallMedia();
-      if (smallMedia) {
+      if (store.state.mediaSize === "s") {
         imgSize.value = "50";
         topLabelClass.value = "basemap-img-Top-Small";
         bottomLabelClass.value = "basemap-img-Bottom-Small";

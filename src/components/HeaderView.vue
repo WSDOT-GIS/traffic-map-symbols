@@ -116,7 +116,7 @@ export default defineComponent({
   }
   #burger-menu {
     position: absolute;
-    right: 10px;
+    right: 0;
     top: 10px;
     height: 34px;
     width: 33px;
@@ -126,6 +126,9 @@ export default defineComponent({
 @media screen and (max-width: 1263px) {
   html body header .logo-container .region-header .logo {
     padding-left: 2%;
+  }
+  html body header {
+    padding-right: 2%;
   }
 }
 </style>

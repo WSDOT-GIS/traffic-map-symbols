@@ -1,7 +1,6 @@
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
-import {ferryRoutesSymbol} from "@/symbols/FerryRoutesSymbol"
-import Field from "@arcgis/core/layers/support/Field";
+import { ferryRoutesSymbol } from "@/symbols/FerryRoutesSymbol"
 import * as layerUtil from "@/utils/layerUtil";
 
 const renderer = new simpleRenderer({
@@ -10,15 +9,15 @@ const renderer = new simpleRenderer({
 
 let layer: FeatureLayer | undefined;
 
-const fields = [
-    new Field({
-        name: "OBJECTID",
-        alias: "OBJECTID",
-        type: "oid"
-    }),
-]
+// const fields = [
+//     new Field({
+//         name: "OBJECTID",
+//         alias: "OBJECTID",
+//         type: "oid"
+//     }),
+// ]
 
-export const initLayer = async (url: string): Promise<FeatureLayer>  => {
+export const initLayer = async (url: string): Promise<FeatureLayer> => {
     const graphics = await layerUtil.fetchJsonData(url)
     layer = new FeatureLayer({
         id: "ferry-routes-lines-layer",

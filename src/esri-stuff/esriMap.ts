@@ -1,8 +1,8 @@
-import WebMap from "@arcgis/core/WebMap";
+import WebMap from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
 import Point from "@arcgis/core/geometry/Point";
-import Polygon from "@arcgis/core/geometry/Polygon";
-import { geodesicBuffer } from "@arcgis/core/geometry/geometryEngine";
+// import Polygon from "@arcgis/core/geometry/Polygon";
+// import { geodesicBuffer } from "@arcgis/core/geometry/geometryEngine";
 import { whenTrue } from "@arcgis/core/core/watchUtils";
 import TileLayer from "@arcgis/core/layers/TileLayer";
 import Extent from "@arcgis/core/geometry/Extent";
@@ -12,7 +12,8 @@ import Layer from "@arcgis/core/layers/Layer";
 import Graphic from "@arcgis/core/Graphic";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
-import { difference } from "@arcgis/core/geometry/geometryEngine";
+// import { difference } from "@arcgis/core/geometry/geometryEngine";
+import esriConfig from "@arcgis/core/config";
 // Layers
 import * as TrafficLayer from "@/layers/TrafficLayer";
 import * as ParkRideLayer from "@/layers/ParkRideLayer";
@@ -35,7 +36,7 @@ import * as FerryRoutesReferenceLayer from "@/layers/ferryRoutesReferenceLayer"
 import * as LineFerryRoutesLayer from "@/layers/LineFerryRoutesLayer"
 import * as FerryRoutePointsLayer from "@/layers/PointFerryRoutesLayer"
 //
-import { getEsriExtent, getOutOfBoundDirection } from "@/utils/extentUtil";
+import * as extentUtil from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 import FeatureInfo from "@/types/FeatureInfo";
 import { getConfig } from "@/utils/appConfigUtil";
@@ -43,7 +44,9 @@ import firePerimeterFeatureIDs from "@/utils/firePerimeterQuery"
 import { getBasemapInfo } from "@/layers/Basemaps";
 import XY from "@/types/XY";
 import * as layerUtil from "@/utils/layerUtil";
-const fullExtent = getEsriExtent("full");
+
+esriConfig.request.useIdentity = false
+const fullExtent = extentUtil.getEsriExtent("full");
 
 // Initialize empty map, and load layers later...
 export const webmap = new WebMap({
@@ -110,11 +113,11 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const ferryRoutePointsLayer = FerryRoutePointsLayer.initLayer(config.ferryRoutePoints)
     const borderCrossingsLayer = await BorderCrossingsLayer.initLayer(config.borderCrossings)
     // The first one in the array will be displayed at the bottom of the map... 
-    webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, ferryRoutesReferenceLayer, trafficLyr, 
+    webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, ferryRoutesReferenceLayer, trafficLyr,
         ferryRouteLinesLayer, stateRouteShieldsLayer,
         firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, lineRestrictionLyr,
-        pointRestrictionLyr, cameraLyr, 
+        pointRestrictionLyr, cameraLyr,
         ferryRoutePointsLayer, roadAlertLyrs,
         mileMarkersLayer, borderCrossingsLayer]);
     // Store the default visibility...
@@ -158,16 +161,19 @@ export const tryZoomToPoint = (point: Point, numLevels?: number): boolean => {
     }
     return isSuccess;
 }
-
-export const tryZoomToPointAsync = async (point: Point, numLevels?: number): Promise<boolean> => {
+/**
+ * Zoom centered at the specified location
+ * @param point The center location
+ * @param zoomLevel The zoom level to zoom into.
+ * If numLevels is also specified, that will take precedence over this value.
+ * @returns 
+ */
+export const tryZoomToPointAsync = async (point: Point, zoomLevel: number): Promise<boolean> => {
     let isSuccess = true;
-    if (!numLevels) {
-        numLevels = 1;
-    }
     const orgLevel = mapView.zoom;
     await mapView.goTo({
         target: point,
-        zoom: mapView.zoom += numLevels
+        zoom: zoomLevel
     }, {
         duration: 300,
         easing: "ease-in"
@@ -184,7 +190,7 @@ export const tryZoomToPointAsync = async (point: Point, numLevels?: number): Pro
 export const zoomToMax = async (point: Point): Promise<void> => {
     await mapView.goTo({
         target: point,
-        scale: getMaxScale()
+        scale: getZoomLevel(-1).scale
     }, {
         duration: 300,
         easing: "ease-in"
@@ -231,6 +237,35 @@ export const getMaxScale = (): number => {
         return maxScale;
     }
 }
+/** Zoom levels and corresponding scales */
+let zoomLevels: { level: number, scale: number }[];
+/**
+ * Get the scale by the number levels from the minimum scale.
+ * @param numLevelsFromMin Number of levels from the minimum scale. 
+ * For example, 0 is the min scale. 3 is the fourth level from the min scale.
+ * You can also specify number of levels from the maximum scale by using the negative value.
+ * For example -1 is the max scale. -2 is the second level from the max scale.
+ */
+export const getZoomLevel = (numLevelsFromMin: number): { level: number, scale: number } => {
+    if (!zoomLevels) {
+        const info = getBasemapInfo("wsdot");
+        const lyr = info.basemap.baseLayers.getItemAt(0);
+        const tile = lyr as TileLayer;
+        const lods = tile.tileInfo.lods;
+        zoomLevels = lods.map((x) => {
+            return { level: x.level, scale: x.scale };
+        })
+        zoomLevels.sort((a, b) => a.level - b.level);
+    }
+    const item = zoomLevels.slice(numLevelsFromMin);
+    if (item) {
+        return item[0];
+    } else if (numLevelsFromMin < 0) {
+        return zoomLevels[0];
+    } else {
+        return zoomLevels.slice(-1)[0];
+    }
+}
 
 export const toScreenXY = (mapX: number, mapY: number): { x: number, y: number } => {
     const pt = toPoint(mapX, mapY);
@@ -253,8 +288,8 @@ export const toPoint = (mapX: number, mapY: number): Point => {
 export const checkPannedExtent = (shiftX: number, shiftY: number): string => {
     const topLeft = mapView.toMap({ x: -1 * shiftX, y: -1 * shiftY });
     const bottomRight = mapView.toMap({ x: mapView.width - shiftX, y: mapView.height - shiftY });
-    const topLeftDir = getOutOfBoundDirection(topLeft, fullExtent);
-    const bottomRightDir = getOutOfBoundDirection(bottomRight, fullExtent);
+    const topLeftDir = extentUtil.getOutOfBoundDirection(topLeft, fullExtent);
+    const bottomRightDir = extentUtil.getOutOfBoundDirection(bottomRight, fullExtent);
     // Positive = panning down/south => check the top, otherwise check the bottom...
     let outOfBoundsDir = shiftY > 0 ? topLeftDir[0] : bottomRightDir[0];
     // Positive = panning east/right => check the left, otherwise check the right side...
@@ -357,7 +392,7 @@ export const getIdsFromCluster = async (clusterGraphic: Graphic, layer: Layer, m
     }
 }
 
-export const bufferByPixels = (distancePixel: number, screenPoint?: { x: number, y: number }, mapPoint?: Point): Polygon => {
+export const pixel2meter = (distancePixel: number, screenPoint?: XY, mapPoint?: Point): number => {
     if (!screenPoint && mapPoint) {
         screenPoint = mapView.toScreen(mapPoint);
     }
@@ -367,18 +402,35 @@ export const bufferByPixels = (distancePixel: number, screenPoint?: { x: number,
     if (screenPoint && mapPoint) {
         const ptShift = mapView.toMap({ x: screenPoint.x + distancePixel, y: screenPoint.y });
         const mapDist = Math.abs(ptShift.x - mapPoint.x);
-        const outBuff = geodesicBuffer(
-            mapPoint,
-            mapDist,
-            "meters"
-        ) as Polygon;
-        return outBuff;
+        return mapDist;
     }
     else {
-        throw "Need to specify either screen or map point.";
+        return -1;
     }
-
 }
+
+// export const bufferByPixels = (distancePixel: number, screenPoint?: XY, mapPoint?: Point): Polygon => {
+//     if (!screenPoint && mapPoint) {
+//         screenPoint = mapView.toScreen(mapPoint);
+//     }
+//     if (!mapPoint && screenPoint) {
+//         mapPoint = mapView.toMap(screenPoint);
+//     }
+//     if (screenPoint && mapPoint) {
+//         const ptShift = mapView.toMap({ x: screenPoint.x + distancePixel, y: screenPoint.y });
+//         const mapDist = Math.abs(ptShift.x - mapPoint.x);
+//         const outBuff = geodesicBuffer(
+//             mapPoint,
+//             mapDist,
+//             "meters"
+//         ) as Polygon;
+//         return outBuff;
+//     }
+//     else {
+//         throw "Need to specify either screen or map point.";
+//     }
+
+// }
 /** Highlight feature */
 let highlight: __esri.Handle;
 export const highlightFeature = (featureInfo: FeatureInfo): void => {
@@ -402,13 +454,11 @@ export const removeHighlight = (): void => {
     }
 }
 /*** grey out outside ***/
-const outOfExtentLayer = new GraphicsLayer();
-const displayExtent = getEsriExtent("full").expand(1.2);
+// const outOfExtentLayer = new GraphicsLayer();
+// const displayExtent = extentUtil.getEsriExtent("full").expand(1.2);
+
 export const addOutOfExtentLayer = (): void => {
-    webmap.add(outOfExtentLayer);
-}
-export const updateOutOfExtentLayer = (): void => {
-    outOfExtentLayer.removeAll();
+    const outOfExtentLayer = new GraphicsLayer();
     const symbol = new SimpleFillSymbol({
         style: "solid",
         color: [256, 256, 256, 0.95],
@@ -416,21 +466,40 @@ export const updateOutOfExtentLayer = (): void => {
             style: "none"
         }
     });
-    const diffGeoms = difference(mapView.extent, displayExtent);
-    if (Array.isArray(diffGeoms)) {
-        for (const each of diffGeoms) {
-            const g = new Graphic({
-                geometry: each,
-                symbol: symbol,
-            })
-            outOfExtentLayer.add(g);
-        }
-    } else {
+    const geoms = extentUtil.getOutOfExtentPolygons();
+    geoms.forEach((x) => {
         const g = new Graphic({
-            geometry: diffGeoms,
+            geometry: x,
             symbol: symbol,
         })
         outOfExtentLayer.add(g);
-    }
+    });
+    webmap.add(outOfExtentLayer);
 }
+// export const updateOutOfExtentLayer = (): void => {
+//     outOfExtentLayer.removeAll();
+//     const symbol = new SimpleFillSymbol({
+//         style: "solid",
+//         color: [256, 256, 256, 0.95],
+//         outline: {
+//             style: "none"
+//         }
+//     });
+//     const diffGeoms = difference(mapView.extent, displayExtent);
+//     if (Array.isArray(diffGeoms)) {
+//         for (const each of diffGeoms) {
+//             const g = new Graphic({
+//                 geometry: each,
+//                 symbol: symbol,
+//             })
+//             outOfExtentLayer.add(g);
+//         }
+//     } else {
+//         const g = new Graphic({
+//             geometry: diffGeoms,
+//             symbol: symbol,
+//         })
+//         outOfExtentLayer.add(g);
+//     }
+// }
 

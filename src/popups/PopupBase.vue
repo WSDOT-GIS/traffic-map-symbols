@@ -1,164 +1,3 @@
-<template>
-  <div
-    ref="modalContainerRef"
-    class="popup-modal-container"
-    :class="{
-      'w3-modal': smallMedia,
-      'popup-modal-container-show': smallMedia && propFeatures.length > 0 && propFeatures[0],
-      'popup-modal-container-hide': smallMedia && (!propFeatures || propFeatures.length == 0),
-    }"
-  >
-    <div
-      ref="containerRef"
-      class="popup-container w3-card w3-col"
-      :class="{
-        'popup-container-above': relativePosition === 'above',
-        'popup-container-below': relativePosition === 'below',
-        'w3-modal-content': smallMedia,
-      }"
-      v-if="propFeatures.length > 0 && propFeatures[0]"
-      :style="popupTopLeft"
-      v-click-away="onClickAway"
-    >
-      <!-- container without the pointer -->
-      <div class="popup-inner-container w3-display-container">
-        <div class="popup-header w3-left-align">
-          <div
-            class="popup-banner"
-            :style="{
-              backgroundColor: LightThemeColor,
-              borderColor: DarkThemeColor,
-            }"
-          >
-            <div class="popup-banner-icon" v-html="IconSvg"></div>
-            <span class="popup-banner-text"> {{ getBannerText() }}</span>
-          </div>
-          <div
-            v-if="badgeText.length > 0"
-            class="popup-badge"
-            :style="{
-              backgroundColor: badgeLightColor,
-              borderColor: badgeDarkColor,
-              color: badgeTextColor,
-            }"
-          >
-            {{ badgeText }}
-          </div>
-          <div v-if="Config.paging && Config.paging.maxPage > 1" class="popup-page-tracker">
-            {{ currentPage }} of {{ Config.paging.maxPage }}
-          </div>
-        </div>
-        <button class="popup-close-button w3-button w3-display-topright" @click="close">
-          &times;
-        </button>
-        <!-- Content (below the header) container -->
-        <div
-          :style="{ maxHeight: maxHeight + 'px' }"
-          class="popup-content-container"
-          ref="contentContainerRef"
-        >
-          <h4 v-if="Config.title && !Config.title.isHTML" class="popup-title w3-container">
-            {{ getTitle() }}
-          </h4>
-          <h4
-            v-if="Config.title && Config.title.isHTML"
-            v-html="getTitle()"
-            class="popup-title w3-container"
-          ></h4>
-          <div v-if="Config.subtitle" class="popup-content w3-container">
-            <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
-          </div>
-          <div v-if="propWeatherForecast != undefined">
-            <div class="popup-content w3-container">
-              <label class="popup-row-label">Forecast</label>
-            </div>
-            <table class="weatherForecastTable">
-              <tr id="weatherPeriodText">
-                <td
-                  v-for="eachFeature in propWeatherForecast.forecasts"
-                  :key="eachFeature.forecastNumber"
-                >
-                  {{ eachFeature.periodText }}
-                </td>
-              </tr>
-              <tr id="weatherForecastIcons">
-                <td
-                  class="weatherForecastIcon"
-                  v-for="eachFeature in propWeatherForecast.forecasts"
-                  :key="eachFeature.forecastNumber"
-                >
-                  <img
-                    :src="
-                      'https://images.wsdot.wa.gov/traffic/weaicons/' +
-                      eachFeature.weatherIconFileName
-                    "
-                  />
-                </td>
-              </tr>
-              <tr id="weatherForecastDescription">
-                <td
-                  v-for="eachFeature in propWeatherForecast.forecasts"
-                  :key="eachFeature.forecastNumber"
-                >
-                  {{ eachFeature.weatherDescription }}
-                </td>
-              </tr>
-            </table>
-          </div>
-
-          <Carousel
-            v-if="Config.imageFieldName"
-            :items-to-show="1"
-            :wrapAround="true"
-            @update:modelValue="currentIdx = $event"
-            :style="pagenationStyle"
-          >
-            <Slide v-for="eachFeature in Features" :key="eachFeature.id">
-              <div class="carousel-item-container">
-                <img
-                  class="popup-img"
-                  :src="getImgUrl(eachFeature)"
-                  :alt="eachFeature.id"
-                  @load="onImgLoad()"
-                  @error="$event.target.src = require('@/assets/no-image.png')"
-                />
-              </div>
-            </Slide>
-            <template #addons="{ slidesCount }">
-              <navigation v-if="slidesCount > 1" />
-              <pagination v-if="slidesCount > 1" />
-            </template>
-          </Carousel>
-          <div class="travelDelayTime" v-if="propTravelDelay && propTravelDelay > 0">
-            {{ `${propTravelDelay} minute delay` }}
-          </div>
-          <div
-            v-for="eachConfig in Config.content"
-            :key="eachConfig.label"
-            class="popup-content w3-container"
-          >
-            <PopupRow v-if="Config.content" :Config="eachConfig" :Feature="Features[currentIdx]" />
-          </div>
-          <div v-if="Config.moreInfoURL">
-            <div
-              v-if="Config.moreInfoURL.text && Config.moreInfoURL.text !== ''"
-              class="popup-content w3-container"
-            >
-              {{ getMoreInfoURL() }}
-            </div>
-            <div v-if="Config.moreInfoURL.custom" class="popup-content w3-container">
-              <div v-html="getMoreInfoURL()"></div>
-            </div>
-          </div>
-        </div>
-        <!-- Content (below the header) container -->
-      </div>
-      <!-- Inner container -->
-    </div>
-    <!-- Popup container -->
-  </div>
-  <!-- Modal container -->
-</template>
 <script lang="ts">
 import { computed, defineComponent, nextTick, onUpdated, PropType, ref, toRefs, watch } from "vue";
 import "vue3-carousel/dist/carousel.css";
@@ -177,7 +16,6 @@ import PopupConfig from "@/types/PopupConfig";
 import PopupRow from "./PopupRow.vue";
 import XY from "@/types/XY";
 import ForecastListInfo from "@/types/ForecastListInfo";
-import { isSmallMedia } from "@/utils/mediaUtil";
 import MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
 import { getEsriExtent } from "@/utils/extentUtil";
 
@@ -248,13 +86,12 @@ export default defineComponent({
     const mapSize = computed(() => store.state.mapSize);
     const mapScale = computed(() => store.state.scale);
     const mapCenter = computed(() => store.state.center);
+    const smallMedia = computed(() => store.state.mediaSize === "s");
     const maxHeight = ref(mapSize.value.height);
-    const smallMedia = ref(isSmallMedia());
     const minTop = 60; // Space needed at the top so the icon and arrow is visible.
     watch(mapSize, (size) => {
       maxHeight.value = size.height - minTop - 30 /* height of header */;
-      smallMedia.value = isSmallMedia();
-      if (!smallMedia.value) {
+      if (smallMedia.value) {
         /* On desktop, subtract more so it leaves a bit more of space under or above the icon. 
            Otherwise long popups (Ferry) pushes icon too much to the edge. */
         maxHeight.value -= 80;
@@ -869,7 +706,9 @@ export default defineComponent({
           highlightFeature(feature);
         }
       } else {
-        removeHighlight();
+        if (!smallMedia.value) {
+          removeHighlight();
+        }
       }
     };
     /** If MapX and Y are provided, those values supersede the feature x/y.
@@ -921,6 +760,168 @@ export default defineComponent({
   },
 });
 </script>
+
+<template>
+  <div
+    ref="modalContainerRef"
+    class="popup-modal-container"
+    :class="{
+      'w3-modal': smallMedia,
+      'popup-modal-container-show': smallMedia && propFeatures.length > 0 && propFeatures[0],
+      'popup-modal-container-hide': smallMedia && (!propFeatures || propFeatures.length == 0),
+    }"
+  >
+    <div
+      ref="containerRef"
+      class="popup-container w3-card w3-col"
+      :class="{
+        'popup-container-above': relativePosition === 'above',
+        'popup-container-below': relativePosition === 'below',
+        'w3-modal-content': smallMedia,
+      }"
+      v-if="propFeatures.length > 0 && propFeatures[0]"
+      :style="popupTopLeft"
+      v-click-away="onClickAway"
+    >
+      <!-- container without the pointer -->
+      <div class="popup-inner-container w3-display-container">
+        <div class="popup-header w3-left-align">
+          <div
+            class="popup-banner"
+            :style="{
+              backgroundColor: LightThemeColor,
+              borderColor: DarkThemeColor,
+            }"
+          >
+            <div class="popup-banner-icon" v-html="IconSvg"></div>
+            <span class="popup-banner-text"> {{ getBannerText() }}</span>
+          </div>
+          <div
+            v-if="badgeText.length > 0"
+            class="popup-badge"
+            :style="{
+              backgroundColor: badgeLightColor,
+              borderColor: badgeDarkColor,
+              color: badgeTextColor,
+            }"
+          >
+            {{ badgeText }}
+          </div>
+          <div v-if="Config.paging && Config.paging.maxPage > 1" class="popup-page-tracker">
+            {{ currentPage }} of {{ Config.paging.maxPage }}
+          </div>
+        </div>
+        <button class="popup-close-button w3-button w3-display-topright" @click="close">
+          &times;
+        </button>
+        <!-- Content (below the header) container -->
+        <div
+          :style="{ maxHeight: maxHeight + 'px' }"
+          class="popup-content-container"
+          ref="contentContainerRef"
+        >
+          <h4 v-if="Config.title && !Config.title.isHTML" class="popup-title w3-container">
+            {{ getTitle() }}
+          </h4>
+          <h4
+            v-if="Config.title && Config.title.isHTML"
+            v-html="getTitle()"
+            class="popup-title w3-container"
+          ></h4>
+          <div v-if="Config.subtitle" class="popup-content w3-container">
+            <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
+          </div>
+          <div v-if="propWeatherForecast != undefined">
+            <div class="popup-content w3-container">
+              <label class="popup-row-label">Forecast</label>
+            </div>
+            <table class="weatherForecastTable">
+              <tr id="weatherPeriodText">
+                <td
+                  v-for="eachFeature in propWeatherForecast.forecasts"
+                  :key="eachFeature.forecastNumber"
+                >
+                  {{ eachFeature.periodText }}
+                </td>
+              </tr>
+              <tr id="weatherForecastIcons">
+                <td
+                  class="weatherForecastIcon"
+                  v-for="eachFeature in propWeatherForecast.forecasts"
+                  :key="eachFeature.forecastNumber"
+                >
+                  <img
+                    :src="
+                      'https://images.wsdot.wa.gov/traffic/weaicons/' +
+                      eachFeature.weatherIconFileName
+                    "
+                  />
+                </td>
+              </tr>
+              <tr id="weatherForecastDescription">
+                <td
+                  v-for="eachFeature in propWeatherForecast.forecasts"
+                  :key="eachFeature.forecastNumber"
+                >
+                  {{ eachFeature.weatherDescription }}
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <Carousel
+            v-if="Config.imageFieldName"
+            :items-to-show="1"
+            :wrapAround="true"
+            @update:modelValue="currentIdx = $event"
+            :style="pagenationStyle"
+          >
+            <Slide v-for="eachFeature in Features" :key="eachFeature.id">
+              <div class="carousel-item-container">
+                <img
+                  class="popup-img"
+                  :src="getImgUrl(eachFeature)"
+                  :alt="eachFeature.id"
+                  @load="onImgLoad()"
+                  @error="$event.target.src = require('@/assets/no-image.png')"
+                />
+              </div>
+            </Slide>
+            <template #addons="{ slidesCount }">
+              <navigation v-if="slidesCount > 1" />
+              <pagination v-if="slidesCount > 1" />
+            </template>
+          </Carousel>
+          <div class="travelDelayTime" v-if="propTravelDelay && propTravelDelay > 0">
+            {{ `${propTravelDelay} minute delay` }}
+          </div>
+          <div
+            v-for="eachConfig in Config.content"
+            :key="eachConfig.label"
+            class="popup-content w3-container"
+          >
+            <PopupRow v-if="Config.content" :Config="eachConfig" :Feature="Features[currentIdx]" />
+          </div>
+          <div v-if="Config.moreInfoURL">
+            <div
+              v-if="Config.moreInfoURL.text && Config.moreInfoURL.text !== ''"
+              class="popup-content w3-container"
+            >
+              {{ getMoreInfoURL() }}
+            </div>
+            <div v-if="Config.moreInfoURL.custom" class="popup-content w3-container">
+              <div v-html="getMoreInfoURL()"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Content (below the header) container -->
+      </div>
+      <!-- Inner container -->
+    </div>
+    <!-- Popup container -->
+  </div>
+  <!-- Modal container -->
+</template>
 
 <style scoped>
 .popup-modal-container-show {

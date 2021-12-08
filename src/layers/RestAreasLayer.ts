@@ -26,6 +26,11 @@ const fields = [
         alias: "Amenties",
         type: "string"
     }),
+    new Field({
+        name: "RestAreaId",
+        alias: "RestAreaId",
+        type: "oid"
+    })
 ]
 
 let layer: FeatureLayer | undefined;

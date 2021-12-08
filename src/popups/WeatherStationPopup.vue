@@ -117,7 +117,7 @@ export default defineComponent({
           if (response) {
             const featureNWSZoneId = response?.attributes?.NWSZoneId?.toString().replace(/\s/g, "");
             const config = getConfig();
-            fetch(config.forecastExtendedAPI + featureNWSZoneId).then((result) => {
+            fetch(config.forecastExtendedAPI + featureNWSZoneId + "/").then((result) => {
               if(result.status==200){
                 result.json().then((response) => {
                   function mycomparator(a:any,b:any) {
@@ -162,9 +162,10 @@ export default defineComponent({
     const getSurfTemp = (feature: FeatureInfo) => {
       let text = naText;
       if (feature) {
-        const f = Number(feature.attributes["SurfaceTemperature"]);
-        if (f && !isNaN(f)) {
-          const c = Math.round(((f - 32) * 5) / 9);
+        const c = Number(feature.attributes["SurfaceTemperature"]);
+        if (c && !isNaN(c)) {
+          //(6°C × 9/5) + 32 
+          const f = Math.round((c *(9/5))+32);
           text = combineNums(f, c, "°F", "°C");
         }
       }
