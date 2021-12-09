@@ -404,7 +404,7 @@ export default defineComponent({
       const featureId = getFeatureIdFromUrl();
       if (featureType && featureId) {
         // Make sure the map is ready, then search for the feature...
-        esriMap.mapView.when().then(() => {
+        esriMap.mapView.when(() => {
           getFeature(featureId, featureType, esriMap.webmap).then((result) => {
             if (result) {
               if (result.geometry.type !== "point") {
@@ -435,7 +435,7 @@ export default defineComponent({
               });
             }
           });
-        }).catch(error => {
+        }).catch((error) => {
           if (error.name.includes("webgl")) {
               store.commit("setInitializing", { isInitializing: true, isLoading: false, initializingMessage: "WebGL error" });
               console.warn("WebGL error");
