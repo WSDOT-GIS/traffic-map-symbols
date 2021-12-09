@@ -3,12 +3,12 @@ import requests
 import logging
 from logging.handlers import TimedRotatingFileHandler
 from logging import Formatter
+from datetime import datetime
 import urllib3
 import numpy
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)#comment this line to reveal SSL warnings
 
-targetPath = "//hqtob1webtmdev1/wwwroot/GISData"
-targetPath2 = "//wsdot/resources/Topics/Publish/Web/Data/TravelCenter"
+targetPath = "//wsdot/resources/Topics/Publish/Web/Data/TravelCenter"
 
 dataSources = [
     {
@@ -19,7 +19,7 @@ dataSources = [
     },
     {
         #"url": "https://hqolymgis30s.wsdot.loc/arcgis/rest/services/TravelCenter/TravelCenter/MapServer/1/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&having=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentOnly=false&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=json",
-        "url":"https://data.wsdot.wa.gov/arcgis/rest/services/TravelCenter/TravelCenter/MapServer/1/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=CameraID%2CCameraTitle%2CImageURL&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&having=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentOnly=false&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=json",
+        "url":"https://data.wsdot.wa.gov/arcgis/rest/services/TravelCenter/TravelCenter/MapServer/1/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=CameraID%2CCompassDirection%2CCameraTitle%2CImageURL&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&having=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentOnly=false&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=json",
         "title": "Cameras",
         "type": "Point"
     },
@@ -71,7 +71,7 @@ dataSources = [
     },
     {
         #"url": "https://hqolymgis30s.wsdot.loc/arcgis/rest/services/TravelCenter/TravelCenter/MapServer/10/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&having=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentOnly=false&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=json",
-        "url": "https://data.wsdot.wa.gov/arcgis/rest/services/TravelCenter/TravelCenter/MapServer/10/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=RestAreaName%2CLocationName%2CAmenties&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&having=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentOnly=false&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=json",
+        "url": "https://data.wsdot.wa.gov/arcgis/rest/services/TravelCenter/TravelCenter/MapServer/10/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=RestAreaId%2CRestAreaName%2CLocationName%2CAmenties&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&having=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentOnly=false&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=json",
         "title": "RestAreas",
         "type": "Point"
     },
@@ -86,12 +86,11 @@ dataSources = [
         "type": "Table"
     }]
 logger = logging.getLogger(__name__)
-handler = TimedRotatingFileHandler(filename='./jsonScraper_StaticCopy', when='S', interval=60, backupCount=10, encoding='utf-8', delay=False)
+handler = TimedRotatingFileHandler(filename='D:\\Jobs\\TravelInfojsonScraper\\jsonScraper_Prod.log', when='D', interval=1, backupCount=30, encoding='utf-8', delay=False)
 formatter = Formatter(fmt='%(asctime)s:%(levelname)s:%(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 logger.setLevel(logging.INFO)
-#logging.basicConfig(filename=f'jsonScraper_StaticCopy.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 #Debug>Info>Warning>Error>Critical
 logger.info("~~~~~~~~~~~~~~~~~~~~~~~~~Task Start~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 def getGeoJson():
@@ -99,13 +98,7 @@ def getGeoJson():
     for source in dataSources:
         try:
             rawJsonData = requests.get(source["url"], verify=False)
-            if source["title"] in ["Cameras","PointRestrictions","LineRestrictions","MountainPasses","WeatherStations","RestAreas","ParkAndRides","BorderCrossingTimes","RoadAlerts","TravelTimes"]:
-                cleanJsonData = removeNullGeometries(rawJsonData.text, source["title"], source["type"])
-                source["response"] = cleanJsonData
-                print(cleanJsonData)
-            else:
-                source["response"] = rawJsonData.text
-                print(source["response"])
+            source['response'] = rawJsonData.text
         except requests.exceptions.Timeout:
             print("~~~~~~~~~~~~~~~~~~~~~ "+"logger1")
             logger.error(f'Request {source["url"]} timed out')
@@ -121,19 +114,13 @@ def getGeoJson():
             logger.error(e)
         i += 1
     return dataSources
-
-def addRestrictionMidpoints(dataSourcesWithJSON):#add midpoints of lines to points layer
-    for idx, val in enumerate(dataSourcesWithJSON):
-        #print(val["title"])
-        if val["title"]=="PointRestrictions":
-            parsedRestrictionPointsLayer = json.loads(dataSourcesWithJSON[idx]["response"])
-        if val["title"] == "LineRestrictions":
-            parsedRestrictionLinesLayer = json.loads(dataSourcesWithJSON[idx]["response"])
-    i = len(parsedRestrictionPointsLayer["features"])
-    for feature in parsedRestrictionPointsLayer["features"]:
-        feature['attributes']["lineMarker"] = "False"
-    for feature in parsedRestrictionLinesLayer["features"]:
-        newFeature = feature
+def addRestrictionMidpoints(pointRestrictionsResponseData, lineRestrictionsResponseData, pointRestrictionLayerIndex):#add midpoints of lines to points layer
+    i = len(pointRestrictionsResponseData["features"])
+    for feature in pointRestrictionsResponseData["features"]:
+        feature['attributes']["lineMarker"] = "False"# add 'false' to all existing point features
+    for feature in lineRestrictionsResponseData["features"]:
+        newFeature = {}
+        newFeature['attributes'] = feature['attributes']# duplicate the line restriction feature to preserve attributes, before calculaing the geometry of its midpoint, for the feature to be added to the points layer
         middleIndex = float(len(feature["geometry"]["paths"][0])) / 2
         if middleIndex % 2 != 0:
             middleCoord= feature["geometry"]["paths"][0][int(middleIndex - .5)]
@@ -143,21 +130,11 @@ def addRestrictionMidpoints(dataSourcesWithJSON):#add midpoints of lines to poin
         newFeature["id"] = i
         newFeature['attributes']["ESRI_OID"] = i
         newFeature['attributes']["lineMarker"] = "True"
-        parsedRestrictionPointsLayer["features"].append(newFeature)
+        pointRestrictionsResponseData["features"].append(newFeature)
         i+=1
-    for idx, val in enumerate(dataSourcesWithJSON):
-        if val["title"]=="PointRestrictions":
-            dataSources = json.loads(dataSourcesWithJSON[idx]["response"])
-            dataSources["features"] = parsedRestrictionPointsLayer["features"]
-            encodedResponse = json.dumps(dataSources)
-            dataSourcesWithJSON[idx]["response"] = encodedResponse
-    return dataSourcesWithJSON
-def combineBorderCrossings(featuresWithLineMidpoints):
-    for idx, val in enumerate(featuresWithLineMidpoints):
-        if val["title"]=="BorderCrossingTimes":
-            BorderCrossingsLayer = json.loads(featuresWithLineMidpoints[idx]["response"])
+def combineBorderCrossings(loadedJsonResponseData):
+    BorderCrossingsLayer = loadedJsonResponseData
     borderCrossingIDs = []
-    completedCrossings = []
     selectedBorderCrossing = {}
     borderCrossingsToRemove = []
     borderCrossingHTMLAttributes=[]
@@ -206,77 +183,72 @@ def combineBorderCrossings(featuresWithLineMidpoints):
                 feature['attributes']["HTMLTable"] = record["table"]
     '''assign formatted features to layer'''
     BorderCrossingsLayer["features"]=(newFeatures)
-    for idx, val in enumerate(featuresWithLineMidpoints):
-        print(featuresWithLineMidpoints[idx]["title"])
-        if val["title"]=="FerryRouteAlerts":
-            print(val)
-        if val["title"]=="RestAreas":
-            print(val)
-        if val["title"]=="BorderCrossingTimes":
-            dataSources = json.loads(featuresWithLineMidpoints[idx]["response"])
-            dataSources["features"] = newFeatures
-            encodedResponse = json.dumps(dataSources)
-            featuresWithLineMidpoints[idx]["response"] = encodedResponse
-            
-    featuresWithCombinedBorderCrossings = featuresWithLineMidpoints
-    
-    return featuresWithCombinedBorderCrossings
-def writeFiles(jsonData):
-    for file in jsonData:
-        if "response" in file:
-            file["response"] = file["response"].replace('href=', "target='_blank' href=")
-            file["response"] = file["response"].replace('&#x0D;', '')
-            file["response"] = file["response"].replace(':""', ':null')
-            file["response"] = file["response"].replace(': ""', ': null')
-            if "Invalid or missing input parameters" in file["response"]:
-                logger.error(f'Invalid or missing input parameters in {file["title"]}.json')
-                continue
+def writeFiles(responseData,title):
+    responseData = responseData.replace('href=', "target='_blank' href=")
+    responseData = responseData.replace('&#x0D;', '')
+    responseData = responseData.replace(':""', ':null')
+    responseData = responseData.replace(': ""', ': null')
+    if title == "CountyAlerts":
+        print(responseData)
+    if "Invalid or missing input parameters" in responseData:
+        logger.error(f'Invalid or missing input parameters in {file["title"]}.json')
+    else:
+        try:
+            txtFile = open(f'{targetPath}\\{title}.json', 'w')
+            try:
+                txtFile.write(responseData)
+            except:
+                logger.error(f'Unable to write file {title}.json')
+        except FileNotFoundError:
+            logger.error(f'Unable to open {targetPath}\\{title}.json')
+def addTimeStamps(loadedJsonResponseData):
+    loadedJsonResponseData["timestamp"] = f'{datetime.now()}'
+def removeNullGeometries(loadedData, layerTitle, layerType):
+    newFeatures = []
+    for feature in loadedData['features']:
+        if layerType=="Point":
+            if len(feature['geometry'])>1:
+                newFeatures.append(feature)
             else:
-                try:
-                    txtFile = open(f'{targetPath}\\{file["title"]}.json', 'w')
-                    try:
-                        txtFile.write(file["response"])
-                    except:
-                        logger.error(f'Unable to write file {file["title"]}.json')
-                except FileNotFoundError:
-                    logger.error(f'Unable to open {targetPath}\\{file["title"]}.json')
-                try:
-                    txtFile = open(f'{targetPath2}\\{file["title"]}.json', 'w')
-                    try:
-                        txtFile.write(file["response"])
-                    except:
-                        logger.error(f'Unable to write file {file["title"]}.json')
-                except FileNotFoundError:
-                    logger.error(f'Unable to open {targetPath2}\\{file["title"]}.json')
-        else:
-            logger.error(f'Unable to process {file["title"]} layer. Missing response from map service.')
-def removeNullGeometries(rawJsonData, layerTitle, layerType):
-     newFeatures = []
-     loadedData = json.loads(rawJsonData)
-     i=0
-     for feature in loadedData['features']:
-         if layerType=="Point":
-             if len(feature['geometry'])>1:
-                 newFeatures.append(feature)
-             else:
-                 logger.error(f'feature at index {i} in layer {layerTitle} has null geometry')
-         if layerType=="Polyline":
-             print(len(feature['geometry']['paths'][0]))
-             if len(feature['geometry']['paths'][0])>1:
-                 newFeatures.append(feature)
-             else:
-                 logger.error(f'feature at index {i} in layer {layerTitle} has null geometry')
-         i+=1
-     loadedData['features'] = newFeatures
-     newData = json.dumps(loadedData)
-     return newData
-     
+                logger.error(f'feature at index {i} in layer {layerTitle} has null geometry')
+        if layerType=="Polyline":
+            if len(feature['geometry']['paths'][0])>1:
+                newFeatures.append(feature)
+            else:
+                logger.error(f'feature at index {i} in layer {layerTitle} has null geometry')
+    loadedData['features'] = newFeatures
+def loadJson(val) :
+    loadedJson = json.loads(val['response'])
+    return loadedJson
 if __name__ == '__main__':
     jsonResponse = getGeoJson()
-    featuresWithLineMidpoints = addRestrictionMidpoints(jsonResponse)
-    featuresWithCombinedBorderCrossings = combineBorderCrossings(featuresWithLineMidpoints)
-    writeFiles(featuresWithCombinedBorderCrossings)
-
+    pointRestrictionsResponseData=''#to be reassigned if the point restriction layer response is valid
+    lineRestrictionsResponseData=''#to be reassigned if the line restriction layer response is valid
+    pointRestrictionLayerIndex = ''#to be reassigned if the point restriction layer response is valid, used for replacement of original "response" data in datasources array
+    for idx, val in enumerate(jsonResponse):
+        if "response" in val:#if json fetch succeeded
+            loadedJsonResponseData = loadJson(val)
+            addTimeStamps(loadedJsonResponseData)
+            if len(loadedJsonResponseData['features'])>0:# if features exist in the json response
+                if val['title'] in ["Cameras","PointRestrictions","LineRestrictions","MountainPasses","WeatherStations","RestAreas","ParkAndRides","BorderCrossingTimes","RoadAlerts","TravelTimes"]:
+                    removeNullGeometries(loadedJsonResponseData, val["title"], val['type'])
+                if val["title"]=="BorderCrossingTimes":
+                    combineBorderCrossings(loadedJsonResponseData)
+                if val["title"]=="LineRestrictions":
+                    lineRestrictionsResponseData=loadedJsonResponseData# assigned for check before line midpoints are added
+                if val["title"]=="PointRestrictions":
+                    pointRestrictionLayerIndex = idx
+                    pointRestrictionsResponseData=loadedJsonResponseData# assigned for check before line midpoints are added
+            print(val['title'])
+            val['response'] = json.dumps(loadedJsonResponseData, ensure_ascii=False)
+            writeFiles(val['response'],val['title'])
+        else:
+            logger.error(f'Unable to process {val["title"]} layer. Missing response from map service.')
+    if pointRestrictionsResponseData!='' and lineRestrictionsResponseData!='' and pointRestrictionLayerIndex!='':# if point AND line restriction layers contain valid json with features, and index is assigned...
+        addRestrictionMidpoints(pointRestrictionsResponseData, lineRestrictionsResponseData, pointRestrictionLayerIndex)
+        dataSources[pointRestrictionLayerIndex]['response'] = json.dumps(pointRestrictionsResponseData, ensure_ascii=False)
+        writeFiles(dataSources[pointRestrictionLayerIndex]['response'],dataSources[pointRestrictionLayerIndex]['title'])
+    logging.shutdown()
 '''
 # DEBUG: Detailed information, typically of interest only when diagnosing problems.
 
@@ -287,4 +259,3 @@ if __name__ == '__main__':
 # ERROR: Due to a more serious problem, the software has not been able to perform some function.
 
 # CRITICAL: A serious error, indicating that the program itself may be unable to continue running.'''
-
