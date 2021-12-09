@@ -77,7 +77,7 @@ import ZoomButtonView from "@/components/ZoomButtonView.vue";
 import AlertView from "@/components/AlertView.vue";
 import AdView from "@/components/AdView.vue";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-
+import {hasParentClass} from "@/utils/miscUtil"
 export default defineComponent({
   components: {
     ZoomPopupView,
@@ -280,8 +280,11 @@ export default defineComponent({
                   }
                 );
               } else {
-                hidePointInteractionGraphics(LineRestrictionsLayer());
-                hidePointInteractionGraphics(LineFerryRoutesLayer());
+                const target = clickEvent.target as HTMLElement;
+                if (hasParentClass(target,"alert-content")==false) {
+                  hidePointInteractionGraphics(LineRestrictionsLayer());
+                  hidePointInteractionGraphics(LineFerryRoutesLayer());
+                }
                 // Not aggregate...
                 const id = g.getObjectId();
                 // get lines for restriciton point click
@@ -319,12 +322,15 @@ export default defineComponent({
               }
             }
           } else {
-            hidePointInteractionGraphics(LineRestrictionsLayer());
-            hidePointInteractionGraphics(LineFerryRoutesLayer());
-            removeGraphicsByType("selectedGraphic");
-            removeGraphicsByType("myLocation"); //remove "my location" graphic
-            //No feature exist...
-            closePopup();
+            const target = clickEvent.target as HTMLElement;
+            if (hasParentClass(target,"alert-content")==false) {
+              hidePointInteractionGraphics(LineRestrictionsLayer());
+              hidePointInteractionGraphics(LineFerryRoutesLayer());
+              removeGraphicsByType("selectedGraphic");
+              removeGraphicsByType("myLocation"); //remove "my location" graphic
+                        //No feature exist...
+              closePopup();
+            }
           }
         });
       });

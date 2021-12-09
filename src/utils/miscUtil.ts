@@ -60,5 +60,18 @@ export const getMediaSize = (): "s" | "l" => {
 export const WebMercator = {
     "wkid": 3857
 }
-
+export const hasParentClass = (child:HTMLElement, classname:string):boolean=>{
+    if(child){
+        if (child.className.split(' ').indexOf(classname) >= 0) return true;
+        try {
+        //Throws TypeError if child doesn't have parent any more
+        return hasParentClass(child.parentNode as HTMLElement, classname);
+        } catch (TypeError) {
+        return false;
+        }
+    }
+    else{
+        return false
+    }
+ }
 

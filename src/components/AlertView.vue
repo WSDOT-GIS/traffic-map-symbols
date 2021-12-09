@@ -17,7 +17,7 @@
             }}</span
           >
         </div>
-        <button class="alert-close-button w3-button w3-display-right" @click="toggleDisplay">
+        <button class="alert-close-button w3-button w3-display-right alert-close" @click="toggleDisplay">
           &times;
         </button>
       </div>
