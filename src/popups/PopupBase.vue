@@ -91,7 +91,7 @@ export default defineComponent({
     const minTop = 60; // Space needed at the top so the icon and arrow is visible.
     watch(mapSize, (size) => {
       maxHeight.value = size.height - minTop - 30 /* height of header */;
-      if (smallMedia.value) {
+      if (!smallMedia.value) {
         /* On desktop, subtract more so it leaves a bit more of space under or above the icon. 
            Otherwise long popups (Ferry) pushes icon too much to the edge. */
         maxHeight.value -= 80;
