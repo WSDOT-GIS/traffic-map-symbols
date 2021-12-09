@@ -18,6 +18,7 @@ import XY from "@/types/XY";
 import ForecastListInfo from "@/types/ForecastListInfo";
 import MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
 import { getEsriExtent } from "@/utils/extentUtil";
+import {hasParentClass} from "@/utils/miscUtil"
 
 export default defineComponent({
   components: { Carousel, Slide, Pagination, Navigation, PopupRow },
@@ -169,7 +170,9 @@ export default defineComponent({
            - If user clicks on map, then do not do anything here. */
         const target = event.target as HTMLElement;
         if (event.type === "click" && !target.classList.contains("esri-view-surface")) {
-          close();
+          if (hasParentClass(target,"alert-content")==false) {
+            close();
+          }
         } else if (event.type === "touchstart") {
           // Touch event is handled here...
           if (
