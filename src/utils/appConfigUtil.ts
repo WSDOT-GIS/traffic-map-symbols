@@ -10,7 +10,6 @@ export const loadConfig = async (): Promise<AppConfig> => {
         const fetchResponse = await fetch(dir + "/appConfig.json");
         const config = await fetchResponse.json();
         appConfig = config as AppConfig;
-        console.log(appConfig)
     }
     return appConfig;
 

@@ -49,16 +49,13 @@ export default defineComponent({
         })
       ]
     })
-    console.log(analytics)
     const onToggle = (evt: Event) => {
       const target = evt.currentTarget as HTMLInputElement;
-      console.log(props.Title +" "+target.checked)
       const sendToggleOn = ()=>{analytics.track('toggle', {
           category: 'Layer',
           label: props.Title+"-"+"On",
           value: 1
         })
-        console.log(analytics)
       }
       const sendToggleOff = ()=>{analytics.track('toggle', {
           category: 'Layer',

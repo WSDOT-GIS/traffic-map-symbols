@@ -353,7 +353,7 @@ export default defineComponent({
     let prevWidth = 0;
     let prevHeight = 0;
     /**
-     * Position popup on top of the feature...
+     * Position popup...
      */
     const adjustPositionSize = () => {
       if (!containerRef.value) {
