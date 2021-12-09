@@ -66,7 +66,7 @@
           class="alerts-legend-icon"
           v-html="layerIcons.find((x) => x.id == 'road-alert')?.paths"
         ></div>
-        <div class="alerts-legend-label">Alert</div>
+        <div class="alerts-legend-label">Low</div>
       </div>
       <div class="alerts-legend-item">
         <div
