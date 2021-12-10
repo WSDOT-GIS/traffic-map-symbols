@@ -74,15 +74,14 @@ mapView.ui.remove("zoom");
 //
 export const init = (container: HTMLDivElement): void => {
     mapView.container = container;
-    mapView.when()
-        .then(() => {
-            // Somehow map does not zoom enough, so set extent again here...
-            mapView.extent = fullExtent;
+    mapView.when(() => {
+        // Somehow map does not zoom enough, so set extent again here...
+        mapView.extent = fullExtent;
 
-        })
-        .catch(error => {
-            console.warn("Failed to initialize map. Error: ", error);
-        });
+    })
+    // .catch((error) => {
+    //     console.warn("Failed to initialize map. Error: ", error);
+    // });
 };
 /** Store the default layer visibility. This is used by Saved Map function. */
 export const defaultLayerProps: { id: string, visible: boolean }[] = []
