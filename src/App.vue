@@ -7,6 +7,7 @@ import { useStore } from "@/store";
 import { mapState } from "vuex";
 import SetupModal from "@/components/SetupModal.vue";
 import { getConfig } from "@/utils/appConfigUtil";
+import { getBrowserSupportInfo } from "./utils/miscUtil";
 
 export default defineComponent({
   name: "App",
@@ -26,7 +27,15 @@ export default defineComponent({
       isInitializing: true,
       isLoading: true,
       initializingMessage: "Map is loading...",
-    }); 
+    });
+    const browserInfo = getBrowserSupportInfo();
+    if (!browserInfo.supported) {
+      store.commit("setInitializing", {
+        isInitializing: true,
+        isLoading: false,
+        initializingMessage: browserInfo.browser + " is not supported.",
+      });
+    }
     // Make map fill the screen between the header and footer...
     const resizeMapContainer = () => {
       const headDiv = document.querySelector("#header") as HTMLElement;

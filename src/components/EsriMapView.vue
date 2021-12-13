@@ -35,7 +35,6 @@ import * as alertInfoUtil from "@/utils/alertInfoUtil";
 import AlertInfo from "@/types/AlertInfo";
 import FerryAlertInfo from "@/types/FerryAlertInfo";
 import { getFeatureInfoById } from "@/utils/featureInfoUtil";
-import { getBrowserSupportInfo } from "@/utils/miscUtil";
 /* Basemap */
 import { initBasemap } from "@/layers/Basemaps";
 /* Layers for popup */
@@ -335,19 +334,10 @@ export default defineComponent({
       const appConfig = await getConfig();
       const esriMap = await import("../esri-stuff/esriMap");
       esriMap.mapView
-        .when(() => {
-          console.log("MapView is ready!");
-        })
+        .when(() => {console.log("MapView is ready!")})
         .catch((error) => {
           console.error(error);
-          const browserInfo = getBrowserSupportInfo();
-          if (!browserInfo.supported) {
-            store.commit("setInitializing", {
-              isInitializing: true,
-              isLoading: false,
-              initializingMessage: browserInfo.browser + " is not supported.",
-            });
-          } else if (error.name.includes("webgl")) {
+          if (error.name.includes("webgl")) {
             store.commit("setInitializing", {
               isInitializing: true,
               isLoading: false,
