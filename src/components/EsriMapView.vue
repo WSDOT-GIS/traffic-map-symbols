@@ -333,26 +333,6 @@ export default defineComponent({
     onMounted(async () => {
       const appConfig = await getConfig();
       const esriMap = await import("../esri-stuff/esriMap");
-      esriMap.mapView
-        .when(() => {console.log("MapView is ready!")})
-        .catch((error) => {
-          console.error(error);
-          if (error.name.includes("webgl")) {
-            store.commit("setInitializing", {
-              isInitializing: true,
-              isLoading: false,
-              initializingMessage: "WebGL error",
-            });
-            console.warn("WebGL error");
-          } else {
-            console.warn("Failed to initialize map. Error: ", error);
-            store.commit("setInitializing", {
-              isInitializing: true,
-              isLoading: false,
-              initializingMessage: "Failed to initialize map. Error: " + error,
-            });
-          }
-        });
       mapDiv = document.getElementById("esri-map-view") as HTMLDivElement;
       esriMap.init(mapDiv);
       store.commit("setMapSize", {
@@ -381,7 +361,7 @@ export default defineComponent({
         return Promise.all(loadedPromises)
           .then(() => {
             store.commit("setInitializing", {
-              isInitializing: false,
+              isInitializing: false
             }); /***TODO: use this to wait until non-feature layers are also ready***/
           })
           .catch((err) => {
@@ -424,7 +404,7 @@ export default defineComponent({
       const featureId = getFeatureIdFromUrl();
       if (featureType && featureId) {
         // Make sure the map is ready, then search for the feature...
-        esriMap.mapView.when(() => {
+        esriMap.mapView.when().then(() => {
           getFeature(featureId, featureType, esriMap.webmap).then((result) => {
             if (result) {
               if (result.geometry.type !== "point") {
@@ -455,24 +435,16 @@ export default defineComponent({
               });
             }
           });
+        }).catch(error => {
+          if (error.name.includes("webgl")) {
+              store.commit("setInitializing", { isInitializing: true, isLoading: false, initializingMessage: "WebGL error" });
+              console.warn("WebGL error");
+            }
+          else{
+            console.warn("Failed to initialize map. Error: ", error)
+            store.commit("setInitializing", { isInitializing: true, isLoading: false, initializingMessage: "Failed to initialize map. Error: "+error });
+          }
         });
-        // .catch((error) => {
-        //   if (error.name.includes("webgl")) {
-        //     store.commit("setInitializing", {
-        //       isInitializing: true,
-        //       isLoading: false,
-        //       initializingMessage: "WebGL error",
-        //     });
-        //     console.warn("WebGL error");
-        //   } else {
-        //     console.warn("Failed to initialize map. Error: ", error);
-        //     store.commit("setInitializing", {
-        //       isInitializing: true,
-        //       isLoading: false,
-        //       initializingMessage: "Failed to initialize map. Error: " + error,
-        //     });
-        //   }
-        // });
       }
       // Pointer move event handler...
       esriMap.mapView.on(["pointer-move"], (event) => {
