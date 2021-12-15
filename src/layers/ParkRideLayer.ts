@@ -47,7 +47,7 @@ const fields = [
 let layer: FeatureLayer | undefined;
 
 export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
-    layer = await layerUtil.initLayer(jsonUrl, "park-ride-layer", "Park and Rides", renderer, fields, "point", false);
+    layer = await layerUtil.initLayer(jsonUrl, "park-ride-layer", "Park and Rides", renderer, fields, "point", false, true);
     return layer;
 }
 
