@@ -71,7 +71,7 @@ dataSources = [
     },
     {
         #"url": "https://hqolymgis30s.wsdot.loc/arcgis/rest/services/TravelCenter/TravelCenter/MapServer/10/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&having=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentOnly=false&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=json",
-        "url": "https://data.wsdot.wa.gov/arcgis/rest/services/TravelCenter/TravelCenter/MapServer/10/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=RestAreaName%2CLocationName%2CAmenties&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&having=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentOnly=false&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=json",
+        "url": "https://data.wsdot.wa.gov/arcgis/rest/services/TravelCenter/TravelCenter/MapServer/10/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=RestAreaId%2CRestAreaName%2CLocationName%2CAmenties&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&having=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentOnly=false&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=json",
         "title": "RestAreas",
         "type": "Point"
     },
@@ -86,7 +86,7 @@ dataSources = [
         "type": "Table"
     }]
 logger = logging.getLogger(__name__)
-handler = TimedRotatingFileHandler(filename='D:\\Jobs\\TravelInfojsonScraper\\Dev\\jsonScraper.log', when='D', interval=1, backupCount=30, encoding='utf-8', delay=False)
+handler = TimedRotatingFileHandler(filename='D:\\Jobs\\TravelInfojsonScraper\\Dev\\jsonScraper_Dev.log', when='M', interval=720, backupCount=60, encoding='utf-8', delay=False)#12 hour turnover
 formatter = Formatter(fmt='%(asctime)s:%(levelname)s:%(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)

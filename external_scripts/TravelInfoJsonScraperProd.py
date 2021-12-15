@@ -86,7 +86,7 @@ dataSources = [
         "type": "Table"
     }]
 logger = logging.getLogger(__name__)
-handler = TimedRotatingFileHandler(filename='D:\\Jobs\\TravelInfojsonScraper\\jsonScraper_Prod.log', when='D', interval=1, backupCount=30, encoding='utf-8', delay=False)
+handler = TimedRotatingFileHandler(filename='D:\\Jobs\\TravelInfojsonScraper\\jsonScraper_Prod.log', when='M', interval=720, backupCount=60, encoding='utf-8', delay=False)#12 hour turnover
 formatter = Formatter(fmt='%(asctime)s:%(levelname)s:%(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
