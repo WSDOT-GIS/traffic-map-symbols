@@ -69,7 +69,7 @@ const fields = [
 let layer: FeatureLayer | undefined;
 
 export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
-    layer = await layerUtil.initLayer(jsonUrl, "traffic-camera-layer", "Cameras", renderer, fields, "point", false);
+    layer = await layerUtil.initLayer(jsonUrl, "traffic-camera-layer", "Cameras", renderer, fields, "point", false, true);
     layer.featureReduction = clusterConfig;
     return layer;
 }
