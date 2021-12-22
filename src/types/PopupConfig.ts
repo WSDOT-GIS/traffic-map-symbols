@@ -32,7 +32,7 @@ interface PopupConfig {
     paging?: {
         direction: "vertical" | "horizontal";
         maxPage: number;
-    }
+    };
 }
 
 export default PopupConfig;
