@@ -72,6 +72,10 @@ export default defineComponent({
   },
   setup(props, context) {
     // The DOM only exists while the visibility is true. Get it in onUpdate().
+    const cameraImageLoading = ref<boolean>();
+    if(props.Config.imageFieldName){//if the layer is the cameras layer
+      cameraImageLoading.value=true
+    }
     const propWeatherForecast = ref<ForecastListInfo>();
     const modalContainerRef = ref<HTMLDivElement>();
     const containerRef = ref<HTMLDivElement>();
@@ -134,7 +138,6 @@ export default defineComponent({
       currentIdx.value = 0;
       setBadgeText();
       setBadgeColors();
-
       highlightMap();
       mapX.value = 0;
       mapY.value = 0;
@@ -151,6 +154,10 @@ export default defineComponent({
       numImgLoaded = 0;
       wasUpdatedOnce = false;
       doPanMap = true;
+      if(props.Config.imageFieldName){
+        cameraImageLoading.value=true
+      }
+      
     });
     // Picture carousel colors.
     const pagenationStyle = computed(() => {
@@ -258,11 +265,14 @@ export default defineComponent({
     });
     // Image load happens later and change the size of the popup, so need to make adjustment after that...
     const onImgLoad = () => {
+      console.log("image loaded")
       numImgLoaded = numImgLoaded + 1;
+      isLoadComplete()
       adjustPositionSize();
     };
     // Adjust position after the container DIV is available...
     onUpdated(() => {
+      console.log("image loaded")
       if (!containerRef.value || !contentContainerRef.value) {
         return;
       }
@@ -366,10 +376,10 @@ export default defineComponent({
         return;
       }
       // Wait for everything to load, then adjust.
-      if (!isLoadComplete()) {
+      /*if (!isLoadComplete()) {
         // Not everything is loaded yet.
         return;
-      }
+      }*/
       if (!props.Features || props.Features.length === 0 || !props.Features[0]) {
         // Nothing to show...
         return;
@@ -547,14 +557,17 @@ export default defineComponent({
     /**
      * Figure out if everything is loaded or not.
      */
-    const isLoadComplete = () => {
+    const isLoadComplete = () => {//check if the loading is complete after each image loads
       let isComplete: boolean;
       if (props.Config.imageFieldName) {
         isComplete = numImgLoaded >= props.Features.length;
       } else {
         isComplete = wasUpdatedOnce;
       }
-      return isComplete;
+      console.log('isLoadComplete: '+ isComplete)
+      if(props.Config.imageFieldName){
+        cameraImageLoading.value = !isComplete;
+      }
     };
     /** This sets the margin top and left of the popup container. */
     const setPosition = (top?: number, left?: number) => {
@@ -734,7 +747,6 @@ export default defineComponent({
         }
       }
     };
-
     return {
       modalContainerRef,
       containerRef,
@@ -761,6 +773,8 @@ export default defineComponent({
       smallMedia,
       currentPage,
       onClickAway,
+      cameraImageLoading,
+      isLoadComplete
     };
   },
 });
@@ -873,8 +887,14 @@ export default defineComponent({
               </tr>
             </table>
           </div>
-
+          <div v-show="cameraImageLoading" class="w3-container loadingSpinnerDiv" :style="cameraImageLoading?display='block':display='none'">
+            <img class="loadingSpinner"
+            src='@/assets/loadingSpinner.gif'/>
+            <label>Camera images loading...</label>
+          </div>
+          <div :style="!cameraImageLoading?display='block':display='none'">
             <Carousel
+              v-show="!cameraImageLoading"
               v-if="Config.imageFieldName"
               :items-to-show="1"
               :wrapAround="true"
@@ -899,6 +919,7 @@ export default defineComponent({
                 <pagination v-if="slidesCount > 1" />
               </template>
             </Carousel>
+          </div>
           <div class="travelDelayTime" v-if="propTravelDelay && propTravelDelay > 0">
             {{ `${propTravelDelay} minute delay` }}
           </div>
@@ -1085,8 +1106,18 @@ export default defineComponent({
 .popup-content-section {
   margin-bottom: 8px;
 }
-
+.loadingSpinnerDiv{
+  display: flex;
+  flex-direction: column;
+}
+.loadingSpinner{
+  width: 20%;
+  height: auto;
+  margin-left: auto;
+  margin-right: auto;
+}
 /* Picture stylings ******/
+
 .popup-img {
   width: 100%;
   height: auto;
