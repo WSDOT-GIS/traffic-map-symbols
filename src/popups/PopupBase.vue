@@ -892,9 +892,8 @@ export default defineComponent({
             src='@/assets/loadingSpinner.gif'/>
             <label>Camera images loading...</label>
           </div>
-          <div :style="!cameraImageLoading?display='block':display='none'">
+          <div v-show="!cameraImageLoading">
             <Carousel
-              v-show="!cameraImageLoading"
               v-if="Config.imageFieldName"
               :items-to-show="1"
               :wrapAround="true"
