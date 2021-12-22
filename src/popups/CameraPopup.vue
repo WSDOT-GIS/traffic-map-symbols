@@ -62,14 +62,30 @@ export default defineComponent({
     const mapXY = ref<XY | undefined>();
     const layerIcons = layerListIcons;
     const getDirection = (feature: FeatureInfo): string | undefined => {
-      let dir: string | undefined;
       if (features.value.length > 0) {
         let val = feature.attributes["CompassDirection"] as string;
+        let newVal:string|undefined;
         if (val) {
-          dir = val === "B" ? undefined : val;
+          switch(val){
+            case "N":
+              newVal= "North";
+              break;
+            case "S":
+              newVal="South";
+              break;
+            case "E":
+              newVal="East";
+              break;
+            case "W":
+              newVal="West";
+              break;
+            case "B":
+              newVal = undefined;
+              break;
+          }
         }
+        return newVal;
       }
-      return dir;
     };
 
     watch(props, () => {
