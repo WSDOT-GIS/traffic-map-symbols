@@ -9,7 +9,7 @@ import numpy
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)#comment this line to reveal SSL warnings
 targetPath = "//hqtob1webtmdev1/wwwroot/GISData"
 #targetPath = "//wsdot/resources/Topics/Publish/Web/Data/TravelCenter"
-
+#HATSurl = https://hqgissite01p/arcgis/rest/services/TravelCenter
 dataSources = [
     {
         #"url": "https://hqolymgis30s.wsdot.loc/arcgis/rest/services/TravelCenter/TravelCenter/MapServer/0/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&having=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentOnly=false&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=json",
