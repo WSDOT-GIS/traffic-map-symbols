@@ -263,14 +263,12 @@ export default defineComponent({
     });
     // Image load happens later and change the size of the popup, so need to make adjustment after that...
     const onImgLoad = () => {
-      console.log("image loaded")
       numImgLoaded = numImgLoaded + 1;
       isLoadComplete()
       adjustPositionSize();
     };
     // Adjust position after the container DIV is available...
     onUpdated(() => {
-      console.log("image loaded")
       if (!containerRef.value || !contentContainerRef.value) {
         return;
       }
@@ -562,7 +560,6 @@ export default defineComponent({
       } else {
         isComplete = wasUpdatedOnce;
       }
-      console.log('isLoadComplete: '+ isComplete)
       if(props.Config.imageFieldName){
         cameraImageLoading.value = !isComplete;
       }
