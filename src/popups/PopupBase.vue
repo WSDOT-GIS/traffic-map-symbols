@@ -18,7 +18,7 @@ import XY from "@/types/XY";
 import ForecastListInfo from "@/types/ForecastListInfo";
 import MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
 import { getEsriExtent } from "@/utils/extentUtil";
-import {hasParentClass} from "@/utils/miscUtil"
+import { hasParentClass } from "@/utils/miscUtil";
 
 export default defineComponent({
   components: { Carousel, Slide, Pagination, Navigation, PopupRow },
@@ -73,8 +73,9 @@ export default defineComponent({
   setup(props, context) {
     // The DOM only exists while the visibility is true. Get it in onUpdate().
     const cameraImageLoading = ref<boolean>();
-    if(props.Config.imageFieldName){//if the layer is the cameras layer
-      cameraImageLoading.value=true
+    if (props.Config.imageFieldName) {
+      //if the layer is the cameras layer
+      cameraImageLoading.value = true;
     }
     const propWeatherForecast = ref<ForecastListInfo>();
     const modalContainerRef = ref<HTMLDivElement>();
@@ -154,10 +155,9 @@ export default defineComponent({
       numImgLoaded = 0;
       wasUpdatedOnce = false;
       doPanMap = true;
-      if(props.Config.imageFieldName){
-        cameraImageLoading.value=true
+      if (props.Config.imageFieldName) {
+        cameraImageLoading.value = true;
       }
-      
     });
     // Picture carousel colors.
     const pagenationStyle = computed(() => {
@@ -169,15 +169,17 @@ export default defineComponent({
     });
 
     const onClickAway = (event: PointerEvent | TouchEvent) => {
+      const target = event.target as HTMLElement;
       if (smallMedia.value) {
-        close();
+        if (!hasParentClass(target, "alert-content")) {
+          close();
+        }
       } else {
         /* On Desktop
            - If user clicks on something other than the map (e.g. TOC, header, ...), then close the popup.
            - If user clicks on map, then do not do anything here. */
-        const target = event.target as HTMLElement;
         if (event.type === "click" && !target.classList.contains("esri-view-surface")) {
-          if (hasParentClass(target,"alert-content")==false) {
+          if (!hasParentClass(target, "alert-content")) {
             close();
           }
         } else if (event.type === "touchstart") {
@@ -264,7 +266,7 @@ export default defineComponent({
     // Image load happens later and change the size of the popup, so need to make adjustment after that...
     const onImgLoad = () => {
       numImgLoaded = numImgLoaded + 1;
-      isLoadComplete()
+      isLoadComplete();
       adjustPositionSize();
     };
     // Adjust position after the container DIV is available...
@@ -553,14 +555,15 @@ export default defineComponent({
     /**
      * Figure out if everything is loaded or not.
      */
-    const isLoadComplete = () => {//check if the loading is complete after each image loads
+    const isLoadComplete = () => {
+      //check if the loading is complete after each image loads
       let isComplete: boolean;
       if (props.Config.imageFieldName) {
         isComplete = numImgLoaded >= props.Features.length;
       } else {
         isComplete = wasUpdatedOnce;
       }
-      if(props.Config.imageFieldName){
+      if (props.Config.imageFieldName) {
         cameraImageLoading.value = !isComplete;
       }
     };
@@ -769,7 +772,7 @@ export default defineComponent({
       currentPage,
       onClickAway,
       cameraImageLoading,
-      isLoadComplete
+      isLoadComplete,
     };
   },
 });
@@ -882,9 +885,12 @@ export default defineComponent({
               </tr>
             </table>
           </div>
-          <div v-show="cameraImageLoading" class="w3-container loadingSpinnerDiv" :style="cameraImageLoading?display='block':display='none'">
-            <img class="loadingSpinner"
-            src='@/assets/loadingSpinner.gif'/>
+          <div
+            v-show="cameraImageLoading"
+            class="w3-container loadingSpinnerDiv"
+            :style="cameraImageLoading ? (display = 'block') : (display = 'none')"
+          >
+            <img class="loadingSpinner" src="@/assets/loadingSpinner.gif" />
             <label>Camera images loading...</label>
           </div>
           <div v-show="!cameraImageLoading">
@@ -1098,11 +1104,11 @@ export default defineComponent({
 .popup-content-section {
   margin-bottom: 8px;
 }
-.loadingSpinnerDiv{
+.loadingSpinnerDiv {
   display: flex;
   flex-direction: column;
 }
-.loadingSpinner{
+.loadingSpinner {
   width: 20%;
   height: auto;
   margin-left: auto;
