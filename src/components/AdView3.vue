@@ -37,39 +37,44 @@ export default defineComponent({
       //window.googletag = window.googletag || { cmd: [] };
       // GPT slots
       const gptAdSlots = [];
+      var page_ts = document.location.pathname.split('/');
+      var k1 = page_ts[1] || 'none';
+      var k2 = page_ts[2] || 'none';
+      var k3 = page_ts[3] || 'none';
+      var k4 = page_ts[4] || 'none';
+      var k5 = page_ts[5] || 'none';
       // const googletag = window.googletag;
       /* Use googletag.cmd to queue callbacks for when GPT is ready. 
         These callbacks do not have to check googletag.apiReady as they are guaranteed to execute once the API is set up.*/
-      googletag.cmd.push(() => {
-        // Define a size mapping object. The first parameter to addSize is
-        // a viewport size, while the second is a list of allowed ad sizes.
-        var mapping = googletag
-          .sizeMapping()
-          .addSize([0, 0], [])
-          .addSize([320, 200], [320, 50])
-          .addSize([730, 200], [728, 90])
-          .addSize([1000, 200], [728, 90])
-          .build();
-        // Define the GPT slot
-        gptAdSlots[0] = googletag
-          .defineSlot(
-            "/22447621233/WSDOT:driving-map:responsive",
-            [320, 50],
-            "div-gpt-ad-1632317155034-0"
-          )
-          .defineSizeMapping(mapping)
-          .addService(googletag.pubads());
-        googletag.pubads().enableSingleRequest();
-        // This event is fired whenever the on-screen percentage of an ad slot's area changes.
-        // Catch this so the controls can reposition accordingly to avoid overlapping with the ad.
-        googletag.pubads().addEventListener("slotVisibilityChanged", () => {
-          onResize();
-        });
-        // Start ad fetching
-        googletag.enableServices();
-        //
-        googletag.display("div-gpt-ad-1632317155034-0");
-      });
+      window.googletag = window.googletag || {cmd: []};
+    googletag.cmd.push(() => {
+
+    // Define a size mapping object. The first parameter to addSize is
+    // a viewport size, while the second is a list of allowed ad sizes.
+    var mapping = googletag.sizeMapping()
+      .addSize([320, 200], [[320, 50], [300, 50]])
+      .addSize([730, 200], [728, 90])
+      .addSize([1000, 200],[728, 90])
+      .build();
+
+    // Define the GPT slot
+    gptAdSlots[0] = googletag.defineSlot('/22447621233/WSDOT:driving-map:responsive', [[320, 50], [728, 90]], 'div-gpt-ad-1638464548434-0')
+      .defineSizeMapping(mapping)
+      .addService(googletag.pubads());
+
+    googletag.pubads().enableSingleRequest();
+    googletag.pubads().addEventListener("slotVisibilityChanged", () => {
+      onResize();
+    });
+    googletag.pubads().collapseEmptyDivs();
+    googletag.pubads()
+      .setTargeting('key1', k1)
+      .setTargeting('key2', k2)
+      .setTargeting('key3', k3)
+      .setTargeting('key4', k4)
+      .setTargeting('key5', k5)
+    googletag.enableServices();
+  });
     });
     const prevSize = { width: 0, height: 0 };
     const onResize = () => {
@@ -133,6 +138,3 @@ p {
   padding: 5px;
 }
 </style>
-
-
-
