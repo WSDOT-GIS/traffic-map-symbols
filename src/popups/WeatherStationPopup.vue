@@ -165,8 +165,10 @@ export default defineComponent({
         const c = Number(feature.attributes["SurfaceTemperature"]);
         if (c && !isNaN(c)) {
           //(6°C × 9/5) + 32 
-          const f = Math.round((c *(9/5))+32);
-          text = combineNums(f, c, "°F", "°C");
+          // BUG 42968 - remove unit since Tom cannote tell what it is.
+          // const f = Math.round((c *(9/5))+32);
+          // text = combineNums(f, c, "°F", "°C");
+          text = c.toString();
         }
       }
       return text;
