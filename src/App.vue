@@ -87,7 +87,7 @@ body,
   margin: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  /* overflow: hidden; */
   /** Got these from internal website */
   font-family: "Lato", sans-serif;
 }
@@ -108,16 +108,11 @@ hr.horizontal-divider {
   position: relative;
   width: 100%;
   height: 80%;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 #map-container > * {
   position: absolute;
 }
 
-@media screen and (max-width: 600px), screen and (max-height: 400px) {
-  #app {
-    overflow: auto;
-  }
-}
 </style>
