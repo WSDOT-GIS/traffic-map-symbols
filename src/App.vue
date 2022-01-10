@@ -114,4 +114,10 @@ hr.horizontal-divider {
 #map-container > * {
   position: absolute;
 }
+
+@media screen and (max-width: 600px), screen and (max-height: 400px) {
+  #app {
+    overflow: auto;
+  }
+}
 </style>
