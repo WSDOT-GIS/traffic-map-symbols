@@ -898,6 +898,8 @@ export default defineComponent({
               v-if="Config.imageFieldName"
               :items-to-show="1"
               :wrapAround="true"
+              :mouseDrag="false"
+              :touchDrag="false"
               @update:modelValue="currentIdx = $event"
               :style="pagenationStyle"
             >
