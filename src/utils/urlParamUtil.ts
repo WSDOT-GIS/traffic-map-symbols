@@ -3,11 +3,18 @@ Support both query parameters and routings
 [[ Routings ]]
 * /layer/<name>/<name>/...
     Make one or more layers visible
+* /feature/<layer name>/<feature id>
+    Turn on a layer and zoom to a feature
 Sample URLs:
 * Make camera layer visible
 /layer/camera
 * make camera and restrictions layers visible
 /layer/camera/restriction
+* Zoom to a camera with ID 1003
+/feature/camera/1003
+* Zoom to a restriction
+/feature/restriction/R-WA-290-2 (point)
+/feature/restriction/R-WA-101-5 (line)
 
 [[ URL query parameters ]]
 * extent
@@ -90,15 +97,27 @@ export const setVisibleLayersFromUrl = (layerList: LayerInfo[], route: RouteLoca
 /**
  * Get feature ID.
  */
-export const getFeatureIdFromUrl = (): string | null => {
-    const id = params.get("featureid");
+export const getFeatureIdFromUrl = (route: RouteLocationNormalizedLoaded): string | null => {
+    let id: string | null;
+    if (route.params.featureid) {
+        const p = route.params.featureid;
+        id = typeof p === 'string' ? p : p[0];
+    } else {
+        id = params.get("featureid");
+    }
     return id;
 }
 /** 
  * Get feature type. 
  */
-export const getFeatureTypeFromUrl = (): string | null => {
-    const type = params.get("featuretype");
+export const getFeatureTypeFromUrl = (route: RouteLocationNormalizedLoaded): string | null => {
+    let type: string | null;
+    if (route.params.featuretype) {
+        const p = route.params.featuretype;
+        type = typeof p === 'string' ? p : p[0];
+    } else {
+        type = params.get("featuretype");
+    }
     return type;
 }
 /**  Assign extent if it is specified.
