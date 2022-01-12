@@ -44,6 +44,11 @@ Sample URLs:
 ?featuretype=weather&featureid=1909
 ?featuretype=mountain&featureid=2
 ?featuretype=time&featureid=4
+?featuretype=restriction&featureid=R-WA-101-5&layer=restarea,parkride
+
+[[ Combination ]]
+* Zoom to a restriction and also turn on camera and restarea layers
+/feature/restriction/R-WA-101-5?layer=camera,restarea
 */
 
 import { project } from "@arcgis/core/geometry/projection";
@@ -66,6 +71,7 @@ const params = new URLSearchParams(window.location.search);
  */
 export const setVisibleLayersFromUrl = (layerList: LayerInfo[], route: RouteLocationNormalizedLoaded): LayerInfo[] => {
     let layers: string[] | undefined;
+    // Check routes...
     if (route.params.layernames) {
         const p = route.params.layernames;
         layers = typeof p === 'string' ? [p] : p;
@@ -73,15 +79,20 @@ export const setVisibleLayersFromUrl = (layerList: LayerInfo[], route: RouteLoca
     else if (route.params.featuretype) {
         const p = route.params.featuretype;
         layers = typeof p === 'string' ? [p] : p;
-    } else {
-        const p = params.get("featuretype");
-        if (p) {
-            layers = p.split(',');
-        }
     }
-    console.log(layers)
+    // Check query parameters...
+    if (!layers) {
+        layers = [];
+    }
+    let param = params.get("featuretype");
+    if (param) {
+        layers = layers.concat(param.split(','));
+    }
+    param = params.get("layer");
+    if (param) {
+        layers = layers.concat(param.split(','));
+    }
     if (layers) {
-        // const layers = param.split(',');
         const layerIds: string[] = [];
         layers.forEach((each) => {
             layerIds.push(...getLayerIds(each));
