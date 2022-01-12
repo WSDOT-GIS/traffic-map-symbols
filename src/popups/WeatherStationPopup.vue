@@ -90,6 +90,7 @@ export default defineComponent({
           async (result) => {
             if (result) {
               forecastList.value = undefined;
+              feature.value = result;
               getWeatherForecast(result);
             }
           }
