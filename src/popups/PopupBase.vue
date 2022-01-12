@@ -76,7 +76,8 @@ export default defineComponent({
     if(props.Config.imageFieldName){//if the layer is the cameras layer
       cameraImageLoading.value=true
     }
-    const propWeatherForecast = ref<ForecastListInfo>();
+    const propWeatherForecast = ref<ForecastListInfo>()
+    propWeatherForecast.value=undefined
     const modalContainerRef = ref<HTMLDivElement>();
     const containerRef = ref<HTMLDivElement>();
     const contentContainerRef = ref<HTMLDivElement>();
@@ -134,6 +135,7 @@ export default defineComponent({
     const propFeatures = toRefs(props).Features;
     const propTravelDelay = toRefs(props).TravelDelay;
     watch(propFeatures, () => {
+      propWeatherForecast.value=undefined
       setWeatherForecast();
       currentIdx.value = 0;
       setBadgeText();
@@ -265,12 +267,11 @@ export default defineComponent({
     const onImgLoad = () => {
       console.log("image loaded")
       numImgLoaded = numImgLoaded + 1;
-      isLoadComplete()
+      cameraImageLoadComplete()
       adjustPositionSize();
     };
     // Adjust position after the container DIV is available...
     onUpdated(() => {
-      console.log("image loaded")
       if (!containerRef.value || !contentContainerRef.value) {
         return;
       }
@@ -374,7 +375,7 @@ export default defineComponent({
         return;
       }
       // Wait for everything to load, then adjust.
-      /*if (!isLoadComplete()) {
+      /*if (!cameraImageLoadComplete()) {
         // Not everything is loaded yet.
         return;
       }*/
@@ -555,14 +556,14 @@ export default defineComponent({
     /**
      * Figure out if everything is loaded or not.
      */
-    const isLoadComplete = () => {//check if the loading is complete after each image loads
+    const cameraImageLoadComplete = () => {//check if the loading is complete after each image loads
       let isComplete: boolean;
       if (props.Config.imageFieldName) {
         isComplete = numImgLoaded >= props.Features.length;
       } else {
         isComplete = wasUpdatedOnce;
       }
-      console.log('isLoadComplete: '+ isComplete)
+      console.log('cameraImageLoadComplete: '+ isComplete)
       if(props.Config.imageFieldName){
         cameraImageLoading.value = !isComplete;
       }
@@ -772,7 +773,7 @@ export default defineComponent({
       currentPage,
       onClickAway,
       cameraImageLoading,
-      isLoadComplete
+      cameraImageLoadComplete
     };
   },
 });
@@ -848,11 +849,16 @@ export default defineComponent({
           <div v-if="Config.subtitle" class="popup-content w3-container">
             <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
           </div>
-          <div v-if="propWeatherForecast != undefined">
+         <div v-show="!propWeatherForecast" class="w3-container loadingSpinnerDiv">
+            <img class="loadingSpinner"
+            src='@/assets/loadingSpinner.gif'/>
+            <label>Forecast loading...</label>
+          </div>
+          <div>
             <div class="popup-content w3-container">
               <label class="popup-row-label">Forecast</label>
             </div>
-            <table class="weatherForecastTable">
+            <table v-show="propWeatherForecast" v-if="propWeatherForecast" class="weatherForecastTable">
               <tr id="weatherPeriodText">
                 <td
                   v-for="eachFeature in propWeatherForecast.forecasts"
