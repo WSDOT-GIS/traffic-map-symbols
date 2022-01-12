@@ -78,7 +78,7 @@ import ZoomButtonView from "@/components/ZoomButtonView.vue";
 import AlertView from "@/components/AlertView.vue";
 import AdView from "@/components/AdView.vue";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import {hasParentClass} from "@/utils/miscUtil"
+import { hasParentClass } from "@/utils/miscUtil"
 export default defineComponent({
   components: {
     ZoomPopupView,
@@ -107,9 +107,6 @@ export default defineComponent({
       mapLoaded.value = true;
     }, 9000);
     const route = useRoute();
-    console.log("Route layer name: " + route.params.layernames);
-    console.log("Feature type name: " + route.params.featuretype);
-    console.log("Feature ID: " + route.params.featureid);
     const store = useStore();
     // Statewide alerts...
     const alerts = ref<AlertInfo[]>([]);
@@ -286,7 +283,7 @@ export default defineComponent({
                 );
               } else {
                 const target = clickEvent.target as HTMLElement;
-                if (hasParentClass(target,"alert-content")==false) {
+                if (hasParentClass(target, "alert-content") == false) {
                   hidePointInteractionGraphics(LineRestrictionsLayer());
                   hidePointInteractionGraphics(LineFerryRoutesLayer());
                 }
@@ -328,12 +325,12 @@ export default defineComponent({
             }
           } else {
             const target = clickEvent.target as HTMLElement;
-            if (hasParentClass(target,"alert-content")==false) {
+            if (hasParentClass(target, "alert-content") == false) {
               hidePointInteractionGraphics(LineRestrictionsLayer());
               hidePointInteractionGraphics(LineFerryRoutesLayer());
               removeGraphicsByType("selectedGraphic");
               removeGraphicsByType("myLocation"); //remove "my location" graphic
-                        //No feature exist...
+              //No feature exist...
               closePopup();
             }
           }
@@ -448,12 +445,12 @@ export default defineComponent({
           });
         }).catch(error => {
           if (error.name.includes("webgl")) {
-              store.commit("setInitializing", { isInitializing: true, isLoading: false, initializingMessage: "WebGL error" });
-              console.warn("WebGL error");
-            }
-          else{
+            store.commit("setInitializing", { isInitializing: true, isLoading: false, initializingMessage: "WebGL error" });
+            console.warn("WebGL error");
+          }
+          else {
             console.warn("Failed to initialize map. Error: ", error)
-            store.commit("setInitializing", { isInitializing: true, isLoading: false, initializingMessage: "Failed to initialize map. Error: "+error });
+            store.commit("setInitializing", { isInitializing: true, isLoading: false, initializingMessage: "Failed to initialize map. Error: " + error });
           }
         });
       }
