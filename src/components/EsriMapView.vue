@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
+import { useRoute } from "vue-router";
 import { useStore } from "@/store";
 import { project } from "@arcgis/core/geometry/projection";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
@@ -105,6 +106,10 @@ export default defineComponent({
     setTimeout(() => {
       mapLoaded.value = true;
     }, 9000);
+    const route = useRoute();
+    console.log("Route layer name: " + route.params.layernames);
+    console.log("Feature type name: " + route.params.featuretype);
+    console.log("Feature ID: " + route.params.featureid);
     const store = useStore();
     // Statewide alerts...
     const alerts = ref<AlertInfo[]>([]);
@@ -337,7 +342,7 @@ export default defineComponent({
     };
 
     onMounted(async () => {
-      const appConfig = await getConfig();
+      const appConfig = getConfig();
       const esriMap = await import("../esri-stuff/esriMap");
       mapDiv = document.getElementById("esri-map-view") as HTMLDivElement;
       esriMap.init(mapDiv);
@@ -396,7 +401,7 @@ export default defineComponent({
       // Gray out areas outside of the display area...
       esriMap.addOutOfExtentLayer();
       // Set layer visibility based on URL query...
-      const layerList = setVisibleLayersFromUrl(store.state.layerList);
+      const layerList = setVisibleLayersFromUrl(store.state.layerList, route);
       store.commit("setLayerList", layerList);
       // Set the initial map size in the state store...
       store.commit("setMapSize", {
@@ -406,10 +411,8 @@ export default defineComponent({
       // Set extent based on the URL query parameter...
       esriMap.mapView.extent = await getExtentFromUrl();
       // Zoom, turn on layer and open popup if specified in URL query parameter...
-      const featureType = getFeatureTypeFromUrl();
-      console.log(featureType)
-      const featureId = getFeatureIdFromUrl();
-      console.log(featureId)
+      const featureType = getFeatureTypeFromUrl(route);
+      const featureId = getFeatureIdFromUrl(route);
       if (featureType && featureId) {
         // Make sure the map is ready, then search for the feature...
         esriMap.mapView.when().then(() => {
