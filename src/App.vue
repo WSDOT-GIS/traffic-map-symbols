@@ -11,7 +11,7 @@ import { getConfig } from "@/utils/appConfigUtil";
 export default defineComponent({
   name: "App",
   components: {
-    EsriMapView,
+    // EsriMapView,
     HeaderView,
     SetupModal,
     FooterView,
@@ -68,7 +68,8 @@ export default defineComponent({
       :class="[isInitializing ? disabledClass : activeClass]"
       :style="{ height: mapHeight, opacity: isInitializing ? 0.5 : 1 }"
     >
-      <EsriMapView />
+      <router-view />
+      <!-- <EsriMapView /> -->
     </div>
     <SetupModal v-if="isInitializing" />
   </main>

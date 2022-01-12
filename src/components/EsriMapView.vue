@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
+import { useRoute } from "vue-router";
 import { useStore } from "@/store";
 import { project } from "@arcgis/core/geometry/projection";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
@@ -105,6 +106,10 @@ export default defineComponent({
     setTimeout(() => {
       mapLoaded.value = true;
     }, 9000);
+    const route = useRoute();
+    console.log("Route layer name: " + route.params.layernames);
+    console.log("Feature type name: " + route.params.featuretype);
+    console.log("Feature ID: " + route.params.featureid);
     const store = useStore();
     // Statewide alerts...
     const alerts = ref<AlertInfo[]>([]);
@@ -337,7 +342,7 @@ export default defineComponent({
     };
 
     onMounted(async () => {
-      const appConfig = await getConfig();
+      const appConfig = getConfig();
       const esriMap = await import("../esri-stuff/esriMap");
       mapDiv = document.getElementById("esri-map-view") as HTMLDivElement;
       esriMap.init(mapDiv);
