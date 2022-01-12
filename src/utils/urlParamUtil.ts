@@ -1,5 +1,15 @@
 /*
-URL query parameters:
+Support both query parameters and routings
+[[ Routings ]]
+* /layer/<name>/<name>/...
+    Make one or more layers visible
+Sample URLs:
+* Make camera layer visible
+/layer/camera
+* make camera and restrictions layers visible
+/layer/camera/restriction
+
+[[ URL query parameters ]]
 * extent
     Comma separated list of xmin, xmax, ymin, ymax in DD format.
     The sequence does not matter.
@@ -38,18 +48,32 @@ import { getBasemapInfo } from "@/layers/Basemaps";
 import BasemapInfo from "@/types/BasemapInfo";
 import { getLayerIds } from "./layerUtil";
 import { getFeatureByName } from "@/layers/ZoomExtentLayer";
+import { RouteLocationNormalizedLoaded } from "vue-router";
 
 // Read the URL query parameters...
 const params = new URLSearchParams(window.location.search);
 /**
- * Make layers in the specified type visible.
+ * Make layers specified layer visible.
  * @param layerList 
  */
-export const setVisibleLayersFromUrl = (layerList: LayerInfo[]): LayerInfo[] => {
-    const param = params.get("featuretype");
-    console.log(param)
-    if (param) {
-        const layers = param.split(',');
+export const setVisibleLayersFromUrl = (layerList: LayerInfo[], route: RouteLocationNormalizedLoaded): LayerInfo[] => {
+    let layers: string[] | undefined;
+    if (route.params.layernames) {
+        const p = route.params.layernames;
+        layers = typeof p === 'string' ? [p] : p;
+    }
+    else if (route.params.featuretype) {
+        const p = route.params.featuretype;
+        layers = typeof p === 'string' ? [p] : p;
+    } else {
+        const p = params.get("featuretype");
+        if (p) {
+            layers = p.split(',');
+        }
+    }
+    console.log(layers)
+    if (layers) {
+        // const layers = param.split(',');
         const layerIds: string[] = [];
         layers.forEach((each) => {
             layerIds.push(...getLayerIds(each));

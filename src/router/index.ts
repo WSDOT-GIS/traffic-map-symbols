@@ -8,8 +8,8 @@ const routes: Array<RouteRecordRaw> = [
     component: EsriMapView
   },
   {
-    path: '/layers/:layernames+',
-    name: 'Layers',
+    path: '/layer/:layernames+',
+    name: 'Layer',
     component: EsriMapView
   },
   {
