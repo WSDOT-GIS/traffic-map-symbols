@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, onBeforeUnmount, ref } from "vue";
-import EsriMapView from "./components/EsriMapView.vue";
+// import EsriMapView from "./components/EsriMapView.vue";
 import HeaderView from "./components/HeaderView.vue";
 import FooterView from "./components/FooterView.vue";
 import { useStore } from "@/store";
