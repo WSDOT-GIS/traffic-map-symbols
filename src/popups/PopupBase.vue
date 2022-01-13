@@ -356,7 +356,6 @@ export default defineComponent({
     //Assigns the weather forecast to the weather forecast ref
     const setWeatherForecast = () => {
       if (props.Config.weatherForecast) {
-        console.log(props.Config.weatherForecast)
         propWeatherForecast.value = props.Config.weatherForecast;
       }
     };
