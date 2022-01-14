@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
+import { useRoute } from "vue-router";
 import { useStore } from "@/store";
 import { project } from "@arcgis/core/geometry/projection";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
@@ -77,7 +78,7 @@ import ZoomButtonView from "@/components/ZoomButtonView.vue";
 import AlertView from "@/components/AlertView.vue";
 import AdView from "@/components/AdView.vue";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import {hasParentClass} from "@/utils/miscUtil"
+import { hasParentClass } from "@/utils/miscUtil"
 export default defineComponent({
   components: {
     ZoomPopupView,
@@ -105,6 +106,7 @@ export default defineComponent({
     setTimeout(() => {
       mapLoaded.value = true;
     }, 9000);
+    const route = useRoute();
     const store = useStore();
     // Statewide alerts...
     const alerts = ref<AlertInfo[]>([]);
@@ -281,7 +283,7 @@ export default defineComponent({
                 );
               } else {
                 const target = clickEvent.target as HTMLElement;
-                if (hasParentClass(target,"alert-content")==false) {
+                if (hasParentClass(target, "alert-content") == false) {
                   hidePointInteractionGraphics(LineRestrictionsLayer());
                   hidePointInteractionGraphics(LineFerryRoutesLayer());
                 }
@@ -323,12 +325,12 @@ export default defineComponent({
             }
           } else {
             const target = clickEvent.target as HTMLElement;
-            if (hasParentClass(target,"alert-content")==false) {
+            if (hasParentClass(target, "alert-content") == false) {
               hidePointInteractionGraphics(LineRestrictionsLayer());
               hidePointInteractionGraphics(LineFerryRoutesLayer());
               removeGraphicsByType("selectedGraphic");
               removeGraphicsByType("myLocation"); //remove "my location" graphic
-                        //No feature exist...
+              //No feature exist...
               closePopup();
             }
           }
@@ -337,7 +339,7 @@ export default defineComponent({
     };
 
     onMounted(async () => {
-      const appConfig = await getConfig();
+      const appConfig = getConfig();
       const esriMap = await import("../esri-stuff/esriMap");
       mapDiv = document.getElementById("esri-map-view") as HTMLDivElement;
       esriMap.init(mapDiv);
@@ -396,7 +398,7 @@ export default defineComponent({
       // Gray out areas outside of the display area...
       esriMap.addOutOfExtentLayer();
       // Set layer visibility based on URL query...
-      const layerList = setVisibleLayersFromUrl(store.state.layerList);
+      const layerList = setVisibleLayersFromUrl(store.state.layerList, route);
       store.commit("setLayerList", layerList);
       // Set the initial map size in the state store...
       store.commit("setMapSize", {
@@ -406,10 +408,8 @@ export default defineComponent({
       // Set extent based on the URL query parameter...
       esriMap.mapView.extent = await getExtentFromUrl();
       // Zoom, turn on layer and open popup if specified in URL query parameter...
-      const featureType = getFeatureTypeFromUrl();
-      console.log(featureType)
-      const featureId = getFeatureIdFromUrl();
-      console.log(featureId)
+      const featureType = getFeatureTypeFromUrl(route);
+      const featureId = getFeatureIdFromUrl(route);
       if (featureType && featureId) {
         // Make sure the map is ready, then search for the feature...
         esriMap.mapView.when().then(() => {
@@ -445,12 +445,12 @@ export default defineComponent({
           });
         }).catch(error => {
           if (error.name.includes("webgl")) {
-              store.commit("setInitializing", { isInitializing: true, isLoading: false, initializingMessage: "WebGL error" });
-              console.warn("WebGL error");
-            }
-          else{
+            store.commit("setInitializing", { isInitializing: true, isLoading: false, initializingMessage: "WebGL error" });
+            console.warn("WebGL error");
+          }
+          else {
             console.warn("Failed to initialize map. Error: ", error)
-            store.commit("setInitializing", { isInitializing: true, isLoading: false, initializingMessage: "Failed to initialize map. Error: "+error });
+            store.commit("setInitializing", { isInitializing: true, isLoading: false, initializingMessage: "Failed to initialize map. Error: " + error });
           }
         });
       }

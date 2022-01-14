@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import router from './router';
 import App from './App.vue'
 import VueClickAway from "vue3-click-away";
 import {ApplicationInsights}from '@microsoft/applicationinsights-web'
@@ -25,6 +26,6 @@ loadConfig().then(() => {
     appInsights.trackPageView()
     // adding store as a plugin while creating an app...
     const app = createApp(App)
-    app.use(store, key).use(VueClickAway).mount('#app');
+    app.use(store, key).use(router).use(VueClickAway).mount('#app');
     app.provide('$appInsights', appInsights)
 });

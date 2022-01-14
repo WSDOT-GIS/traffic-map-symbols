@@ -1,5 +1,22 @@
 /*
-URL query parameters:
+Support both query parameters and routings
+[[ Routings ]]
+* /layer/<name>/<name>/...
+    Make one or more layers visible
+* /feature/<layer name>/<feature id>
+    Turn on a layer and zoom to a feature and open popup
+Sample URLs:
+* Make camera layer visible
+/layer/camera
+* make camera and restrictions layers visible
+/layer/camera/restriction
+* Zoom to a camera with ID 1003
+/feature/camera/1003
+* Zoom to a restriction and open popup
+/feature/restriction/R-WA-290-2 (point)
+/feature/restriction/R-WA-101-5 (line)
+
+[[ URL query parameters ]]
 * extent
     Comma separated list of xmin, xmax, ymin, ymax in DD format.
     The sequence does not matter.
@@ -20,12 +37,18 @@ Sample URLs:
 ?extent=-122.4489756,47.7741882,-122.1102255,47.5032113&layer=camera,parkride&base=satellite
 * Open camera popup with ID
 ?featuretype=camera&featureid=1001
+* Open other popups
 ?featuretype=restriction&featureid=R-WA-290-2 (point)
 ?featuretype=restriction&featureid=R-WA-101-5 (line)
 ?featuretype=alert&featureid=464389
 ?featuretype=weather&featureid=1909
 ?featuretype=mountain&featureid=2
 ?featuretype=time&featureid=4
+?featuretype=restriction&featureid=R-WA-101-5&layer=restarea,parkride
+
+[[ Combination ]]
+* Zoom to a restriction and also turn on camera and restarea layers
+/feature/restriction/R-WA-101-5?layer=camera,restarea
 */
 
 import { project } from "@arcgis/core/geometry/projection";
@@ -38,18 +61,38 @@ import { getBasemapInfo } from "@/layers/Basemaps";
 import BasemapInfo from "@/types/BasemapInfo";
 import { getLayerIds } from "./layerUtil";
 import { getFeatureByName } from "@/layers/ZoomExtentLayer";
+import { RouteLocationNormalizedLoaded } from "vue-router";
 
 // Read the URL query parameters...
 const params = new URLSearchParams(window.location.search);
 /**
- * Make layers in the specified type visible.
+ * Make layers specified layer visible.
  * @param layerList 
  */
-export const setVisibleLayersFromUrl = (layerList: LayerInfo[]): LayerInfo[] => {
-    const param = params.get("featuretype");
-    console.log(param)
+export const setVisibleLayersFromUrl = (layerList: LayerInfo[], route: RouteLocationNormalizedLoaded): LayerInfo[] => {
+    let layers: string[] | undefined;
+    // Check routes...
+    if (route.params.layernames) {
+        const p = route.params.layernames;
+        layers = typeof p === 'string' ? [p] : p;
+    }
+    else if (route.params.featuretype) {
+        const p = route.params.featuretype;
+        layers = typeof p === 'string' ? [p] : p;
+    }
+    // Check query parameters...
+    if (!layers) {
+        layers = [];
+    }
+    let param = params.get("featuretype");
     if (param) {
-        const layers = param.split(',');
+        layers = layers.concat(param.split(','));
+    }
+    param = params.get("layer");
+    if (param) {
+        layers = layers.concat(param.split(','));
+    }
+    if (layers) {
         const layerIds: string[] = [];
         layers.forEach((each) => {
             layerIds.push(...getLayerIds(each));
@@ -67,15 +110,27 @@ export const setVisibleLayersFromUrl = (layerList: LayerInfo[]): LayerInfo[] => 
 /**
  * Get feature ID.
  */
-export const getFeatureIdFromUrl = (): string | null => {
-    const id = params.get("featureid");
+export const getFeatureIdFromUrl = (route: RouteLocationNormalizedLoaded): string | null => {
+    let id: string | null;
+    if (route.params.featureid) {
+        const p = route.params.featureid;
+        id = typeof p === 'string' ? p : p[0];
+    } else {
+        id = params.get("featureid");
+    }
     return id;
 }
 /** 
  * Get feature type. 
  */
-export const getFeatureTypeFromUrl = (): string | null => {
-    const type = params.get("featuretype");
+export const getFeatureTypeFromUrl = (route: RouteLocationNormalizedLoaded): string | null => {
+    let type: string | null;
+    if (route.params.featuretype) {
+        const p = route.params.featuretype;
+        type = typeof p === 'string' ? p : p[0];
+    } else {
+        type = params.get("featuretype");
+    }
     return type;
 }
 /**  Assign extent if it is specified.
