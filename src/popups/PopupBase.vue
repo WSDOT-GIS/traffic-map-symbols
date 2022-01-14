@@ -69,15 +69,26 @@ export default defineComponent({
       type: Object as PropType<ForecastListInfo>,
       required: false,
     },
+    weatherForecastLoaded:{
+      type: String,
+      required: false
+    }
   },
   setup(props, context) {
     // The DOM only exists while the visibility is true. Get it in onUpdate().
+    //#region weather forecast loading setup
+    const propWeatherForecast = ref<ForecastListInfo>()
+    propWeatherForecast.value=undefined
+    const weatherForecastsLoaded = computed(()=>{return props.weatherForecastLoaded})
+    //#endregion
+
+    //#region image loading setup
     const cameraImageLoading = ref<boolean>();
     if(props.Config.imageFieldName){//if the layer is the cameras layer
       cameraImageLoading.value=true
     }
-    const propWeatherForecast = ref<ForecastListInfo>()
-    propWeatherForecast.value=undefined
+    //#endregion
+
     const modalContainerRef = ref<HTMLDivElement>();
     const containerRef = ref<HTMLDivElement>();
     const contentContainerRef = ref<HTMLDivElement>();
@@ -135,7 +146,6 @@ export default defineComponent({
     const propFeatures = toRefs(props).Features;
     const propTravelDelay = toRefs(props).TravelDelay;
     watch(propFeatures, () => {
-      propWeatherForecast.value=undefined
       setWeatherForecast();
       currentIdx.value = 0;
       setBadgeText();
@@ -159,7 +169,6 @@ export default defineComponent({
       if(props.Config.imageFieldName){
         cameraImageLoading.value=true
       }
-      
     });
     // Picture carousel colors.
     const pagenationStyle = computed(() => {
@@ -213,6 +222,7 @@ export default defineComponent({
       setScreenXY();
     });
     watch(currentIdx, () => {
+      propWeatherForecast.value = undefined//clear previous forecasts from last opened popup
       setWeatherForecast();
       context.emit("idxUpdate", currentIdx.value);
       setBadgeText();
@@ -267,7 +277,6 @@ export default defineComponent({
     });
     // Image load happens later and change the size of the popup, so need to make adjustment after that...
     const onImgLoad = () => {
-      console.log("image loaded")
       numImgLoaded = numImgLoaded + 1;
       cameraImageLoadComplete()
       adjustPositionSize();
@@ -346,8 +355,10 @@ export default defineComponent({
     });
     //Assigns the weather forecast to the weather forecast ref
     const setWeatherForecast = () => {
-      if (props.WeatherForecast) {
-        propWeatherForecast.value = props.WeatherForecast;
+      if (props.Config.weatherForecast) {
+        console.log(props.Config.weatherForecast)
+        propWeatherForecast.value = props.Config.weatherForecast;
+        
       }
     };
 
@@ -565,7 +576,6 @@ export default defineComponent({
       } else {
         isComplete = wasUpdatedOnce;
       }
-      console.log('cameraImageLoadComplete: '+ isComplete)
       if(props.Config.imageFieldName){
         cameraImageLoading.value = !isComplete;
       }
@@ -775,7 +785,8 @@ export default defineComponent({
       currentPage,
       onClickAway,
       cameraImageLoading,
-      cameraImageLoadComplete
+      cameraImageLoadComplete,
+      weatherForecastsLoaded
     };
   },
 });
@@ -851,16 +862,17 @@ export default defineComponent({
           <div v-if="Config.subtitle" class="popup-content w3-container">
             <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
           </div>
-         <div v-show="!propWeatherForecast" class="w3-container loadingSpinnerDiv">
+         <div v-if="weatherForecastsLoaded=='false'" class="w3-container loadingSpinnerDiv">
             <img class="loadingSpinner"
             src='@/assets/loadingSpinner.gif'/>
             <label>Forecast loading...</label>
+            <label>{{}}</label>
           </div>
-          <div>
+          <div >
             <div class="popup-content w3-container">
               <label class="popup-row-label">Forecast</label>
             </div>
-            <table v-show="propWeatherForecast" v-if="propWeatherForecast" class="weatherForecastTable">
+            <table v-if="weatherForecastsLoaded=='true'" class="weatherForecastTable">
               <tr id="weatherPeriodText">
                 <td
                   v-for="eachFeature in propWeatherForecast.forecasts"
@@ -885,6 +897,7 @@ export default defineComponent({
               </tr>
               <tr id="weatherForecastDescription">
                 <td
+                  ref = "forecastDivs"
                   v-for="eachFeature in propWeatherForecast.forecasts"
                   :key="eachFeature.forecastNumber"
                 >

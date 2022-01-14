@@ -1,11 +1,12 @@
 <template>
+  <div>{{forecastsLoaded}}</div>
   <PopupBase
     :IconSvg="layerIcons.find((x) => x.id === 'weather-stations-layer')?.paths"
     LightThemeColor="#00515133"
     DarkThemeColor="#005151"
-    :WeatherForecast="forecastList"
     :Features="[feature]"
     :Config="{
+      weatherForecast: forecastList,
       bannerText: { text: 'Weather station' },
       title: { custom: getTitle },
       subtitle: {
@@ -44,12 +45,13 @@
         },
       ],
     }"
+    :weatherForecastLoaded="forecastsLoaded"
     @close="close"
   >
   </PopupBase>
 </template>
 <script lang="ts">
-import { defineComponent, nextTick, PropType, ref, watch } from "vue";
+import { defineComponent, nextTick, PropType, ref, watch, onUpdated } from "vue";
 import PopupBase from "./PopupBase.vue";
 import FeatureLayer from "@/layers/WeatherStationsLayer";
 import { getFeatureInfoById } from "@/utils/featureInfoUtil";
@@ -71,6 +73,7 @@ export default defineComponent({
     const feature = ref<FeatureInfo>();
     const layerIcons = layerListIcons;
     const forecastList = ref<ForecastListInfo>();
+    const forecastsLoaded = ref<string>("false");
     watch(props, () => {
       if (props.Featureset.layerId === FeatureLayer().id) {
         //if clicked feature belongs to WeatherStations layer
@@ -89,6 +92,7 @@ export default defineComponent({
           //query feature layer for feature
           async (result) => {
             if (result) {
+              forecastsLoaded.value = 'false'
               forecastList.value = undefined;
               feature.value = result;
               getWeatherForecast(result);
@@ -132,7 +136,7 @@ export default defineComponent({
                     nwsZoneRegionName: response.nwsZoneRegionName,
                     forecasts: sortedForecasts,
                   };
-                  
+                  forecastsLoaded.value="true"
                 });
               }
               feature.value = featureresult;
@@ -216,7 +220,6 @@ export default defineComponent({
       }
       return text;
     };
-
     return {
       feature,
       layerIcons,
@@ -229,6 +232,7 @@ export default defineComponent({
       getSubtitle,
       getMoreInfoURL,
       forecastList,
+      forecastsLoaded
     };
   },
 });
