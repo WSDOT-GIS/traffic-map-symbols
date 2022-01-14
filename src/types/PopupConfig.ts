@@ -1,4 +1,5 @@
 import FeatureInfo from "./FeatureInfo";
+import ForecastListInfo from "./ForecastListInfo";
 import MoreInfoURLInfo from "./MoreInfoURLInfo";
 import PopupRowConfig from "./PopupRowConfig";
 
@@ -23,6 +24,7 @@ interface PopupConfig {
     };
     subtitle?: PopupRowConfig;// display hard coded subtitle string
     imageFieldName?: string;
+    weatherForecast?:ForecastListInfo|undefined;
     content: PopupRowConfig[];
     moreInfoURL?: {
         text?: string; // display hard coded string
