@@ -865,11 +865,11 @@ export default defineComponent({
             <label>Forecast loading...</label>
             <label>{{}}</label>
           </div>
-          <div >
+          <div v-if="weatherForecastsLoaded=='true'">
             <div class="popup-content w3-container">
               <label class="popup-row-label">Forecast</label>
             </div>
-            <table v-if="weatherForecastsLoaded=='true'" class="weatherForecastTable">
+            <table  class="weatherForecastTable">
               <tr id="weatherPeriodText">
                 <td
                   v-for="eachFeature in propWeatherForecast.forecasts"
