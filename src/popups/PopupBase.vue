@@ -356,7 +356,6 @@ export default defineComponent({
       if (props.Config.weatherForecast) {
         console.log(props.Config.weatherForecast)
         propWeatherForecast.value = props.Config.weatherForecast;
-        
       }
     };
 
