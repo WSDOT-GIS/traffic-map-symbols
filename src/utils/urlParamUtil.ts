@@ -1,15 +1,13 @@
 /*
 Support both query parameters and routings
 [[ Routings ]]
-* /layer/<name>/<name>/...
+* /layer/<name>/...
     Make one or more layers visible
 * /feature/<layer name>/<feature id>
     Turn on a layer and zoom to a feature and open popup
 Sample URLs:
 * Make camera layer visible
 /layer/camera
-* make camera and restrictions layers visible
-/layer/camera/restriction
 * Zoom to a camera with ID 1003
 /feature/camera/1003
 * Zoom to a restriction and open popup
@@ -72,8 +70,8 @@ const params = new URLSearchParams(window.location.search);
 export const setVisibleLayersFromUrl = (layerList: LayerInfo[], route: RouteLocationNormalizedLoaded): LayerInfo[] => {
     let layers: string[] | undefined;
     // Check routes...
-    if (route.params.layernames) {
-        const p = route.params.layernames;
+    if (route.params.layername) {
+        const p = route.params.layername;
         layers = typeof p === 'string' ? [p] : p;
     }
     else if (route.params.featuretype) {
@@ -134,49 +132,57 @@ export const getFeatureTypeFromUrl = (route: RouteLocationNormalizedLoaded): str
     return type;
 }
 /**  Assign extent if it is specified.
-     Check the extent property first, then check namedextent property, if nothing or invalid, return full state.
+     Check namedextent property first, then check the extent property, if nothing or invalid, return full state.
 */
-export const getExtentFromUrl = async (): Promise<Extent> => {
-    const extentParam = params.get("extent");
-    let extent: Extent | undefined;
-    if (extentParam) {
-        const extentNums = extentParam.split(',').map(
-            x => parseFloat(x)).sort((a, b) => { return a - b });
-        if (extentNums.length == 4) {
-            let isValid = true;
-            for (let i = 0; i < 4; i++) {
-                // Check to make sure lat, long values are within reasonable range...
-                if (i < 2 && (extentNums[i] < -126 || extentNums[i] > -116)) {
-                    isValid = false;
-                    break;
+export const getExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Promise<Extent> => {
+    let extent = await getNamedExtentFromUrl(route);
+    if (!extent) {
+        const extentParam = params.get("extent");
+        if (extentParam) {
+            const extentNums = extentParam.split(',').map(
+                x => parseFloat(x)).sort((a, b) => { return a - b });
+            if (extentNums.length == 4) {
+                let isValid = true;
+                for (let i = 0; i < 4; i++) {
+                    // Check to make sure lat, long values are within reasonable range...
+                    if (i < 2 && (extentNums[i] < -126 || extentNums[i] > -116)) {
+                        isValid = false;
+                        break;
+                    }
+                    else if (i > 1 && (extentNums[i] < 45 || extentNums[i] > 50)) {
+                        isValid = false;
+                        break;
+                    }
                 }
-                else if (i > 1 && (extentNums[i] < 45 || extentNums[i] > 50)) {
-                    isValid = false;
-                    break;
+                if (isValid) {
+                    const extentWgs = new Extent({
+                        xmin: extentNums[0],
+                        xmax: extentNums[1],
+                        ymin: extentNums[2],
+                        ymax: extentNums[3],
+                        spatialReference: SpatialReference.WGS84
+                    });
+                    extent = project(extentWgs, SpatialReference.WebMercator) as Extent;
                 }
-            }
-            if (isValid) {
-                const extentWgs = new Extent({
-                    xmin: extentNums[0],
-                    xmax: extentNums[1],
-                    ymin: extentNums[2],
-                    ymax: extentNums[3],
-                    spatialReference: SpatialReference.WGS84
-                });
-                extent = project(extentWgs, SpatialReference.WebMercator) as Extent;
             }
         }
-    }
-    if (!extent) {
-        //extent = getEsriExtent("full");
-        extent = await getNamedExtentFromUrl();
     }
 
     return extent;
 }
-
-const getNamedExtentFromUrl = async (): Promise<Extent> => {
-    const param = params.get("namedextent");
+/**
+ * Get extent by name
+ * Support route (area\<name>) and query parameter (?namedextent=<name>)
+ * @param route 
+ */
+const getNamedExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Promise<Extent> => {
+    let param: string | null;
+    if (route.params.areaname) {
+        const p = route.params.areaname;
+        param = typeof p === 'string' ? p : p[0];
+    } else {
+        param = params.get("namedextent");
+    }
     let extent: Extent | undefined;
     if (param) {
         try {
