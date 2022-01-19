@@ -79,7 +79,7 @@ export default defineComponent({
     //#region weather forecast loading setup
     const propWeatherForecast = ref<ForecastListInfo>()
     propWeatherForecast.value=undefined
-    const weatherForecastsLoaded = computed(()=>{return props.weatherForecastLoaded})
+    const weatherForecastsLoaded = computed(()=>{return props.weatherForecastLoaded})//conditionally displays weather forecast panel and weather forecast loading spinner.
     //#endregion
 
     //#region image loading setup
