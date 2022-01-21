@@ -11,6 +11,7 @@
     "@analytics/google-analytics": "^0.5.3",
     "@arcgis/core": "^4.21.2",
     "@microsoft/applicationinsights-web": "^2.7.1",
+    "@splidejs/vue-splide": "^0.5.17",
     "analytics": "^0.7.18",
     "core-js": "^3.19.1",
     "polygon-clipping": "^0.15.3",

@@ -1,7 +1,9 @@
 <script lang="ts">
 import { computed, defineComponent, nextTick, onUpdated, PropType, ref, toRefs, watch } from "vue";
-import "vue3-carousel/dist/carousel.css";
-import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
+// import "vue3-carousel/dist/carousel.css";
+// import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
+import { Splide, SplideSlide } from '@splidejs/vue-splide';
+import '@splidejs/splide/dist/css/themes/splide-default.min.css';
 import { useStore } from "@/store";
 import {
   mapView,
@@ -21,7 +23,7 @@ import { getEsriExtent } from "@/utils/extentUtil";
 import {hasParentClass} from "@/utils/miscUtil"
 
 export default defineComponent({
-  components: { Carousel, Slide, Pagination, Navigation, PopupRow },
+  components: { /*Carousel, Slide, Pagination, Navigation,*/ PopupRow, Splide, SplideSlide },
   props: {
     // MapX & Y are only required to supersede the feature x/y.
     MapXY: {
@@ -755,6 +757,15 @@ export default defineComponent({
         }
       }
     };
+    /**
+     * Catch the carousel spicture changes.
+     * @param splide 
+     * @param newIndex 
+     */
+    const onSplideMoved = (splide: unknown, newIndex: number) => {
+      console.log("newIndex " + newIndex);
+      currentIdx.value = newIndex;
+    }
     return {
       modalContainerRef,
       containerRef,
@@ -783,7 +794,8 @@ export default defineComponent({
       onClickAway,
       cameraImageLoading,
       cameraImageLoadComplete,
-      weatherForecastsLoaded
+      weatherForecastsLoaded,
+      onSplideMoved
     };
   },
 });
@@ -909,7 +921,73 @@ export default defineComponent({
             <label>Camera images loading...</label>
           </div>
           <div v-show="!cameraImageLoading">
-            <Carousel
+            <Splide
+              :options="{ type: 'loop', rewind: true, arrows: Features.length > 1, pagination: false }"
+              @splide:moved="onSplideMoved"
+            >
+              <template #before-track>
+                <div v-if="Features.length > 1" class="splide__arrows">
+                  <button
+                    class="splide__arrow splide__arrow--prev"
+                    type="button"
+                    :style="{ backgroundColor: DarkThemeColor }"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 40 40"
+                      width="40"
+                      height="40"
+                    >
+                      <path
+                        d="m15.5 0.932-4.3 4.38 14.5 14.6-14.5 14.5 4.3 4.4 14.6-14.6 4.4-4.3-4.4-4.4-14.6-14.6z"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    class="splide__arrow splide__arrow--next"
+                    type="button"
+                    :style="{ backgroundColor: DarkThemeColor }"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 40 40"
+                      width="40"
+                      height="40"
+                      style="fill: #fff"
+                    >
+                      <path
+                        d="m15.5 0.932-4.3 4.38 14.5 14.6-14.5 14.5 4.3 4.4 14.6-14.6 4.4-4.3-4.4-4.4-14.6-14.6z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </template>
+              <SplideSlide v-for="(eachFeature, idx) in Features" :key="idx">
+                <div class="carousel-item-container">
+                  <img
+                    class="popup-img"
+                    :src="getImgUrl(eachFeature)"
+                    :alt="eachFeature.id"
+                    @load="onImgLoad()"
+                    @error="$event.target.src = require('@/assets/no-image.png')"
+                  />
+                </div>
+              </SplideSlide>
+              <template #after-track>
+                <div v-if="Features.length > 1" class="splide-pagination-container">
+                  <ul class="splide__pagination">
+                    <li v-for="(eachFeature, idx) in Features" :key="idx">
+                      <button
+                        class="splide__pagination__page"
+                        :class="{ 'is-active': currentIdx == idx }"
+                        type="button"
+                      ></button>
+                    </li>
+                  </ul>
+                </div>
+              </template>
+            </Splide>
+            <!--<Carousel
               v-if="Config.imageFieldName"
               :items-to-show="1"
               :wrapAround="true"
@@ -933,7 +1011,7 @@ export default defineComponent({
                 <navigation v-if="slidesCount > 1" />
                 <pagination v-if="slidesCount > 1" />
               </template>
-            </Carousel>
+            </Carousel>-->
           </div>
           <div class="travelDelayTime" v-if="propTravelDelay && propTravelDelay > 0">
             {{ `${propTravelDelay} minute delay` }}
@@ -1200,8 +1278,19 @@ export default defineComponent({
 .popup-inner-container {
   color: #000;
 }
+/* Splide customizations */
+.splide__arrow svg {
+  fill: #fff;
+}
+.splide__pagination {
+  bottom: auto;
+}
+.splide-pagination-container {
+  height: 1em;
+  margin-bottom: 0.5em;
+}
 /* Right and left arrows to scroll the pictures. */
-.carousel__prev,
+/* .carousel__prev,
 .carousel__next {
   top: 40%;
   opacity: 0.7;
@@ -1240,7 +1329,7 @@ export default defineComponent({
 .carousel__pagination {
   margin: 5px;
   padding-left: 0;
-}
+} */
 /*https://github.com/ismail9k/vue3-carousel/issues/22 */
 /* .carousel__slide--visible {
 transform: rotateY(0);
