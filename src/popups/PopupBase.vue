@@ -766,7 +766,7 @@ export default defineComponent({
       currentIdx.value = newIndex;
     }
     const onSplidePaginationClicked = (index: number) => {
-      
+      console.log(index);
     }
     return {
       modalContainerRef,
