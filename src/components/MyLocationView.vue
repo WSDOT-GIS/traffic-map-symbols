@@ -62,11 +62,11 @@ export default defineComponent({
       warningDisplayClass.value = "warningOff";
       if (store.state.userLocation == null) {
         navigator.geolocation.getCurrentPosition(success, error, options);
-        console.log(navigator)
-        console.log(navigator.geolocation)
+        // console.log(navigator)
+        // console.log(navigator.geolocation)
       } else {
         success(store.state.userLocation);
-        console.log(store.state.userLocation)
+        // console.log(store.state.userLocation)
       }
     };
     const success = (location: any) => {
