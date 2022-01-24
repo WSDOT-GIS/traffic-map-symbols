@@ -93,7 +93,15 @@ export const setVisibleLayersFromUrl = (layerList: LayerInfo[], route: RouteLoca
     if (layers) {
         const layerIds: string[] = [];
         layers.forEach((each) => {
-            layerIds.push(...getLayerIds(each));
+            let ids: string[] | undefined;
+            try {
+                ids = getLayerIds(each);
+            } catch (ex) {
+                console.error(ex);
+            }
+            if (ids) {
+                layerIds.push(...ids);
+            }
         })
         layerList.forEach((eachLyr) => {
             if (layerIds.includes(eachLyr.id)) {

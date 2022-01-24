@@ -21,7 +21,8 @@ const routes: Array<RouteRecordRaw> = [
     path: '/area/:areaname',
     name: 'Area',
     component: EsriMapView
-  }
+  },
+  { path: '/:pathMatch(.*)*', name: 'NotFound', component: EsriMapView }
 ]
 
 const router = createRouter({
