@@ -9,9 +9,10 @@ import "./assets/main.css" // WATECH CSS
 // import "./assets/sidr.css" // WATECH CSS
 import { store, key } from "./store";
 import { loadConfig } from "./utils/appConfigUtil";
+import { createLayerGroupInfos } from "./utils/layerUtil";
 
 // Load config before app starts...
-loadConfig().then(() => {
+loadConfig().then((appConfig) => {
     const appInsights = new ApplicationInsights(
     {
         config:{
@@ -24,6 +25,8 @@ loadConfig().then(() => {
     })
     appInsights.loadAppInsights()
     appInsights.trackPageView()
+    //
+    createLayerGroupInfos(appConfig);
     // adding store as a plugin while creating an app...
     const app = createApp(App)
     app.use(store, key).use(router).use(VueClickAway).mount('#app');

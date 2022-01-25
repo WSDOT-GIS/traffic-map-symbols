@@ -58,7 +58,7 @@ import { getEsriExtent } from "./extentUtil";
 import { getBasemapInfo } from "@/layers/Basemaps";
 import BasemapInfo from "@/types/BasemapInfo";
 import { getLayerIds } from "./layerUtil";
-import { getFeatureByName } from "@/layers/ZoomExtentLayer";
+import * as ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 import { RouteLocationNormalizedLoaded } from "vue-router";
 
 // Read the URL query parameters...
@@ -111,7 +111,22 @@ export const setVisibleLayersFromUrl = (layerList: LayerInfo[], route: RouteLoca
     }
     return layerList;
 }
-
+/**
+ * Check to make sure the ID is valid.
+ * @param groupId Layer group ID
+ */
+export const validateLayerName = (name: string): boolean => {
+    let ids: string[] | undefined;
+    try {
+        ids = getLayerIds(name);
+    } catch (ex) {
+        return false;
+    }
+    if (ids) {
+        return true;
+    }
+    else { return false; }
+}
 /**
  * Get feature ID.
  */
@@ -193,7 +208,7 @@ const getNamedExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Prom
     let extent: Extent | undefined;
     if (param) {
         try {
-            const ftr = await getFeatureByName(param);
+            const ftr = await ZoomExtentLayer.getFeatureByName(param);
             extent = ftr.geometry.extent.expand(2);
         }
         catch (ex) {
@@ -204,6 +219,10 @@ const getNamedExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Prom
         extent = getEsriExtent("full");
     }
     return extent;
+}
+
+export const validateAreaName = (name: string): boolean => {
+    return ZoomExtentLayer.validateName(name);
 }
 
 export const getBasemapFromUrl = (): BasemapInfo => {

@@ -21,7 +21,7 @@ import {
   getFeatureIdFromUrl,
   getFeatureTypeFromUrl,
 } from "@/utils/urlParamUtil";
-import { createLayerGroupInfos, getFeature, setLayerVisibility } from "@/utils/layerUtil";
+import { getFeature, setLayerVisibility } from "@/utils/layerUtil";
 import {
   removeGraphicsByType,
   hidePointInteractionGraphics,
@@ -118,7 +118,7 @@ export default defineComponent({
     });
     alertInfoUtil.initFerryAlerts(config.ferryAlerts);
     // Build the list used by the URL query...
-    createLayerGroupInfos(config);
+    // createLayerGroupInfos(config);
     // Zoom popup...
     const zoomPopupVisible = ref(false);
     const zoomPopupLabel = ref("");
