@@ -88,7 +88,24 @@ export const setVisibleLayersFromUrl = (layerList: LayerInfo[], route: RouteLoca
     }
     param = params.get("layer");
     if (param) {
-        layers = layers.concat(param.split(','));
+        const layerParams = param.split(',');
+        const validLayers = layerParams.filter((item) => {
+            return validateLayerName(item);
+        });
+        if (layerParams.length > validLayers.length) {
+            params.set("layer", validLayers.join(","));
+            if (window.history.replaceState) {
+                const url = window.location.protocol
+                    + "//" + window.location.host
+                    + window.location.pathname
+                    + "?layer="
+                    + validLayers.join(",");
+                window.history.replaceState({
+                    path: url
+                }, "", url)
+            }
+        }
+        layers = layers.concat(validLayers);
     }
     if (layers) {
         const layerIds: string[] = [];
