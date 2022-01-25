@@ -61,8 +61,43 @@ import { getLayerIds } from "./layerUtil";
 import * as ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 import { RouteLocationNormalizedLoaded } from "vue-router";
 
+const queryStringKeys = ["extent", "namedextent", "base", "layer", "featuretype", "featureid"];
 // Read the URL query parameters...
 const params = new URLSearchParams(window.location.search);
+/**
+ * Update query string in the URL.
+ * Run this after validating query string to update URL.
+ */
+const resetQueryString = () => {
+    if (window.history.replaceState) {
+        let url = window.location.protocol
+            + "//" + window.location.host
+            + window.location.pathname
+        if (params.toString().length > 0) {
+            url += "?"
+                + decodeURI(params.toString());
+        }
+        window.history.replaceState({
+            path: url
+        }, "", url)
+    }
+}
+/**
+ * Check all the keys in the query string and remove invalid ones.
+ */
+const removeKeys: string[] = [];
+params.forEach((value, key) => {
+    if (queryStringKeys.indexOf(key) < 0) {
+        removeKeys.push(key);
+    }
+});
+removeKeys.forEach((key) => {
+    params.delete(key);
+});
+if (removeKeys.length > 0) {
+    resetQueryString();
+}
+
 /**
  * Make layers specified layer visible.
  * @param layerList 
@@ -93,17 +128,11 @@ export const setVisibleLayersFromUrl = (layerList: LayerInfo[], route: RouteLoca
             return validateLayerName(item);
         });
         if (layerParams.length > validLayers.length) {
-            params.set("layer", validLayers.join(","));
-            if (window.history.replaceState) {
-                const url = window.location.protocol
-                    + "//" + window.location.host
-                    + window.location.pathname
-                    + "?layer="
-                    + validLayers.join(",");
-                window.history.replaceState({
-                    path: url
-                }, "", url)
+            if (validLayers.length > 0) {
+                params.set("layer", validLayers.join(","));
             }
+            else { params.delete("layer"); }
+            resetQueryString();
         }
         layers = layers.concat(validLayers);
     }
@@ -203,10 +232,16 @@ export const getExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Pr
                     });
                     extent = project(extentWgs, SpatialReference.WebMercator) as Extent;
                 }
+                else {
+                    params.delete("extent");
+                    resetQueryString();
+                }
             }
         }
     }
-
+    if (!extent) {
+        extent = getEsriExtent("full");
+    }
     return extent;
 }
 /**
@@ -214,13 +249,20 @@ export const getExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Pr
  * Support route (area\<name>) and query parameter (?namedextent=<name>)
  * @param route 
  */
-const getNamedExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Promise<Extent> => {
+const getNamedExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Promise<Extent|undefined> => {
     let param: string | null;
     if (route.params.areaname) {
         const p = route.params.areaname;
         param = typeof p === 'string' ? p : p[0];
     } else {
         param = params.get("namedextent");
+        if (param) {
+            if (!validateAreaName(param)) {
+                params.delete("namedextent");
+                resetQueryString();
+                param = null;
+            }
+        }
     }
     let extent: Extent | undefined;
     if (param) {
@@ -231,9 +273,6 @@ const getNamedExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Prom
         catch (ex) {
             console.error(ex);
         }
-    }
-    if (!extent) {
-        extent = getEsriExtent("full");
     }
     return extent;
 }
@@ -246,5 +285,9 @@ export const getBasemapFromUrl = (): BasemapInfo => {
     const param = params.get("base");
     const name = param ? param : "";
     const basemapInfo = getBasemapInfo(name);
+    if (basemapInfo.name !== param) {
+        params.delete("base");
+        resetQueryString();
+    }
     return basemapInfo;
 }
