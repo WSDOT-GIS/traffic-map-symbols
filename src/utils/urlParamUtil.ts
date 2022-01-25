@@ -117,11 +117,11 @@ export const setVisibleLayersFromUrl = (layerList: LayerInfo[], route: RouteLoca
     if (!layers) {
         layers = [];
     }
-    let param = params.get("featuretype");
-    if (param) {
-        layers = layers.concat(param.split(','));
+    const type = getFeatureTypeFromQuery();
+    if (type) {
+        layers.push(type);
     }
-    param = params.get("layer");
+    const param = params.get("layer");
     if (param) {
         const layerParams = param.split(',');
         const validLayers = layerParams.filter((item) => {
@@ -195,7 +195,27 @@ export const getFeatureTypeFromUrl = (route: RouteLocationNormalizedLoaded): str
         const p = route.params.featuretype;
         type = typeof p === 'string' ? p : p[0];
     } else {
-        type = params.get("featuretype");
+        type = getFeatureTypeFromQuery();
+    }
+    return type;
+}
+/**
+ * Get feature type from the query string.
+ */
+const getFeatureTypeFromQuery = (): string | null => {
+    let type: string | null = null;
+    const param = params.get("featuretype");
+    if (param) {
+        if (validateLayerName(param)) {
+            type = param;
+        }
+        else {
+            params.delete("featuretype");
+            if (params.has("featureid")) {
+                params.delete("featureid");
+            }
+            resetQueryString();
+        }
     }
     return type;
 }
@@ -249,7 +269,7 @@ export const getExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Pr
  * Support route (area\<name>) and query parameter (?namedextent=<name>)
  * @param route 
  */
-const getNamedExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Promise<Extent|undefined> => {
+const getNamedExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Promise<Extent | undefined> => {
     let param: string | null;
     if (route.params.areaname) {
         const p = route.params.areaname;
