@@ -441,6 +441,8 @@ export default defineComponent({
               esriMap.tryZoomToPointAsync(result.geometry as Point, zoomLevel).then(() => {
                 showPopup(result.layer.id, [result.getObjectId()]);
               });
+            } else {
+              console.error("Failed to find the feature specified: " + featureType + ", " + featureId);
             }
           });
         }).catch(error => {
