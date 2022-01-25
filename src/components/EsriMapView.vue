@@ -640,6 +640,7 @@ export default defineComponent({
   height: 100%;
   width: 100%;
   touch-action: none;
+  overflow: hidden;
 }
 #map-bottom-right-container {
   display: inline-flex;

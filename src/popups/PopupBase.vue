@@ -976,7 +976,7 @@ export default defineComponent({
   display: none;
 }
 .popup-container {
-  z-index: 10;
+  z-index: 9;
   background-color: #fff;
   position: relative;
 }
