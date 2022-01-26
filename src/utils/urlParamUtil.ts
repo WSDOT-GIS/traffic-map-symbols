@@ -66,7 +66,7 @@ const queryStringKeys = ["extent", "namedextent", "base", "layer", "featuretype"
 const params = new URLSearchParams(window.location.search);
 /**
  * Update query string in the URL.
- * Run this after validating query string to update URL.
+ * Run this after validating and cleaning query string to update URL.
  */
 const resetQueryString = () => {
     if (window.history.replaceState) {
