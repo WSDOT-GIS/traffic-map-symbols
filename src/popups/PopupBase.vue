@@ -18,7 +18,7 @@ import XY from "@/types/XY";
 import ForecastListInfo from "@/types/ForecastListInfo";
 import MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
 import { getEsriExtent } from "@/utils/extentUtil";
-import { hasParentClass } from "@/utils/miscUtil";
+import { hasParentClass, hasParent } from "@/utils/miscUtil";
 
 export default defineComponent({
   components: { Carousel, Slide, Pagination, Navigation, PopupRow },
@@ -69,7 +69,7 @@ export default defineComponent({
       type: Object as PropType<ForecastListInfo>,
       required: false,
     },
-    weatherForecastLoaded:{
+    weatherForecastLoaded: {
       type: String,
       required: false
     }
@@ -78,14 +78,14 @@ export default defineComponent({
     // The DOM only exists while the visibility is true. Get it in onUpdate().
     //#region weather forecast loading setup
     const propWeatherForecast = ref<ForecastListInfo>()
-    propWeatherForecast.value=undefined
-    const weatherForecastsLoaded = computed(()=>{return props.weatherForecastLoaded})
+    propWeatherForecast.value = undefined
+    const weatherForecastsLoaded = computed(() => { return props.weatherForecastLoaded })
     //#endregion
 
     //#region image loading setup
     const cameraImageLoading = ref<boolean>();
-    if(props.Config.imageFieldName){//if the layer is the cameras layer
-      cameraImageLoading.value=true
+    if (props.Config.imageFieldName) {//if the layer is the cameras layer
+      cameraImageLoading.value = true
     }
     //#endregion
 
@@ -166,8 +166,8 @@ export default defineComponent({
       numImgLoaded = 0;
       wasUpdatedOnce = false;
       doPanMap = true;
-      if(props.Config.imageFieldName){
-        cameraImageLoading.value=true
+      if (props.Config.imageFieldName) {
+        cameraImageLoading.value = true
       }
     });
     // Picture carousel colors.
@@ -181,28 +181,24 @@ export default defineComponent({
 
     const onClickAway = (event: PointerEvent | TouchEvent) => {
       const target = event.target as HTMLElement;
-      if (smallMedia.value) {
-        if (!hasParentClass(target, "alert-content")) {
+      if (!hasParentClass(target, "alert-content") && !hasParent(target, "alert-container-open")) {
+        if (smallMedia.value) {
           close();
-        }
-      } else {
-        /* On Desktop
-           - If user clicks on something other than the map (e.g. TOC, header, ...), then close the popup.
-           - If user clicks on map, then do not do anything here. */
-        if (event.type === "click" && !target.classList.contains("esri-view-surface")) {
-          if (!hasParentClass(target, "alert-content")) {
+        } else {
+          /* On Desktop
+             - If user clicks on something other than the map (e.g. TOC, header, ...), then close the popup.
+             - If user clicks on map, then do not do anything here. */
+          if (event.type === "click" && !target.classList.contains("esri-view-surface")) {
             close();
-          }
-        } else if (event.type === "touchstart") {
-          // Touch event is handled here...
-          if (
-            !target.classList.contains("esri-view-surface") &&
-            !(
-              target.nodeName === "CANVAS" &&
-              target.parentElement?.classList.contains("esri-view-surface")
-            )
-          ) {
-            close();
+          } else if (event.type === "touchstart") {
+            // Touch event is handled here...
+            if (
+              !target.classList.contains("esri-view-surface") &&
+              target.nodeName !== "CANVAS" &&
+              !target.parentElement?.classList.contains("esri-view-surface")
+            ) {
+              close();
+            }
           }
         }
       }
@@ -574,7 +570,7 @@ export default defineComponent({
       } else {
         isComplete = wasUpdatedOnce;
       }
-      if(props.Config.imageFieldName){
+      if (props.Config.imageFieldName) {
         cameraImageLoading.value = !isComplete;
       }
     };
@@ -823,7 +819,7 @@ export default defineComponent({
             }"
           >
             <div class="popup-banner-icon" v-html="IconSvg"></div>
-            <span class="popup-banner-text"> {{ getBannerText() }}</span>
+            <span class="popup-banner-text">{{ getBannerText() }}</span>
           </div>
           <div
             v-if="badgeText.length > 0"
@@ -833,25 +829,23 @@ export default defineComponent({
               borderColor: badgeDarkColor,
               color: badgeTextColor,
             }"
-          >
-            {{ badgeText }}
-          </div>
-          <div v-if="Config.paging && Config.paging.maxPage > 1" class="popup-page-tracker">
-            {{ currentPage }} of {{ Config.paging.maxPage }}
-          </div>
+          >{{ badgeText }}</div>
+          <div
+            v-if="Config.paging && Config.paging.maxPage > 1"
+            class="popup-page-tracker"
+          >{{ currentPage }} of {{ Config.paging.maxPage }}</div>
         </div>
-        <button class="popup-close-button w3-button w3-display-topright" @click="close">
-          &times;
-        </button>
+        <button class="popup-close-button w3-button w3-display-topright" @click="close">&times;</button>
         <!-- Content (below the header) container -->
         <div
           :style="{ maxHeight: maxHeight + 'px' }"
           class="popup-content-container"
           ref="contentContainerRef"
         >
-          <h4 v-if="Config.title && !Config.title.isHTML" class="popup-title w3-container">
-            {{ getTitle() }}
-          </h4>
+          <h4
+            v-if="Config.title && !Config.title.isHTML"
+            class="popup-title w3-container"
+          >{{ getTitle() }}</h4>
           <h4
             v-if="Config.title && Config.title.isHTML"
             v-html="getTitle()"
@@ -860,24 +854,21 @@ export default defineComponent({
           <div v-if="Config.subtitle" class="popup-content w3-container">
             <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
           </div>
-         <div v-if="weatherForecastsLoaded=='false'" class="w3-container loadingSpinnerDiv">
-            <img class="loadingSpinner"
-            src='@/assets/loadingSpinner.gif'/>
+          <div v-if="weatherForecastsLoaded == 'false'" class="w3-container loadingSpinnerDiv">
+            <img class="loadingSpinner" src="@/assets/loadingSpinner.gif" />
             <label>Forecast loading...</label>
-            <label>{{}}</label>
+            <label>{{ }}</label>
           </div>
-          <div >
+          <div>
             <div class="popup-content w3-container">
               <label class="popup-row-label">Forecast</label>
             </div>
-            <table v-if="weatherForecastsLoaded=='true'" class="weatherForecastTable">
+            <table v-if="weatherForecastsLoaded == 'true'" class="weatherForecastTable">
               <tr id="weatherPeriodText">
                 <td
                   v-for="eachFeature in propWeatherForecast.forecasts"
                   :key="eachFeature.forecastNumber"
-                >
-                  {{ eachFeature.periodText }}
-                </td>
+                >{{ eachFeature.periodText }}</td>
               </tr>
               <tr id="weatherForecastIcons">
                 <td
@@ -895,18 +886,19 @@ export default defineComponent({
               </tr>
               <tr id="weatherForecastDescription">
                 <td
-                  ref = "forecastDivs"
+                  ref="forecastDivs"
                   v-for="eachFeature in propWeatherForecast.forecasts"
                   :key="eachFeature.forecastNumber"
-                >
-                  {{ eachFeature.weatherDescription }}
-                </td>
+                >{{ eachFeature.weatherDescription }}</td>
               </tr>
             </table>
           </div>
-          <div v-show="cameraImageLoading" class="w3-container loadingSpinnerDiv" :style="cameraImageLoading?display='block':display='none'">
-            <img class="loadingSpinner"
-            src='@/assets/loadingSpinner.gif'/>
+          <div
+            v-show="cameraImageLoading"
+            class="w3-container loadingSpinnerDiv"
+            :style="cameraImageLoading ? display = 'block' : display = 'none'"
+          >
+            <img class="loadingSpinner" src="@/assets/loadingSpinner.gif" />
             <label>Camera images loading...</label>
           </div>
           <div v-show="!cameraImageLoading">
@@ -936,9 +928,10 @@ export default defineComponent({
               </template>
             </Carousel>
           </div>
-          <div class="travelDelayTime" v-if="propTravelDelay && propTravelDelay > 0">
-            {{ `${propTravelDelay} minute delay` }}
-          </div>
+          <div
+            class="travelDelayTime"
+            v-if="propTravelDelay && propTravelDelay > 0"
+          >{{ `${propTravelDelay} minute delay` }}</div>
           <div
             v-for="eachConfig in Config.content"
             :key="eachConfig.label"
@@ -950,9 +943,7 @@ export default defineComponent({
             <div
               v-if="Config.moreInfoURL.text && Config.moreInfoURL.text !== ''"
               class="popup-content w3-container"
-            >
-              {{ getMoreInfoURL() }}
-            </div>
+            >{{ getMoreInfoURL() }}</div>
             <div v-if="Config.moreInfoURL.custom" class="popup-content w3-container">
               <div v-html="getMoreInfoURL()"></div>
             </div>
@@ -976,7 +967,7 @@ export default defineComponent({
   display: none;
 }
 .popup-container {
-  z-index: 10;
+  z-index: 9;
   background-color: #fff;
   position: relative;
 }
@@ -1122,11 +1113,11 @@ export default defineComponent({
 .popup-content-section {
   margin-bottom: 8px;
 }
-.loadingSpinnerDiv{
+.loadingSpinnerDiv {
   display: flex;
   flex-direction: column;
 }
-.loadingSpinner{
+.loadingSpinner {
   width: 20%;
   height: auto;
   margin-left: auto;

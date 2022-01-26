@@ -24,6 +24,7 @@ export const initBasemap = async (basemapString: string): Promise<void> => {
         }
     ]
 }
+
 export const getBasemapInfo = (name: string): BasemapInfo => {
     const results = basemaps.filter((x) => {
         return x.name == name;

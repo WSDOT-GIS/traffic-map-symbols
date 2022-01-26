@@ -90,7 +90,7 @@ export default defineComponent({
   width: 300px;
   /* overflow-y: auto; */
   border: 1px solid var(--color-gray20);
-  z-index: 9;
+  z-index: 10;
 }
 
 #map-top-left-container-closed {
