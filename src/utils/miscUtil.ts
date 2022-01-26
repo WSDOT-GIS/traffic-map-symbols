@@ -60,33 +60,34 @@ export const getMediaSize = (): "s" | "l" => {
 export const WebMercator = {
     "wkid": 3857
 }
-export const hasParentClass = (child:HTMLElement, classname:string):boolean=>{
-    if(child){
-        if (child.className.split(' ').indexOf(classname) >= 0) return true;
+export const hasParentClass = (child: HTMLElement, classname: string): boolean => {
+    if (child) {
+        // If the element is SVG, className is SVGAnimatedString object and throws an error on child.className.split().
+        if (typeof child.className === "string" && child.className.split(' ').indexOf(classname) >= 0) return true;
         try {
-        //Throws TypeError if child doesn't have parent any more
-        return hasParentClass(child.parentNode as HTMLElement, classname);
+            //Throws TypeError if child doesn't have parent any more
+            return hasParentClass(child.parentNode as HTMLElement, classname);
         } catch (TypeError) {
-        return false;
+            return false;
         }
     }
-    else{
+    else {
         return false
     }
- }
+}
 
- export const hasParent = (child:HTMLElement, id:string):boolean=>{
-    if(child){
+export const hasParent = (child: HTMLElement, id: string): boolean => {
+    if (child) {
         if (child.id === id) return true;
         try {
-        //Throws TypeError if child doesn't have parent any more
-        return hasParent(child.parentNode as HTMLElement, id);
+            //Throws TypeError if child doesn't have parent any more
+            return hasParent(child.parentNode as HTMLElement, id);
         } catch (TypeError) {
-        return false;
+            return false;
         }
     }
-    else{
+    else {
         return false
     }
- }
+}
 
