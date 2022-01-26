@@ -201,6 +201,7 @@ export default defineComponent({
               target.nodeName === "CANVAS" &&
               target.parentElement?.classList.contains("esri-view-surface")
             )
+            && !hasParentClass(target, "alert-content")
           ) {
             close();
           }
