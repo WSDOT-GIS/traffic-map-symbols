@@ -415,7 +415,7 @@ export default defineComponent({
         height: mapView.height,
       });
       // Set extent based on the URL query parameter...
-      esriMap.mapView.extent = await getExtentFromUrl();
+      esriMap.mapView.extent = await getExtentFromUrl(route);
       // Zoom, turn on layer and open popup if specified in URL query parameter...
       const featureType = getFeatureTypeFromUrl(route);
       const featureId = getFeatureIdFromUrl(route);
