@@ -1,7 +1,5 @@
 <script lang="ts">
 import { computed, defineComponent, nextTick, onUpdated, PropType, ref, toRefs, watch } from "vue";
-// import "vue3-carousel/dist/carousel.css";
-// import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
 import '@splidejs/splide/dist/css/themes/splide-default.min.css';
 import { useStore } from "@/store";
@@ -129,7 +127,7 @@ export default defineComponent({
     let numImgLoaded = 0;
     let wasUpdatedOnce = false;
     let doPanMap = true;
-    // let isPanning = false;
+    let isPanning = false;
     // Used to keep track of pages...
     const currentPage = ref(1);
     let pagePositions: {
@@ -138,6 +136,8 @@ export default defineComponent({
       prev: "above" | "inside" | "below" | "";
     }[] = [];
     let pageObserver: IntersectionObserver | undefined;
+    //
+    const splide = ref();
     // Index of the currently shown feature.
     const currentIdx = ref(0);
     const badgeText = ref("");
@@ -168,18 +168,25 @@ export default defineComponent({
       numImgLoaded = 0;
       wasUpdatedOnce = false;
       doPanMap = true;
+      isPanning = false;
       if (props.Config.imageFieldName) {
         cameraImageLoading.value = true
       }
     });
     // Picture carousel colors.
-    const pagenationStyle = computed(() => {
+    // const pagenationStyle = computed(() => {
+    //   return {
+    //     "--vc-nav-background-color": props.DarkThemeColor,
+    //     "--vc-pgn-active-color": props.DarkThemeColor,
+    //     "--vc-pgn-background-color": props.LightThemeColor,
+    //   };
+    // });
+    const splideStyles = computed(() => {
       return {
-        "--vc-nav-background-color": props.DarkThemeColor,
-        "--vc-pgn-active-color": props.DarkThemeColor,
-        "--vc-pgn-background-color": props.LightThemeColor,
-      };
-    });
+        "--splide-arrow-color": props.DarkThemeColor,
+        "--splide-arrow-visibility": props.Features.length > 1 ? "visible" : "hidden"
+      }
+    })
 
     const onClickAway = (event: PointerEvent | TouchEvent) => {
       if (smallMedia.value) {
@@ -237,17 +244,6 @@ export default defineComponent({
       }
       setScreenXY();
     });
-    // Watch scale change...
-    // watch(mapScale, () => {
-    //   // While map is being panned to show the popup, map sometimes zoom out as well resulting in scale change, so do not close popup.
-    //   // Only close if user intentionally change scales.
-    //   // if (!isPanning) {
-    //   //   close();
-    //   // } else {
-    //   //   setScreenXY();
-    //   // }
-    //   setScreenXY();
-    // });
     // Store the previous scale so it can detect if the center is moving due to zooming or panning.
     let prevScale = 0;
     // Watch map moving...
@@ -278,9 +274,17 @@ export default defineComponent({
     // Image load happens later and change the size of the popup, so need to make adjustment after that...
     const onImgLoad = () => {
       numImgLoaded = numImgLoaded + 1;
+      console.log("*** Image loaded: " + numImgLoaded);
       cameraImageLoadComplete()
       adjustPositionSize();
     };
+    const onSplideMounted = () => {
+      console.log("*** Splide mounted");
+      // numImgLoaded = props.Features.length;
+      // cameraImageLoadComplete();
+      // doPanMap = true;
+      // adjustPositionSize();
+    }
     // Adjust position after the container DIV is available...
     onUpdated(() => {
       if (!containerRef.value || !contentContainerRef.value) {
@@ -386,6 +390,7 @@ export default defineComponent({
         // Container is null. It is not visible yet.
         return;
       }
+      if (isPanning) return;
       // Wait for everything to load, then adjust.
       /*if (!cameraImageLoadComplete()) {
         // Not everything is loaded yet.
@@ -413,13 +418,14 @@ export default defineComponent({
           prevWidth = w;
           prevHeight = h;
         }
+        console.log("*** doPanMap = " + doPanMap);
         // If this is not the initial load, then move popup along with map.
         if (!doPanMap) {
           // Recalculate top and let position...
           const newTopLeft = calcTopLeft(h, w);
           setPosition(newTopLeft.top, newTopLeft.left);
         } else {
-          doPanMap = false;
+
           nextTick(() => {
             // New vertical position...
             if (screenY.value > mapSize.value.height / 2) {
@@ -449,13 +455,15 @@ export default defineComponent({
 
             setPosition(newTopLeft.top, newTopLeft.left);
             if (Math.abs(shiftXY.x) >= 1 || Math.abs(shiftXY.y) >= 1) {
-              // isPanning = true;
+              console.log("*** Panning 1...");
+
+              isPanning = true;
               panMap(shiftXY.x, shiftXY.y).then(() => {
-                // isPanning = false;
+                doPanMap = false;
+                isPanning = false;
                 setScreenXY();
                 // Check the popup position again and pan map more if necessary.
                 shiftXY = calcShiftXY(
-                  //{ top: popupTop.value, left: popupLeft.value },
                   {
                     top: parseInt(popupTopLeft.value.marginTop),
                     left: parseInt(popupTopLeft.value.marginLeft),
@@ -464,9 +472,10 @@ export default defineComponent({
                   w
                 );
                 if (shiftXY.x !== 0 || shiftXY.y !== 0) {
-                  // isPanning = true;
+                  console.log("*** Panning 2...");
+                  isPanning = true;
                   panMap(shiftXY.x, shiftXY.y).then(() => {
-                    // isPanning = false;
+                    isPanning = false;
                     setScreenXY();
                   });
                 }
@@ -568,7 +577,7 @@ export default defineComponent({
     /**
      * Figure out if everything is loaded or not.
      */
-    const cameraImageLoadComplete = () => {//check if the loading is complete after each image loads
+    const cameraImageLoadComplete = (): boolean => {//check if the loading is complete after each image loads
       let isComplete: boolean;
       if (props.Config.imageFieldName) {
         isComplete = numImgLoaded >= props.Features.length;
@@ -578,6 +587,7 @@ export default defineComponent({
       if (props.Config.imageFieldName) {
         cameraImageLoading.value = !isComplete;
       }
+      return isComplete;
     };
     /** This sets the margin top and left of the popup container. */
     const setPosition = (top?: number, left?: number) => {
@@ -766,8 +776,9 @@ export default defineComponent({
       currentIdx.value = newIndex;
     }
     const onSplidePaginationClicked = (index: number) => {
-      console.log(index);
+      splide.value.splide.go(index);
     }
+
     return {
       modalContainerRef,
       containerRef,
@@ -778,7 +789,7 @@ export default defineComponent({
       currentIdx,
       close,
       adjustPositionSize,
-      pagenationStyle,
+      // pagenationStyle,
       onImgLoad,
       getBannerText,
       badgeText,
@@ -797,8 +808,11 @@ export default defineComponent({
       cameraImageLoading,
       cameraImageLoadComplete,
       weatherForecastsLoaded,
+      splide,
       onSplideMoved,
-      onSplidePaginationClicked
+      onSplidePaginationClicked,
+      onSplideMounted,
+      splideStyles
     };
   },
 });
@@ -920,47 +934,22 @@ export default defineComponent({
             <label>Camera images loading...</label>
           </div>
           <div v-show="!cameraImageLoading">
+            <!-- <div class="carousel-item-container" v-if="Features.length == 1">
+              <img
+                class="popup-img"
+                :src="getImgUrl(Features[0])"
+                :alt="Features[0].id"
+                @load="onImgLoad()"
+                @error="$event.target.src = require('@/assets/no-image.png')"
+              />
+            </div>-->
             <Splide
-              :options="{ type: 'loop', rewind: true, arrows: Features.length > 1, pagination: false }"
+              ref="splide"
+              :options="{ type: 'loop', pagination: false, classes: { arrow: 'splide__arrow splide-arrow' } }"
               @splide:moved="onSplideMoved"
+              @splide:mounted="onSplideMounted"
+              :style="splideStyles"
             >
-              <template #before-track>
-                <div v-if="Features.length > 1" class="splide__arrows">
-                  <button
-                    class="splide__arrow splide__arrow--prev"
-                    type="button"
-                    :style="{ backgroundColor: DarkThemeColor }"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 40 40"
-                      width="40"
-                      height="40"
-                    >
-                      <path
-                        d="m15.5 0.932-4.3 4.38 14.5 14.6-14.5 14.5 4.3 4.4 14.6-14.6 4.4-4.3-4.4-4.4-14.6-14.6z"
-                      />
-                    </svg>
-                  </button>
-                  <button
-                    class="splide__arrow splide__arrow--next"
-                    type="button"
-                    :style="{ backgroundColor: DarkThemeColor }"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 40 40"
-                      width="40"
-                      height="40"
-                      style="fill: #fff"
-                    >
-                      <path
-                        d="m15.5 0.932-4.3 4.38 14.5 14.6-14.5 14.5 4.3 4.4 14.6-14.6 4.4-4.3-4.4-4.4-14.6-14.6z"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </template>
               <SplideSlide v-for="(eachFeature, idx) in Features" :key="idx">
                 <div class="carousel-item-container">
                   <img
@@ -972,7 +961,7 @@ export default defineComponent({
                   />
                 </div>
               </SplideSlide>
-              <template #after-track>
+              <!-- <template #after-track>
                 <div v-if="Features.length > 1" class="splide-pagination-container">
                   <ul class="splide__pagination">
                     <li v-for="(eachFeature, idx) in Features" :key="idx">
@@ -986,33 +975,8 @@ export default defineComponent({
                     </li>
                   </ul>
                 </div>
-              </template>
+              </template>-->
             </Splide>
-            <!--<Carousel
-              v-if="Config.imageFieldName"
-              :items-to-show="1"
-              :wrapAround="true"
-              :mouseDrag="false"
-              :touchDrag="false"
-              @update:modelValue="currentIdx = $event"
-              :style="pagenationStyle"
-            >
-              <Slide v-for="eachFeature in Features" :key="eachFeature.id">
-                <div class="carousel-item-container">
-                  <img
-                    class="popup-img"
-                    :src="getImgUrl(eachFeature)"
-                    :alt="eachFeature.id"
-                    @load="onImgLoad()"
-                    @error="$event.target.src = require('@/assets/no-image.png')"
-                  />
-                </div>
-              </Slide>
-              <template #addons="{ slidesCount }">
-                <navigation v-if="slidesCount > 1" />
-                <pagination v-if="slidesCount > 1" />
-              </template>
-            </Carousel>-->
           </div>
           <div
             class="travelDelayTime"
@@ -1279,6 +1243,14 @@ export default defineComponent({
   color: #000;
 }
 /* Splide customizations */
+:root {
+  --splide-arrow-color: transparent;
+  --splide-arrow-visibility: hidden;
+}
+.splide-arrow {
+  background: var(--splide-arrow-color);
+  visibility: var(--splide-arrow-visibility);
+}
 .splide__arrow svg {
   fill: #fff;
 }
