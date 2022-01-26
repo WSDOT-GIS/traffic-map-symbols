@@ -75,3 +75,18 @@ export const hasParentClass = (child:HTMLElement, classname:string):boolean=>{
     }
  }
 
+ export const hasParent = (child:HTMLElement, id:string):boolean=>{
+    if(child){
+        if (child.id === id) return true;
+        try {
+        //Throws TypeError if child doesn't have parent any more
+        return hasParent(child.parentNode as HTMLElement, id);
+        } catch (TypeError) {
+        return false;
+        }
+    }
+    else{
+        return false
+    }
+ }
+
