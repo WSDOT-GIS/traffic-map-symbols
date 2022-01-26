@@ -75,7 +75,7 @@ const resetQueryString = () => {
             + window.location.pathname
         if (params.toString().length > 0) {
             url += "?"
-                + decodeURI(params.toString());
+                + decodeURIComponent(params.toString());
         }
         window.history.replaceState({
             path: url
