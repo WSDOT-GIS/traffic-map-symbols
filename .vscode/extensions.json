@@ -1,6 +1,7 @@
 {
     "recommendations": [
         "eg2.vscode-npm-script",
-        "davidanson.vscode-markdownlint"
+        "davidanson.vscode-markdownlint",
+        "octref.vetur"
     ]
 }

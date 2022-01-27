@@ -14,6 +14,10 @@ This project is utilizing
   * Build tools currently not compatible with Node 17 due to an [issue with Vue CLI].
 * Recommended development environment is [Visual Studio Code]
 
+## Resources
+
+* [Using Vue in Visual Studio Code]
+
 ## Serve production build locally using `dotnet serve`
 
 You can use the [dotnet-serve] tool to test the production build on your local machine.
@@ -22,7 +26,7 @@ You can use the [dotnet-serve] tool to test the production build on your local m
 dotnet serve --path-base /Travel/Real-time/Map/ --directory dist --open-browser --gzip --brotli --cors --tls
 ```
 
-The command below is a shorter version of the above command.
+The above command can be shortened as follows:
 
 ```console
 dotnet serve --path-base /Travel/Real-time/Map/ -d=dist -ozbcS
@@ -43,5 +47,6 @@ dotnet serve --path-base /Travel/Real-time/Map/ -d=dist -ozbcS
 [Node]:https://nodejs.org/en/
 [TypeScript]:https://www.typescriptlang.org/
 [Visual Studio Code]:https://code.visualstudio.com/
+[Using Vue in Visual Studio Code]:https://code.visualstudio.com/docs/nodejs/vuejs-tutorial
 [Vue]:https://vuejs.org/
 [WSDOT Travel Center Map]:https://wsdot.com/travel/real-time/map/
