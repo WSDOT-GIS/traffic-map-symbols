@@ -21,18 +21,18 @@ import { getEsriExtent } from "@/utils/extentUtil";
 import { hasParentClass } from "@/utils/miscUtil"
 
 export default defineComponent({
-  components: { /*Carousel, Slide, Pagination, Navigation,*/ PopupRow, Splide, SplideSlide },
+  components: { PopupRow, Splide, SplideSlide },
   props: {
     // MapX & Y are only required to supersede the feature x/y.
     MapXY: {
       type: Object as PropType<XY>,
       required: false,
     },
-    Width: {
-      // "m (medium) or w (wide)"
-      type: String,
-      required: false,
-    },
+    // Width: {
+    //   // "m (medium) or w (wide)"
+    //   type: String,
+    //   required: false,
+    // },
     DarkThemeColor: {
       type: String,
       required: true,
@@ -136,8 +136,6 @@ export default defineComponent({
       prev: "above" | "inside" | "below" | "";
     }[] = [];
     let pageObserver: IntersectionObserver | undefined;
-    //
-    const splide = ref();
     // Index of the currently shown feature.
     const currentIdx = ref(0);
     const badgeText = ref("");
@@ -173,18 +171,13 @@ export default defineComponent({
         cameraImageLoading.value = true
       }
     });
-    // Picture carousel colors.
-    // const pagenationStyle = computed(() => {
-    //   return {
-    //     "--vc-nav-background-color": props.DarkThemeColor,
-    //     "--vc-pgn-active-color": props.DarkThemeColor,
-    //     "--vc-pgn-background-color": props.LightThemeColor,
-    //   };
-    // });
+    // Picture carousel CSS variables.
     const splideStyles = computed(() => {
       return {
-        "--splide-arrow-color": props.DarkThemeColor,
-        "--splide-arrow-visibility": props.Features.length > 1 ? "visible" : "hidden"
+        "--dark-theme-color": props.DarkThemeColor,
+        "--light-theme-color": props.LightThemeColor,
+        "--splide-arrow-visibility": props.Features.length > 1 ? "visible" : "hidden",
+        "--splide-page-display": props.Features.length > 1 ? "block" : "none"
       }
     })
 
@@ -274,17 +267,9 @@ export default defineComponent({
     // Image load happens later and change the size of the popup, so need to make adjustment after that...
     const onImgLoad = () => {
       numImgLoaded = numImgLoaded + 1;
-      console.log("*** Image loaded: " + numImgLoaded);
       cameraImageLoadComplete()
       adjustPositionSize();
     };
-    const onSplideMounted = () => {
-      console.log("*** Splide mounted");
-      // numImgLoaded = props.Features.length;
-      // cameraImageLoadComplete();
-      // doPanMap = true;
-      // adjustPositionSize();
-    }
     // Adjust position after the container DIV is available...
     onUpdated(() => {
       if (!containerRef.value || !contentContainerRef.value) {
@@ -418,14 +403,12 @@ export default defineComponent({
           prevWidth = w;
           prevHeight = h;
         }
-        console.log("*** doPanMap = " + doPanMap);
         // If this is not the initial load, then move popup along with map.
         if (!doPanMap) {
           // Recalculate top and let position...
           const newTopLeft = calcTopLeft(h, w);
           setPosition(newTopLeft.top, newTopLeft.left);
         } else {
-
           nextTick(() => {
             // New vertical position...
             if (screenY.value > mapSize.value.height / 2) {
@@ -455,8 +438,6 @@ export default defineComponent({
 
             setPosition(newTopLeft.top, newTopLeft.left);
             if (Math.abs(shiftXY.x) >= 1 || Math.abs(shiftXY.y) >= 1) {
-              console.log("*** Panning 1...");
-
               isPanning = true;
               panMap(shiftXY.x, shiftXY.y).then(() => {
                 doPanMap = false;
@@ -472,7 +453,6 @@ export default defineComponent({
                   w
                 );
                 if (shiftXY.x !== 0 || shiftXY.y !== 0) {
-                  console.log("*** Panning 2...");
                   isPanning = true;
                   panMap(shiftXY.x, shiftXY.y).then(() => {
                     isPanning = false;
@@ -775,9 +755,6 @@ export default defineComponent({
     const onSplideMoved = (splide: unknown, newIndex: number) => {
       currentIdx.value = newIndex;
     }
-    const onSplidePaginationClicked = (index: number) => {
-      splide.value.splide.go(index);
-    }
 
     return {
       modalContainerRef,
@@ -789,7 +766,6 @@ export default defineComponent({
       currentIdx,
       close,
       adjustPositionSize,
-      // pagenationStyle,
       onImgLoad,
       getBannerText,
       badgeText,
@@ -808,10 +784,7 @@ export default defineComponent({
       cameraImageLoading,
       cameraImageLoadComplete,
       weatherForecastsLoaded,
-      splide,
       onSplideMoved,
-      onSplidePaginationClicked,
-      onSplideMounted,
       splideStyles
     };
   },
@@ -934,20 +907,15 @@ export default defineComponent({
             <label>Camera images loading...</label>
           </div>
           <div v-show="!cameraImageLoading">
-            <!-- <div class="carousel-item-container" v-if="Features.length == 1">
-              <img
-                class="popup-img"
-                :src="getImgUrl(Features[0])"
-                :alt="Features[0].id"
-                @load="onImgLoad()"
-                @error="$event.target.src = require('@/assets/no-image.png')"
-              />
-            </div>-->
             <Splide
-              ref="splide"
-              :options="{ type: 'loop', pagination: false, classes: { arrow: 'splide__arrow splide-arrow' } }"
+              :options="{
+                type: 'loop', pagination: true,
+                classes: {
+                  arrow: 'splide__arrow splide-arrow',
+                  page: 'splide__pagination__page splide-pagination'
+                }
+              }"
               @splide:moved="onSplideMoved"
-              @splide:mounted="onSplideMounted"
               :style="splideStyles"
             >
               <SplideSlide v-for="(eachFeature, idx) in Features" :key="idx">
@@ -961,21 +929,6 @@ export default defineComponent({
                   />
                 </div>
               </SplideSlide>
-              <!-- <template #after-track>
-                <div v-if="Features.length > 1" class="splide-pagination-container">
-                  <ul class="splide__pagination">
-                    <li v-for="(eachFeature, idx) in Features" :key="idx">
-                      <button
-                        class="splide__pagination__page"
-                        :class="{ 'is-active': currentIdx == idx }"
-                        :style="{ backgroundColor: currentIdx == idx ? DarkThemeColor : LightThemeColor }"
-                        type="button"
-                        @click="onSplidePaginationClicked(idx)"
-                      ></button>
-                    </li>
-                  </ul>
-                </div>
-              </template>-->
             </Splide>
           </div>
           <div
@@ -1174,17 +1127,12 @@ export default defineComponent({
   margin-right: auto;
 }
 /* Picture stylings ******/
-
 .popup-img {
   width: 100%;
   height: auto;
 }
 .carousel-item-container {
   width: 100%;
-}
-/* Hide the 1/3 of circle behind right & left arrow. */
-.carousel {
-  overflow: hidden;
 }
 #weatherForecastIcons #weatherForecastDescription {
   font-size: 5pt;
@@ -1244,66 +1192,27 @@ export default defineComponent({
 }
 /* Splide customizations */
 :root {
-  --splide-arrow-color: transparent;
+  --dark-theme-color: transparent;
+  --light-theme-color: transparent;
   --splide-arrow-visibility: hidden;
+  --splide-page-display: none;
 }
 .splide-arrow {
-  background: var(--splide-arrow-color);
+  background: var(--dark-theme-color);
   visibility: var(--splide-arrow-visibility);
+}
+.splide-pagination {
+  background: var(--light-theme-color);
+  display: var(--splide-page-display);
+}
+.splide-pagination.is-active {
+  background: var(--dark-theme-color);
 }
 .splide__arrow svg {
   fill: #fff;
 }
 .splide__pagination {
   bottom: auto;
+  position: relative;
 }
-.splide-pagination-container {
-  height: 1em;
-  margin-bottom: 0.5em;
-}
-/* Right and left arrows to scroll the pictures. */
-/* .carousel__prev,
-.carousel__next {
-  top: 40%;
-  opacity: 0.7;
-}
-.carousel__prev {
-  left: 20px;
-}
-.carousel__next {
-  right: 20px;
-}
-.carousel__prev:hover {
-  filter: drop-shadow(2px 2px 3px rgb(0 0 0 / 0.5));
-  left: 17px;
-  top: 39%;
-}
-.carousel__next:hover {
-  filter: drop-shadow(-2px 2px 3px rgb(0 0 0 / 0.5));
-  right: 17px;
-  top: 39%;
-}
-.carousel__prev svg path {
-  d: path(
-    "M 16.500785,17.692215 10.752113,11.931001 16.500785,6.169785 14.731001,4.4 7.2,11.931001 14.731001,19.462 Z"
-  );
-}
-.carousel__next svg path {
-  d: path(
-    "M 7.8,6.1697845 13.548671,11.930999 7.8,17.692215 9.569783,19.462 17.100784,11.930999 9.569783,4.3999995 Z"
-  );
-}
-.carousel__pagination-button {
-  width: 10px;
-  height: 10px;
-  border-radius: 10px;
-}
-.carousel__pagination {
-  margin: 5px;
-  padding-left: 0;
-} */
-/*https://github.com/ismail9k/vue3-carousel/issues/22 */
-/* .carousel__slide--visible {
-transform: rotateY(0);
-} */
 </style>
