@@ -18,7 +18,7 @@ This project is utilizing
 
 branch | status
 -|-
-*latest* | [![Build Status](https://dev.azure.com/WSDOT/TravelerInformation/_apis/build/status/Travel%20Center/TravelerInformationCoreMap)](https://dev.azure.com/WSDOT/TravelerInformation/_build/latest?definitionId=804)
+*default branch* | [![Build Status](https://dev.azure.com/WSDOT/TravelerInformation/_apis/build/status/Travel%20Center/TravelerInformationCoreMap)](https://dev.azure.com/WSDOT/TravelerInformation/_build/latest?definitionId=804)
 main | [![Build Status](https://dev.azure.com/WSDOT/TravelerInformation/_apis/build/status/Travel%20Center/TravelerInformationCoreMap?branchName=main)](https://dev.azure.com/WSDOT/TravelerInformation/_build/latest?definitionId=804&branchName=main)
 Develop | [![Build Status](https://dev.azure.com/WSDOT/TravelerInformation/_apis/build/status/Travel%20Center/TravelerInformationCoreMap?branchName=Develop)](https://dev.azure.com/WSDOT/TravelerInformation/_build/latest?definitionId=804&branchName=Develop)
 
