@@ -42,7 +42,7 @@ dotnet serve --path-base /Travel/Real-time/Map/ -d=dist -ozbcS
 
 ["Active LTS" version]:https://nodejs.org/en/about/releases/
 [ArcGIS API for JavaScript]:https://developers.arcgis.com/javascript/latest/
-[issue with Vue CLI]:https://github.com/vuejs/vue-cli/issues?q=is:issue+0308010C\
+[issue with Vue CLI]:https://github.com/vuejs/vue-cli/issues?q=is:issue+0308010C
 [dotnet-serve]:https://github.com/natemcmaster/dotnet-serve
 [Node]:https://nodejs.org/en/
 [TypeScript]:https://www.typescriptlang.org/
