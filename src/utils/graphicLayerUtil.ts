@@ -9,7 +9,14 @@ import { getLineFromPointId } from "./featureInfoUtil";
 import CIMSymbol from "@arcgis/core/symbols/CIMSymbol";
 import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
-export const buildGraphicsByType = (type: string, data: any): Graphic => {//type is the type of data being passed, data is the data object
+
+/**
+ * 
+ * @param type The type of data being passed: "coordinates" or "CIMSymbol"
+ * @param data The data object
+ * @returns A graphic
+ */
+export const buildGraphicsByType = (type: string, data: any): Graphic => {
     let graphic;
     let selectedSymbol;
     let layer
