@@ -1,7 +1,7 @@
 <script lang="ts">
 import { computed, defineComponent, nextTick, onUpdated, PropType, ref, toRefs, watch } from "vue";
-import "vue3-carousel/dist/carousel.css";
-import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
+import { Splide, SplideSlide } from '@splidejs/vue-splide';
+import '@splidejs/splide/dist/css/themes/splide-default.min.css';
 import { useStore } from "@/store";
 import {
   mapView,
@@ -21,18 +21,18 @@ import { getEsriExtent } from "@/utils/extentUtil";
 import { hasParentClass } from "@/utils/miscUtil"
 
 export default defineComponent({
-  components: { Carousel, Slide, Pagination, Navigation, PopupRow },
+  components: { PopupRow, Splide, SplideSlide },
   props: {
     // MapX & Y are only required to supersede the feature x/y.
     MapXY: {
       type: Object as PropType<XY>,
       required: false,
     },
-    Width: {
-      // "m (medium) or w (wide)"
-      type: String,
-      required: false,
-    },
+    // Width: {
+    //   // "m (medium) or w (wide)"
+    //   type: String,
+    //   required: false,
+    // },
     DarkThemeColor: {
       type: String,
       required: true,
@@ -127,7 +127,7 @@ export default defineComponent({
     let numImgLoaded = 0;
     let wasUpdatedOnce = false;
     let doPanMap = true;
-    // let isPanning = false;
+    let isPanning = false;
     // Used to keep track of pages...
     const currentPage = ref(1);
     let pagePositions: {
@@ -166,18 +166,20 @@ export default defineComponent({
       numImgLoaded = 0;
       wasUpdatedOnce = false;
       doPanMap = true;
+      isPanning = false;
       if (props.Config.imageFieldName) {
         cameraImageLoading.value = true
       }
     });
-    // Picture carousel colors.
-    const pagenationStyle = computed(() => {
+    // Picture carousel CSS variables.
+    const splideStyles = computed(() => {
       return {
-        "--vc-nav-background-color": props.DarkThemeColor,
-        "--vc-pgn-active-color": props.DarkThemeColor,
-        "--vc-pgn-background-color": props.LightThemeColor,
-      };
-    });
+        "--dark-theme-color": props.DarkThemeColor,
+        "--light-theme-color": props.LightThemeColor,
+        "--splide-arrow-visibility": props.Features.length > 1 ? "visible" : "hidden",
+        "--splide-page-display": props.Features.length > 1 ? "block" : "none"
+      }
+    })
 
     const onClickAway = (event: PointerEvent | TouchEvent) => {
       if (smallMedia.value) {
@@ -237,17 +239,6 @@ export default defineComponent({
       }
       setScreenXY();
     });
-    // Watch scale change...
-    // watch(mapScale, () => {
-    //   // While map is being panned to show the popup, map sometimes zoom out as well resulting in scale change, so do not close popup.
-    //   // Only close if user intentionally change scales.
-    //   // if (!isPanning) {
-    //   //   close();
-    //   // } else {
-    //   //   setScreenXY();
-    //   // }
-    //   setScreenXY();
-    // });
     // Store the previous scale so it can detect if the center is moving due to zooming or panning.
     let prevScale = 0;
     // Watch map moving...
@@ -386,6 +377,7 @@ export default defineComponent({
         // Container is null. It is not visible yet.
         return;
       }
+      if (isPanning) return;
       // Wait for everything to load, then adjust.
       /*if (!cameraImageLoadComplete()) {
         // Not everything is loaded yet.
@@ -419,7 +411,6 @@ export default defineComponent({
           const newTopLeft = calcTopLeft(h, w);
           setPosition(newTopLeft.top, newTopLeft.left);
         } else {
-          doPanMap = false;
           nextTick(() => {
             // New vertical position...
             if (screenY.value > mapSize.value.height / 2) {
@@ -449,13 +440,13 @@ export default defineComponent({
 
             setPosition(newTopLeft.top, newTopLeft.left);
             if (Math.abs(shiftXY.x) >= 1 || Math.abs(shiftXY.y) >= 1) {
-              // isPanning = true;
+              isPanning = true;
               panMap(shiftXY.x, shiftXY.y).then(() => {
-                // isPanning = false;
+                doPanMap = false;
+                isPanning = false;
                 setScreenXY();
                 // Check the popup position again and pan map more if necessary.
                 shiftXY = calcShiftXY(
-                  //{ top: popupTop.value, left: popupLeft.value },
                   {
                     top: parseInt(popupTopLeft.value.marginTop),
                     left: parseInt(popupTopLeft.value.marginLeft),
@@ -464,9 +455,9 @@ export default defineComponent({
                   w
                 );
                 if (shiftXY.x !== 0 || shiftXY.y !== 0) {
-                  // isPanning = true;
+                  isPanning = true;
                   panMap(shiftXY.x, shiftXY.y).then(() => {
-                    // isPanning = false;
+                    isPanning = false;
                     setScreenXY();
                   });
                 }
@@ -568,7 +559,7 @@ export default defineComponent({
     /**
      * Figure out if everything is loaded or not.
      */
-    const cameraImageLoadComplete = () => {//check if the loading is complete after each image loads
+    const cameraImageLoadComplete = (): boolean => {//check if the loading is complete after each image loads
       let isComplete: boolean;
       if (props.Config.imageFieldName) {
         isComplete = numImgLoaded >= props.Features.length;
@@ -578,6 +569,7 @@ export default defineComponent({
       if (props.Config.imageFieldName) {
         cameraImageLoading.value = !isComplete;
       }
+      return isComplete;
     };
     /** This sets the margin top and left of the popup container. */
     const setPosition = (top?: number, left?: number) => {
@@ -757,6 +749,15 @@ export default defineComponent({
         }
       }
     };
+    /**
+     * Catch the carousel spicture changes.
+     * @param splide 
+     * @param newIndex 
+     */
+    const onSplideMoved = (splide: unknown, newIndex: number) => {
+      currentIdx.value = newIndex;
+    }
+
     return {
       modalContainerRef,
       containerRef,
@@ -767,7 +768,6 @@ export default defineComponent({
       currentIdx,
       close,
       adjustPositionSize,
-      pagenationStyle,
       onImgLoad,
       getBannerText,
       badgeText,
@@ -785,7 +785,9 @@ export default defineComponent({
       onClickAway,
       cameraImageLoading,
       cameraImageLoadComplete,
-      weatherForecastsLoaded
+      weatherForecastsLoaded,
+      onSplideMoved,
+      splideStyles
     };
   },
 });
@@ -907,16 +909,18 @@ export default defineComponent({
             <label>Camera images loading...</label>
           </div>
           <div v-show="!cameraImageLoading">
-            <Carousel
-              v-if="Config.imageFieldName"
-              :items-to-show="1"
-              :wrapAround="true"
-              :mouseDrag="false"
-              :touchDrag="false"
-              @update:modelValue="currentIdx = $event"
-              :style="pagenationStyle"
+            <Splide
+              :options="{
+                type: 'loop', pagination: true,
+                classes: {
+                  arrow: 'splide__arrow splide-arrow',
+                  page: 'splide__pagination__page splide-pagination'
+                }
+              }"
+              @splide:moved="onSplideMoved"
+              :style="splideStyles"
             >
-              <Slide v-for="eachFeature in Features" :key="eachFeature.id">
+              <SplideSlide v-for="(eachFeature, idx) in Features" :key="idx">
                 <div class="carousel-item-container">
                   <img
                     class="popup-img"
@@ -926,12 +930,8 @@ export default defineComponent({
                     @error="$event.target.src = require('@/assets/no-image.png')"
                   />
                 </div>
-              </Slide>
-              <template #addons="{ slidesCount }">
-                <navigation v-if="slidesCount > 1" />
-                <pagination v-if="slidesCount > 1" />
-              </template>
-            </Carousel>
+              </SplideSlide>
+            </Splide>
           </div>
           <div
             class="travelDelayTime"
@@ -1129,17 +1129,12 @@ export default defineComponent({
   margin-right: auto;
 }
 /* Picture stylings ******/
-
 .popup-img {
   width: 100%;
   height: auto;
 }
 .carousel-item-container {
   width: 100%;
-}
-/* Hide the 1/3 of circle behind right & left arrow. */
-.carousel {
-  overflow: hidden;
 }
 #weatherForecastIcons #weatherForecastDescription {
   font-size: 5pt;
@@ -1197,49 +1192,29 @@ export default defineComponent({
 .popup-inner-container {
   color: #000;
 }
-/* Right and left arrows to scroll the pictures. */
-.carousel__prev,
-.carousel__next {
-  top: 40%;
-  opacity: 0.7;
+/* Splide customizations */
+:root {
+  --dark-theme-color: transparent;
+  --light-theme-color: transparent;
+  --splide-arrow-visibility: hidden;
+  --splide-page-display: none;
 }
-.carousel__prev {
-  left: 20px;
+.splide-arrow {
+  background: var(--dark-theme-color);
+  visibility: var(--splide-arrow-visibility);
 }
-.carousel__next {
-  right: 20px;
+.splide-pagination {
+  background: var(--light-theme-color);
+  display: var(--splide-page-display);
 }
-.carousel__prev:hover {
-  filter: drop-shadow(2px 2px 3px rgb(0 0 0 / 0.5));
-  left: 17px;
-  top: 39%;
+.splide-pagination.is-active {
+  background: var(--dark-theme-color);
 }
-.carousel__next:hover {
-  filter: drop-shadow(-2px 2px 3px rgb(0 0 0 / 0.5));
-  right: 17px;
-  top: 39%;
+.splide__arrow svg {
+  fill: #fff;
 }
-.carousel__prev svg path {
-  d: path(
-    "M 16.500785,17.692215 10.752113,11.931001 16.500785,6.169785 14.731001,4.4 7.2,11.931001 14.731001,19.462 Z"
-  );
+.splide__pagination {
+  bottom: auto;
+  position: relative;
 }
-.carousel__next svg path {
-  d: path(
-    "M 7.8,6.1697845 13.548671,11.930999 7.8,17.692215 9.569783,19.462 17.100784,11.930999 9.569783,4.3999995 Z"
-  );
-}
-.carousel__pagination-button {
-  width: 10px;
-  height: 10px;
-  border-radius: 10px;
-}
-.carousel__pagination {
-  margin: 5px;
-  padding-left: 0;
-}
-/*https://github.com/ismail9k/vue3-carousel/issues/22 */
-/* .carousel__slide--visible {
-transform: rotateY(0);
-} */
 </style>
