@@ -23,7 +23,6 @@ export default defineComponent({
   },
   setup(props, context) {
     var page_ts = document.location.pathname.split('/');
-    console.log(page_ts)
     var k1 = page_ts[1] || 'none';
     var k2 = page_ts[2] || 'none';
     var k3 = page_ts[3] || 'none';
@@ -144,6 +143,3 @@ p {
   padding: 5px;
 }
 </style>
-
-
-

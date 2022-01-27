@@ -45,7 +45,7 @@ import {
 } from "../utils/graphicLayerUtil";
 export default defineComponent({
   components: { MapButtonView },
-  setup() {
+  setup(props, context) {
     const store = useStore();
     const location = ref<any>();
     const options = {
@@ -58,16 +58,10 @@ export default defineComponent({
     );
     const warningDisplayClass = ref<string>("warningOff");
     const getLocation = () => {
+      
       removeGraphicsByType("myLocation");
       warningDisplayClass.value = "warningOff";
-      if (store.state.userLocation == null) {
-        navigator.geolocation.getCurrentPosition(success, error, options);
-        console.log(navigator)
-        console.log(navigator.geolocation)
-      } else {
-        success(store.state.userLocation);
-        console.log(store.state.userLocation)
-      }
+      navigator.geolocation.getCurrentPosition(success, error, options);
     };
     const success = (location: any) => {
       store.commit("setUserLocation", location);
@@ -85,10 +79,12 @@ export default defineComponent({
           const graphic = buildGraphicsByType("coordinates", location.coords);
           addGraphicsByType("myLocation", graphic);
         });
+        context.emit("locationFound",[true,`success`])
     };
     const error = (error: any) => {
+      store.commit("setUserLocation", null)
+      context.emit("locationFound",[false,`Locating failed for the following reason: ${error.message}`])
       warningDisplayClass.value = "warningOn";
-      errorMessage.value = `Locating failed for the following reason: ${error.message}`;
     };
     return { location, options, errorMessage, warningDisplayClass, getLocation };
   },
