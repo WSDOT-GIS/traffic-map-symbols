@@ -73,7 +73,7 @@ export default defineComponent({
     const feature = ref<FeatureInfo>();
     const layerIcons = layerListIcons;
     const forecastList = ref<ForecastListInfo>();
-    const forecastsLoaded = ref<string>("false");//passed in as a property to PopupBase
+    const forecastsLoaded = ref<string>("false");
     watch(props, () => {
       if (props.Featureset.layerId === FeatureLayer().id) {
         //if clicked feature belongs to WeatherStations layer
@@ -92,7 +92,7 @@ export default defineComponent({
           //query feature layer for feature
           async (result) => {
             if (result) {
-              forecastsLoaded.value = 'false'//reset forecast loaded value when a new popup is shown
+              forecastsLoaded.value = 'false'
               forecastList.value = undefined;
               feature.value = result;
               getWeatherForecast(result);

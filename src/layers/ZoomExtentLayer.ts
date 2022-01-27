@@ -10,7 +10,7 @@ import Field from "@arcgis/core/layers/support/Field";
 const renderer = new SimpleRenderer({
     symbol: new SimpleFillSymbol({
         style: "none",
-        outline: { 
+        outline: {
             width: 2,
             color: "blue"
         }
@@ -146,7 +146,11 @@ export const getFeatureById = async (id: number): Promise<Graphic> => {
     }
     return response.features[0];
 }
-
+/**
+ * Get the extent feature by name.
+ * Note: Case insenstive
+ * @param name Name of the extent area
+ */
 export const getFeatureByName = async (name: string): Promise<Graphic> => {
     const query = layer.createQuery();
     const nameFormatted = name[0].toUpperCase() + name.slice(1).toLowerCase();
@@ -157,4 +161,19 @@ export const getFeatureByName = async (name: string): Promise<Graphic> => {
         throw "Failed to find the zoom extent with the specified name: '" + name + "'. Please make sure the spelling is correct.";
     }
     return response.features[0];
+}
+/**
+ * Check to make sure the name is valid. 
+ * NOTE: Case insensitive
+ * @param name Name of the extent area
+ */
+export const validateName = (name: string): boolean => {
+    const result = graphics.find((item) => {
+        return item.attributes.Name.toLowerCase() === name.toLowerCase();
+    });
+    if (result) {
+        return true;
+    } else {
+        return false;
+    }
 }

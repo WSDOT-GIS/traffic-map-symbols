@@ -21,7 +21,7 @@ import {
   getFeatureIdFromUrl,
   getFeatureTypeFromUrl,
 } from "@/utils/urlParamUtil";
-import { createLayerGroupInfos, getFeature, setLayerVisibility } from "@/utils/layerUtil";
+import { getFeature, setLayerVisibility } from "@/utils/layerUtil";
 import {
   removeGraphicsByType,
   hidePointInteractionGraphics,
@@ -127,7 +127,7 @@ export default defineComponent({
     });
     alertInfoUtil.initFerryAlerts(config.ferryAlerts);
     // Build the list used by the URL query...
-    createLayerGroupInfos(config);
+    // createLayerGroupInfos(config);
     // Zoom popup...
     const zoomPopupVisible = ref(false);
     const zoomPopupLabel = ref("");
@@ -450,6 +450,8 @@ export default defineComponent({
               esriMap.tryZoomToPointAsync(result.geometry as Point, zoomLevel).then(() => {
                 showPopup(result.layer.id, [result.getObjectId()]);
               });
+            } else {
+              console.error("Failed to find the feature specified: " + featureType + ", " + featureId);
             }
           });
         }).catch(error => {
@@ -659,6 +661,7 @@ export default defineComponent({
   height: 100%;
   width: 100%;
   touch-action: none;
+  overflow: hidden;
 }
 #map-bottom-right-container {
   display: inline-flex;

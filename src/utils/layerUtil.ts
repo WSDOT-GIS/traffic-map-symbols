@@ -48,7 +48,10 @@ const getGroupLayerInfo = (groupId: string): GroupLayerInfo => {
         return item.id === groupId;
     });
     if (!result) {
-        throw `${groupId} is an invalid group ID (feature type).`
+        const ids = layerGroups.map((item) => {
+            return item.id;
+        })
+        throw `${groupId} is an invalid feature type. The valid IDs are: ${ids.join(', ')}.`;
     }
     return result;
 }
@@ -62,7 +65,10 @@ export const getLayerIds = (groupId: string): string[] => {
             return each.id;
         });
     } else {
-        throw "Failed to find layer IDs for " + groupId + ".";
+        const ids = layerGroups.map((item) => {
+            return item.id;
+        })
+        throw "Failed to find a layer with the ID, " + groupId + ". The valid IDs are: " + ids.join(", ") + ".";
     }
 }
 
