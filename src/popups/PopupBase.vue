@@ -75,7 +75,6 @@ export default defineComponent({
     }
   },
   setup(props, context) {
-    console.log("popupBase");
     // The DOM only exists while the visibility is true. Get it in onUpdate().
     //#region weather forecast loading setup
     const propWeatherForecast = ref<ForecastListInfo>()
@@ -187,7 +186,6 @@ export default defineComponent({
       let elapsedTime = 0
       window.setTimeout(()=>{elapsedTime=500},500)
       if (smallMedia.value&&elapsedTime<500) {
-        console.log(elapsedTime);
       //#endregion
         close();
       } else {
