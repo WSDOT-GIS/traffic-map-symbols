@@ -75,6 +75,7 @@ export default defineComponent({
     }
   },
   setup(props, context) {
+    console.log("popupBase");
     // The DOM only exists while the visibility is true. Get it in onUpdate().
     //#region weather forecast loading setup
     const propWeatherForecast = ref<ForecastListInfo>()
@@ -180,7 +181,12 @@ export default defineComponent({
     });
 
     const onClickAway = (event: PointerEvent | TouchEvent) => {
-      if (smallMedia.value) {
+      //#region fix click drag from closing pop up on mac
+      let elapsedTime = 0
+      window.setTimeout(()=>{elapsedTime=500},500)
+      if (smallMedia.value&&elapsedTime<500) {
+        console.log(elapsedTime);
+      //#endregion
         close();
       } else {
         /* On Desktop
@@ -809,7 +815,7 @@ export default defineComponent({
       }"
       v-if="propFeatures.length > 0 && propFeatures[0]"
       :style="popupTopLeft"
-      v-click-away="onClickAway"
+      @mouseup="onClickAway"
     >
       <!-- container without the pointer -->
       <div class="popup-inner-container w3-display-container">
