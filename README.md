@@ -8,11 +8,19 @@ This project is utilizing
 * [TypeScript]
 * [ArcGIS API for JavaScript] 4.X
 
-## Developer Setup
+## Developers
+
+### Prerequisites
 
 * Install [Node] 16, which is the ["Active LTS" version] as of this writing.
   * Build tools currently not compatible with Node 17 due to an [issue with Vue CLI].
-* Recommended development environment is [Visual Studio Code]
+* Recommended development environment is [Visual Studio Code].
+  * The `.vscode/extensions.json` file is configured with recommended extensions (including Vetur, as recommended by the Vue [tutorial on the VS Code website][Using Vue in Visual Studio Code].) You can view the recommended extensions in the *Extensions* panel (Ctrl + Shift + X).
+
+### Setup
+
+1. Clone this repository locally to your computer using `git clone` command.
+2. Change to the directory created by `git clone` and run `npm install`.
 
 ## Resources
 
