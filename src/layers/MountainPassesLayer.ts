@@ -45,6 +45,7 @@ const fields = [
     new Field({ name: "PublicMessage1", type: "string", alias: "PublicMessage1", length: 300 }),
     new Field({ name: "TravelDirection2", type: "string", alias: "TravelDirection2", length: 20 }),
     new Field({ name: "PublicMessage2", type: "string", alias: "PublicMessage2", length: 300 }),
+    new Field({ name: "WebPageName", type: "string", alias: "WebPageName", length: 300 }),
 ]
 
 let layer: FeatureLayer | undefined;

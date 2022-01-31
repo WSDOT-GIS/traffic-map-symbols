@@ -178,6 +178,7 @@ export const validateLayerName = (name: string): boolean => {
  */
 export const getFeatureIdFromUrl = (route: RouteLocationNormalizedLoaded): string | null => {
     let id: string | null;
+    console.log(route.params);
     if (route.params.featureid) {
         const p = route.params.featureid;
         id = typeof p === 'string' ? p : p[0];

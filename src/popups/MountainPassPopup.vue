@@ -108,7 +108,7 @@ export default defineComponent({
         linkText = feature.attributes["PassName"] as string;
       }
       const moreInfoObject = new Object({
-        url: `/travel/real-time/mountainpasses/${feature.attributes.MountainPassId}`,
+        url: `/travel/real-time/mountainpasses/${feature.attributes.WebPageName}`,
         text: "Learn more about ",
         linkText: linkText,
       }) as MoreInfoURLInfo;
