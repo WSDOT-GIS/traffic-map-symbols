@@ -12,13 +12,9 @@ export const loadConfig = async (): Promise<AppConfig> => {
         if (idx >= 0) {
             dir = href.substring(0, idx + rootPath.length);
         }
-        console.log("href: " + href);
-        console.log("dir: " + dir);
-        console.log("fetch: " + dir + "/appConfig.json");
         const fetchResponse = await fetch(dir + "/appConfig.json");
         const config = await fetchResponse.json();
         appConfig = config as AppConfig;
-        console.log(appConfig)
     }
     return appConfig;
 

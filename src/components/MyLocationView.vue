@@ -61,7 +61,14 @@ export default defineComponent({
       
       removeGraphicsByType("myLocation");
       warningDisplayClass.value = "warningOff";
-      navigator.geolocation.getCurrentPosition(success, error, options);
+      if (store.state.userLocation == null) {
+        navigator.geolocation.getCurrentPosition(success, error, options);
+        // console.log(navigator)
+        // console.log(navigator.geolocation)
+      } else {
+        success(store.state.userLocation);
+        // console.log(store.state.userLocation)
+      }
     };
     const success = (location: any) => {
       store.commit("setUserLocation", location);

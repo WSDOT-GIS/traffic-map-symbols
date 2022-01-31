@@ -23,7 +23,11 @@ export default defineComponent({
     const config = getConfig();
     const activeClass = "active";
     const disabledClass = "disabled";
-    store.commit("setInitializing", { isInitializing: true, isLoading: true, initializingMessage: "Map is loading..." });
+    store.commit("setInitializing", {
+      isInitializing: true,
+      isLoading: true,
+      initializingMessage: "Map is loading...",
+    });
     // Make map fill the screen between the header and footer...
     const resizeMapContainer = () => {
       const headDiv = document.querySelector("#header") as HTMLElement;
@@ -86,6 +90,7 @@ body,
   margin: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden;
   /** Got these from internal website */
   font-family: "Lato", sans-serif;
 }
@@ -112,4 +117,5 @@ hr.horizontal-divider {
 #map-container > * {
   position: absolute;
 }
+
 </style>

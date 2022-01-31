@@ -58,11 +58,46 @@ import { getEsriExtent } from "./extentUtil";
 import { getBasemapInfo } from "@/layers/Basemaps";
 import BasemapInfo from "@/types/BasemapInfo";
 import { getLayerIds } from "./layerUtil";
-import { getFeatureByName } from "@/layers/ZoomExtentLayer";
+import * as ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 import { RouteLocationNormalizedLoaded } from "vue-router";
 
+const queryStringKeys = ["extent", "namedextent", "base", "layer", "featuretype", "featureid"];
 // Read the URL query parameters...
 const params = new URLSearchParams(window.location.search);
+/**
+ * Update query string in the URL.
+ * Run this after validating and cleaning query string to update URL.
+ */
+const resetQueryString = () => {
+    if (window.history.replaceState) {
+        let url = window.location.protocol
+            + "//" + window.location.host
+            + window.location.pathname
+        if (params.toString().length > 0) {
+            url += "?"
+                + decodeURIComponent(params.toString());
+        }
+        window.history.replaceState({
+            path: url
+        }, "", url)
+    }
+}
+/**
+ * Check all the keys in the query string and remove invalid ones.
+ */
+const removeKeys: string[] = [];
+params.forEach((value, key) => {
+    if (queryStringKeys.indexOf(key) < 0) {
+        removeKeys.push(key);
+    }
+});
+removeKeys.forEach((key) => {
+    params.delete(key);
+});
+if (removeKeys.length > 0) {
+    resetQueryString();
+}
+
 /**
  * Make layers specified layer visible.
  * @param layerList 
@@ -82,29 +117,62 @@ export const setVisibleLayersFromUrl = (layerList: LayerInfo[], route: RouteLoca
     if (!layers) {
         layers = [];
     }
-    let param = params.get("featuretype");
-    if (param) {
-        layers = layers.concat(param.split(','));
+    const type = getFeatureTypeFromQuery();
+    if (type) {
+        layers.push(type);
     }
-    param = params.get("layer");
+    const param = params.get("layer");
     if (param) {
-        layers = layers.concat(param.split(','));
+        const layerParams = param.split(',');
+        const validLayers = layerParams.filter((item) => {
+            return validateLayerName(item);
+        });
+        if (layerParams.length > validLayers.length) {
+            if (validLayers.length > 0) {
+                params.set("layer", validLayers.join(","));
+            }
+            else { params.delete("layer"); }
+            resetQueryString();
+        }
+        layers = layers.concat(validLayers);
     }
     if (layers) {
         const layerIds: string[] = [];
         layers.forEach((each) => {
-            layerIds.push(...getLayerIds(each));
+            let ids: string[] | undefined;
+            try {
+                ids = getLayerIds(each);
+            } catch (ex) {
+                console.error(ex);
+            }
+            if (ids) {
+                layerIds.push(...ids);
+            }
         })
         layerList.forEach((eachLyr) => {
             if (layerIds.includes(eachLyr.id)) {
-                console.log("true")
                 eachLyr.visible = true;
             }
         });
     }
     return layerList;
 }
-
+/**
+ * Check to make sure the ID is valid.
+ * @param groupId Layer group ID
+ */
+export const validateLayerName = (name: string): boolean => {
+    let ids: string[] | undefined;
+    try {
+        ids = getLayerIds(name);
+    } catch (ex) {
+        return false;
+    }
+    if (ids) {
+        return true;
+    }
+    else { return false; }
+}
 /**
  * Get feature ID.
  */
@@ -128,7 +196,27 @@ export const getFeatureTypeFromUrl = (route: RouteLocationNormalizedLoaded): str
         const p = route.params.featuretype;
         type = typeof p === 'string' ? p : p[0];
     } else {
-        type = params.get("featuretype");
+        type = getFeatureTypeFromQuery();
+    }
+    return type;
+}
+/**
+ * Get feature type from the query string.
+ */
+const getFeatureTypeFromQuery = (): string | null => {
+    let type: string | null = null;
+    const param = params.get("featuretype");
+    if (param) {
+        if (validateLayerName(param)) {
+            type = param;
+        }
+        else {
+            params.delete("featuretype");
+            if (params.has("featureid")) {
+                params.delete("featureid");
+            }
+            resetQueryString();
+        }
     }
     return type;
 }
@@ -165,33 +253,11 @@ export const getExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Pr
                     });
                     extent = project(extentWgs, SpatialReference.WebMercator) as Extent;
                 }
+                else {
+                    params.delete("extent");
+                    resetQueryString();
+                }
             }
-        }
-    }
-
-    return extent;
-}
-/**
- * Get extent by name
- * Support route (area\<name>) and query parameter (?namedextent=<name>)
- * @param route 
- */
-const getNamedExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Promise<Extent> => {
-    let param: string | null;
-    if (route.params.areaname) {
-        const p = route.params.areaname;
-        param = typeof p === 'string' ? p : p[0];
-    } else {
-        param = params.get("namedextent");
-    }
-    let extent: Extent | undefined;
-    if (param) {
-        try {
-            const ftr = await getFeatureByName(param);
-            extent = ftr.geometry.extent.expand(2);
-        }
-        catch (ex) {
-            console.error(ex);
         }
     }
     if (!extent) {
@@ -199,10 +265,50 @@ const getNamedExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Prom
     }
     return extent;
 }
+/**
+ * Get extent by name
+ * Support route (area\<name>) and query parameter (?namedextent=<name>)
+ * @param route 
+ */
+const getNamedExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Promise<Extent | undefined> => {
+    let param: string | null;
+    if (route.params.areaname) {
+        const p = route.params.areaname;
+        param = typeof p === 'string' ? p : p[0];
+    } else {
+        param = params.get("namedextent");
+        if (param) {
+            if (!validateAreaName(param)) {
+                params.delete("namedextent");
+                resetQueryString();
+                param = null;
+            }
+        }
+    }
+    let extent: Extent | undefined;
+    if (param) {
+        try {
+            const ftr = await ZoomExtentLayer.getFeatureByName(param);
+            extent = ftr.geometry.extent.expand(2);
+        }
+        catch (ex) {
+            console.error(ex);
+        }
+    }
+    return extent;
+}
+
+export const validateAreaName = (name: string): boolean => {
+    return ZoomExtentLayer.validateName(name);
+}
 
 export const getBasemapFromUrl = (): BasemapInfo => {
     const param = params.get("base");
     const name = param ? param : "";
     const basemapInfo = getBasemapInfo(name);
+    if (basemapInfo.name !== param) {
+        params.delete("base");
+        resetQueryString();
+    }
     return basemapInfo;
 }
