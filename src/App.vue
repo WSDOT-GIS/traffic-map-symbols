@@ -90,7 +90,6 @@ body,
   margin: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden;
   /** Got these from internal website */
   font-family: "Lato", sans-serif;
 }
@@ -117,5 +116,4 @@ hr.horizontal-divider {
 #map-container > * {
   position: absolute;
 }
-
 </style>
