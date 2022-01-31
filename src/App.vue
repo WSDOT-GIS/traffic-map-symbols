@@ -16,8 +16,8 @@ export default defineComponent({
     FooterView,
   },
   setup() {
-    
-    
+
+
     const mapHeight = ref("500px");
     const store = useStore();
     const config = getConfig();
@@ -34,7 +34,7 @@ export default defineComponent({
       if (navDiv && navDiv.offsetHeight) {
         navH = navDiv.offsetHeight;
       }
-      const h = window.innerHeight - headDiv.offsetHeight - navH - footDiv.offsetHeight;
+      const h = window.innerHeight - headDiv.offsetHeight - navH - footDiv.offsetHeight - 1;
       mapHeight.value = h + "px";
     };
     window.addEventListener("resize", resizeMapContainer);
@@ -50,7 +50,7 @@ export default defineComponent({
       resizeMapContainer,
       activeClass,
       disabledClass,
-       
+
     };
   },
   computed: mapState(["isInitializing"]),
@@ -106,7 +106,7 @@ hr.horizontal-divider {
   position: relative;
   width: 100%;
   height: 80%;
-  /* overflow: hidden; */
+  overflow: hidden;
 }
 
 #map-container > * {
