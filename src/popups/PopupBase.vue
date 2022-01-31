@@ -900,14 +900,14 @@ export default defineComponent({
             </table>
           </div>
           <div
-            v-show="cameraImageLoading"
+            v-show="cameraImageLoading && Config.imageFieldName"
             class="w3-container loadingSpinnerDiv"
             :style="cameraImageLoading ? display = 'block' : display = 'none'"
           >
             <img class="loadingSpinner" src="@/assets/loadingSpinner.gif" />
             <label>Camera images loading...</label>
           </div>
-          <div v-show="!cameraImageLoading">
+          <div v-show="!cameraImageLoading && Config.imageFieldName">
             <Splide
               :options="{
                 type: 'loop', pagination: true,
