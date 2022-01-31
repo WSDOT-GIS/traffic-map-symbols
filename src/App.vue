@@ -37,7 +37,7 @@ export default defineComponent({
       if (navDiv && navDiv.offsetHeight) {
         navH = navDiv.offsetHeight;
       }
-      const h = window.innerHeight - headDiv.offsetHeight - navH - footDiv.offsetHeight;
+      const h = window.innerHeight - headDiv.offsetHeight - navH - footDiv.offsetHeight - 1;
       mapHeight.value = h + "px";
     };
     window.addEventListener("resize", resizeMapContainer);
@@ -88,7 +88,6 @@ body,
   margin: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden;
   /** Got these from internal website */
   font-family: "Lato", sans-serif;
 }
