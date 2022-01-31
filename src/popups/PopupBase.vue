@@ -18,7 +18,7 @@ import XY from "@/types/XY";
 import ForecastListInfo from "@/types/ForecastListInfo";
 import MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
 import { getEsriExtent } from "@/utils/extentUtil";
-import { hasParentClass } from "@/utils/miscUtil"
+import { hasParentClass, hasParent } from "@/utils/miscUtil";
 
 export default defineComponent({
   components: { PopupRow, Splide, SplideSlide },
@@ -79,7 +79,7 @@ export default defineComponent({
     //#region weather forecast loading setup
     const propWeatherForecast = ref<ForecastListInfo>()
     propWeatherForecast.value = undefined
-    const weatherForecastsLoaded = computed(() => { return props.weatherForecastLoaded })//conditionally displays weather forecast panel and weather forecast loading spinner.
+    const weatherForecastsLoaded = computed(() => { return props.weatherForecastLoaded })
     //#endregion
 
     //#region image loading setup
@@ -108,7 +108,7 @@ export default defineComponent({
     const minTop = 60; // Space needed at the top so the icon and arrow is visible.
     watch(mapSize, (size) => {
       maxHeight.value = size.height - minTop - 30 /* height of header */;
-      if (smallMedia.value) {
+      if (!smallMedia.value) {
         /* On desktop, subtract more so it leaves a bit more of space under or above the icon. 
            Otherwise long popups (Ferry) pushes icon too much to the edge. */
         maxHeight.value -= 80;
@@ -184,29 +184,25 @@ export default defineComponent({
     const onClickAway = (event: PointerEvent | TouchEvent) => {
       //#region fix click drag from closing pop up on mac
       let elapsedTime = 0
-      window.setTimeout(()=>{elapsedTime=500},500)
-      if (smallMedia.value&&elapsedTime<500) {
-      //#endregion
-        close();
-      } else {
-        /* On Desktop
-           - If user clicks on something other than the map (e.g. TOC, header, ...), then close the popup.
-           - If user clicks on map, then do not do anything here. */
-        const target = event.target as HTMLElement;
-        if (event.type === "click" && !target.classList.contains("esri-view-surface")) {
-          if (hasParentClass(target, "alert-content") == false) {
+      window.setTimeout(() => { elapsedTime = 500 }, 500)
+      const target = event.target as HTMLElement;
+      if (!hasParentClass(target, "alert-content") && !hasParent(target, "alert-container-open")) {
+        if (smallMedia.value && elapsedTime < 500) {
+          //#endregion
+          close();
+        } else {
+          /* On Desktop
+             - If user clicks on something other than the map (e.g. TOC, header, ...), then close the popup.
+             - If user clicks on map, then do not do anything here. */
+          if (event.type === "click" && !target.classList.contains("esri-view-surface")) {
             close();
-          }
-        } else if (event.type === "touchstart") {
-          // Touch event is handled here...
-          if (
-            !target.classList.contains("esri-view-surface") &&
-            !(
-              target.nodeName === "CANVAS" &&
-              target.parentElement?.classList.contains("esri-view-surface")
-            )
-          ) {
-            if (hasParentClass(target, "alert-content") == false) {
+          } else if (event.type === "touchstart") {
+            // Touch event is handled here...
+            if (
+              !target.classList.contains("esri-view-surface") &&
+              target.nodeName !== "CANVAS" &&
+              !target.parentElement?.classList.contains("esri-view-surface")
+            ) {
               close();
             }
           }
@@ -351,7 +347,6 @@ export default defineComponent({
     //Assigns the weather forecast to the weather forecast ref
     const setWeatherForecast = () => {
       if (props.Config.weatherForecast) {
-        console.log(props.Config.weatherForecast)
         propWeatherForecast.value = props.Config.weatherForecast;
       }
     };
@@ -374,7 +369,7 @@ export default defineComponent({
     let prevWidth = 0;
     let prevHeight = 0;
     /**
-     * Position popup on top of the feature...
+     * Position popup...
      */
     const adjustPositionSize = () => {
       if (!containerRef.value) {
@@ -976,7 +971,7 @@ export default defineComponent({
   display: none;
 }
 .popup-container {
-  z-index: 10;
+  z-index: 9;
   background-color: #fff;
   position: relative;
 }
@@ -1133,6 +1128,7 @@ export default defineComponent({
   margin-right: auto;
 }
 /* Picture stylings ******/
+
 .popup-img {
   width: 100%;
   height: auto;
