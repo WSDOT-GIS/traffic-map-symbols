@@ -409,6 +409,7 @@ export default defineComponent({
           const newTopLeft = calcTopLeft(h, w);
           setPosition(newTopLeft.top, newTopLeft.left);
         } else {
+          doPanMap = false;
           nextTick(() => {
             // New vertical position...
             if (screenY.value > mapSize.value.height / 2) {
@@ -440,7 +441,6 @@ export default defineComponent({
             if (Math.abs(shiftXY.x) >= 1 || Math.abs(shiftXY.y) >= 1) {
               isPanning = true;
               panMap(shiftXY.x, shiftXY.y).then(() => {
-                doPanMap = false;
                 isPanning = false;
                 setScreenXY();
                 // Check the popup position again and pan map more if necessary.
