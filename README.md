@@ -2,7 +2,11 @@
 
 This repository contains the source code for the [WSDOT Travel Center Map]
 
-This project is utilizing
+## Python Scripts
+
+Python scripts for updating JSON data used by the map application are in the `external_scripts` subfolder. This folder is ignored by Visual Studio Code when opening the root. To work on the Python scripts, you must open Visual Studio Code from the `external_scripts` subfolder.
+
+## This project is utilizing
 
 * [Vue] 3.x
 * [TypeScript]
@@ -21,6 +25,14 @@ This project is utilizing
 
 1. Clone this repository locally to your computer using `git clone` command.
 2. Change to the directory created by `git clone` and run `npm install`.
+
+### Configuration
+
+#### Browser Compatibility
+
+See [Vue CLI: Browser Compatibility](https://cli.vuejs.org/guide/browser-compatibility.html#browserslist) for details.
+
+The file `.browserslistrc` is a [browserslist] configuration file that tells the build process which browsers to support.
 
 ## Resources
 
@@ -50,6 +62,7 @@ dotnet serve --path-base /Travel/Real-time/Map/ -d=dist -ozbcS
 
 ["Active LTS" version]:https://nodejs.org/en/about/releases/
 [ArcGIS API for JavaScript]:https://developers.arcgis.com/javascript/latest/
+[browserslist]:https://github.com/browserslist/browserslist
 [issue with Vue CLI]:https://github.com/vuejs/vue-cli/issues?q=is:issue+0308010C
 [dotnet-serve]:https://github.com/natemcmaster/dotnet-serve
 [Node]:https://nodejs.org/en/
