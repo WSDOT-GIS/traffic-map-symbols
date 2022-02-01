@@ -42,14 +42,20 @@ The file `.browserslistrc` is a [browserslist] configuration file that tells the
 
 You can use the [dotnet-serve] tool to test the production build on your local machine.
 
-```console
-dotnet serve --path-base /Travel/Real-time/Map/ --directory dist --open-browser --gzip --brotli --cors --tls
+### Install
+
+You can install [dotnet-serve] using the following command, which uses the `.config/dotnet-tools.json` file.
+
+```pwsh
+dotnet tools restore
 ```
 
-The above command can be shortened as follows:
+### Run
 
-```console
-dotnet serve --path-base /Travel/Real-time/Map/ -d=dist -ozbcS
+The following command will run [dotnet-serve] with the settings defined in `.netconfig`.
+
+```pwsh
+dotnet serve
 ```
 
 ## Build Status
