@@ -182,18 +182,15 @@ export default defineComponent({
     })
 
     const onClickAway = (event: PointerEvent | TouchEvent) => {
-      //#region fix click drag from closing pop up on mac
-      // let elapsedTime = 0
-      // window.setTimeout(() => { elapsedTime = 500 }, 500)
       const target = event.target as HTMLElement;
       if (!hasParentClass(target, "alert-content") && !hasParent(target, "alert-container-open")) {
-        if (smallMedia.value) {// && elapsedTime < 500) {
+        if (smallMedia.value) {
           close();
         } else {
           /* On Desktop
              - If user clicks on something other than the map (e.g. TOC, header, ...), then close the popup.
              - If user clicks on map, then do not do anything here. */
-          if (event.type === "click" && !hasParentClass(target, "esri-view-surface")) {//} && target.id !== "map-container") {
+          if (event.type === "click" && !hasParentClass(target, "esri-view-surface") && target.id !== "map-container") {
             close();
           } else if (event.type === "touchstart") {
             // Touch event is handled here...
