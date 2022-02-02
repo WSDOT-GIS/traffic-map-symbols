@@ -37,7 +37,7 @@ export const createLayerGroupInfos = (config: AppConfig): void => {
         ]
     });
     layerGroups.push({ id: "time", layers: [{ id: "travel-times-layer", uniqueField: "TravelTimesID", jsonUrl: config.travelTimes }] });
-    layerGroups.push({ id: "mountain", layers: [{ id: "mountain-passes-layer", uniqueField: "MountainPassId", jsonUrl: config.mountainPasses }] });
+    layerGroups.push({ id: "mountain", layers: [{ id: "mountain-passes-layer", uniqueField: "WebPageName", jsonUrl: config.mountainPasses }] });
     layerGroups.push({ id: "weather", layers: [{ id: "weather-stations-layer", uniqueField: "WeatherStationId", jsonUrl: config.weatherStations }] });
     layerGroups.push({ id: "parkride", layers: [{ id: "park-ride-layer", uniqueField: "", jsonUrl: config.parkAndRides }] }); // TODO: need unique field
     layerGroups.push({ id: "restarea", layers: [{ id: "rest-areas-layer", uniqueField: "RestAreaId", jsonUrl: config.restAreas }] });
@@ -116,6 +116,7 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
     if (groupInfo.layers[0].jsonUrl && ftrCount === 0) {
         await reloadData(groupInfo.layers[0].jsonUrl, fLayer);
         if (groupInfo.layers.length > 1) {
+            console.log('a');
             for (const eachLyr of groupInfo.layers) {
                 if (eachLyr.id === groupInfo.layers[0].id) {
                     continue;
@@ -130,10 +131,29 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
     }
     const query = fLayer.createQuery();
     const field = fLayer.getField(groupInfo.layers[0].uniqueField);
+    console.log('b');
     query.where = `${groupInfo.layers[0].uniqueField} = `;
-    if (["string", "date"].includes(field.type)) {
+    if(field.type=='string'){
+        if((uniqueValue as string).split("-").length>0){
+            const uniqueValues = (uniqueValue as string).split("-").map((value)=>{
+                if(value=="to"||value=="To"){
+                    return "to"
+                }
+                else{
+                    const properCase = (value[0].toLocaleUpperCase())+(value.substring(1).toLocaleLowerCase())
+                    return (properCase)
+                }
+            })
+            query.where +=`'${(uniqueValues.join('-'))}'`;
+        }
+        else{
+            query.where += `'${uniqueValue}'`
+        }
+    }
+    else if(field.type=='date'){
         query.where += `'${uniqueValue}'`
-    } else {
+    }
+    else {
         query.where += uniqueValue
     }
     query.outFields = [fLayer.objectIdField, groupInfo.layers[0].uniqueField]
