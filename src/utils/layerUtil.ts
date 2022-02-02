@@ -133,9 +133,27 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
     const field = fLayer.getField(groupInfo.layers[0].uniqueField);
     console.log('b');
     query.where = `${groupInfo.layers[0].uniqueField} = `;
-    if (["string", "date"].includes(field.type)) {
+    if(field.type=='string'){
+        if((uniqueValue as string).split("-").length>0){
+            const uniqueValues = (uniqueValue as string).split("-").map((value)=>{
+                if(value=="to"||value=="To"){
+                    return "to"
+                }
+                else{
+                    const properCase = (value[0].toLocaleUpperCase())+(value.substring(1).toLocaleLowerCase())
+                    return (properCase)
+                }
+            })
+            query.where +=`'${(uniqueValues.join('-'))}'`;
+        }
+        else{
+            query.where += `'${uniqueValue}'`
+        }
+    }
+    else if(field.type=='date'){
         query.where += `'${uniqueValue}'`
-    } else {
+    }
+    else {
         query.where += uniqueValue
     }
     query.outFields = [fLayer.objectIdField, groupInfo.layers[0].uniqueField]
