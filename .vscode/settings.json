@@ -1,8 +1,5 @@
 {
     "files.exclude": {
         "external_scripts": true
-    },
-    "search.exclude": {
-        "dist": true
     }
 }
