@@ -65,7 +65,7 @@ import MountainPassPopup from "@/popups/MountainPassPopup.vue";
 import WeatherStationsPopup from "@/popups/WeatherStationPopup.vue";
 import RestAreaPopup from "@/popups/RestAreaPopup.vue";
 import RoadAlertPopup from "@/popups/RoadAlertPopup.vue";
-import WildfirePointsPopup from "@/popups/WildfirePointsPopup.vue";
+// import WildfirePointsPopup from "@/popups/WildfirePointsPopup.vue";
 import BorderCrossingPopup from "@/popups/BorderCrossingPopup.vue";
 import RegionalAlertPopup from "@/popups/RegionalAlertPopup.vue";
 import FerryRoutesPopup from "@/popups/FerryRoutesPopup.vue";
@@ -89,7 +89,7 @@ export default defineComponent({
     WeatherStationsPopup,
     RestAreaPopup,
     RoadAlertPopup,
-    WildfirePointsPopup,
+    // WildfirePointsPopup,
     BorderCrossingPopup,
     RegionalAlertPopup,
     FerryRoutesPopup,
@@ -627,7 +627,7 @@ export default defineComponent({
   <WeatherStationsPopup :Featureset="popupFeatureset" />
   <RestAreaPopup :Featureset="popupFeatureset" />
   <RoadAlertPopup :Featureset="popupFeatureset" />
-  <WildfirePointsPopup :Featureset="popupFeatureset" />
+  <!-- <WildfirePointsPopup :Featureset="popupFeatureset" /> -->
   <BorderCrossingPopup :Featureset="popupFeatureset" />
   <RegionalAlertPopup :Featureset="popupFeatureset" />
   <FerryRoutesPopup :Featureset="popupFeatureset" :Alerts="ferryAlerts" />
