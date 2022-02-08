@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, onMounted, ref, VueElement } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "@/store";
 import { project } from "@arcgis/core/geometry/projection";
@@ -79,7 +79,7 @@ import AlertView from "@/components/AlertView.vue";
 import AdView from "@/components/AdView.vue";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import { hasParentClass } from "@/utils/miscUtil";
-import { useToast, POSITION} from "vue-toastification";
+import { useToast, POSITION } from "vue-toastification";
 export default defineComponent({
   components: {
     ZoomPopupView,
@@ -419,7 +419,6 @@ export default defineComponent({
       // Zoom, turn on layer and open popup if specified in URL query parameter...
       const featureType = getFeatureTypeFromUrl(route);
       const featureId = getFeatureIdFromUrl(route);
-      console.log(featureId);
       if (featureType && featureId) {
         // Make sure the map is ready, then search for the feature...
         esriMap.mapView.when().then(() => {
@@ -570,12 +569,11 @@ export default defineComponent({
         }
       }
     };
-    const displayToast = (event:any)=>{
-      console.log(event);
-      if(event[0]==false){
+    const displayToast = (event: any) => {
+      if (event[0] == false) {
         locationErrorToast.error(event[1].toString())
       }
-      else{
+      else {
         locationErrorToast.clear()
       }
     }
@@ -628,7 +626,7 @@ export default defineComponent({
         <BasemapView />
       </div>
       <div class="map-bottom-right-container-column flex-column">
-        <MyLocationView @locationFound="displayToast"/>
+        <MyLocationView @locationFound="displayToast" />
         <ZoomButtonView />
       </div>
     </div>

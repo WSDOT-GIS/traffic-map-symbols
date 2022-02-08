@@ -51,7 +51,7 @@
   </PopupBase>
 </template>
 <script lang="ts">
-import { defineComponent, nextTick, PropType, ref, watch, onUpdated } from "vue";
+import { defineComponent, nextTick, PropType, ref, watch } from "vue";
 import PopupBase from "./PopupBase.vue";
 import FeatureLayer from "@/layers/WeatherStationsLayer";
 import { getFeatureInfoById } from "@/utils/featureInfoUtil";
