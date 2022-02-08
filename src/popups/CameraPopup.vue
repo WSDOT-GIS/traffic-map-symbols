@@ -34,7 +34,6 @@
 </template>
 <script lang="ts">
 import { defineComponent, nextTick, PropType, ref, watch } from "vue";
-import "vue3-carousel/dist/carousel.css";
 
 import PopupBase from "./PopupBase.vue";
 import FeaturesetInfo from "@/types/FeaturesetInfo";

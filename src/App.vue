@@ -7,7 +7,6 @@ import { useStore } from "@/store";
 import { mapState } from "vuex";
 import SetupModal from "@/components/SetupModal.vue";
 import { getConfig } from "@/utils/appConfigUtil";
-
 export default defineComponent({
   name: "App",
   components: {
@@ -17,6 +16,8 @@ export default defineComponent({
     FooterView,
   },
   setup() {
+
+
     const mapHeight = ref("500px");
     const store = useStore();
     const config = getConfig();
@@ -53,6 +54,7 @@ export default defineComponent({
       resizeMapContainer,
       activeClass,
       disabledClass,
+
     };
   },
   computed: mapState(["isInitializing"]),
@@ -114,5 +116,4 @@ hr.horizontal-divider {
 #map-container > * {
   position: absolute;
 }
-
 </style>

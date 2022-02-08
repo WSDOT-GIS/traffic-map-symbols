@@ -9,6 +9,9 @@ import "./assets/main.css" // WATECH CSS
 // import "./assets/sidr.css" // WATECH CSS
 import { store, key } from "./store";
 import { loadConfig } from "./utils/appConfigUtil";
+import Toast, { PluginOptions } from "vue-toastification";
+// Import the CSS or use your own!
+import "vue-toastification/dist/index.css";
 import { createLayerGroupInfos } from "./utils/layerUtil";
 
 // Load config before app starts...
@@ -29,6 +32,10 @@ loadConfig().then((appConfig) => {
     createLayerGroupInfos(appConfig);
     // adding store as a plugin while creating an app...
     const app = createApp(App)
+    const options: PluginOptions = {
+        // You can set your default options here
+    };
+    app.use(Toast, options);
     app.use(store, key).use(router).use(VueClickAway).mount('#app');
     app.provide('$appInsights', appInsights)
 });

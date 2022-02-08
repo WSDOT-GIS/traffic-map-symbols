@@ -1,0 +1,8 @@
+[serve]
+	path-base = /Travel/Real-time/Map/
+	directory =  dist
+	open-browser
+	gzip
+	brotli
+	tls
+	cors

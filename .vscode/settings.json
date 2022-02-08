@@ -1,0 +1,5 @@
+{
+    "files.exclude": {
+        "external_scripts": true
+    }
+}
