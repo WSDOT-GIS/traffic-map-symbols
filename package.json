@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@analytics/google-analytics": "^0.5.3",
-    "@arcgis/core": "^4.22.2",
+    "@arcgis/core": "4.21.2",
     "@microsoft/applicationinsights-web": "^2.7.3",
     "@splidejs/vue-splide": "^0.5.18",
     "analytics": "^0.7.21",
