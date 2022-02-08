@@ -47,7 +47,7 @@ import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
 import MountainPassesLayer from "@/layers/MountainPassesLayer";
 import RoadAlertsLayer from "@/layers/RoadAlertsLayer";
 import RestAreasLayer from "@/layers/RestAreasLayer";
-import FireIncidentLayer from "@/layers/FireIncidentLayer";
+// import FireIncidentLayer from "@/layers/FireIncidentLayer";
 import RoadsReferenceLayer from "@/layers/RoadsReferenceLayer";
 import BoundariesPlacesReferenceLayer from "@/layers/BoundariesPlacesReferenceLayer";
 import BorderCrossingLayer from "@/layers/BorderCrossingsLayer";
@@ -173,7 +173,7 @@ export default defineComponent({
           MountainPassesLayer(),
           RestAreasLayer(),
           RoadAlertsLayer(),
-          FireIncidentLayer(),
+          // FireIncidentLayer(),
           RoadsReferenceLayer(),
           BoundariesPlacesReferenceLayer(),
           BorderCrossingLayer(),

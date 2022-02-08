@@ -101,9 +101,9 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const pointRestrictionLyr = await PointRestrictionsLayer.initLayer(config.pointRestrictions);
     const cameraLyr = await CameraLayer.initLayer(config.cameras);
     const roadAlertLyrs = await RoadAlertsLayer.initLayer(config.roadAlerts);
-    const fireIncidentLayer = FireIncidentsLayer.initLayer(config.fireIncidents);
-    const firePerimeterIDs = await firePerimeterFeatureIDs(fireIncidentLayer);
-    const firePerimetersLayer = FirePerimetersLayer.initLayer(config.firePerimeters, firePerimeterIDs);//Needed to filter fire perimeters to just those within the state
+    // const fireIncidentLayer = FireIncidentsLayer.initLayer(config.fireIncidents);
+    // const firePerimeterIDs = await firePerimeterFeatureIDs(fireIncidentLayer);
+    // const firePerimetersLayer = FirePerimetersLayer.initLayer(config.firePerimeters, firePerimeterIDs);//Needed to filter fire perimeters to just those within the state
     const mileMarkersLayer = MileMakersLayer.initLayer(config.mileMarkers)
     const esriRoadsReferenceLayer = RoadsReferenceLayer.initLayer(config.esriRoadsReferenceLayer)
     const esriPlacesReferenceLayer = BoundariesPlacesReferenceLayer.initLayer(config.esriPlacesReferenceLayer)
@@ -115,7 +115,7 @@ export const loadOperationalLayers = async (): Promise<void> => {
     // The first one in the array will be displayed at the bottom of the map... 
     webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, ferryRoutesReferenceLayer, trafficLyr,
         ferryRouteLinesLayer, stateRouteShieldsLayer,
-        firePerimetersLayer, fireIncidentLayer,
+        // firePerimetersLayer, fireIncidentLayer,
         restAreasLyr, parkRideLyr, weatherLyr, mtLyr, lineRestrictionLyr,
         pointRestrictionLyr, cameraLyr,
         ferryRoutePointsLayer, roadAlertLyrs,
