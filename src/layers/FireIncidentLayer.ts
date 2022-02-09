@@ -9,16 +9,22 @@ const fireIncidentRenderer = new simpleRenderer({
 
 let layer: FeatureLayer | undefined;
 
-export const initLayer = (url: string): FeatureLayer => {
-    layer = new FeatureLayer({
-        id: "fire-incidents-layer",
-        url: url,
-        title: "Fire Incidents",
-        renderer: fireIncidentRenderer,
-        visible: false,
-        definitionExpression: "POOState= 'US-WA'",
-        labelsVisible: false
-    });
+export const initLayer = (url: string): FeatureLayer | undefined => {
+    try {
+        layer = new FeatureLayer({
+            id: "fire-incidents-layer",
+            url: url,
+            title: "Fire Incidents",
+            renderer: fireIncidentRenderer,
+            visible: false,
+            definitionExpression: "POOState= 'US-WA'",
+            labelsVisible: false
+        });
+    }
+    catch (ex) {
+        console.error(ex);
+        layer = undefined;
+    }
     return layer;
 }
 
