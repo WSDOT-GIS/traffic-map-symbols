@@ -10,10 +10,10 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
-    "baseUrl": ".",
+    "baseUrl": ".", 
     "types": [
       "webpack-env",
-      "@types/doubleclick-gpt"
+      "doubleclick-gpt"
     ],
     "paths": {
       "@/*": [

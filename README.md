@@ -37,6 +37,8 @@ The file `.browserslistrc` is a [browserslist] configuration file that tells the
 ## Resources
 
 * [Using Vue in Visual Studio Code]
+* [Vue.js: TypeScript Support](https://v3.vuejs.org/guide/typescript-support.html)
+  * [Vue CLI: TypeScript](https://cli.vuejs.org/config/#typescript)
 
 ## Serve production build locally using `dotnet serve`
 
@@ -57,6 +59,11 @@ The following command will run [dotnet-serve] with the settings defined in `.net
 ```pwsh
 dotnet serve
 ```
+
+## Additional documentation
+
+* [Pacakges](packages.md)
+* [List of deprecated NPM pacakges currently in use by this project](deprecated-packages.md)
 
 ## Build Status
 
