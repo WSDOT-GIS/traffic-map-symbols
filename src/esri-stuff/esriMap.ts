@@ -93,41 +93,44 @@ export const loadOperationalLayers = async (): Promise<void> => {
     const config = getConfig();
     const lyrs = [];
     // Removed since do not need API Key for now...
-    const esriRoadsReferenceLayer = RoadsReferenceLayer.initLayer(config.esriRoadsReferenceLayer)
-    const esriPlacesReferenceLayer = BoundariesPlacesReferenceLayer.initLayer(config.esriPlacesReferenceLayer)
-    const ferryRoutesReferenceLayer = FerryRoutesReferenceLayer.initLayer(config.ferryRoutesReferenceLayer)
-    const trafficLyr = TrafficLayer.initLayer(config.traffic, config.layerRefreshMinute);
-    const ferryRouteLinesLayer = await LineFerryRoutesLayer.initLayer(config.ferryRouteLines)
-    const stateRouteShieldsLayer = StateRouteShieldsLayer.initLayer(config.stateRouteShieldsLayer)
+    lyrs.push(RoadsReferenceLayer.initLayer(config.esriRoadsReferenceLayer));
+    lyrs.push(BoundariesPlacesReferenceLayer.initLayer(config.esriPlacesReferenceLayer));
+    lyrs.push(FerryRoutesReferenceLayer.initLayer(config.ferryRoutesReferenceLayer));
+    lyrs.push(TrafficLayer.initLayer(config.traffic, config.layerRefreshMinute));
+    lyrs.push(await LineFerryRoutesLayer.initLayer(config.ferryRouteLines));
+    lyrs.push(StateRouteShieldsLayer.initLayer(config.stateRouteShieldsLayer));
     const fireIncidentLayer = FireIncidentsLayer.initLayer(config.fireIncidents);
     if (fireIncidentLayer) {
         const firePerimeterIDs = await firePerimeterFeatureIDs(fireIncidentLayer);
-        const firePerimetersLayer = FirePerimetersLayer.initLayer(config.firePerimeters, firePerimeterIDs);//Needed to filter fire perimeters to just those within the state
+        //Needed to filter fire perimeters to just those within the state
+        const firePerimetersLayer = FirePerimetersLayer.initLayer(config.firePerimeters, firePerimeterIDs);
         if (fireIncidentLayer && firePerimetersLayer) {
             lyrs.push(firePerimetersLayer, fireIncidentLayer);
         }
     }
-    const mileMarkersLayer = MileMakersLayer.initLayer(config.mileMarkers)
-    const borderCrossingsLayer = await BorderCrossingsLayer.initLayer(config.borderCrossings)
-    const parkRideLyr = await ParkRideLayer.initLayer(config.parkAndRides);
-    const restAreasLyr = await RestAreasLayer.initLayer(config.restAreas);
-    const weatherLyr = await WeatherLayer.initLayer(config.weatherStations, mapView);
-    const mtLyr = await MountainLayer.initLayer(config.mountainPasses);
-    const lineRestrictionLyr = await LineRestrictionsLayer.initLayer(config.lineRestrictions);
-    const pointRestrictionLyr = await PointRestrictionsLayer.initLayer(config.pointRestrictions);
-    const cameraLyr = await CameraLayer.initLayer(config.cameras);
-    const ferryRoutePointsLayer = FerryRoutePointsLayer.initLayer(config.ferryRoutePoints)
-    const roadAlertLyrs = await RoadAlertsLayer.initLayer(config.roadAlerts);
-
+    lyrs.push(MileMakersLayer.initLayer(config.mileMarkers));
+    lyrs.push(await BorderCrossingsLayer.initLayer(config.borderCrossings));
+    lyrs.push(await ParkRideLayer.initLayer(config.parkAndRides));
+    lyrs.push(await RestAreasLayer.initLayer(config.restAreas));
+    lyrs.push(await WeatherLayer.initLayer(config.weatherStations, mapView));
+    lyrs.push(await MountainLayer.initLayer(config.mountainPasses));
+    lyrs.push(await LineRestrictionsLayer.initLayer(config.lineRestrictions));
+    lyrs.push(await PointRestrictionsLayer.initLayer(config.pointRestrictions));
+    lyrs.push(await CameraLayer.initLayer(config.cameras));
+    lyrs.push(FerryRoutePointsLayer.initLayer(config.ferryRoutePoints));
+    lyrs.push(await RoadAlertsLayer.initLayer(config.roadAlerts));
+    const validLyrs = lyrs.filter((item) => {
+        return item;
+    })
     // The first one in the array will be displayed at the bottom of the map... 
-
-    webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, ferryRoutesReferenceLayer, trafficLyr,
-        ferryRouteLinesLayer, stateRouteShieldsLayer,
-        firePerimetersLayer, fireIncidentLayer,
-        restAreasLyr, parkRideLyr, weatherLyr, mtLyr, lineRestrictionLyr,
-        pointRestrictionLyr, cameraLyr,
-        ferryRoutePointsLayer, roadAlertLyrs,
-        mileMarkersLayer, borderCrossingsLayer]);
+    webmap.addMany(validLyrs);
+    // webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, ferryRoutesReferenceLayer, trafficLyr,
+    //     ferryRouteLinesLayer, stateRouteShieldsLayer,
+    //     firePerimetersLayer, fireIncidentLayer,
+    //     restAreasLyr, parkRideLyr, weatherLyr, mtLyr, lineRestrictionLyr,
+    //     pointRestrictionLyr, cameraLyr,
+    //     ferryRoutePointsLayer, roadAlertLyrs,
+    //     mileMarkersLayer, borderCrossingsLayer]);
     // Store the default visibility...
     webmap.layers.forEach((eachLyr) => {
         defaultLayerProps.push({ id: eachLyr.id, visible: eachLyr.visible });

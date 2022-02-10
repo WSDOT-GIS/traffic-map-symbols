@@ -10,6 +10,7 @@ const fireIncidentRenderer = new simpleRenderer({
 let layer: FeatureLayer | undefined;
 
 export const initLayer = (url: string): FeatureLayer | undefined => {
+    // return undefined;
     try {
         layer = new FeatureLayer({
             id: "fire-incidents-layer",

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, onMounted, ref, VueElement } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "@/store";
 import { project } from "@arcgis/core/geometry/projection";
@@ -79,7 +79,7 @@ import AlertView from "@/components/AlertView.vue";
 import AdView from "@/components/AdView.vue";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import { hasParentClass } from "@/utils/miscUtil";
-import { useToast, POSITION} from "vue-toastification";
+// import { useToast, POSITION} from "vue-toastification";
 export default defineComponent({
   components: {
     ZoomPopupView,
@@ -103,14 +103,15 @@ export default defineComponent({
     AdView,
   },
   setup() {
-    const locationErrorToast = useToast();
-    locationErrorToast.updateDefaults({
-      position: POSITION.BOTTOM_CENTER,
-      timeout: 5000,
-      maxToasts: 1,
-      draggable: false,
-      hideProgressBar: true
-    })
+    // const errorToast = useToast();
+    // errorToast("Test from EsriMap")
+    // errorToast.updateDefaults({
+    //   position: POSITION.BOTTOM_CENTER,
+    //   timeout: 5000,
+    //   maxToasts: 1,
+    //   draggable: false,
+    //   hideProgressBar: true
+    // });
     const mapLoaded = ref<boolean>(false);
     setTimeout(() => {
       mapLoaded.value = true;
@@ -573,11 +574,12 @@ export default defineComponent({
     const displayToast = (event:any)=>{
       console.log(event);
       if(event[0]==false){
-        locationErrorToast.error(event[1].toString())
+        store.dispatch("showError", event[1].toString());
+        // errorToast.error(event[1].toString())
       }
-      else{
-        locationErrorToast.clear()
-      }
+      // else{
+      //   // errorToast.clear()
+      // }
     }
     return {
       bottomRightDiv,
@@ -595,8 +597,8 @@ export default defineComponent({
       ferryAlerts,
       adjustBottomControls,
       marginBottomContainer,
-      mapLoaded,
-      locationErrorToast,
+      // mapLoaded,
+      // errorToast,
       displayToast
     };
   },

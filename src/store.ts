@@ -1,12 +1,13 @@
 import { InjectionKey } from "vue";
 import { createStore, useStore as baseUseStore, Store } from "vuex";
+import { useToast } from "vue-toastification";
 import Extent from "@arcgis/core/geometry/Extent";
 import { webmap, mapView } from "./esri-stuff/esriMap";
 import { getBasemapInfo, toggleBasemapInfo } from "./layers/Basemaps";
 import ExtentInfo from "./types/ExtentInfo";
 import { convert2EsriExtent, convert2ExtentInfo } from "./utils/extentUtil";
 import LayerInfo from "./types/LayerInfo";
-import {InitializingInfo} from "./types/InitializingInfo";
+import { InitializingInfo } from "./types/InitializingInfo";
 import { getMediaSize } from "./utils/miscUtil";
 
 // Reference - https://next.vuex.vuejs.org/guide/typescript-support.html#typing-usestore-composition-function
@@ -28,7 +29,11 @@ export interface State {
     leftPaneIsOpen: boolean;
     /** s: small, l:large */
     mediaSize: "s" | "l"; // TODO: add more as needed
+    errors: string[];//{ id: string, message: string }[];
+    isToastReady: boolean;
 }
+//
+const toast = useToast();
 
 // define injection key...
 export const key: InjectionKey<Store<State>> = Symbol()
@@ -56,12 +61,17 @@ export const store = createStore<State>({
             initiaizingMessage: "",
             leftPaneIsOpen: getMediaSize() !== "s",
             mediaSize: getMediaSize(),
+            errors: [],
+            isToastReady: false
         }
     },
     getters: {
         completeLayerList: state => {
-            return state.layerList
+            return state.layerList;
         },
+        lastError: state => {
+            return state.errors[state.errors.length - 1];
+        }
     },
     mutations: {
         setBasemap(state, payload) {
@@ -136,14 +146,41 @@ export const store = createStore<State>({
             state.isMobileMenuOpen = !state.isMobileMenuOpen;
         },
         setInitializing(state, payload: InitializingInfo) {
-            payload.isInitializing!=undefined?state.isInitializing = payload.isInitializing:null
-            payload.isLoading!=undefined?state.isLoading = payload.isLoading:null
-            payload.initializingMessage? state.initiaizingMessage = payload.initializingMessage:null
+            payload.isInitializing != undefined ? state.isInitializing = payload.isInitializing : null
+            payload.isLoading != undefined ? state.isLoading = payload.isLoading : null
+            payload.initializingMessage ? state.initiaizingMessage = payload.initializingMessage : null
         },
         setLeftPaneIsOpen(state, payload) {
             state.leftPaneIsOpen = payload;
+        },
+        // If the error happens before toast message can be displayed, save it in the array to show later.
+        saveError(state, message: string) {
+            state.errors.push(message);
+        },
+        // The toast cannot be displayed until the page and its content are ready.
+        setIsToastReady(state) {
+            state.isToastReady = true;
         }
     },
+    actions: {
+        showError({ state, commit }, message: string) {
+            if (state.isToastReady) {
+                toast.error(message);
+            }
+            else { commit("saveError", message); }
+        },
+        // Set the flag to indicate the toast message is ready to be shown.
+        // If there are errors happened earlier, show them now.
+        setIsToastReady({ state, commit }) {
+            if (!state.isToastReady) {
+                commit("setIsToastReady");
+                state.errors.forEach((item) => {
+                    toast.error(item);
+                });
+                state.errors = [];
+            }
+        }
+    }
 })
 /**
  * Clone the target of proxy (i.e. removing the reactivity)
