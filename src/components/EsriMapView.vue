@@ -79,7 +79,7 @@ import AlertView from "@/components/AlertView.vue";
 import AdView from "@/components/AdView.vue";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import { hasParentClass } from "@/utils/miscUtil";
-// import { useToast, POSITION} from "vue-toastification";
+
 export default defineComponent({
   components: {
     ZoomPopupView,
@@ -103,15 +103,6 @@ export default defineComponent({
     AdView,
   },
   setup() {
-    // const errorToast = useToast();
-    // errorToast("Test from EsriMap")
-    // errorToast.updateDefaults({
-    //   position: POSITION.BOTTOM_CENTER,
-    //   timeout: 5000,
-    //   maxToasts: 1,
-    //   draggable: false,
-    //   hideProgressBar: true
-    // });
     const mapLoaded = ref<boolean>(false);
     setTimeout(() => {
       mapLoaded.value = true;
@@ -571,15 +562,11 @@ export default defineComponent({
         }
       }
     };
-    const displayToast = (event:any)=>{
+    const displayToast = (event: any) => {
       console.log(event);
-      if(event[0]==false){
+      if (event[0] == false) {
         store.dispatch("showError", event[1].toString());
-        // errorToast.error(event[1].toString())
       }
-      // else{
-      //   // errorToast.clear()
-      // }
     }
     return {
       bottomRightDiv,
@@ -630,7 +617,7 @@ export default defineComponent({
         <BasemapView />
       </div>
       <div class="map-bottom-right-container-column flex-column">
-        <MyLocationView @locationFound="displayToast"/>
+        <MyLocationView @locationFound="displayToast" />
         <ZoomButtonView />
       </div>
     </div>
