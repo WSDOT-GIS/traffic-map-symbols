@@ -26,6 +26,20 @@ Python scripts for updating JSON data used by the map application are in the `ex
 1. Clone this repository locally to your computer using `git clone` command.
 2. Change to the directory created by `git clone` and run `npm install`.
 
+### Updating ArcGIS API for JavaScript
+
+When you update the version of [ArcGIS API for JavaScript] used by the project, do so in these areas.
+
+* Update CSS reference in `src\components\EsriMapView.vue`. The version number and URL of this CSS will be different when upgrading.
+
+  ```css
+  @import "https://js.arcgis.com/4.22/@arcgis/core/assets/esri/themes/light/main.css";
+  ```
+
+* Update the versions in the NPM package configuration file, `package.json`.
+  * `@arcgis/core`
+  * `@types/arcgis-js-api`
+
 ### Configuration
 
 #### Browser Compatibility
