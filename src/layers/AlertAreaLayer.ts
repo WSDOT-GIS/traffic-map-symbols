@@ -10,6 +10,8 @@ import Polygon from "@arcgis/core/geometry/Polygon";
 
 import * as pc from "polygon-clipping";
 
+import LayerInfo from "@/types/LayerInfo";
+
 // Create a symbol for rendering the graphic
 const renderer = new SimpleRenderer({
     symbol: new SimpleFillSymbol({

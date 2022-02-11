@@ -29,7 +29,7 @@ export interface State {
     leftPaneIsOpen: boolean;
     /** s: small, l:large */
     mediaSize: "s" | "l"; // TODO: add more as needed
-    errors: string[];//{ id: string, message: string }[];
+    errors: string[];
     isToastReady: boolean;
 }
 //
@@ -53,7 +53,30 @@ export const store = createStore<State>({
                 ymin: 0,
                 ymax: 0
             },
-            layerList: [],
+            layerList: [
+                { id: "alert-area-layer" },
+                { id: "border-crossings-layer" },
+                { id: "boundaries-places-reference-layer" },
+                { id: "traffic-camera-layer" },
+                { id: "esri-reference-layer" },
+                { id: "ferry-routes-reference-layer" },
+                { id: "fire-incidents-layer" },
+                { id: "fire-perimeters-layer" },
+                { id: "ferry-routes-lines-layer" },
+                { id: "line-restrictions-layer" },
+                { id: "mile-markers" },
+                { id: "mountain-passes-layer" },
+                { id: "park-ride-layer" },
+                { id: "ferry-routes-points-layer" },
+                { id: "point-restrictions-layer" },
+                { id: "regional-alert-layer" },
+                { id: "rest-areas-layer" },
+                { id: "road-alerts-layer" },
+                { id: "roads-reference-layer" },
+                { id: "state-route-shields-layer" },
+                { id: "traffic-flow-layer" },
+                { id: "weather-stations-layer" },
+            ],
             userLocation: null,
             isMobileMenuOpen: false,
             isInitializing: false,
@@ -105,31 +128,50 @@ export const store = createStore<State>({
         setUserLocation(state, payload) {
             state.userLocation = payload;
         },
-        setLayerList(state, payload) {
-            let layerList: LayerInfo[];
-            if (!payload) {
-                layerList = [];
-                webmap.layers.forEach((layer, index) => {
-                    layerList.push({
-                        id: layer.id,
-                        index: index,
-                        title: layer.title,
-                        visible: layer.visible,
-                    });
-                });
+        /**
+         * Update the layer info in the layer list
+         * @param state 
+         * @param payload Set the properties that need to be updated, and leave others undefined. Undefined properties will not be updated. 
+         */
+        updateLayerInfo(state, payload: LayerInfo) {
+            const idx = state.layerList.findIndex((item) => item.id === payload.id);
+            if (idx < 0) {
+                throw "The layer specified does not exist in the state store.";
             }
-            else {
-                layerList = payload;
+            const info = state.layerList[idx];
+            if (payload.title) { info.title = payload.title }
+            if (payload.index) {
+                info.index = payload.index;
+                info.isLoaded = payload.index >= 0;
             }
-            state.layerList = layerList;
-            if (payload) {
-                webmap.layers.forEach((layer, index) => {
-                    if (state.layerList[index] && layer.id == state.layerList[index].id) {
-                        layer.visible = state.layerList[index].visible
-                    }
-                })
-            }
+            if (payload.url) { info.url = payload.url }
+            if (payload.visible !== undefined) { info.visible = payload.visible }
         },
+        // setLayerList(state, payload: LayerInfo[]) {
+        //     let layerList: LayerInfo[];
+        //     if (!payload) {
+        //         layerList = [];
+        //         webmap.layers.forEach((layer, index) => {
+        //             layerList.push({
+        //                 id: layer.id,
+        //                 index: index,
+        //                 title: layer.title,
+        //                 visible: layer.visible,
+        //             });
+        //         });
+        //     }
+        //     else {
+        //         layerList = payload;
+        //     }
+        //     state.layerList = layerList;
+        //     if (payload) {
+        //         webmap.layers.forEach((layer, index) => {
+        //             if (state.layerList[index] && layer.id == state.layerList[index].id) {
+        //                 layer.visible = state.layerList[index].visible
+        //             }
+        //         })
+        //     }
+        // },
         setCurrentExtent(state, payload) {
             if (payload instanceof Extent) {
                 // If the payload is ESRI extent, then update the state only.
@@ -163,6 +205,38 @@ export const store = createStore<State>({
         }
     },
     actions: {
+        updateLayerList({ commit }) {
+            webmap.layers.forEach((layer, index) => {
+                const info: LayerInfo = {
+                    id: layer.id,
+                    index: index,
+                    title: layer.title,
+                    visible: layer.visible
+                };
+                commit("updateLayerInfo", info);
+            });
+        },
+        /**
+         * Update LayerInfo and map layer visibility
+         * @param param0 
+         * @param payload Layer IDs and visibility 
+         */
+        modifyLayerVisibility({ commit, state }, payload: { ids: string[], visible: boolean }) {
+            payload.ids.forEach((eachId) => {
+                const updateInfo: LayerInfo = { id: eachId, visible: payload.visible };
+                commit("updateLayerInfo", updateInfo);
+                const info = state.layerList.find((eachInfo) => eachInfo.id === eachId);
+                if (!info) { throw "Invalid layer ID was passed." }
+                if (!info.isLoaded) {
+                    console.warn("Failed to modify layer visibility because the specified layer is not available: " + eachId);
+                    return;
+                }
+                const layer = webmap.layers.find((lyr) => {
+                    return lyr.id === eachId;
+                });
+                layer.visible = payload.visible;
+            });
+        },
         showError({ state, commit }, message: string) {
             if (state.isToastReady) {
                 toast.error(message);
@@ -182,6 +256,7 @@ export const store = createStore<State>({
         }
     }
 })
+
 /**
  * Clone the target of proxy (i.e. removing the reactivity)
  * @param proxy The reactive object

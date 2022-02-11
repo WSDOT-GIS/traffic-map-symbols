@@ -10,7 +10,7 @@ const fireIncidentRenderer = new simpleRenderer({
 let layer: FeatureLayer | undefined;
 
 export const initLayer = (url: string): FeatureLayer | undefined => {
-    // return undefined;
+    return undefined;
     try {
         layer = new FeatureLayer({
             id: "fire-incidents-layer",
@@ -29,9 +29,9 @@ export const initLayer = (url: string): FeatureLayer | undefined => {
     return layer;
 }
 
-const getLayer = (): FeatureLayer => {
+const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
-        throw "Fire Incident is not ready yet!";
+        console.error("Fire Incident is not ready yet!");
     }
     return layer;
 }

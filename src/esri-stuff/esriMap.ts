@@ -35,6 +35,7 @@ import * as RestAreasLayer from "@/layers/RestAreasLayer";
 import * as FerryRoutesReferenceLayer from "@/layers/ferryRoutesReferenceLayer"
 import * as LineFerryRoutesLayer from "@/layers/LineFerryRoutesLayer"
 import * as FerryRoutePointsLayer from "@/layers/PointFerryRoutesLayer"
+import * as AlertAreaLayer from "@/layers/AlertAreaLayer"
 //
 import * as extentUtil from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
@@ -44,6 +45,7 @@ import firePerimeterFeatureIDs from "@/utils/firePerimeterQuery"
 import { getBasemapInfo } from "@/layers/Basemaps";
 import XY from "@/types/XY";
 import * as layerUtil from "@/utils/layerUtil";
+import LayerInfo from "@/types/LayerInfo";
 
 esriConfig.request.useIdentity = false
 const fullExtent = extentUtil.getEsriExtent("full");
@@ -91,52 +93,82 @@ export const defaultLayerProps: { id: string, visible: boolean }[] = []
  */
 export const loadOperationalLayers = async (): Promise<void> => {
     const config = getConfig();
-    const lyrs = [];
-    // Removed since do not need API Key for now...
-    lyrs.push(RoadsReferenceLayer.initLayer(config.esriRoadsReferenceLayer));
-    lyrs.push(BoundariesPlacesReferenceLayer.initLayer(config.esriPlacesReferenceLayer));
-    lyrs.push(FerryRoutesReferenceLayer.initLayer(config.ferryRoutesReferenceLayer));
-    lyrs.push(TrafficLayer.initLayer(config.traffic, config.layerRefreshMinute));
-    lyrs.push(await LineFerryRoutesLayer.initLayer(config.ferryRouteLines));
-    lyrs.push(StateRouteShieldsLayer.initLayer(config.stateRouteShieldsLayer));
+    // Load async ones in parallel...
+    const promises = []
+    promises.push(LineFerryRoutesLayer.initLayer(config.ferryRouteLines));
+    promises.push(BorderCrossingsLayer.initLayer(config.borderCrossings));
+    promises.push(ParkRideLayer.initLayer(config.parkAndRides));
+    promises.push(RestAreasLayer.initLayer(config.restAreas));
+    promises.push(WeatherLayer.initLayer(config.weatherStations, mapView));
+    promises.push(MountainLayer.initLayer(config.mountainPasses));
+    promises.push(LineRestrictionsLayer.initLayer(config.lineRestrictions));
+    promises.push(PointRestrictionsLayer.initLayer(config.pointRestrictions));
+    promises.push(CameraLayer.initLayer(config.cameras));
+    promises.push(RoadAlertsLayer.initLayer(config.roadAlerts));
+    // Load sync ones...
+    RoadsReferenceLayer.initLayer(config.esriRoadsReferenceLayer);
+    BoundariesPlacesReferenceLayer.initLayer(config.esriPlacesReferenceLayer);
+    FerryRoutesReferenceLayer.initLayer(config.ferryRoutesReferenceLayer);
+    TrafficLayer.initLayer(config.traffic, config.layerRefreshMinute);
+    StateRouteShieldsLayer.initLayer(config.stateRouteShieldsLayer);
+    MileMakersLayer.initLayer(config.mileMarkers);
+    FerryRoutePointsLayer.initLayer(config.ferryRoutePoints);
+    // Load fire layers...
     const fireIncidentLayer = FireIncidentsLayer.initLayer(config.fireIncidents);
     if (fireIncidentLayer) {
         const firePerimeterIDs = await firePerimeterFeatureIDs(fireIncidentLayer);
         //Needed to filter fire perimeters to just those within the state
-        const firePerimetersLayer = FirePerimetersLayer.initLayer(config.firePerimeters, firePerimeterIDs);
-        if (fireIncidentLayer && firePerimetersLayer) {
-            lyrs.push(firePerimetersLayer, fireIncidentLayer);
-        }
+        FirePerimetersLayer.initLayer(config.firePerimeters, firePerimeterIDs);
     }
-    lyrs.push(MileMakersLayer.initLayer(config.mileMarkers));
-    lyrs.push(await BorderCrossingsLayer.initLayer(config.borderCrossings));
-    lyrs.push(await ParkRideLayer.initLayer(config.parkAndRides));
-    lyrs.push(await RestAreasLayer.initLayer(config.restAreas));
-    lyrs.push(await WeatherLayer.initLayer(config.weatherStations, mapView));
-    lyrs.push(await MountainLayer.initLayer(config.mountainPasses));
-    lyrs.push(await LineRestrictionsLayer.initLayer(config.lineRestrictions));
-    lyrs.push(await PointRestrictionsLayer.initLayer(config.pointRestrictions));
-    lyrs.push(await CameraLayer.initLayer(config.cameras));
-    lyrs.push(FerryRoutePointsLayer.initLayer(config.ferryRoutePoints));
-    lyrs.push(await RoadAlertsLayer.initLayer(config.roadAlerts));
-    const validLyrs = lyrs.filter((item) => {
-        return item;
-    })
+    // Wait for all the async ones to finish loading...
+    await Promise.all(promises);
+    // Create list of layers to load to the map...
+    const lyrs: (Layer | undefined)[] = [];
+    lyrs.push(RoadsReferenceLayer.default(),
+        BoundariesPlacesReferenceLayer.default(),
+        FerryRoutesReferenceLayer.default(),
+        TrafficLayer.default(),
+        LineFerryRoutesLayer.default(),
+        StateRouteShieldsLayer.default());
+    if (fireIncidentLayer && FirePerimetersLayer.default()) {
+        lyrs.push(fireIncidentLayer, FirePerimetersLayer.default());
+    }
+    lyrs.push(MileMakersLayer.default(),
+        BorderCrossingsLayer.default(),
+        ParkRideLayer.default(),
+        RestAreasLayer.default(),
+        WeatherLayer.default(),
+        MountainLayer.default());
+    if (PointRestrictionsLayer.default()) {
+        lyrs.push(LineRestrictionsLayer.default(), PointRestrictionsLayer.default());
+    }
+    lyrs.push(CameraLayer.default(),
+        FerryRoutePointsLayer.default(),
+        RoadAlertsLayer.default());
+    // Remove all the ones that did not load...
+    const validLyrs = validateLayerList(lyrs);
     // The first one in the array will be displayed at the bottom of the map... 
     webmap.addMany(validLyrs);
-    // webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, ferryRoutesReferenceLayer, trafficLyr,
-    //     ferryRouteLinesLayer, stateRouteShieldsLayer,
-    //     firePerimetersLayer, fireIncidentLayer,
-    //     restAreasLyr, parkRideLyr, weatherLyr, mtLyr, lineRestrictionLyr,
-    //     pointRestrictionLyr, cameraLyr,
-    //     ferryRoutePointsLayer, roadAlertLyrs,
-    //     mileMarkersLayer, borderCrossingsLayer]);
     // Store the default visibility...
     webmap.layers.forEach((eachLyr) => {
         defaultLayerProps.push({ id: eachLyr.id, visible: eachLyr.visible });
     });
 }
-
+/**
+ * Filter out the layers that did not load.
+ * @param list List of layers to validate
+ */
+export const validateLayerList = (list: (Layer | undefined)[]): Layer[] => {
+    const validLyrs: Layer[] = list.filter(isLayer);
+    return validLyrs;
+}
+/**
+ * Type guard for the layer object
+ * @param layer 
+ */
+export const isLayer = (layer: Layer | undefined): layer is Layer => {
+    return !!layer;
+}
 /** Load regional alert point and polygon layers separately from the other operation layers. */
 export const loadRegionalAlert = async (): Promise<void> => {
     const config = getConfig();

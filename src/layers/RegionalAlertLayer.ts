@@ -100,7 +100,7 @@ export const initLayer = async (alertUrl: string, countyUrl: string, regionUrl: 
         title: "Regional Alerts",
         source: fetchResults.point,
         fields: fields,
-        objectIdField: "EventID",//"AppGenId",
+        objectIdField: "EventID",
         geometryType: "point",
         spatialReference: SpatialReference.WebMercator,
         renderer: renderer,

@@ -165,8 +165,7 @@ export default defineComponent({
       mapDiv: HTMLDivElement,
       esriMap: typeof import("../esri-stuff/esriMap")
     ) => {
-      const opLayerOpts = {
-        include: [
+      const lyrs = esriMap.validateLayerList([
           ParkRideLayer(),
           CameraLayer(),
           PointRestrictionsLayer(),
@@ -180,8 +179,25 @@ export default defineComponent({
           BorderCrossingLayer(),
           RegionalAlertLayer(),
           PointFerryRoutesLayer(),
-          ZoomExtentLayer,
-        ],
+          ZoomExtentLayer]);
+      const opLayerOpts = {
+        include: lyrs
+        // include: [
+        //   ParkRideLayer(),
+        //   CameraLayer(),
+        //   PointRestrictionsLayer(),
+        //   WeatherStationsLayer(),
+        //   MountainPassesLayer(),
+        //   RestAreasLayer(),
+        //   RoadAlertsLayer(),
+        //   FireIncidentLayer(),
+        //   RoadsReferenceLayer(),
+        //   BoundariesPlacesReferenceLayer(),
+        //   BorderCrossingLayer(),
+        //   RegionalAlertLayer(),
+        //   PointFerryRoutesLayer(),
+        //   ZoomExtentLayer,
+        // ],
       };
       if (pointerMoveHandle) {
         pointerMoveHandle.remove();
@@ -231,7 +247,7 @@ export default defineComponent({
                 arrayFound.results.push(eachResult);
               } else {
                 const layerInfo = store.state.layerList.find(
-                  (layerInfo) => layerInfo.id === eachResult.graphic.layer.id
+                  (item) => item.id === eachResult.graphic.layer.id
                 );
                 if (layerInfo) {
                   resultsByLayer.push({
@@ -245,7 +261,7 @@ export default defineComponent({
             // Pick the top most layer...
             let maxIdx = 0;
             resultsByLayer.forEach((eachResultSet) => {
-              if (eachResultSet.info.index > maxIdx) {
+              if (eachResultSet.info.index && eachResultSet.info.index > maxIdx) {
                 maxIdx = eachResultSet.info.index;
               }
             });
@@ -379,11 +395,11 @@ export default defineComponent({
       });
       /* Set layer list here before the rest of the map is ready, so we can show the layer list UI early.
        * Otherwise user will see a map without layer list until everything is ready. */
-      store.commit("setLayerList");
+      store.dispatch("updateLayerList");
       // Load regional alert after the other operations layers have been loaded so it won't slow down the map loading...
       await esriMap.loadRegionalAlert();
       // Update the layer list with regional alert layers.
-      store.commit("setLayerList");
+      store.dispatch("updateLayerList");
       // Set refresh interval for layers & alerts...
       setInterval(() => {
         esriMap.refreshLayerData();
@@ -399,8 +415,9 @@ export default defineComponent({
       // Gray out areas outside of the display area...
       esriMap.addOutOfExtentLayer();
       // Set layer visibility based on URL query...
-      const layerList = setVisibleLayersFromUrl(store.state.layerList, route);
-      store.commit("setLayerList", layerList);
+      const layerIds = setVisibleLayersFromUrl(/*store.state.layerList,*/ route);
+      //store.commit("setLayerList", layerList);
+      store.dispatch("modifyLayerVisibility", {ids: layerIds, visible: true});
       // Set the initial map size in the state store...
       store.commit("setMapSize", {
         width: mapView.width,
@@ -430,8 +447,9 @@ export default defineComponent({
               }
               // If the layer is not visible, turn it on...
               if (!result.layer.visible) {
-                const layerList = setLayerVisibility(result.layer.id, true, store.state.layerList);
-                store.commit("setLayerList", layerList);
+                //const layerList = setLayerVisibility(result.layer.id, true, store.state.layerList);
+                //store.commit("setLayerList", layerList);
+                store.dispatch("modifyLayerVisibility", {ids: [result.layer.id], visible: true});
               }
               // Zoom in (zoom level differs depends on the device)...
               let zoomLevel: number;
@@ -562,6 +580,7 @@ export default defineComponent({
         }
       }
     };
+    /** Display error message */
     const displayToast = (event: any) => {
       console.log(event);
       if (event[0] == false) {
@@ -579,13 +598,10 @@ export default defineComponent({
       zoomMetroEventHandler,
       popupXY,
       popupFeatureset,
-      closePopup,
       alerts,
       ferryAlerts,
       adjustBottomControls,
       marginBottomContainer,
-      // mapLoaded,
-      // errorToast,
       displayToast
     };
   },

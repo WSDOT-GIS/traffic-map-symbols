@@ -99,10 +99,10 @@ if (removeKeys.length > 0) {
 }
 
 /**
- * Make layers specified layer visible.
+ * Get layer IDs of layers that should be visible from URL
  * @param layerList 
  */
-export const setVisibleLayersFromUrl = (layerList: LayerInfo[], route: RouteLocationNormalizedLoaded): LayerInfo[] => {
+export const setVisibleLayersFromUrl = (/*layerList: LayerInfo[],*/route: RouteLocationNormalizedLoaded): string[] => {
     let layers: string[] | undefined;
     // Check routes...
     if (route.params.layername) {
@@ -136,8 +136,9 @@ export const setVisibleLayersFromUrl = (layerList: LayerInfo[], route: RouteLoca
         }
         layers = layers.concat(validLayers);
     }
+    const layerIds: string[] = [];
     if (layers) {
-        const layerIds: string[] = [];
+        // const layerIds: string[] = [];
         layers.forEach((each) => {
             let ids: string[] | undefined;
             try {
@@ -148,14 +149,14 @@ export const setVisibleLayersFromUrl = (layerList: LayerInfo[], route: RouteLoca
             if (ids) {
                 layerIds.push(...ids);
             }
-        })
-        layerList.forEach((eachLyr) => {
-            if (layerIds.includes(eachLyr.id)) {
-                eachLyr.visible = true;
-            }
         });
+        // layerList.forEach((eachLyr) => {
+        //     if (layerIds.includes(eachLyr.id)) {
+        //         eachLyr.visible = true;
+        //     }
+        // });
     }
-    return layerList;
+    return layerIds;
 }
 /**
  * Check to make sure the ID is valid.

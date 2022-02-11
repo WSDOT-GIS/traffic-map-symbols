@@ -1,5 +1,5 @@
 import uniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer"
-import { alertSymbol, alertSymbolMedium, alertSymbolHigh, roadClosedSymbol, alertSymbolHighest } from "@/symbols/AlertSymbol"
+import { alertSymbol, alertSymbolMedium, roadClosedSymbol, alertSymbolHighest } from "@/symbols/AlertSymbol"
 import Field from "@arcgis/core/layers/support/Field"
 
 import * as layerUtil from "@/utils/layerUtil";
@@ -31,10 +31,6 @@ const renderer = new uniqueValueRenderer({
         },
     ]
 })
-
-// const roadAlertsClosureRenderer = new SimpleRenderer({
-//     symbol: roadClosedSymbol,
-// })
 
 const fields = [
     new Field({

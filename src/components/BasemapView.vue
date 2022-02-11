@@ -1,9 +1,9 @@
 <template>
   <div id="basemap-widget-container">
-    <MapButtonView @click="onClick" :Height="imgSize" AriaLabel="Change basemap">
+    <MapButtonView @click="onClick" :Height="imgSize" aria-label="Change basemap">
       <template v-slot>
         <div class="basemap-img-container">
-          <img :src="imgSrc" :height="imgSize" alt="" />
+          <img :src="imgSrc" :height="imgSize" alt />
           <label :class="topLabelClass" :id="labelStyle">{{ iconTitle }}</label>
           <label :class="bottomLabelClass" :id="labelStyle">Basemap</label>
         </div>
@@ -32,26 +32,42 @@ export default defineComponent({
     const topLabelClass = ref<string>(); //reference to class used to define top label size and placement, determined by selected basemap
     const bottomLabelClass = ref<string>(); //reference to class used to define bottom label size and placement, determined by selected basemap
     const toggleImageryReference = () => {
-      store.state.layerList.map((x) => {
-        if (webmap.basemap.title == "Basemap" || webmap.basemap.title == "WSDOT Basemap") {
-          if (
-            x.id == "roads-reference-layer" ||
-            x.id == "boundaries-places-reference-layer" ||
-            x.id == "ferry-routes-reference-layer"
-          ) {
-            x.visible = true;
-          }
-        } else {
-          if (
-            x.id == "roads-reference-layer" ||
-            x.id == "boundaries-places-reference-layer" ||
-            x.id == "ferry-routes-reference-layer"
-          ) {
-            x.visible = false;
-          }
-        }
-      });
-      store.commit("setLayerList", store.state.layerList);
+      store.dispatch("modifyLayerVisibility",
+        {
+          ids: [
+            "roads-reference-layer",
+            "boundaries-places-reference-layer",
+            "ferry-routes-reference-layer"],
+          visible: true
+        });
+      store.dispatch("modifyLayerVisibility",
+        {
+          ids: [
+            "roads-reference-layer",
+            "boundaries-places-reference-layer",
+            "ferry-routes-reference-layer"],
+          visible: false
+        });
+      // store.state.layerList.map((x) => {
+      //   if (webmap.basemap.title == "Basemap" || webmap.basemap.title == "WSDOT Basemap") {
+      //     if (
+      //       x.id == "roads-reference-layer" ||
+      //       x.id == "boundaries-places-reference-layer" ||
+      //       x.id == "ferry-routes-reference-layer"
+      //     ) {
+      //       x.visible = true;
+      //     }
+      //   } else {
+      //     if (
+      //       x.id == "roads-reference-layer" ||
+      //       x.id == "boundaries-places-reference-layer" ||
+      //       x.id == "ferry-routes-reference-layer"
+      //     ) {
+      //       x.visible = false;
+      //     }
+      //   }
+      // });
+      // store.commit("setLayerList", store.state.layerList);
     };
     const updateBasemapIcon = () => {
       imgSrc.value == satelliteImage ? (imgSrc.value = tileImage) : (imgSrc.value = satelliteImage);

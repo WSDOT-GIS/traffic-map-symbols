@@ -19,7 +19,6 @@ import { isEsriFeatures } from "@/utils/typeUtil";
  *   * uniqueField
  *      Unique field that is from the source database. Do not use ESRI ID.
 */
-
 const layerGroups: GroupLayerInfo[] = [];
 export const createLayerGroupInfos = (config: AppConfig): void => {
     layerGroups.push({ id: "camera", layers: [{ id: "traffic-camera-layer", uniqueField: "CameraID", jsonUrl: config.cameras }] });

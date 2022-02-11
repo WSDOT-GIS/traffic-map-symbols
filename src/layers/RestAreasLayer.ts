@@ -1,4 +1,3 @@
-// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer"
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import symbol from "@/symbols/RestAreasSymbol";
@@ -46,25 +45,5 @@ const getLayer = (): FeatureLayer => {
     }
     return layer;
 }
-
-// let layer: GeoJSONLayer | undefined;
-
-// export const initLayer = (url: string): GeoJSONLayer => {
-//     layer = new GeoJSONLayer({
-//         id: "rest-areas-layer",
-//         url: url,
-//         title: "Rest Areas",
-//         renderer: restAreasRenderer,
-//         visible: false
-//     });
-//     return layer;
-// }
-
-// const getLayer = (): GeoJSONLayer => {
-//     if (!layer) {
-//         throw "Layer is not ready yet!";
-//     }
-//     return layer;
-// }
 
 export default getLayer

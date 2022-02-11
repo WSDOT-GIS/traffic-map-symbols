@@ -267,12 +267,8 @@
       <ToggleSwitchView
         @toggle="clickEvent"
         :Enabled="true"
-        :Checked="layerList[getLayerIndex('fire-perimeters-layer')].visible"
-        :Value="
-          getLayerIndex('fire-perimeters-layer').toString() +
-          ',' +
-          getLayerIndex('fire-incidents-layer').toString()
-        "
+        :Checked="layerList[getLayerIndex('fire-perimeters-layer')].visible ?? false"
+        Value="fire-perimeters-layer,fire-incidents-layer"
         Title="Toggle Wildland Fires"
       >
         <template v-slot>
@@ -290,8 +286,8 @@
     <div class="layer-list-row">
       <ToggleSwitchView
         @toggle="clickEvent"
-        :Checked="layerList[getLayerIndex('mile-markers')].visible"
-        :Value="getLayerIndex('mile-markers').toString()"
+        :Checked="layerList[getLayerIndex('mile-markers')].visible ?? false"
+        Value="mile-markers"
         :Title="'Toggle Mile Markers'"
         :Enabled="true"
       >
@@ -309,8 +305,8 @@
   </div>
 </template>
 <script lang="ts">
-import { store, useStore } from "@/store";
-import { defineComponent } from "vue";
+import { useStore } from "@/store";
+import { computed, defineComponent } from "vue";
 import { layerListIcons } from "@/symbols/IconDefinitions";
 import ToggleSwitchView from "./ToggleSwitchView.vue";
 
@@ -319,29 +315,25 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const layerIcons = layerListIcons;
-    return { layerIcons, store };
-  },
-  computed: {
-    layerList() {
-      return store.state.layerList;
-    },
-  },
-  methods: {
+    const layerList = computed(() => store.state.layerList);
     //#region toggle layer on and off
-    clickEvent: async (evt: { checked: boolean; value: string }) => {
-      store.state.layerList.map((layer, index) => {
-        if (evt) {
-          const idxs = evt.value.split(",");
-          for (let i = 0; i < idxs.length; i++) {
-            if (index.toString() === idxs[i]) {
-              layer.visible = evt.checked;
-            }
-          }
-        }
-      });
-      store.commit("setLayerList", store.state.layerList);
-    },
-    getLayerIndex: (id: string): number => {
+    const clickEvent = async (evt: { checked: boolean; value: string }) => {
+      console.log(evt.value);
+      const ids = evt.value.split(",");
+      store.dispatch("modifyLayerVisibility", {ids: ids, visible: evt.checked});
+      // store.state.layerList.map((layer, index) => {
+      //   if (evt) {
+      //     const idxs = evt.value.split(",");
+      //     for (let i = 0; i < idxs.length; i++) {
+      //       if (index.toString() === idxs[i]) {
+      //         layer.visible = evt.checked;
+      //       }
+      //     }
+      //   }
+      // });
+      // store.commit("setLayerList", store.state.layerList);
+    }
+    const getLayerIndex = (id: string): number => {
       let layerIndex = -1;
       store.state.layerList.map((val, index) => {
         if (val.id == id) {
@@ -349,10 +341,42 @@ export default defineComponent({
         }
       });
       return layerIndex;
-    },
+    }
 
-    //#endregion
+    return { layerIcons, layerList, clickEvent, getLayerIndex };
   },
+  // computed: {
+  //   layerList() {
+  //     return store.state.layerList;
+  //   },
+  // },
+  // methods: {
+  //   //#region toggle layer on and off
+  //   clickEvent: async (evt: { checked: boolean; value: string }) => {
+  //     store.state.layerList.map((layer, index) => {
+  //       if (evt) {
+  //         const idxs = evt.value.split(",");
+  //         for (let i = 0; i < idxs.length; i++) {
+  //           if (index.toString() === idxs[i]) {
+  //             layer.visible = evt.checked;
+  //           }
+  //         }
+  //       }
+  //     });
+  //     store.commit("setLayerList", store.state.layerList);
+  //   },
+  //   getLayerIndex: (id: string): number => {
+  //     let layerIndex = -1;
+  //     store.state.layerList.map((val, index) => {
+  //       if (val.id == id) {
+  //         layerIndex = index;
+  //       }
+  //     });
+  //     return layerIndex;
+  //   },
+
+  //   //#endregion
+  // },
 });
 </script>
 <style scoped>

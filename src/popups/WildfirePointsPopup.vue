@@ -59,7 +59,8 @@ export default defineComponent({
     const feature = ref<FeatureInfo>();
     const layerIcons = layerListIcons;
     watch(props, () => {
-      if (props.Featureset.layerId === FeatureLayer().id) {
+      const lyr = FeatureLayer();
+      if (lyr && props.Featureset.layerId === lyr.id) {
         //if clicked feature belongs to WeatherStations layer
         show();
       } else {
@@ -97,7 +98,9 @@ export default defineComponent({
     };
     const show = () => {
       const setVal = () => {
-        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(
+        const lyr = FeatureLayer();
+        if (!lyr) { return; }
+        getFeatureInfoById(props.Featureset.ids[0], lyr).then(
           //query feature layer for feature
           (result) => {
             if (result) {

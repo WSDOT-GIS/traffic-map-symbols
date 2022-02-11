@@ -58,34 +58,4 @@ const getLayer = (): FeatureLayer => {
     return layer;
 }
 
-// let layer: GeoJSONLayer | undefined;
-
-// export const initLayer = (url: string): GeoJSONLayer => {
-//     layer = new GeoJSONLayer({
-//         id: "park-ride-layer",
-//         url: url,
-//         title: "Park and Rides",
-//         renderer: renderer,
-//         fields: fields,
-//         visible: false
-//     });
-//     return layer;
-// }
-
-// const getLayer = (): GeoJSONLayer => {
-//     if (!layer) {
-//         throw "ParkRideLayer is not ready yet!";
-//     }
-//     return layer;
-// }
-
-// const layer = new GeoJSONLayer({
-//     id: "park-ride-layer",
-//     url: "https://data.wsdot.wa.gov/travelcenter/ParkAndRides.json",
-//     title: "Park and Rides",
-//     renderer: renderer,
-//     fields: fields,
-//     visible: false
-// });
-
 export default getLayer
