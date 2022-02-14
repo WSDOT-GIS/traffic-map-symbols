@@ -54,28 +54,28 @@ export const store = createStore<State>({
                 ymax: 0
             },
             layerList: [
-                { id: "alert-area-layer" },
-                { id: "border-crossings-layer" },
-                { id: "boundaries-places-reference-layer" },
-                { id: "traffic-camera-layer" },
-                { id: "esri-reference-layer" },
-                { id: "ferry-routes-reference-layer" },
-                { id: "fire-incidents-layer" },
-                { id: "fire-perimeters-layer" },
-                { id: "ferry-routes-lines-layer" },
-                { id: "line-restrictions-layer" },
-                { id: "mile-markers" },
-                { id: "mountain-passes-layer" },
-                { id: "park-ride-layer" },
-                { id: "ferry-routes-points-layer" },
-                { id: "point-restrictions-layer" },
-                { id: "regional-alert-layer" },
-                { id: "rest-areas-layer" },
-                { id: "road-alerts-layer" },
-                { id: "roads-reference-layer" },
-                { id: "state-route-shields-layer" },
-                { id: "traffic-flow-layer" },
-                { id: "weather-stations-layer" },
+                new LayerInfo("alert-area-layer"),
+                new LayerInfo("border-crossings-layer"),
+                new LayerInfo("boundaries-places-reference-layer"),
+                new LayerInfo("traffic-camera-layer"),
+                new LayerInfo("esri-reference-layer"),
+                new LayerInfo("ferry-routes-reference-layer"),
+                new LayerInfo("fire-incidents-layer"),
+                new LayerInfo("fire-perimeters-layer"),
+                new LayerInfo("ferry-routes-lines-layer"),
+                new LayerInfo("line-restrictions-layer"),
+                new LayerInfo("mile-markers"),
+                new LayerInfo("mountain-passes-layer"),
+                new LayerInfo("park-ride-layer"),
+                new LayerInfo("ferry-routes-points-layer"),
+                new LayerInfo("point-restrictions-layer"),
+                new LayerInfo("regional-alert-layer"),
+                new LayerInfo("rest-areas-layer"),
+                new LayerInfo("road-alerts-layer"),
+                new LayerInfo("roads-reference-layer"),
+                new LayerInfo("state-route-shields-layer"),
+                new LayerInfo("traffic-flow-layer"),
+                new LayerInfo("weather-stations-layer"),
             ],
             userLocation: null,
             isMobileMenuOpen: false,
@@ -89,8 +89,12 @@ export const store = createStore<State>({
         }
     },
     getters: {
-        completeLayerList: state => {
-            return state.layerList;
+        getLayerInfoById: (state) => (id: string) => {
+            return getLayerInfo(state, id);
+        },
+        layerInfoExists: (state) => (id: string) => {
+            const result = state.layerList.filter((item) => item.id === id);
+            return result.length === 1;
         },
         lastError: state => {
             return state.errors[state.errors.length - 1];
@@ -133,19 +137,24 @@ export const store = createStore<State>({
          * @param state 
          * @param payload Set the properties that need to be updated, and leave others undefined. Undefined properties will not be updated. 
          */
-        updateLayerInfo(state, payload: LayerInfo) {
-            const idx = state.layerList.findIndex((item) => item.id === payload.id);
-            if (idx < 0) {
-                throw "The layer specified does not exist in the state store.";
-            }
-            const info = state.layerList[idx];
+        updateLayerInfo(state, payload: { id: string, title?: string, index?: number, url?: string, visible?: boolean, status?: "loaded" | "failed" }) {
+            // const info = state.layerList.find((item) => item.id === payload.id);
+            // if (!info) {
+            //     throw `The layer specified, ${payload.id}, does not exist in the state store.`;
+            // }
+            const info = getLayerInfo(state, payload.id);
             if (payload.title) { info.title = payload.title }
             if (payload.index) {
                 info.index = payload.index;
-                info.isLoaded = payload.index >= 0;
+                info.status = payload.index >= 0 ? "loaded" : "failed";
             }
             if (payload.url) { info.url = payload.url }
             if (payload.visible !== undefined) { info.visible = payload.visible }
+            if (payload.status) { info.status = payload.status }
+        },
+        updateLayerInfoVisibility(state, payload: {id: string, visible: boolean}) {
+            const info = getLayerInfo(state, payload.id);
+            info.visible = payload.visible;
         },
         // setLayerList(state, payload: LayerInfo[]) {
         //     let layerList: LayerInfo[];
@@ -207,13 +216,13 @@ export const store = createStore<State>({
     actions: {
         updateLayerList({ commit }) {
             webmap.layers.forEach((layer, index) => {
-                const info: LayerInfo = {
+                const updateInfo = {
                     id: layer.id,
                     index: index,
                     title: layer.title,
                     visible: layer.visible
-                };
-                commit("updateLayerInfo", info);
+                }
+                commit("updateLayerInfo", updateInfo);
             });
         },
         /**
@@ -223,11 +232,10 @@ export const store = createStore<State>({
          */
         modifyLayerVisibility({ commit, state }, payload: { ids: string[], visible: boolean }) {
             payload.ids.forEach((eachId) => {
-                const updateInfo: LayerInfo = { id: eachId, visible: payload.visible };
-                commit("updateLayerInfo", updateInfo);
-                const info = state.layerList.find((eachInfo) => eachInfo.id === eachId);
-                if (!info) { throw "Invalid layer ID was passed." }
-                if (!info.isLoaded) {
+                // const updateInfo: LayerInfo = { id: eachId, visible: payload.visible };
+                commit("updateLayerInfoVisibility", {id: eachId, visible: payload.visible});
+                const info = getLayerInfo(state, eachId);
+                if (info.status !== "loaded") {
                     console.warn("Failed to modify layer visibility because the specified layer is not available: " + eachId);
                     return;
                 }
@@ -256,6 +264,12 @@ export const store = createStore<State>({
         }
     }
 })
+
+const getLayerInfo = (state: State, id: string): LayerInfo => {
+    const info = state.layerList.find((item) => item.id === id);
+    if (!info) { throw "Layer with specified ID, " + id + ", does not exist." }
+    return info;
+}
 
 /**
  * Clone the target of proxy (i.e. removing the reactivity)

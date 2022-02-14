@@ -125,7 +125,7 @@
           ',' +
           getLayerIndex('line-restrictions-layer').toString()
         "
-        Title="Toggle Truck Restrictions"
+        title="Toggle Truck Restrictions"
       >
         <template v-slot>
           <div class="layer-list-item-label">
@@ -241,7 +241,7 @@
             >
           </template>
         </ToggleSwitchView>
-      </li> -->
+    </li>-->
     <!--Border Crossings-->
     <div class="layer-list-row">
       <ToggleSwitchView
@@ -249,7 +249,7 @@
         :Enabled="true"
         :Checked="layerList[getLayerIndex('border-crossings-layer')].visible"
         :Value="getLayerIndex('border-crossings-layer').toString()"
-        Title="Toggle Border Crossings"
+        title="Toggle Border Crossings"
       >
         <template v-slot>
           <div class="layer-list-item-label">
@@ -267,7 +267,7 @@
       <ToggleSwitchView
         @toggle="clickEvent"
         :Enabled="true"
-        :Checked="layerList[getLayerIndex('fire-perimeters-layer')].visible ?? false"
+        :Checked="getLayerVisibility('fire-perimeters-layer')"
         Value="fire-perimeters-layer,fire-incidents-layer"
         Title="Toggle Wildland Fires"
       >
@@ -286,7 +286,7 @@
     <div class="layer-list-row">
       <ToggleSwitchView
         @toggle="clickEvent"
-        :Checked="layerList[getLayerIndex('mile-markers')].visible ?? false"
+        :Checked="getLayerVisibility('mile-markers')"
         Value="mile-markers"
         :Title="'Toggle Mile Markers'"
         :Enabled="true"
@@ -309,6 +309,7 @@ import { useStore } from "@/store";
 import { computed, defineComponent } from "vue";
 import { layerListIcons } from "@/symbols/IconDefinitions";
 import ToggleSwitchView from "./ToggleSwitchView.vue";
+import LayerInfo from "@/types/LayerInfo";
 
 export default defineComponent({
   components: { ToggleSwitchView },
@@ -320,7 +321,8 @@ export default defineComponent({
     const clickEvent = async (evt: { checked: boolean; value: string }) => {
       console.log(evt.value);
       const ids = evt.value.split(",");
-      store.dispatch("modifyLayerVisibility", {ids: ids, visible: evt.checked});
+      console.log("IDs: " + ids);
+      store.dispatch("modifyLayerVisibility", { ids: ids, visible: evt.checked });
       // store.state.layerList.map((layer, index) => {
       //   if (evt) {
       //     const idxs = evt.value.split(",");
@@ -333,17 +335,18 @@ export default defineComponent({
       // });
       // store.commit("setLayerList", store.state.layerList);
     }
-    const getLayerIndex = (id: string): number => {
-      let layerIndex = -1;
-      store.state.layerList.map((val, index) => {
-        if (val.id == id) {
-          layerIndex = index;
-        }
-      });
-      return layerIndex;
+    const getLayerVisibility = (id: string): boolean => {
+      const info = store.getters.getLayerInfoById(id);
+      let visible = false;
+      if (info) {
+        visible = (info as LayerInfo).visible;
+      }
+      return visible;
     }
 
-    return { layerIcons, layerList, clickEvent, getLayerIndex };
+    const getLayerIndex = (id: string): number => { return 1 }
+
+    return { layerIcons, layerList, clickEvent, getLayerVisibility, getLayerIndex };
   },
   // computed: {
   //   layerList() {

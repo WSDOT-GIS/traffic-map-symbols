@@ -16,9 +16,7 @@
               'saved-map-title-selected': item.s,
             }"
             @click="selectItem($event, item)"
-          >
-            {{ item.t }}
-          </div>
+          >{{ item.t }}</div>
         </div>
         <div class="saved-map-list-col-1">
           <button
@@ -27,9 +25,7 @@
             class="saved-map-remove-btn w3-button"
             @click="removeItem($event, item)"
             ref="closeButtonRef"
-          >
-            &times;
-          </button>
+          >&times;</button>
         </div>
       </div>
     </div>
@@ -127,18 +123,20 @@ export default defineComponent({
           return eachInfo.id === eachCookie.i;
         });
         if (lyrCookie) {
-          eachInfo.visible = lyrCookie.v;
+          store.dispatch("modifyLayerVisibility", { ids: [lyrCookie.i], visible: lyrCookie.v });
+          // eachInfo.visible = lyrCookie.v;
         } else {
           // Not in cookie, so apply default...
           const defaultProp = defaultLayerProps.find((eachProp) => {
             return eachInfo.id === eachProp.id;
           });
           if (defaultProp) {
-            eachInfo.visible = defaultProp.visible;
+            store.dispatch("modifyLayerVisibility", { ids: [eachInfo.id], visible: defaultProp.visible });
+            // eachInfo.visible = defaultProp.visible;
           }
         }
       });
-      store.commit("setLayerList", store.state.layerList);
+      // store.commit("setLayerList", store.state.layerList);
       // Set basemap...
       if (validateBasemapName(item.b)) {
         store.commit("setBasemap", item.b);
@@ -202,7 +200,6 @@ export default defineComponent({
       formVisible,
       itemContainerRef,
       closeButtonRef,
-      itemTitleWidth,
       showForm,
       closeForm,
       selectItem,
