@@ -5,6 +5,7 @@
     Width="w"
     LightThemeColor="#007b5f33"
     DarkThemeColor="#007b5f"
+    LayerId="traffic-camera-layer"
     :Features="features"
     :Config="{
       bannerText: {

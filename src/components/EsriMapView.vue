@@ -83,17 +83,17 @@ import { hasParentClass } from "@/utils/miscUtil";
 export default defineComponent({
   components: {
     ZoomPopupView,
-    CameraPopup,
-    ParkRidePopup,
-    PointRestrictionPopup,
-    MountainPassPopup,
-    WeatherStationsPopup,
-    RestAreaPopup,
-    RoadAlertPopup,
-    WildfirePointsPopup,
+    // CameraPopup,
+    // ParkRidePopup,
+    // PointRestrictionPopup,
+    // MountainPassPopup,
+    // WeatherStationsPopup,
+    // RestAreaPopup,
+    // RoadAlertPopup,
+    // WildfirePointsPopup,
     BorderCrossingPopup,
-    RegionalAlertPopup,
-    FerryRoutesPopup,
+    // RegionalAlertPopup,
+    // FerryRoutesPopup,
     LeftPaneView,
     BasemapView,
     CoordinatesView,
@@ -645,17 +645,17 @@ export default defineComponent({
     :Label="zoomPopupLabel"
     @clicked="zoomMetroEventHandler"
   ></ZoomPopupView>
-  <CameraPopup :MapXY="popupXY" :Featureset="popupFeatureset" />
+  <!--<CameraPopup :MapXY="popupXY" :Featureset="popupFeatureset" />
   <ParkRidePopup :Featureset="popupFeatureset" />
   <PointRestrictionPopup :Featureset="popupFeatureset" />
   <MountainPassPopup :Featureset="popupFeatureset" />
   <WeatherStationsPopup :Featureset="popupFeatureset" />
   <RestAreaPopup :Featureset="popupFeatureset" />
   <RoadAlertPopup :Featureset="popupFeatureset" />
-  <WildfirePointsPopup :Featureset="popupFeatureset" />
+  <WildfirePointsPopup :Featureset="popupFeatureset" />-->
   <BorderCrossingPopup :Featureset="popupFeatureset" />
-  <RegionalAlertPopup :Featureset="popupFeatureset" />
-  <FerryRoutesPopup :Featureset="popupFeatureset" :Alerts="ferryAlerts" />
+  <!--<RegionalAlertPopup :Featureset="popupFeatureset" />
+  <FerryRoutesPopup :Featureset="popupFeatureset" :Alerts="ferryAlerts" />-->
   <LeftPaneView />
 </template>
 

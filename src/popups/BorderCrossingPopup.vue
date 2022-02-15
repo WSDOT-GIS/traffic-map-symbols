@@ -1,9 +1,85 @@
+<script lang="ts">
+import { defineComponent, PropType, ref, watch } from "vue";
+import PopupBase from "./PopupBase.vue";
+import { getLayer } from "@/esri-stuff/esriMap";
+import { getFeatureInfoById } from "@/utils/featureInfoUtil";
+import FeaturesetInfo from "@/types/FeaturesetInfo";
+import FeatureInfo from "@/types/FeatureInfo";
+import { layerListIcons } from "@/symbols/IconDefinitions";
+import MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
+import { store } from "@/store";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+export default defineComponent({
+  components: { PopupBase },
+  props: {
+    Featureset: {
+      type: Object as PropType<FeaturesetInfo>,
+      required: true,
+    },
+  },
+  setup(props) {
+    const layerId = "border-crossings-layer";
+    const feature = ref<FeatureInfo>();
+    const layerIcons = layerListIcons;
+    watch(props, () => {
+      if (props.Featureset.layerId === layerId) {
+        show();
+      } else {
+        close();
+      }
+    });
+    const getMoreInfoURL = (): MoreInfoURLInfo => {
+      const moreInfoObject = new Object({
+        url: `https://www.th.gov.bc.ca/ATIS/index.htm`,
+        text: "Get the",
+        linkText: "Southbound wait time",
+      }) as MoreInfoURLInfo;
+      return moreInfoObject;
+    };
+    const getTitle = (feature: FeatureInfo): string => {
+      return `SR ${feature.attributes["StateRouteID"] as string}`;
+    };
+    const show = () => {
+      const lyrStatus = store.getters.getLayerStatus(layerId);
+      if (lyrStatus !== "loaded") { return; }
+      const lyr = getLayer(layerId) as FeatureLayer;
+      const setVal = () => {
+        getFeatureInfoById(props.Featureset.ids[0], lyr).then((result) => {
+          if (result) {
+            feature.value = result;
+          }
+        });
+      };
+      if (feature.value) {
+        // Clean up the previous data...
+        close();
+        setVal();
+      } else {
+        setVal();
+      }
+    };
+    // Setting XY to 0 closes the popup...
+    const close = () => {
+      feature.value = undefined;
+    };
+    return {
+      layerId,
+      feature,
+      close,
+      getMoreInfoURL,
+      layerIcons,
+      getTitle,
+    };
+  },
+});
+</script>
 <template>
   <PopupBase
     :IconSvg="layerIcons.find((x) => x.id == 'border-crossing')?.paths"
     LightThemeColor="#e885b433"
     DarkThemeColor="#e885b4"
-    :Features="[feature]"
+    :LayerId="layerId"
+    :Features="feature?[feature]:[]"
     :Config="{
       bannerText: { text: 'Border crossing wait times' },
       title: { custom: getTitle },
@@ -28,75 +104,6 @@
     </template>
   </PopupBase>
 </template>
-<script lang="ts">
-import { defineComponent, PropType, ref, watch } from "vue";
-import PopupBase from "./PopupBase.vue";
-import FeatureLayer from "@/layers/BorderCrossingsLayer";
-import { getFeatureInfoById } from "@/utils/featureInfoUtil";
-import FeaturesetInfo from "@/types/FeaturesetInfo";
-import FeatureInfo from "@/types/FeatureInfo";
-import { layerListIcons } from "@/symbols/IconDefinitions";
-import MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
-export default defineComponent({
-  components: { PopupBase },
-  props: {
-    Featureset: {
-      type: Object as PropType<FeaturesetInfo>,
-      required: true,
-    },
-  },
-  setup(props) {
-    const feature = ref<FeatureInfo>();
-    const layerIcons = layerListIcons;
-    watch(props, () => {
-      if (props.Featureset.layerId === FeatureLayer().id) {
-        show();
-      } else {
-        close();
-      }
-    });
-    const getMoreInfoURL = (): MoreInfoURLInfo => {
-      const moreInfoObject = new Object({
-        url: `https://www.th.gov.bc.ca/ATIS/index.htm`,
-        text: "Get the",
-        linkText: "Southbound wait time",
-      }) as MoreInfoURLInfo;
-      return moreInfoObject;
-    };
-    const getTitle = (feature: FeatureInfo): string => {
-      return `SR ${feature.attributes["StateRouteID"] as string}`;
-    };
-    const show = () => {
-      const setVal = () => {
-        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then((result) => {
-          if (result) {
-            feature.value = result;
-          }
-        });
-      };
-      if (feature.value) {
-        // Clean up the previous data...
-        close();
-        setVal();
-      } else {
-        setVal();
-      }
-    };
-    // Setting XY to 0 closes the popup...
-    const close = () => {
-      feature.value = undefined;
-    };
-
-    return {
-      feature,
-      close,
-      getMoreInfoURL,
-      layerIcons,
-      getTitle,
-    };
-  },
-});
-</script>
 <style>
 table.waitTimeTable {
   margin: 8px 16px 16px 16px;

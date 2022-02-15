@@ -28,11 +28,6 @@ export default defineComponent({
       type: Object as PropType<XY>,
       required: false,
     },
-    // Width: {
-    //   // "m (medium) or w (wide)"
-    //   type: String,
-    //   required: false,
-    // },
     DarkThemeColor: {
       type: String,
       required: true,
@@ -52,6 +47,10 @@ export default defineComponent({
     IconSvg: {
       type: String,
       required: false,
+    },
+    LayerId: {
+      type: String,
+      required: true
     },
     Features: {
       type: Array as PropType<Array<FeatureInfo>>,
@@ -100,6 +99,7 @@ export default defineComponent({
     }
     const relativePosition = ref(relativePositions.above);
     const store = useStore();
+    const layerStatus = computed(() => store.getters.getLayerStatus(props.LayerId));
     const mapSize = computed(() => store.state.mapSize);
     const mapScale = computed(() => store.state.scale);
     const mapCenter = computed(() => store.state.center);
@@ -757,6 +757,7 @@ export default defineComponent({
       modalContainerRef,
       containerRef,
       contentContainerRef,
+      layerStatus,
       relativePosition,
       popupTopLeft,
       maxHeight,
@@ -806,7 +807,7 @@ export default defineComponent({
         'popup-container-below': relativePosition === 'below',
         'w3-modal-content': smallMedia,
       }"
-      v-if="propFeatures.length > 0 && propFeatures[0]"
+      v-if="layerStatus === 'loaded' && propFeatures.length > 0 && propFeatures[0]"
       :style="popupTopLeft"
       v-click-away="onClickAway"
     >

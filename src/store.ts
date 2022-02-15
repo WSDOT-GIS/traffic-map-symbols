@@ -96,6 +96,10 @@ export const store = createStore<State>({
             const result = state.layerList.filter((item) => item.id === id);
             return result.length === 1;
         },
+        getLayerStatus: (state) => (id: string) => {
+            const info = getLayerInfo(state, id);
+            return info.status;
+        },
         lastError: state => {
             return state.errors[state.errors.length - 1];
         }

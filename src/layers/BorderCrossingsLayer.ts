@@ -51,9 +51,9 @@ export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
     return layer;
 }
 
-const getLayer = (): FeatureLayer => {
+const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
-        throw "Border Crossings Layer is not ready yet!";
+        console.warn("Border Crossings Layer is not ready yet!");
     }
     return layer;
 }

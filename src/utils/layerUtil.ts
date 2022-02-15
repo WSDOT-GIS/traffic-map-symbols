@@ -214,7 +214,8 @@ export const setLayerEvent = (layer: FeatureLayer, jsonUrl: string, loadOnce?: b
 // Keep track of what is loading, so prevent loading the same layer at the same time.
 let loadManager: { id: string, promise: Promise<void> }[] = [];
 
-export const reloadData = async (jsonUrl: string, layer: FeatureLayer): Promise<void> => {
+export const reloadData = async (jsonUrl: string, layer: FeatureLayer | undefined): Promise<void> => {
+    if (!layer) { return; }
     const reload = async (jsonUrl: string, layer: FeatureLayer): Promise<void> => {
         if (!layer.visible) { return; }
         // Fetch all features from JSON...
@@ -222,10 +223,7 @@ export const reloadData = async (jsonUrl: string, layer: FeatureLayer): Promise<
             if (graphics.length > 0) {
                 await replaceFeatures(layer, graphics);
             }
-            // Replace old with new features...
         })
-
-
     }
     // Check if the layer is already being loaded currently or not...
     const runningProc = loadManager.find(x => x.id === layer.id);
