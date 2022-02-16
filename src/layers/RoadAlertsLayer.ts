@@ -85,12 +85,17 @@ let closureLayer: FeatureLayer | undefined;
 let layer: FeatureLayer | undefined;
 export const layerId = "road-alerts-layer";
 
-export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
-    layer = await layerUtil.initLayer(jsonUrl, layerId, "Road Alerts", renderer, fields, "point", true);
-    layer.orderBy = [{
-        field: "TravelCenterPriorityId",
-        order: "ascending"
-    }]
+export const initLayer = async (jsonUrl: string): Promise<FeatureLayer | undefined> => {
+    try {
+        layer = await layerUtil.initLayer(jsonUrl, layerId, "Road Alerts", renderer, fields, "point", true);
+        layer.orderBy = [{
+            field: "TravelCenterPriorityId",
+            order: "ascending"
+        }]
+    }
+    catch (ex) {
+        console.error(ex);
+    }
     return layer;
 }
 //**This happens here instead of in the layerutils because of the source distinciton. TODO: fix this**
@@ -102,9 +107,9 @@ export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
 //         }
 //     });
 // }
-const getLayer = (): FeatureLayer => {
+const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
-        throw "ParkRideLayer is not ready yet!";
+        console.error("ParkRideLayer is not ready yet!");
     }
     return layer;
 }

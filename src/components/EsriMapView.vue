@@ -89,7 +89,7 @@ export default defineComponent({
     MountainPassPopup,
     // WeatherStationsPopup,
     RestAreaPopup,
-    // RoadAlertPopup,
+    RoadAlertPopup,
     // WildfirePointsPopup,
     BorderCrossingPopup,
     // RegionalAlertPopup,
@@ -638,8 +638,8 @@ export default defineComponent({
   <MountainPassPopup :Featureset="popupFeatureset" />
   <!--<WeatherStationsPopup :Featureset="popupFeatureset" />-->
   <RestAreaPopup :Featureset="popupFeatureset" />
-  <!--<RoadAlertPopup :Featureset="popupFeatureset" />
-  <WildfirePointsPopup :Featureset="popupFeatureset" />-->
+  <RoadAlertPopup :Featureset="popupFeatureset" />
+  <!--<WildfirePointsPopup :Featureset="popupFeatureset" />-->
   <BorderCrossingPopup :Featureset="popupFeatureset" />
   <!--<RegionalAlertPopup :Featureset="popupFeatureset" />-->
   <FerryRoutesPopup :Featureset="popupFeatureset" :Alerts="ferryAlerts" />
