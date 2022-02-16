@@ -88,7 +88,7 @@ export default defineComponent({
     PointRestrictionPopup,
     MountainPassPopup,
     // WeatherStationsPopup,
-    // RestAreaPopup,
+    RestAreaPopup,
     // RoadAlertPopup,
     // WildfirePointsPopup,
     BorderCrossingPopup,
@@ -636,9 +636,9 @@ export default defineComponent({
   <ParkRidePopup :Featureset="popupFeatureset" />
   <PointRestrictionPopup :Featureset="popupFeatureset" />
   <MountainPassPopup :Featureset="popupFeatureset" />
-  <!--<WeatherStationsPopup :Featureset="popupFeatureset" />
+  <!--<WeatherStationsPopup :Featureset="popupFeatureset" />-->
   <RestAreaPopup :Featureset="popupFeatureset" />
-  <RoadAlertPopup :Featureset="popupFeatureset" />
+  <!--<RoadAlertPopup :Featureset="popupFeatureset" />
   <WildfirePointsPopup :Featureset="popupFeatureset" />-->
   <BorderCrossingPopup :Featureset="popupFeatureset" />
   <!--<RegionalAlertPopup :Featureset="popupFeatureset" />-->

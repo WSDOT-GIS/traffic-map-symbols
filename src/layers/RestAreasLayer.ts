@@ -35,14 +35,19 @@ const fields = [
 let layer: FeatureLayer | undefined;
 export const layerId = "rest-areas-layer";
 
-export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
-    layer = await layerUtil.initLayer(jsonUrl, layerId, "Rest Areas", renderer, fields, "point", false, true)
+export const initLayer = async (jsonUrl: string): Promise<FeatureLayer | undefined> => {
+    try {
+        layer = await layerUtil.initLayer(jsonUrl, layerId, "Rest Areas", renderer, fields, "point", false, true);
+    }
+    catch (ex) {
+        console.error(ex);
+    }
     return layer;
 }
 
-const getLayer = (): FeatureLayer => {
+const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
-        throw "Rest Area Layer is not ready yet!";
+        console.error("Rest Area Layer is not ready yet!");
     }
     return layer;
 }
