@@ -10,8 +10,6 @@ import Polygon from "@arcgis/core/geometry/Polygon";
 
 import * as pc from "polygon-clipping";
 
-import LayerInfo from "@/types/LayerInfo";
-
 // Create a symbol for rendering the graphic
 const renderer = new SimpleRenderer({
     symbol: new SimpleFillSymbol({
@@ -42,31 +40,40 @@ const fields = [
 
 let layer: FeatureLayer | undefined;
 
-export const initLayer = (features: Graphic[]): FeatureLayer => {
-    layer = new FeatureLayer({
-        id: "alert-area-layer",
-        title: "Alert Areas",
-        fields: fields,
-        objectIdField: "AppGenId",
-        geometryType: "polygon",
-        spatialReference: SpatialReference.WebMercator,
-        renderer: renderer,
-        source: features,
-    });
+export const layerId = "alert-area-layer"; 
+
+export const initLayer = (features: Graphic[]): FeatureLayer | undefined => {
+    try {
+        layer = new FeatureLayer({
+            id: layerId,
+            title: "Alert Areas",
+            fields: fields,
+            objectIdField: "AppGenId",
+            geometryType: "polygon",
+            spatialReference: SpatialReference.WebMercator,
+            renderer: renderer,
+            source: features,
+        });
+    }
+    catch (ex) {
+        console.error(ex);
+        layer = undefined;
+    }
     return layer;
 }
 
-const getLayer = (): FeatureLayer => {
+const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
-        throw "Alert Area Layer is not ready yet!";
+        console.error("Alert Area Layer is not ready yet!");
     }
     return layer;
 }
 
 export default getLayer;
 
-export const getFeatureById = async (eventId: number): Promise<Graphic> => {
+export const getFeatureById = async (eventId: number): Promise<Graphic | undefined> => {
     const layer = getLayer();
+    if (!layer) { return; }
     const query = layer.createQuery();
     query.where = "EventID = " + eventId;
     query.outFields = ["*"];
@@ -80,8 +87,9 @@ export const getFeatureById = async (eventId: number): Promise<Graphic> => {
  * @param visibleExtent 
  * @returns 
  */
-export const getVisibleCenter = async (eventId: number, visibleExtent: Extent): Promise<Point> => {
+export const getVisibleCenter = async (eventId: number, visibleExtent: Extent): Promise<Point | undefined> => {
     const g = await getFeatureById(eventId);
+    if (!g) { return; }
     const eventPoly = g.geometry as Polygon;
     const extentVertices: number[][][] = [[
         [visibleExtent.xmin, visibleExtent.ymax],

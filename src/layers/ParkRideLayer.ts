@@ -45,15 +45,21 @@ const fields = [
 ]
 
 let layer: FeatureLayer | undefined;
+export const layerId = "park-ride-layer";
 
-export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
-    layer = await layerUtil.initLayer(jsonUrl, "park-ride-layer", "Park and Rides", renderer, fields, "point", false, true);
+export const initLayer = async (jsonUrl: string): Promise<FeatureLayer | undefined> => {
+    try {
+        layer = await layerUtil.initLayer(jsonUrl, layerId, "Park and Rides", renderer, fields, "point", false, true);
+    }
+    catch (ex) {
+        console.error(ex);
+    }
     return layer;
 }
 
-const getLayer = (): FeatureLayer => {
+const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
-        throw "ParkRideLayer is not ready yet!";
+        console.error("ParkRideLayer is not ready yet!");
     }
     return layer;
 }

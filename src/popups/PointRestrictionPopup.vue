@@ -1,53 +1,15 @@
-<template>
-  <PopupBase
-    :IconSvg="layerIcons.find((x) => x.id === 'point-restrictions-layer')?.paths"
-    LightThemeColor="#CC209C33"
-    DarkThemeColor="#cc209c"
-    LightBadgeColor="#CC209C33"
-    DarkBadgeColor="#cc209c"
-    :Features="[feature]"
-    :Config="{
-      bannerText: { text: 'Truck restriction' },
-      badgeText: { custom: getBadgeText },
-      title: { custom: getTitle },
-      content: [
-        { label: 'Travel delay', value: { text: '???' } },
-        { label: 'Description', value: { fieldName: 'restriction_comment' } },
-        {
-          label: 'Date effective',
-          value: {
-            fieldName: 'date_effective',
-            isDate: true,
-            isTime: false,
-          },
-        },
-        {
-          label: 'Last updated',
-          value: {
-            fieldName: 'RecordUpdateDate',
-            isDate: true,
-            isTime: true,
-          },
-        },
-      ],
-      moreInfoURL: {
-        custom: getMoreInfoURL,
-      },
-    }"
-    @close="close"
-  >
-  </PopupBase>
-</template>
 <script lang="ts">
 import { defineComponent, PropType, ref, watch } from "vue";
 import PopupBase from "./PopupBase.vue";
-
-import FeatureLayer from "@/layers/PointRestrictionsLayer";
 import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
 import MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
+import { getLayer } from "@/esri-stuff/esriMap";
+import { useStore } from "@/store";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+
 export default defineComponent({
   components: { PopupBase },
   props: {
@@ -57,11 +19,13 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const layerId = "point-restrictions-layer";
+    const store = useStore();
     const feature = ref<FeatureInfo>();
     const layerIcons = layerListIcons;
 
     watch(props, () => {
-      if (props.Featureset.layerId === FeatureLayer().id) {
+      if (props.Featureset.layerId === layerId) {
         show();
       } else {
         close();
@@ -80,8 +44,14 @@ export default defineComponent({
       return moreInfoObject;
     };
     const show = () => {
+      const lyrStatus = store.getters.getLayerStatus(layerId);
+      if (lyrStatus !== "loaded") {
+        close();
+        return;
+      }
+      const lyr = getLayer(layerId) as FeatureLayer;
       const setVal = () => {
-        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then((result) => {
+        getFeatureInfoById(props.Featureset.ids[0], lyr).then((result) => {
           if (result) {
             feature.value = result;
           }
@@ -115,6 +85,7 @@ export default defineComponent({
     };
 
     return {
+      layerId,
       feature,
       layerIcons,
       close,
@@ -125,4 +96,43 @@ export default defineComponent({
   },
 });
 </script>
-
+<template>
+  <PopupBase
+    :IconSvg="layerIcons.find((x) => x.id === 'point-restrictions-layer')?.paths"
+    LightThemeColor="#CC209C33"
+    DarkThemeColor="#cc209c"
+    LightBadgeColor="#CC209C33"
+    DarkBadgeColor="#cc209c"
+    :LayerId="layerId"
+    :Features="feature ? [feature] : []"
+    :Config="{
+      bannerText: { text: 'Truck restriction' },
+      badgeText: { custom: getBadgeText },
+      title: { custom: getTitle },
+      content: [
+        { label: 'Travel delay', value: { text: '???' } },
+        { label: 'Description', value: { fieldName: 'restriction_comment' } },
+        {
+          label: 'Date effective',
+          value: {
+            fieldName: 'date_effective',
+            isDate: true,
+            isTime: false,
+          },
+        },
+        {
+          label: 'Last updated',
+          value: {
+            fieldName: 'RecordUpdateDate',
+            isDate: true,
+            isTime: true,
+          },
+        },
+      ],
+      moreInfoURL: {
+        custom: getMoreInfoURL,
+      },
+    }"
+    @close="close"
+  ></PopupBase>
+</template>

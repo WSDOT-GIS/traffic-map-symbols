@@ -82,9 +82,11 @@ let closureLayer: FeatureLayer | undefined;
  * Specify this if data should be loaded at start up. Otherwise not necessary.
  * @returns 
  */
- let layer: FeatureLayer | undefined;
- export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
-    layer = await layerUtil.initLayer(jsonUrl, "road-alerts-layer", "Road Alerts", renderer, fields, "point", true);
+let layer: FeatureLayer | undefined;
+export const layerId = "road-alerts-layer";
+
+export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
+    layer = await layerUtil.initLayer(jsonUrl, layerId, "Road Alerts", renderer, fields, "point", true);
     layer.orderBy = [{
         field: "TravelCenterPriorityId",
         order: "ascending"

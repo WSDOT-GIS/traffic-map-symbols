@@ -8,6 +8,7 @@ const renderer = new simpleRenderer({
 })
 
 let layer: FeatureLayer | undefined;
+export const layerId = "ferry-routes-points-layer";
 
 const fields = [
     new Field({
@@ -59,7 +60,7 @@ const fields = [
 
 export const initLayer = (url: string): FeatureLayer => {
     layer = new FeatureLayer({
-        id: "ferry-routes-points-layer",
+        id: layerId,
         url: url,
         title: "ferryRoutesPoints",
         fields: fields,

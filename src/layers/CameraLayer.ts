@@ -67,16 +67,23 @@ const fields = [
 ]
 
 let layer: FeatureLayer | undefined;
+export const layerId = "traffic-camera-layer";
 
-export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
-    layer = await layerUtil.initLayer(jsonUrl, "traffic-camera-layer", "Cameras", renderer, fields, "point", false, true);
-    layer.featureReduction = clusterConfig;
+export const initLayer = async (jsonUrl: string): Promise<FeatureLayer | undefined> => {
+    try {
+        layer = await layerUtil.initLayer(jsonUrl, layerId, "Cameras", renderer, fields, "point", false, true);
+    }
+    catch (ex) {
+        console.error(ex);
+        layer = undefined;
+    }
+    if (layer) { layer.featureReduction = clusterConfig; }
     return layer;
 }
 
-const getLayer = (): FeatureLayer => {
+const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
-        throw "CameraLayer is not ready yet!";
+        console.error("CameraLayer is not ready yet!");
     }
     return layer;
 }

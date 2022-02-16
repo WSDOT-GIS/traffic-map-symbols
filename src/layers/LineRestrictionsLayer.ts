@@ -1,5 +1,4 @@
 import { roadRestrictionLine, bridgeRestrictionLine } from "../symbols/LineRestrictionsSymbol"
-// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
 import Field from "@arcgis/core/layers/support/Field";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
@@ -64,24 +63,32 @@ const fields = [
 ]
 
 let layer: FeatureLayer | undefined;
+export const layerId = "line-restrictions-layer";
 
-export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
-    layer = await layerUtil.initLayer(jsonUrl,
-        "line-restrictions-layer",
-        "Restriction Lines",
-        renderer,
-        fields,
-        "polyline",
-        false,
-    );
+export const initLayer = async (jsonUrl: string): Promise<FeatureLayer | undefined> => {
+    try {
+        layer = await layerUtil.initLayer(jsonUrl,
+            layerId,
+            "Restriction Lines",
+            renderer,
+            fields,
+            "polyline",
+            false,
+        );
+    }
+    catch (ex) {
+        console.error(ex);
+    }
     // hide all features... Show only when the corresponding point was selected.
-    layer.definitionExpression = "1=0" 
+    if (layer) {
+        layer.definitionExpression = "1=0";
+    }
     return layer;
 }
 
-const getLayer = (): FeatureLayer => {
+const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
-        throw "LineRestrictionLayer is not ready yet!";
+        console.error("LineRestrictionLayer is not ready yet!");
     }
     return layer;
 }

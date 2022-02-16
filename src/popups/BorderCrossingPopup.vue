@@ -1,14 +1,15 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, watch } from "vue";
 import PopupBase from "./PopupBase.vue";
-import { getLayer } from "@/esri-stuff/esriMap";
 import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
 import MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
-import { store } from "@/store";
+import { getLayer } from "@/esri-stuff/esriMap";
+import { useStore } from "@/store";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+
 export default defineComponent({
   components: { PopupBase },
   props: {
@@ -19,6 +20,7 @@ export default defineComponent({
   },
   setup(props) {
     const layerId = "border-crossings-layer";
+    const store = useStore();
     const feature = ref<FeatureInfo>();
     const layerIcons = layerListIcons;
     watch(props, () => {
@@ -41,7 +43,10 @@ export default defineComponent({
     };
     const show = () => {
       const lyrStatus = store.getters.getLayerStatus(layerId);
-      if (lyrStatus !== "loaded") { return; }
+      if (lyrStatus !== "loaded") { 
+        close();
+        return; 
+      }
       const lyr = getLayer(layerId) as FeatureLayer;
       const setVal = () => {
         getFeatureInfoById(props.Featureset.ids[0], lyr).then((result) => {

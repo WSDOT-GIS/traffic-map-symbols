@@ -39,10 +39,11 @@ const fields = [
 ]
 
 let layer: FeatureLayer | undefined;
+export const layerId = "travel-times-layer";
 
 export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
     layer = await layerUtil.initLayer(jsonUrl, 
-        "travel-times-layer",
+        layerId,
         "Travel Times",
         renderer,
         fields,

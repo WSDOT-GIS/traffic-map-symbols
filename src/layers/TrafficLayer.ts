@@ -1,10 +1,11 @@
 import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 
 let layer: MapImageLayer | undefined;
+export const layerId = "traffic-flow-layer";
 
 export const initLayer = (url: string, refreshMinute: number): MapImageLayer => {
     layer = new MapImageLayer({
-        id: "traffic-flow-layer",
+        id: layerId,
         url: url,
         sublayers: [
             { id: 6, visible: true, title: "Live Traffic Flow" }, // live traffic

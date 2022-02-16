@@ -1,18 +1,6 @@
-<template>
-  <PopupBase
-    :IconSvg="layerIcons.find((x) => x.id === 'road-alert')?.paths"
-    LightThemeColor="#FFC1074D"
-    DarkThemeColor="#FFC107"
-    :Features="[feature]"
-    :Config="popupConfig"
-    @close="close"
-  >
-  </PopupBase>
-</template>
 <script lang="ts">
 import { defineComponent, PropType, ref, watch } from "vue";
 import PopupBase from "./PopupBase.vue";
-import FeatureLayer from "@/layers/PointFerryRoutesLayer";
 import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import FeatureInfo from "@/types/FeatureInfo";
@@ -20,6 +8,9 @@ import { layerListIcons } from "@/symbols/IconDefinitions";
 import { getFerryAlerts } from "@/utils/alertInfoUtil";
 import PopupConfig from "@/types/PopupConfig";
 import { formatEpoch } from "@/utils/miscUtil";
+import { getLayer } from "@/esri-stuff/esriMap";
+import { useStore } from "@/store";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 export default defineComponent({
   components: { PopupBase },
@@ -30,6 +21,8 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const layerId = "ferry-routes-points-layer";
+    const store = useStore();
     const feature = ref<FeatureInfo>();
     const layerIcons = layerListIcons;
     const popupConfig = ref<PopupConfig>({
@@ -39,7 +32,7 @@ export default defineComponent({
     });
 
     watch(props, () => {
-      if (props.Featureset.layerId === "ferry-routes-points-layer") {
+      if (props.Featureset.layerId === layerId) {
         show();
       } else {
         close();
@@ -48,8 +41,14 @@ export default defineComponent({
 
     const show = () => {
       popupConfig.value.content = [];
+      const lyrStatus = store.getters.getLayerStatus(layerId);
+      if (lyrStatus !== "loaded") {
+        close();
+        return;
+      }
+      const lyr = getLayer(layerId) as FeatureLayer;
       const setVal = () => {
-        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then((ftr) => {
+        getFeatureInfoById(props.Featureset.ids[0], lyr).then((ftr) => {
           if (ftr) {
             getFerryAlerts(ftr.attributes.FerryRouteID as number).then((alerts) => {
               if (popupConfig.value.paging) {
@@ -60,9 +59,8 @@ export default defineComponent({
                   label: "",
                   value: {
                     text: `<div class="popup-page-break" data-page-num="${idx + 1}"></div>
-                    <h4 class="popup-title popup-paging-entry" data-page-num="${idx + 1}">${
-                      each.AlertFullTitle
-                    }</h4>`,
+                    <h4 class="popup-title popup-paging-entry" data-page-num="${idx + 1}">${each.AlertFullTitle
+                      }</h4>`,
                     isHTML: true,
                   },
                 });
@@ -96,6 +94,7 @@ export default defineComponent({
       feature.value = undefined;
     };
     return {
+      layerId,
       popupConfig,
       feature,
       layerIcons,
@@ -104,4 +103,14 @@ export default defineComponent({
   },
 });
 </script>
-
+<template>
+  <PopupBase
+    :IconSvg="layerIcons.find((x) => x.id === 'road-alert')?.paths"
+    LightThemeColor="#FFC1074D"
+    DarkThemeColor="#FFC107"
+    :LayerId="layerId"
+    :Features="feature ? [feature] : []"
+    :Config="popupConfig"
+    @close="close"
+  ></PopupBase>
+</template>

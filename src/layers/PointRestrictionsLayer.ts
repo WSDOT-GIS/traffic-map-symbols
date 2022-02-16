@@ -63,44 +63,30 @@ const fields = [
 ]
 
 let layer: FeatureLayer | undefined;
+export const layerId = "point-restrictions-layer";
 
-export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
-    layer = await layerUtil.initLayer(jsonUrl,
-        "point-restrictions-layer",
-        "Restriction Points",
-        renderer,
-        fields,
-        "point",
-        false,
-    );
-    return layer;
-}
-
-const getLayer = (): FeatureLayer => {
-    if (!layer) {
-        throw "PointRestrictionLayer is not ready yet!";
+export const initLayer = async (jsonUrl: string): Promise<FeatureLayer | undefined> => {
+    try {
+        layer = await layerUtil.initLayer(jsonUrl,
+            layerId,
+            "Restriction Points",
+            renderer,
+            fields,
+            "point",
+            false,
+        );
+    }
+    catch (ex) {
+        console.error(ex);
     }
     return layer;
 }
-// let layer: GeoJSONLayer | undefined;
 
-// export const initLayer = (url: string): GeoJSONLayer => {
-//     layer = new GeoJSONLayer({
-//         id: "point-restrictions-layer",
-//         url: url,
-//         title: "Restriction Points",
-//         renderer: renderer,
-//         visible: false,
-//         fields: fields
-//     });
-//     return layer;
-// }
-
-// const getLayer = (): GeoJSONLayer => {
-//     if (!layer) {
-//         throw "PointRestrictionLayer is not ready yet!";
-//     }
-//     return layer;
-// }
+const getLayer = (): FeatureLayer | undefined => {
+    if (!layer) {
+        console.error("PointRestrictionLayer is not ready yet!");
+    }
+    return layer;
+}
 
 export default getLayer

@@ -100,8 +100,9 @@ const graphics = [
     },
 ]
 
+export const layerId = "zoom-areas-layer";
 const layer = new FeatureLayer({
-    id: "zoom-areas-layer",
+    id: layerId,
     title: "Metro Areas",
     fields: [
         new Field({

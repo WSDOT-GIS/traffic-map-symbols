@@ -49,17 +49,24 @@ const fields = [
 ]
 
 let layer: FeatureLayer | undefined;
+export const layerId = "mountain-passes-layer";
 
-export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
-    layer = await layerUtil.initLayer(jsonUrl, "mountain-passes-layer", "Mountain Pass Reports",
-        renderer, fields, "point", false);
+export const initLayer = async (jsonUrl: string): Promise<FeatureLayer | undefined> => {
+    try {
+        layer = await layerUtil.initLayer(jsonUrl, layerId, "Mountain Pass Reports",
+            renderer, fields, "point", false);
+    }
+    catch (ex) {
+        console.error(ex);
+        layer = undefined;
+    }
     return layer;
 
 }
 
-const getLayer = (): FeatureLayer => {
+const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
-        throw "MountainPassLayer is not ready yet!";
+        console.error("MountainPassLayer is not ready yet!");
     }
     return layer;
 }

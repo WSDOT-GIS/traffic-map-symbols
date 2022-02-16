@@ -1,11 +1,12 @@
 import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 
 let layer: MapImageLayer | undefined;
+export const layerId = "roads-reference-layer";
 
 export const initLayer = (url: string): MapImageLayer | undefined => {
     try {
         layer = new MapImageLayer({
-            id: "roads-reference-layer",
+            id: layerId,
             url: url,
             title: "ESRI Roads Reference",
             visible: false,

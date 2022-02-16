@@ -8,6 +8,7 @@ const renderer = new simpleRenderer({
 })
 
 let layer: FeatureLayer | undefined;
+export const layerId = "ferry-routes-lines-layer";
 
 // const fields = [
 //     new Field({
@@ -17,24 +18,30 @@ let layer: FeatureLayer | undefined;
 //     }),
 // ]
 
-export const initLayer = async (url: string): Promise<FeatureLayer> => {
-    const graphics = await layerUtil.fetchJsonData(url)
-    layer = new FeatureLayer({
-        id: "ferry-routes-lines-layer",
-        url: url,
-        title: "ferryRoutes",
-        renderer: renderer,
-        visible: false,
-        labelsVisible: false,
-        source: graphics,
-        definitionExpression: '1=0'
-    });
+export const initLayer = async (url: string): Promise<FeatureLayer | undefined> => {
+    try {
+        const graphics = await layerUtil.fetchJsonData(url)
+        layer = new FeatureLayer({
+            id: layerId,
+            url: url,
+            title: "ferryRoutes",
+            renderer: renderer,
+            visible: false,
+            labelsVisible: false,
+            source: graphics,
+            definitionExpression: '1=0'
+        });
+    }
+    catch (ex) {
+        console.error(ex);
+        layer = undefined;
+    }
     return layer;
 }
 
-const getLayer = (): FeatureLayer => {
+const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
-        throw "Ferry Routes is not ready yet!";
+        console.error("Ferry Routes is not ready yet!");
     }
     return layer;
 }

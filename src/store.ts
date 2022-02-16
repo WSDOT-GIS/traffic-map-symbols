@@ -150,13 +150,13 @@ export const store = createStore<State>({
             if (payload.title) { info.title = payload.title }
             if (payload.index) {
                 info.index = payload.index;
-                info.status = payload.index >= 0 ? "loaded" : "failed";
+                if (payload.index >= 0) { info.status = "loaded"; }
             }
             if (payload.url) { info.url = payload.url }
             if (payload.visible !== undefined) { info.visible = payload.visible }
             if (payload.status) { info.status = payload.status }
         },
-        updateLayerInfoVisibility(state, payload: {id: string, visible: boolean}) {
+        updateLayerInfoVisibility(state, payload: { id: string, visible: boolean }) {
             const info = getLayerInfo(state, payload.id);
             info.visible = payload.visible;
         },
@@ -229,6 +229,11 @@ export const store = createStore<State>({
                 commit("updateLayerInfo", updateInfo);
             });
         },
+        flagFailedLayers({ commit }, layerIds: string[]) {
+            layerIds.forEach((eachId) => {
+                commit("updateLayerInfo", { id: eachId, status: "failed" });
+            });
+        },
         /**
          * Update LayerInfo and map layer visibility
          * @param param0 
@@ -237,7 +242,7 @@ export const store = createStore<State>({
         modifyLayerVisibility({ commit, state }, payload: { ids: string[], visible: boolean }) {
             payload.ids.forEach((eachId) => {
                 // const updateInfo: LayerInfo = { id: eachId, visible: payload.visible };
-                commit("updateLayerInfoVisibility", {id: eachId, visible: payload.visible});
+                commit("updateLayerInfoVisibility", { id: eachId, visible: payload.visible });
                 const info = getLayerInfo(state, eachId);
                 if (info.status !== "loaded") {
                     console.warn("Failed to modify layer visibility because the specified layer is not available: " + eachId);

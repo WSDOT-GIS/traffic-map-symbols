@@ -38,10 +38,11 @@ const fields = [
 ]
 
 let layer: FeatureLayer | undefined;
+export const layerId = "border-crossings-layer";
 
 export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
     layer = await layerUtil.initLayer(jsonUrl,
-        "border-crossings-layer",
+        layerId,
         "Border Crossing Points",
         renderer,
         fields,

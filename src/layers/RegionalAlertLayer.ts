@@ -91,29 +91,37 @@ const fields = [
 ]
 
 let layer: FeatureLayer | undefined;
+export const layerId = "regional-alert-layer";
 
-export const initLayer = async (alertUrl: string, countyUrl: string, regionUrl: string): Promise<{ point: FeatureLayer, polygon: FeatureLayer }> => {
-    const fetchResults = await fetchData(alertUrl, countyUrl, regionUrl);
-
-    layer = new FeatureLayer({
-        id: "regional-alert-layer",
-        title: "Regional Alerts",
-        source: fetchResults.point,
-        fields: fields,
-        objectIdField: "EventID",
-        geometryType: "point",
-        spatialReference: SpatialReference.WebMercator,
-        renderer: renderer,
-    });
-    // Create the area boundary layer...
-    const areaLayer = initAreaLayer(fetchResults.polygon);
-
+export const initLayer = async (alertUrl: string, countyUrl: string, regionUrl: string):
+    Promise<{ point: FeatureLayer | undefined, polygon: FeatureLayer | undefined }> => {
+    let areaLayer: FeatureLayer | undefined;
+    try {
+        const fetchResults = await fetchData(alertUrl, countyUrl, regionUrl);
+        layer = new FeatureLayer({
+            id: layerId,
+            title: "Regional Alerts",
+            source: fetchResults.point,
+            fields: fields,
+            objectIdField: "EventID",
+            geometryType: "point",
+            spatialReference: SpatialReference.WebMercator,
+            renderer: renderer,
+        });
+        // Create the area boundary layer...
+        areaLayer = initAreaLayer(fetchResults.polygon);
+    }
+    catch (ex) {
+        console.error(ex);
+        layer = undefined;
+        areaLayer = undefined;
+    }
     return { point: layer, polygon: areaLayer };
 }
 
-const getLayer = (): FeatureLayer => {
+const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
-        throw "Regional Alert Layer is not ready yet!";
+        console.error("Regional Alert Layer is not ready yet!");
     }
     return layer;
 }
@@ -123,17 +131,21 @@ export default getLayer;
 export const reloadData = async (alertUrl: string, countyUrl: string, regionUrl: string): Promise<void> => {
     const fetchResults = await fetchData(alertUrl, countyUrl, regionUrl);
     const pointLyr = getLayer();
-    pointLyr.queryFeatures().then((featureSet) => {
-        pointLyr.applyEdits({ deleteFeatures: featureSet.features }).then(() => {
-            pointLyr.applyEdits({ addFeatures: fetchResults.point });
+    if (pointLyr) {
+        pointLyr.queryFeatures().then((featureSet) => {
+            pointLyr.applyEdits({ deleteFeatures: featureSet.features }).then(() => {
+                pointLyr.applyEdits({ addFeatures: fetchResults.point });
+            });
         });
-    });
+    }
     const polyLyr = AlertAreaLayer();
-    polyLyr.queryFeatures().then((featureSet) => {
-        polyLyr.applyEdits({ deleteFeatures: featureSet.features }).then(() => {
-            polyLyr.applyEdits({ addFeatures: fetchResults.polygon });
+    if (polyLyr) {
+        polyLyr.queryFeatures().then((featureSet) => {
+            polyLyr.applyEdits({ deleteFeatures: featureSet.features }).then(() => {
+                polyLyr.applyEdits({ addFeatures: fetchResults.polygon });
+            });
         });
-    });
+    }
 }
 /**
  * Fetch alerts from JSON, fetch boundaries from county or region map services, then create graphics.
@@ -202,17 +214,6 @@ const fetchData = async (alertUrl: string, countyUrl: string, regionUrl: string)
     return { point: pointGraphics, polygon: polyGraphics };
 }
 
-// export const getFeatureById = async (id: number): Promise<Graphic> => {
-//     const layer = getLayer();
-//     const query = layer.createQuery();
-//     query.where = layer.objectIdField + " = " + id;
-//     query.outFields = ["*"];
-//     const response = await layer.queryFeatures(query);
-//     return response.features[0];
-// }
-// const debugX = -13669225.4615;
-// const debugY = 5938652.26065;
-// let debugCnt = 0;
 /**
  * Center the alert icon in the center of the region that is visible.
  * @param mapExtent 
@@ -220,6 +221,7 @@ const fetchData = async (alertUrl: string, countyUrl: string, regionUrl: string)
  */
 export const centerFeatures = async (visibleExtent?: Extent): Promise<void> => {
     const layer = getLayer();
+    if (!layer) { return; }
     const query = layer.createQuery();
     query.where = "1=1";
     query.returnGeometry = true;
@@ -233,8 +235,10 @@ export const centerFeatures = async (visibleExtent?: Extent): Promise<void> => {
         if (visibleExtent) {
             newPt = await getVisibleCenter(regionId, visibleExtent);
         } else {
-            const regionFtr = await getAreaById(regionId)
-            newPt = (regionFtr.geometry as Polygon).centroid;
+            const regionFtr = await getAreaById(regionId);
+            if (regionFtr) {
+                newPt = (regionFtr.geometry as Polygon).centroid;
+            }
         }
         if (newPt) {
             feature.geometry = newPt;

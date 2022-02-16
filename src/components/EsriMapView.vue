@@ -21,7 +21,7 @@ import {
   getFeatureIdFromUrl,
   getFeatureTypeFromUrl,
 } from "@/utils/urlParamUtil";
-import { getFeature, setLayerVisibility } from "@/utils/layerUtil";
+import { getFeature } from "@/utils/layerUtil";
 import {
   removeGraphicsByType,
   hidePointInteractionGraphics,
@@ -42,7 +42,7 @@ import { initBasemap } from "@/layers/Basemaps";
 import ParkRideLayer from "@/layers/ParkRideLayer";
 import CameraLayer, { toggleCluster } from "@/layers/CameraLayer";
 import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
-import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
+// import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
 import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
 import MountainPassesLayer from "@/layers/MountainPassesLayer";
 import RoadAlertsLayer from "@/layers/RoadAlertsLayer";
@@ -51,7 +51,7 @@ import FireIncidentLayer from "@/layers/FireIncidentLayer";
 import RoadsReferenceLayer from "@/layers/RoadsReferenceLayer";
 import BoundariesPlacesReferenceLayer from "@/layers/BoundariesPlacesReferenceLayer";
 import BorderCrossingLayer from "@/layers/BorderCrossingsLayer";
-import LineFerryRoutesLayer from "@/layers/LineFerryRoutesLayer";
+// import LineFerryRoutesLayer from "@/layers/LineFerryRoutesLayer";
 import PointFerryRoutesLayer from "@/layers/PointFerryRoutesLayer";
 import RegionalAlertLayer, {
   centerFeatures as centerRegionalAlerts,
@@ -83,17 +83,17 @@ import { hasParentClass } from "@/utils/miscUtil";
 export default defineComponent({
   components: {
     ZoomPopupView,
-    // CameraPopup,
-    // ParkRidePopup,
-    // PointRestrictionPopup,
-    // MountainPassPopup,
+    CameraPopup,
+    ParkRidePopup,
+    PointRestrictionPopup,
+    MountainPassPopup,
     // WeatherStationsPopup,
     // RestAreaPopup,
     // RoadAlertPopup,
     // WildfirePointsPopup,
     BorderCrossingPopup,
     // RegionalAlertPopup,
-    // FerryRoutesPopup,
+    FerryRoutesPopup,
     LeftPaneView,
     BasemapView,
     CoordinatesView,
@@ -166,38 +166,22 @@ export default defineComponent({
       esriMap: typeof import("../esri-stuff/esriMap")
     ) => {
       const lyrs = esriMap.validateLayerList([
-          ParkRideLayer(),
-          CameraLayer(),
-          PointRestrictionsLayer(),
-          WeatherStationsLayer(),
-          MountainPassesLayer(),
-          RestAreasLayer(),
-          RoadAlertsLayer(),
-          FireIncidentLayer(),
-          RoadsReferenceLayer(),
-          BoundariesPlacesReferenceLayer(),
-          BorderCrossingLayer(),
-          RegionalAlertLayer(),
-          PointFerryRoutesLayer(),
-          ZoomExtentLayer]);
+        ParkRideLayer(),
+        CameraLayer(),
+        PointRestrictionsLayer(),
+        WeatherStationsLayer(),
+        MountainPassesLayer(),
+        RestAreasLayer(),
+        RoadAlertsLayer(),
+        FireIncidentLayer(),
+        RoadsReferenceLayer(),
+        BoundariesPlacesReferenceLayer(),
+        BorderCrossingLayer(),
+        RegionalAlertLayer(),
+        PointFerryRoutesLayer(),
+        ZoomExtentLayer]);
       const opLayerOpts = {
         include: lyrs
-        // include: [
-        //   ParkRideLayer(),
-        //   CameraLayer(),
-        //   PointRestrictionsLayer(),
-        //   WeatherStationsLayer(),
-        //   MountainPassesLayer(),
-        //   RestAreasLayer(),
-        //   RoadAlertsLayer(),
-        //   FireIncidentLayer(),
-        //   RoadsReferenceLayer(),
-        //   BoundariesPlacesReferenceLayer(),
-        //   BorderCrossingLayer(),
-        //   RegionalAlertLayer(),
-        //   PointFerryRoutesLayer(),
-        //   ZoomExtentLayer,
-        // ],
       };
       if (pointerMoveHandle) {
         pointerMoveHandle.remove();
@@ -301,8 +285,8 @@ export default defineComponent({
               } else {
                 const target = clickEvent.target as HTMLElement;
                 if (hasParentClass(target, "alert-content") == false) {
-                  hidePointInteractionGraphics(LineRestrictionsLayer());
-                  hidePointInteractionGraphics(LineFerryRoutesLayer());
+                  hidePointInteractionGraphics("line-restrictions-layer", esriMap.webmap);
+                  hidePointInteractionGraphics("ferry-routes-lines-layer", esriMap.webmap);
                 }
                 // Not aggregate...
                 const id = g.getObjectId();
@@ -314,7 +298,7 @@ export default defineComponent({
                       result?.attributes.lineMarker == "True"
                     ) {
                       displayPointInteractionGraphics(
-                        LineRestrictionsLayer(),
+                        "line-restrictions-layer", esriMap.webmap,
                         "UniqueId",
                         result?.attributes.UniqueId
                       );
@@ -328,7 +312,7 @@ export default defineComponent({
                   // Display line...
                   getFeatureInfoById(id, g.layer as FeatureLayer).then((result) => {
                     displayPointInteractionGraphics(
-                      LineFerryRoutesLayer(),
+                      "ferry-routes-lines-layer", esriMap.webmap,
                       "FerryRouteID",
                       result?.attributes.FerryRouteID
                     );
@@ -343,8 +327,8 @@ export default defineComponent({
           } else {
             const target = clickEvent.target as HTMLElement;
             if (hasParentClass(target, "alert-content") == false) {
-              hidePointInteractionGraphics(LineRestrictionsLayer());
-              hidePointInteractionGraphics(LineFerryRoutesLayer());
+              hidePointInteractionGraphics("line-restrictions-layer", esriMap.webmap);
+              hidePointInteractionGraphics("ferry-routes-lines-layer", esriMap.webmap);
               removeGraphicsByType("selectedGraphic");
               removeGraphicsByType("myLocation"); //remove "my location" graphic
               //No feature exist...
@@ -369,7 +353,7 @@ export default defineComponent({
       const basemapInfo = getBasemapFromUrl();
       store.commit("setBasemap", basemapInfo.name);
       // Read config, then load operational layers...
-      await esriMap.loadOperationalLayers();
+      const failedLyrIds = await esriMap.loadOperationalLayers();
       //set watcher to turn off initial loader screen
       const mapLayers = esriMap.getLayers() as Collection<Layer>;
       let vlPromises = [] as Array<Promise<LayerView>>;
@@ -397,9 +381,12 @@ export default defineComponent({
        * Otherwise user will see a map without layer list until everything is ready. */
       store.dispatch("updateLayerList");
       // Load regional alert after the other operations layers have been loaded so it won't slow down the map loading...
-      await esriMap.loadRegionalAlert();
-      // Update the layer list with regional alert layers.
+      const failedAlertLyrIds = await esriMap.loadRegionalAlert();
+      failedLyrIds.push(...failedAlertLyrIds);
+      // Update the layer list with regional alert layers in the store.
       store.dispatch("updateLayerList");
+      // Flag layers that failed to load in the store.
+      store.dispatch("flagFailedLayers", failedLyrIds);
       // Set refresh interval for layers & alerts...
       setInterval(() => {
         esriMap.refreshLayerData();
@@ -417,7 +404,7 @@ export default defineComponent({
       // Set layer visibility based on URL query...
       const layerIds = setVisibleLayersFromUrl(/*store.state.layerList,*/ route);
       //store.commit("setLayerList", layerList);
-      store.dispatch("modifyLayerVisibility", {ids: layerIds, visible: true});
+      store.dispatch("modifyLayerVisibility", { ids: layerIds, visible: true });
       // Set the initial map size in the state store...
       store.commit("setMapSize", {
         width: mapView.width,
@@ -439,7 +426,7 @@ export default defineComponent({
               } else {
                 if (featureType == "restriction") {
                   displayPointInteractionGraphics(
-                    LineRestrictionsLayer(),
+                    "line-restrictions-layer", esriMap.webmap,
                     "UniqueId",
                     result?.attributes.UniqueId
                   );
@@ -449,7 +436,7 @@ export default defineComponent({
               if (!result.layer.visible) {
                 //const layerList = setLayerVisibility(result.layer.id, true, store.state.layerList);
                 //store.commit("setLayerList", layerList);
-                store.dispatch("modifyLayerVisibility", {ids: [result.layer.id], visible: true});
+                store.dispatch("modifyLayerVisibility", { ids: [result.layer.id], visible: true });
               }
               // Zoom in (zoom level differs depends on the device)...
               let zoomLevel: number;
@@ -645,17 +632,17 @@ export default defineComponent({
     :Label="zoomPopupLabel"
     @clicked="zoomMetroEventHandler"
   ></ZoomPopupView>
-  <!--<CameraPopup :MapXY="popupXY" :Featureset="popupFeatureset" />
+  <CameraPopup :MapXY="popupXY" :Featureset="popupFeatureset" />
   <ParkRidePopup :Featureset="popupFeatureset" />
   <PointRestrictionPopup :Featureset="popupFeatureset" />
   <MountainPassPopup :Featureset="popupFeatureset" />
-  <WeatherStationsPopup :Featureset="popupFeatureset" />
+  <!--<WeatherStationsPopup :Featureset="popupFeatureset" />
   <RestAreaPopup :Featureset="popupFeatureset" />
   <RoadAlertPopup :Featureset="popupFeatureset" />
   <WildfirePointsPopup :Featureset="popupFeatureset" />-->
   <BorderCrossingPopup :Featureset="popupFeatureset" />
-  <!--<RegionalAlertPopup :Featureset="popupFeatureset" />
-  <FerryRoutesPopup :Featureset="popupFeatureset" :Alerts="ferryAlerts" />-->
+  <!--<RegionalAlertPopup :Featureset="popupFeatureset" />-->
+  <FerryRoutesPopup :Featureset="popupFeatureset" :Alerts="ferryAlerts" />
   <LeftPaneView />
 </template>
 

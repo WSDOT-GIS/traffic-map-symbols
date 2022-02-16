@@ -1,10 +1,11 @@
 import TileLayer from "@arcgis/core/layers/TileLayer";
 
 let layer: TileLayer | undefined;
+export const layerId = "state-route-shields-layer";
 
 export const initLayer = (url: string): TileLayer => {
     layer = new TileLayer({
-        id: "state-route-shields-layer",
+        id: layerId,
         url: url,
         title: "State Route Shields",
         visible: true,

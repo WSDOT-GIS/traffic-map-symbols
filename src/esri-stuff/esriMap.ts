@@ -88,9 +88,10 @@ export const init = (container: HTMLDivElement): void => {
 /** Store the default layer visibility. This is used by Saved Map function. */
 export const defaultLayerProps: { id: string, visible: boolean }[] = []
 /**
- * Get config and get apiKey and URL, then initialize layers and add to map...
+ * Get config and get apiKey and URL, then initialize layers and add to map..
+ * Returns the list of IDs of the layers that failed to load.
  */
-export const loadOperationalLayers = async (): Promise<void> => {
+export const loadOperationalLayers = async (): Promise<string[]> => {
     const config = getConfig();
     // Load async ones in parallel...
     const promises = []
@@ -122,36 +123,40 @@ export const loadOperationalLayers = async (): Promise<void> => {
     // Wait for all the async ones to finish loading...
     await Promise.all(promises);
     // Create list of layers to load to the map...
-    const lyrs: (Layer | undefined)[] = [];
-    lyrs.push(RoadsReferenceLayer.default(),
-        BoundariesPlacesReferenceLayer.default(),
-        FerryRoutesReferenceLayer.default(),
-        TrafficLayer.default(),
-        LineFerryRoutesLayer.default(),
-        StateRouteShieldsLayer.default());
-    if (fireIncidentLayer && FirePerimetersLayer.default()) {
-        lyrs.push(fireIncidentLayer, FirePerimetersLayer.default());
+    const loadedLyrs: Layer[] = [];
+    const failedLyrIds: string[] = [];
+    const addToList = (layer: Layer | undefined, layerId: string) => {
+        if (layer) { loadedLyrs.push(layer); }
+        else { failedLyrIds.push(layerId) }
     }
-    lyrs.push(MileMakersLayer.default(),
-        BorderCrossingsLayer.default(),
-        ParkRideLayer.default(),
-        RestAreasLayer.default(),
-        WeatherLayer.default(),
-        MountainLayer.default());
-    if (PointRestrictionsLayer.default()) {
-        lyrs.push(LineRestrictionsLayer.default(), PointRestrictionsLayer.default());
-    }
-    lyrs.push(CameraLayer.default(),
-        FerryRoutePointsLayer.default(),
-        RoadAlertsLayer.default());
+    addToList(RoadsReferenceLayer.default(), RoadsReferenceLayer.layerId);
+    addToList(BoundariesPlacesReferenceLayer.default(), BoundariesPlacesReferenceLayer.layerId);
+    addToList(FerryRoutesReferenceLayer.default(), FerryRoutesReferenceLayer.layerId);
+    addToList(TrafficLayer.default(), TrafficLayer.layerId);
+    addToList(LineFerryRoutesLayer.default(), LineFerryRoutesLayer.layerId);
+    addToList(StateRouteShieldsLayer.default(), StateRouteShieldsLayer.layerId);
+    addToList(FirePerimetersLayer.default(), FirePerimetersLayer.layerId);
+    addToList(fireIncidentLayer, FireIncidentsLayer.layerId);
+    addToList(MileMakersLayer.default(), MileMakersLayer.layerId);
+    addToList(BorderCrossingsLayer.default(), BorderCrossingsLayer.layerId);
+    addToList(ParkRideLayer.default(), ParkRideLayer.layerId);
+    addToList(RestAreasLayer.default(), RestAreasLayer.layerId);
+    addToList(WeatherLayer.default(), WeatherLayer.layerId);
+    addToList(MountainLayer.default(), MountainLayer.layerId);
+    addToList(LineRestrictionsLayer.default(), LineRestrictionsLayer.layerId);
+    addToList(PointRestrictionsLayer.default(), PointRestrictionsLayer.layerId);
+    addToList(CameraLayer.default(), CameraLayer.layerId);
+    addToList(FerryRoutePointsLayer.default(), FerryRoutePointsLayer.layerId);
+    addToList(RoadAlertsLayer.default(), RoadAlertsLayer.layerId);
     // Remove all the ones that did not load...
-    const validLyrs = validateLayerList(lyrs);
+    // const validLyrs = validateLayerList(lyrs);
     // The first one in the array will be displayed at the bottom of the map... 
-    webmap.addMany(validLyrs);
+    webmap.addMany(loadedLyrs);
     // Store the default visibility...
     webmap.layers.forEach((eachLyr) => {
         defaultLayerProps.push({ id: eachLyr.id, visible: eachLyr.visible });
     });
+    return failedLyrIds;
 }
 /**
  * Filter out the layers that did not load.
@@ -168,12 +173,25 @@ export const validateLayerList = (list: (Layer | undefined)[]): Layer[] => {
 export const isLayer = (layer: Layer | undefined): layer is Layer => {
     return !!layer;
 }
-/** Load regional alert point and polygon layers separately from the other operation layers. */
-export const loadRegionalAlert = async (): Promise<void> => {
+/** 
+ * Load regional alert point and polygon layers separately from the other operation layers. 
+ * Returns layer IDs of the layers that failed to load.
+*/
+export const loadRegionalAlert = async (): Promise<string[]> => {
     const config = getConfig();
     const layers = await RegionalAlertLayer.initLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
-    webmap.add(layers.point);
-    webmap.add(layers.polygon, 0);
+    const failedLayerIds: string[] = [];
+    if (layers.point) {
+        webmap.add(layers.point);
+    } else {
+        failedLayerIds.push(RegionalAlertLayer.layerId);
+    }
+    if (layers.polygon) {
+        webmap.add(layers.polygon, 0);
+    } else {
+        failedLayerIds.push(AlertAreaLayer.layerId);
+    }
+    return failedLayerIds;
 }
 /**
  * Reload data for some layers.

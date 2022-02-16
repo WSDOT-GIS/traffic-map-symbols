@@ -14,5 +14,9 @@ module.exports = {
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    // note you must disable the base rule as it can report incorrect errors
+    // See https://github.com/typescript-eslint/typescript-eslint/blob/main/packages/eslint-plugin/docs/rules/no-loss-of-precision.md
+    "no-loss-of-precision": "off",
+    "@typescript-eslint/no-loss-of-precision": ["error"]
   }
 }

@@ -1,9 +1,10 @@
 import TileLayer from "@arcgis/core/layers/TileLayer";
 let layer: TileLayer | undefined;
+export const layerId = "ferry-routes-reference-layer";
 
 export const initLayer = (url: string): TileLayer => {
     layer = new TileLayer({
-        id: "ferry-routes-reference-layer",
+        id: layerId,
         url: url,
         title: "Ferry Routes Reference",
         visible: false,
