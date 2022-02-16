@@ -4,7 +4,7 @@ import Field from "@arcgis/core/layers/support/Field";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 import * as layerUtil from "@/utils/layerUtil";
-import  symbol  from "@/symbols/TravelTimeSymbol"
+import symbol from "@/symbols/TravelTimeSymbol"
 
 const renderer = new SimpleRenderer({
     symbol: symbol
@@ -41,21 +41,25 @@ const fields = [
 let layer: FeatureLayer | undefined;
 export const layerId = "travel-times-layer";
 
-export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
-    layer = await layerUtil.initLayer(jsonUrl, 
-        layerId,
-        "Travel Times",
-        renderer,
-        fields,
-        "point",
-        false,
-    );
+export const initLayer = async (jsonUrl: string): Promise<FeatureLayer | undefined> => {
+    try {
+        layer = await layerUtil.initLayer(jsonUrl,
+            layerId,
+            "Travel Times",
+            renderer,
+            fields,
+            "point",
+            false,
+        );
+    } catch (ex) {
+        console.error(ex);
+    }
     return layer;
 }
 
-const getLayer = (): FeatureLayer => {
+const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
-        throw "TravelTimesLayer is not ready yet!";
+        console.error("TravelTimesLayer is not ready yet!");
     }
     return layer;
 }
