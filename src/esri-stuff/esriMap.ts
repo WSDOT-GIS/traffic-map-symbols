@@ -89,7 +89,8 @@ export const init = (container: HTMLDivElement): void => {
 export const defaultLayerProps: { id: string, visible: boolean }[] = []
 /**
  * Get config and get apiKey and URL, then initialize layers and add to map..
- * Returns the list of IDs of the layers that failed to load.
+ * 
+ * @returns The list of IDs of the layers that failed to load.
  */
 export const loadOperationalLayers = async (): Promise<string[]> => {
     const config = getConfig();
@@ -123,10 +124,10 @@ export const loadOperationalLayers = async (): Promise<string[]> => {
     // Wait for all the async ones to finish loading...
     await Promise.all(promises);
     // Create list of layers to load to the map...
-    const loadedLyrs: Layer[] = [];
+    const lyrs: Layer[] = [];
     const failedLyrIds: string[] = [];
     const addToList = (layer: Layer | undefined, layerId: string) => {
-        if (layer) { loadedLyrs.push(layer); }
+        if (layer) { lyrs.push(layer); }
         else { failedLyrIds.push(layerId) }
     }
     addToList(RoadsReferenceLayer.default(), RoadsReferenceLayer.layerId);
@@ -148,10 +149,8 @@ export const loadOperationalLayers = async (): Promise<string[]> => {
     addToList(CameraLayer.default(), CameraLayer.layerId);
     addToList(FerryRoutePointsLayer.default(), FerryRoutePointsLayer.layerId);
     addToList(RoadAlertsLayer.default(), RoadAlertsLayer.layerId);
-    // Remove all the ones that did not load...
-    // const validLyrs = validateLayerList(lyrs);
     // The first one in the array will be displayed at the bottom of the map... 
-    webmap.addMany(loadedLyrs);
+    webmap.addMany(lyrs);
     // Store the default visibility...
     webmap.layers.forEach((eachLyr) => {
         defaultLayerProps.push({ id: eachLyr.id, visible: eachLyr.visible });

@@ -146,23 +146,24 @@ export const store = createStore<State>({
         },
         /**
          * Update the layer info in the layer list
+         *
          * @param state 
          * @param payload Set the properties that need to be updated, and leave others undefined. Undefined properties will not be updated. 
          */
-        updateLayerInfo(state, payload: { id: string, title?: string, index?: number, url?: string, visible?: boolean, status?: "loaded" | "failed" }) {
-            // const info = state.layerList.find((item) => item.id === payload.id);
-            // if (!info) {
-            //     throw `The layer specified, ${payload.id}, does not exist in the state store.`;
-            // }
+        updateLayerInfo(state, payload: { id: string, title?: string, index?: number, url?: string, visible?: boolean, 
+        status?: "not-loaded" | "loading" | "loaded" | "failed" }) {
             const info = getLayerInfo(state, payload.id);
             if (payload.title) { info.title = payload.title }
-            if (payload.index) {
-                info.index = payload.index;
-                if (payload.index >= 0) { info.status = "loaded"; }
-            }
+            if (payload.index) { info.index = payload.index; }
             if (payload.url) { info.url = payload.url }
             if (payload.visible !== undefined) { info.visible = payload.visible }
-            if (payload.status) { info.status = payload.status }
+            if (payload.status) { 
+                
+                if (info.status !== "failed" && payload.status === "failed") {
+                    showError(state, `The layer, ${info.id}, failed to load.`);
+                }
+                info.status = payload.status 
+            }
         },
         updateLayerInfoVisibility(state, payload: { id: string, visible: boolean }) {
             const info = getLayerInfo(state, payload.id);
@@ -207,7 +208,8 @@ export const store = createStore<State>({
                     id: layer.id,
                     index: index,
                     title: layer.title,
-                    visible: layer.visible
+                    visible: layer.visible,
+                    status: layer.loadStatus
                 }
                 commit("updateLayerInfo", updateInfo);
             });
@@ -240,12 +242,8 @@ export const store = createStore<State>({
                 layer.visible = payload.visible;
             });
         },
-        showError({ state, commit }, message: string) {
+        showError({ state }, message: string) {
             showError(state, message);
-            // if (state.isToastReady) {
-            //     toast.error(message);
-            // }
-            // else { commit("saveError", message); }
         },
         // Set the flag to indicate the toast message is ready to be shown.
         // If there are errors happened earlier, show them now.

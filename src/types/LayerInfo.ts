@@ -4,7 +4,7 @@ class LayerInfo {
     index = -1;
     visible = false;
     url = "";
-    status: "none" | "loaded" | "failed" = "none";
+    status: "not-loaded" | "loading" | "loaded" | "failed" = "not-loaded";
 
     constructor(id: string) {
         this.id = id;
