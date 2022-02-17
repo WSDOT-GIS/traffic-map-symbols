@@ -655,7 +655,7 @@ export default defineComponent({
 </template>
 
 <style scoped>
-@import "https://js.arcgis.com/4.19/@arcgis/core/assets/esri/themes/light/main.css";
+@import "https://js.arcgis.com/4.21/@arcgis/core/assets/esri/themes/light/main.css";
 #esri-map-view {
   padding: 0;
   margin: 0;
