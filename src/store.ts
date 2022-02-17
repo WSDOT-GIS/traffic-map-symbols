@@ -105,17 +105,25 @@ export const store = createStore<State>({
         }
     },
     mutations: {
-        setBasemap(state, payload) {
+        setBasemap(state, payload: string) {
             if (state.basemap != payload || !state.basemap) {
                 const basemapInfo = getBasemapInfo(payload);
                 state.basemap = basemapInfo.name;
-                webmap.basemap = basemapInfo.basemap;
+                if (basemapInfo.basemap) {
+                    webmap.basemap = basemapInfo.basemap;
+                } else {
+                    console.error(`The specified basemap, ${payload}, is not available.`);
+                }
             }
         },
         toggleBasemap(state) {
             const basemapInfo = toggleBasemapInfo(state.basemap);
             state.basemap = basemapInfo.name;
-            webmap.basemap = basemapInfo.basemap;
+            if (basemapInfo.basemap) {
+                webmap.basemap = basemapInfo.basemap;
+            } else {
+                console.error(`The specified basemap, ${basemapInfo.name}, is not available.`);
+            }
         },
         setPointerX(state, payload) {
             state.pointerX = payload.toFixed(6);
@@ -160,31 +168,6 @@ export const store = createStore<State>({
             const info = getLayerInfo(state, payload.id);
             info.visible = payload.visible;
         },
-        // setLayerList(state, payload: LayerInfo[]) {
-        //     let layerList: LayerInfo[];
-        //     if (!payload) {
-        //         layerList = [];
-        //         webmap.layers.forEach((layer, index) => {
-        //             layerList.push({
-        //                 id: layer.id,
-        //                 index: index,
-        //                 title: layer.title,
-        //                 visible: layer.visible,
-        //             });
-        //         });
-        //     }
-        //     else {
-        //         layerList = payload;
-        //     }
-        //     state.layerList = layerList;
-        //     if (payload) {
-        //         webmap.layers.forEach((layer, index) => {
-        //             if (state.layerList[index] && layer.id == state.layerList[index].id) {
-        //                 layer.visible = state.layerList[index].visible
-        //             }
-        //         })
-        //     }
-        // },
         setCurrentExtent(state, payload) {
             if (payload instanceof Extent) {
                 // If the payload is ESRI extent, then update the state only.
@@ -229,10 +212,13 @@ export const store = createStore<State>({
                 commit("updateLayerInfo", updateInfo);
             });
         },
-        flagFailedLayers({ commit }, layerIds: string[]) {
+        flagFailedLayers({ commit, state }, layerIds: string[]) {
             layerIds.forEach((eachId) => {
                 commit("updateLayerInfo", { id: eachId, status: "failed" });
             });
+            if (layerIds.length > 0) {
+                showError(state, "Failed to load layer(s): " + layerIds.join(", "));
+            }
         },
         /**
          * Update LayerInfo and map layer visibility
@@ -255,10 +241,11 @@ export const store = createStore<State>({
             });
         },
         showError({ state, commit }, message: string) {
-            if (state.isToastReady) {
-                toast.error(message);
-            }
-            else { commit("saveError", message); }
+            showError(state, message);
+            // if (state.isToastReady) {
+            //     toast.error(message);
+            // }
+            // else { commit("saveError", message); }
         },
         // Set the flag to indicate the toast message is ready to be shown.
         // If there are errors happened earlier, show them now.
@@ -278,6 +265,13 @@ const getLayerInfo = (state: State, id: string): LayerInfo => {
     const info = state.layerList.find((item) => item.id === id);
     if (!info) { throw "Layer with specified ID, " + id + ", does not exist." }
     return info;
+}
+
+const showError = (state: State, message: string) => {
+    if (state.isToastReady) {
+        toast.error(message);
+    }
+    else { store.commit("saveError", message); }
 }
 
 /**

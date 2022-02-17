@@ -1,22 +1,8 @@
-<template>
-  <div id="basemap-widget-container">
-    <MapButtonView @click="onClick" :Height="imgSize" aria-label="Change basemap">
-      <template v-slot>
-        <div class="basemap-img-container">
-          <img :src="imgSrc" :height="imgSize" alt />
-          <label :class="topLabelClass" :id="labelStyle">{{ iconTitle }}</label>
-          <label :class="bottomLabelClass" :id="labelStyle">Basemap</label>
-        </div>
-      </template>
-    </MapButtonView>
-  </div>
-</template>
-
 <script lang="ts">
 import { useStore } from "@/store";
 import { computed, defineComponent, ref, watch } from "vue";
 import MapButtonView from "@/components/MapButtonView.vue";
-import { webmap } from "@/esri-stuff/esriMap";
+
 /* eslint @typescript-eslint/no-var-requires: "off" */
 export default defineComponent({
   components: { MapButtonView },
@@ -107,7 +93,20 @@ export default defineComponent({
   },
 });
 </script>
- <style scoped>
+<template>
+  <div id="basemap-widget-container">
+    <MapButtonView @click="onClick" :Height="imgSize" AriaLabel="Change basemap">
+      <template v-slot>
+        <div class="basemap-img-container">
+          <img :src="imgSrc" :height="imgSize" alt="" />
+          <label :class="topLabelClass" :id="labelStyle">{{ iconTitle }}</label>
+          <label :class="bottomLabelClass" :id="labelStyle">Basemap</label>
+        </div>
+      </template>
+    </MapButtonView>
+  </div>
+</template>
+<style scoped>
 /*Defines the style of the basemap picker*/
 #iconImage {
   height: 100px;

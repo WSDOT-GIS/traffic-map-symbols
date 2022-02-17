@@ -132,24 +132,24 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
     const field = fLayer.getField(groupInfo.layers[0].uniqueField);
     console.log('b');
     query.where = `${groupInfo.layers[0].uniqueField} = `;
-    if(field.type=='string'){
-        if((uniqueValue as string).split("-").length>0){
-            const uniqueValues = (uniqueValue as string).split("-").map((value)=>{
-                if(value=="to"||value=="To"){
+    if (field.type == 'string') {
+        if ((uniqueValue as string).split("-").length > 0) {
+            const uniqueValues = (uniqueValue as string).split("-").map((value) => {
+                if (value == "to" || value == "To") {
                     return "to"
                 }
-                else{
-                    const properCase = (value[0].toLocaleUpperCase())+(value.substring(1).toLocaleLowerCase())
+                else {
+                    const properCase = (value[0].toLocaleUpperCase()) + (value.substring(1).toLocaleLowerCase())
                     return (properCase)
                 }
             })
-            query.where +=`'${(uniqueValues.join('-'))}'`;
+            query.where += `'${(uniqueValues.join('-'))}'`;
         }
-        else{
+        else {
             query.where += `'${uniqueValue}'`
         }
     }
-    else if(field.type=='date'){
+    else if (field.type == 'date') {
         query.where += `'${uniqueValue}'`
     }
     else {
@@ -219,11 +219,11 @@ export const reloadData = async (jsonUrl: string, layer: FeatureLayer | undefine
     const reload = async (jsonUrl: string, layer: FeatureLayer): Promise<void> => {
         if (!layer.visible) { return; }
         // Fetch all features from JSON...
-        await fetchJsonData(jsonUrl).then(async (graphics) => {
-            if (graphics.length > 0) {
-                await replaceFeatures(layer, graphics);
-            }
-        })
+        const graphics = await fetchJsonData(jsonUrl);//.then(async (graphics) => {
+        if (graphics.length > 0) {
+            await replaceFeatures(layer, graphics);
+        }
+        //})
     }
     // Check if the layer is already being loaded currently or not...
     const runningProc = loadManager.find(x => x.id === layer.id);
@@ -251,7 +251,6 @@ export const replaceFeatures = async (layer: FeatureLayer, newFeatures: Graphic[
 export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
     // Fetch all features from JSON...
     const json = await fetchJson(jsonUrl);
-    //const json = await response.json();
     if (!isEsriFeatures(json)) {
         throw "Invalid JSON format. It is not ESRI Features JSON."
     }

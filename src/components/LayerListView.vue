@@ -1,3 +1,42 @@
+<script lang="ts">
+import { useStore } from "@/store";
+import { computed, defineComponent } from "vue";
+import { layerListIcons } from "@/symbols/IconDefinitions";
+import ToggleSwitchView from "./ToggleSwitchView.vue";
+import LayerInfo from "@/types/LayerInfo";
+
+export default defineComponent({
+  components: { ToggleSwitchView },
+  setup() {
+    const store = useStore();
+    const layerIcons = layerListIcons;
+    const layerList = computed(() => store.state.layerList);
+    //#region toggle layer on and off
+    const clickEvent = async (evt: { checked: boolean; value: string }) => {
+      const ids = evt.value.split(",");
+      store.dispatch("modifyLayerVisibility", { ids: ids, visible: evt.checked });
+    };
+    const getLayerVisibility = (id: string): boolean => {
+      const info = store.getters.getLayerInfoById(id);
+      let visible = false;
+      if (info) {
+        visible = (info as LayerInfo).visible;
+      }
+      return visible;
+    };
+    const getLayerTitle = (id: string): string => {
+      const info = store.getters.getLayerInfoById(id);
+      let title = "";
+      if (info) {
+        title = (info as LayerInfo).title;
+      }
+      return title;
+    };
+
+    return { layerIcons, layerList, clickEvent, getLayerVisibility, getLayerTitle };
+  },
+});
+</script>
 <template>
   <div id="layer-list-widget" title="Map Features" v-if="layerList.length > 0">
     <!-- Column headers -->
@@ -10,7 +49,7 @@
       @toggle="clickEvent"
       :Enabled="true"
       :Checked="getLayerVisibility('traffic-flow-layer')"
-      Value='traffic-flow-layer'
+      Value="traffic-flow-layer"
       :Title="'Toggle ' + getLayerTitle('traffic-flow-layer')"
     >
       <template v-slot>
@@ -46,7 +85,7 @@
       @toggle="clickEvent"
       :Enabled="true"
       :Checked="getLayerVisibility('road-alerts-layer')"
-      Value='road-alerts-layer,ferry-routes-points-layer'
+      Value="road-alerts-layer,ferry-routes-points-layer"
       :Title="'Toggle ' + getLayerTitle('road-alerts-layer')"
     >
       <template v-slot>
@@ -91,7 +130,7 @@
         @toggle="clickEvent"
         :Enabled="true"
         :Checked="getLayerVisibility('traffic-camera-layer')"
-        Value='traffic-camera-layer'
+        Value="traffic-camera-layer"
         :Title="'Toggle ' + getLayerTitle('traffic-camera-layer')"
       >
         <template v-slot>
@@ -111,7 +150,7 @@
         @toggle="clickEvent"
         :Enabled="true"
         :Checked="getLayerVisibility('point-restrictions-layer')"
-        Value='point-restrictions-layer,line-restrictions-layer'
+        Value="point-restrictions-layer,line-restrictions-layer"
         :Title="'Toggle ' + getLayerTitle('point-restrictions-layer')"
       >
         <template v-slot>
@@ -131,7 +170,7 @@
         @toggle="clickEvent"
         :Enabled="true"
         :Checked="getLayerVisibility('mountain-passes-layer')"
-        Value='mountain-passes-layer'
+        Value="mountain-passes-layer"
         :Title="'Toggle ' + getLayerTitle('mountain-passes-layer')"
       >
         <template v-slot>
@@ -151,7 +190,7 @@
         @toggle="clickEvent"
         :Enabled="true"
         :Checked="getLayerVisibility('weather-stations-layer')"
-        Value='weather-stations-layer'
+        Value="weather-stations-layer"
         :Title="'Toggle ' + getLayerTitle('weather-stations-layer')"
       >
         <template v-slot>
@@ -171,7 +210,7 @@
         @toggle="clickEvent"
         :Enabled="true"
         :Checked="getLayerVisibility('rest-areas-layer')"
-        Value='rest-areas-layer'
+        Value="rest-areas-layer"
         :Title="'Toggle ' + getLayerTitle('rest-areas-layer')"
       >
         <template v-slot>
@@ -191,7 +230,7 @@
         @toggle="clickEvent"
         :Enabled="true"
         :Checked="getLayerVisibility('park-ride-layer')"
-        Value='park-ride-layer'
+        Value="park-ride-layer"
         :Title="'Toggle ' + getLayerTitle('park-ride-layer')"
       >
         <template v-slot>
@@ -211,7 +250,7 @@
         @toggle="clickEvent"
         :Enabled="true"
         :Checked="getLayerVisibility('border-crossings-layer')"
-        Value='border-crossings-layer'
+        Value="border-crossings-layer"
         :Title="'Toggle ' + getLayerTitle('border-crossings-layer')"
       >
         <template v-slot>
@@ -267,92 +306,6 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import { useStore } from "@/store";
-import { computed, defineComponent } from "vue";
-import { layerListIcons } from "@/symbols/IconDefinitions";
-import ToggleSwitchView from "./ToggleSwitchView.vue";
-import LayerInfo from "@/types/LayerInfo";
-
-export default defineComponent({
-  components: { ToggleSwitchView },
-  setup() {
-    const store = useStore();
-    const layerIcons = layerListIcons;
-    const layerList = computed(() => store.state.layerList);
-    //#region toggle layer on and off
-    const clickEvent = async (evt: { checked: boolean; value: string }) => {
-      console.log(evt.value);
-      const ids = evt.value.split(",");
-      console.log("IDs: " + ids);
-      store.dispatch("modifyLayerVisibility", { ids: ids, visible: evt.checked });
-      // store.state.layerList.map((layer, index) => {
-      //   if (evt) {
-      //     const idxs = evt.value.split(",");
-      //     for (let i = 0; i < idxs.length; i++) {
-      //       if (index.toString() === idxs[i]) {
-      //         layer.visible = evt.checked;
-      //       }
-      //     }
-      //   }
-      // });
-      // store.commit("setLayerList", store.state.layerList);
-    }
-    const getLayerVisibility = (id: string): boolean => {
-      const info = store.getters.getLayerInfoById(id);
-      let visible = false;
-      if (info) {
-        visible = (info as LayerInfo).visible;
-      }
-      return visible;
-    }
-    const getLayerTitle = (id: string): string => {
-      const info = store.getters.getLayerInfoById(id);
-      let title = "";
-      if (info) {
-        title = (info as LayerInfo).title;
-      }
-      return title;
-    }
-
-    const getLayerIndex = (id: string): number => { return 1 }
-
-    return { layerIcons, layerList, clickEvent, getLayerVisibility, getLayerIndex, getLayerTitle };
-  },
-  // computed: {
-  //   layerList() {
-  //     return store.state.layerList;
-  //   },
-  // },
-  // methods: {
-  //   //#region toggle layer on and off
-  //   clickEvent: async (evt: { checked: boolean; value: string }) => {
-  //     store.state.layerList.map((layer, index) => {
-  //       if (evt) {
-  //         const idxs = evt.value.split(",");
-  //         for (let i = 0; i < idxs.length; i++) {
-  //           if (index.toString() === idxs[i]) {
-  //             layer.visible = evt.checked;
-  //           }
-  //         }
-  //       }
-  //     });
-  //     store.commit("setLayerList", store.state.layerList);
-  //   },
-  //   getLayerIndex: (id: string): number => {
-  //     let layerIndex = -1;
-  //     store.state.layerList.map((val, index) => {
-  //       if (val.id == id) {
-  //         layerIndex = index;
-  //       }
-  //     });
-  //     return layerIndex;
-  //   },
-
-  //   //#endregion
-  // },
-});
-</script>
 <style scoped>
 #layer-list-widget {
   padding-bottom: 16px;

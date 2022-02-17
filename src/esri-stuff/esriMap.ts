@@ -284,23 +284,26 @@ export const zoomToExtent = async (extent: Extent): Promise<void> => {
     });
 }
 
-let maxScale = 0;
+// let maxScale = 0;
 
-export const getMaxScale = (): number => {
-    if (maxScale > 0) {
-        return maxScale;
-    } else {
-        const info = getBasemapInfo("wsdot");
-        const lyr = info.basemap.baseLayers.getItemAt(0);
-        const tile = lyr as TileLayer;
-        maxScale = tile.maxScale;
-        return maxScale;
-    }
-}
+// export const getMaxScale = (): number => {
+//     if (maxScale > 0) {
+//         return maxScale;
+//     } else {
+//         const info = getBasemapInfo("wsdot");
+//         if (info.basemap) {
+//             const lyr = info.basemap.baseLayers.getItemAt(0);
+//             const tile = lyr as TileLayer;
+//             maxScale = tile.maxScale;
+//             return maxScale;
+//         }
+//         else { return 0 }
+//     }
+// }
 /** Zoom levels and corresponding scales */
 let zoomLevels: { level: number, scale: number }[];
 /**
- * Get the scale by the number levels from the minimum scale.
+ * Get the scale by the number of levels from the minimum scale.
  * @param numLevelsFromMin Number of levels from the minimum scale. 
  * For example, 0 is the min scale. 3 is the fourth level from the min scale.
  * You can also specify number of levels from the maximum scale by using the negative value.
@@ -309,13 +312,16 @@ let zoomLevels: { level: number, scale: number }[];
 export const getZoomLevel = (numLevelsFromMin: number): { level: number, scale: number } => {
     if (!zoomLevels) {
         const info = getBasemapInfo("wsdot");
-        const lyr = info.basemap.baseLayers.getItemAt(0);
-        const tile = lyr as TileLayer;
-        const lods = tile.tileInfo.lods;
-        zoomLevels = lods.map((x) => {
-            return { level: x.level, scale: x.scale };
-        })
-        zoomLevels.sort((a, b) => a.level - b.level);
+        if (info.basemap) {
+            const lyr = info.basemap.baseLayers.getItemAt(0);
+            const tile = lyr as TileLayer;
+            const lods = tile.tileInfo.lods;
+            zoomLevels = lods.map((x) => {
+                return { level: x.level, scale: x.scale };
+            })
+            zoomLevels.sort((a, b) => a.level - b.level);
+        }
+        else { zoomLevels = []; }
     }
     const item = zoomLevels.slice(numLevelsFromMin);
     if (item) {

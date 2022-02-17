@@ -4,25 +4,40 @@ import BasemapInfo from "@/types/BasemapInfo";
 
 export const getDefaultBasemapInfo = (): BasemapInfo => { return basemaps[0] }
 // Array of basemaps. The first one is the default.
-let basemaps: BasemapInfo[] = []
-export const initBasemap = async (basemapString: string): Promise<void> => {
-    basemaps = [
-        {
-            name: "wsdot",
-            basemap: new Basemap({
-                baseLayers: [
-                    new TileLayer({
-                        url: basemapString,
-                    }),
-                ],
-                title: "WSDOT Basemap",
-                id: "wsdot-basemap",
-            })
-        }, {
-            name: "satellite",
-            basemap: Basemap.fromId("satellite")
-        }
-    ]
+const basemaps: BasemapInfo[] = [];
+
+export const initBasemap = async (basemapUrl: string): Promise<void> => {
+    let wsdotBase: Basemap | undefined;
+    try {
+        wsdotBase = new Basemap({
+            baseLayers: [
+                new TileLayer({
+                    url: basemapUrl,
+                })
+            ],
+            title: "WSDOT Basemap",
+            id: "wsdot-basemap",
+        });
+    } catch (ex) {
+        console.error(ex);
+        wsdotBase = undefined;
+    }
+    basemaps.push({
+        name: "wsdot",
+        basemap: wsdotBase
+    })
+    // Satellite...
+    let imgBase: Basemap | undefined;
+    try {
+        imgBase = Basemap.fromId("satellite");
+    } catch (ex) {
+        console.error(ex);
+        imgBase = undefined;
+    }
+    basemaps.push({
+        name: "satellite",
+        basemap: imgBase
+    })
 }
 
 export const getBasemapInfo = (name: string): BasemapInfo => {
