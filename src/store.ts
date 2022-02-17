@@ -158,7 +158,6 @@ export const store = createStore<State>({
             if (payload.url) { info.url = payload.url }
             if (payload.visible !== undefined) { info.visible = payload.visible }
             if (payload.status) { 
-                
                 if (info.status !== "failed" && payload.status === "failed") {
                     showError(state, `The layer, ${info.id}, failed to load.`);
                 }
