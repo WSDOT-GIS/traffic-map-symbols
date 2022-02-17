@@ -80,7 +80,6 @@ export const initLayer = async (jsonUrl: string, view: MapView): Promise<Feature
             fields,
             "point",
             false,
-            true
         );
         layer.definitionExpression = "WeatherNetworkPriority = 0"
         view.watch("scale", (scale) => {

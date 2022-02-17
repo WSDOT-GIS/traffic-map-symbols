@@ -37,7 +37,7 @@ export const layerId = "rest-areas-layer";
 
 export const initLayer = async (jsonUrl: string): Promise<FeatureLayer | undefined> => {
     try {
-        layer = await layerUtil.initLayer(jsonUrl, layerId, "Rest Areas", renderer, fields, "point", false, true);
+        layer = await layerUtil.initLayer(jsonUrl, layerId, "Rest Areas", renderer, fields, "point", false);
     }
     catch (ex) {
         console.error(ex);

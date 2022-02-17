@@ -164,7 +164,7 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
 
 export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: string,
     renderer: Renderer, fields: Field[], geometryType: "point" | "multipoint" | "polyline" | "polygon",
-    visible: boolean, loadOnce?: boolean): Promise<FeatureLayer> => {
+    visible: boolean/*, loadOnce?: boolean*/): Promise<FeatureLayer> => {
     // Create Graphics from JSON...
     let graphics: Graphic[] = [];
     if (visible) {
@@ -196,18 +196,18 @@ export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: st
         spatialReference: SpatialReference.WebMercator,
     });
     // Set event to load layer when it becomes visible...
-    setLayerEvent(layer, jsonUrl, loadOnce);
+    setLayerEvent(layer, jsonUrl);//, loadOnce);
     return layer;
 }
 
-export const setLayerEvent = (layer: FeatureLayer, jsonUrl: string, loadOnce?: boolean): void => {
+export const setLayerEvent = (layer: FeatureLayer, jsonUrl: string/*, loadOnce?: boolean*/): void => {
     const handle = layer.watch("visible", (newValue, oldValue, propName, target) => {
         const lyr = target as FeatureLayer;
         if (newValue) {
             reloadData(jsonUrl, lyr);
-            if (loadOnce) {
+            // if (loadOnce) {
                 handle.remove();
-            }
+            // }
         }
     });
 }
