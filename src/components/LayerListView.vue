@@ -263,7 +263,7 @@
       </ToggleSwitchView>
     </div>
     <!-- Wildland Fires -->
-    <div class="layer-list-row">
+    <!--<div class="layer-list-row">
       <ToggleSwitchView
         @toggle="clickEvent"
         :Enabled="true"
@@ -285,7 +285,7 @@
           </div>
         </template>
       </ToggleSwitchView>
-    </div>
+    </div>-->
     <!-- Mile Markers -->
     <div class="layer-list-row">
       <ToggleSwitchView
