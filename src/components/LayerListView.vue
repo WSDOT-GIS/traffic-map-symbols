@@ -46,7 +46,7 @@
       @toggle="clickEvent"
       :Enabled="true"
       :Checked="getLayerVisibility('road-alerts-layer')"
-      Value='road-alerts-layer,road-closures-layer,ferry-routes-points-layer'
+      Value='road-alerts-layer,ferry-routes-points-layer'
       :Title="'Toggle ' + getLayerTitle('road-alerts-layer')"
     >
       <template v-slot>

@@ -71,33 +71,37 @@ const fields = [
 let layer: FeatureLayer | undefined;
 export const layerId = "weather-stations-layer";
 
-export const initLayer = async (jsonUrl: string, view: MapView): Promise<FeatureLayer> => {
-    layer = await layerUtil.initLayer(jsonUrl,
-        layerId,
-        "Weather Stations",
-        renderer,
-        fields,
-        "point",
-        false,
-        true
-    );
-    layer.definitionExpression = "WeatherNetworkPriority = 0"
-    view.watch("scale", (scale) => {
-        if (scale > 577790.554289) {
-            (layer as FeatureLayer).definitionExpression = "WeatherNetworkPriority = 0";
-            (layer as FeatureLayer).refresh()
-        }
-        else {
-            (layer as FeatureLayer).definitionExpression = "1=1";
-            (layer as FeatureLayer).refresh()
-        }
-    })
+export const initLayer = async (jsonUrl: string, view: MapView): Promise<FeatureLayer | undefined> => {
+    try {
+        layer = await layerUtil.initLayer(jsonUrl,
+            layerId,
+            "Weather Stations",
+            renderer,
+            fields,
+            "point",
+            false,
+            true
+        );
+        layer.definitionExpression = "WeatherNetworkPriority = 0"
+        view.watch("scale", (scale) => {
+            if (scale > 577790.554289) {
+                (layer as FeatureLayer).definitionExpression = "WeatherNetworkPriority = 0";
+                (layer as FeatureLayer).refresh()
+            }
+            else {
+                (layer as FeatureLayer).definitionExpression = "1=1";
+                (layer as FeatureLayer).refresh()
+            }
+        })
+    } catch (ex) {
+        console.error(ex);
+    }
     return layer;
 }
 
-const getLayer = (): FeatureLayer => {
+const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
-        throw "WeatherStationsLayer is not ready yet!";
+        console.error("WeatherStationsLayer is not ready yet!");
     }
     return layer;
 }

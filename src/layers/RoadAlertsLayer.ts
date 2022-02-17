@@ -109,12 +109,11 @@ export const initLayer = async (jsonUrl: string): Promise<FeatureLayer | undefin
 // }
 const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
-        console.error("ParkRideLayer is not ready yet!");
+        console.error("Road Alerts layer is not ready yet!");
     }
     return layer;
 }
 
-// export default RoadAlertsLayer
 export default getLayer;
 
 export const reloadData = async (url: string): Promise<void> => {

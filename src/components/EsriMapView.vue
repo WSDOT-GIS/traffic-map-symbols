@@ -87,12 +87,12 @@ export default defineComponent({
     ParkRidePopup,
     PointRestrictionPopup,
     MountainPassPopup,
-    // WeatherStationsPopup,
+    WeatherStationsPopup,
     RestAreaPopup,
     RoadAlertPopup,
     // WildfirePointsPopup,
     BorderCrossingPopup,
-    // RegionalAlertPopup,
+    RegionalAlertPopup,
     FerryRoutesPopup,
     LeftPaneView,
     BasemapView,
@@ -636,12 +636,12 @@ export default defineComponent({
   <ParkRidePopup :Featureset="popupFeatureset" />
   <PointRestrictionPopup :Featureset="popupFeatureset" />
   <MountainPassPopup :Featureset="popupFeatureset" />
-  <!--<WeatherStationsPopup :Featureset="popupFeatureset" />-->
+  <WeatherStationsPopup :Featureset="popupFeatureset" />
   <RestAreaPopup :Featureset="popupFeatureset" />
   <RoadAlertPopup :Featureset="popupFeatureset" />
   <!--<WildfirePointsPopup :Featureset="popupFeatureset" />-->
   <BorderCrossingPopup :Featureset="popupFeatureset" />
-  <!--<RegionalAlertPopup :Featureset="popupFeatureset" />-->
+  <RegionalAlertPopup :Featureset="popupFeatureset" />
   <FerryRoutesPopup :Featureset="popupFeatureset" :Alerts="ferryAlerts" />
   <LeftPaneView />
 </template>

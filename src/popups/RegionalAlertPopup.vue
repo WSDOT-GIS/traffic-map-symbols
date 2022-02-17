@@ -119,7 +119,7 @@ export default defineComponent({
     :IconSvg="layerIcons.find((x) => x.id === 'regional-alert-layer')?.paths"
     LightThemeColor="#8E09004D"
     DarkThemeColor="#8E0900"
-    LayerId="layerId"
+    :LayerId="layerId"
     :Features="feature ? [feature] : []"
     :Config="{
       bannerText: { text: 'Emergency' },
