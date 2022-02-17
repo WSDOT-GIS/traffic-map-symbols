@@ -4,9 +4,9 @@ const zlib = require("zlib");
 
 module.exports = {
     // Uncomment below for testing Local Host on BrowserStack
-    devServer: {
-        disableHostCheck: true
-    },
+    // devServer: {
+    //     disableHostCheck: true
+    // },
     // publicPath for production must include path to the app, root works for dev
     publicPath: process.env.NODE_ENV === 'production' ? '/Travel/Real-time/Map/' : '/',
     configureWebpack: {
