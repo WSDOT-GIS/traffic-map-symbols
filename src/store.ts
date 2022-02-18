@@ -6,7 +6,7 @@ import { webmap, mapView } from "./esri-stuff/esriMap";
 import { getBasemapInfo, toggleBasemapInfo } from "./layers/Basemaps";
 import ExtentInfo from "./types/ExtentInfo";
 import { convert2EsriExtent, convert2ExtentInfo } from "./utils/extentUtil";
-import LayerInfo from "./types/LayerInfo";
+import LayerInfo, { LayerStatus } from "./types/LayerInfo";
 import { InitializingInfo } from "./types/InitializingInfo";
 import { getMediaSize } from "./utils/miscUtil";
 
@@ -150,18 +150,20 @@ export const store = createStore<State>({
          * @param state 
          * @param payload Set the properties that need to be updated, and leave others undefined. Undefined properties will not be updated. 
          */
-        updateLayerInfo(state, payload: { id: string, title?: string, index?: number, url?: string, visible?: boolean, 
-        status?: "not-loaded" | "loading" | "loaded" | "failed" }) {
+        updateLayerInfo(state, payload: {
+            id: string, title?: string, index?: number, url?: string, visible?: boolean,
+            status?: LayerStatus//"not-loaded" | "loading" | "loaded" | "failed"
+        }) {
             const info = getLayerInfo(state, payload.id);
             if (payload.title) { info.title = payload.title }
             if (payload.index) { info.index = payload.index; }
             if (payload.url) { info.url = payload.url }
             if (payload.visible !== undefined) { info.visible = payload.visible }
-            if (payload.status) { 
+            if (payload.status) {
                 if (info.status !== "failed" && payload.status === "failed") {
                     showError(state, `The layer, ${info.id}, failed to load.`);
                 }
-                info.status = payload.status 
+                info.status = payload.status
             }
         },
         updateLayerInfoVisibility(state, payload: { id: string, visible: boolean }) {
@@ -201,25 +203,29 @@ export const store = createStore<State>({
         }
     },
     actions: {
-        updateLayerList({ commit }) {
-            webmap.layers.forEach((layer, index) => {
-                const updateInfo = {
-                    id: layer.id,
-                    index: index,
-                    title: layer.title,
-                    visible: layer.visible,
-                    status: layer.loadStatus
-                }
-                commit("updateLayerInfo", updateInfo);
-            });
-        },
-        flagFailedLayers({ commit, state }, layerIds: string[]) {
-            layerIds.forEach((eachId) => {
-                commit("updateLayerInfo", { id: eachId, status: "failed" });
-            });
-            if (layerIds.length > 0) {
-                showError(state, "Failed to load layer(s): " + layerIds.join(", "));
+        updateLayerList({ commit }, payload?: LayerInfo[]) {
+            if (!payload) {
+                webmap.layers.forEach((layer, index) => {
+                    const updateInfo = {
+                        id: layer.id,
+                        index: index,
+                        title: layer.title,
+                        visible: layer.visible,
+                        //status: layer.loadStatus
+                    }
+                    commit("updateLayerInfo", updateInfo);
+                });
             }
+            else {
+                payload.forEach((info) => {
+                    commit("updateLayerInfo", info);
+                })
+            }
+        },
+        updateLayerStatus({ commit }, payload: { layerIds: string[], status: LayerStatus }) {
+            payload.layerIds.forEach((eachId) => {
+                commit("updateLayerInfo", { id: eachId, status: payload.status });
+            });
         },
         /**
          * Update LayerInfo and map layer visibility

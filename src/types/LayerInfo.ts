@@ -4,11 +4,16 @@ class LayerInfo {
     index = -1;
     visible = false;
     url = "";
-    status: "not-loaded" | "loading" | "loaded" | "failed" = "not-loaded";
+    status = LayerStatus.NotLoaded;//"not-loaded" | "loading" | "loaded" | "failed" = "not-loaded";
 
-    constructor(id: string) {
+    constructor(id: string, title: string) {
         this.id = id;
+        this.title = title;
     }
+}
+
+export enum LayerStatus {
+    NotLoaded = "not-loaded", Loading = "loading", Loaded = "loaded", Failed = "failed"
 }
 
 export default LayerInfo;

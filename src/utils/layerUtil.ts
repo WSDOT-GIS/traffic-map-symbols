@@ -164,12 +164,15 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
 
 export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: string,
     renderer: Renderer, fields: Field[], geometryType: "point" | "multipoint" | "polyline" | "polygon",
-    visible: boolean/*, loadOnce?: boolean*/): Promise<FeatureLayer> => {
+    visible: boolean, graphics?: Graphic[]): Promise<FeatureLayer> => {
     // Create Graphics from JSON...
-    let graphics: Graphic[] = [];
-    if (visible) {
-        graphics = await fetchJsonData(jsonUrl);
+    if (!graphics) {
+        graphics = [];
     }
+    //let graphics: Graphic[] = [];
+    // if (visible) {
+    //     graphics = await fetchJsonData(jsonUrl);
+    // }
     // Do not set the WSDOT unique ID as OID. The app might change them.
     // So create a new system generated field as OID.
     let oidField = "AppGenId";
@@ -196,7 +199,9 @@ export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: st
         spatialReference: SpatialReference.WebMercator,
     });
     // Set event to load layer when it becomes visible...
-    setLayerEvent(layer, jsonUrl);//, loadOnce);
+    if (!graphics) {
+        setLayerEvent(layer, jsonUrl);//, loadOnce);
+    }
     return layer;
 }
 
@@ -206,7 +211,7 @@ export const setLayerEvent = (layer: FeatureLayer, jsonUrl: string/*, loadOnce?:
         if (newValue) {
             reloadData(jsonUrl, lyr);
             // if (loadOnce) {
-                handle.remove();
+            handle.remove();
             // }
         }
     });

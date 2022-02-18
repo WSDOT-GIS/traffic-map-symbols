@@ -92,7 +92,7 @@ export const defaultLayerProps: { id: string, visible: boolean }[] = []
  * 
  * @returns The list of IDs of the layers that failed to load.
  */
-export const loadOperationalLayers = async (): Promise<string[]> => {
+export const loadOperationalLayers = async (): Promise<LayerInfo[]> => {
     const config = getConfig();
     // Load async ones in parallel...
     const promises = []
@@ -123,6 +123,7 @@ export const loadOperationalLayers = async (): Promise<string[]> => {
     }
     // Wait for all the async ones to finish loading...
     await Promise.all(promises);
+
     // Create list of layers to load to the map...
     const lyrs: Layer[] = [];
     const failedLyrIds: string[] = [];

@@ -4,7 +4,9 @@ import Field from "@arcgis/core/layers/support/Field"
 
 import * as layerUtil from "@/utils/layerUtil";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 import Graphic from "@arcgis/core/Graphic";
+// import Graphic from "@arcgis/core/Graphic";
 
 const renderer = new uniqueValueRenderer({
     field: "TravelCenterPriorityId",
@@ -74,8 +76,8 @@ const fields = [
     new Field({ name: "TravelCenterPriorityId", type: "small-integer", alias: "TravelCenterPriorityId" }),
 ]
 
-let priorityLayer: FeatureLayer | undefined;
-let closureLayer: FeatureLayer | undefined;
+// let priorityLayer: FeatureLayer | undefined;
+// let closureLayer: FeatureLayer | undefined;
 /**
  * Initialize two road alert layers.
  * @param url 
@@ -83,11 +85,26 @@ let closureLayer: FeatureLayer | undefined;
  * @returns 
  */
 let layer: FeatureLayer | undefined;
-export const layerId = "road-alerts-layer";
+let status: LayerStatus;
+
+export const layerInfo = new LayerInfo("road-alerts-layer", "Road Alerts");
+
+export const layerId = layerInfo.id;
 
 export const initLayer = async (jsonUrl: string): Promise<FeatureLayer | undefined> => {
+    let graphics: Graphic[];
+
     try {
-        layer = await layerUtil.initLayer(jsonUrl, layerId, "Road Alerts", renderer, fields, "point", true);
+        graphics = await layerUtil.fetchJsonData(jsonUrl);
+        status = LayerStatus.Loaded;
+    } catch (ex) {
+        console.error(ex);
+        graphics = [];
+        status = LayerStatus.Failed;
+    }
+    
+    try {
+        layer = await layerUtil.initLayer(jsonUrl, layerId, "Road Alerts", renderer, fields, "point", true, graphics);
         layer.orderBy = [{
             field: "TravelCenterPriorityId",
             order: "ascending"
@@ -95,6 +112,7 @@ export const initLayer = async (jsonUrl: string): Promise<FeatureLayer | undefin
     }
     catch (ex) {
         console.error(ex);
+        status = LayerStatus.Failed;
     }
     return layer;
 }
@@ -116,27 +134,31 @@ const getLayer = (): FeatureLayer | undefined => {
 
 export default getLayer;
 
-export const reloadData = async (url: string): Promise<void> => {
-    const features = await getFeatures(url);
-    if (priorityLayer) {
-        layerUtil.replaceFeatures(priorityLayer, features.priority);
-    }
-    if (closureLayer) {
-        layerUtil.replaceFeatures(closureLayer, features.closure);
-    }
+export const getStatus = (): LayerStatus | undefined => {
+    return status;
 }
 
-const getFeatures = async (url: string): Promise<{ priority: Graphic[], closure: Graphic[] }> => {
-    const graphics = await layerUtil.fetchJsonData(url);
-    let pGraphics: Graphic[] = [];
-    let cGraphics: Graphic[] = [];
-    // Priority features...
-    pGraphics = graphics.filter((each) => {
-        return each.attributes.EventCategoryDescription !== 'Closure'
-    });
-    // Closure features...
-    cGraphics = graphics.filter((each) => {
-        return each.attributes.EventCategoryDescription === 'Closure'
-    })
-    return { priority: pGraphics, closure: cGraphics };
-}
+// export const reloadData = async (url: string): Promise<void> => {
+//     const features = await getFeatures(url);
+//     if (priorityLayer) {
+//         layerUtil.replaceFeatures(priorityLayer, features.priority);
+//     }
+//     if (closureLayer) {
+//         layerUtil.replaceFeatures(closureLayer, features.closure);
+//     }
+// }
+
+// const getFeatures = async (url: string): Promise<{ priority: Graphic[], closure: Graphic[] }> => {
+//     const graphics = await layerUtil.fetchJsonData(url);
+//     let pGraphics: Graphic[] = [];
+//     let cGraphics: Graphic[] = [];
+//     // Priority features...
+//     pGraphics = graphics.filter((each) => {
+//         return each.attributes.EventCategoryDescription !== 'Closure'
+//     });
+//     // Closure features...
+//     cGraphics = graphics.filter((each) => {
+//         return each.attributes.EventCategoryDescription === 'Closure'
+//     })
+//     return { priority: pGraphics, closure: cGraphics };
+// }
