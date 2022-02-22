@@ -45,6 +45,7 @@ import firePerimeterFeatureIDs from "@/utils/firePerimeterQuery"
 import { getBasemapInfo } from "@/layers/Basemaps";
 import XY from "@/types/XY";
 import * as layerUtil from "@/utils/layerUtil";
+import LayerInfo, { isLayerInfo, LayerStatus } from "@/types/LayerInfo";
 
 esriConfig.request.useIdentity = false
 const fullExtent = extentUtil.getEsriExtent("full");
@@ -106,8 +107,10 @@ export const loadOperationalLayers = async (): Promise<LayerInfo[]> => {
     promises.push(PointRestrictionsLayer.initLayer(config.pointRestrictions));
     promises.push(CameraLayer.initLayer(config.cameras));
     promises.push(RoadAlertsLayer.initLayer(config.roadAlerts));
+    promises.map(eachPromise => eachPromise.catch(error => error));
     // Load sync ones...
-    RoadsReferenceLayer.initLayer(config.esriRoadsReferenceLayer);
+    const infos: LayerInfo[] = [];
+    infos.push(RoadsReferenceLayer.initLayer(config.esriRoadsReferenceLayer));
     BoundariesPlacesReferenceLayer.initLayer(config.esriPlacesReferenceLayer);
     FerryRoutesReferenceLayer.initLayer(config.ferryRoutesReferenceLayer);
     TrafficLayer.initLayer(config.traffic, config.layerRefreshMinute);
@@ -122,41 +125,48 @@ export const loadOperationalLayers = async (): Promise<LayerInfo[]> => {
         FirePerimetersLayer.initLayer(config.firePerimeters, firePerimeterIDs);
     }
     // Wait for all the async ones to finish loading...
-    await Promise.all(promises);
+    const results = await Promise.all(promises);
+    results.forEach(eachResult => {
+        if (isLayerInfo(eachResult)) { infos.push(eachResult); }
+        else {
+            console.warn(eachResult);
+        }
+    })
 
     // Create list of layers to load to the map...
     const lyrs: Layer[] = [];
-    const failedLyrIds: string[] = [];
-    const addToList = (layer: Layer | undefined, layerId: string) => {
-        if (layer) { lyrs.push(layer); }
-        else { failedLyrIds.push(layerId) }
+    //const infos: LayerInfo[] = [];
+    const addToList = (layer: Layer | undefined) => {
+        if (layer) {
+            lyrs.push(layer);
+        }
     }
-    addToList(RoadsReferenceLayer.default(), RoadsReferenceLayer.layerId);
-    addToList(BoundariesPlacesReferenceLayer.default(), BoundariesPlacesReferenceLayer.layerId);
-    addToList(FerryRoutesReferenceLayer.default(), FerryRoutesReferenceLayer.layerId);
-    addToList(TrafficLayer.default(), TrafficLayer.layerId);
-    addToList(LineFerryRoutesLayer.default(), LineFerryRoutesLayer.layerId);
-    addToList(StateRouteShieldsLayer.default(), StateRouteShieldsLayer.layerId);
-    addToList(FirePerimetersLayer.default(), FirePerimetersLayer.layerId);
-    addToList(fireIncidentLayer, FireIncidentsLayer.layerId);
-    addToList(MileMakersLayer.default(), MileMakersLayer.layerId);
-    addToList(BorderCrossingsLayer.default(), BorderCrossingsLayer.layerId);
-    addToList(ParkRideLayer.default(), ParkRideLayer.layerId);
-    addToList(RestAreasLayer.default(), RestAreasLayer.layerId);
-    addToList(WeatherLayer.default(), WeatherLayer.layerId);
-    addToList(MountainLayer.default(), MountainLayer.layerId);
-    addToList(LineRestrictionsLayer.default(), LineRestrictionsLayer.layerId);
-    addToList(PointRestrictionsLayer.default(), PointRestrictionsLayer.layerId);
-    addToList(CameraLayer.default(), CameraLayer.layerId);
-    addToList(FerryRoutePointsLayer.default(), FerryRoutePointsLayer.layerId);
-    addToList(RoadAlertsLayer.default(), RoadAlertsLayer.layerId);
+    addToList(RoadsReferenceLayer.default());
+    addToList(BoundariesPlacesReferenceLayer.default());
+    addToList(FerryRoutesReferenceLayer.default());
+    addToList(TrafficLayer.default());
+    addToList(LineFerryRoutesLayer.default());
+    addToList(StateRouteShieldsLayer.default());
+    addToList(FirePerimetersLayer.default());
+    addToList(fireIncidentLayer);
+    addToList(MileMakersLayer.default());
+    addToList(BorderCrossingsLayer.default());
+    addToList(ParkRideLayer.default());
+    addToList(RestAreasLayer.default());
+    addToList(WeatherLayer.default());
+    addToList(MountainLayer.default());
+    addToList(LineRestrictionsLayer.default());
+    addToList(PointRestrictionsLayer.default());
+    addToList(CameraLayer.default());
+    addToList(FerryRoutePointsLayer.default());
+    addToList(RoadAlertsLayer.default());
     // The first one in the array will be displayed at the bottom of the map... 
     webmap.addMany(lyrs);
     // Store the default visibility...
     webmap.layers.forEach((eachLyr) => {
         defaultLayerProps.push({ id: eachLyr.id, visible: eachLyr.visible });
     });
-    return failedLyrIds;
+    return infos;
 }
 /**
  * Filter out the layers that did not load.
@@ -177,21 +187,18 @@ export const isLayer = (layer: Layer | undefined): layer is Layer => {
  * Load regional alert point and polygon layers separately from the other operation layers. 
  * Returns layer IDs of the layers that failed to load.
 */
-export const loadRegionalAlert = async (): Promise<string[]> => {
+export const loadRegionalAlert = async (): Promise<LayerInfo[]> => {
     const config = getConfig();
-    const layers = await RegionalAlertLayer.initLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
-    const failedLayerIds: string[] = [];
-    if (layers.point) {
-        webmap.add(layers.point);
-    } else {
-        failedLayerIds.push(RegionalAlertLayer.layerId);
+    const infos = await RegionalAlertLayer.initLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
+    const pointLayer = RegionalAlertLayer.default();
+    if (pointLayer) {
+        webmap.add(pointLayer);
     }
-    if (layers.polygon) {
-        webmap.add(layers.polygon, 0);
-    } else {
-        failedLayerIds.push(AlertAreaLayer.layerId);
+    const areaLayer = AlertAreaLayer.default();
+    if (areaLayer) {
+        webmap.add(areaLayer, 0);
     }
-    return failedLayerIds;
+    return [infos.point, infos.polygon];
 }
 /**
  * Reload data for some layers.

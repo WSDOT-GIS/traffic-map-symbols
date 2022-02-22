@@ -6,9 +6,10 @@ import { webmap, mapView } from "./esri-stuff/esriMap";
 import { getBasemapInfo, toggleBasemapInfo } from "./layers/Basemaps";
 import ExtentInfo from "./types/ExtentInfo";
 import { convert2EsriExtent, convert2ExtentInfo } from "./utils/extentUtil";
-import LayerInfo, { LayerStatus } from "./types/LayerInfo";
+import LayerInfo, { LayerStatus, esriStatus2LayerStatus } from "./types/LayerInfo";
 import { InitializingInfo } from "./types/InitializingInfo";
 import { getMediaSize } from "./utils/miscUtil";
+// Layers
 
 // Reference - https://next.vuex.vuejs.org/guide/typescript-support.html#typing-usestore-composition-function
 // define typings for the store state...
@@ -54,28 +55,28 @@ export const store = createStore<State>({
                 ymax: 0
             },
             layerList: [
-                new LayerInfo("alert-area-layer"),
-                new LayerInfo("border-crossings-layer"),
-                new LayerInfo("boundaries-places-reference-layer"),
-                new LayerInfo("traffic-camera-layer"),
-                new LayerInfo("esri-reference-layer"),
-                new LayerInfo("ferry-routes-reference-layer"),
-                new LayerInfo("fire-incidents-layer"),
-                new LayerInfo("fire-perimeters-layer"),
-                new LayerInfo("ferry-routes-lines-layer"),
-                new LayerInfo("line-restrictions-layer"),
-                new LayerInfo("mile-markers"),
-                new LayerInfo("mountain-passes-layer"),
-                new LayerInfo("park-ride-layer"),
-                new LayerInfo("ferry-routes-points-layer"),
-                new LayerInfo("point-restrictions-layer"),
-                new LayerInfo("regional-alert-layer"),
-                new LayerInfo("rest-areas-layer"),
-                new LayerInfo("road-alerts-layer"),
-                new LayerInfo("roads-reference-layer"),
-                new LayerInfo("state-route-shields-layer"),
-                new LayerInfo("traffic-flow-layer"),
-                new LayerInfo("weather-stations-layer"),
+                // new LayerInfo("alert-area-layer"),
+                // new LayerInfo("border-crossings-layer"),
+                // new LayerInfo("boundaries-places-reference-layer"),
+                // new LayerInfo("traffic-camera-layer"),
+                // new LayerInfo("esri-reference-layer"),
+                // new LayerInfo("ferry-routes-reference-layer"),
+                // new LayerInfo("fire-incidents-layer"),
+                // new LayerInfo("fire-perimeters-layer"),
+                // new LayerInfo("ferry-routes-lines-layer"),
+                // new LayerInfo("line-restrictions-layer"),
+                // new LayerInfo("mile-markers"),
+                // new LayerInfo("mountain-passes-layer"),
+                // new LayerInfo("park-ride-layer"),
+                // new LayerInfo("ferry-routes-points-layer"),
+                // new LayerInfo("point-restrictions-layer"),
+                // new LayerInfo("regional-alert-layer"),
+                // new LayerInfo("rest-areas-layer"),
+                // new LayerInfo("road-alerts-layer"),
+                // new LayerInfo("roads-reference-layer"),
+                // new LayerInfo("state-route-shields-layer"),
+                // new LayerInfo("traffic-flow-layer"),
+                // new LayerInfo("weather-stations-layer"),
             ],
             userLocation: null,
             isMobileMenuOpen: false,
@@ -145,6 +146,32 @@ export const store = createStore<State>({
             state.userLocation = payload;
         },
         /**
+         * Add LayerInfos if not exist already, or update the existing ones.
+         *
+         * @param state 
+         * @param payload 
+         */
+        updateLayerInfos(state, payload: LayerInfo[]) {
+            payload.forEach(newInfo => {
+                const idx = state.layerList.findIndex(info => info.id === newInfo.id);
+                if (idx < 0) {
+                    state.layerList.push(newInfo);
+                } else {
+                    const info = state.layerList[idx];
+                    if (newInfo.title) { info.title = newInfo.title; }
+                    if (newInfo.index) { info.index = newInfo.index; }
+                    if (newInfo.url) { info.url = newInfo.url }
+                    if (newInfo.visible !== undefined) { info.visible = newInfo.visible }
+                    if (newInfo.status) {
+                        if (info.status !== LayerStatus.Failed && newInfo.status === LayerStatus.Failed) {
+                            showError(state, `The layer, ${info.id}, failed to load.`);
+                        }
+                        info.status = newInfo.status
+                    }
+                }
+            })
+        },
+        /**
          * Update the layer info in the layer list
          *
          * @param state 
@@ -152,7 +179,7 @@ export const store = createStore<State>({
          */
         updateLayerInfo(state, payload: {
             id: string, title?: string, index?: number, url?: string, visible?: boolean,
-            status?: LayerStatus//"not-loaded" | "loading" | "loaded" | "failed"
+            status?: LayerStatus
         }) {
             const info = getLayerInfo(state, payload.id);
             if (payload.title) { info.title = payload.title }
@@ -160,7 +187,7 @@ export const store = createStore<State>({
             if (payload.url) { info.url = payload.url }
             if (payload.visible !== undefined) { info.visible = payload.visible }
             if (payload.status) {
-                if (info.status !== "failed" && payload.status === "failed") {
+                if (info.status !== LayerStatus.Failed && payload.status === LayerStatus.Failed) {
                     showError(state, `The layer, ${info.id}, failed to load.`);
                 }
                 info.status = payload.status
@@ -211,15 +238,13 @@ export const store = createStore<State>({
                         index: index,
                         title: layer.title,
                         visible: layer.visible,
-                        //status: layer.loadStatus
+                        // status: esriStatus2LayerStatus(layer.loadStatus)
                     }
                     commit("updateLayerInfo", updateInfo);
                 });
             }
             else {
-                payload.forEach((info) => {
-                    commit("updateLayerInfo", info);
-                })
+                commit("updateLayerInfos", payload);
             }
         },
         updateLayerStatus({ commit }, payload: { layerIds: string[], status: LayerStatus }) {
@@ -234,7 +259,6 @@ export const store = createStore<State>({
          */
         modifyLayerVisibility({ commit, state }, payload: { ids: string[], visible: boolean }) {
             payload.ids.forEach((eachId) => {
-                // const updateInfo: LayerInfo = { id: eachId, visible: payload.visible };
                 commit("updateLayerInfoVisibility", { id: eachId, visible: payload.visible });
                 const info = getLayerInfo(state, eachId);
                 if (info.status !== "loaded") {

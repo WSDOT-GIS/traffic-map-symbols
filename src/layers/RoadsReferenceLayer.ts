@@ -1,14 +1,17 @@
+import LayerInfo from "@/types/LayerInfo";
 import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 
 let layer: MapImageLayer | undefined;
 export const layerId = "roads-reference-layer";
+const layerTitle = "ESRI Roads Reference"
 
-export const initLayer = (url: string): MapImageLayer | undefined => {
+export const initLayer = (url: string): LayerInfo => {
+    const layerInfo = new LayerInfo(layerId, layerTitle);
     try {
         layer = new MapImageLayer({
             id: layerId,
             url: url,
-            title: "ESRI Roads Reference",
+            title: layerTitle,
             visible: false,
         });
     }
@@ -16,7 +19,7 @@ export const initLayer = (url: string): MapImageLayer | undefined => {
         console.error(ex);
         layer = undefined;
     }
-    return layer;
+    return layerInfo;
 }
 
 const getLayer = (): MapImageLayer | undefined => {

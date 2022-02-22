@@ -5,6 +5,7 @@ import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 
 import * as layerUtil from "@/utils/layerUtil";
 import symbol from "@/symbols/BorderCrossingsSymbol"
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 const renderer = new simpleRenderer({
     symbol: symbol
 })
@@ -39,17 +40,24 @@ const fields = [
 
 let layer: FeatureLayer | undefined;
 export const layerId = "border-crossings-layer";
+const layerTitle = "Border Crossing Points";
 
-export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
-    layer = await layerUtil.initLayer(jsonUrl,
-        layerId,
-        "Border Crossing Points",
-        renderer,
-        fields,
-        "point",
-        false,
-    );
-    return layer;
+export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
+    const layerInfo = new LayerInfo(layerId, layerTitle);
+    try {
+        layer = await layerUtil.initLayer(jsonUrl,
+            layerId,
+            layerTitle,
+            renderer,
+            fields,
+            "point",
+            false,
+        );
+    } catch (ex) {
+        console.error(ex);
+        layerInfo.status = LayerStatus.Failed;
+    }
+    return layerInfo;
 }
 
 const getLayer = (): FeatureLayer | undefined => {

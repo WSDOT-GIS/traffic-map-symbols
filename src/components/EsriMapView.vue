@@ -65,7 +65,7 @@ import MountainPassPopup from "@/popups/MountainPassPopup.vue";
 import WeatherStationsPopup from "@/popups/WeatherStationPopup.vue";
 import RestAreaPopup from "@/popups/RestAreaPopup.vue";
 import RoadAlertPopup from "@/popups/RoadAlertPopup.vue";
-import WildfirePointsPopup from "@/popups/WildfirePointsPopup.vue";
+// import WildfirePointsPopup from "@/popups/WildfirePointsPopup.vue";
 import BorderCrossingPopup from "@/popups/BorderCrossingPopup.vue";
 import RegionalAlertPopup from "@/popups/RegionalAlertPopup.vue";
 import FerryRoutesPopup from "@/popups/FerryRoutesPopup.vue";
@@ -353,7 +353,8 @@ export default defineComponent({
       const basemapInfo = getBasemapFromUrl();
       store.commit("setBasemap", basemapInfo.name);
       // Read config, then load operational layers...
-      const failedLyrIds = await esriMap.loadOperationalLayers();
+      const lyrInfos = await esriMap.loadOperationalLayers();
+      store.commit("updateLayerInfos", lyrInfos);
       //set watcher to turn off initial loader screen
       const mapLayers = esriMap.getLayers() as Collection<Layer>;
       let vlPromises = [] as Array<Promise<LayerView>>;
@@ -379,14 +380,10 @@ export default defineComponent({
       });
       /* Set layer list here before the rest of the map is ready, so we can show the layer list UI early.
        * Otherwise user will see a map without layer list until everything is ready. */
-      store.dispatch("updateLayerList");
+      // store.dispatch("updateLayerList");
       // Load regional alert after the other operations layers have been loaded so it won't slow down the map loading...
-      const failedAlertLyrIds = await esriMap.loadRegionalAlert();
-      failedLyrIds.push(...failedAlertLyrIds);
-      // Update the layer list with regional alert layers in the store.
-      store.dispatch("updateLayerList");
-      // Flag layers that failed to load in the store.
-      store.dispatch("flagFailedLayers", failedLyrIds);
+      const alertLyrInfos = await esriMap.loadRegionalAlert();
+      store.commit("updateLayerInfos", alertLyrInfos);
       // Set refresh interval for layers & alerts...
       setInterval(() => {
         esriMap.refreshLayerData();

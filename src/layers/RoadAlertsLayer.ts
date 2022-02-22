@@ -76,35 +76,28 @@ const fields = [
     new Field({ name: "TravelCenterPriorityId", type: "small-integer", alias: "TravelCenterPriorityId" }),
 ]
 
-// let priorityLayer: FeatureLayer | undefined;
-// let closureLayer: FeatureLayer | undefined;
-/**
- * Initialize two road alert layers.
- * @param url 
- * Specify this if data should be loaded at start up. Otherwise not necessary.
- * @returns 
- */
+export const layerId = "road-alerts-layer";
+const layerTitle = "Road Alerts";
+
 let layer: FeatureLayer | undefined;
-let status: LayerStatus;
 
-export const layerInfo = new LayerInfo("road-alerts-layer", "Road Alerts");
+// export const layerInfo = new LayerInfo(layerId, layerTitle);
 
-export const layerId = layerInfo.id;
-
-export const initLayer = async (jsonUrl: string): Promise<FeatureLayer | undefined> => {
+export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
+    const layerInfo = new LayerInfo(layerId, layerTitle);
     let graphics: Graphic[];
 
     try {
         graphics = await layerUtil.fetchJsonData(jsonUrl);
-        status = LayerStatus.Loaded;
+        layerInfo.status = LayerStatus.Loaded;
     } catch (ex) {
         console.error(ex);
         graphics = [];
-        status = LayerStatus.Failed;
+        layerInfo.status = LayerStatus.Failed;
     }
-    
+
     try {
-        layer = await layerUtil.initLayer(jsonUrl, layerId, "Road Alerts", renderer, fields, "point", true, graphics);
+        layer = await layerUtil.initLayer(jsonUrl, layerId, layerTitle, renderer, fields, "point", true, graphics);
         layer.orderBy = [{
             field: "TravelCenterPriorityId",
             order: "ascending"
@@ -112,9 +105,9 @@ export const initLayer = async (jsonUrl: string): Promise<FeatureLayer | undefin
     }
     catch (ex) {
         console.error(ex);
-        status = LayerStatus.Failed;
+        layerInfo.status = LayerStatus.Failed;
     }
-    return layer;
+    return layerInfo;
 }
 //**This happens here instead of in the layerutils because of the source distinciton. TODO: fix this**
 /** This is fixed now? **/
@@ -134,9 +127,6 @@ const getLayer = (): FeatureLayer | undefined => {
 
 export default getLayer;
 
-export const getStatus = (): LayerStatus | undefined => {
-    return status;
-}
 
 // export const reloadData = async (url: string): Promise<void> => {
 //     const features = await getFeatures(url);

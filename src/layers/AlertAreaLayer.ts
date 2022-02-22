@@ -9,6 +9,7 @@ import Point from "@arcgis/core/geometry/Point";
 import Polygon from "@arcgis/core/geometry/Polygon";
 
 import * as pc from "polygon-clipping";
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 
 // Create a symbol for rendering the graphic
 const renderer = new SimpleRenderer({
@@ -41,8 +42,10 @@ const fields = [
 let layer: FeatureLayer | undefined;
 
 export const layerId = "alert-area-layer"; 
+const layerTitle = "Alert Areas";
 
-export const initLayer = (features: Graphic[]): FeatureLayer | undefined => {
+export const initLayer = (features: Graphic[]): LayerInfo => {
+    const layerInfo = new LayerInfo(layerId, layerTitle);
     try {
         layer = new FeatureLayer({
             id: layerId,
@@ -58,8 +61,9 @@ export const initLayer = (features: Graphic[]): FeatureLayer | undefined => {
     catch (ex) {
         console.error(ex);
         layer = undefined;
+        layerInfo.status = LayerStatus.Failed;
     }
-    return layer;
+    return layerInfo;
 }
 
 const getLayer = (): FeatureLayer | undefined => {

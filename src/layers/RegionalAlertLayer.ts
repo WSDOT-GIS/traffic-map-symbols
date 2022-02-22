@@ -10,6 +10,7 @@ import Polygon from "@arcgis/core/geometry/Polygon";
 
 import AlertAreaLayer, { getVisibleCenter, getFeatureById as getAreaById } from "./AlertAreaLayer";
 import { initLayer as initAreaLayer } from "@/layers/AlertAreaLayer";
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 
 
 // Create a symbol for rendering the graphic
@@ -92,15 +93,26 @@ const fields = [
 
 let layer: FeatureLayer | undefined;
 export const layerId = "regional-alert-layer";
+const layerTitle = "Regional Alerts";
 
 export const initLayer = async (alertUrl: string, countyUrl: string, regionUrl: string):
-    Promise<{ point: FeatureLayer | undefined, polygon: FeatureLayer | undefined }> => {
-    let areaLayer: FeatureLayer | undefined;
+    Promise<{ point: LayerInfo, polygon: LayerInfo }> => {
+    const pointInfo = new LayerInfo(layerId, layerTitle);
+    let fetchResults: { point: Graphic[], polygon: Graphic[] };
+    let fetchSuccess = true;
     try {
-        const fetchResults = await fetchData(alertUrl, countyUrl, regionUrl);
+        fetchResults = await fetchData(alertUrl, countyUrl, regionUrl);
+    }
+    catch (ex) {
+        fetchResults = { point: [], polygon: [] };
+        console.error(ex);
+        fetchSuccess = false;
+        pointInfo.status = LayerStatus.Failed;
+    }
+    try {
         layer = new FeatureLayer({
             id: layerId,
-            title: "Regional Alerts",
+            title: layerTitle,
             source: fetchResults.point,
             fields: fields,
             objectIdField: "EventID",
@@ -108,15 +120,17 @@ export const initLayer = async (alertUrl: string, countyUrl: string, regionUrl: 
             spatialReference: SpatialReference.WebMercator,
             renderer: renderer,
         });
-        // Create the area boundary layer...
-        areaLayer = initAreaLayer(fetchResults.polygon);
     }
     catch (ex) {
         console.error(ex);
-        layer = undefined;
-        areaLayer = undefined;
+        pointInfo.status = LayerStatus.Failed;
     }
-    return { point: layer, polygon: areaLayer };
+    // Create the area boundary layer...
+    const areaInfo = initAreaLayer(fetchResults.polygon);
+    if (!fetchSuccess) {
+        areaInfo.status = LayerStatus.Failed;
+    }
+    return { point: pointInfo, polygon: areaInfo };
 }
 
 const getLayer = (): FeatureLayer | undefined => {

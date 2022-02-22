@@ -2,6 +2,7 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import { ferryRoutesSymbol } from "@/symbols/FerryRoutesSymbol"
 import * as layerUtil from "@/utils/layerUtil";
+import LayerInfo from "@/types/LayerInfo";
 
 const renderer = new simpleRenderer({
     symbol: ferryRoutesSymbol
@@ -9,6 +10,7 @@ const renderer = new simpleRenderer({
 
 let layer: FeatureLayer | undefined;
 export const layerId = "ferry-routes-lines-layer";
+const layerTitle = "Ferry Routes"
 
 // const fields = [
 //     new Field({
@@ -18,13 +20,14 @@ export const layerId = "ferry-routes-lines-layer";
 //     }),
 // ]
 
-export const initLayer = async (url: string): Promise<FeatureLayer | undefined> => {
+export const initLayer = async (url: string): Promise<LayerInfo> => {
+    const layerInfo = new LayerInfo(layerId, layerTitle);
     try {
         const graphics = await layerUtil.fetchJsonData(url)
         layer = new FeatureLayer({
             id: layerId,
             url: url,
-            title: "ferryRoutes",
+            title: layerTitle,//"ferryRoutes",
             renderer: renderer,
             visible: false,
             labelsVisible: false,
@@ -36,7 +39,7 @@ export const initLayer = async (url: string): Promise<FeatureLayer | undefined> 
         console.error(ex);
         layer = undefined;
     }
-    return layer;
+    return layerInfo;
 }
 
 const getLayer = (): FeatureLayer | undefined => {
