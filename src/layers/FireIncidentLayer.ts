@@ -1,6 +1,7 @@
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import fireIncidentSymbol from "@/symbols/FireIncidentSymbol"
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 
 
 const fireIncidentRenderer = new simpleRenderer({
@@ -9,13 +10,15 @@ const fireIncidentRenderer = new simpleRenderer({
 
 let layer: FeatureLayer | undefined;
 export const layerId = "fire-incidents-layer";
+const layerTitle = "Fire Incidents";
 
-export const initLayer = (url: string): FeatureLayer | undefined => {
+export const initLayer = (url: string): LayerInfo => {
+    const layerInfo = new LayerInfo(layerId, layerTitle);
     try {
         layer = new FeatureLayer({
             id: layerId,
             url: url,
-            title: "Fire Incidents",
+            title: layerTitle,
             renderer: fireIncidentRenderer,
             visible: false,
             definitionExpression: "POOState= 'US-WA'",
@@ -25,8 +28,9 @@ export const initLayer = (url: string): FeatureLayer | undefined => {
     catch (ex) {
         console.error(ex);
         layer = undefined;
+        layerInfo.status = LayerStatus.Failed
     }
-    return layer;
+    return layerInfo;
 }
 
 const getLayer = (): FeatureLayer | undefined => {

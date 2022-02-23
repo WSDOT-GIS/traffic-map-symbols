@@ -1,21 +1,29 @@
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 
 let layer: MapImageLayer | undefined;
 export const layerId = "boundaries-places-reference-layer";
+const layerTitle = "ESRI Boundaries and Places Reference";
 
-export const initLayer = (url: string): MapImageLayer => {
-    layer = new MapImageLayer({
-        id: layerId,
-        url: url,
-        title: "ESRI Boundaries and Places Reference",
-        visible: false,
-    });
-    return layer;
+export const initLayer = (url: string): LayerInfo => {
+    const layerInfo = new LayerInfo(layerId, layerTitle);
+    try {
+        layer = new MapImageLayer({
+            id: layerId,
+            url: url,
+            title: layerTitle,
+            visible: false,
+        });
+    } catch (ex) {
+        console.error(ex);
+        layerInfo.status = LayerStatus.Failed;
+    }
+    return layerInfo;
 }
 
-const getLayer = (): MapImageLayer => {
+const getLayer = (): MapImageLayer | undefined => {
     if (!layer) {
-        throw "ESRI Boundaries and Places Reference is not ready yet!";
+        console.error("ESRI Boundaries and Places Reference is not ready yet!");
     }
     return layer;
 }

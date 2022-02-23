@@ -2,7 +2,7 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import { ferryRoutesSymbol } from "@/symbols/FerryRoutesSymbol"
 import * as layerUtil from "@/utils/layerUtil";
-import LayerInfo from "@/types/LayerInfo";
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 
 const renderer = new simpleRenderer({
     symbol: ferryRoutesSymbol
@@ -38,6 +38,7 @@ export const initLayer = async (url: string): Promise<LayerInfo> => {
     catch (ex) {
         console.error(ex);
         layer = undefined;
+        layerInfo.status = LayerStatus.Failed;
     }
     return layerInfo;
 }

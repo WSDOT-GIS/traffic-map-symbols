@@ -4,6 +4,7 @@ import symbol from "@/symbols/RestAreasSymbol";
 import Field from "@arcgis/core/layers/support/Field";
 
 import * as layerUtil from "@/utils/layerUtil";
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 
 const renderer = new simpleRenderer({
     symbol: symbol
@@ -34,15 +35,19 @@ const fields = [
 
 let layer: FeatureLayer | undefined;
 export const layerId = "rest-areas-layer";
+const layerTitle = "Rest Areas";
 
-export const initLayer = async (jsonUrl: string): Promise<FeatureLayer | undefined> => {
+export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
+    const layerInfo = new LayerInfo(layerId, layerTitle);
     try {
-        layer = await layerUtil.initLayer(jsonUrl, layerId, "Rest Areas", renderer, fields, "point", false);
+        layer = await layerUtil.initLayer(jsonUrl, layerId, layerTitle, renderer, fields, "point", false);
     }
     catch (ex) {
         console.error(ex);
+        layer = undefined;
+        layerInfo.status = LayerStatus.Failed
     }
-    return layer;
+    return layerInfo;
 }
 
 const getLayer = (): FeatureLayer | undefined => {

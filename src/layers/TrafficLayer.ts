@@ -1,9 +1,12 @@
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 
 let layer: MapImageLayer | undefined;
 export const layerId = "traffic-flow-layer";
+const layerTitle = "Live Traffic Flow";
 
-export const initLayer = (url: string, refreshMinute: number): MapImageLayer | undefined => {
+export const initLayer = (url: string, refreshMinute: number): LayerInfo => {
+    const layerInfo = new LayerInfo(layerId, layerTitle);
     try {
         layer = new MapImageLayer({
             id: layerId,
@@ -17,8 +20,10 @@ export const initLayer = (url: string, refreshMinute: number): MapImageLayer | u
         });
     } catch (ex) {
         console.error(ex);
+        layer = undefined;
+        layerInfo.status = LayerStatus.Failed
     }
-    return layer;
+    return layerInfo;
 }
 
 const getLayer = (): MapImageLayer | undefined => {

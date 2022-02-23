@@ -1,4 +1,4 @@
-import LayerInfo from "@/types/LayerInfo";
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 
 let layer: MapImageLayer | undefined;
@@ -18,6 +18,7 @@ export const initLayer = (url: string): LayerInfo => {
     catch (ex) {
         console.error(ex);
         layer = undefined;
+        layerInfo.status = LayerStatus.Failed;
     }
     return layerInfo;
 }

@@ -4,6 +4,7 @@ import Field from "@arcgis/core/layers/support/Field";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 import * as layerUtil from "@/utils/layerUtil";
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 
 const renderer = new UniqueValueRenderer({
     field: "TType",
@@ -64,12 +65,14 @@ const fields = [
 
 let layer: FeatureLayer | undefined;
 export const layerId = "line-restrictions-layer";
+const layerTitle = "Restriction Lines";
 
-export const initLayer = async (jsonUrl: string): Promise<FeatureLayer | undefined> => {
+export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
+    const layerInfo = new LayerInfo(layerId, layerTitle);
     try {
         layer = await layerUtil.initLayer(jsonUrl,
             layerId,
-            "Restriction Lines",
+            layerTitle,
             renderer,
             fields,
             "polyline",
@@ -78,12 +81,14 @@ export const initLayer = async (jsonUrl: string): Promise<FeatureLayer | undefin
     }
     catch (ex) {
         console.error(ex);
+        layer = undefined;
+        layerInfo.status = LayerStatus.Failed
     }
     // hide all features... Show only when the corresponding point was selected.
     if (layer) {
         layer.definitionExpression = "1=0";
     }
-    return layer;
+    return layerInfo;
 }
 
 const getLayer = (): FeatureLayer | undefined => {
@@ -92,14 +97,5 @@ const getLayer = (): FeatureLayer | undefined => {
     }
     return layer;
 }
-
-// const LineRestrictionsLayer = new GeoJSONLayer({
-//     id: "line-restrictions-layer",
-//     url: "https://data.wsdot.wa.gov/travelcenter/LineRestrictions.json",
-//     title: "Restriction Lines",
-//     renderer: lineRestrictionsRenderer,
-//     visible: false,
-//     fields: fields
-// });
 
 export default getLayer

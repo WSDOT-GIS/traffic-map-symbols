@@ -5,6 +5,7 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import Symbol from "@/symbols/CameraSymbol";
 import { clusterConfig, clusterMaxScale } from "@/utils/clusterUtil";
 import * as layerUtil from "@/utils/layerUtil";
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 
 const renderer = new SimpleRenderer({ symbol: Symbol });
 
@@ -68,17 +69,20 @@ const fields = [
 
 let layer: FeatureLayer | undefined;
 export const layerId = "traffic-camera-layer";
+const layerTitle = "Cameras";
 
-export const initLayer = async (jsonUrl: string): Promise<FeatureLayer | undefined> => {
+export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
+    const layerInfo = new LayerInfo(layerId, layerTitle);
     try {
         layer = await layerUtil.initLayer(jsonUrl, layerId, "Cameras", renderer, fields, "point", false);
     }
     catch (ex) {
         console.error(ex);
         layer = undefined;
+        layerInfo.status = LayerStatus.Failed;
     }
     if (layer) { layer.featureReduction = clusterConfig; }
-    return layer;
+    return layerInfo;
 }
 
 const getLayer = (): FeatureLayer | undefined => {

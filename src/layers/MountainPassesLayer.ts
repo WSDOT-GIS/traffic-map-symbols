@@ -5,6 +5,7 @@ import Field from "@arcgis/core/layers/support/Field"
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
 // import SpatialReference from "@arcgis/core/geometry/SpatialReference"
 import * as layerUtil from "@/utils/layerUtil";
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 // import Graphic from "@arcgis/core/Graphic"
 // import { getConfig } from "@/utils/appConfigUtil"
 
@@ -50,17 +51,20 @@ const fields = [
 
 let layer: FeatureLayer | undefined;
 export const layerId = "mountain-passes-layer";
+const layerTitle = "Mountain Pass Reports";
 
-export const initLayer = async (jsonUrl: string): Promise<FeatureLayer | undefined> => {
+export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
+    const layerInfo = new LayerInfo(layerId, layerTitle);
     try {
-        layer = await layerUtil.initLayer(jsonUrl, layerId, "Mountain Pass Reports",
+        layer = await layerUtil.initLayer(jsonUrl, layerId, layerTitle,
             renderer, fields, "point", false);
     }
     catch (ex) {
         console.error(ex);
         layer = undefined;
+        layerInfo.status = LayerStatus.Failed
     }
-    return layer;
+    return layerInfo;
 
 }
 

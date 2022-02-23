@@ -18,44 +18,28 @@ export default defineComponent({
     const labelStyle = ref<string>("iconLabelWhite"); //reference to class used to define label color, determined by selected basemap
     const topLabelClass = ref<string>(); //reference to class used to define top label size and placement, determined by selected basemap
     const bottomLabelClass = ref<string>(); //reference to class used to define bottom label size and placement, determined by selected basemap
-    const toggleImageryReference = () => {
-      store.dispatch("modifyLayerVisibility",
-        {
-          ids: [
-            "roads-reference-layer",
-            "boundaries-places-reference-layer",
-            "ferry-routes-reference-layer"],
-          visible: true
-        });
-      store.dispatch("modifyLayerVisibility",
-        {
-          ids: [
-            "roads-reference-layer",
-            "boundaries-places-reference-layer",
-            "ferry-routes-reference-layer"],
-          visible: false
-        });
-      // store.state.layerList.map((x) => {
-      //   if (webmap.basemap.title == "Basemap" || webmap.basemap.title == "WSDOT Basemap") {
-      //     if (
-      //       x.id == "roads-reference-layer" ||
-      //       x.id == "boundaries-places-reference-layer" ||
-      //       x.id == "ferry-routes-reference-layer"
-      //     ) {
-      //       x.visible = true;
-      //     }
-      //   } else {
-      //     if (
-      //       x.id == "roads-reference-layer" ||
-      //       x.id == "boundaries-places-reference-layer" ||
-      //       x.id == "ferry-routes-reference-layer"
-      //     ) {
-      //       x.visible = false;
-      //     }
-      //   }
-      // });
-      // store.commit("setLayerList", store.state.layerList);
-    };
+    // const toggleImageryReference = () => {
+    //   store.state.layerList.map((x) => {
+    //     if (webmap.basemap.title == "Basemap" || webmap.basemap.title == "WSDOT Basemap") {
+    //       if (
+    //         x.id == "roads-reference-layer" ||
+    //         x.id == "boundaries-places-reference-layer" ||
+    //         x.id == "ferry-routes-reference-layer"
+    //       ) {
+    //         x.visible = true;
+    //       }
+    //     } else {
+    //       if (
+    //         x.id == "roads-reference-layer" ||
+    //         x.id == "boundaries-places-reference-layer" ||
+    //         x.id == "ferry-routes-reference-layer"
+    //       ) {
+    //         x.visible = false;
+    //       }
+    //     }
+    //   });
+    //   store.commit("setLayerList", store.state.layerList);
+    // };
     /**
      * Toggle icon and label based on the current base map selection in the state store.
      */
@@ -64,14 +48,32 @@ export default defineComponent({
         imgSrc.value = tileImage;
         iconTitle.value = "WSDOT";
         labelStyle.value = "iconLabelBlack";
+        // Show the reference layers for the imagery basemap.
+        store.dispatch("modifyLayerVisibility",
+        {
+          ids: [
+            "roads-reference-layer",
+            "boundaries-places-reference-layer",
+            "ferry-routes-reference-layer"],
+          visible: true
+        });
       } else {
         imgSrc.value = satelliteImage;
         iconTitle.value = "Imagery";
         labelStyle.value = "iconLabelWhite";
+        // Hide the reference layers for the imagery basemap.
+        store.dispatch("modifyLayerVisibility",
+        {
+          ids: [
+            "roads-reference-layer",
+            "boundaries-places-reference-layer",
+            "ferry-routes-reference-layer"],
+          visible: false
+        });
       }
     });
     const onClick = () => {
-      toggleImageryReference();
+      // toggleImageryReference();
       store.commit("toggleBasemap"); //fire "toggleBasemap" mutation in store.ts
     };
     const setStyle = () => {

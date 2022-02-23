@@ -34,7 +34,7 @@ import * as RegionalAlertLayer from "@/layers/RegionalAlertLayer";
 import * as RestAreasLayer from "@/layers/RestAreasLayer";
 import * as FerryRoutesReferenceLayer from "@/layers/ferryRoutesReferenceLayer"
 import * as LineFerryRoutesLayer from "@/layers/LineFerryRoutesLayer"
-import * as FerryRoutePointsLayer from "@/layers/PointFerryRoutesLayer"
+import * as PointFerryRoutesLayer from "@/layers/PointFerryRoutesLayer"
 import * as AlertAreaLayer from "@/layers/AlertAreaLayer"
 //
 import * as extentUtil from "@/utils/extentUtil";
@@ -45,7 +45,7 @@ import firePerimeterFeatureIDs from "@/utils/firePerimeterQuery"
 import { getBasemapInfo } from "@/layers/Basemaps";
 import XY from "@/types/XY";
 import * as layerUtil from "@/utils/layerUtil";
-import LayerInfo, { isLayerInfo, LayerStatus } from "@/types/LayerInfo";
+import LayerInfo, { isLayerInfo } from "@/types/LayerInfo";
 
 esriConfig.request.useIdentity = false
 const fullExtent = extentUtil.getEsriExtent("full");
@@ -111,18 +111,19 @@ export const loadOperationalLayers = async (): Promise<LayerInfo[]> => {
     // Load sync ones...
     const infos: LayerInfo[] = [];
     infos.push(RoadsReferenceLayer.initLayer(config.esriRoadsReferenceLayer));
-    BoundariesPlacesReferenceLayer.initLayer(config.esriPlacesReferenceLayer);
-    FerryRoutesReferenceLayer.initLayer(config.ferryRoutesReferenceLayer);
-    TrafficLayer.initLayer(config.traffic, config.layerRefreshMinute);
-    StateRouteShieldsLayer.initLayer(config.stateRouteShieldsLayer);
-    MileMakersLayer.initLayer(config.mileMarkers);
-    FerryRoutePointsLayer.initLayer(config.ferryRoutePoints);
+    infos.push(BoundariesPlacesReferenceLayer.initLayer(config.esriPlacesReferenceLayer));
+    infos.push(FerryRoutesReferenceLayer.initLayer(config.ferryRoutesReferenceLayer));
+    infos.push(TrafficLayer.initLayer(config.traffic, config.layerRefreshMinute));
+    infos.push(StateRouteShieldsLayer.initLayer(config.stateRouteShieldsLayer));
+    infos.push(MileMakersLayer.initLayer(config.mileMarkers));
+    infos.push(PointFerryRoutesLayer.initLayer(config.ferryRoutePoints));
     // Load fire layers...
-    const fireIncidentLayer = FireIncidentsLayer.initLayer(config.fireIncidents);
+    infos.push(FireIncidentsLayer.initLayer(config.fireIncidents));
+    const fireIncidentLayer = FireIncidentsLayer.default();
     if (fireIncidentLayer) {
         const firePerimeterIDs = await firePerimeterFeatureIDs(fireIncidentLayer);
         //Needed to filter fire perimeters to just those within the state
-        FirePerimetersLayer.initLayer(config.firePerimeters, firePerimeterIDs);
+        infos.push(FirePerimetersLayer.initLayer(config.firePerimeters, firePerimeterIDs));
     }
     // Wait for all the async ones to finish loading...
     const results = await Promise.all(promises);
@@ -158,7 +159,7 @@ export const loadOperationalLayers = async (): Promise<LayerInfo[]> => {
     addToList(LineRestrictionsLayer.default());
     addToList(PointRestrictionsLayer.default());
     addToList(CameraLayer.default());
-    addToList(FerryRoutePointsLayer.default());
+    addToList(PointFerryRoutesLayer.default());
     addToList(RoadAlertsLayer.default());
     // The first one in the array will be displayed at the bottom of the map... 
     webmap.addMany(lyrs);

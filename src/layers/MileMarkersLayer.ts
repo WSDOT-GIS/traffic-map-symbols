@@ -1,21 +1,31 @@
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 import VectorTileLayer from "@arcgis/core/layers/VectorTileLayer";
 
 let layer: VectorTileLayer | undefined;
-export const layerId = "mile-markers"; 
+export const layerId = "mile-markers";
+const layerTitle = "Mile Markers";
 
-export const initLayer = (url: string): VectorTileLayer => {
-    layer = new VectorTileLayer({
-        id: layerId,
-        url: url,
-        title: "Mile Markers",
-        visible: false,
-    });
-    return layer;
+export const initLayer = (url: string): LayerInfo => {
+    const layerInfo = new LayerInfo(layerId, layerTitle);
+    try {
+        layer = new VectorTileLayer({
+            id: layerId,
+            url: url,
+            title: layerTitle,
+            visible: false,
+        });
+    }
+    catch (ex) {
+        console.error(ex);
+        layer = undefined;
+        layerInfo.status = LayerStatus.Failed
+    }
+    return layerInfo;
 }
 
-const getLayer = (): VectorTileLayer => {
+const getLayer = (): VectorTileLayer | undefined => {
     if (!layer) {
-        throw "MileMarkers is not ready yet!";
+        console.error("MileMarkers is not ready yet!");
     }
     return layer;
 }

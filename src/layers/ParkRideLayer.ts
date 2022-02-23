@@ -3,6 +3,7 @@ import Symbol from "@/symbols/ParkRideSymbol";
 import Field from "@arcgis/core/layers/support/Field";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as layerUtil from "@/utils/layerUtil";
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 
 const renderer = new SimpleRenderer({ symbol: Symbol });
 
@@ -46,15 +47,18 @@ const fields = [
 
 let layer: FeatureLayer | undefined;
 export const layerId = "park-ride-layer";
-
-export const initLayer = async (jsonUrl: string): Promise<FeatureLayer | undefined> => {
+const layerTitle = "Park and Rides";
+export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
+    const layerInfo = new LayerInfo(layerId, layerTitle);
     try {
-        layer = await layerUtil.initLayer(jsonUrl, layerId, "Park and Rides", renderer, fields, "point", false);
+        layer = await layerUtil.initLayer(jsonUrl, layerId, layerTitle, renderer, fields, "point", false);
     }
     catch (ex) {
         console.error(ex);
+        layer = undefined;
+        layerInfo.status = LayerStatus.Failed
     }
-    return layer;
+    return layerInfo;
 }
 
 const getLayer = (): FeatureLayer | undefined => {

@@ -56,27 +56,27 @@ export const store = createStore<State>({
             },
             layerList: [
                 // new LayerInfo("alert-area-layer"),
-                // new LayerInfo("border-crossings-layer"),
-                // new LayerInfo("boundaries-places-reference-layer"),
-                // new LayerInfo("traffic-camera-layer"),
+                new LayerInfo("border-crossings-layer"),
+                new LayerInfo("boundaries-places-reference-layer"),
+                new LayerInfo("traffic-camera-layer"),
                 // new LayerInfo("esri-reference-layer"),
-                // new LayerInfo("ferry-routes-reference-layer"),
-                // new LayerInfo("fire-incidents-layer"),
-                // new LayerInfo("fire-perimeters-layer"),
+                new LayerInfo("ferry-routes-reference-layer"),
+                new LayerInfo("fire-incidents-layer"),
+                new LayerInfo("fire-perimeters-layer"),
                 // new LayerInfo("ferry-routes-lines-layer"),
                 // new LayerInfo("line-restrictions-layer"),
-                // new LayerInfo("mile-markers"),
-                // new LayerInfo("mountain-passes-layer"),
-                // new LayerInfo("park-ride-layer"),
-                // new LayerInfo("ferry-routes-points-layer"),
-                // new LayerInfo("point-restrictions-layer"),
-                // new LayerInfo("regional-alert-layer"),
-                // new LayerInfo("rest-areas-layer"),
-                // new LayerInfo("road-alerts-layer"),
-                // new LayerInfo("roads-reference-layer"),
+                new LayerInfo("mile-markers"),
+                new LayerInfo("mountain-passes-layer"),
+                new LayerInfo("park-ride-layer"),
+                new LayerInfo("ferry-routes-points-layer"),
+                new LayerInfo("point-restrictions-layer"),
+                new LayerInfo("regional-alert-layer"),
+                new LayerInfo("rest-areas-layer"),
+                new LayerInfo("road-alerts-layer"),
+                new LayerInfo("roads-reference-layer"),
                 // new LayerInfo("state-route-shields-layer"),
-                // new LayerInfo("traffic-flow-layer"),
-                // new LayerInfo("weather-stations-layer"),
+                new LayerInfo("traffic-flow-layer"),
+                new LayerInfo("weather-stations-layer"),
             ],
             userLocation: null,
             isMobileMenuOpen: false,
@@ -172,7 +172,7 @@ export const store = createStore<State>({
             })
         },
         /**
-         * Update the layer info in the layer list
+         * Update a layer info in the layer list
          *
          * @param state 
          * @param payload Set the properties that need to be updated, and leave others undefined. Undefined properties will not be updated. 

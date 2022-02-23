@@ -5,6 +5,7 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as layerUtil from "@/utils/layerUtil";
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import symbol from "@/symbols/PointRestrictionsSymbol"
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 const renderer = new simpleRenderer({
     symbol: symbol
 })
@@ -64,12 +65,14 @@ const fields = [
 
 let layer: FeatureLayer | undefined;
 export const layerId = "point-restrictions-layer";
+const layerTitle = "Restriction Points";
 
-export const initLayer = async (jsonUrl: string): Promise<FeatureLayer | undefined> => {
+export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
+    const layerInfo = new LayerInfo(layerId, layerTitle);
     try {
         layer = await layerUtil.initLayer(jsonUrl,
             layerId,
-            "Restriction Points",
+            layerTitle,
             renderer,
             fields,
             "point",
@@ -78,8 +81,10 @@ export const initLayer = async (jsonUrl: string): Promise<FeatureLayer | undefin
     }
     catch (ex) {
         console.error(ex);
+        layer = undefined;
+        layerInfo.status = LayerStatus.Failed
     }
-    return layer;
+    return layerInfo;
 }
 
 const getLayer = (): FeatureLayer | undefined => {
