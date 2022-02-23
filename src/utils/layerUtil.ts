@@ -116,7 +116,6 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
     if (groupInfo.layers[0].jsonUrl && ftrCount === 0) {
         await reloadData(groupInfo.layers[0].jsonUrl, fLayer);
         if (groupInfo.layers.length > 1) {
-            console.log('a');
             for (const eachLyr of groupInfo.layers) {
                 if (eachLyr.id === groupInfo.layers[0].id) {
                     continue;
@@ -134,7 +133,7 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
     console.log('b');
     query.where = `${groupInfo.layers[0].uniqueField} = `;
     if(field.type=='string'){
-        if((uniqueValue as string).split("-").length>0){
+        if((uniqueValue as string).split("-").length>0&&fLayer.title=="Mountain Pass Reports"){
             const uniqueValues = (uniqueValue as string).split("-").map((value)=>{
                 if(value=="to"||value=="To"){
                     return "to"
