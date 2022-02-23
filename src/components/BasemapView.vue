@@ -9,6 +9,7 @@ export default defineComponent({
   setup() {
     const store = useStore(); //create reference to vuex store
     const mapSize = computed(() => store.state.mapSize);
+    const basemapName = computed(() => store.state.basemap);
     const tileImage = require("@/assets/icons/tileBasemap.png"); //use wsdot basemap icon
     const satelliteImage = require("@/assets/icons/worldImagery.png"); //use imagery basemap icon
     const imgSrc = ref<string>(satelliteImage); //reference to image used in icon
@@ -55,17 +56,23 @@ export default defineComponent({
       // });
       // store.commit("setLayerList", store.state.layerList);
     };
-    const updateBasemapIcon = () => {
-      imgSrc.value == satelliteImage ? (imgSrc.value = tileImage) : (imgSrc.value = satelliteImage);
-      iconTitle.value == "Imagery" ? (iconTitle.value = "WSDOT") : (iconTitle.value = "Imagery");
-      labelStyle.value == "iconLabelWhite"
-        ? (labelStyle.value = "iconLabelBlack")
-        : (labelStyle.value = "iconLabelWhite");
-    };
+    /**
+     * Toggle icon and label based on the current base map selection in the state store.
+     */
+    watch(basemapName, () => {
+      if (basemapName.value === "satellite") {
+        imgSrc.value = tileImage;
+        iconTitle.value = "WSDOT";
+        labelStyle.value = "iconLabelBlack";
+      } else {
+        imgSrc.value = satelliteImage;
+        iconTitle.value = "Imagery";
+        labelStyle.value = "iconLabelWhite";
+      }
+    });
     const onClick = () => {
       toggleImageryReference();
       store.commit("toggleBasemap"); //fire "toggleBasemap" mutation in store.ts
-      updateBasemapIcon();
     };
     const setStyle = () => {
       if (store.state.mediaSize === "s") {
