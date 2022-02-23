@@ -14,21 +14,16 @@ export default defineComponent({
     //#region toggle layer on and off
     const clickEvent = async (evt: { checked: boolean; value: string }) => {
       const ids = evt.value.split(",");
-      store.dispatch("modifyLayerVisibility", { ids: ids, visible: evt.checked });
+      store.dispatch("updateLayerVisibility", { ids: ids, visible: evt.checked });
     };
     const getLayerVisibility = (id: string): boolean => {
-      const info = store.getters.getLayerInfoById(id);
-      let visible = false;
-      if (info) {
-        visible = (info as LayerInfo).visible;
-      }
+      const visible = store.getters.getLayerVisibility(id);
       return visible;
     };
     const getLayerTitle = (id: string): string => {
-      const info = store.getters.getLayerInfoById(id);
-      let title = "";
-      if (info) {
-        title = (info as LayerInfo).title;
+      let title = store.getters.getLayerTitle(id);
+      if (!title) {
+        title = "";
       }
       return title;
     };

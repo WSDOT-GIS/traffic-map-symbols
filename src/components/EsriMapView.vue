@@ -65,7 +65,7 @@ import MountainPassPopup from "@/popups/MountainPassPopup.vue";
 import WeatherStationsPopup from "@/popups/WeatherStationPopup.vue";
 import RestAreaPopup from "@/popups/RestAreaPopup.vue";
 import RoadAlertPopup from "@/popups/RoadAlertPopup.vue";
-// import WildfirePointsPopup from "@/popups/WildfirePointsPopup.vue";
+import WildfirePointsPopup from "@/popups/WildfirePointsPopup.vue";
 import BorderCrossingPopup from "@/popups/BorderCrossingPopup.vue";
 import RegionalAlertPopup from "@/popups/RegionalAlertPopup.vue";
 import FerryRoutesPopup from "@/popups/FerryRoutesPopup.vue";
@@ -90,7 +90,7 @@ export default defineComponent({
     WeatherStationsPopup,
     RestAreaPopup,
     RoadAlertPopup,
-    // WildfirePointsPopup,
+    WildfirePointsPopup,
     BorderCrossingPopup,
     RegionalAlertPopup,
     FerryRoutesPopup,
@@ -230,9 +230,10 @@ export default defineComponent({
               if (arrayFound) {
                 arrayFound.results.push(eachResult);
               } else {
-                const layerInfo = store.state.layerList.find(
-                  (item) => item.id === eachResult.graphic.layer.id
-                );
+                const layerInfo = store.getters.getLayerInfoById(eachResult.graphic.layer.id);
+                // const layerInfo = store.state.layerList.find(
+                //   (item) => item.id === eachResult.graphic.layer.id
+                // );
                 if (layerInfo) {
                   resultsByLayer.push({
                     info: layerInfo,
@@ -380,7 +381,7 @@ export default defineComponent({
       });
       /* Set layer list here before the rest of the map is ready, so we can show the layer list UI early.
        * Otherwise user will see a map without layer list until everything is ready. */
-      // store.dispatch("updateLayerList");
+      store.dispatch("updateLayerVisibility");
       // Load regional alert after the other operations layers have been loaded so it won't slow down the map loading...
       const alertLyrInfos = await esriMap.loadRegionalAlert();
       store.commit("updateLayerInfos", alertLyrInfos);
@@ -401,7 +402,7 @@ export default defineComponent({
       // Set layer visibility based on URL query...
       const layerIds = setVisibleLayersFromUrl(/*store.state.layerList,*/ route);
       //store.commit("setLayerList", layerList);
-      store.dispatch("modifyLayerVisibility", { ids: layerIds, visible: true });
+      store.dispatch("updateLayerVisibility", { ids: layerIds, visible: true });
       // Set the initial map size in the state store...
       store.commit("setMapSize", {
         width: mapView.width,
@@ -433,7 +434,7 @@ export default defineComponent({
               if (!result.layer.visible) {
                 //const layerList = setLayerVisibility(result.layer.id, true, store.state.layerList);
                 //store.commit("setLayerList", layerList);
-                store.dispatch("modifyLayerVisibility", { ids: [result.layer.id], visible: true });
+                store.dispatch("updateLayerVisibility", { ids: [result.layer.id], visible: true });
               }
               // Zoom in (zoom level differs depends on the device)...
               let zoomLevel: number;
@@ -636,7 +637,7 @@ export default defineComponent({
   <WeatherStationsPopup :Featureset="popupFeatureset" />
   <RestAreaPopup :Featureset="popupFeatureset" />
   <RoadAlertPopup :Featureset="popupFeatureset" />
-  <!--<WildfirePointsPopup :Featureset="popupFeatureset" />-->
+  <WildfirePointsPopup :Featureset="popupFeatureset" />
   <BorderCrossingPopup :Featureset="popupFeatureset" />
   <RegionalAlertPopup :Featureset="popupFeatureset" />
   <FerryRoutesPopup :Featureset="popupFeatureset" :Alerts="ferryAlerts" />

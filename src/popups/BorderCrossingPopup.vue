@@ -9,6 +9,7 @@ import MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
 import { getLayer } from "@/esri-stuff/esriMap";
 import { useStore } from "@/store";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import { LayerStatus } from "@/types/LayerInfo";
 
 export default defineComponent({
   components: { PopupBase },
@@ -43,7 +44,7 @@ export default defineComponent({
     };
     const show = () => {
       const lyrStatus = store.getters.getLayerStatus(layerId);
-      if (lyrStatus !== "loaded") { 
+      if (lyrStatus !== LayerStatus.Loaded) { 
         close();
         return; 
       }

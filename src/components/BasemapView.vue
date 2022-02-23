@@ -49,7 +49,7 @@ export default defineComponent({
         iconTitle.value = "WSDOT";
         labelStyle.value = "iconLabelBlack";
         // Show the reference layers for the imagery basemap.
-        store.dispatch("modifyLayerVisibility",
+        store.dispatch("updateLayerVisibility",
         {
           ids: [
             "roads-reference-layer",
@@ -62,7 +62,7 @@ export default defineComponent({
         iconTitle.value = "Imagery";
         labelStyle.value = "iconLabelWhite";
         // Hide the reference layers for the imagery basemap.
-        store.dispatch("modifyLayerVisibility",
+        store.dispatch("updateLayerVisibility",
         {
           ids: [
             "roads-reference-layer",

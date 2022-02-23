@@ -1,43 +1,3 @@
-<template>
-  <div id="savedMapWidget">
-    <h6 id="saved-map-list-title">My saved maps</h6>
-    <div id="saved-map-list-container">
-      <div
-        v-for="(item, index) in mapList"
-        :key="index"
-        class="saved-map-list-row"
-        ref="itemContainerRef"
-      >
-        <div class="saved-map-list-col-0">
-          <div
-            :title="'Show ' + item.t"
-            class="saved-map-title w3-btn w3-transparent"
-            :class="{
-              'saved-map-title-selected': item.s,
-            }"
-            @click="selectItem($event, item)"
-          >{{ item.t }}</div>
-        </div>
-        <div class="saved-map-list-col-1">
-          <button
-            :title="'Delete ' + item.t"
-            :aria-label="'Delete ' + item.t"
-            class="saved-map-remove-btn w3-button"
-            @click="removeItem($event, item)"
-            ref="closeButtonRef"
-          >&times;</button>
-        </div>
-      </div>
-    </div>
-    <WsdotButtonView Caption="Save this map" @click="showForm" />
-    <SaveMapFormView
-      :Visible="formVisible"
-      @ok-save-map-form="addItem($event)"
-      @close-save-map-form="closeForm"
-    />
-  </div>
-</template>
-
 <script lang="ts">
 import { computed, defineComponent, nextTick, onMounted, onUpdated, ref, watch } from "vue";
 
@@ -123,20 +83,17 @@ export default defineComponent({
           return eachInfo.id === eachCookie.i;
         });
         if (lyrCookie) {
-          store.dispatch("modifyLayerVisibility", { ids: [lyrCookie.i], visible: lyrCookie.v });
-          // eachInfo.visible = lyrCookie.v;
+          store.dispatch("updateLayerVisibility", { ids: [lyrCookie.i], visible: lyrCookie.v });
         } else {
           // Not in cookie, so apply default...
           const defaultProp = defaultLayerProps.find((eachProp) => {
             return eachInfo.id === eachProp.id;
           });
           if (defaultProp) {
-            store.dispatch("modifyLayerVisibility", { ids: [eachInfo.id], visible: defaultProp.visible });
-            // eachInfo.visible = defaultProp.visible;
+            store.dispatch("updateLayerVisibility", { ids: [eachInfo.id], visible: defaultProp.visible });
           }
         }
       });
-      // store.commit("setLayerList", store.state.layerList);
       // Set basemap...
       if (validateBasemapName(item.b)) {
         store.commit("setBasemap", item.b);
@@ -209,7 +166,45 @@ export default defineComponent({
   },
 });
 </script>
-
+<template>
+  <div id="savedMapWidget">
+    <h6 id="saved-map-list-title">My saved maps</h6>
+    <div id="saved-map-list-container">
+      <div
+        v-for="(item, index) in mapList"
+        :key="index"
+        class="saved-map-list-row"
+        ref="itemContainerRef"
+      >
+        <div class="saved-map-list-col-0">
+          <div
+            :title="'Show ' + item.t"
+            class="saved-map-title w3-btn w3-transparent"
+            :class="{
+              'saved-map-title-selected': item.s,
+            }"
+            @click="selectItem($event, item)"
+          >{{ item.t }}</div>
+        </div>
+        <div class="saved-map-list-col-1">
+          <button
+            :title="'Delete ' + item.t"
+            :aria-label="'Delete ' + item.t"
+            class="saved-map-remove-btn w3-button"
+            @click="removeItem($event, item)"
+            ref="closeButtonRef"
+          >&times;</button>
+        </div>
+      </div>
+    </div>
+    <WsdotButtonView Caption="Save this map" @click="showForm" />
+    <SaveMapFormView
+      :Visible="formVisible"
+      @ok-save-map-form="addItem($event)"
+      @close-save-map-form="closeForm"
+    />
+  </div>
+</template>
 <style scoped>
 #savedMapWidget {
   padding-bottom: 16px;

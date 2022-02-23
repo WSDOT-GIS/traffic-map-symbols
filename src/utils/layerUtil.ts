@@ -1,4 +1,4 @@
-import LayerInfo from "@/types/LayerInfo";
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Graphic from "@arcgis/core/Graphic";
 import WebMap from "@arcgis/core/Map";
@@ -83,14 +83,24 @@ export const resizeFeature = (graphic: Graphic): void => {
  * @param layerList 
  * @returns 
  */
-export const setLayerVisibility = (layerId: string, visible: boolean, layerList: LayerInfo[]): LayerInfo[] => {
-    const result = layerList.find((item) => {
-        return item.id === layerId;
-    });
-    if (result) {
-        result.visible = visible;
+export const setLayerVisibility = (layerInfo: LayerInfo, visible: boolean): LayerStatus => {
+    const layer = map.findLayerById(layerInfo.id);
+    if (!layer) {
+        console.error("Failed to set layer visibitlity. The specified layer does not exist in map: " + layerInfo.id);
     }
-    return layerList
+    if (!layer.visible && visible) {
+        layer.visble = visible;
+        if (layerInfo.status !== LayerStatus.Loaded && layerInfo.isJson && layerInfo.url) {
+            reloadData(layerInfo.url, layer as FeatureLayer);
+        }
+    }
+    // const result = layerList.find((item) => {
+    //     return item.id === layerId;
+    // });
+    // if (result) {
+    //     result.visible = visible;
+    // }
+    // return layerList
 }
 /**
  * Get a feature from the layer group.
@@ -199,20 +209,18 @@ export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: st
         spatialReference: SpatialReference.WebMercator,
     });
     // Set event to load layer when it becomes visible...
-    if (!graphics) {
-        setLayerEvent(layer, jsonUrl);//, loadOnce);
+    if (graphics.length === 0) {
+        setLayerEvent(layer, jsonUrl);
     }
     return layer;
 }
 
-export const setLayerEvent = (layer: FeatureLayer, jsonUrl: string/*, loadOnce?: boolean*/): void => {
+export const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
     const handle = layer.watch("visible", (newValue, oldValue, propName, target) => {
         const lyr = target as FeatureLayer;
         if (newValue) {
             reloadData(jsonUrl, lyr);
-            // if (loadOnce) {
             handle.remove();
-            // }
         }
     });
 }
@@ -224,11 +232,10 @@ export const reloadData = async (jsonUrl: string, layer: FeatureLayer | undefine
     const reload = async (jsonUrl: string, layer: FeatureLayer): Promise<void> => {
         if (!layer.visible) { return; }
         // Fetch all features from JSON...
-        const graphics = await fetchJsonData(jsonUrl);//.then(async (graphics) => {
+        const graphics = await fetchJsonData(jsonUrl);
         if (graphics.length > 0) {
             await replaceFeatures(layer, graphics);
         }
-        //})
     }
     // Check if the layer is already being loaded currently or not...
     const runningProc = loadManager.find(x => x.id === layer.id);

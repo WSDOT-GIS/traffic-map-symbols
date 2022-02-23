@@ -2,15 +2,16 @@ class LayerInfo {
     readonly id: string;
     title = "";
     index = -1;
-    visible = false;
+    visible: boolean | undefined;
     url = "";
+    isJson = false;
     status = LayerStatus.NotLoaded;
 
-    constructor(id: string, title?: string) {
+    constructor(id: string, title?: string, url?: string, isJson?: boolean) {
         this.id = id;
-        if (title) {
-            this.title = title;
-        }
+        if (title) { this.title = title; }
+        if (url) { this.url = url; }
+        if (isJson) { this.isJson = isJson; }
     }
 }
 
