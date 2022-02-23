@@ -130,7 +130,6 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
     }
     const query = fLayer.createQuery();
     const field = fLayer.getField(groupInfo.layers[0].uniqueField);
-    console.log('b');
     query.where = `${groupInfo.layers[0].uniqueField} = `;
     if(field.type=='string'){
         if((uniqueValue as string).split("-").length>0&&fLayer.title=="Mountain Pass Reports"){
