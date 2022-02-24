@@ -62,7 +62,7 @@ export const layerId = "ferry-routes-points-layer";
 const layerTitle = "ferryRoutesPoints";
 
 export const initLayer = (url: string): LayerInfo => {
-    const layerInfo = new LayerInfo(layerId, layerTitle);
+    const layerInfo = new LayerInfo(layerId, layerTitle, url);
     try {
         layer = new FeatureLayer({
             id: layerId,

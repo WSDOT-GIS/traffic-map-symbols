@@ -72,7 +72,7 @@ export const layerId = "traffic-camera-layer";
 const layerTitle = "Cameras";
 
 export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
-    const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl, true);
+    const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
     try {
         layer = await layerUtil.initLayer(jsonUrl, layerId, "Cameras", renderer, fields, "point", false);
     }

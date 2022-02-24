@@ -6,7 +6,7 @@ export const layerId = "traffic-flow-layer";
 const layerTitle = "Live Traffic Flow";
 
 export const initLayer = (url: string, refreshMinute: number): LayerInfo => {
-    const layerInfo = new LayerInfo(layerId, layerTitle);
+    const layerInfo = new LayerInfo(layerId, layerTitle, url);
     try {
         layer = new MapImageLayer({
             id: layerId,

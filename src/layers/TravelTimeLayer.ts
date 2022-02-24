@@ -44,7 +44,7 @@ export const layerId = "travel-times-layer";
 const layerTitle = "Travel Times";
 
 export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
-    const layerInfo = new LayerInfo(layerId, layerTitle);
+    const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
     try {
         layer = await layerUtil.initLayer(jsonUrl,
             layerId,

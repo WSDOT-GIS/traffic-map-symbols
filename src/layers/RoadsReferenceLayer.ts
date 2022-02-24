@@ -6,7 +6,7 @@ export const layerId = "roads-reference-layer";
 const layerTitle = "ESRI Roads Reference"
 
 export const initLayer = (url: string): LayerInfo => {
-    const layerInfo = new LayerInfo(layerId, layerTitle);
+    const layerInfo = new LayerInfo(layerId, layerTitle, url);
     try {
         layer = new MapImageLayer({
             id: layerId,

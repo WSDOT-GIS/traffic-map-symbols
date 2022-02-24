@@ -21,7 +21,7 @@ const layerTitle = "Ferry Routes"
 // ]
 
 export const initLayer = async (url: string): Promise<LayerInfo> => {
-    const layerInfo = new LayerInfo(layerId, layerTitle);
+    const layerInfo = new LayerInfo(layerId, layerTitle, url);
     try {
         const graphics = await layerUtil.fetchJsonData(url)
         layer = new FeatureLayer({

@@ -9,7 +9,7 @@ import { convert2EsriExtent, convert2ExtentInfo } from "./utils/extentUtil";
 import LayerInfo, { LayerStatus, esriStatus2LayerStatus } from "./types/LayerInfo";
 import { InitializingInfo } from "./types/InitializingInfo";
 import { getMediaSize } from "./utils/miscUtil";
-import { getConfig } from "@/utils/appConfigUtil";
+import { setLayerVisibility } from "./utils/layerUtil";
 
 // Reference - https://next.vuex.vuejs.org/guide/typescript-support.html#typing-usestore-composition-function
 // define typings for the store state...
@@ -243,36 +243,18 @@ export const store = createStore<State>({
         }
     },
     actions: {
-        // updateLayerList({ commit }, payload?: LayerInfo[]) {
-        //     if (!payload) {
-        //         webmap.layers.forEach((layer, index) => {
-        //             const updateInfo = {
-        //                 id: layer.id,
-        //                 index: index,
-        //                 title: layer.title,
-        //                 visible: layer.visible,
-        //             }
-        //             commit("updateLayerInfo", updateInfo);
-        //         });
-        //     }
-        //     else {
-        //         commit("updateLayerInfos", payload);
-        //     }
-        // },
         updateLayerVisibility({ commit, state }, payload?: { ids: string[], visible: boolean }) {
             if (payload) {
                 payload.ids.forEach((eachId) => {
                     commit("updateLayerInfo", { id: eachId, visible: payload.visible });
-                    const layer = webmap.layers.find((lyr) => {
-                        return lyr.id === eachId;
-                    });
-                    if (layer) {
-                        layer.visible = payload.visible;
-                    }
-                    if (payload.visible) {
-                        const info = getLayerInfo(state, eachId);
-                        if (info && info.status !== LayerStatus.Loaded) {
-
+                    const info = getLayerInfo(state, eachId);
+                    if (info && webmap) {
+                        const layer = webmap.findLayerById(eachId);
+                        if (layer) {
+                            const newStatus = setLayerVisibility(layer, info, payload.visible);
+                            if (info.status !== newStatus) {
+                                commit("updateLayerInfo", { id: eachId, status: newStatus });
+                            }
                         }
                     }
                 });
@@ -281,7 +263,6 @@ export const store = createStore<State>({
                     commit("updateLayerInfo", { id: mapLyr.id, visible: mapLyr.visible });
                 })
             }
-
         },
         updateLayerStatus({ commit }, payload: { layerIds: string[], status: LayerStatus }) {
             payload.layerIds.forEach((eachId) => {

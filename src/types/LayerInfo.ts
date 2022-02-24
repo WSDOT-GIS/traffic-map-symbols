@@ -4,14 +4,16 @@ class LayerInfo {
     index = -1;
     visible: boolean | undefined;
     url = "";
-    isJson = false;
+    isJson = () => this.url.endsWith(".json");
     status = LayerStatus.NotLoaded;
 
-    constructor(id: string, title?: string, url?: string, isJson?: boolean) {
+    constructor(id: string, title?: string, url?: string) {
         this.id = id;
         if (title) { this.title = title; }
-        if (url) { this.url = url; }
-        if (isJson) { this.isJson = isJson; }
+        if (url) {
+            this.url = url;
+        }
+
     }
 }
 

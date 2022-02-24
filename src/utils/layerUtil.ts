@@ -11,6 +11,7 @@ import GroupLayerInfo from "@/types/GroupLayerInfo";
 import AppConfig from "@/types/AppConfig";
 import { fetchJson } from "@/utils/miscUtil";
 import { isEsriFeatures } from "@/utils/typeUtil";
+import Layer from "@arcgis/core/layers/Layer";
 /**  Mapping between layer groups (type in URL query param) and layer IDs...
  *   * id
  *      ID for the layer group (type).
@@ -83,24 +84,20 @@ export const resizeFeature = (graphic: Graphic): void => {
  * @param layerList 
  * @returns 
  */
-export const setLayerVisibility = (layerInfo: LayerInfo, visible: boolean): LayerStatus => {
-    const layer = map.findLayerById(layerInfo.id);
-    if (!layer) {
-        console.error("Failed to set layer visibitlity. The specified layer does not exist in map: " + layerInfo.id);
-    }
-    if (!layer.visible && visible) {
-        layer.visble = visible;
-        if (layerInfo.status !== LayerStatus.Loaded && layerInfo.isJson && layerInfo.url) {
+export const setLayerVisibility = (layer: Layer, layerInfo: LayerInfo, visible: boolean): LayerStatus => {
+    let outStatus = layerInfo.status;
+    if (layer.visible === visible) { return outStatus; }
+    else { layer.visible = visible }
+    if (visible && layerInfo.status !== LayerStatus.Loaded && layerInfo.isJson() && layerInfo.url) {
+        try {
             reloadData(layerInfo.url, layer as FeatureLayer);
+            outStatus = LayerStatus.Loaded;
+        } catch (ex) {
+            outStatus = LayerStatus.Failed;
+            throw ex;
         }
     }
-    // const result = layerList.find((item) => {
-    //     return item.id === layerId;
-    // });
-    // if (result) {
-    //     result.visible = visible;
-    // }
-    // return layerList
+    return outStatus;
 }
 /**
  * Get a feature from the layer group.
@@ -209,9 +206,9 @@ export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: st
         spatialReference: SpatialReference.WebMercator,
     });
     // Set event to load layer when it becomes visible...
-    if (graphics.length === 0) {
-        setLayerEvent(layer, jsonUrl);
-    }
+    // if (graphics.length === 0) {
+    //     setLayerEvent(layer, jsonUrl);
+    // }
     return layer;
 }
 
@@ -240,7 +237,7 @@ export const reloadData = async (jsonUrl: string, layer: FeatureLayer | undefine
     // Check if the layer is already being loaded currently or not...
     const runningProc = loadManager.find(x => x.id === layer.id);
     if (runningProc) {
-        // It is loading currently already, so wait until that finishes.
+        // Loading is in progress already, so wait until that finishes.
         await runningProc.promise;
     } else {
         // It is not loading now, so start loading.

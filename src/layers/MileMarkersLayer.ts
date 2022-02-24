@@ -6,7 +6,7 @@ export const layerId = "mile-markers";
 const layerTitle = "Mile Markers";
 
 export const initLayer = (url: string): LayerInfo => {
-    const layerInfo = new LayerInfo(layerId, layerTitle);
+    const layerInfo = new LayerInfo(layerId, layerTitle, url);
     try {
         layer = new VectorTileLayer({
             id: layerId,

@@ -17,7 +17,8 @@ export default defineComponent({
       store.dispatch("updateLayerVisibility", { ids: ids, visible: evt.checked });
     };
     const getLayerVisibility = (id: string): boolean => {
-      const visible = store.getters.getLayerVisibility(id);
+      let visible = store.getters.getLayerVisibility(id);
+      if (visible === undefined) { visible = false;}
       return visible;
     };
     const getLayerTitle = (id: string): string => {

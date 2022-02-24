@@ -5,7 +5,7 @@ export const layerId = "ferry-routes-reference-layer";
 const layerTitle = "Ferry Routes Reference";
 
 export const initLayer = (url: string): LayerInfo => {
-    const layerInfo = new LayerInfo(layerId, layerTitle);
+    const layerInfo = new LayerInfo(layerId, layerTitle, url);
     try {
         layer = new TileLayer({
             id: layerId,

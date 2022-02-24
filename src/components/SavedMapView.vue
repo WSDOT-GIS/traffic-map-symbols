@@ -119,14 +119,14 @@ export default defineComponent({
         const defaultProp = defaultLayerProps.find((eachProp) => {
           return eachProp.id === eachInfo.id;
         });
-        if (defaultProp) {
+        if (defaultProp && eachInfo.visible !== undefined) {
           return eachInfo.visible !== defaultProp.visible;
         } else {
           return false;
         }
       });
       const layerList = layerListFilter.map((eachInfo) => {
-        return { i: eachInfo.id, v: eachInfo.visible };
+        return { i: eachInfo.id, v: eachInfo.visible as boolean };
       });
       mapList.value.push({
         t: newTitle.trim(),

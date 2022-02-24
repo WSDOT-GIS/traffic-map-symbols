@@ -11,7 +11,7 @@ export const layerId = "fire-perimeters-layer";
 const layerTitle = "Fire Perimeters";
 
 export const initLayer = (url: string, firePerimeterIDs: string): LayerInfo => {
-    const layerInfo = new LayerInfo(layerId, layerTitle);
+    const layerInfo = new LayerInfo(layerId, layerTitle, url);
     try {
         layer = new FeatureLayer({
             id: layerId,

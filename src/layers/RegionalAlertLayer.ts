@@ -97,7 +97,7 @@ const layerTitle = "Regional Alerts";
 
 export const initLayer = async (alertUrl: string, countyUrl: string, regionUrl: string):
     Promise<{ point: LayerInfo, polygon: LayerInfo }> => {
-    const pointInfo = new LayerInfo(layerId, layerTitle);
+    const pointInfo = new LayerInfo(layerId, layerTitle, alertUrl);
     let fetchResults: { point: Graphic[], polygon: Graphic[] };
     let fetchSuccess = true;
     try {

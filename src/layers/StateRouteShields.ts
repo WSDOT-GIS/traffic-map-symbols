@@ -6,7 +6,7 @@ export const layerId = "state-route-shields-layer";
 const layerTitle = "State Route Shields";
 
 export const initLayer = (url: string): LayerInfo => {
-    const layerInfo = new LayerInfo(layerId, layerTitle);
+    const layerInfo = new LayerInfo(layerId, layerTitle, url);
     try {
         layer = new TileLayer({
             id: layerId,
