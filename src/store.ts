@@ -6,10 +6,12 @@ import { webmap, mapView } from "./esri-stuff/esriMap";
 import { getBasemapInfo, toggleBasemapInfo } from "./layers/Basemaps";
 import ExtentInfo from "./types/ExtentInfo";
 import { convert2EsriExtent, convert2ExtentInfo } from "./utils/extentUtil";
-import LayerInfo, { LayerStatus, esriStatus2LayerStatus } from "./types/LayerInfo";
+import LayerInfo, { esriStatus2LayerStatus, LayerStatus } from "./types/LayerInfo";
 import { InitializingInfo } from "./types/InitializingInfo";
 import { getMediaSize } from "./utils/miscUtil";
 import { setLayerVisibility } from "./utils/layerUtil";
+import Layer from "@arcgis/core/layers/Layer";
+import BasemapInfo from "./types/BasemapInfo";
 
 // Reference - https://next.vuex.vuejs.org/guide/typescript-support.html#typing-usestore-composition-function
 // define typings for the store state...
@@ -30,11 +32,14 @@ export interface State {
     leftPaneIsOpen: boolean;
     /** s: small, l:large */
     mediaSize: "s" | "l"; // TODO: add more as needed
-    errors: string[];
+    errors: string[]; // Shown in the toast.
+    serviceAlerts: string[]; // Shown in the banner.
     isToastReady: boolean;
 }
 //
 const toast = useToast();
+let basemapWatchHandles: __esri.WatchHandle[];
+let layerWatchHandles: __esri.WatchHandle[];
 
 // define injection key...
 export const key: InjectionKey<Store<State>> = Symbol()
@@ -72,7 +77,7 @@ export const store = createStore<State>({
                 new LayerInfo("point-restrictions-layer"),
                 new LayerInfo("regional-alert-layer"),
                 new LayerInfo("rest-areas-layer"),
-                new LayerInfo("road-alerts-layer"),
+                new LayerInfo("road-serviceAlerts-layer"),
                 new LayerInfo("roads-reference-layer"),
                 new LayerInfo("state-route-shields-layer"),
                 new LayerInfo("traffic-flow-layer"),
@@ -86,11 +91,12 @@ export const store = createStore<State>({
             leftPaneIsOpen: getMediaSize() !== "s",
             mediaSize: getMediaSize(),
             errors: [],
+            serviceAlerts: [],
             isToastReady: false
         }
     },
     getters: {
-        getLayerInfoById: (state) => (id: string) => {
+        getLayerInfo: (state) => (id: string) => {
             return getLayerInfo(state, id);
         },
         layerInfoExists: (state) => (id: string) => {
@@ -125,9 +131,22 @@ export const store = createStore<State>({
                 const basemapInfo = getBasemapInfo(payload);
                 state.basemap = basemapInfo.name;
                 if (basemapInfo.basemap) {
+                    if (basemapWatchHandles) {
+                        basemapWatchHandles.forEach(eachHandle => eachHandle.remove());
+                    }
+                    basemapWatchHandles = [];
                     webmap.basemap = basemapInfo.basemap;
+                    webmap.basemap.baseLayers.forEach(eachLyr => {
+                        const handle = eachLyr.watch("loadStatus", (newValue, oldValue, propertyName, target) => {
+                            const lyr = target as Layer;
+                            if (newValue === "failed") {
+                                addServiceAlert(state, "Failed to load the base map layer: " + lyr.title);
+                            }
+                        });
+                        basemapWatchHandles.push(handle);
+                    });
                 } else {
-                    console.error(`The specified basemap, ${payload}, is not available.`);
+                    addServiceAlert(state, `The specified basemap, ${payload}, is not available.`);
                 }
             }
         },
@@ -137,7 +156,7 @@ export const store = createStore<State>({
             if (basemapInfo.basemap) {
                 webmap.basemap = basemapInfo.basemap;
             } else {
-                console.error(`The specified basemap, ${basemapInfo.name}, is not available.`);
+                addServiceAlert(state, `The specified basemap, ${basemapInfo.name}, is not available.`);
             }
         },
         setPointerX(state, payload) {
@@ -165,11 +184,14 @@ export const store = createStore<State>({
          * @param state 
          * @param payload 
          */
-        updateLayerInfos(state, payload: LayerInfo[]) {
+        setLayerInfos(state, payload: LayerInfo[]) {
             payload.forEach(newInfo => {
                 const info = getLayerInfo(state, newInfo.id);
                 if (!info) {
                     state.layerList.push(newInfo);
+                    if (newInfo.status === LayerStatus.Failed) {
+                        addServiceAlert(state, newInfo);
+                    }
                 } else {
                     if (newInfo.title) { info.title = newInfo.title; }
                     if (newInfo.index) { info.index = newInfo.index; }
@@ -177,7 +199,7 @@ export const store = createStore<State>({
                     if (newInfo.visible !== undefined) { info.visible = newInfo.visible }
                     if (newInfo.status) {
                         if (info.status !== LayerStatus.Failed && newInfo.status === LayerStatus.Failed) {
-                            showError(state, `The layer, ${info.id}, failed to load.`);
+                            addServiceAlert(state, info);
                         }
                         info.status = newInfo.status
                     }
@@ -205,7 +227,7 @@ export const store = createStore<State>({
             if (payload.visible !== undefined) { info.visible = payload.visible }
             if (payload.status) {
                 if (info.status !== LayerStatus.Failed && payload.status === LayerStatus.Failed) {
-                    showError(state, `The layer, ${info.id}, failed to load.`);
+                    addServiceAlert(state, info);
                 }
                 info.status = payload.status
             }
@@ -240,7 +262,11 @@ export const store = createStore<State>({
         // The toast cannot be displayed until the page and its content are ready.
         setIsToastReady(state) {
             state.isToastReady = true;
+        },
+        addServiceAlert(state, message: string) {
+            addServiceAlert(state, message);
         }
+
     },
     actions: {
         updateLayerVisibility({ commit, state }, payload?: { ids: string[], visible: boolean }) {
@@ -251,10 +277,11 @@ export const store = createStore<State>({
                     if (info && webmap) {
                         const layer = webmap.findLayerById(eachId);
                         if (layer) {
-                            const newStatus = setLayerVisibility(layer, info, payload.visible);
-                            if (info.status !== newStatus) {
-                                commit("updateLayerInfo", { id: eachId, status: newStatus });
-                            }
+                            setLayerVisibility(layer, info, payload.visible).then((newStatus) => {
+                                if (info.status !== newStatus) {
+                                    commit("updateLayerInfo", { id: eachId, status: newStatus });
+                                }
+                            })
                         }
                     }
                 });
@@ -264,9 +291,57 @@ export const store = createStore<State>({
                 })
             }
         },
-        updateLayerStatus({ commit }, payload: { layerIds: string[], status: LayerStatus }) {
+        updateLayerIndices({ commit }) {
+            webmap.layers.forEach((mapLyr, idx) => {
+                commit("updateLayerInfo", { id: mapLyr.id, index: idx });
+            })
+        },
+        /** 
+         * Setup layer watch handlers to keep track of layer status.
+         * If it is JSON layer, only use the layer's loadStatus property if it is "Failed". Otherwise the status is updated when JSON is fetched.
+         * If it is not a JSON layer, use the layer's loadStatus property.
+         */
+        watchLayers({ commit, state }) {
+            if (layerWatchHandles) {
+                layerWatchHandles.forEach(handle => handle.remove());
+            }
+            layerWatchHandles = [];
+            webmap.layers.forEach((mapLyr) => {
+                const info = getLayerInfo(state, mapLyr.id);
+                if (!info) { return; }
+                const isJson = info.isJson();
+                if (!isJson) {
+                    commit("updateLayerInfo", { id: mapLyr.id, status: esriStatus2LayerStatus(mapLyr.loadStatus) })
+                }
+                else if (mapLyr.loadStatus === "failed") {
+                    commit("updateLayerInfo", { id: mapLyr.id, status: LayerStatus.Failed })
+                }
+                const handle = mapLyr.watch("loadStatus", (newValue, oldValue, propertyName, target) => {
+                    const lyr = target as Layer;
+                    if (!isJson) {
+                        commit("updateLayerInfo", { id: lyr.id, status: esriStatus2LayerStatus(newValue) })
+                    }
+                    else if (newValue === "failed") {
+                        commit("updateLayerInfo", { id: lyr.id, status: LayerStatus.Failed })
+                    }
+                });
+                layerWatchHandles.push(handle);
+            })
+        },
+        updateLayerStatus({ commit }, payload: { layerIds: string[], status: LayerStatus | string }) {
+            let status: LayerStatus;
+            if (typeof payload.status === "string") {
+                const result = esriStatus2LayerStatus(payload.status);
+                if (result) { status = result; }
+                else {
+                    console.error("Failed to update layer status. Invalid status: " + payload.status);
+                    return;
+                }
+            } else {
+                status = payload.status;
+            }
             payload.layerIds.forEach((eachId) => {
-                commit("updateLayerInfo", { id: eachId, status: payload.status });
+                commit("updateLayerInfo", { id: eachId, status: status });
             });
         },
         showError({ state }, message: string) {
@@ -281,6 +356,10 @@ export const store = createStore<State>({
                     toast.error(item);
                 });
                 state.errors = [];
+                // Temporary...
+                state.serviceAlerts.forEach((item) => {
+                    toast.warning(item);
+                })
             }
         }
     }
@@ -296,6 +375,24 @@ const showError = (state: State, message: string) => {
         toast.error(message);
     }
     else { store.commit("saveError", message); }
+}
+
+const addServiceAlert = (state: State, service: string | LayerInfo) => {
+    let name: string;
+    let msg: string;
+    if (service instanceof LayerInfo) {
+        name = service.title ? service.title : service.id;
+        msg = `The layer, ${name}, failed to load.`;
+    } else {
+        name = service;
+        msg = `The service, ${name}, is not available.`;
+    }
+    state.serviceAlerts.push(name);
+    console.warn(msg);
+    // Temporary... TODO: show in banner
+    if (state.isToastReady) {
+        toast.warning(msg);
+    }
 }
 
 /**

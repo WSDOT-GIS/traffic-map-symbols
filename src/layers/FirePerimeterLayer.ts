@@ -10,8 +10,9 @@ let layer: FeatureLayer | undefined;
 export const layerId = "fire-perimeters-layer";
 const layerTitle = "Fire Perimeters";
 
-export const initLayer = (url: string, firePerimeterIDs: string): LayerInfo => {
+export const initLayer = (url: string, incidentNames: string[]): LayerInfo => {
     const layerInfo = new LayerInfo(layerId, layerTitle, url);
+    const queryString = "IncidentName IN('" + incidentNames.join("','") + "')";
     try {
         layer = new FeatureLayer({
             id: layerId,
@@ -19,7 +20,7 @@ export const initLayer = (url: string, firePerimeterIDs: string): LayerInfo => {
             url: url,
             title: layerTitle,
             visible: false,
-            definitionExpression: firePerimeterIDs
+            definitionExpression: queryString
         });
     }
     catch (ex) {

@@ -7,33 +7,21 @@ export const getDefaultBasemapInfo = (): BasemapInfo => { return basemaps[0] }
 const basemaps: BasemapInfo[] = [];
 
 export const initBasemap = async (basemapUrl: string): Promise<void> => {
-    let wsdotBase: Basemap | undefined;
-    try {
-        wsdotBase = new Basemap({
-            baseLayers: [
-                new TileLayer({
-                    url: basemapUrl,
-                })
-            ],
-            title: "WSDOT Basemap",
-            id: "wsdot-basemap",
-        });
-    } catch (ex) {
-        console.error(ex);
-        wsdotBase = undefined;
-    }
+    const wsdotBase = new Basemap({
+        baseLayers: [
+            new TileLayer({
+                url: basemapUrl,
+            })
+        ],
+        title: "WSDOT Basemap",
+        id: "wsdot-basemap",
+    });
     basemaps.push({
         name: "wsdot",
         basemap: wsdotBase
     })
     // Satellite...
-    let imgBase: Basemap | undefined;
-    try {
-        imgBase = Basemap.fromId("satellite");
-    } catch (ex) {
-        console.error(ex);
-        imgBase = undefined;
-    }
+    const imgBase = Basemap.fromId("satellite");
     basemaps.push({
         name: "satellite",
         basemap: imgBase
@@ -41,11 +29,11 @@ export const initBasemap = async (basemapUrl: string): Promise<void> => {
 }
 
 export const getBasemapInfo = (name: string): BasemapInfo => {
-    const results = basemaps.filter((x) => {
-        return x.name == name;
+    const result = basemaps.find((x) => {
+        return x.name === name;
     });
-    if (results.length > 0) {
-        return results[0];
+    if (result) {
+        return result;
     } else {
         return getDefaultBasemapInfo();
     }
@@ -67,10 +55,14 @@ export const toggleBasemapInfo = (currentName: string): BasemapInfo => {
         return basemaps[0];
     }
 }
-// Make sure the base map name is valid...
+/**
+ * Make sure the base map name is valid...
+ * @param name 
+ */
 export const validateBasemapName = (name: string): boolean => {
     const result = basemaps.filter((item) => {
         return item.name === name;
     })
     return result.length > 0;
 }
+

@@ -3,7 +3,6 @@ import { useStore } from "@/store";
 import { computed, defineComponent } from "vue";
 import { layerListIcons } from "@/symbols/IconDefinitions";
 import ToggleSwitchView from "./ToggleSwitchView.vue";
-import LayerInfo from "@/types/LayerInfo";
 
 export default defineComponent({
   components: { ToggleSwitchView },

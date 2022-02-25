@@ -121,9 +121,11 @@ export const loadOperationalLayers = async (): Promise<LayerInfo[]> => {
     infos.push(FireIncidentsLayer.initLayer(config.fireIncidents));
     const fireIncidentLayer = FireIncidentsLayer.default();
     if (fireIncidentLayer) {
-        const firePerimeterIDs = await firePerimeterFeatureIDs(fireIncidentLayer);
+        const incidentNames = await FireIncidentsLayer.getIncidentNames();//await firePerimeterFeatureIDs(fireIncidentLayer);
         //Needed to filter fire perimeters to just those within the state
-        infos.push(FirePerimetersLayer.initLayer(config.firePerimeters, firePerimeterIDs));
+        if (incidentNames.length > 0) {
+            infos.push(FirePerimetersLayer.initLayer(config.firePerimeters, incidentNames));
+        }
     }
     // Wait for all the async ones to finish loading...
     const results = await Promise.all(promises);
@@ -136,7 +138,6 @@ export const loadOperationalLayers = async (): Promise<LayerInfo[]> => {
 
     // Create list of layers to load to the map...
     const lyrs: Layer[] = [];
-    //const infos: LayerInfo[] = [];
     const addToList = (layer: Layer | undefined) => {
         if (layer) {
             lyrs.push(layer);

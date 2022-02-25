@@ -2,6 +2,7 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import fireIncidentSymbol from "@/symbols/FireIncidentSymbol"
 import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
+import Graphic from "@arcgis/core/Graphic";
 
 
 const fireIncidentRenderer = new simpleRenderer({
@@ -41,3 +42,22 @@ const getLayer = (): FeatureLayer | undefined => {
 }
 
 export default getLayer
+
+export const getIncidentNames = async (): Promise<string[]> => {
+    if (!layer) {
+        console.error("Failed to get fire incident names since the layer is not available.");
+        return [];
+    }
+    const fireIncidentQuery = layer.createQuery();
+    fireIncidentQuery.outFields = ["IncidentName"];
+    let features: Graphic[];
+    try {
+        const response = await layer.queryFeatures(fireIncidentQuery);
+        features = response.features;
+    } catch (ex) {
+        console.error(ex)
+        return [];
+    }
+    const names = features.map(ftr => ftr.attributes.IncidentName as string);
+    return names;
+}

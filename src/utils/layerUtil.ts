@@ -84,17 +84,16 @@ export const resizeFeature = (graphic: Graphic): void => {
  * @param layerList 
  * @returns 
  */
-export const setLayerVisibility = (layer: Layer, layerInfo: LayerInfo, visible: boolean): LayerStatus => {
+export const setLayerVisibility = async (layer: Layer, layerInfo: LayerInfo, visible: boolean): Promise<LayerStatus> => {
     let outStatus = layerInfo.status;
     if (layer.visible === visible) { return outStatus; }
     else { layer.visible = visible }
     if (visible && layerInfo.status !== LayerStatus.Loaded && layerInfo.isJson() && layerInfo.url) {
         try {
-            reloadData(layerInfo.url, layer as FeatureLayer);
+            await reloadData(layerInfo.url, layer as FeatureLayer);
             outStatus = LayerStatus.Loaded;
         } catch (ex) {
             outStatus = LayerStatus.Failed;
-            throw ex;
         }
     }
     return outStatus;
@@ -258,7 +257,9 @@ export const replaceFeatures = async (layer: FeatureLayer, newFeatures: Graphic[
 }
 
 export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
+    console.debug("...")
     // Fetch all features from JSON...
+    //let json: unknown;
     const json = await fetchJson(jsonUrl);
     if (!isEsriFeatures(json)) {
         throw "Invalid JSON format. It is not ESRI Features JSON."
