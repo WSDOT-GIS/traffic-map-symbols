@@ -17,7 +17,7 @@ import { mapView, webmap, zoomToMetroArea } from "@/esri-stuff/esriMap";
 import {
   getExtentFromUrl,
   getBasemapFromUrl,
-  setVisibleLayersFromUrl,
+  getLayerVisibilityFromUrl,
   getFeatureIdFromUrl,
   getFeatureTypeFromUrl,
 } from "@/utils/urlParamUtil";
@@ -363,7 +363,11 @@ export default defineComponent({
       let loadedPromises = [] as Array<Promise<unknown>>;
       const test: string[] = [];
       mapLayers.forEach((layer) => {
-        if (layer.type == "feature" && layer.id !== "ferry-routes-points-layer" && layer.loadStatus !== "failed") {
+        if (
+          layer.type == "feature" &&
+          layer.id !== "ferry-routes-points-layer" &&
+          layer.loadStatus !== "failed"
+        ) {
           vlPromises.push(mapView.whenLayerView(layer));
           test.push(layer.title);
         }
@@ -407,8 +411,9 @@ export default defineComponent({
       // Gray out areas outside of the display area...
       esriMap.addOutOfExtentLayer();
       // Set layer visibility based on URL query...
-      const layerIds = setVisibleLayersFromUrl(route);
-      store.dispatch("updateLayerVisibility", { ids: layerIds, visible: true });
+      const layerIds = getLayerVisibilityFromUrl(route);
+      store.dispatch("updateLayerVisibility", { ids: layerIds.visible, visible: true });
+      store.dispatch("updateLayerVisibility", { ids: layerIds.invisible, visible: false });
       // Set the initial map size in the state store...
       store.commit("setMapSize", {
         width: mapView.width,

@@ -103,7 +103,7 @@ if (removeKeys.length > 0) {
  * @param layerList 
  * @route
  */
-export const setVisibleLayersFromUrl = (/*layerList: LayerInfo[],*/route: RouteLocationNormalizedLoaded): string[] => {
+export const getLayerVisibilityFromUrl = (route: RouteLocationNormalizedLoaded): { visible: string[], invisible: string[] } => {
     let layers: string[] | undefined;
     // Flag to turn off layers shown by default. Currently only the Road Alert layer.
     let hideDefaultLyrs = false;
@@ -142,6 +142,7 @@ export const setVisibleLayersFromUrl = (/*layerList: LayerInfo[],*/route: RouteL
         layers = layers.concat(validLayers);
     }
     const layerIds: string[] = [];
+    const hideLayerIds: string[] = [];
     if (layers) {
         // const layerIds: string[] = [];
         layers.forEach((each) => {
@@ -156,15 +157,16 @@ export const setVisibleLayersFromUrl = (/*layerList: LayerInfo[],*/route: RouteL
             }
         });
         // Do not show alert layers...
-        // if (hideDefaultLyrs && !layers.includes("alert")) {
-        //     const lyrs2Hide = ['road-alerts-layer', 'road-closures-layer', 'ferry-routes-points-layer'];
-        //     lyrs2Hide.forEach((hideId) => {
-        //         const info = layerList.find((lyr) => lyr.id === hideId);
-        //         if (info) { info.visible = false; }
-        //     })
-        // }
+        if (hideDefaultLyrs && !layers.includes("alert")) {
+            hideLayerIds.push('road-alerts-layer', 'road-closures-layer', 'ferry-routes-points-layer');
+            // const lyrs2Hide = ['road-alerts-layer', 'road-closures-layer', 'ferry-routes-points-layer'];
+            // lyrs2Hide.forEach((hideId) => {
+            //     const info = layerList.find((lyr) => lyr.id === hideId);
+            //     if (info) { info.visible = false; }
+            // })
+        }
     }
-    return layerIds;
+    return { visible: layerIds, invisible: hideLayerIds };
 }
 /**
  * Check to make sure the ID is valid.
