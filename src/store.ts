@@ -11,7 +11,6 @@ import { InitializingInfo } from "./types/InitializingInfo";
 import { getMediaSize } from "./utils/miscUtil";
 import { setLayerVisibility } from "./utils/layerUtil";
 import Layer from "@arcgis/core/layers/Layer";
-import BasemapInfo from "./types/BasemapInfo";
 
 // Reference - https://next.vuex.vuejs.org/guide/typescript-support.html#typing-usestore-composition-function
 // define typings for the store state...
@@ -59,30 +58,7 @@ export const store = createStore<State>({
                 ymin: 0,
                 ymax: 0
             },
-            layerList: [
-                new LayerInfo("alert-area-layer"),
-                new LayerInfo("border-crossings-layer"),
-                new LayerInfo("boundaries-places-reference-layer"),
-                new LayerInfo("traffic-camera-layer"),
-                new LayerInfo("esri-reference-layer"),
-                new LayerInfo("ferry-routes-reference-layer"),
-                new LayerInfo("fire-incidents-layer"),
-                new LayerInfo("fire-perimeters-layer"),
-                new LayerInfo("ferry-routes-lines-layer"),
-                new LayerInfo("line-restrictions-layer"),
-                new LayerInfo("mile-markers"),
-                new LayerInfo("mountain-passes-layer"),
-                new LayerInfo("park-ride-layer"),
-                new LayerInfo("ferry-routes-points-layer"),
-                new LayerInfo("point-restrictions-layer"),
-                new LayerInfo("regional-alert-layer"),
-                new LayerInfo("rest-areas-layer"),
-                new LayerInfo("road-serviceAlerts-layer"),
-                new LayerInfo("roads-reference-layer"),
-                new LayerInfo("state-route-shields-layer"),
-                new LayerInfo("traffic-flow-layer"),
-                new LayerInfo("weather-stations-layer"),
-            ],
+            layerList: [],
             userLocation: null,
             isMobileMenuOpen: false,
             isInitializing: false,
