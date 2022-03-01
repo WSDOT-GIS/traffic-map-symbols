@@ -216,9 +216,6 @@ export const store = createStore<State>({
             id: string, title?: string, index?: number, url?: string, visible?: boolean,
             status?: LayerStatus
         }) {
-            // if (payload.id === "ferry-routes-points-layer" && payload.status) {
-            //     console.debug("*** status: " + payload.status);
-            // }
             let info = getLayerInfo(state, payload.id);
             if (!info) {
                 info = new LayerInfo(payload.id);
@@ -371,7 +368,7 @@ const addServiceAlert = (state: State, alert: string | LayerInfo) => {
     let msg: string;
     if (alert instanceof LayerInfo) {
         const name = alert.title ? alert.title : alert.id;
-        msg = `The layer, ${name}, failed to load.`;
+        msg = `Failed to load the layer: ${name}.`;
     } else {
         msg = alert;
     }

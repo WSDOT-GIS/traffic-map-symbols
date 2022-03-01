@@ -51,7 +51,7 @@ export default defineComponent({
           //query feature layer for feature
           async (result) => {
             if (result) {
-              forecastsLoaded.value = 'false'
+              forecastsLoaded.value = "false";
               forecastList.value = undefined;
               feature.value = result;
               getWeatherForecast(result);
@@ -88,7 +88,7 @@ export default defineComponent({
             const featureNWSZoneId = response?.attributes?.NWSZoneId?.toString().replace(/\s/g, "");
             const config = getConfig();
             fetch(config.forecastExtendedAPI + featureNWSZoneId + "/").then((result) => {
-              if (result.status == 200) {
+              if (result.status >= 200 && result.status < 300) {
                 result.json().then((response) => {
                   function mycomparator(a: any, b: any) {
                     return parseInt(a.forecastNumber, 10) - parseInt(b.forecastNumber, 10);
@@ -101,8 +101,10 @@ export default defineComponent({
                     nwsZoneRegionName: response.nwsZoneRegionName,
                     forecasts: sortedForecasts,
                   };
-                  forecastsLoaded.value = "true"
+                  forecastsLoaded.value = "true";
                 });
+              } else {
+                store.commit("addServiceAlert", "Weather forecast service is not availble.");
               }
               feature.value = featureresult;
             });
@@ -125,7 +127,9 @@ export default defineComponent({
       const moreInfoObject = new Object({
         url: `/travel/real-time/Weather/${feature.attributes.WeatherStationId}`,
         text: "Learn more about the weather and forecast at ",
-        linkText: `${feature.attributes["WeatherStationDescription"]?.toString().split(" on ")[0]} station`,
+        linkText: `${
+          feature.attributes["WeatherStationDescription"]?.toString().split(" on ")[0]
+        } station`,
       }) as MoreInfoURLInfo;
       return moreInfoObject;
     };
@@ -134,9 +138,9 @@ export default defineComponent({
       if (feature) {
         const c = Number(feature.attributes["SurfaceTemperature"]);
         if (c && !isNaN(c)) {
-          //(6°C × 9/5) + 32 
+          //(6°C × 9/5) + 32
           // BUG 42968 - remove unit since Tom cannote tell what it is.
-          const f = Math.round((c * (9 / 5)) + 32);
+          const f = Math.round(c * (9 / 5) + 32);
           text = combineNums(f, c, "°F", "°C");
           //text = c.toString();
         }
@@ -198,7 +202,7 @@ export default defineComponent({
       getSubtitle,
       getMoreInfoURL,
       forecastList,
-      forecastsLoaded
+      forecastsLoaded,
     };
   },
 });

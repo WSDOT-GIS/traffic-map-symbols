@@ -59,7 +59,7 @@ const fields = [
 ]
 
 export const layerId = "ferry-routes-points-layer";
-const layerTitle = "ferryRoutesPoints";
+const layerTitle = "Ferry Routes Points";
 
 export const initLayer = (url: string): LayerInfo => {
     const layerInfo = new LayerInfo(layerId, layerTitle, url);

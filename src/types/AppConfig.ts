@@ -24,7 +24,7 @@ interface AppConfig {
     // ESRI API Key... Do not need this right now...
     // apiKey: string;
     // Weather forecast API...
-    forecastSummaryAPI: string;
+    //forecastSummaryAPI: string;
     forecastExtendedAPI: string,
     fireIncidents: string,
     firePerimeters: string,
