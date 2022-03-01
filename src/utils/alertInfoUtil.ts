@@ -5,10 +5,16 @@ import { isEsriRows } from "@/utils/typeUtil"
 
 /*** Statewide alerts *******************/
 let stateAlertUrl: string;
+/**
+ * @param url
+ */
 export const initStateAlerts = (url: string): void => {
     stateAlertUrl = url;
 }
 
+/**
+ *
+ */
 export const getStateAlerts = async (): Promise<AlertInfo[]> => {
     if (!stateAlertUrl) {
         throw "State alert URL is not set yet."
@@ -27,10 +33,16 @@ export const getStateAlerts = async (): Promise<AlertInfo[]> => {
 let ferryAlerts: FerryAlertInfo[] | undefined;
 let ferryAlertUrl: string;
 
+/**
+ * @param url
+ */
 export const initFerryAlerts = (url: string): void => {
     ferryAlertUrl = url;
 }
 
+/**
+ * @param routeId
+ */
 export const getFerryAlerts = async (routeId: number): Promise<FerryAlertInfo[]> => {
     if (!ferryAlertUrl) {
         throw "Ferry Alerts URL is not set yet.";
@@ -51,6 +63,9 @@ export const getFerryAlerts = async (routeId: number): Promise<FerryAlertInfo[]>
     return alerts;
 }
 
+/**
+ * @param force
+ */
 export const reloadFerryAlerts = async (force?: boolean): Promise<void> => {
     if (!force && !ferryAlerts) {
         return;

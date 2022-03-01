@@ -10,6 +10,10 @@ let layer: FeatureLayer | undefined;
 export const layerId = "fire-perimeters-layer";
 const layerTitle = "Fire Perimeters";
 
+/**
+ * @param url
+ * @param incidentNames
+ */
 export const initLayer = (url: string, incidentNames: string[]): LayerInfo => {
     const layerInfo = new LayerInfo(layerId, layerTitle, url);
     const queryString = "IncidentName IN('" + incidentNames.join("','") + "')";
@@ -31,6 +35,9 @@ export const initLayer = (url: string, incidentNames: string[]): LayerInfo => {
     return layerInfo;
 }
 
+/**
+ *
+ */
 const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
         console.error("Fire Perimeters is not ready yet!");

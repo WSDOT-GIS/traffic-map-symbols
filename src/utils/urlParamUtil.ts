@@ -101,7 +101,9 @@ if (removeKeys.length > 0) {
 
 /**
  * Get layer IDs of layers that should be visible from URL
+ *
  * @param layerList 
+ * @param route
  * @route
  */
 export const getLayerVisibilityFromUrl = (route: RouteLocationNormalizedLoaded): { visible: string[], invisible: string[] } => {
@@ -325,10 +327,16 @@ const getNamedExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Prom
     return extent;
 }
 
+/**
+ * @param name
+ */
 export const validateAreaName = (name: string): boolean => {
     return ZoomExtentLayer.validateName(name);
 }
 
+/**
+ *
+ */
 export const getBasemapFromUrl = (): BasemapInfo => {
     const param = params.get("base");
     const name = param ? param : "";

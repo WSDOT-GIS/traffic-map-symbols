@@ -37,6 +37,9 @@ let layer: FeatureLayer | undefined;
 export const layerId = "rest-areas-layer";
 const layerTitle = "Rest Areas";
 
+/**
+ * @param jsonUrl
+ */
 export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
     try {
@@ -50,6 +53,9 @@ export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     return layerInfo;
 }
 
+/**
+ *
+ */
 const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
         console.error("Rest Area Layer is not ready yet!");

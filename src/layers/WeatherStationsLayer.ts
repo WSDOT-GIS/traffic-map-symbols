@@ -73,6 +73,10 @@ let layer: FeatureLayer | undefined;
 export const layerId = "weather-stations-layer";
 const layerTitle = "Weather Stations";
 
+/**
+ * @param jsonUrl
+ * @param view
+ */
 export const initLayer = async (jsonUrl: string, view: MapView): Promise<LayerInfo> => {
     const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
     try {
@@ -103,6 +107,9 @@ export const initLayer = async (jsonUrl: string, view: MapView): Promise<LayerIn
     return layerInfo;
 }
 
+/**
+ *
+ */
 const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
         console.error("WeatherStationsLayer is not ready yet!");

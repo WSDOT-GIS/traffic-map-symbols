@@ -71,6 +71,9 @@ let layer: FeatureLayer | undefined;
 export const layerId = "traffic-camera-layer";
 const layerTitle = "Cameras";
 
+/**
+ * @param jsonUrl
+ */
 export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
     try {
@@ -85,6 +88,9 @@ export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     return layerInfo;
 }
 
+/**
+ *
+ */
 const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
         console.error("CameraLayer is not ready yet!");
@@ -110,6 +116,9 @@ export const toggleCluster = (newScale: number, oldScale: number): void => {
     }
 }
 
+/**
+ * @param scale
+ */
 export const setCluster = (scale: number): void => {
     if (!layer) { return }
     if (layer.featureReduction) {

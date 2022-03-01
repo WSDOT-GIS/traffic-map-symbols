@@ -5,6 +5,9 @@ let layer: VectorTileLayer | undefined;
 export const layerId = "mile-markers";
 const layerTitle = "Mile Markers";
 
+/**
+ * @param url
+ */
 export const initLayer = (url: string): LayerInfo => {
     const layerInfo = new LayerInfo(layerId, layerTitle, url);
     try {
@@ -23,6 +26,9 @@ export const initLayer = (url: string): LayerInfo => {
     return layerInfo;
 }
 
+/**
+ *
+ */
 const getLayer = (): VectorTileLayer | undefined => {
     if (!layer) {
         console.error("MileMarkers is not ready yet!");

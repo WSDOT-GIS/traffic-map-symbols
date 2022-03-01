@@ -176,6 +176,11 @@ export const getIdsFromCluster = async (clusterGraphic: Graphic, layer: FeatureL
     }
 }
 
+/**
+ * @param clusterGraphic
+ * @param layer
+ * @param mapView
+ */
 export const getClusterExtent = async (clusterGraphic: Graphic, layer: FeatureLayer, mapView: MapView): Promise<Extent> => {
     const layerView = await mapView.whenLayerView(layer);
     const query = layerView.createQuery();

@@ -81,6 +81,9 @@ const layerTitle = "Road Alerts";
 
 let layer: FeatureLayer | undefined;
 
+/**
+ * @param jsonUrl
+ */
 export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
     let graphics: Graphic[];

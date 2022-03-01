@@ -13,6 +13,9 @@ let layer: FeatureLayer | undefined;
 export const layerId = "fire-incidents-layer";
 const layerTitle = "Fire Incidents";
 
+/**
+ * @param url
+ */
 export const initLayer = (url: string): LayerInfo => {
     const layerInfo = new LayerInfo(layerId, layerTitle, url);
     try {
@@ -34,6 +37,9 @@ export const initLayer = (url: string): LayerInfo => {
     return layerInfo;
 }
 
+/**
+ *
+ */
 const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
         console.error("Fire Incident is not ready yet!");
@@ -43,6 +49,9 @@ const getLayer = (): FeatureLayer | undefined => {
 
 export default getLayer
 
+/**
+ *
+ */
 export const getIncidentNames = async (): Promise<string[]> => {
     if (!layer) {
         console.error("Failed to get fire incident names since the layer is not available.");

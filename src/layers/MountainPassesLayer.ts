@@ -53,6 +53,9 @@ let layer: FeatureLayer | undefined;
 export const layerId = "mountain-passes-layer";
 const layerTitle = "Mountain Pass Reports";
 
+/**
+ * @param jsonUrl
+ */
 export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
     try {
@@ -68,6 +71,9 @@ export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
 
 }
 
+/**
+ *
+ */
 const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
         console.error("MountainPassLayer is not ready yet!");

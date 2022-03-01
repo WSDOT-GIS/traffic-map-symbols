@@ -63,10 +63,20 @@ export const buildGraphicsByType = (type: string, data: any): Graphic => {
     return graphic as Graphic
 
 }
+/**
+ * @param graphicType
+ * @param graphic
+ */
 export const addGraphicsByType = (graphicType: string, graphic: Graphic): void => {
     graphic.attributes = { graphicType: graphicType }
     mapView.graphics.add(graphic as Graphic)
 }
+/**
+ * @param layerId
+ * @param map
+ * @param targetField
+ * @param targetValue
+ */
 export const displayPointInteractionGraphics = (layerId: string, map: Map, targetField: string, targetValue: string | number | undefined): void => {
     const layer = map.findLayerById(layerId);
     if (!layer || layer.type != "feature") {
@@ -82,6 +92,10 @@ export const displayPointInteractionGraphics = (layerId: string, map: Map, targe
         fLyr
     )
 }
+/**
+ * @param layerId
+ * @param map
+ */
 export const hidePointInteractionGraphics = (layerId: string, map: Map): void => {
     const layer = map.findLayerById(layerId);
     if (!layer || layer.type != "feature") {
@@ -94,6 +108,9 @@ export const hidePointInteractionGraphics = (layerId: string, map: Map): void =>
         targetLayer.definitionExpression = "1=0"; //remove line restriction symbol
     }
 }
+/**
+ * @param graphicType
+ */
 export const removeGraphicsByType = (graphicType: string): void => {
     switch (graphicType) {
         default: {

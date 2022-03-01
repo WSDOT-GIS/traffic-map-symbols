@@ -597,7 +597,11 @@ export default defineComponent({
         }
       }
     };
-    /** Display error message */
+    /**
+     * Display error message
+     *
+     * @param event
+     */
     const displayToast = (event: any) => {
       if (event[0] == false) {
         store.dispatch("showError", event[1].toString());

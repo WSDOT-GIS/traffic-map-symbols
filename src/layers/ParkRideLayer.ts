@@ -48,6 +48,9 @@ const fields = [
 let layer: FeatureLayer | undefined;
 export const layerId = "park-ride-layer";
 const layerTitle = "Park and Rides";
+/**
+ * @param jsonUrl
+ */
 export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
     try {
@@ -61,6 +64,9 @@ export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     return layerInfo;
 }
 
+/**
+ *
+ */
 const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
         console.error("ParkRideLayer is not ready yet!");

@@ -12,15 +12,19 @@ import AppConfig from "@/types/AppConfig";
 import { fetchJson } from "@/utils/miscUtil";
 import { isEsriFeatures } from "@/utils/typeUtil";
 import Layer from "@arcgis/core/layers/Layer";
-/**  Mapping between layer groups (type in URL query param) and layer IDs...
+/**
+ *  Mapping between layer groups (type in URL query param) and layer IDs...
  *   - id
  *      ID for the layer group (type).
  *   - layers 
  *      Popup is opened for the first layer in the layers array.
  *   - uniqueField
  *      Unique field that is from the source database. Do not use ESRI ID (i.e. OID).
-*/
+ */
 const layerGroups: GroupLayerInfo[] = [];
+/**
+ * @param config
+ */
 export const createLayerGroupInfos = (config: AppConfig): void => {
     layerGroups.push({ id: "camera", layers: [{ id: "traffic-camera-layer", uniqueField: "CameraID", jsonUrl: config.cameras }] });
     layerGroups.push({ id: "alert", layers: [{ id: "road-alerts-layer", uniqueField: "EventID" }] }); // Loaded by default, should not need to load data.
@@ -56,6 +60,9 @@ const getGroupLayerInfo = (groupId: string): GroupLayerInfo => {
     return result;
 }
 
+/**
+ * @param groupId
+ */
 export const getLayerIds = (groupId: string): string[] => {
     const result = layerGroups.find((item) => {
         return item.id === groupId;
@@ -72,6 +79,9 @@ export const getLayerIds = (groupId: string): string[] => {
     }
 }
 
+/**
+ * @param graphic
+ */
 export const resizeFeature = (graphic: Graphic): void => {
     const mapGraphic = buildGraphicsByType("CIMSymbol", graphic)
     addGraphicsByType("selectedGraphic", mapGraphic)
@@ -81,6 +91,8 @@ export const resizeFeature = (graphic: Graphic): void => {
  * NOTE: The layer list need to be committed to the state store.
  *
  * @param layerId 
+ * @param layer
+ * @param layerInfo
  * @param visible 
  * @param layerList 
  * @returns 
@@ -168,6 +180,16 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
     }
 }
 
+/**
+ * @param jsonUrl
+ * @param layerId
+ * @param layerTitle
+ * @param renderer
+ * @param fields
+ * @param geometryType
+ * @param visible
+ * @param graphics
+ */
 export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: string,
     renderer: Renderer, fields: Field[], geometryType: "point" | "multipoint" | "polyline" | "polygon",
     visible: boolean, graphics?: Graphic[]): Promise<FeatureLayer> => {
@@ -223,6 +245,10 @@ export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: st
 // Keep track of what is loading, so prevent loading the same layer at the same time.
 let loadManager: { id: string, promise: Promise<LayerStatus | undefined> }[] = [];
 
+/**
+ * @param jsonUrl
+ * @param layer
+ */
 export const reloadData = async (jsonUrl: string, layer: FeatureLayer | undefined): Promise<LayerInfo | undefined> => {
     if (!layer) { return; }
     const reload = async (jsonUrl: string, layer: FeatureLayer): Promise<LayerStatus | undefined> => {
@@ -259,6 +285,10 @@ export const reloadData = async (jsonUrl: string, layer: FeatureLayer | undefine
     }
 }
 
+/**
+ * @param layer
+ * @param newFeatures
+ */
 export const replaceFeatures = async (layer: FeatureLayer, newFeatures: Graphic[]): Promise<void> => {
     // Delete existing features...
     const fs = await layer.queryFeatures();
@@ -268,6 +298,9 @@ export const replaceFeatures = async (layer: FeatureLayer, newFeatures: Graphic[
     layer.refresh();
 }
 
+/**
+ * @param jsonUrl
+ */
 export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
     // Fetch all features from JSON...
     const json = await fetchJson(jsonUrl);

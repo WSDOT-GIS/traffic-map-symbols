@@ -5,6 +5,10 @@ let layer: MapImageLayer | undefined;
 export const layerId = "traffic-flow-layer";
 const layerTitle = "Live Traffic Flow";
 
+/**
+ * @param url
+ * @param refreshMinute
+ */
 export const initLayer = (url: string, refreshMinute: number): LayerInfo => {
     const layerInfo = new LayerInfo(layerId, layerTitle, url);
     try {
@@ -26,6 +30,9 @@ export const initLayer = (url: string, refreshMinute: number): LayerInfo => {
     return layerInfo;
 }
 
+/**
+ *
+ */
 const getLayer = (): MapImageLayer | undefined => {
     if (!layer) {
         console.error("TrafficLayer is not ready yet!");

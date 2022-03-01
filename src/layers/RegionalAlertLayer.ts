@@ -101,6 +101,11 @@ interface AlertFetchResult {
     errors: string[];
 }
 
+/**
+ * @param alertUrl
+ * @param countyUrl
+ * @param regionUrl
+ */
 export const initLayer = async (alertUrl: string, countyUrl: string, regionUrl: string):
     Promise<LayerInfo[]> => {
     const pointInfo = new LayerInfo(layerId, layerTitle, alertUrl);
@@ -136,6 +141,9 @@ export const initLayer = async (alertUrl: string, countyUrl: string, regionUrl: 
     return [pointInfo, areaInfo];
 }
 
+/**
+ *
+ */
 const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
         console.error("Regional Alert Layer is not ready yet!");
@@ -145,6 +153,11 @@ const getLayer = (): FeatureLayer | undefined => {
 
 export default getLayer;
 
+/**
+ * @param alertUrl
+ * @param countyUrl
+ * @param regionUrl
+ */
 export const reloadData = async (alertUrl: string, countyUrl: string, regionUrl: string):
     Promise<LayerInfo[]> => {
     let fetchResults: AlertFetchResult;

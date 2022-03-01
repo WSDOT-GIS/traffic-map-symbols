@@ -20,6 +20,9 @@ const layerTitle = "Ferry Routes"
 //     }),
 // ]
 
+/**
+ * @param url
+ */
 export const initLayer = async (url: string): Promise<LayerInfo> => {
     const layerInfo = new LayerInfo(layerId, layerTitle, url);
     try {
@@ -43,6 +46,9 @@ export const initLayer = async (url: string): Promise<LayerInfo> => {
     return layerInfo;
 }
 
+/**
+ *
+ */
 const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
         console.error("Ferry Routes is not ready yet!");

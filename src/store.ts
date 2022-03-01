@@ -187,6 +187,12 @@ export const store = createStore<State>({
          *
          * @param state 
          * @param payload Set the properties that need to be updated, and leave others undefined. Undefined properties will not be updated. 
+         * @param payload.id
+         * @param payload.title
+         * @param payload.index
+         * @param payload.url
+         * @param payload.visible
+         * @param payload.status
          */
         updateLayerInfo(state, payload: {
             id: string, title?: string, index?: number, url?: string, visible?: boolean,
@@ -276,6 +282,10 @@ export const store = createStore<State>({
          * Setup layer watch handlers to keep track of layer status.
          * If it is JSON layer, only use the layer's loadStatus property if it is "Failed". Otherwise the status is updated when JSON is fetched.
          * If it is not a JSON layer, use the layer's loadStatus property.
+         *
+         * @param root0
+         * @param root0.commit
+         * @param root0.state
          */
         watchLayers({ commit, state }) {
             if (layerWatchHandles) {

@@ -42,6 +42,9 @@ let layer: FeatureLayer | undefined;
 export const layerId = "border-crossings-layer";
 const layerTitle = "Border Crossing Points";
 
+/**
+ * @param jsonUrl
+ */
 export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
     try {
@@ -60,6 +63,9 @@ export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     return layerInfo;
 }
 
+/**
+ *
+ */
 const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
         console.error("Border Crossings Layer is not ready yet!");

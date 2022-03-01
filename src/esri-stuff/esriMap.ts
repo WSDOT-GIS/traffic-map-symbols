@@ -70,6 +70,9 @@ export const mapView = new MapView({
 // Zoom buttons are replaced with the custom Vue components.
 mapView.ui.remove("zoom");
 //
+/**
+ * @param container
+ */
 export const init = (container: HTMLDivElement): void => {
     mapView.container = container;
     mapView.when()
@@ -168,6 +171,7 @@ export const loadOperationalLayers = async (): Promise<LayerInfo[]> => {
 }
 /**
  * Filter out the layers that did not load.
+ *
  * @param list List of layers to validate
  */
 export const validateLayerList = (list: (Layer | undefined)[]): Layer[] => {
@@ -176,6 +180,7 @@ export const validateLayerList = (list: (Layer | undefined)[]): Layer[] => {
 }
 /**
  * Type guard for the layer object
+ *
  * @param layer 
  */
 export const isLayer = (layer: Layer | undefined): layer is Layer => {
@@ -184,7 +189,7 @@ export const isLayer = (layer: Layer | undefined): layer is Layer => {
 /** 
  * Load regional alert point and polygon layers separately from the other operational layers. 
  * Returns layer IDs of the layers that failed to load.
-*/
+ */
 export const loadRegionalAlert = async (): Promise<LayerInfo[]> => {
     const config = getConfig();
     const infos = await RegionalAlertLayer.initLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
@@ -222,6 +227,10 @@ export const refreshLayerData = async (): Promise<LayerInfo[]> => {
     return infos;
 };
 
+/**
+ * @param point
+ * @param numLevels
+ */
 export const tryZoomToPoint = (point: Point, numLevels?: number): boolean => {
     let isSuccess = true;
     if (!numLevels) {
@@ -263,6 +272,9 @@ export const tryZoomToPointAsync = async (point: Point, zoomLevel: number): Prom
     return isSuccess;
 }
 
+/**
+ * @param point
+ */
 export const zoomToMax = async (point: Point): Promise<void> => {
     await mapView.goTo({
         target: point,
@@ -275,6 +287,9 @@ export const zoomToMax = async (point: Point): Promise<void> => {
     });
 }
 
+/**
+ * @param extent
+ */
 export const zoomToMetroArea = (extent: Extent): void => {
     mapView.extent = extent.expand(2);
     ZoomExtentLayer.visible = false;
@@ -291,6 +306,9 @@ export const zoomToMetroArea = (extent: Extent): void => {
     });
 };
 
+/**
+ * @param extent
+ */
 export const zoomToExtent = async (extent: Extent): Promise<void> => {
     await mapView.goTo(extent, {
         duration: 300,
@@ -359,12 +377,20 @@ export const getZoomLevel = (numLevelsFromMin: number): ZoomLevel => {
     }
 }
 
+/**
+ * @param mapX
+ * @param mapY
+ */
 export const toScreenXY = (mapX: number, mapY: number): { x: number, y: number } => {
     const pt = toPoint(mapX, mapY);
     const screenPt = mapView.toScreen(pt);
     return { x: screenPt.x, y: screenPt.y };
 }
 
+/**
+ * @param mapX
+ * @param mapY
+ */
 export const toPoint = (mapX: number, mapY: number): Point => {
     const pt = new Point({ x: mapX, y: mapY, spatialReference: mapView.spatialReference });
     return pt;
@@ -441,9 +467,15 @@ export const panMap = async (shiftX: number, shiftY: number): Promise<{ actualSh
     }
 }
 
+/**
+ * @param id
+ */
 export const getLayer = (id: string): Layer => {
     return webmap.findLayerById(id);
 }
+/**
+ *
+ */
 export const getLayers = (): Collection<Layer> => {
     return webmap.layers;
 }
@@ -491,6 +523,11 @@ export const getIdsFromCluster = async (clusterGraphic: Graphic, layer: Layer, m
     }
 }
 
+/**
+ * @param distancePixel
+ * @param screenPoint
+ * @param mapPoint
+ */
 export const pixel2meter = (distancePixel: number, screenPoint?: XY, mapPoint?: Point): number => {
     if (!screenPoint && mapPoint) {
         screenPoint = mapView.toScreen(mapPoint);
@@ -532,6 +569,9 @@ export const pixel2meter = (distancePixel: number, screenPoint?: XY, mapPoint?: 
 // }
 /** Highlight feature */
 let highlight: __esri.Handle;
+/**
+ * @param featureInfo
+ */
 export const highlightFeature = (featureInfo: FeatureInfo): void => {
     const layer = getLayer(featureInfo.layerId) as FeatureLayer;
     mapView.whenLayerView(layer).then((layerView) => {
@@ -547,6 +587,9 @@ export const highlightFeature = (featureInfo: FeatureInfo): void => {
     })
 }
 
+/**
+ *
+ */
 export const removeHighlight = (): void => {
     if (highlight) {
         highlight.remove();

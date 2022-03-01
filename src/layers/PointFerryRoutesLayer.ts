@@ -61,6 +61,9 @@ const fields = [
 export const layerId = "ferry-routes-points-layer";
 const layerTitle = "Ferry Routes Points";
 
+/**
+ * @param url
+ */
 export const initLayer = (url: string): LayerInfo => {
     const layerInfo = new LayerInfo(layerId, layerTitle, url);
     try {
@@ -83,6 +86,9 @@ export const initLayer = (url: string): LayerInfo => {
     return layerInfo;
 }
 
+/**
+ *
+ */
 const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
         console.error("Ferry Point Layer is not ready yet!");

@@ -5,6 +5,9 @@ let layer: MapImageLayer | undefined;
 export const layerId = "roads-reference-layer";
 const layerTitle = "ESRI Roads Reference"
 
+/**
+ * @param url
+ */
 export const initLayer = (url: string): LayerInfo => {
     const layerInfo = new LayerInfo(layerId, layerTitle, url);
     try {
@@ -23,6 +26,9 @@ export const initLayer = (url: string): LayerInfo => {
     return layerInfo;
 }
 
+/**
+ *
+ */
 const getLayer = (): MapImageLayer | undefined => {
     if (!layer) {
         console.error("ESRI Roads Reference is not ready yet!");

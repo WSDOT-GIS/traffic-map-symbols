@@ -1,3 +1,7 @@
+/**
+ * @param epoch
+ * @param isTime
+ */
 export const formatEpoch = (epoch: number, isTime?: boolean): string => {
     /* IT said date will be in UTC, so removed the workaround below. If necessary simply
               change all the methods to UTC... methods. */
@@ -25,6 +29,10 @@ const formatDateTimePart = (part: number) => {
     return ("0" + part).slice(-2);
 };
 
+/**
+ * @param url
+ * @param isUnicode
+ */
 export const fetchJson = async (url: string, isUnicode?: boolean): Promise<unknown> => {
     const response = await fetch(url, { cache: "no-store" });
     if (response.status < 200 || response.status >= 300) {
@@ -64,6 +72,10 @@ export const getMediaSize = (): "s" | "l" => {
 export const WebMercator = {
     "wkid": 3857
 }
+/**
+ * @param child
+ * @param classname
+ */
 export const hasParentClass = (child: HTMLElement, classname: string): boolean => {
     if (child) {
         // If the element is SVG, className is SVGAnimatedString object and throws an error on child.className.split().
@@ -80,6 +92,10 @@ export const hasParentClass = (child: HTMLElement, classname: string): boolean =
     }
 }
 
+/**
+ * @param child
+ * @param id
+ */
 export const hasParent = (child: HTMLElement, id: string): boolean => {
     if (child) {
         if (child.id === id) return true;
@@ -95,6 +111,9 @@ export const hasParent = (child: HTMLElement, id: string): boolean => {
     }
 }
 
+/**
+ *
+ */
 export const getGuid = (): string => {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);

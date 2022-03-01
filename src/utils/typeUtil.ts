@@ -11,11 +11,17 @@ type EsriFeatures = {
     }[]
 }
 
+/**
+ * @param obj
+ */
 export const isEsriRows = (obj: any): obj is EsriRows => {
     return "features" in obj && Array.isArray(obj.features)
         && obj.features.every((x: any) => { return "attributes" in x });
 }
 
+/**
+ * @param obj
+ */
 export const isEsriFeatures = (obj: any): obj is EsriFeatures => {
     return "features" in obj && "spatialReference" in obj
         && Array.isArray(obj.features)
