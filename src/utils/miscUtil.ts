@@ -27,6 +27,9 @@ const formatDateTimePart = (part: number) => {
 
 export const fetchJson = async (url: string, isUnicode?: boolean): Promise<unknown> => {
     const response = await fetch(url, { cache: "no-store" });
+    if (response.status < 200 || response.status >= 300) {
+        throw new Error(`Fetch failed with code ${response.status}. URL: ${url}`);
+    }
     let json: unknown;
     if (isUnicode) {
         json = await response.json();
@@ -90,5 +93,12 @@ export const hasParent = (child: HTMLElement, id: string): boolean => {
     else {
         return false
     }
+}
+
+export const getGuid = (): string => {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
 }
 

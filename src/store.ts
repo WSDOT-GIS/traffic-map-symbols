@@ -1,13 +1,16 @@
 import { InjectionKey } from "vue";
 import { createStore, useStore as baseUseStore, Store } from "vuex";
+import { useToast } from "vue-toastification";
 import Extent from "@arcgis/core/geometry/Extent";
 import { webmap, mapView } from "./esri-stuff/esriMap";
 import { getBasemapInfo, toggleBasemapInfo } from "./layers/Basemaps";
 import ExtentInfo from "./types/ExtentInfo";
 import { convert2EsriExtent, convert2ExtentInfo } from "./utils/extentUtil";
-import LayerInfo from "./types/LayerInfo";
-import {InitializingInfo} from "./types/InitializingInfo";
+import LayerInfo, { esriStatus2LayerStatus, LayerStatus } from "./types/LayerInfo";
+import { InitializingInfo } from "./types/InitializingInfo";
 import { getMediaSize } from "./utils/miscUtil";
+import { setLayerVisibility } from "./utils/layerUtil";
+import Layer from "@arcgis/core/layers/Layer";
 
 // Reference - https://next.vuex.vuejs.org/guide/typescript-support.html#typing-usestore-composition-function
 // define typings for the store state...
@@ -28,7 +31,14 @@ export interface State {
     leftPaneIsOpen: boolean;
     /** s: small, l:large */
     mediaSize: "s" | "l"; // TODO: add more as needed
+    errors: string[]; // Shown in the toast.
+    serviceAlerts: string[]; // Shown in the banner.
+    isToastReady: boolean;
 }
+//
+const toast = useToast();
+let basemapWatchHandles: __esri.WatchHandle[];
+let layerWatchHandles: __esri.WatchHandle[];
 
 // define injection key...
 export const key: InjectionKey<Store<State>> = Symbol()
@@ -56,25 +66,74 @@ export const store = createStore<State>({
             initiaizingMessage: "",
             leftPaneIsOpen: getMediaSize() !== "s",
             mediaSize: getMediaSize(),
+            errors: [],
+            serviceAlerts: [],
+            isToastReady: false
         }
     },
     getters: {
-        completeLayerList: state => {
-            return state.layerList
+        getLayerInfo: (state) => (id: string) => {
+            return getLayerInfo(state, id);
         },
+        layerInfoExists: (state) => (id: string) => {
+            const result = state.layerList.filter((item) => item.id === id);
+            return result.length === 1;
+        },
+        getLayerStatus: (state) => (id: string) => {
+            const info = getLayerInfo(state, id);
+            if (info) { return info.status; }
+            else { return LayerStatus.NotLoaded; }
+        },
+        getLayerVisibility: (state) => (id: string) => {
+            const info = getLayerInfo(state, id);
+            if (info) { return info.visible; }
+            else { return false; }
+        },
+        getLayerTitle: (state) => (id: string) => {
+            const info = getLayerInfo(state, id);
+            let title: string | undefined;
+            if (info) {
+                title = (info as LayerInfo).title;
+            }
+            return title;
+        },
+        lastError: state => {
+            return state.errors[state.errors.length - 1];
+        }
     },
     mutations: {
-        setBasemap(state, payload) {
+        setBasemap(state, payload: string) {
             if (state.basemap != payload || !state.basemap) {
                 const basemapInfo = getBasemapInfo(payload);
                 state.basemap = basemapInfo.name;
-                webmap.basemap = basemapInfo.basemap;
+                if (basemapInfo.basemap) {
+                    if (basemapWatchHandles) {
+                        basemapWatchHandles.forEach(eachHandle => eachHandle.remove());
+                    }
+                    basemapWatchHandles = [];
+                    webmap.basemap = basemapInfo.basemap;
+                    webmap.basemap.baseLayers.forEach(eachLyr => {
+                        const handle = eachLyr.watch("loadStatus", (newValue, oldValue, propertyName, target) => {
+                            const lyr = target as Layer;
+                            if (newValue === "failed") {
+                                addServiceAlert(state, "Failed to load the base map layer: " + lyr.title);
+                            }
+                        });
+                        basemapWatchHandles.push(handle);
+                    });
+                } else {
+                    addServiceAlert(state, `The specified basemap, ${payload}, is not available.`);
+                }
             }
         },
         toggleBasemap(state) {
             const basemapInfo = toggleBasemapInfo(state.basemap);
             state.basemap = basemapInfo.name;
-            webmap.basemap = basemapInfo.basemap;
+            if (basemapInfo.basemap) {
+                webmap.basemap = basemapInfo.basemap;
+            } else {
+                addServiceAlert(state, `The specified basemap, ${basemapInfo.name}, is not available.`);
+            }
         },
         setPointerX(state, payload) {
             state.pointerX = payload.toFixed(6);
@@ -95,29 +154,58 @@ export const store = createStore<State>({
         setUserLocation(state, payload) {
             state.userLocation = payload;
         },
-        setLayerList(state, payload) {
-            let layerList: LayerInfo[];
-            if (!payload) {
-                layerList = [];
-                webmap.layers.forEach((layer, index) => {
-                    layerList.push({
-                        id: layer.id,
-                        index: index,
-                        title: layer.title,
-                        visible: layer.visible,
-                    });
-                });
-            }
-            else {
-                layerList = payload;
-            }
-            state.layerList = layerList;
-            if (payload) {
-                webmap.layers.forEach((layer, index) => {
-                    if (state.layerList[index] && layer.id == state.layerList[index].id) {
-                        layer.visible = state.layerList[index].visible
+        /**
+         * Add LayerInfos if not exist already, or update the existing ones.
+         *
+         * @param state 
+         * @param payload 
+         */
+        setLayerInfos(state, payload: LayerInfo[]) {
+            payload.forEach(newInfo => {
+                const info = getLayerInfo(state, newInfo.id);
+                if (!info) {
+                    state.layerList.push(newInfo);
+                    if (newInfo.status === LayerStatus.Failed) {
+                        addServiceAlert(state, newInfo);
                     }
-                })
+                } else {
+                    if (newInfo.title) { info.title = newInfo.title; }
+                    if (newInfo.index) { info.index = newInfo.index; }
+                    if (newInfo.url) { info.url = newInfo.url }
+                    if (newInfo.visible !== undefined) { info.visible = newInfo.visible }
+                    if (newInfo.status) {
+                        if (info.status !== LayerStatus.Failed && newInfo.status === LayerStatus.Failed) {
+                            addServiceAlert(state, info);
+                        }
+                        info.status = newInfo.status
+                    }
+                }
+            })
+        },
+        /**
+         * Update a layer info in the layer list
+         *
+         * @param state 
+         * @param payload Set the properties that need to be updated, and leave others undefined. Undefined properties will not be updated. 
+         */
+        updateLayerInfo(state, payload: {
+            id: string, title?: string, index?: number, url?: string, visible?: boolean,
+            status?: LayerStatus
+        }) {
+            let info = getLayerInfo(state, payload.id);
+            if (!info) {
+                info = new LayerInfo(payload.id);
+                state.layerList.push(info);
+            }
+            if (payload.title) { info.title = payload.title }
+            if (payload.index) { info.index = payload.index; }
+            if (payload.url) { info.url = payload.url }
+            if (payload.visible !== undefined) { info.visible = payload.visible }
+            if (payload.status) {
+                if (info.status !== LayerStatus.Failed && payload.status === LayerStatus.Failed) {
+                    addServiceAlert(state, info);
+                }
+                info.status = payload.status
             }
         },
         setCurrentExtent(state, payload) {
@@ -136,15 +224,140 @@ export const store = createStore<State>({
             state.isMobileMenuOpen = !state.isMobileMenuOpen;
         },
         setInitializing(state, payload: InitializingInfo) {
-            payload.isInitializing!=undefined?state.isInitializing = payload.isInitializing:null
-            payload.isLoading!=undefined?state.isLoading = payload.isLoading:null
-            payload.initializingMessage? state.initiaizingMessage = payload.initializingMessage:null
+            payload.isInitializing != undefined ? state.isInitializing = payload.isInitializing : null
+            payload.isLoading != undefined ? state.isLoading = payload.isLoading : null
+            payload.initializingMessage ? state.initiaizingMessage = payload.initializingMessage : null
         },
         setLeftPaneIsOpen(state, payload) {
             state.leftPaneIsOpen = payload;
+        },
+        // If the error happens before toast message can be displayed, save it in the array to show later.
+        saveError(state, message: string) {
+            state.errors.push(message);
+        },
+        // The toast cannot be displayed until the page and its content are ready.
+        setIsToastReady(state) {
+            state.isToastReady = true;
+        },
+        addServiceAlert(state, msg: string) {
+            addServiceAlert(state, msg);
         }
+
     },
+    actions: {
+        updateLayerVisibility({ commit, state }, payload?: { ids: string[], visible: boolean }) {
+            if (payload) {
+                payload.ids.forEach((eachId) => {
+                    commit("updateLayerInfo", { id: eachId, visible: payload.visible });
+                    const info = getLayerInfo(state, eachId);
+                    if (info && webmap) {
+                        const layer = webmap.findLayerById(eachId);
+                        if (layer) {
+                            setLayerVisibility(layer, info, payload.visible).then((newStatus) => {
+                                if (info.status !== newStatus) {
+                                    commit("updateLayerInfo", { id: eachId, status: newStatus });
+                                }
+                            })
+                        }
+                    }
+                });
+            } else {
+                webmap.layers.forEach(mapLyr => {
+                    commit("updateLayerInfo", { id: mapLyr.id, visible: mapLyr.visible });
+                })
+            }
+        },
+        updateLayerIndices({ commit }) {
+            webmap.layers.forEach((mapLyr, idx) => {
+                commit("updateLayerInfo", { id: mapLyr.id, index: idx });
+            })
+        },
+        /** 
+         * Setup layer watch handlers to keep track of layer status.
+         * If it is JSON layer, only use the layer's loadStatus property if it is "Failed". Otherwise the status is updated when JSON is fetched.
+         * If it is not a JSON layer, use the layer's loadStatus property.
+         */
+        watchLayers({ commit, state }) {
+            if (layerWatchHandles) {
+                layerWatchHandles.forEach(handle => handle.remove());
+            }
+            layerWatchHandles = [];
+            webmap.layers.forEach((mapLyr) => {
+                const info = getLayerInfo(state, mapLyr.id);
+                if (!info) { return; }
+                const isJson = info.isJson();
+                if (!isJson) {
+                    commit("updateLayerInfo", { id: mapLyr.id, status: esriStatus2LayerStatus(mapLyr.loadStatus) })
+                }
+                else if (mapLyr.loadStatus === "failed") {
+                    commit("updateLayerInfo", { id: mapLyr.id, status: LayerStatus.Failed })
+                }
+                const handle = mapLyr.watch("loadStatus", (newValue, oldValue, propertyName, target) => {
+                    const lyr = target as Layer;
+                    if (!isJson) {
+                        commit("updateLayerInfo", { id: lyr.id, status: esriStatus2LayerStatus(newValue) })
+                    }
+                    else if (newValue === "failed") {
+                        commit("updateLayerInfo", { id: lyr.id, status: LayerStatus.Failed })
+                    }
+                });
+                layerWatchHandles.push(handle);
+            })
+        },
+        updateLayerStatus({ commit }, payload: LayerInfo[]) {
+            payload.forEach(info => commit("updateLayerInfo", { id: info.id, status: info.status }));
+        },
+        showError({ state }, message: string) {
+            showError(state, message);
+        },
+        // Set the flag to indicate the toast message is ready to be shown.
+        // If there are errors happened earlier, show them now.
+        setIsToastReady({ state, commit }) {
+            if (!state.isToastReady) {
+                commit("setIsToastReady");
+                state.errors.forEach((item) => {
+                    toast.error(item);
+                });
+                state.errors = [];
+                // Temporary...
+                state.serviceAlerts.forEach((item) => {
+                    toast.warning(item);
+                })
+            }
+        }
+    }
 })
+
+const getLayerInfo = (state: State, id: string): LayerInfo | undefined => {
+    const info = state.layerList.find((item) => item.id === id);
+    return info;
+}
+
+const showError = (state: State, message: string) => {
+    if (state.isToastReady) {
+        toast.error(message);
+    }
+    else { store.commit("saveError", message); }
+}
+
+const addServiceAlert = (state: State, alert: string | LayerInfo) => {
+    let msg: string;
+    if (alert instanceof LayerInfo) {
+        const name = alert.title ? alert.title : alert.id;
+        msg = `Failed to load the layer: ${name}.`;
+    } else {
+        msg = alert;
+    }
+    if (state.serviceAlerts.findIndex(each => each === msg) < 0) {
+        state.serviceAlerts.push(msg);
+    }
+    console.warn(msg);
+    // Temporary... TODO: show in banner
+    if (state.isToastReady) {
+        toast.warning(msg);
+    }
+}
+
 /**
  * Clone the target of proxy (i.e. removing the reactivity)
  *

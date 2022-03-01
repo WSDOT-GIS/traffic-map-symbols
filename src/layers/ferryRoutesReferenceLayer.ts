@@ -1,19 +1,28 @@
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 import TileLayer from "@arcgis/core/layers/TileLayer";
 let layer: TileLayer | undefined;
+export const layerId = "ferry-routes-reference-layer";
+const layerTitle = "Ferry Routes Reference";
 
-export const initLayer = (url: string): TileLayer => {
-    layer = new TileLayer({
-        id: "ferry-routes-reference-layer",
-        url: url,
-        title: "Ferry Routes Reference",
-        visible: false,
-    });
-    return layer;
+export const initLayer = (url: string): LayerInfo => {
+    const layerInfo = new LayerInfo(layerId, layerTitle, url);
+    try {
+        layer = new TileLayer({
+            id: layerId,
+            url: url,
+            title: layerTitle,
+            visible: false,
+        });
+    } catch (ex) {
+        console.error(ex);
+        layerInfo.status = LayerStatus.Failed;
+    }
+    return layerInfo;
 }
 
-const getLayer = (): TileLayer => {
+const getLayer = (): TileLayer | undefined => {
     if (!layer) {
-        throw "Ferry Routes Reference is not ready yet!";
+        console.error("Ferry Routes Reference is not ready yet!");
     }
     return layer;
 }

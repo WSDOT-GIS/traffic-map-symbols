@@ -1,4 +1,4 @@
-import LayerInfo from "@/types/LayerInfo";
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Graphic from "@arcgis/core/Graphic";
 import WebMap from "@arcgis/core/Map";
@@ -11,16 +11,15 @@ import GroupLayerInfo from "@/types/GroupLayerInfo";
 import AppConfig from "@/types/AppConfig";
 import { fetchJson } from "@/utils/miscUtil";
 import { isEsriFeatures } from "@/utils/typeUtil";
-/**
- *  Mapping between layer groups (type in URL query param) and layer IDs...
- *   id
+import Layer from "@arcgis/core/layers/Layer";
+/**  Mapping between layer groups (type in URL query param) and layer IDs...
+ *   - id
  *      ID for the layer group (type).
- *   layerIds 
- *      Popup is opened for the first layer in the layerIds array.
- *   uniqueField
- *      Unique field that is from the source database. Do not use ESRI ID.
- */
-
+ *   - layers 
+ *      Popup is opened for the first layer in the layers array.
+ *   - uniqueField
+ *      Unique field that is from the source database. Do not use ESRI ID (i.e. OID).
+*/
 const layerGroups: GroupLayerInfo[] = [];
 export const createLayerGroupInfos = (config: AppConfig): void => {
     layerGroups.push({ id: "camera", layers: [{ id: "traffic-camera-layer", uniqueField: "CameraID", jsonUrl: config.cameras }] });
@@ -86,14 +85,19 @@ export const resizeFeature = (graphic: Graphic): void => {
  * @param layerList 
  * @returns 
  */
-export const setLayerVisibility = (layerId: string, visible: boolean, layerList: LayerInfo[]): LayerInfo[] => {
-    const result = layerList.find((item) => {
-        return item.id === layerId;
-    });
-    if (result) {
-        result.visible = visible;
+export const setLayerVisibility = async (layer: Layer, layerInfo: LayerInfo, visible: boolean): Promise<LayerStatus> => {
+    let outStatus = layerInfo.status;
+    if (layer.visible === visible) { return outStatus; }
+    else { layer.visible = visible }
+    if (visible && layerInfo.status !== LayerStatus.Loaded && layerInfo.isJson() && layerInfo.url) {
+        try {
+            const info = await reloadData(layerInfo.url, layer as FeatureLayer);
+            outStatus = info ? info.status : layerInfo.status;
+        } catch (ex) {
+            outStatus = LayerStatus.Failed;
+        }
     }
-    return layerList
+    return outStatus;
 }
 /**
  * Get a feature from the layer group.
@@ -134,24 +138,24 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
     const query = fLayer.createQuery();
     const field = fLayer.getField(groupInfo.layers[0].uniqueField);
     query.where = `${groupInfo.layers[0].uniqueField} = `;
-    if(field.type=='string'){
-        if((uniqueValue as string).split("-").length>0&&fLayer.title=="Mountain Pass Reports"){
-            const uniqueValues = (uniqueValue as string).split("-").map((value)=>{
-                if(value=="to"||value=="To"){
+    if (field.type == 'string') {
+        if ((uniqueValue as string).split("-").length > 0 && fLayer.title == "Mountain Pass Reports") {
+            const uniqueValues = (uniqueValue as string).split("-").map((value) => {
+                if (value == "to" || value == "To") {
                     return "to"
                 }
-                else{
-                    const properCase = (value[0].toLocaleUpperCase())+(value.substring(1).toLocaleLowerCase())
+                else {
+                    const properCase = (value[0].toLocaleUpperCase()) + (value.substring(1).toLocaleLowerCase())
                     return (properCase)
                 }
             })
-            query.where +=`'${(uniqueValues.join('-'))}'`;
+            query.where += `'${(uniqueValues.join('-'))}'`;
         }
-        else{
+        else {
             query.where += `'${uniqueValue}'`
         }
     }
-    else if(field.type=='date'){
+    else if (field.type == 'date') {
         query.where += `'${uniqueValue}'`
     }
     else {
@@ -166,12 +170,15 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
 
 export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: string,
     renderer: Renderer, fields: Field[], geometryType: "point" | "multipoint" | "polyline" | "polygon",
-    visible: boolean, loadOnce?: boolean): Promise<FeatureLayer> => {
+    visible: boolean, graphics?: Graphic[]): Promise<FeatureLayer> => {
     // Create Graphics from JSON...
-    let graphics: Graphic[] = [];
-    if (visible) {
-        graphics = await fetchJsonData(jsonUrl);
+    if (!graphics) {
+        graphics = [];
     }
+    //let graphics: Graphic[] = [];
+    // if (visible) {
+    //     graphics = await fetchJsonData(jsonUrl);
+    // }
     // Do not set the WSDOT unique ID as OID. The app might change them.
     // So create a new system generated field as OID.
     let oidField = "AppGenId";
@@ -198,48 +205,57 @@ export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: st
         spatialReference: SpatialReference.WebMercator,
     });
     // Set event to load layer when it becomes visible...
-    setLayerEvent(layer, jsonUrl, loadOnce);
+    // if (graphics.length === 0) {
+    //     setLayerEvent(layer, jsonUrl);
+    // }
     return layer;
 }
 
-export const setLayerEvent = (layer: FeatureLayer, jsonUrl: string, loadOnce?: boolean): void => {
-    const handle = layer.watch("visible", (newValue, oldValue, propName, target) => {
-        const lyr = target as FeatureLayer;
-        if (newValue) {
-            reloadData(jsonUrl, lyr);
-            if (loadOnce) {
-                handle.remove();
-            }
-        }
-    });
-}
+// export const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
+//     const handle = layer.watch("visible", (newValue, oldValue, propName, target) => {
+//         const lyr = target as FeatureLayer;
+//         if (newValue) {
+//             reloadData(jsonUrl, lyr);
+//             handle.remove();
+//         }
+//     });
+// }
 // Keep track of what is loading, so prevent loading the same layer at the same time.
-let loadManager: { id: string, promise: Promise<void> }[] = [];
+let loadManager: { id: string, promise: Promise<LayerStatus | undefined> }[] = [];
 
-export const reloadData = async (jsonUrl: string, layer: FeatureLayer): Promise<void> => {
-    const reload = async (jsonUrl: string, layer: FeatureLayer): Promise<void> => {
+export const reloadData = async (jsonUrl: string, layer: FeatureLayer | undefined): Promise<LayerInfo | undefined> => {
+    if (!layer) { return; }
+    const reload = async (jsonUrl: string, layer: FeatureLayer): Promise<LayerStatus | undefined> => {
         if (!layer.visible) { return; }
+        let status: LayerStatus;
         // Fetch all features from JSON...
-        await fetchJsonData(jsonUrl).then(async (graphics) => {
+        try {
+            const graphics = await fetchJsonData(jsonUrl);
             if (graphics.length > 0) {
                 await replaceFeatures(layer, graphics);
             }
-            // Replace old with new features...
-        })
-
-
+            status = LayerStatus.Loaded;
+        } catch (ex) {
+            console.error(ex);
+            status = LayerStatus.Failed;
+        }
+        return status;
     }
     // Check if the layer is already being loaded currently or not...
     const runningProc = loadManager.find(x => x.id === layer.id);
     if (runningProc) {
-        // It is loading currently already, so wait until that finishes.
+        // Loading is in progress already, so wait until that finishes.
         await runningProc.promise;
-    } else {
-        // It is not loading now, so start loading.
-        const promise = reload(jsonUrl, layer);
-        loadManager.push({ id: layer.id, promise: promise });
-        await promise;
-        loadManager = loadManager.filter(x => x.id !== layer.id);
+    }
+    // Start loading.
+    const promise = reload(jsonUrl, layer);
+    loadManager.push({ id: layer.id, promise: promise });
+    const status = await promise;
+    loadManager = loadManager.filter(x => x.id !== layer.id);
+    if (status) {
+        const info = new LayerInfo(layer.id);
+        info.status = status;
+        return info;
     }
 }
 
@@ -255,7 +271,6 @@ export const replaceFeatures = async (layer: FeatureLayer, newFeatures: Graphic[
 export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
     // Fetch all features from JSON...
     const json = await fetchJson(jsonUrl);
-    //const json = await response.json();
     if (!isEsriFeatures(json)) {
         throw "Invalid JSON format. It is not ESRI Features JSON."
     }

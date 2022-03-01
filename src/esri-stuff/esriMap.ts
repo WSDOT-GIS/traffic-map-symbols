@@ -1,8 +1,6 @@
 import WebMap from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
 import Point from "@arcgis/core/geometry/Point";
-// import Polygon from "@arcgis/core/geometry/Polygon";
-// import { geodesicBuffer } from "@arcgis/core/geometry/geometryEngine";
 import { whenTrue } from "@arcgis/core/core/watchUtils";
 import TileLayer from "@arcgis/core/layers/TileLayer";
 import Extent from "@arcgis/core/geometry/Extent";
@@ -12,7 +10,6 @@ import Layer from "@arcgis/core/layers/Layer";
 import Graphic from "@arcgis/core/Graphic";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
-// import { difference } from "@arcgis/core/geometry/geometryEngine";
 import esriConfig from "@arcgis/core/config";
 // Layers
 import * as TrafficLayer from "@/layers/TrafficLayer";
@@ -34,16 +31,17 @@ import * as RegionalAlertLayer from "@/layers/RegionalAlertLayer";
 import * as RestAreasLayer from "@/layers/RestAreasLayer";
 import * as FerryRoutesReferenceLayer from "@/layers/ferryRoutesReferenceLayer"
 import * as LineFerryRoutesLayer from "@/layers/LineFerryRoutesLayer"
-import * as FerryRoutePointsLayer from "@/layers/PointFerryRoutesLayer"
+import * as PointFerryRoutesLayer from "@/layers/PointFerryRoutesLayer"
+import * as AlertAreaLayer from "@/layers/AlertAreaLayer"
 //
 import * as extentUtil from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 import FeatureInfo from "@/types/FeatureInfo";
 import { getConfig } from "@/utils/appConfigUtil";
-import firePerimeterFeatureIDs from "@/utils/firePerimeterQuery"
 import { getBasemapInfo } from "@/layers/Basemaps";
 import XY from "@/types/XY";
 import * as layerUtil from "@/utils/layerUtil";
+import LayerInfo, { isLayerInfo } from "@/types/LayerInfo";
 
 esriConfig.request.useIdentity = false
 const fullExtent = extentUtil.getEsriExtent("full");
@@ -87,64 +85,141 @@ export const init = (container: HTMLDivElement): void => {
 /** Store the default layer visibility. This is used by Saved Map function. */
 export const defaultLayerProps: { id: string, visible: boolean }[] = []
 /**
- * Get config and get apiKey and URL, then initialize layers and add to map...
+ * Get config and get apiKey and URL, then initialize layers and add to map..
+ * 
+ * @returns The list of IDs of the layers that failed to load.
  */
-export const loadOperationalLayers = async (): Promise<void> => {
+export const loadOperationalLayers = async (): Promise<LayerInfo[]> => {
     const config = getConfig();
-    // Removed since do not need API Key for now...
-    const trafficLyr = TrafficLayer.initLayer(config.traffic, config.layerRefreshMinute);
-    const restAreasLyr = await RestAreasLayer.initLayer(config.restAreas);
-    const parkRideLyr = await ParkRideLayer.initLayer(config.parkAndRides);
-    const weatherLyr = await WeatherLayer.initLayer(config.weatherStations, mapView);
-    const mtLyr = await MountainLayer.initLayer(config.mountainPasses);
-    const lineRestrictionLyr = await LineRestrictionsLayer.initLayer(config.lineRestrictions);
-    const pointRestrictionLyr = await PointRestrictionsLayer.initLayer(config.pointRestrictions);
-    const cameraLyr = await CameraLayer.initLayer(config.cameras);
-    const roadAlertLyrs = await RoadAlertsLayer.initLayer(config.roadAlerts);
-    const fireIncidentLayer = FireIncidentsLayer.initLayer(config.fireIncidents);
-    const firePerimeterIDs = await firePerimeterFeatureIDs(fireIncidentLayer);
-    const firePerimetersLayer = FirePerimetersLayer.initLayer(config.firePerimeters, firePerimeterIDs);//Needed to filter fire perimeters to just those within the state
-    const mileMarkersLayer = MileMakersLayer.initLayer(config.mileMarkers)
-    const esriRoadsReferenceLayer = RoadsReferenceLayer.initLayer(config.esriRoadsReferenceLayer)
-    const esriPlacesReferenceLayer = BoundariesPlacesReferenceLayer.initLayer(config.esriPlacesReferenceLayer)
-    const stateRouteShieldsLayer = StateRouteShieldsLayer.initLayer(config.stateRouteShieldsLayer)
-    const ferryRoutesReferenceLayer = FerryRoutesReferenceLayer.initLayer(config.ferryRoutesReferenceLayer)
-    const ferryRouteLinesLayer = await LineFerryRoutesLayer.initLayer(config.ferryRouteLines)
-    const ferryRoutePointsLayer = FerryRoutePointsLayer.initLayer(config.ferryRoutePoints)
-    const borderCrossingsLayer = await BorderCrossingsLayer.initLayer(config.borderCrossings)
+    // Load async ones in parallel...
+    const promises = []
+    promises.push(LineFerryRoutesLayer.initLayer(config.ferryRouteLines));
+    promises.push(BorderCrossingsLayer.initLayer(config.borderCrossings));
+    promises.push(ParkRideLayer.initLayer(config.parkAndRides));
+    promises.push(RestAreasLayer.initLayer(config.restAreas));
+    promises.push(WeatherLayer.initLayer(config.weatherStations, mapView));
+    promises.push(MountainLayer.initLayer(config.mountainPasses));
+    promises.push(LineRestrictionsLayer.initLayer(config.lineRestrictions));
+    promises.push(PointRestrictionsLayer.initLayer(config.pointRestrictions));
+    promises.push(CameraLayer.initLayer(config.cameras));
+    promises.push(RoadAlertsLayer.initLayer(config.roadAlerts));
+    promises.map(eachPromise => eachPromise.catch(error => error));
+    // Load sync ones...
+    const infos: LayerInfo[] = [];
+    infos.push(RoadsReferenceLayer.initLayer(config.esriRoadsReferenceLayer));
+    infos.push(BoundariesPlacesReferenceLayer.initLayer(config.esriPlacesReferenceLayer));
+    infos.push(FerryRoutesReferenceLayer.initLayer(config.ferryRoutesReferenceLayer));
+    infos.push(TrafficLayer.initLayer(config.traffic, config.layerRefreshMinute));
+    infos.push(StateRouteShieldsLayer.initLayer(config.stateRouteShieldsLayer));
+    infos.push(MileMakersLayer.initLayer(config.mileMarkers));
+    infos.push(PointFerryRoutesLayer.initLayer(config.ferryRoutePoints));
+    // Load fire layers...
+    infos.push(FireIncidentsLayer.initLayer(config.fireIncidents));
+    const fireIncidentLayer = FireIncidentsLayer.default();
+    if (fireIncidentLayer) {
+        const incidentNames = await FireIncidentsLayer.getIncidentNames();
+        //Needed to filter fire perimeters to just those within the state
+        if (incidentNames.length > 0) {
+            infos.push(FirePerimetersLayer.initLayer(config.firePerimeters, incidentNames));
+        }
+    }
+    // Wait for all the async ones to finish loading...
+    const results = await Promise.all(promises);
+    results.forEach(eachResult => {
+        if (isLayerInfo(eachResult)) { infos.push(eachResult); }
+        else {
+            console.warn(eachResult);
+        }
+    })
+
+    // Create list of layers to load to the map...
+    const lyrs: Layer[] = [];
+    const addToList = (layer: Layer | undefined) => {
+        if (layer) {
+            lyrs.push(layer);
+        }
+    }
+    addToList(RoadsReferenceLayer.default());
+    addToList(BoundariesPlacesReferenceLayer.default());
+    addToList(FerryRoutesReferenceLayer.default());
+    addToList(TrafficLayer.default());
+    addToList(LineFerryRoutesLayer.default());
+    addToList(StateRouteShieldsLayer.default());
+    addToList(FirePerimetersLayer.default());
+    addToList(fireIncidentLayer);
+    addToList(MileMakersLayer.default());
+    addToList(BorderCrossingsLayer.default());
+    addToList(ParkRideLayer.default());
+    addToList(RestAreasLayer.default());
+    addToList(WeatherLayer.default());
+    addToList(MountainLayer.default());
+    addToList(LineRestrictionsLayer.default());
+    addToList(PointRestrictionsLayer.default());
+    addToList(CameraLayer.default());
+    addToList(PointFerryRoutesLayer.default());
+    addToList(RoadAlertsLayer.default());
     // The first one in the array will be displayed at the bottom of the map... 
-    webmap.addMany([esriRoadsReferenceLayer, esriPlacesReferenceLayer, ferryRoutesReferenceLayer, trafficLyr,
-        ferryRouteLinesLayer, stateRouteShieldsLayer,
-        firePerimetersLayer, fireIncidentLayer,
-        restAreasLyr, parkRideLyr, weatherLyr, mtLyr, lineRestrictionLyr,
-        pointRestrictionLyr, cameraLyr,
-        ferryRoutePointsLayer, roadAlertLyrs,
-        mileMarkersLayer, borderCrossingsLayer]);
+    webmap.addMany(lyrs);
     // Store the default visibility...
     webmap.layers.forEach((eachLyr) => {
         defaultLayerProps.push({ id: eachLyr.id, visible: eachLyr.visible });
     });
-
+    return infos;
 }
-/** Load regional alert point and polygon layers separately from the other operation layers. */
-export const loadRegionalAlert = async (): Promise<void> => {
+/**
+ * Filter out the layers that did not load.
+ * @param list List of layers to validate
+ */
+export const validateLayerList = (list: (Layer | undefined)[]): Layer[] => {
+    const validLyrs: Layer[] = list.filter(isLayer);
+    return validLyrs;
+}
+/**
+ * Type guard for the layer object
+ * @param layer 
+ */
+export const isLayer = (layer: Layer | undefined): layer is Layer => {
+    return !!layer;
+}
+/** 
+ * Load regional alert point and polygon layers separately from the other operational layers. 
+ * Returns layer IDs of the layers that failed to load.
+*/
+export const loadRegionalAlert = async (): Promise<LayerInfo[]> => {
     const config = getConfig();
-    const layers = await RegionalAlertLayer.initLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
-    webmap.add(layers.point);
-    webmap.add(layers.polygon, 0);
+    const infos = await RegionalAlertLayer.initLayer(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
+    const pointLayer = RegionalAlertLayer.default();
+    if (pointLayer) {
+        webmap.add(pointLayer);
+    }
+    const areaLayer = AlertAreaLayer.default();
+    if (areaLayer) {
+        webmap.add(areaLayer, 0);
+    }
+    return infos;
 }
 /**
  * Reload data for some layers.
  */
-export const refreshLayerData = async (): Promise<void> => {
+export const refreshLayerData = async (): Promise<LayerInfo[]> => {
     const config = getConfig();
-    RegionalAlertLayer.reloadData(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
-    layerUtil.reloadData(config.roadAlerts, RoadAlertsLayer.default())
-    layerUtil.reloadData(config.pointRestrictions, PointRestrictionsLayer.default());
-    layerUtil.reloadData(config.lineRestrictions, LineRestrictionsLayer.default());
-    layerUtil.reloadData(config.mountainPasses, MountainLayer.default());
-    layerUtil.reloadData(config.weatherStations, WeatherLayer.default());
-    layerUtil.reloadData(config.borderCrossings, BorderCrossingsLayer.default());
+    const promises = [];
+    promises.push(RegionalAlertLayer.reloadData(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries));
+    promises.push(layerUtil.reloadData(config.roadAlerts, RoadAlertsLayer.default()));
+    promises.push(layerUtil.reloadData(config.pointRestrictions, PointRestrictionsLayer.default()));
+    promises.push(layerUtil.reloadData(config.lineRestrictions, LineRestrictionsLayer.default()));
+    promises.push(layerUtil.reloadData(config.mountainPasses, MountainLayer.default()));
+    promises.push(layerUtil.reloadData(config.weatherStations, WeatherLayer.default()));
+    promises.push(layerUtil.reloadData(config.borderCrossings, BorderCrossingsLayer.default()));
+    const results = await Promise.all(promises);
+    const infos: LayerInfo[] = [];
+    results.forEach(eachResult => {
+        if (eachResult) {
+            if (Array.isArray(eachResult)) { infos.push(...eachResult); }
+            else if (isLayerInfo(eachResult)) { infos.push(eachResult); }
+        }
+    })
+    return infos;
 };
 
 export const tryZoomToPoint = (point: Point, numLevels?: number): boolean => {
@@ -225,19 +300,19 @@ export const zoomToExtent = async (extent: Extent): Promise<void> => {
     });
 }
 
-let maxScale = 0;
+// let maxScale = 0;
 
-export const getMaxScale = (): number => {
-    if (maxScale > 0) {
-        return maxScale;
-    } else {
-        const info = getBasemapInfo("wsdot");
-        const lyr = info.basemap.baseLayers.getItemAt(0);
-        const tile = lyr as TileLayer;
-        maxScale = tile.maxScale;
-        return maxScale;
-    }
-}
+// export const getMaxScale = (): number => {
+//     if (maxScale > 0) {
+//         return maxScale;
+//     } else {
+//         const info = getBasemapInfo("wsdot");
+//         const lyr = info.basemap.baseLayers.getItemAt(0);
+//         const tile = lyr as TileLayer;
+//         maxScale = tile.maxScale;
+//         return maxScale;
+//     }
+// }
 
 /**
  * A zoom level and scale
@@ -263,13 +338,16 @@ let zoomLevels: ZoomLevel[];
 export const getZoomLevel = (numLevelsFromMin: number): ZoomLevel => {
     if (!zoomLevels) {
         const info = getBasemapInfo("wsdot");
-        const lyr = info.basemap.baseLayers.getItemAt(0);
-        const tile = lyr as TileLayer;
-        const lods = tile.tileInfo.lods;
-        zoomLevels = lods.map((x) => {
-            return { level: x.level, scale: x.scale };
-        })
-        zoomLevels.sort((a, b) => a.level - b.level);
+        if (info.basemap) {
+            const lyr = info.basemap.baseLayers.getItemAt(0);
+            const tile = lyr as TileLayer;
+            const lods = tile.tileInfo.lods;
+            zoomLevels = lods.map((x) => {
+                return { level: x.level, scale: x.scale };
+            })
+            zoomLevels.sort((a, b) => a.level - b.level);
+        }
+        else { zoomLevels = []; }
     }
     const item = zoomLevels.slice(numLevelsFromMin);
     if (item) {

@@ -2,6 +2,7 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import Field from "@arcgis/core/layers/support/Field";
 import { alertSymbol } from "@/symbols/AlertSymbol"
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 
 const renderer = new simpleRenderer({
     symbol: alertSymbol
@@ -51,29 +52,40 @@ const fields = [
         alias: "Display",
     }),
     new Field({
-        name:"PublishDate",
+        name: "PublishDate",
         type: "date",
         alias: "Last Update Date"
     })
 ]
 
-export const initLayer = (url: string): FeatureLayer => {
-    layer = new FeatureLayer({
-        id: "ferry-routes-points-layer",
-        url: url,
-        title: "ferryRoutesPoints",
-        fields: fields,
-        renderer: renderer,
-        visible: true,
-        labelsVisible: false,
-        definitionExpression: "Display <> 'Keller South to Keller North'"
-    });
-    return layer;
+export const layerId = "ferry-routes-points-layer";
+const layerTitle = "Ferry Routes Points";
+
+export const initLayer = (url: string): LayerInfo => {
+    const layerInfo = new LayerInfo(layerId, layerTitle, url);
+    try {
+        layer = new FeatureLayer({
+            id: layerId,
+            url: url,
+            title: layerTitle,
+            fields: fields,
+            renderer: renderer,
+            visible: true,
+            labelsVisible: false,
+            definitionExpression: "Display <> 'Keller South to Keller North'"
+        });
+    }
+    catch (ex) {
+        console.error(ex);
+        layer = undefined;
+        layerInfo.status = LayerStatus.Failed
+    }
+    return layerInfo;
 }
 
-const getLayer = (): FeatureLayer => {
+const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
-        throw "Ferry Point Layer is not ready yet!";
+        console.error("Ferry Point Layer is not ready yet!");
     }
     return layer;
 }

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, onBeforeUnmount, ref } from "vue";
+import { defineComponent, onBeforeUnmount, onMounted, onUpdated, ref } from "vue";
 // import EsriMapView from "./components/EsriMapView.vue";
 import HeaderView from "./components/HeaderView.vue";
 import FooterView from "./components/FooterView.vue";
@@ -7,6 +7,8 @@ import { useStore } from "@/store";
 import { mapState } from "vuex";
 import SetupModal from "@/components/SetupModal.vue";
 import { getConfig } from "@/utils/appConfigUtil";
+import { useToast } from "vue-toastification";
+
 export default defineComponent({
   name: "App",
   components: {
@@ -16,10 +18,12 @@ export default defineComponent({
     FooterView,
   },
   setup() {
-
-
     const mapHeight = ref("500px");
     const store = useStore();
+
+    const toast = useToast();
+
+    // const errors = computed(() => store.state.errors);
     const config = getConfig();
     const activeClass = "active";
     const disabledClass = "disabled";
@@ -46,11 +50,19 @@ export default defineComponent({
     onBeforeUnmount(() => {
       window.removeEventListener("resize", resizeMapContainer);
     });
+    
+    let wasUpdatedOnce = false;
+    onUpdated(() => {
+      if (!wasUpdatedOnce) {
+        wasUpdatedOnce = true;
+        // The toast cannot be displayed until the page and its content are ready.
+        store.dispatch("setIsToastReady");
+      }
+    });
 
     return {
       config,
       mapHeight,
-      store,
       resizeMapContainer,
       activeClass,
       disabledClass,

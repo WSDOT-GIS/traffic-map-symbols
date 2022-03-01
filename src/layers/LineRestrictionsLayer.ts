@@ -1,10 +1,10 @@
 import { roadRestrictionLine, bridgeRestrictionLine } from "../symbols/LineRestrictionsSymbol"
-// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
 import Field from "@arcgis/core/layers/support/Field";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 import * as layerUtil from "@/utils/layerUtil";
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 
 const renderer = new UniqueValueRenderer({
     field: "TType",
@@ -64,35 +64,38 @@ const fields = [
 ]
 
 let layer: FeatureLayer | undefined;
+export const layerId = "line-restrictions-layer";
+const layerTitle = "Restriction Lines";
 
-export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
-    layer = await layerUtil.initLayer(jsonUrl,
-        "line-restrictions-layer",
-        "Restriction Lines",
-        renderer,
-        fields,
-        "polyline",
-        false,
-    );
+export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
+    const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
+    try {
+        layer = await layerUtil.initLayer(jsonUrl,
+            layerId,
+            layerTitle,
+            renderer,
+            fields,
+            "polyline",
+            false,
+        );
+    }
+    catch (ex) {
+        console.error(ex);
+        layer = undefined;
+        layerInfo.status = LayerStatus.Failed
+    }
     // hide all features... Show only when the corresponding point was selected.
-    layer.definitionExpression = "1=0" 
-    return layer;
+    if (layer) {
+        layer.definitionExpression = "1=0";
+    }
+    return layerInfo;
 }
 
-const getLayer = (): FeatureLayer => {
+const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
-        throw "LineRestrictionLayer is not ready yet!";
+        console.error("LineRestrictionLayer is not ready yet!");
     }
     return layer;
 }
-
-// const LineRestrictionsLayer = new GeoJSONLayer({
-//     id: "line-restrictions-layer",
-//     url: "https://data.wsdot.wa.gov/travelcenter/LineRestrictions.json",
-//     title: "Restriction Lines",
-//     renderer: lineRestrictionsRenderer,
-//     visible: false,
-//     fields: fields
-// });
 
 export default getLayer

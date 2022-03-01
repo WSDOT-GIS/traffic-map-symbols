@@ -28,11 +28,6 @@ export default defineComponent({
       type: Object as PropType<XY>,
       required: false,
     },
-    // Width: {
-    //   // "m (medium) or w (wide)"
-    //   type: String,
-    //   required: false,
-    // },
     DarkThemeColor: {
       type: String,
       required: true,
@@ -52,6 +47,10 @@ export default defineComponent({
     IconSvg: {
       type: String,
       required: false,
+    },
+    LayerId: {
+      type: String,
+      required: true
     },
     Features: {
       type: Array as PropType<Array<FeatureInfo>>,
@@ -100,6 +99,7 @@ export default defineComponent({
     }
     const relativePosition = ref(relativePositions.above);
     const store = useStore();
+    const layerStatus = computed(() => store.getters.getLayerStatus(props.LayerId));
     const mapSize = computed(() => store.state.mapSize);
     const mapScale = computed(() => store.state.scale);
     const mapCenter = computed(() => store.state.center);
@@ -365,143 +365,9 @@ export default defineComponent({
     let prevWidth = 0;
     let prevHeight = 0;
     /**
-     * Position popup...
-     */
-    const adjustPositionSize = () => {
-      if (!containerRef.value) {
-        // Container is null. It is not visible yet.
-        return;
-      }
-      if (isPanning) return;
-      // Wait for everything to load, then adjust.
-      /*if (!cameraImageLoadComplete()) {
-        // Not everything is loaded yet.
-        return;
-      }*/
-      if (!props.Features || props.Features.length === 0 || !props.Features[0]) {
-        // Nothing to show...
-        return;
-      }
-      if (!smallMedia.value) {
-        // Large screen mode...
-        const h = containerRef.value.offsetHeight;
-        const w = containerRef.value.offsetWidth;
-        if (
-          Math.abs(prevScreenX - screenX.value) <= 1 &&
-          Math.abs(prevScreenY - screenY.value) <= 1 &&
-          Math.abs(prevWidth - w) <= 1 &&
-          Math.abs(prevHeight - h) <= 1
-        ) {
-          // Sometimes the width changes slightly for some reason, do not respond to those...
-          return;
-        } else {
-          prevScreenX = screenX.value;
-          prevScreenY = screenY.value;
-          prevWidth = w;
-          prevHeight = h;
-        }
-        // If this is not the initial load, then move popup along with map.
-        if (!doPanMap) {
-          // Recalculate top and let position...
-          const newTopLeft = calcTopLeft(h, w);
-          setPosition(newTopLeft.top, newTopLeft.left);
-        } else {
-          doPanMap = false;
-          nextTick(() => {
-            // New vertical position...
-            if (screenY.value > mapSize.value.height / 2) {
-              // Display above the feature...
-              relativePosition.value = relativePositions.above;
-            } else {
-              // Display below the feature...
-              relativePosition.value = relativePositions.below;
-            }
-            let newTopLeft = calcTopLeft(h, w);
-            /*
-             * Pan map so the popup is displayed within the map view,
-             * and the top is visible.
-             * NOTE: Only do this on the initial popup load.
-             */
-            let shiftXY = calcShiftXY(newTopLeft, h, w);
-            const outOfBoundDir = checkPannedExtent(shiftXY.x, shiftXY.y);
-            if (
-              (relativePosition.value === relativePositions.above && outOfBoundDir[0] === "n") ||
-              (relativePosition.value === relativePositions.below && outOfBoundDir[0] === "s")
-            ) {
-              const bestPosition = getBestRelativePosition(h);
-              relativePosition.value = bestPosition;
-              newTopLeft = calcTopLeft(h, w);
-              shiftXY = calcShiftXY(newTopLeft, h, w);
-            }
-
-            setPosition(newTopLeft.top, newTopLeft.left);
-            if (Math.abs(shiftXY.x) >= 1 || Math.abs(shiftXY.y) >= 1) {
-              isPanning = true;
-              panMap(shiftXY.x, shiftXY.y).then(() => {
-                isPanning = false;
-                setScreenXY();
-                // Check the popup position again and pan map more if necessary.
-                shiftXY = calcShiftXY(
-                  {
-                    top: parseInt(popupTopLeft.value.marginTop),
-                    left: parseInt(popupTopLeft.value.marginLeft),
-                  },
-                  h,
-                  w
-                );
-                if (shiftXY.x !== 0 || shiftXY.y !== 0) {
-                  isPanning = true;
-                  panMap(shiftXY.x, shiftXY.y).then(() => {
-                    isPanning = false;
-                    setScreenXY();
-                  });
-                }
-              });
-            }
-          });
-        }
-      }
-    };
-    const getBestRelativePosition = (
-      height: number
-      // width: number // TODO: maybe in the future...
-    ): relativePositions => {
-      const extent = getEsriExtent("full");
-      const results: { pos: relativePositions; val: number }[] = [];
-      // TODO: Maybe in the future, might need to place it on right or left.
-      // results.push({
-      //   pos: relativePositions.left,
-      //   val: (mapX.value - extent.xmin) / width,
-      // });
-      // results.push({
-      //   pos: relativePositions.right,
-      //   val: (extent.xmax - mapX.value) / width,
-      // });
-      results.push({
-        pos: relativePositions.above,
-        val: (extent.ymax - mapY.value) / height,
-      });
-      results.push({
-        pos: relativePositions.below,
-        val: (mapY.value - extent.ymin) / height,
-      });
-      const maxVal = Math.max.apply(
-        null,
-        results.map((each) => {
-          return each.val;
-        })
-      );
-      const obj = results.find((each) => {
-        return each.val === maxVal;
-      });
-      if (obj) {
-        return obj.pos;
-      } else {
-        throw "getBestRelativePosition() failed.";
-      }
-    };
-    /**
-     *     Figure out the top and left position of the popup.     * NOTE: Make sure to set the relativePosition before calling this.
+     *
+     Figure out the top and left position of the popup.
+     * NOTE: Make sure to set the relativePosition before calling this.
      *
      * @param height
      * @param width
@@ -527,7 +393,8 @@ export default defineComponent({
       return { top: newTop, left: newLeft };
     };
     /**
-     *     Calulate how far map need to be moved so the top of the popup is visible within the map view.
+     *
+     Calulate how far map need to be moved so the top of the popup is visible within the map view.
      *
      * @param topLeft
      * @param topLeft.top
@@ -740,7 +607,8 @@ export default defineComponent({
       }
     };
     /**
-     * If MapX and Y are provided, those values supersede the feature x/y.     * Otherwise the feature x/y is used to determine the location of the popup.
+     * If MapX and Y are provided, those values supersede the feature x/y.
+     * Otherwise the feature x/y is used to determine the location of the popup.
      *
      * @param ignoreMapXY
      */
@@ -760,7 +628,9 @@ export default defineComponent({
       }
     };
     /**
-     *     Catch the carousel spicture changes.     * @param splide 
+     *
+     Catch the carousel spicture changes.
+     * @param splide 
      *
      * @param splide
      * @param newIndex 
@@ -773,6 +643,7 @@ export default defineComponent({
       modalContainerRef,
       containerRef,
       contentContainerRef,
+      layerStatus,
       relativePosition,
       popupTopLeft,
       maxHeight,
@@ -822,7 +693,7 @@ export default defineComponent({
         'popup-container-below': relativePosition === 'below',
         'w3-modal-content': smallMedia,
       }"
-      v-if="propFeatures.length > 0 && propFeatures[0]"
+      v-if="layerStatus === 'loaded' && propFeatures.length > 0 && propFeatures[0]"
       :style="popupTopLeft"
       v-click-away="onClickAway"
     >

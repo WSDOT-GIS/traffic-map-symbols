@@ -1,28 +1,15 @@
-<template>
-  <div id="basemap-widget-container">
-    <MapButtonView @click="onClick" :Height="imgSize" AriaLabel="Change basemap">
-      <template v-slot>
-        <div class="basemap-img-container">
-          <img :src="imgSrc" :height="imgSize" alt="" />
-          <label :class="topLabelClass" :id="labelStyle">{{ iconTitle }}</label>
-          <label :class="bottomLabelClass" :id="labelStyle">Basemap</label>
-        </div>
-      </template>
-    </MapButtonView>
-  </div>
-</template>
-
 <script lang="ts">
 import { useStore } from "@/store";
 import { computed, defineComponent, ref, watch } from "vue";
 import MapButtonView from "@/components/MapButtonView.vue";
-import { webmap } from "@/esri-stuff/esriMap";
+
 /* eslint @typescript-eslint/no-var-requires: "off" */
 export default defineComponent({
   components: { MapButtonView },
   setup() {
     const store = useStore(); //create reference to vuex store
     const mapSize = computed(() => store.state.mapSize);
+    const basemapName = computed(() => store.state.basemap);
     const tileImage = require("@/assets/icons/tileBasemap.png"); //use wsdot basemap icon
     const satelliteImage = require("@/assets/icons/worldImagery.png"); //use imagery basemap icon
     const imgSrc = ref<string>(satelliteImage); //reference to image used in icon
@@ -31,39 +18,63 @@ export default defineComponent({
     const labelStyle = ref<string>("iconLabelWhite"); //reference to class used to define label color, determined by selected basemap
     const topLabelClass = ref<string>(); //reference to class used to define top label size and placement, determined by selected basemap
     const bottomLabelClass = ref<string>(); //reference to class used to define bottom label size and placement, determined by selected basemap
-    const toggleImageryReference = () => {
-      store.state.layerList.map((x) => {
-        if (webmap.basemap.title == "Basemap" || webmap.basemap.title == "WSDOT Basemap") {
-          if (
-            x.id == "roads-reference-layer" ||
-            x.id == "boundaries-places-reference-layer" ||
-            x.id == "ferry-routes-reference-layer"
-          ) {
-            x.visible = true;
-          }
-        } else {
-          if (
-            x.id == "roads-reference-layer" ||
-            x.id == "boundaries-places-reference-layer" ||
-            x.id == "ferry-routes-reference-layer"
-          ) {
-            x.visible = false;
-          }
-        }
-      });
-      store.commit("setLayerList", store.state.layerList);
-    };
-    const updateBasemapIcon = () => {
-      imgSrc.value == satelliteImage ? (imgSrc.value = tileImage) : (imgSrc.value = satelliteImage);
-      iconTitle.value == "Imagery" ? (iconTitle.value = "WSDOT") : (iconTitle.value = "Imagery");
-      labelStyle.value == "iconLabelWhite"
-        ? (labelStyle.value = "iconLabelBlack")
-        : (labelStyle.value = "iconLabelWhite");
-    };
+    // const toggleImageryReference = () => {
+    //   store.state.layerList.map((x) => {
+    //     if (webmap.basemap.title == "Basemap" || webmap.basemap.title == "WSDOT Basemap") {
+    //       if (
+    //         x.id == "roads-reference-layer" ||
+    //         x.id == "boundaries-places-reference-layer" ||
+    //         x.id == "ferry-routes-reference-layer"
+    //       ) {
+    //         x.visible = true;
+    //       }
+    //     } else {
+    //       if (
+    //         x.id == "roads-reference-layer" ||
+    //         x.id == "boundaries-places-reference-layer" ||
+    //         x.id == "ferry-routes-reference-layer"
+    //       ) {
+    //         x.visible = false;
+    //       }
+    //     }
+    //   });
+    //   store.commit("setLayerList", store.state.layerList);
+    // };
+    /**
+     * Toggle icon and label based on the current base map selection in the state store.
+     */
+    watch(basemapName, () => {
+      if (basemapName.value === "satellite") {
+        imgSrc.value = tileImage;
+        iconTitle.value = "WSDOT";
+        labelStyle.value = "iconLabelBlack";
+        // Show the reference layers for the imagery basemap.
+        store.dispatch("updateLayerVisibility",
+        {
+          ids: [
+            "roads-reference-layer",
+            "boundaries-places-reference-layer",
+            "ferry-routes-reference-layer"],
+          visible: true
+        });
+      } else {
+        imgSrc.value = satelliteImage;
+        iconTitle.value = "Imagery";
+        labelStyle.value = "iconLabelWhite";
+        // Hide the reference layers for the imagery basemap.
+        store.dispatch("updateLayerVisibility",
+        {
+          ids: [
+            "roads-reference-layer",
+            "boundaries-places-reference-layer",
+            "ferry-routes-reference-layer"],
+          visible: false
+        });
+      }
+    });
     const onClick = () => {
-      toggleImageryReference();
+      // toggleImageryReference();
       store.commit("toggleBasemap"); //fire "toggleBasemap" mutation in store.ts
-      updateBasemapIcon();
     };
     const setStyle = () => {
       if (store.state.mediaSize === "s") {
@@ -91,7 +102,20 @@ export default defineComponent({
   },
 });
 </script>
- <style scoped>
+<template>
+  <div id="basemap-widget-container">
+    <MapButtonView @click="onClick" :Height="imgSize" AriaLabel="Change basemap">
+      <template v-slot>
+        <div class="basemap-img-container">
+          <img :src="imgSrc" :height="imgSize" alt="" />
+          <label :class="topLabelClass" :id="labelStyle">{{ iconTitle }}</label>
+          <label :class="bottomLabelClass" :id="labelStyle">Basemap</label>
+        </div>
+      </template>
+    </MapButtonView>
+  </div>
+</template>
+<style scoped>
 /*Defines the style of the basemap picker*/
 #iconImage {
   height: 100px;

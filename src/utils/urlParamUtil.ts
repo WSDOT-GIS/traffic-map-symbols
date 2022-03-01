@@ -100,11 +100,11 @@ if (removeKeys.length > 0) {
 }
 
 /**
- * Make specified layer visible.
+ * Get layer IDs of layers that should be visible from URL
  * @param layerList 
  * @route
  */
-export const setVisibleLayersFromUrl = (layerList: LayerInfo[], route: RouteLocationNormalizedLoaded): LayerInfo[] => {
+export const getLayerVisibilityFromUrl = (route: RouteLocationNormalizedLoaded): { visible: string[], invisible: string[] } => {
     let layers: string[] | undefined;
     // Flag to turn off layers shown by default. Currently only the Road Alert layer.
     let hideDefaultLyrs = false;
@@ -142,8 +142,10 @@ export const setVisibleLayersFromUrl = (layerList: LayerInfo[], route: RouteLoca
         }
         layers = layers.concat(validLayers);
     }
+    const layerIds: string[] = [];
+    const hideLayerIds: string[] = [];
     if (layers) {
-        const layerIds: string[] = [];
+        // const layerIds: string[] = [];
         layers.forEach((each) => {
             let ids: string[] | undefined;
             try {
@@ -154,22 +156,18 @@ export const setVisibleLayersFromUrl = (layerList: LayerInfo[], route: RouteLoca
             if (ids) {
                 layerIds.push(...ids);
             }
-        })
-        layerList.forEach((eachLyr) => {
-            if (layerIds.includes(eachLyr.id)) {
-                eachLyr.visible = true;
-            }
         });
         // Do not show alert layers...
         if (hideDefaultLyrs && !layers.includes("alert")) {
-            const lyrs2Hide = ['road-alerts-layer', 'road-closures-layer', 'ferry-routes-points-layer'];
-            lyrs2Hide.forEach((hideId) => {
-                const info = layerList.find((lyr) => lyr.id === hideId);
-                if (info) { info.visible = false; }
-            })
+            hideLayerIds.push('road-alerts-layer', 'road-closures-layer', 'ferry-routes-points-layer');
+            // const lyrs2Hide = ['road-alerts-layer', 'road-closures-layer', 'ferry-routes-points-layer'];
+            // lyrs2Hide.forEach((hideId) => {
+            //     const info = layerList.find((lyr) => lyr.id === hideId);
+            //     if (info) { info.visible = false; }
+            // })
         }
     }
-    return layerList;
+    return { visible: layerIds, invisible: hideLayerIds };
 }
 /**
  * Check to make sure the ID is valid.
@@ -197,7 +195,6 @@ export const validateLayerName = (name: string): boolean => {
  */
 export const getFeatureIdFromUrl = (route: RouteLocationNormalizedLoaded): string | null => {
     let id: string | null;
-    console.log(route.params);
     if (route.params.featureid) {
         const p = route.params.featureid;
         id = typeof p === 'string' ? p : p[0];
