@@ -3,12 +3,12 @@ import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import Graphic from "@arcgis/core/Graphic";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Field from "@arcgis/core/layers/support/Field";
-import symbol from "@/symbols/RegionalAlertSymbol";
 import Extent from "@arcgis/core/geometry/Extent";
 import Point from "@arcgis/core/geometry/Point";
 import Polygon from "@arcgis/core/geometry/Polygon";
 
-import AlertAreaLayer, { getVisibleCenter, getFeatureById as getAreaById } from "./AlertAreaLayer";
+import symbol from "@/symbols/RegionalAlertSymbol";
+import AlertAreaLayer, { getVisibleCenter, getFeatureById as getAreaById, layerId as areaLayerId } from "./AlertAreaLayer";
 import { initLayer as initAreaLayer } from "@/layers/AlertAreaLayer";
 import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 
@@ -95,18 +95,23 @@ let layer: FeatureLayer | undefined;
 export const layerId = "regional-alert-layer";
 const layerTitle = "Regional Alerts";
 
+interface AlertFetchResult {
+    point: Graphic[];
+    polygon: Graphic[];
+    errors: string[];
+}
+
 export const initLayer = async (alertUrl: string, countyUrl: string, regionUrl: string):
-    Promise<{ point: LayerInfo, polygon: LayerInfo }> => {
+    Promise<LayerInfo[]> => {
     const pointInfo = new LayerInfo(layerId, layerTitle, alertUrl);
-    let fetchResults: { point: Graphic[], polygon: Graphic[] };
-    let fetchSuccess = true;
+    let fetchResults: AlertFetchResult;
     try {
         fetchResults = await fetchData(alertUrl, countyUrl, regionUrl);
+        pointInfo.status = fetchResults.errors.length > 0 ? LayerStatus.Failed : LayerStatus.Loaded;
     }
     catch (ex) {
-        fetchResults = { point: [], polygon: [] };
+        fetchResults = { point: [], polygon: [], errors: [] };
         console.error(ex);
-        fetchSuccess = false;
         pointInfo.status = LayerStatus.Failed;
     }
     try {
@@ -127,10 +132,8 @@ export const initLayer = async (alertUrl: string, countyUrl: string, regionUrl: 
     }
     // Create the area boundary layer...
     const areaInfo = initAreaLayer(fetchResults.polygon);
-    if (!fetchSuccess) {
-        areaInfo.status = LayerStatus.Failed;
-    }
-    return { point: pointInfo, polygon: areaInfo };
+    areaInfo.status = pointInfo.status;
+    return [pointInfo, areaInfo];
 }
 
 const getLayer = (): FeatureLayer | undefined => {
@@ -142,24 +145,48 @@ const getLayer = (): FeatureLayer | undefined => {
 
 export default getLayer;
 
-export const reloadData = async (alertUrl: string, countyUrl: string, regionUrl: string): Promise<void> => {
-    const fetchResults = await fetchData(alertUrl, countyUrl, regionUrl);
+export const reloadData = async (alertUrl: string, countyUrl: string, regionUrl: string):
+    Promise<LayerInfo[]> => {
+    let fetchResults: AlertFetchResult;
+    const pointInfo = new LayerInfo(layerId);
+    try {
+        fetchResults = await fetchData(alertUrl, countyUrl, regionUrl);
+        pointInfo.status = fetchResults.errors.length > 0 ? LayerStatus.Failed : LayerStatus.Loaded;
+    }
+    catch (ex) {
+        fetchResults = { point: [], polygon: [], errors: [] };
+        console.error(ex);
+        pointInfo.status = LayerStatus.Failed;
+    }
     const pointLyr = getLayer();
     if (pointLyr) {
-        pointLyr.queryFeatures().then((featureSet) => {
-            pointLyr.applyEdits({ deleteFeatures: featureSet.features }).then(() => {
-                pointLyr.applyEdits({ addFeatures: fetchResults.point });
+        try {
+            pointLyr.queryFeatures().then((featureSet) => {
+                pointLyr.applyEdits({ deleteFeatures: featureSet.features }).then(() => {
+                    pointLyr.applyEdits({ addFeatures: fetchResults.point });
+                });
             });
-        });
+        } catch (ex) {
+            console.error(ex);
+            pointInfo.status = LayerStatus.Failed;
+        }
     }
     const polyLyr = AlertAreaLayer();
+    const polyInfo = new LayerInfo(areaLayerId);
+    polyInfo.status = pointInfo.status;
     if (polyLyr) {
-        polyLyr.queryFeatures().then((featureSet) => {
-            polyLyr.applyEdits({ deleteFeatures: featureSet.features }).then(() => {
-                polyLyr.applyEdits({ addFeatures: fetchResults.polygon });
+        try {
+            polyLyr.queryFeatures().then((featureSet) => {
+                polyLyr.applyEdits({ deleteFeatures: featureSet.features }).then(() => {
+                    polyLyr.applyEdits({ addFeatures: fetchResults.polygon });
+                });
             });
-        });
+        } catch (ex) {
+            console.error(ex);
+            polyInfo.status = LayerStatus.Failed;
+        }
     }
+    return [pointInfo, polyInfo]
 }
 /**
  * Fetch alerts from JSON, fetch boundaries from county or region map services, then create graphics.
@@ -168,7 +195,8 @@ export const reloadData = async (alertUrl: string, countyUrl: string, regionUrl:
  * @param regionUrl 
  * @returns 
  */
-const fetchData = async (alertUrl: string, countyUrl: string, regionUrl: string): Promise<{ point: Graphic[], polygon: Graphic[] }> => {
+const fetchData = async (alertUrl: string, countyUrl: string, regionUrl: string):
+    Promise<AlertFetchResult> => {
     // Fetch all alerts from JSON...
     let response = await fetch(alertUrl);
     let json = await response.json();
@@ -176,6 +204,8 @@ const fetchData = async (alertUrl: string, countyUrl: string, regionUrl: string)
     const pointGraphics: Graphic[] = [];
     // Alert area polygons...
     const polyGraphics: Graphic[] = [];
+    // List of locating errors...
+    const errors: string[] = [];
     for (const each of json.features) {
         // Get region boundary from county or region service...
         let where = "";
@@ -202,8 +232,10 @@ const fetchData = async (alertUrl: string, countyUrl: string, regionUrl: string)
         json = await response.json();
         // Get centroid and set that as alert's geometry
         if (!json.features || json.features.length === 0) {
-            console.error(`Failed to locate the regional alert: ${each.attributes.EventID}, 
-            Area Type: ${each.attributes.EventCategoryType}, Area ID: ${each.attributes.CountyID}`);
+            const err = `Failed to locate the regional alert: ${each.attributes.EventID}, 
+            Area Type: ${each.attributes.EventCategoryType}, Area ID: ${each.attributes.CountyID}`;
+            errors.push(err);
+            console.error(err);
             continue;
         }
         else {
@@ -225,9 +257,8 @@ const fetchData = async (alertUrl: string, countyUrl: string, regionUrl: string)
             }));
         }
     }
-    return { point: pointGraphics, polygon: polyGraphics };
+    return { point: pointGraphics, polygon: polyGraphics, errors: errors };
 }
-
 /**
  * Center the alert icon in the center of the region that is visible.
  * @param mapExtent 

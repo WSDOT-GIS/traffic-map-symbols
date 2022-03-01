@@ -58,16 +58,12 @@ export default defineComponent({
     );
     const warningDisplayClass = ref<string>("warningOff");
     const getLocation = () => {
-      
       removeGraphicsByType("myLocation");
       warningDisplayClass.value = "warningOff";
       if (store.state.userLocation == null) {
         navigator.geolocation.getCurrentPosition(success, error, options);
-        // console.log(navigator)
-        // console.log(navigator.geolocation)
       } else {
         success(store.state.userLocation);
-        // console.log(store.state.userLocation)
       }
     };
     const success = (location: any) => {
@@ -86,11 +82,14 @@ export default defineComponent({
           const graphic = buildGraphicsByType("coordinates", location.coords);
           addGraphicsByType("myLocation", graphic);
         });
-        context.emit("locationFound",[true,`success`])
+      context.emit("locationFound", [true, `success`]);
     };
     const error = (error: any) => {
-      store.commit("setUserLocation", null)
-      context.emit("locationFound",[false,`Locating failed for the following reason: ${error.message}`])
+      store.commit("setUserLocation", null);
+      context.emit("locationFound", [
+        false,
+        `Locating failed for the following reason: ${error.message}`,
+      ]);
       warningDisplayClass.value = "warningOn";
     };
     return { location, options, errorMessage, warningDisplayClass, getLocation };

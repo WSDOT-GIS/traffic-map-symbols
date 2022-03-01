@@ -13,7 +13,7 @@ import LayerView from "@arcgis/core/views/layers/LayerView";
 import * as WatchUtils from "@arcgis/core/core/watchUtils.js";
 import Collection from "@arcgis/core/core/Collection";
 import { getConfig } from "@/utils/appConfigUtil";
-import { mapView, webmap, zoomToMetroArea } from "@/esri-stuff/esriMap";
+import { mapView, zoomToMetroArea } from "@/esri-stuff/esriMap";
 import {
   getExtentFromUrl,
   getBasemapFromUrl,
@@ -42,7 +42,6 @@ import { initBasemap } from "@/layers/Basemaps";
 import ParkRideLayer from "@/layers/ParkRideLayer";
 import CameraLayer, { toggleCluster } from "@/layers/CameraLayer";
 import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
-// import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
 import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
 import MountainPassesLayer from "@/layers/MountainPassesLayer";
 import RoadAlertsLayer from "@/layers/RoadAlertsLayer";
@@ -51,7 +50,6 @@ import FireIncidentLayer from "@/layers/FireIncidentLayer";
 import RoadsReferenceLayer from "@/layers/RoadsReferenceLayer";
 import BoundariesPlacesReferenceLayer from "@/layers/BoundariesPlacesReferenceLayer";
 import BorderCrossingLayer from "@/layers/BorderCrossingsLayer";
-// import LineFerryRoutesLayer from "@/layers/LineFerryRoutesLayer";
 import PointFerryRoutesLayer from "@/layers/PointFerryRoutesLayer";
 import RegionalAlertLayer, {
   centerFeatures as centerRegionalAlerts,
@@ -79,7 +77,6 @@ import AlertView from "@/components/AlertView.vue";
 import AdView from "@/components/AdView.vue";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import { hasParentClass } from "@/utils/miscUtil";
-import { watch } from "@arcgis/core/core/watchUtils.js";
 
 export default defineComponent({
   components: {
@@ -115,12 +112,16 @@ export default defineComponent({
     const ferryAlerts = ref<FerryAlertInfo[]>([]);
     const config = getConfig();
     alertInfoUtil.initStateAlerts(config.stateAlerts);
-    alertInfoUtil.getStateAlerts().then((result) => {
-      alerts.value = result;
-    });
+    alertInfoUtil
+      .getStateAlerts()
+      .then((result) => {
+        alerts.value = result;
+      })
+      .catch((err) => {
+        store.commit("addServiceAlert", "Statewide alert service is not available.");
+        console.error(err);
+      });
     alertInfoUtil.initFerryAlerts(config.ferryAlerts);
-    // Build the list used by the URL query...
-    // createLayerGroupInfos(config);
     // Zoom popup...
     const zoomPopupVisible = ref(false);
     const zoomPopupLabel = ref("");
@@ -372,7 +373,6 @@ export default defineComponent({
           test.push(layer.title);
         }
       });
-      alert(test.join("\n"));
       Promise.all(vlPromises).then((layerViews) => {
         layerViews.forEach((layerView) => {
           loadedPromises.push(WatchUtils.whenFalseOnce(layerView, "updating"));
@@ -398,10 +398,18 @@ export default defineComponent({
       store.dispatch("watchLayers");
       // Set refresh interval for layers & alerts...
       setInterval(() => {
-        esriMap.refreshLayerData();
-        alertInfoUtil.getStateAlerts().then((result) => {
-          alerts.value = result;
-        });
+        esriMap
+          .refreshLayerData()
+          .then((layerInfos) => store.dispatch("updateLayerStatus", layerInfos));
+        alertInfoUtil
+          .getStateAlerts()
+          .then((result) => {
+            alerts.value = result;
+          })
+          .catch((err) => {
+            store.commit("addServiceAlert", "Statewide alert service is not available.");
+            console.error(err);
+          });
         alertInfoUtil.reloadFerryAlerts();
       }, appConfig.layerRefreshMinute * 60000); //60000
       // Setup events on the operational layers...
@@ -424,7 +432,6 @@ export default defineComponent({
       // Zoom, turn on layer and open popup if specified in URL query parameter...
       const featureType = getFeatureTypeFromUrl(route);
       const featureId = getFeatureIdFromUrl(route);
-      console.log(featureId);
       if (featureType && featureId) {
         // Make sure the map is ready, then search for the feature...
         esriMap.mapView
@@ -592,7 +599,6 @@ export default defineComponent({
     };
     /** Display error message */
     const displayToast = (event: any) => {
-      console.log(event);
       if (event[0] == false) {
         store.dispatch("showError", event[1].toString());
       }

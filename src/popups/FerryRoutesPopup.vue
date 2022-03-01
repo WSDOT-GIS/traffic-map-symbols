@@ -50,34 +50,40 @@ export default defineComponent({
       const setVal = () => {
         getFeatureInfoById(props.Featureset.ids[0], lyr).then((ftr) => {
           if (ftr) {
-            getFerryAlerts(ftr.attributes.FerryRouteID as number).then((alerts) => {
-              if (popupConfig.value.paging) {
-                popupConfig.value.paging.maxPage = alerts.length;
-              }
-              alerts.forEach((each, idx) => {
-                popupConfig.value.content.push({
-                  label: "",
-                  value: {
-                    text: `<div class="popup-page-break" data-page-num="${idx + 1}"></div>
-                    <h4 class="popup-title popup-paging-entry" data-page-num="${idx + 1}">${each.AlertFullTitle
+            getFerryAlerts(ftr.attributes.FerryRouteID as number)
+              .then((alerts) => {
+                if (popupConfig.value.paging) {
+                  popupConfig.value.paging.maxPage = alerts.length;
+                }
+                alerts.forEach((each, idx) => {
+                  popupConfig.value.content.push({
+                    label: "",
+                    value: {
+                      text: `<div class="popup-page-break" data-page-num="${idx + 1}"></div>
+                    <h4 class="popup-title popup-paging-entry" data-page-num="${idx + 1}">${
+                        each.AlertFullTitle
                       }</h4>`,
-                    isHTML: true,
-                  },
+                      isHTML: true,
+                    },
+                  });
+                  popupConfig.value.content.push({
+                    label: "Description",
+                    value: {
+                      text: each.HomepageAlertText,
+                      isHTML: true,
+                    },
+                  });
+                  popupConfig.value.content.push({
+                    label: "Publish Date",
+                    value: { text: formatEpoch(each.PublishDate, true) },
+                  });
                 });
-                popupConfig.value.content.push({
-                  label: "Description",
-                  value: {
-                    text: each.HomepageAlertText,
-                    isHTML: true,
-                  },
-                });
-                popupConfig.value.content.push({
-                  label: "Publish Date",
-                  value: { text: formatEpoch(each.PublishDate, true) },
-                });
+                feature.value = ftr;
+              })
+              .catch((err) => {
+                store.commit("addServiceAlert", "Ferry alert service is not available.");
+                console.error(err);
               });
-              feature.value = ftr;
-            });
           }
         });
       };

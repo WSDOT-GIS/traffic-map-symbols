@@ -18,7 +18,7 @@ import Layer from "@arcgis/core/layers/Layer";
  *   * layerIds 
  *      Popup is opened for the first layer in the layerIds array.
  *   * uniqueField
- *      Unique field that is from the source database. Do not use ESRI ID.
+ *      Unique field that is from the source database. Do not use ESRI ID (i.e. OID).
 */
 const layerGroups: GroupLayerInfo[] = [];
 export const createLayerGroupInfos = (config: AppConfig): void => {
@@ -90,8 +90,8 @@ export const setLayerVisibility = async (layer: Layer, layerInfo: LayerInfo, vis
     else { layer.visible = visible }
     if (visible && layerInfo.status !== LayerStatus.Loaded && layerInfo.isJson() && layerInfo.url) {
         try {
-            await reloadData(layerInfo.url, layer as FeatureLayer);
-            outStatus = LayerStatus.Loaded;
+            const info = await reloadData(layerInfo.url, layer as FeatureLayer);
+            outStatus = info ? info.status : layerInfo.status;
         } catch (ex) {
             outStatus = LayerStatus.Failed;
         }
@@ -136,10 +136,10 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
     const query = fLayer.createQuery();
     const field = fLayer.getField(groupInfo.layers[0].uniqueField);
     query.where = `${groupInfo.layers[0].uniqueField} = `;
-    if(field.type=='string'){
-        if((uniqueValue as string).split("-").length>0&&fLayer.title=="Mountain Pass Reports"){
-            const uniqueValues = (uniqueValue as string).split("-").map((value)=>{
-                if(value=="to"||value=="To"){
+    if (field.type == 'string') {
+        if ((uniqueValue as string).split("-").length > 0 && fLayer.title == "Mountain Pass Reports") {
+            const uniqueValues = (uniqueValue as string).split("-").map((value) => {
+                if (value == "to" || value == "To") {
                     return "to"
                 }
                 else {
@@ -209,39 +209,51 @@ export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: st
     return layer;
 }
 
-export const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
-    const handle = layer.watch("visible", (newValue, oldValue, propName, target) => {
-        const lyr = target as FeatureLayer;
-        if (newValue) {
-            reloadData(jsonUrl, lyr);
-            handle.remove();
-        }
-    });
-}
+// export const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
+//     const handle = layer.watch("visible", (newValue, oldValue, propName, target) => {
+//         const lyr = target as FeatureLayer;
+//         if (newValue) {
+//             reloadData(jsonUrl, lyr);
+//             handle.remove();
+//         }
+//     });
+// }
 // Keep track of what is loading, so prevent loading the same layer at the same time.
-let loadManager: { id: string, promise: Promise<void> }[] = [];
+let loadManager: { id: string, promise: Promise<LayerStatus | undefined> }[] = [];
 
-export const reloadData = async (jsonUrl: string, layer: FeatureLayer | undefined): Promise<void> => {
+export const reloadData = async (jsonUrl: string, layer: FeatureLayer | undefined): Promise<LayerInfo | undefined> => {
     if (!layer) { return; }
-    const reload = async (jsonUrl: string, layer: FeatureLayer): Promise<void> => {
+    const reload = async (jsonUrl: string, layer: FeatureLayer): Promise<LayerStatus | undefined> => {
         if (!layer.visible) { return; }
+        let status: LayerStatus;
         // Fetch all features from JSON...
-        const graphics = await fetchJsonData(jsonUrl);
-        if (graphics.length > 0) {
-            await replaceFeatures(layer, graphics);
+        try {
+            const graphics = await fetchJsonData(jsonUrl);
+            if (graphics.length > 0) {
+                await replaceFeatures(layer, graphics);
+            }
+            status = LayerStatus.Loaded;
+        } catch (ex) {
+            console.error(ex);
+            status = LayerStatus.Failed;
         }
+        return status;
     }
     // Check if the layer is already being loaded currently or not...
     const runningProc = loadManager.find(x => x.id === layer.id);
     if (runningProc) {
         // Loading is in progress already, so wait until that finishes.
         await runningProc.promise;
-    } else {
-        // It is not loading now, so start loading.
-        const promise = reload(jsonUrl, layer);
-        loadManager.push({ id: layer.id, promise: promise });
-        await promise;
-        loadManager = loadManager.filter(x => x.id !== layer.id);
+    }
+    // Start loading.
+    const promise = reload(jsonUrl, layer);
+    loadManager.push({ id: layer.id, promise: promise });
+    const status = await promise;
+    loadManager = loadManager.filter(x => x.id !== layer.id);
+    if (status) {
+        const info = new LayerInfo(layer.id);
+        info.status = status;
+        return info;
     }
 }
 
@@ -255,9 +267,7 @@ export const replaceFeatures = async (layer: FeatureLayer, newFeatures: Graphic[
 }
 
 export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
-    console.debug("...")
     // Fetch all features from JSON...
-    //let json: unknown;
     const json = await fetchJson(jsonUrl);
     if (!isEsriFeatures(json)) {
         throw "Invalid JSON format. It is not ESRI Features JSON."

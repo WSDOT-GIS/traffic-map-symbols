@@ -27,7 +27,6 @@ const formatDateTimePart = (part: number) => {
 
 export const fetchJson = async (url: string, isUnicode?: boolean): Promise<unknown> => {
     const response = await fetch(url, { cache: "no-store" });
-    console.log(response);
     if (response.status < 200 || response.status >= 300) {
         throw new Error(`Fetch failed with code ${response.status}. URL: ${url}`);
     }

@@ -1,8 +1,6 @@
 import WebMap from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
 import Point from "@arcgis/core/geometry/Point";
-// import Polygon from "@arcgis/core/geometry/Polygon";
-// import { geodesicBuffer } from "@arcgis/core/geometry/geometryEngine";
 import { whenTrue } from "@arcgis/core/core/watchUtils";
 import TileLayer from "@arcgis/core/layers/TileLayer";
 import Extent from "@arcgis/core/geometry/Extent";
@@ -12,7 +10,6 @@ import Layer from "@arcgis/core/layers/Layer";
 import Graphic from "@arcgis/core/Graphic";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
-// import { difference } from "@arcgis/core/geometry/geometryEngine";
 import esriConfig from "@arcgis/core/config";
 // Layers
 import * as TrafficLayer from "@/layers/TrafficLayer";
@@ -41,7 +38,6 @@ import * as extentUtil from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
 import FeatureInfo from "@/types/FeatureInfo";
 import { getConfig } from "@/utils/appConfigUtil";
-import firePerimeterFeatureIDs from "@/utils/firePerimeterQuery"
 import { getBasemapInfo } from "@/layers/Basemaps";
 import XY from "@/types/XY";
 import * as layerUtil from "@/utils/layerUtil";
@@ -121,7 +117,7 @@ export const loadOperationalLayers = async (): Promise<LayerInfo[]> => {
     infos.push(FireIncidentsLayer.initLayer(config.fireIncidents));
     const fireIncidentLayer = FireIncidentsLayer.default();
     if (fireIncidentLayer) {
-        const incidentNames = await FireIncidentsLayer.getIncidentNames();//await firePerimeterFeatureIDs(fireIncidentLayer);
+        const incidentNames = await FireIncidentsLayer.getIncidentNames();
         //Needed to filter fire perimeters to just those within the state
         if (incidentNames.length > 0) {
             infos.push(FirePerimetersLayer.initLayer(config.firePerimeters, incidentNames));
@@ -186,7 +182,7 @@ export const isLayer = (layer: Layer | undefined): layer is Layer => {
     return !!layer;
 }
 /** 
- * Load regional alert point and polygon layers separately from the other operation layers. 
+ * Load regional alert point and polygon layers separately from the other operational layers. 
  * Returns layer IDs of the layers that failed to load.
 */
 export const loadRegionalAlert = async (): Promise<LayerInfo[]> => {
@@ -200,20 +196,30 @@ export const loadRegionalAlert = async (): Promise<LayerInfo[]> => {
     if (areaLayer) {
         webmap.add(areaLayer, 0);
     }
-    return [infos.point, infos.polygon];
+    return infos;
 }
 /**
  * Reload data for some layers.
  */
-export const refreshLayerData = async (): Promise<void> => {
+export const refreshLayerData = async (): Promise<LayerInfo[]> => {
     const config = getConfig();
-    RegionalAlertLayer.reloadData(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries);
-    layerUtil.reloadData(config.roadAlerts, RoadAlertsLayer.default())
-    layerUtil.reloadData(config.pointRestrictions, PointRestrictionsLayer.default());
-    layerUtil.reloadData(config.lineRestrictions, LineRestrictionsLayer.default());
-    layerUtil.reloadData(config.mountainPasses, MountainLayer.default());
-    layerUtil.reloadData(config.weatherStations, WeatherLayer.default());
-    layerUtil.reloadData(config.borderCrossings, BorderCrossingsLayer.default());
+    const promises = [];
+    promises.push(RegionalAlertLayer.reloadData(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries));
+    promises.push(layerUtil.reloadData(config.roadAlerts, RoadAlertsLayer.default()));
+    promises.push(layerUtil.reloadData(config.pointRestrictions, PointRestrictionsLayer.default()));
+    promises.push(layerUtil.reloadData(config.lineRestrictions, LineRestrictionsLayer.default()));
+    promises.push(layerUtil.reloadData(config.mountainPasses, MountainLayer.default()));
+    promises.push(layerUtil.reloadData(config.weatherStations, WeatherLayer.default()));
+    promises.push(layerUtil.reloadData(config.borderCrossings, BorderCrossingsLayer.default()));
+    const results = await Promise.all(promises);
+    const infos: LayerInfo[] = [];
+    results.forEach(eachResult => {
+        if (eachResult) {
+            if (Array.isArray(eachResult)) { infos.push(...eachResult); }
+            else if (isLayerInfo(eachResult)) { infos.push(eachResult); }
+        }
+    })
+    return infos;
 };
 
 export const tryZoomToPoint = (point: Point, numLevels?: number): boolean => {

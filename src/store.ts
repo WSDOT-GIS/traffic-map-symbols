@@ -216,6 +216,9 @@ export const store = createStore<State>({
             id: string, title?: string, index?: number, url?: string, visible?: boolean,
             status?: LayerStatus
         }) {
+            // if (payload.id === "ferry-routes-points-layer" && payload.status) {
+            //     console.debug("*** status: " + payload.status);
+            // }
             let info = getLayerInfo(state, payload.id);
             if (!info) {
                 info = new LayerInfo(payload.id);
@@ -263,8 +266,8 @@ export const store = createStore<State>({
         setIsToastReady(state) {
             state.isToastReady = true;
         },
-        addServiceAlert(state, message: string) {
-            addServiceAlert(state, message);
+        addServiceAlert(state, msg: string) {
+            addServiceAlert(state, msg);
         }
 
     },
@@ -328,21 +331,8 @@ export const store = createStore<State>({
                 layerWatchHandles.push(handle);
             })
         },
-        updateLayerStatus({ commit }, payload: { layerIds: string[], status: LayerStatus | string }) {
-            let status: LayerStatus;
-            if (typeof payload.status === "string") {
-                const result = esriStatus2LayerStatus(payload.status);
-                if (result) { status = result; }
-                else {
-                    console.error("Failed to update layer status. Invalid status: " + payload.status);
-                    return;
-                }
-            } else {
-                status = payload.status;
-            }
-            payload.layerIds.forEach((eachId) => {
-                commit("updateLayerInfo", { id: eachId, status: status });
-            });
+        updateLayerStatus({ commit }, payload: LayerInfo[]) {
+            payload.forEach(info => commit("updateLayerInfo", { id: info.id, status: info.status }));
         },
         showError({ state }, message: string) {
             showError(state, message);
@@ -377,17 +367,17 @@ const showError = (state: State, message: string) => {
     else { store.commit("saveError", message); }
 }
 
-const addServiceAlert = (state: State, service: string | LayerInfo) => {
-    let name: string;
+const addServiceAlert = (state: State, alert: string | LayerInfo) => {
     let msg: string;
-    if (service instanceof LayerInfo) {
-        name = service.title ? service.title : service.id;
+    if (alert instanceof LayerInfo) {
+        const name = alert.title ? alert.title : alert.id;
         msg = `The layer, ${name}, failed to load.`;
     } else {
-        name = service;
-        msg = `The service, ${name}, is not available.`;
+        msg = alert;
     }
-    state.serviceAlerts.push(name);
+    if (state.serviceAlerts.findIndex(each => each === msg) < 0) {
+        state.serviceAlerts.push(msg);
+    }
     console.warn(msg);
     // Temporary... TODO: show in banner
     if (state.isToastReady) {

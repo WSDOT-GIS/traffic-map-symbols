@@ -29,7 +29,7 @@ const fields = [
     new Field({
         name: "RestAreaId",
         alias: "RestAreaId",
-        type: "oid"
+        type: "integer" // Do not set this to OID. If do, IDs will be changed by API.
     })
 ]
 
