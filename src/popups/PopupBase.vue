@@ -501,8 +501,10 @@ export default defineComponent({
       }
     };
     /**
-     * Figure out the top and left position of the popup.
-     * NOTE: Make sure to set the relativePosition before calling this.
+     *     Figure out the top and left position of the popup.     * NOTE: Make sure to set the relativePosition before calling this.
+     *
+     * @param height
+     * @param width
      */
     const calcTopLeft = (height: number, width: number): { top: number; left: number } => {
       let newTop = 0;
@@ -525,7 +527,13 @@ export default defineComponent({
       return { top: newTop, left: newLeft };
     };
     /**
-     * Calulate how far map need to be moved so the top of the popup is visible within the map view.
+     *     Calulate how far map need to be moved so the top of the popup is visible within the map view.
+     *
+     * @param topLeft
+     * @param topLeft.top
+     * @param topLeft.left
+     * @param height
+     * @param width
      */
     const calcShiftXY = (
       topLeft: { top: number; left: number },
@@ -566,7 +574,12 @@ export default defineComponent({
       }
       return isComplete;
     };
-    /** This sets the margin top and left of the popup container. */
+    /**
+     * This sets the margin top and left of the popup container.
+     *
+     * @param top
+     * @param left
+     */
     const setPosition = (top?: number, left?: number) => {
       // Adjust vertical position...
       if (top) {
@@ -726,8 +739,10 @@ export default defineComponent({
         }
       }
     };
-    /** If MapX and Y are provided, those values supersede the feature x/y.
-     * Otherwise the feature x/y is used to determine the location of the popup.
+    /**
+     * If MapX and Y are provided, those values supersede the feature x/y.     * Otherwise the feature x/y is used to determine the location of the popup.
+     *
+     * @param ignoreMapXY
      */
     const setMapXY = (ignoreMapXY?: boolean) => {
       if (!ignoreMapXY) {
@@ -745,8 +760,9 @@ export default defineComponent({
       }
     };
     /**
-     * Catch the carousel spicture changes.
-     * @param splide 
+     *     Catch the carousel spicture changes.     * @param splide 
+     *
+     * @param splide
      * @param newIndex 
      */
     const onSplideMoved = (splide: unknown, newIndex: number) => {

@@ -74,6 +74,7 @@ export const getFeatureById = async (eventId: number): Promise<Graphic> => {
 /**
  * Get the center of the visible part of the alert polygon.
  * NOTE: Using polygon-cripping package instead of ESRI to reduce the initial file size.
+ *
  * @param eventId 
  * @param visibleExtent 
  * @returns 

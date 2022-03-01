@@ -137,6 +137,7 @@ export const reloadData = async (alertUrl: string, countyUrl: string, regionUrl:
 }
 /**
  * Fetch alerts from JSON, fetch boundaries from county or region map services, then create graphics.
+ *
  * @param alertUrl 
  * @param countyUrl 
  * @param regionUrl 
@@ -215,8 +216,10 @@ const fetchData = async (alertUrl: string, countyUrl: string, regionUrl: string)
 // let debugCnt = 0;
 /**
  * Center the alert icon in the center of the region that is visible.
+ *
  * @param mapExtent 
  * If specified, it will only consider the visible part of the polygon.
+ * @param visibleExtent
  */
 export const centerFeatures = async (visibleExtent?: Extent): Promise<void> => {
     const layer = getLayer();

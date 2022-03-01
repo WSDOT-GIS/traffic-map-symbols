@@ -19,7 +19,8 @@ Python scripts for updating JSON data used by the map application are in the `ex
 * Install [Node] 16, which is the ["Active LTS" version] as of this writing.
   * Build tools currently not compatible with Node 17 due to an [issue with Vue CLI].
 * Recommended development environment is [Visual Studio Code].
-  * The `.vscode/extensions.json` file is configured with recommended extensions (including Vetur, as recommended by the Vue [tutorial on the VS Code website][Using Vue in Visual Studio Code].) You can view the recommended extensions in the *Extensions* panel (Ctrl + Shift + X).
+  * See [Using Vue with Typescript] for details on how to set up Visual Studio Code for Vue projects.
+  * The `.vscode/extensions.json` file is configured to recommend Visual Studio Code extensions for this project. You can view the recommended extensions in the *Extensions* panel (Ctrl + Shift + X).
 
 ### Setup
 
@@ -47,12 +48,6 @@ When you update the version of [ArcGIS API for JavaScript] used by the project, 
 See [Vue CLI: Browser Compatibility](https://cli.vuejs.org/guide/browser-compatibility.html#browserslist) for details.
 
 The file `.browserslistrc` is a [browserslist] configuration file that tells the build process which browsers to support.
-
-## Resources
-
-* [Using Vue in Visual Studio Code]
-* [Vue.js: TypeScript Support](https://v3.vuejs.org/guide/typescript-support.html)
-  * [Vue CLI: TypeScript](https://cli.vuejs.org/config/#typescript)
 
 ## Serve production build locally using `dotnet serve`
 
@@ -95,6 +90,6 @@ dotnet serve
 [Node]:https://nodejs.org/en/
 [TypeScript]:https://www.typescriptlang.org/
 [Visual Studio Code]:https://code.visualstudio.com/
-[Using Vue in Visual Studio Code]:https://code.visualstudio.com/docs/nodejs/vuejs-tutorial
+[Using Vue with Typescript]:https://vuejs.org/guide/typescript/overview.html
 [Vue]:https://vuejs.org/
 [WSDOT Travel Center Map]:https://wsdot.com/travel/real-time/map/

@@ -45,6 +45,7 @@ export const fetchJson = async (url: string, isUnicode?: boolean): Promise<unkno
 
 /**
  * Determines the media size
+ *
  * @returns s: small, l:large (add more as needed)
  */
 export const getMediaSize = (): "s" | "l" => {

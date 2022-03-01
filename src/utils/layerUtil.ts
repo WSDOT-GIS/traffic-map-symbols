@@ -11,14 +11,15 @@ import GroupLayerInfo from "@/types/GroupLayerInfo";
 import AppConfig from "@/types/AppConfig";
 import { fetchJson } from "@/utils/miscUtil";
 import { isEsriFeatures } from "@/utils/typeUtil";
-/**  Mapping between layer groups (type in URL query param) and layer IDs...
- *   * id
+/**
+ *  Mapping between layer groups (type in URL query param) and layer IDs...
+ *   id
  *      ID for the layer group (type).
- *   * layerIds 
+ *   layerIds 
  *      Popup is opened for the first layer in the layerIds array.
- *   * uniqueField
+ *   uniqueField
  *      Unique field that is from the source database. Do not use ESRI ID.
-*/
+ */
 
 const layerGroups: GroupLayerInfo[] = [];
 export const createLayerGroupInfos = (config: AppConfig): void => {
@@ -79,6 +80,7 @@ export const resizeFeature = (graphic: Graphic): void => {
 /**
  * Set the visibility of the specified layer in the layer list.
  * NOTE: The layer list need to be committed to the state store.
+ *
  * @param layerId 
  * @param visible 
  * @param layerList 
@@ -95,6 +97,7 @@ export const setLayerVisibility = (layerId: string, visible: boolean, layerList:
 }
 /**
  * Get a feature from the layer group.
+ *
  * @param uniqueValue 
  * Value from the unique field specified in the layerGroups.
  * @param groupId 

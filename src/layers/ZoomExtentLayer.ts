@@ -17,6 +17,8 @@ const renderer = new SimpleRenderer({
     })
 });
 
+// TODO: Use 3857 instead of deprecated 102100 wkid.
+
 const graphics = [
     // Seattle Metro...
     {
@@ -149,7 +151,9 @@ export const getFeatureById = async (id: number): Promise<Graphic> => {
 /**
  * Get the extent feature by name.
  * Note: Case insenstive
+ *
  * @param name Name of the extent area
+ * @returns Returns the extent feature (graphic).
  */
 export const getFeatureByName = async (name: string): Promise<Graphic> => {
     const query = layer.createQuery();
@@ -165,7 +169,9 @@ export const getFeatureByName = async (name: string): Promise<Graphic> => {
 /**
  * Check to make sure the name is valid. 
  * NOTE: Case insensitive
+ *
  * @param name Name of the extent area
+ * @returns Returns true if the name is valid, false otherwise.
  */
 export const validateName = (name: string): boolean => {
     const result = graphics.find((item) => {

@@ -125,6 +125,10 @@ export default defineComponent({
             fetch(config.forecastExtendedAPI + featureNWSZoneId + "/").then((result) => {
               if(result.status==200){
                 result.json().then((response) => {
+                  /**
+                   * @param a
+                   * @param b
+                   */
                   function mycomparator(a:any,b:any) {
                     return parseInt(a.forecastNumber, 10) - parseInt(b.forecastNumber, 10);
                   }

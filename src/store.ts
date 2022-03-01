@@ -147,6 +147,7 @@ export const store = createStore<State>({
 })
 /**
  * Clone the target of proxy (i.e. removing the reactivity)
+ *
  * @param proxy The reactive object
  * @returns Non-reactive copy of the object
  */
@@ -157,7 +158,7 @@ export const cloneProxyTarget = <T>(proxy: T): T => {
 
 /**
  * define custom useStore that supply key so do not have to do this in each component...
- * */
+ */
 export const useStore = (): Store<State> => {
     return baseUseStore(key);
 }

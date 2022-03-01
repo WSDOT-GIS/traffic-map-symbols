@@ -122,7 +122,12 @@ Returns IDs of each feature if one of the following coditions is met:
 - The number of features is less than the maxCount.
 - All the features are at the identical location.
 Otherwise returns extent of all features.
-*/
+ *
+ * @param clusterGraphic
+ * @param layer
+ * @param mapView
+ * @param maxCount
+ */
 export const getIdsFromCluster = async (clusterGraphic: Graphic, layer: FeatureLayer, mapView: MapView, maxCount?: number): Promise<number[] | Extent> => {
     const layerView = await mapView.whenLayerView(layer);
     const query = layerView.createQuery();

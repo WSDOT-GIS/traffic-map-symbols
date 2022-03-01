@@ -63,6 +63,7 @@ import { RouteLocationNormalizedLoaded } from "vue-router";
 
 const queryStringKeys = ["extent", "namedextent", "base", "layer", "featuretype", "featureid"];
 // Read the URL query parameters...
+/** Current URL search parameters (aka, query string parameters). (window.location.search) */
 const params = new URLSearchParams(window.location.search);
 /**
  * Update query string in the URL.
@@ -172,7 +173,9 @@ export const setVisibleLayersFromUrl = (layerList: LayerInfo[], route: RouteLoca
 }
 /**
  * Check to make sure the ID is valid.
- * @param groupId Layer group ID
+ *
+ * @param name the name of a layer
+ * @returns Returns true if valid, false otherwise.
  */
 export const validateLayerName = (name: string): boolean => {
     let ids: string[] | undefined;
@@ -187,7 +190,10 @@ export const validateLayerName = (name: string): boolean => {
     else { return false; }
 }
 /**
- * Get feature ID.
+ * Get feature ID from a URL.
+ *
+ * @param route Route URL
+ * @returns Returns a feature ID string if one was found, null otherwise.
  */
 export const getFeatureIdFromUrl = (route: RouteLocationNormalizedLoaded): string | null => {
     let id: string | null;
@@ -201,7 +207,11 @@ export const getFeatureIdFromUrl = (route: RouteLocationNormalizedLoaded): strin
     return id;
 }
 /** 
- * Get feature type. 
+ * Get feature type based on the URL. 
+ *
+ * @param route Vue route object
+ * @returns Returns a feature type string if one can be determined from the URL. 
+ * Otherwise, returns null.
  */
 export const getFeatureTypeFromUrl = (route: RouteLocationNormalizedLoaded): string | null => {
     let type: string | null;
@@ -214,7 +224,9 @@ export const getFeatureTypeFromUrl = (route: RouteLocationNormalizedLoaded): str
     return type;
 }
 /**
- * Get feature type from the query string.
+ * Get feature type from the current browser URL search string.
+ *
+ * @returns returns the feature type if availabe, null otherwise.
  */
 const getFeatureTypeFromQuery = (): string | null => {
     let type: string | null = null;
@@ -233,9 +245,13 @@ const getFeatureTypeFromQuery = (): string | null => {
     }
     return type;
 }
-/**  Assign extent if it is specified.
-     Check namedextent property first, then check the extent property, if nothing or invalid, return full state.
-*/
+/**
+ * Assign extent if it is specified.
+ * Check namedextent property first, then check the extent property, if nothing or invalid, return full state.
+ *
+ * @param route Vue route URL object.
+ * @returns Returns the extent specified in the URL if available, or "full" if not specified or invalid.
+ */
 export const getExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Promise<Extent> => {
     let extent = await getNamedExtentFromUrl(route);
     if (!extent) {
@@ -281,6 +297,7 @@ export const getExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Pr
 /**
  * Get extent by name
  * Support route (area\<name>) and query parameter (?namedextent=<name>)
+ *
  * @param route 
  */
 const getNamedExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Promise<Extent | undefined> => {

@@ -54,9 +54,11 @@ export const convert2ExtentInfo = (extent: Extent): ExtentInfo => {
 };
 /**
  * Figure out the relative direction from the full extent.
+ *
  * @param mapXY 
  * Location to compare against the full extent.
- * @returns 
+ * @param extent An extent. If omitted, "full" extent is assumed.
+ * @returns A two character string that matches /[ins][iwe]/
  * First char: vertical direction = i/n/s (inside/north/south)
  * Second char: horizontal direction = i/w/e (inside/west/east)
  */

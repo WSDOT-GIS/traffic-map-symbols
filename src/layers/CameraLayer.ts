@@ -83,7 +83,10 @@ const getLayer = (): FeatureLayer => {
 
 export default getLayer
 
-/*** Helper functions **************/
+/**
+ * @param newScale
+ * @param oldScale
+ */
 // Watch scale change...
 export const toggleCluster = (newScale: number, oldScale: number): void => {
     if (!layer) { return }

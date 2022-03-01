@@ -163,10 +163,11 @@ export const tryZoomToPoint = (point: Point, numLevels?: number): boolean => {
 }
 /**
  * Zoom centered at the specified location
+ *
  * @param point The center location
  * @param zoomLevel The zoom level to zoom into.
  * If numLevels is also specified, that will take precedence over this value.
- * @returns 
+ * @returns A boolean promise indicating of the zoom sucessfully occured.
  */
 export const tryZoomToPointAsync = async (point: Point, zoomLevel: number): Promise<boolean> => {
     let isSuccess = true;
@@ -237,16 +238,29 @@ export const getMaxScale = (): number => {
         return maxScale;
     }
 }
+
+/**
+ * A zoom level and scale
+ */
+interface ZoomLevel {
+    /** zoom level */
+    level: number,
+    /** zoom scale */
+    scale: number
+}
+
 /** Zoom levels and corresponding scales */
-let zoomLevels: { level: number, scale: number }[];
+let zoomLevels: ZoomLevel[];
 /**
  * Get the scale by the number levels from the minimum scale.
+ *
  * @param numLevelsFromMin Number of levels from the minimum scale. 
  * For example, 0 is the min scale. 3 is the fourth level from the min scale.
  * You can also specify number of levels from the maximum scale by using the negative value.
  * For example -1 is the max scale. -2 is the second level from the max scale.
+ * @returns Zoom level information
  */
-export const getZoomLevel = (numLevelsFromMin: number): { level: number, scale: number } => {
+export const getZoomLevel = (numLevelsFromMin: number): ZoomLevel => {
     if (!zoomLevels) {
         const info = getBasemapInfo("wsdot");
         const lyr = info.basemap.baseLayers.getItemAt(0);
@@ -279,6 +293,7 @@ export const toPoint = (mapX: number, mapY: number): Point => {
 }
 /**
  * Check the new extent after panning against the max extent allowed and report the direction from the extent.
+ *
  * @param shiftX 
  * @param shiftY 
  * @returns
@@ -298,6 +313,7 @@ export const checkPannedExtent = (shiftX: number, shiftY: number): string => {
 }
 /**
  * Pan Map using GoTo()
+ *
  * @param shiftX 
  * positive = pan east, negative = pan west
  * @param shiftY
@@ -354,11 +370,16 @@ export const getLayers = (): Collection<Layer> => {
     return webmap.layers;
 }
 /**  
-NOTE: This function only returns each feature if one of the following coditions is met:
-- maxCount is not set 
-- The number of features is less than the maxCount.
-- All the features are at the identical location.
-*/
+ * NOTE: This function only returns each feature if one of the following coditions is met:
+ * - maxCount is not set  * 
+ * - The number of features is less than the maxCount.
+ * - All the features are at the identical location.
+ *
+ * @param clusterGraphic
+ * @param layer
+ * @param maxCount
+ * @returns An array of IDs or undefined
+ */
 export const getIdsFromCluster = async (clusterGraphic: Graphic, layer: Layer, maxCount?: number): Promise<number[] | undefined> => {
     const lyr = layer as FeatureLayer;
     if (!lyr) {

@@ -82,6 +82,7 @@ let priorityLayer: FeatureLayer | undefined;
 let closureLayer: FeatureLayer | undefined;
 /**
  * Initialize two road alert layers.
+ *
  * @param url 
  * Specify this if data should be loaded at start up. Otherwise not necessary.
  * @returns 
@@ -96,7 +97,7 @@ let closureLayer: FeatureLayer | undefined;
     return layer;
 }
 //**This happens here instead of in the layerutils because of the source distinciton. TODO: fix this**
-/** This is fixed now? **/
+/** This is fixed now? */
 // const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
 //     layer.watch("visible", (newValue) => {
 //         if (newValue) {
