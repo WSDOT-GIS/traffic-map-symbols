@@ -19,9 +19,6 @@ const renderer = new SimpleRenderer({
 });
 
 const fields = [
-    // new Field({
-    //     name: "AppGenId", type: "oid", alias: "AppGenId"
-    // }),
     new Field({
         name: "EventID",
         alias: "EventID",

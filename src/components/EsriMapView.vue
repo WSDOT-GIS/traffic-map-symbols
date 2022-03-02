@@ -53,6 +53,7 @@ import BorderCrossingLayer from "@/layers/BorderCrossingsLayer";
 import PointFerryRoutesLayer from "@/layers/PointFerryRoutesLayer";
 import RegionalAlertLayer, {
   centerFeatures as centerRegionalAlerts,
+  layerId as regionalAlertLayerId,
 } from "@/layers/RegionalAlertLayer";
 /* Popups */
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
@@ -566,7 +567,11 @@ export default defineComponent({
         if (!newValue) {
           return;
         }
-        centerRegionalAlerts(esriMap.mapView.extent);
+        // Center the regional alert icon inside the visible area.
+        // Except when the regional alert popup is open.
+        if (popupFeatureset.value.layerId !== regionalAlertLayerId) {
+          centerRegionalAlerts(esriMap.mapView.extent);
+        }
       });
     });
     //
@@ -623,6 +628,7 @@ export default defineComponent({
       adjustBottomControls,
       marginBottomContainer,
       displayToast,
+      closePopup,
     };
   },
 });
@@ -674,7 +680,7 @@ export default defineComponent({
   <RoadAlertPopup :Featureset="popupFeatureset" />
   <WildfirePointsPopup :Featureset="popupFeatureset" />
   <BorderCrossingPopup :Featureset="popupFeatureset" />
-  <RegionalAlertPopup :Featureset="popupFeatureset" />
+  <RegionalAlertPopup :Featureset="popupFeatureset" @close="closePopup" />
   <FerryRoutesPopup :Featureset="popupFeatureset" :Alerts="ferryAlerts" />
   <LeftPaneView />
 </template>

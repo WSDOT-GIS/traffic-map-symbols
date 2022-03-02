@@ -1,7 +1,7 @@
 <script lang="ts">
 import { computed, defineComponent, nextTick, onUpdated, PropType, ref, toRefs, watch } from "vue";
-import { Splide, SplideSlide } from '@splidejs/vue-splide';
-import '@splidejs/splide/dist/css/themes/splide-default.min.css';
+import { Splide, SplideSlide } from "@splidejs/vue-splide";
+import "@splidejs/splide/dist/css/themes/splide-default.min.css";
 import { useStore } from "@/store";
 import {
   mapView,
@@ -22,6 +22,7 @@ import { hasParentClass, hasParent } from "@/utils/miscUtil";
 
 export default defineComponent({
   components: { PopupRow, Splide, SplideSlide },
+  emits: ["close", "idxUpdate"],
   props: {
     // MapX & Y are only required to supersede the feature x/y.
     MapXY: {
@@ -50,19 +51,19 @@ export default defineComponent({
     },
     LayerId: {
       type: String,
-      required: true
+      required: true,
     },
     Features: {
       type: Array as PropType<Array<FeatureInfo>>,
       required: true,
     },
-    TravelDelay: {
-      type: Number,
-      required: false,
-    },
     Config: {
       type: Object as PropType<PopupConfig>,
       required: true,
+    },
+    TravelDelay: {
+      type: Number,
+      required: false,
     },
     WeatherForecast: {
       type: Object as PropType<ForecastListInfo>,
@@ -70,21 +71,24 @@ export default defineComponent({
     },
     weatherForecastLoaded: {
       type: String,
-      required: false
-    }
+      required: false,
+    },
   },
   setup(props, context) {
     // The DOM only exists while the visibility is true. Get it in onUpdate().
     //#region weather forecast loading setup
-    const propWeatherForecast = ref<ForecastListInfo>()
-    propWeatherForecast.value = undefined
-    const weatherForecastsLoaded = computed(() => { return props.weatherForecastLoaded })
+    const propWeatherForecast = ref<ForecastListInfo>();
+    propWeatherForecast.value = undefined;
+    const weatherForecastsLoaded = computed(() => {
+      return props.weatherForecastLoaded;
+    });
     //#endregion
 
     //#region image loading setup
     const cameraImageLoading = ref<boolean>();
-    if (props.Config.imageFieldName) {//if the layer is the cameras layer
-      cameraImageLoading.value = true
+    if (props.Config.imageFieldName) {
+      //if the layer is the cameras layer
+      cameraImageLoading.value = true;
     }
     //#endregion
 
@@ -168,7 +172,7 @@ export default defineComponent({
       doPanMap = true;
       isPanning = false;
       if (props.Config.imageFieldName) {
-        cameraImageLoading.value = true
+        cameraImageLoading.value = true;
       }
     });
     // Picture carousel CSS variables.
@@ -177,9 +181,9 @@ export default defineComponent({
         "--dark-theme-color": props.DarkThemeColor,
         "--light-theme-color": props.LightThemeColor,
         "--splide-arrow-visibility": props.Features.length > 1 ? "visible" : "hidden",
-        "--splide-page-display": props.Features.length > 1 ? "block" : "none"
-      }
-    })
+        "--splide-page-display": props.Features.length > 1 ? "block" : "none",
+      };
+    });
 
     const onClickAway = (event: PointerEvent | TouchEvent) => {
       const target = event.target as HTMLElement;
@@ -190,7 +194,11 @@ export default defineComponent({
           /* On Desktop
              - If user clicks on something other than the map (e.g. TOC, header, ...), then close the popup.
              - If user clicks on map, then do not do anything here. */
-          if (event.type === "click" && !hasParentClass(target, "esri-view-surface") && target.id !== "map-container") {
+          if (
+            event.type === "click" &&
+            !hasParentClass(target, "esri-view-surface") &&
+            target.id !== "map-container"
+          ) {
             close();
           } else if (event.type === "touchstart") {
             // Touch event is handled here...
@@ -219,8 +227,9 @@ export default defineComponent({
     watch([mapX, mapY], () => {
       setScreenXY();
     });
+    // Different feature is selected...
     watch(currentIdx, () => {
-      propWeatherForecast.value = undefined//clear previous forecasts from last opened popup
+      propWeatherForecast.value = undefined; //clear previous forecasts from last opened popup
       setWeatherForecast();
       context.emit("idxUpdate", currentIdx.value);
       setBadgeText();
@@ -265,7 +274,7 @@ export default defineComponent({
     // Image load happens later and change the size of the popup, so need to make adjustment after that...
     const onImgLoad = () => {
       numImgLoaded = numImgLoaded + 1;
-      cameraImageLoadComplete()
+      isImageLoadComplete();
       adjustPositionSize();
     };
     // Adjust position after the container DIV is available...
@@ -373,11 +382,6 @@ export default defineComponent({
         return;
       }
       if (isPanning) return;
-      // Wait for everything to load, then adjust.
-      /*if (!cameraImageLoadComplete()) {
-        // Not everything is loaded yet.
-        return;
-      }*/
       if (!props.Features || props.Features.length === 0 || !props.Features[0]) {
         // Nothing to show...
         return;
@@ -501,7 +505,8 @@ export default defineComponent({
       }
     };
     /**
-     *     Figure out the top and left position of the popup.     * NOTE: Make sure to set the relativePosition before calling this.
+     * Figure out the top and left position of the popup.
+     * NOTE: Make sure to set the relativePosition before calling this.
      *
      * @param height
      * @param width
@@ -527,7 +532,7 @@ export default defineComponent({
       return { top: newTop, left: newLeft };
     };
     /**
-     *     Calulate how far map need to be moved so the top of the popup is visible within the map view.
+     * Calulate how far map need to be moved so the top of the popup is visible within the map view.
      *
      * @param topLeft
      * @param topLeft.top
@@ -562,7 +567,8 @@ export default defineComponent({
     /**
      * Figure out if everything is loaded or not.
      */
-    const cameraImageLoadComplete = (): boolean => {//check if the loading is complete after each image loads
+    const isImageLoadComplete = (): boolean => {
+      //check if the loading is complete after each image loads
       let isComplete: boolean;
       if (props.Config.imageFieldName) {
         isComplete = numImgLoaded >= props.Features.length;
@@ -740,7 +746,8 @@ export default defineComponent({
       }
     };
     /**
-     * If MapX and Y are provided, those values supersede the feature x/y.     * Otherwise the feature x/y is used to determine the location of the popup.
+     * If MapX and Y are provided, those values supersede the feature x/y.
+     * Otherwise the feature x/y is used to determine the location of the popup.
      *
      * @param ignoreMapXY
      */
@@ -760,14 +767,16 @@ export default defineComponent({
       }
     };
     /**
-     *     Catch the carousel spicture changes.     * @param splide 
+     *
+     Catch the carousel spicture changes.
+     * @param splide 
      *
      * @param splide
      * @param newIndex 
      */
     const onSplideMoved = (splide: unknown, newIndex: number) => {
       currentIdx.value = newIndex;
-    }
+    };
 
     return {
       modalContainerRef,
@@ -796,10 +805,10 @@ export default defineComponent({
       currentPage,
       onClickAway,
       cameraImageLoading,
-      cameraImageLoadComplete,
+      isImageLoadComplete,
       weatherForecastsLoaded,
       onSplideMoved,
-      splideStyles
+      splideStyles,
     };
   },
 });
@@ -848,23 +857,25 @@ export default defineComponent({
               borderColor: badgeDarkColor,
               color: badgeTextColor,
             }"
-          >{{ badgeText }}</div>
-          <div
-            v-if="Config.paging && Config.paging.maxPage > 1"
-            class="popup-page-tracker"
-          >{{ currentPage }} of {{ Config.paging.maxPage }}</div>
+          >
+            {{ badgeText }}
+          </div>
+          <div v-if="Config.paging && Config.paging.maxPage > 1" class="popup-page-tracker">
+            {{ currentPage }} of {{ Config.paging.maxPage }}
+          </div>
         </div>
-        <button class="popup-close-button w3-button w3-display-topright" @click="close">&times;</button>
+        <button class="popup-close-button w3-button w3-display-topright" @click="close">
+          &times;
+        </button>
         <!-- Content (below the header) container -->
         <div
           :style="{ maxHeight: maxHeight + 'px' }"
           class="popup-content-container"
           ref="contentContainerRef"
         >
-          <h4
-            v-if="Config.title && !Config.title.isHTML"
-            class="popup-title w3-container"
-          >{{ getTitle() }}</h4>
+          <h4 v-if="Config.title && !Config.title.isHTML" class="popup-title w3-container">
+            {{ getTitle() }}
+          </h4>
           <h4
             v-if="Config.title && Config.title.isHTML"
             v-html="getTitle()"
@@ -876,7 +887,7 @@ export default defineComponent({
           <div v-if="weatherForecastsLoaded == 'false'" class="w3-container loadingSpinnerDiv">
             <img class="loadingSpinner" src="@/assets/loadingSpinner.gif" />
             <label>Forecast loading...</label>
-            <label>{{ }}</label>
+            <label>{{}}</label>
           </div>
           <div v-if="weatherForecastsLoaded == 'true'">
             <div class="popup-content w3-container">
@@ -887,7 +898,9 @@ export default defineComponent({
                 <td
                   v-for="eachFeature in propWeatherForecast.forecasts"
                   :key="eachFeature.forecastNumber"
-                >{{ eachFeature.periodText }}</td>
+                >
+                  {{ eachFeature.periodText }}
+                </td>
               </tr>
               <tr id="weatherForecastIcons">
                 <td
@@ -908,14 +921,16 @@ export default defineComponent({
                   ref="forecastDivs"
                   v-for="eachFeature in propWeatherForecast.forecasts"
                   :key="eachFeature.forecastNumber"
-                >{{ eachFeature.weatherDescription }}</td>
+                >
+                  {{ eachFeature.weatherDescription }}
+                </td>
               </tr>
             </table>
           </div>
           <div
             v-show="cameraImageLoading && Config.imageFieldName"
             class="w3-container loadingSpinnerDiv"
-            :style="cameraImageLoading ? display = 'block' : display = 'none'"
+            :style="cameraImageLoading ? (display = 'block') : (display = 'none')"
           >
             <img class="loadingSpinner" src="@/assets/loadingSpinner.gif" />
             <label>Camera images loading...</label>
@@ -923,11 +938,12 @@ export default defineComponent({
           <div v-show="!cameraImageLoading && Config.imageFieldName">
             <Splide
               :options="{
-                type: 'loop', pagination: true,
+                type: 'loop',
+                pagination: true,
                 classes: {
                   arrow: 'splide__arrow splide-arrow',
-                  page: 'splide__pagination__page splide-pagination'
-                }
+                  page: 'splide__pagination__page splide-pagination',
+                },
               }"
               @splide:moved="onSplideMoved"
               :style="splideStyles"
@@ -945,10 +961,9 @@ export default defineComponent({
               </SplideSlide>
             </Splide>
           </div>
-          <div
-            class="travelDelayTime"
-            v-if="propTravelDelay && propTravelDelay > 0"
-          >{{ `${propTravelDelay} minute delay` }}</div>
+          <div class="travelDelayTime" v-if="propTravelDelay && propTravelDelay > 0">
+            {{ `${propTravelDelay} minute delay` }}
+          </div>
           <div
             v-for="eachConfig in Config.content"
             :key="eachConfig.label"
@@ -960,7 +975,9 @@ export default defineComponent({
             <div
               v-if="Config.moreInfoURL.text && Config.moreInfoURL.text !== ''"
               class="popup-content w3-container"
-            >{{ getMoreInfoURL() }}</div>
+            >
+              {{ getMoreInfoURL() }}
+            </div>
             <div v-if="Config.moreInfoURL.custom" class="popup-content w3-container">
               <div v-html="getMoreInfoURL()"></div>
             </div>
@@ -1193,7 +1210,6 @@ export default defineComponent({
   margin: 0px 0px 5px 16px;
 }
 </style>
-
 
 <style>
 /* The hidden pixel to indicate the vertical page breaks. */

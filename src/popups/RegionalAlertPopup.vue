@@ -9,17 +9,18 @@ import FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
 import { getLayer } from "@/esri-stuff/esriMap";
 import { useStore } from "@/store";
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 export default defineComponent({
   components: { PopupBase },
+  emits: ["close"],
   props: {
     Featureset: {
       type: Object as PropType<FeaturesetInfo>,
       required: true,
     },
   },
-  setup(props) {
+  setup(props, context) {
     const layerId = "regional-alert-layer";
     const store = useStore();
     const feature = ref<FeatureInfo>();
@@ -77,9 +78,13 @@ export default defineComponent({
       );
     };
     // Setting features to undefined closes the popup...
-    const close = () => {
+    const close = (doNotify?: boolean) => {
       feature.value = undefined;
       esriHandles.removeAll();
+      // Let EsriMapView component know the popup is closed, so it won't show the popup again when the icon is moved.
+      if (doNotify) {
+        context.emit("close");
+      }
     };
     const getExtendedMessage = (feature: FeatureInfo): string => {
       let html = "";
@@ -89,10 +94,10 @@ export default defineComponent({
           <div>
             ${feature.attributes["ExtendedMessage"]}
           </div>
-        <br>`
+        <br>`;
       }
       return html;
-    }
+    };
     const getTitle = (feature: FeatureInfo): string => {
       return (
         feature.attributes["EventCategoryTypeDescription"] +
@@ -108,7 +113,7 @@ export default defineComponent({
       layerIcons,
       close,
       getTitle,
-      getExtendedMessage
+      getExtendedMessage,
     };
   },
 });
@@ -131,8 +136,8 @@ export default defineComponent({
           label: '',
           value: {
             custom: getExtendedMessage,
-            isHTML: true
-          }
+            isHTML: true,
+          },
         },
         {
           label: 'Last Updated',
@@ -144,7 +149,6 @@ export default defineComponent({
         },
       ],
     }"
-    @close="close"
+    @close="close(true)"
   ></PopupBase>
 </template>
-
