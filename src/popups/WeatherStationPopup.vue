@@ -11,7 +11,11 @@ import MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
 import { getLayer } from "@/esri-stuff/esriMap";
 import { useStore } from "@/store";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-
+import * as projection from "@arcgis/core/geometry/projection";
+import SpatialReference from "@arcgis/core/geometry/SpatialReference";
+import * as webMercatorUtils from "@arcgis/core/geometry/support/webMercatorUtils";
+import Geometry from "@arcgis/core/geometry/Geometry";
+import Point from "@arcgis/core/geometry/Point";
 export default defineComponent({
   components: { PopupBase },
   props: {
@@ -26,6 +30,7 @@ export default defineComponent({
     const feature = ref<FeatureInfo>();
     const layerIcons = layerListIcons;
     const forecastList = ref<ForecastListInfo>();
+    const subtitleRef = ref<string>("fetching location...")
     const forecastsLoaded = ref<string>("false");
     watch(props, () => {
       if (props.Featureset.layerId === layerId) {
@@ -119,6 +124,13 @@ export default defineComponent({
         const desc = feature.attributes["WeatherStationDescription"]?.toString().split(" on ")[1];
         if (desc) {
           text = "on " + desc;
+        }
+        else{
+          const webmerccoords = webMercatorUtils.xyToLngLat(
+            feature.mapPoint.x,
+            feature.mapPoint.y
+          )
+          text =`${webmerccoords[1].toFixed(6)}, ${webmerccoords[0].toFixed(6)}`
         }
       }
       return text;
