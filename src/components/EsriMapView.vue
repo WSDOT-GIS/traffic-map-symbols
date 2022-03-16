@@ -78,7 +78,7 @@ import AlertView from "@/components/AlertView.vue";
 import AdView from "@/components/AdView.vue";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import { hasParentClass } from "@/utils/miscUtil";
-
+import WarningBannerViewVue from "@/components/WarningBannerView.vue";
 export default defineComponent({
   components: {
     ZoomPopupView,
@@ -100,6 +100,7 @@ export default defineComponent({
     ZoomButtonView,
     AlertView,
     AdView,
+    WarningBannerViewVue
   },
   setup() {
     const mapLoaded = ref<boolean>(false);
@@ -683,6 +684,7 @@ export default defineComponent({
   <RegionalAlertPopup :Featureset="popupFeatureset" @close="closePopup" />
   <FerryRoutesPopup :Featureset="popupFeatureset" :Alerts="ferryAlerts" />
   <LeftPaneView />
+  <WarningBannerViewVue/>
 </template>
 
 <style scoped>

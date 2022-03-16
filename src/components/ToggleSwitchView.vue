@@ -19,7 +19,6 @@ import { defineComponent } from "vue";
 import Analytics from 'analytics';
 import googleAnalytics from '@analytics/google-analytics';
 import { getConfig } from "@/utils/appConfigUtil";
-
 export default defineComponent({
   props: {
     Checked: {
