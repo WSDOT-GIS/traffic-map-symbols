@@ -1,15 +1,16 @@
 <template>
-  <div v-if="!isHidden" v-on:click="isHidden = !isHidden" id="warningBannerDiv">
-    <div id="warningBannerSymbol">
-      <button id="closeWarningBannerButton">
-        !
-      </button>
+  <transition name="fade">
+    <div v-if="!isHidden" v-on:click="isHidden = !isHidden" id="warningBannerDiv">
+      <div id="warningBannerSymbol">
+        <button id="closeWarningBannerButton">
+          !
+        </button>
+      </div>
+      <div id="warningBannerErrorLabel">
+        {{`Failed to load layers: ${serviceAlerts}`}}
+      </div>
     </div>
-    <div id="warningBannerErrorLabel">
-      {{`Failed to load layers: ${serviceAlerts}`}}
-    </div>
-    
-  </div>
+  </transition>
 </template>
 <script lang="ts">
 import { computed, defineComponent, onUpdated, PropType, ref, watch } from "vue";
@@ -30,6 +31,16 @@ export default defineComponent({
 });
 </script>
 <style scoped>
+.fade-enter-active {
+  transition: all .3s ease;
+}
+.fade-leave-active {
+  transition: all .3s 
+}
+.fade-enter, .fade-leave-to
+/* .slide-fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
 #warningBannerDiv{
     background-color: #FFFAEC;
     border: 1pt solid ;
