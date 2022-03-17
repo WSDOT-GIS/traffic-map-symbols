@@ -53,7 +53,6 @@ import { project } from "@arcgis/core/geometry/projection";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Extent from "@arcgis/core/geometry/Extent";
 
-import LayerInfo from "@/types/LayerInfo";
 import { getEsriExtent } from "./extentUtil";
 import { getBasemapInfo } from "@/layers/Basemaps";
 import BasemapInfo from "@/types/BasemapInfo";
@@ -102,9 +101,8 @@ if (removeKeys.length > 0) {
 /**
  * Get layer IDs of layers that should be visible from URL
  *
- * @param layerList 
- * @param route
- * @route
+ * @param route URL routing
+ * @returns object of visible and invisible layer ID arrays 
  */
 export const getLayerVisibilityFromUrl = (route: RouteLocationNormalizedLoaded): { visible: string[], invisible: string[] } => {
     let layers: string[] | undefined;
@@ -161,12 +159,7 @@ export const getLayerVisibilityFromUrl = (route: RouteLocationNormalizedLoaded):
         });
         // Do not show alert layers...
         if (hideDefaultLyrs && !layers.includes("alert")) {
-            hideLayerIds.push('road-alerts-layer', 'road-closures-layer', 'ferry-routes-points-layer');
-            // const lyrs2Hide = ['road-alerts-layer', 'road-closures-layer', 'ferry-routes-points-layer'];
-            // lyrs2Hide.forEach((hideId) => {
-            //     const info = layerList.find((lyr) => lyr.id === hideId);
-            //     if (info) { info.visible = false; }
-            // })
+            hideLayerIds.push(...getLayerIds("alert"));//'road-alerts-layer', 'road-closures-layer', 'ferry-routes-points-layer');
         }
     }
     return { visible: layerIds, invisible: hideLayerIds };

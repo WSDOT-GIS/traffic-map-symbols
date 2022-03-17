@@ -6,7 +6,10 @@ export const layerId = "mile-markers";
 const layerTitle = "Mile Markers";
 
 /**
+ * Initialize the layer
+ * 
  * @param url
+ * @returns LayerInfo
  */
 export const initLayer = (url: string): LayerInfo => {
     const layerInfo = new LayerInfo(layerId, layerTitle, url);

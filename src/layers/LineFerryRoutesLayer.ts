@@ -30,7 +30,7 @@ export const initLayer = async (url: string): Promise<LayerInfo> => {
         layer = new FeatureLayer({
             id: layerId,
             url: url,
-            title: layerTitle,//"ferryRoutes",
+            title: layerTitle,
             renderer: renderer,
             visible: false,
             labelsVisible: false,
