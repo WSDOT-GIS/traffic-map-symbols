@@ -17,6 +17,7 @@ const layerTitle = "Fire Perimeters";
 export const initLayer = (url: string, incidentNames: string[]): LayerInfo => {
     const layerInfo = new LayerInfo(layerId, layerTitle, url);
     const queryString = "IncidentName IN('" + incidentNames.join("','") + "')";
+    console.log(queryString);
     try {
         layer = new FeatureLayer({
             id: layerId,

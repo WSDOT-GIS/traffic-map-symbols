@@ -54,12 +54,15 @@ export const layerId = "mountain-passes-layer";
 const layerTitle = "Mountain Pass Reports";
 
 /**
- * @param jsonUrl
+ * Initialize a layer
+ * 
+ * @param jsonUrl JSON URL
+ * @returns Promise<LayerInfo>
  */
 export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
     try {
-        layer = await layerUtil.initLayer(jsonUrl, layerId, layerTitle,
+        layer = await layerUtil.initLayer(layerId, layerTitle,
             renderer, fields, "point", false);
     }
     catch (ex) {

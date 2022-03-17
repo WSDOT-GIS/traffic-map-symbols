@@ -81,7 +81,10 @@ const layerTitle = "Road Alerts";
 let layer: FeatureLayer | undefined;
 
 /**
- * @param jsonUrl
+ * Initialize a layer
+ * 
+ * @param jsonUrl JSON URL
+ * @returns LayerInfo
  */
 export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
@@ -97,7 +100,7 @@ export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     }
 
     try {
-        layer = await layerUtil.initLayer(jsonUrl, layerId, layerTitle, renderer, fields, "point", true, graphics);
+        layer = await layerUtil.initLayer(layerId, layerTitle, renderer, fields, "point", true, graphics);
         layer.orderBy = [{
             field: "TravelCenterPriorityId",
             order: "ascending"

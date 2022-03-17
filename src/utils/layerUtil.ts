@@ -197,26 +197,24 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
 }
 
 /**
- * @param jsonUrl
- * @param layerId
- * @param layerTitle
- * @param renderer
- * @param fields
- * @param geometryType
- * @param visible
- * @param graphics
+ * Initialize a feature layer
+ * 
+ * @param layerId Layer ID
+ * @param layerTitle Title
+ * @param renderer Renderer
+ * @param fields Array of field
+ * @param geometryType geometry type
+ * @param visible default visibility
+ * @param graphics (Optional) Array of graphics to load
+ * @returns Promise<FeatureLayer>
  */
-export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: string,
+export const initLayer = async (layerId: string, layerTitle: string,
     renderer: Renderer, fields: Field[], geometryType: "point" | "multipoint" | "polyline" | "polygon",
     visible: boolean, graphics?: Graphic[]): Promise<FeatureLayer> => {
     // Create Graphics from JSON...
     if (!graphics) {
         graphics = [];
     }
-    //let graphics: Graphic[] = [];
-    // if (visible) {
-    //     graphics = await fetchJsonData(jsonUrl);
-    // }
     // Do not set the WSDOT unique ID as OID. The app might change them.
     // So create a new system generated field as OID.
     let oidField = "AppGenId";
@@ -242,22 +240,9 @@ export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: st
         geometryType: geometryType,
         spatialReference: SpatialReference.WebMercator,
     });
-    // Set event to load layer when it becomes visible...
-    // if (graphics.length === 0) {
-    //     setLayerEvent(layer, jsonUrl);
-    // }
     return layer;
 }
 
-// export const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
-//     const handle = layer.watch("visible", (newValue, oldValue, propName, target) => {
-//         const lyr = target as FeatureLayer;
-//         if (newValue) {
-//             reloadData(jsonUrl, lyr);
-//             handle.remove();
-//         }
-//     });
-// }
 // Keep track of what is loading, so prevent loading the same layer at the same time.
 let loadManager: { id: string, promise: Promise<LayerStatus | undefined> }[] = [];
 
