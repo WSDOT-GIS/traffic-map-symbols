@@ -70,6 +70,7 @@ import RegionalAlertPopup from "@/popups/RegionalAlertPopup.vue";
 import FerryRoutesPopup from "@/popups/FerryRoutesPopup.vue";
 /* Components */
 import LeftPaneView from "@/components/LeftPaneView.vue";
+import BannerView from "@/components/BannerView.vue";
 import BasemapView from "@/components/BasemapView.vue";
 import CoordinatesView from "@/components/CoordinatesView.vue";
 import MyLocationView from "@/components/MyLocationView.vue";
@@ -78,7 +79,7 @@ import AlertView from "@/components/AlertView.vue";
 import AdView from "@/components/AdView.vue";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import { hasParentClass } from "@/utils/miscUtil";
-import WarningBannerViewVue from "@/components/WarningBannerView.vue";
+
 export default defineComponent({
   components: {
     ZoomPopupView,
@@ -100,7 +101,7 @@ export default defineComponent({
     ZoomButtonView,
     AlertView,
     AdView,
-    WarningBannerViewVue
+    BannerView
   },
   setup() {
     const mapLoaded = ref<boolean>(false);
@@ -684,7 +685,7 @@ export default defineComponent({
   <RegionalAlertPopup :Featureset="popupFeatureset" @close="closePopup" />
   <FerryRoutesPopup :Featureset="popupFeatureset" :Alerts="ferryAlerts" />
   <LeftPaneView />
-  <WarningBannerViewVue/>
+  <BannerView/>
 </template>
 
 <style scoped>

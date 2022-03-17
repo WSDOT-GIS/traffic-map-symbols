@@ -354,17 +354,18 @@ const addServiceAlert = (state: State, alert: string | LayerInfo) => {
     let msg: string;
     if (alert instanceof LayerInfo) {
         const name = alert.title ? alert.title : alert.id;
-        msg = `Failed to load the layer: ${name}.`;
+        msg =name;
     } else {
         msg = alert;
     }
     if (state.serviceAlerts.findIndex(each => each === msg) < 0) {
         state.serviceAlerts.push(msg);
+        console.log(state.serviceAlerts)
     }
     console.warn(msg);
     // Temporary... TODO: show in banner
     if (state.isToastReady) {
-        toast.warning(msg);
+       // toast.warning(msg);
     }
 }
 
