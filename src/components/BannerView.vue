@@ -1,11 +1,6 @@
 <template>
   <transition name="fade">
-    <div v-if="!isHidden" v-on:click="isHidden = !isHidden" id="warningBannerDiv">
-      <div id="warningBannerSymbol">
-        <button id="closeWarningBannerButton">
-          !
-        </button>
-      </div>
+    <div v-if="!isHidden" id="warningBannerDiv">
       <div id="warningBannerErrorLabel">
         {{`Failed to load layers: ${serviceAlerts}`}}
       </div>
@@ -47,34 +42,18 @@ export default defineComponent({
     position: absolute;
     text-align: left;
     vertical-align: middle;
-  
     top: 0;
     height:35px;
-    left:300px;
-    width:calc(100% - 300px);
+    width:100%;
     /* overflow-y: auto; */
     border: 1px solid #FFC107;
     z-index: 10;
 }
-#closeWarningBannerButton{
-  position: absolute;
-  top: 6px;
-  background-color: #FFC107;
-  border: none;
-  color: white;
-  font-size: var(--type-scale-base2);
-  font-weight: var(--font-weight-normal);
-  line-height: var(--type-scale-base2);
-  text-align: center;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  left: 3px;
-  position: absolute;
-}
+
 #warningBannerErrorLabel{
   top: 4px;right: 0px;bottom: 0px;left: 30px;
   position: absolute;
   vertical-align: middle;
+  text-align: center;
 }
 </style>

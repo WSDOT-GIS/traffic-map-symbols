@@ -1,6 +1,6 @@
 <template>
   <transition name="left-pane-slide">
-    <div id="map-top-left-container" v-if="isOpen" class="w3-card w3-white w3-col">
+    <div :style="store.state.serviceAlerts.length>0?{top:30 + 'px'}:{top:0 + 'px'}" id="map-top-left-container" v-if="isOpen" class="w3-card w3-white w3-col">
       <div class="w3-container w3-border-0" ref="headerRef">
         <div class="map-left-panel-title">Map Legend</div>
         <div class="map-left-panel-btn map-left-panel-close-btn w3-button" @click="toggleDisplay">
@@ -32,6 +32,7 @@
     id="map-top-left-container-closed"
     class="w3-container w3-padding-small w3-card w3-white w3-button"
     @click="toggleDisplay"
+    :style="store.state.serviceAlerts.length>0?{top:35 + 'px'}:{top:0 + 'px'}"
   >
     <label class="map-left-panel-title-closed">Map Legend</label>
     <div class="map-left-panel-btn map-left-panel-open-btn w3-button">
@@ -63,6 +64,7 @@ export default defineComponent({
   components: { LayerListView, SavedMapView },
   setup() {
     const store = useStore();
+    const serviceAlerts = computed(()=>store.state.serviceAlerts)
     const headerRef = ref<HTMLDivElement>();
     const mapSize = computed(() => store.state.mapSize);
     const maxHeight = ref(mapSize.value.height);
@@ -77,8 +79,8 @@ export default defineComponent({
       store.commit("setLeftPaneIsOpen", !store.state.leftPaneIsOpen);
       //isOpen.value = !isOpen.value;
     };
-    return { isOpen, maxHeight, toggleDisplay, headerRef };
-  },
+    return { isOpen, maxHeight, toggleDisplay, headerRef,store, serviceAlerts };
+  }
 });
 </script>
 
