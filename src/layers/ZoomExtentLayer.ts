@@ -31,7 +31,7 @@ const graphics = [
                 [-13629746.45, 6023828.51],
                 [-13629746.45, 6068530.04]
             ]],
-            spatialReference: { wkid: 102100 }
+            spatialReference: { wkid: 3857 }
         },
         attributes: {
             "ObjectID": 1,
@@ -51,7 +51,7 @@ const graphics = [
                 [-13082872.63, 6077106.34],
                 [-13082872.63, 6039636.67]
             ]],
-            spatialReference: { wkid: 102100 }
+            spatialReference: { wkid: 3857 }
         },
         attributes: {
             "ObjectID": 2,
@@ -71,7 +71,7 @@ const graphics = [
                 [-13661045.09, 5740346.29],
                 [-13661045.09, 5715999.99]
             ]],
-            spatialReference: { wkid: 102100 }
+            spatialReference: { wkid: 3857 }
         },
         attributes: {
             "ObjectID": 3,
@@ -91,7 +91,7 @@ const graphics = [
                 [-13652280.94, 5993905.72],
                 [-13652280.94, 5964648.36]
             ]],
-            spatialReference: { wkid: 102100 }
+            spatialReference: { wkid: 3857 }
         },
         attributes: {
             "ObjectID": 4,
