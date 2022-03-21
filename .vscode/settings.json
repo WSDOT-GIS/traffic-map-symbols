@@ -1,5 +1,3 @@
 {
-    "files.exclude": {
-        "external_scripts": true
-    }
+    "typescript.tsdk": "node_modules\\typescript\\lib"
 }
