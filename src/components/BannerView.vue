@@ -2,7 +2,7 @@
   <transition name="fade">
     <div v-if="bannerVisible" id="warningBannerDiv">
       <div id="warningBannerErrorLabel">
-        {{`Failed to load layers: ${serviceAlerts}`}}
+        {{`The following layers are unavailable: ${serviceAlerts}`}}
       </div>
       <div
       title="Close error banner"
