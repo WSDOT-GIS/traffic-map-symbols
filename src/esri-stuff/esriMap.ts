@@ -18,6 +18,7 @@ import * as CameraLayer from "@/layers/CameraLayer";
 import * as PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
 import * as LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
 import * as RoadAlertsLayer from "@/layers/RoadAlertsLayer";
+import * as LineRoadAlertsLayer from "@/layers/LineRoadAlertsLayer";
 import * as WeatherLayer from "@/layers/WeatherStationsLayer";
 import * as MountainLayer from "@/layers/MountainPassesLayer";
 import * as FireIncidentsLayer from "@/layers/FireIncidentLayer";
@@ -106,6 +107,7 @@ export const loadOperationalLayers = async (): Promise<LayerInfo[]> => {
     promises.push(PointRestrictionsLayer.initLayer(config.pointRestrictions));
     promises.push(CameraLayer.initLayer(config.cameras));
     promises.push(RoadAlertsLayer.initLayer(config.roadAlerts));
+    promises.push(LineRoadAlertsLayer.initLayer(config.lineRoadAlerts))
     promises.map(eachPromise => eachPromise.catch(error => error));
     // Load sync ones...
     const infos: LayerInfo[] = [];
@@ -161,6 +163,7 @@ export const loadOperationalLayers = async (): Promise<LayerInfo[]> => {
     addToList(CameraLayer.default());
     addToList(PointFerryRoutesLayer.default());
     addToList(RoadAlertsLayer.default());
+    addToList(LineRoadAlertsLayer.default());
     // The first one in the array will be displayed at the bottom of the map... 
     webmap.addMany(lyrs);
     // Store the default visibility...
@@ -211,6 +214,7 @@ export const refreshLayerData = async (): Promise<LayerInfo[]> => {
     const promises = [];
     promises.push(RegionalAlertLayer.reloadData(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries));
     promises.push(layerUtil.reloadData(config.roadAlerts, RoadAlertsLayer.default()));
+    promises.push(layerUtil.reloadData(config.lineRoadAlerts, LineRoadAlertsLayer.default()));
     promises.push(layerUtil.reloadData(config.pointRestrictions, PointRestrictionsLayer.default()));
     promises.push(layerUtil.reloadData(config.lineRestrictions, LineRestrictionsLayer.default()));
     promises.push(layerUtil.reloadData(config.mountainPasses, MountainLayer.default()));

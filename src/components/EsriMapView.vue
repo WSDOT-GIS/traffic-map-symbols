@@ -121,7 +121,7 @@ export default defineComponent({
         alerts.value = result;
       })
       .catch((err) => {
-        store.commit("addServiceAlert", "Statewide alert service is not available.");
+        store.commit("addServiceAlert", "Statewide alerts");
         console.error(err);
       });
     alertInfoUtil.initFerryAlerts(config.ferryAlerts);
@@ -295,20 +295,28 @@ export default defineComponent({
                 // Not aggregate...
                 const id = g.getObjectId();
                 // get lines for restriciton point click
-                if (g.layer.id === "point-restrictions-layer") {
+                if (g.layer.id === "point-restrictions-layer"||g.layer.id === "road-alerts-layer") {
                   getFeatureInfoById(id, g.layer as FeatureLayer).then((result) => {
-                    if (
-                      result?.attributes.lineMarker == "true" ||
-                      result?.attributes.lineMarker == "True"
-                    ) {
-                      displayPointInteractionGraphics(
-                        "line-restrictions-layer",
-                        esriMap.webmap,
-                        "UniqueId",
-                        result?.attributes.UniqueId
-                      );
-                      showPopup(results2Show.layer.id, [id]);
-                    } else {
+                    if ( result?.attributes.lineMarker == "true" || result?.attributes.lineMarker == "True" ) {
+                      if(g.layer.id === "point-restrictions-layer"){
+                        displayPointInteractionGraphics(
+                          "line-restrictions-layer",
+                          esriMap.webmap,
+                          "UniqueId",
+                          result?.attributes.UniqueId
+                        )
+                      }
+                      if(g.layer.id === "road-alerts-layer"){
+                        displayPointInteractionGraphics(
+                          "line-road-alerts-layer",
+                          esriMap.webmap,
+                          "EventID",
+                          result?.attributes.EventID
+                        )
+                      }
+                      showPopup(results2Show.layer.id, [id])
+                    }
+                    else {
                       showPopup(results2Show.layer.id, [id]);
                     }
                   });
@@ -410,7 +418,6 @@ export default defineComponent({
             alerts.value = result;
           })
           .catch((err) => {
-            store.commit("addServiceAlert", "Statewide alert service is not available.");
             console.error(err);
           });
         alertInfoUtil.reloadFerryAlerts();
@@ -686,7 +693,7 @@ export default defineComponent({
   <RegionalAlertPopup :Featureset="popupFeatureset" @close="closePopup" />
   <FerryRoutesPopup :Featureset="popupFeatureset" :Alerts="ferryAlerts" />
   <LeftPaneView />
-  <BannerView v-if="store.state.serviceAlerts.length>0"/>
+  <BannerView/>
 </template>
 
 <style scoped>

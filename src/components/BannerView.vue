@@ -1,8 +1,17 @@
 <template>
   <transition name="fade">
-    <div v-if="!isHidden" id="warningBannerDiv">
+    <div v-if="bannerVisible" id="warningBannerDiv">
       <div id="warningBannerErrorLabel">
         {{`Failed to load layers: ${serviceAlerts}`}}
+      </div>
+      <div
+      title="Close error banner"
+      aria-label="Close error banner"
+      id="error-banner-close-btn"
+      class="w3-button"
+      @click="removeServiceAlertBanner"
+      >
+      X
       </div>
     </div>
   </transition>
@@ -16,13 +25,16 @@ export default defineComponent({
     const store = useStore()
     const isHidden = ref<boolean>(false)
     const serviceAlerts = computed(()=>store.state.serviceAlerts.join(", "))
-    return { serviceAlerts, isHidden };
-  },
-  watch: { 
-    serviceAlerts() {
-        this.isHidden = false
-    }
+    watch(serviceAlerts,(alerts)=>{
+      if(alerts.length>0){
+        store.dispatch('setServiceAlertBannerVisibility',true)
+      }
+    })
+    const bannerVisible = computed(()=>store.state.serviceAlertsBannerVisible)
+    const removeServiceAlertBanner =()=> store.dispatch('setServiceAlertBannerVisibility',false)
+    return { serviceAlerts, isHidden, removeServiceAlertBanner, bannerVisible, store};
   }
+  
 });
 </script>
 <style scoped>
@@ -55,5 +67,20 @@ export default defineComponent({
   position: absolute;
   vertical-align: middle;
   text-align: center;
+}
+
+#error-banner-close-btn {
+  position: absolute;
+  background-color: #FFFAEC ;
+  border: 1pt solid #FFC107;
+  color: black;
+  font-size: var(--type-scale-base1);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--type-scale-base2);
+  text-align: center;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  right: 5px
 }
 </style>

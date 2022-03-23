@@ -5,10 +5,10 @@
   "lineRestrictions": "https://data.wsdot.wa.gov/travelcenter/LineRestrictions.json",
   "mountainPasses": "https://data.wsdot.wa.gov/travelcenter/MountainPasses.json",
   "parkAndRides": "https://data.wsdot.wa.gov/travelcenter/ParkAndRides.json",
-  "pointRestrictions": "xhttps://data.wsdot.wa.gov/travelcenter/PointRestrictions.json",
+  "pointRestrictions": "https://data.wsdot.wa.gov/travelcenter/PointRestrictions.json",
   "restAreas": "https://data.wsdot.wa.gov/travelcenter/RestAreas.json",
   "borderCrossings": "https://data.wsdot.wa.gov/travelcenter/BorderCrossingTimes.json",
-  "roadAlerts": "xhttps://data.wsdot.wa.gov/travelcenter/RoadAlerts.json",
+  "roadAlerts": "https://data.wsdot.wa.gov/travelcenter/RoadAlerts.json",
   "regionalAlerts": "https://data.wsdot.wa.gov/travelcenter/Dev/CountyAlerts.json",
   "stateAlerts": "https://data.wsdot.wa.gov/travelcenter/StatewideAlerts.json",
   "traffic": "https://utility.arcgis.com/usrsvcs/appservices/G9CkczziK8rxtWpL/rest/services/World/Traffic/MapServer",
@@ -27,6 +27,6 @@
   "ferryRouteLines": "https://services.arcgis.com/IYrj3otxNjPsrTRD/ArcGIS/rest/services/Travel_Center_Ferry_Routes/FeatureServer/1/query?where=1%3D1&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=true&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=json&token=",
   "ferryRoutePoints": "https://services.arcgis.com/IYrj3otxNjPsrTRD/ArcGIS/rest/services/Travel_Center_Ferry_Routes/FeatureServer/2",
   "ferryRoutesReferenceLayer": "https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/FerryRoutes_Final/MapServer",
-  "layerRefreshMinute": 5,
+  "layerRefreshMinute": 1,
   "googleAnalyticsID": "UA-970887-21"
 }

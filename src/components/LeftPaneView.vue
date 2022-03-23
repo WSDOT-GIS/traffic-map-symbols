@@ -1,6 +1,6 @@
 <template>
   <transition name="left-pane-slide">
-    <div :style="store.state.serviceAlerts.length>0?{top:30 + 'px'}:{top:0 + 'px'}" id="map-top-left-container" v-if="isOpen" class="w3-card w3-white w3-col">
+    <div :style="store.state.serviceAlertsBannerVisible?{top:30 + 'px'}:{top:0 + 'px'}" id="map-top-left-container" v-if="isOpen" class="w3-card w3-white w3-col">
       <div class="w3-container w3-border-0" ref="headerRef">
         <div class="map-left-panel-title">Map Legend</div>
         <div class="map-left-panel-btn map-left-panel-close-btn w3-button" @click="toggleDisplay">

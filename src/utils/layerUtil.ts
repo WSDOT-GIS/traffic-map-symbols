@@ -27,7 +27,12 @@ const layerGroups: GroupLayerInfo[] = [];
  */
 export const createLayerGroupInfos = (config: AppConfig): void => {
     layerGroups.push({ id: "camera", layers: [{ id: "traffic-camera-layer", uniqueField: "CameraID", jsonUrl: config.cameras }] });
-    layerGroups.push({ id: "alert", layers: [{ id: "road-alerts-layer", uniqueField: "EventID" }] }); // Loaded by default, should not need to load data.
+    layerGroups.push({ 
+        id: "alert", layers: [
+            { id: "road-alerts-layer", uniqueField: "EventID", jsonUrl: config.roadAlerts },
+            { id: "line-road-alerts-layer", uniqueField: "EventID", jsonUrl: config.lineRoadAlerts }
+        ]
+     }); // Loaded by default, should not need to load data.
     layerGroups.push({
         id: "restriction", layers: [
             { id: "point-restrictions-layer", uniqueField: "UniqueId", jsonUrl: config.pointRestrictions },
