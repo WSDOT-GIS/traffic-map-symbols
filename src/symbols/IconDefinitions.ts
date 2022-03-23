@@ -1,5 +1,7 @@
 import IconInfo from "@/types/IconInfo"
 /* eslint-disable no-useless-escape */
+
+/** Defines icons for layer list */
 const layerListIcons: IconInfo[] = [
   {
     id: "traffic-camera-layer",
@@ -307,6 +309,7 @@ const layerListIcons: IconInfo[] = [
   },
 ]
 
+/** Defines non-layer list icons */
 const otherIcons: IconInfo[] = [
   {
     id: "statewide-alert-banner",
