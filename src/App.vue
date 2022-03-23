@@ -21,8 +21,7 @@ export default defineComponent({
     const mapHeight = ref("500px");
     const store = useStore();
 
-    const toast = useToast();
-
+   // const toast = useToast();
     // const errors = computed(() => store.state.errors);
     const config = getConfig();
     const activeClass = "active";

@@ -33,6 +33,7 @@ export interface State {
     mediaSize: "s" | "l"; // TODO: add more as needed
     errors: string[]; // Shown in the toast.
     serviceAlerts: string[]; // Shown in the banner.
+    serviceAlertsBannerVisible:boolean;
     isToastReady: boolean;
 }
 //
@@ -68,6 +69,7 @@ export const store = createStore<State>({
             mediaSize: getMediaSize(),
             errors: [],
             serviceAlerts: [],
+            serviceAlertsBannerVisible: false,
             isToastReady: false
         }
     },
@@ -99,6 +101,9 @@ export const store = createStore<State>({
         },
         lastError: state => {
             return state.errors[state.errors.length - 1];
+        },
+        getServiceAlerts: state=>{
+            return state.serviceAlerts
         }
     },
     mutations: {
@@ -168,6 +173,7 @@ export const store = createStore<State>({
                     if (newInfo.status === LayerStatus.Failed) {
                         addServiceAlert(state, newInfo);
                     }
+                    else{removeServiceAlert(state, newInfo)}
                 } else {
                     if (newInfo.title) { info.title = newInfo.title; }
                     if (newInfo.index) { info.index = newInfo.index; }
@@ -176,6 +182,9 @@ export const store = createStore<State>({
                     if (newInfo.status) {
                         if (info.status !== LayerStatus.Failed && newInfo.status === LayerStatus.Failed) {
                             addServiceAlert(state, info);
+                        }
+                        else{
+                            removeServiceAlert(state, newInfo)
                         }
                         info.status = newInfo.status
                     }
@@ -210,6 +219,9 @@ export const store = createStore<State>({
             if (payload.status) {
                 if (info.status !== LayerStatus.Failed && payload.status === LayerStatus.Failed) {
                     addServiceAlert(state, info);
+                }
+                else{
+                    removeServiceAlert(state, info)
                 }
                 info.status = payload.status
             }
@@ -247,6 +259,12 @@ export const store = createStore<State>({
         },
         addServiceAlert(state, msg: string) {
             addServiceAlert(state, msg);
+        },
+        removeServiceAlert(state, msg: string){
+            removeServiceAlert(state, msg);
+        },
+        setServiceAlertBannerVisibility(state,visible:boolean){
+            setServiceAlertBannerVisibility(state,visible)
         }
 
     },
@@ -320,6 +338,9 @@ export const store = createStore<State>({
         showError({ state }, message: string) {
             showError(state, message);
         },
+        setServiceAlertBannerVisibility({ state },message:boolean) {
+            setServiceAlertBannerVisibility(state, message);
+        },
         // Set the flag to indicate the toast message is ready to be shown.
         // If there are errors happened earlier, show them now.
         setIsToastReady({ state, commit }) {
@@ -330,9 +351,6 @@ export const store = createStore<State>({
                 });
                 state.errors = [];
                 // Temporary...
-                state.serviceAlerts.forEach((item) => {
-                    toast.warning(item);
-                })
             }
         }
     }
@@ -354,7 +372,7 @@ const addServiceAlert = (state: State, alert: string | LayerInfo) => {
     let msg: string;
     if (alert instanceof LayerInfo) {
         const name = alert.title ? alert.title : alert.id;
-        msg = `Failed to load the layer: ${name}.`;
+        msg =name;
     } else {
         msg = alert;
     }
@@ -364,10 +382,26 @@ const addServiceAlert = (state: State, alert: string | LayerInfo) => {
     console.warn(msg);
     // Temporary... TODO: show in banner
     if (state.isToastReady) {
-        toast.warning(msg);
+       // toast.warning(msg);
     }
 }
-
+const  setServiceAlertBannerVisibility= (state:State,visible: boolean)=>{
+    state.serviceAlertsBannerVisible=visible
+}
+const removeServiceAlert = (state: State, alert: string | LayerInfo) => {
+    let msg: string;
+    if (alert instanceof LayerInfo) {
+        const name = alert.title ? alert.title : alert.id;
+        msg =name;
+    } else {
+        msg = alert;
+    }
+    if (state.serviceAlerts.findIndex(each => each === msg) > -1) {
+        const alertIndex = state.serviceAlerts.findIndex(each => each === msg)
+        state.serviceAlerts.splice(alertIndex,1);
+        console.log(state.serviceAlerts)
+    }
+}
 /**
  * Clone the target of proxy (i.e. removing the reactivity)
  *

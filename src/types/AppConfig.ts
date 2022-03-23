@@ -11,6 +11,7 @@ interface AppConfig {
     pointRestrictions: string;
     restAreas: string;
     roadAlerts: string;
+    lineRoadAlerts: string;
     borderCrossings: string;
     traffic: string;
     weatherStations: string;

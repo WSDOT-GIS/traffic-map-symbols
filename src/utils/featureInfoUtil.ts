@@ -66,6 +66,7 @@ export const getLineFromPointId = async (fieldName: string, value: number | stri
     query.where = `${fieldName} = '${value}'`;
     query.returnGeometry = true
     const response = await layer.queryFeatures(query);
+    console.log(response)
     return response
 }
 /**

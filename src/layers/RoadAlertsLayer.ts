@@ -34,11 +34,11 @@ const renderer = new uniqueValueRenderer({
 })
 
 const fields = [
-    new Field({
+    /*new Field({
         name: "AppGenId",
         alias: "AppGenId",
         type: "oid"
-    }),
+    }),*/
     new Field({
         name: "EventID", type: "integer", alias: "EventID"
     }),
@@ -73,6 +73,7 @@ const fields = [
     new Field({ name: "TMSOverlap", type: "integer", alias: "TMSOverlap" }),
     new Field({ name: "RegionID", type: "small-integer", alias: "RegionID" }),
     new Field({ name: "TravelCenterPriorityId", type: "small-integer", alias: "TravelCenterPriorityId" }),
+    new Field({ name: "lineMarker", type: "string", alias: "lineMarker"})
 ]
 
 export const layerId = "road-alerts-layer";
