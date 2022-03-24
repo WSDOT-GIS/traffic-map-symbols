@@ -62,12 +62,13 @@ export default defineComponent({
 
 #warningBannerErrorLabel {
   top: 4px;
-  right: 0px;
+  right: 2em;
   bottom: 0px;
-  left: 30px;
+  left: 1em;
   position: absolute;
   vertical-align: middle;
   text-align: center;
+  overflow: hidden;
 }
 
 #error-banner-close-btn {
