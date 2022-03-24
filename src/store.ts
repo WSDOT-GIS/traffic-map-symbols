@@ -227,9 +227,12 @@ export const store = createStore<State>({
                     addServiceAlert(state, info);
                 }
                 else {
-                    removeServiceAlert(state, info)
+                    removeServiceAlert(state, info);
                 }
-                info.status = payload.status
+                info.status = payload.status;
+            }
+            else if (info.status === LayerStatus.Failed && info.visible) {
+                addServiceAlert(state, info);
             }
         },
         setCurrentExtent(state, payload) {
@@ -372,8 +375,7 @@ const showError = (state: State, message: string) => {
 const addServiceAlert = (state: State, alert: string | LayerInfo) => {
     let msg: string;
     if (alert instanceof LayerInfo) {
-        const name = alert.title ? alert.title : alert.id;
-        msg = name;
+        msg = alert.title ? alert.title : alert.id;
     } else {
         msg = alert;
     }
@@ -391,15 +393,13 @@ const setServiceAlertBannerVisibility = (state: State, visible: boolean) => {
 const removeServiceAlert = (state: State, alert: string | LayerInfo) => {
     let msg: string;
     if (alert instanceof LayerInfo) {
-        const name = alert.title ? alert.title : alert.id;
-        msg = name;
+        msg = alert.title ? alert.title : alert.id;
     } else {
         msg = alert;
     }
     if (state.serviceAlerts.findIndex(each => each === msg) > -1) {
         const alertIndex = state.serviceAlerts.findIndex(each => each === msg)
         state.serviceAlerts.splice(alertIndex, 1);
-        console.log(state.serviceAlerts)
     }
 }
 /**
