@@ -385,10 +385,9 @@ const addServiceAlert = (state: State, alert: string | LayerInfo) => {
     if (state.serviceAlerts.findIndex(each => each === msg) < 0) {
         state.serviceAlerts.push(msg);
     }
-    console.warn(msg);
-    // Temporary... TODO: show in banner
-    if (state.isToastReady) {
-        // toast.warning(msg);
+    // If the banner was closed, open it again...
+    if (!state.serviceAlertsBannerVisible) {
+        setServiceAlertBannerVisibility(state, true);
     }
 }
 const setServiceAlertBannerVisibility = (state: State, visible: boolean) => {
