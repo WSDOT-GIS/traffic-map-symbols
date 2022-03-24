@@ -220,7 +220,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>{{ forecastsLoaded }}</div>
+  <!-- <div>{{ forecastsLoaded }}</div> -->
   <PopupBase
     :IconSvg="layerIcons.find((x) => x.id === 'weather-stations-layer')?.paths"
     LightThemeColor="#00515133"

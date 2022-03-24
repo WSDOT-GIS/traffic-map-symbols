@@ -1,11 +1,10 @@
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
+import { computed, defineComponent, watch } from "vue";
 import { useStore } from "@/store";
 
 export default defineComponent({
   setup() {
     const store = useStore();
-    const isHidden = ref<boolean>(false);
     const serviceAlerts = computed(() => store.state.serviceAlerts.join(", "));
     watch(serviceAlerts, (alerts) => {
       if (alerts.length > 0) {
@@ -14,26 +13,26 @@ export default defineComponent({
     });
     const bannerVisible = computed(() => store.state.serviceAlertsBannerVisible);
     const removeServiceAlertBanner = () => store.commit("setServiceAlertBannerVisibility", false);
-    return { serviceAlerts, isHidden, removeServiceAlertBanner, bannerVisible, store };
+    return { serviceAlerts, removeServiceAlertBanner, bannerVisible, store };
   },
 });
 </script>
 <template>
   <transition name="fade">
-    <div v-if="bannerVisible" id="warningBannerDiv">
-      <div id="warningBannerErrorLabel">
-        {{ `Layers unavailable: ${serviceAlerts}` }}
-      </div>
-      <button
-        title="Close error banner"
-        aria-label="Close error banner"
-        id="error-banner-close-btn"
-        class="w3-button w3-display-right"
-        @click="removeServiceAlertBanner"
-      >
-        &times;
-      </button>
+  <div v-if="bannerVisible" id="warningBannerDiv">
+    <div id="warningBannerErrorLabel">
+      {{ `Layers unavailable: ${serviceAlerts}` }}
     </div>
+    <button
+      title="Close error banner"
+      aria-label="Close error banner"
+      id="error-banner-close-btn"
+      class="w3-button w3-display-right"
+      @click="removeServiceAlertBanner"
+    >
+      &times;
+    </button>
+  </div>
   </transition>
 </template>
 <style scoped>
@@ -77,6 +76,6 @@ export default defineComponent({
   font-size: var(--type-scale-base6);
   line-height: var(--type-scale-base4);
   font-weight: var(--font-weight-normal);
-  height:35px;
+  height: 35px;
 }
 </style>
