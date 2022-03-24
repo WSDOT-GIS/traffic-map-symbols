@@ -22,7 +22,7 @@ export default defineComponent({
   <transition name="fade">
     <div v-if="bannerVisible" id="warningBannerDiv">
       <div id="warningBannerErrorLabel">
-        {{ `These layers are not available: ${serviceAlerts}` }}
+        {{ `Layers unavailable: ${serviceAlerts}` }}
       </div>
       <button
         title="Close error banner"

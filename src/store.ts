@@ -272,7 +272,6 @@ export const store = createStore<State>({
         setServiceAlertBannerVisibility(state, visible: boolean) {
             setServiceAlertBannerVisibility(state, visible)
         }
-
     },
     actions: {
         updateLayerVisibility({ commit, state }, payload?: { ids: string[], visible: boolean }) {
@@ -344,9 +343,6 @@ export const store = createStore<State>({
         showError({ state }, message: string) {
             showError(state, message);
         },
-        // setServiceAlertBannerVisibility({ state }, message: boolean) {
-        //     setServiceAlertBannerVisibility(state, message);
-        // },
         // Set the flag to indicate the toast message is ready to be shown.
         // If there are errors happened earlier, show them now.
         setIsToastReady({ state, commit }) {
