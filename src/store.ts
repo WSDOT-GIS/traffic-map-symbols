@@ -117,6 +117,9 @@ export const store = createStore<State>({
                     }
                     basemapWatchHandles = [];
                     webmap.basemap = basemapInfo.basemap;
+                    if (webmap.basemap.loadStatus === "failed") {
+                        addServiceAlert(state, webmap.basemap.title);
+                    }
                     webmap.basemap.baseLayers.forEach(eachLyr => {
                         const handle = eachLyr.watch("loadStatus", (newValue, oldValue, propertyName, target) => {
                             const lyr = target as Layer;
@@ -136,8 +139,11 @@ export const store = createStore<State>({
             state.basemap = basemapInfo.name;
             if (basemapInfo.basemap) {
                 webmap.basemap = basemapInfo.basemap;
+                if (webmap.basemap.loadStatus === "failed") {
+                    addServiceAlert(state, webmap.basemap.title);
+                }
             } else {
-                addServiceAlert(state, `The specified basemap, ${basemapInfo.name}, is not available.`);
+                addServiceAlert(state, webmap.basemap.title);
             }
         },
         setPointerX(state, payload) {
