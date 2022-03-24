@@ -9,11 +9,11 @@ export default defineComponent({
     const serviceAlerts = computed(() => store.state.serviceAlerts.join(", "));
     watch(serviceAlerts, (alerts) => {
       if (alerts.length > 0) {
-        store.dispatch("setServiceAlertBannerVisibility", true);
+        store.commit("setServiceAlertBannerVisibility", true);
       }
     });
     const bannerVisible = computed(() => store.state.serviceAlertsBannerVisible);
-    const removeServiceAlertBanner = () => store.dispatch("setServiceAlertBannerVisibility", false);
+    const removeServiceAlertBanner = () => store.commit("setServiceAlertBannerVisibility", false);
     return { serviceAlerts, isHidden, removeServiceAlertBanner, bannerVisible, store };
   },
 });
@@ -75,8 +75,8 @@ export default defineComponent({
   border-style: none;
   background-color: transparent;
   font-size: var(--type-scale-base6);
-  line-height: var(--type-scale-base8);
+  line-height: var(--type-scale-base4);
   font-weight: var(--font-weight-normal);
-  vertical-align: top;
+  height:35px;
 }
 </style>
