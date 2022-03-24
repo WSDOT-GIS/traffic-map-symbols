@@ -1,52 +1,15 @@
-<template>
-  <PopupBase
-    :IconSvg="layerIcons.find((x) => x.id === 'fire-incidents-layer')?.paths"
-    LightThemeColor="#D23D004D"
-    DarkThemeColor="#D23D00"
-    :Features="[feature]"
-    :Config="{
-      bannerText: { text: 'Wildland fire' },
-      title: { fieldName: 'IncidentName' },
-      moreInfoURL: {
-        custom: getMoreInfoURL,
-      },
-      content: [
-        { label: 'Type', value: { fieldName: 'IncidentTypeCategory' } },
-        { label: 'Cause', value: { fieldName: 'FireCause' } },
-        { label: 'Daily acres', value: { custom: getDailyAcres } },
-        { label: 'Total acres burned', value: { custom: getTotalAcres } },
-        { label: 'Percentage contained', value: { custom: getPercentContained } },
-        {
-          label: 'Discovery Date',
-          value: {
-            fieldName: 'FireDiscoveryDateTime',
-            isDate: true,
-            isTime: true,
-          },
-        },
-        {
-          label: 'Last Updated',
-          value: {
-            fieldName: 'ModifiedOnDateTime',
-            isDate: true,
-            isTime: true,
-          },
-        },
-      ],
-    }"
-    @close="close"
-  >
-  </PopupBase>
-</template>
 <script lang="ts">
 import { defineComponent, nextTick, PropType, ref, watch } from "vue";
 import PopupBase from "./PopupBase.vue";
-import FeatureLayer from "@/layers/FireIncidentLayer";
 import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
 import MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
+import { getLayer } from "@/esri-stuff/esriMap";
+import { useStore } from "@/store";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+
 export default defineComponent({
   components: { PopupBase },
   props: {
@@ -56,10 +19,12 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const layerId = "fire-incidents-layer";
+    const store = useStore();
     const feature = ref<FeatureInfo>();
     const layerIcons = layerListIcons;
     watch(props, () => {
-      if (props.Featureset.layerId === FeatureLayer().id) {
+      if (props.Featureset.layerId === layerId) {
         //if clicked feature belongs to WeatherStations layer
         show();
       } else {
@@ -96,8 +61,15 @@ export default defineComponent({
       return formattedAcres;
     };
     const show = () => {
+      const lyrStatus = store.getters.getLayerStatus(layerId);
+      if (lyrStatus !== "loaded") {
+        close();
+        return;
+      }
+      const lyr = getLayer(layerId) as FeatureLayer;
       const setVal = () => {
-        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(
+        if (!lyr) { return; }
+        getFeatureInfoById(props.Featureset.ids[0], lyr).then(
           //query feature layer for feature
           (result) => {
             if (result) {
@@ -121,6 +93,7 @@ export default defineComponent({
       feature.value = undefined;
     };
     return {
+      layerId,
       feature,
       layerIcons,
       close,
@@ -132,4 +105,43 @@ export default defineComponent({
   },
 });
 </script>
-
+<template>
+  <PopupBase
+    :IconSvg="layerIcons.find((x) => x.id === 'fire-incidents-layer')?.paths"
+    LightThemeColor="#D23D004D"
+    DarkThemeColor="#D23D00"
+    :LayerId="layerId"
+    :Features="feature ? [feature] : []"
+    :Config="{
+      bannerText: { text: 'Wildland fire' },
+      title: { fieldName: 'IncidentName' },
+      moreInfoURL: {
+        custom: getMoreInfoURL,
+      },
+      content: [
+        { label: 'Type', value: { fieldName: 'IncidentTypeCategory' } },
+        { label: 'Cause', value: { fieldName: 'FireCause' } },
+        { label: 'Daily acres', value: { custom: getDailyAcres } },
+        { label: 'Total acres burned', value: { custom: getTotalAcres } },
+        { label: 'Percentage contained', value: { custom: getPercentContained } },
+        {
+          label: 'Discovery Date',
+          value: {
+            fieldName: 'FireDiscoveryDateTime',
+            isDate: true,
+            isTime: true,
+          },
+        },
+        {
+          label: 'Last Updated',
+          value: {
+            fieldName: 'ModifiedOnDateTime',
+            isDate: true,
+            isTime: true,
+          },
+        },
+      ],
+    }"
+    @close="close"
+  ></PopupBase>
+</template>

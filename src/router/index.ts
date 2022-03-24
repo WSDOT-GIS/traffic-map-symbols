@@ -1,3 +1,7 @@
+/**
+ * @file Manages custom URLs for the application.
+ * @see {@link https://router.vuejs.org/}
+ */
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import EsriMapView from '../components/EsriMapView.vue'
 import * as urlParamUtil from '../utils/urlParamUtil';

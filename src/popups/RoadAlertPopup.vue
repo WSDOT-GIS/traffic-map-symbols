@@ -1,46 +1,15 @@
-<template>
-  <PopupBase
-    :IconSvg="badgeIcon"
-    LightThemeColor="#FFC1074D"
-    DarkThemeColor="#FFC107"
-    :LightBadgeColor="lightBadgeColor"
-    :DarkBadgeColor="darkBadgeColor"
-    :Features="[feature]"
-    :Config="{
-      bannerText: { fieldName: 'EventCategoryTypeDescription' },
-      badgeText: { custom: getEventPriority },
-      title: { custom: getTitle },
-      content: [
-        { label: 'Travel delay', value: { text: '???' } },
-        {
-          label: 'Description',
-          value: {
-            fieldName: 'HeadlineMessage',
-            isHTML: true,
-          },
-        },
-        {
-          label: 'Last updated',
-          value: {
-            fieldName: 'LastModifiedDate',
-            isDate: true,
-            isTime: true,
-          },
-        },
-      ],
-    }"
-    @close="close"
-  >
-  </PopupBase>
-</template>
 <script lang="ts">
 import { defineComponent, PropType, ref, watch } from "vue";
 import PopupBase from "./PopupBase.vue";
-import FeatureLayer from "@/layers/RoadAlertsLayer";
 import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
+import { getLayer } from "@/esri-stuff/esriMap";
+import { useStore } from "@/store";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import { LayerStatus } from "@/types/LayerInfo";
+
 export default defineComponent({
   components: { PopupBase },
   props: {
@@ -50,13 +19,15 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const layerId = "road-alerts-layer";
+    const store = useStore();
     const feature = ref<FeatureInfo>();
     const darkBadgeColor = ref("");
     const lightBadgeColor = ref("");
     const badgeIcon = ref("");
     watch(props, () => {
       if (
-        props.Featureset.layerId === FeatureLayer().id 
+        props.Featureset.layerId === layerId
       ) {
         show();
       } else {
@@ -65,8 +36,14 @@ export default defineComponent({
     });
 
     const show = () => {
+      const lyrStatus = store.getters.getLayerStatus(layerId);
+      if (lyrStatus !== LayerStatus.Loaded) {
+        close();
+        return;
+      }
+      const lyr = getLayer(layerId) as FeatureLayer;
       const setVal = () => {
-        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then((result) => {
+        getFeatureInfoById(props.Featureset.ids[0], lyr).then((result) => {
           if (result) {
             feature.value = result;
           }
@@ -121,6 +98,7 @@ export default defineComponent({
     };
 
     return {
+      layerId,
       feature,
       close,
       getTitle,
@@ -132,4 +110,38 @@ export default defineComponent({
   },
 });
 </script>
-
+<template>
+  <PopupBase
+    :IconSvg="badgeIcon"
+    LightThemeColor="#FFC1074D"
+    DarkThemeColor="#FFC107"
+    :LightBadgeColor="lightBadgeColor"
+    :DarkBadgeColor="darkBadgeColor"
+    :LayerId="layerId"
+    :Features="feature ? [feature] : []"
+    :Config="{
+      bannerText: { fieldName: 'EventCategoryTypeDescription' },
+      badgeText: { custom: getEventPriority },
+      title: { custom: getTitle },
+      content: [
+        { label: 'Travel delay', value: { text: '???' } },
+        {
+          label: 'Description',
+          value: {
+            fieldName: 'HeadlineMessage',
+            isHTML: true,
+          },
+        },
+        {
+          label: 'Last updated',
+          value: {
+            fieldName: 'LastModifiedDate',
+            isDate: true,
+            isTime: true,
+          },
+        },
+      ],
+    }"
+    @close="close"
+  ></PopupBase>
+</template>

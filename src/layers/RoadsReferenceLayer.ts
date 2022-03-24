@@ -1,20 +1,37 @@
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 
 let layer: MapImageLayer | undefined;
+export const layerId = "roads-reference-layer";
+const layerTitle = "ESRI Roads Reference"
 
-export const initLayer = (url: string): MapImageLayer => {
-    layer = new MapImageLayer({
-        id: "roads-reference-layer",
-        url: url,
-        title: "ESRI Roads Reference",
-        visible: false,
-    });
-    return layer;
+/**
+ * @param url
+ */
+export const initLayer = (url: string): LayerInfo => {
+    const layerInfo = new LayerInfo(layerId, layerTitle, url);
+    try {
+        layer = new MapImageLayer({
+            id: layerId,
+            url: url,
+            title: layerTitle,
+            visible: false,
+        });
+    }
+    catch (ex) {
+        console.error(ex);
+        layer = undefined;
+        layerInfo.status = LayerStatus.Failed;
+    }
+    return layerInfo;
 }
 
-const getLayer = (): MapImageLayer => {
+/**
+ *
+ */
+const getLayer = (): MapImageLayer | undefined => {
     if (!layer) {
-        throw "ESRI Roads Reference is not ready yet!";
+        console.error("ESRI Roads Reference is not ready yet!");
     }
     return layer;
 }

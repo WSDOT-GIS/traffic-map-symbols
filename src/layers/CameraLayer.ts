@@ -5,6 +5,7 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import Symbol from "@/symbols/CameraSymbol";
 import { clusterConfig, clusterMaxScale } from "@/utils/clusterUtil";
 import * as layerUtil from "@/utils/layerUtil";
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 
 const renderer = new SimpleRenderer({ symbol: Symbol });
 
@@ -67,23 +68,45 @@ const fields = [
 ]
 
 let layer: FeatureLayer | undefined;
+export const layerId = "traffic-camera-layer";
+const layerTitle = "Cameras";
 
-export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
-    layer = await layerUtil.initLayer(jsonUrl, "traffic-camera-layer", "Cameras", renderer, fields, "point", false, true);
-    layer.featureReduction = clusterConfig;
-    return layer;
+/**
+ * Initialize a layer
+ * 
+ * @param jsonUrl JSON URL
+ * @returns Promise<LayerInfo>
+ */
+export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
+    const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
+    try {
+        layer = await layerUtil.initLayer(layerId, "Cameras", renderer, fields, "point", false);
+    }
+    catch (ex) {
+        console.error(ex);
+        layer = undefined;
+        layerInfo.status = LayerStatus.Failed;
+    }
+    if (layer) { layer.featureReduction = clusterConfig; }
+    return layerInfo;
 }
 
-const getLayer = (): FeatureLayer => {
+/**
+ *
+ */
+const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
-        throw "CameraLayer is not ready yet!";
+        console.error("CameraLayer is not ready yet!");
     }
     return layer;
 }
 
 export default getLayer
 
-/*** Helper functions **************/
+/**
+ * @param newScale
+ * @param oldScale
+ */
 // Watch scale change...
 export const toggleCluster = (newScale: number, oldScale: number): void => {
     if (!layer) { return }
@@ -96,6 +119,9 @@ export const toggleCluster = (newScale: number, oldScale: number): void => {
     }
 }
 
+/**
+ * @param scale
+ */
 export const setCluster = (scale: number): void => {
     if (!layer) { return }
     if (layer.featureReduction) {

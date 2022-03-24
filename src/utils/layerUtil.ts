@@ -1,4 +1,4 @@
-import LayerInfo from "@/types/LayerInfo";
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Graphic from "@arcgis/core/Graphic";
 import WebMap from "@arcgis/core/Map";
@@ -11,19 +11,37 @@ import GroupLayerInfo from "@/types/GroupLayerInfo";
 import AppConfig from "@/types/AppConfig";
 import { fetchJson } from "@/utils/miscUtil";
 import { isEsriFeatures } from "@/utils/typeUtil";
-/**  Mapping between layer groups (type in URL query param) and layer IDs...
- *   * id
- *      ID for the layer group (type).
- *   * layerIds 
- *      Popup is opened for the first layer in the layerIds array.
- *   * uniqueField
- *      Unique field that is from the source database. Do not use ESRI ID.
-*/
-
+import Layer from "@arcgis/core/layers/Layer";
+/**
+ *  Specify which layers belong together (i.e. should be treated as if they are one layer) 
+ *  Layers in each group should have the same visibility and displayed as a single item in the table of contents
+ *   - id
+ *      ID for the layer group.
+ *   - layers 
+ *      List of layers that belog to each group.
+ *      NOTE: Popup is opened for the first layer in the layers array.
+ *   - layers.id
+ *      Layer ID
+ *   - layer.uniqueField
+ *      Unique field that is from the source database. Do not use ESRI ID (i.e. OID).
+ *   - layer.jsonUrl
+ *      URL of JSON file. Only applicable to those layers that loads JSON at runtime.
+ */
 const layerGroups: GroupLayerInfo[] = [];
+/**
+ * Create the layer group list
+ * 
+ * @param config Application configuration to get the JSON URLs from.
+ */
 export const createLayerGroupInfos = (config: AppConfig): void => {
     layerGroups.push({ id: "camera", layers: [{ id: "traffic-camera-layer", uniqueField: "CameraID", jsonUrl: config.cameras }] });
-    layerGroups.push({ id: "alert", layers: [{ id: "road-alerts-layer", uniqueField: "EventID" }] }); // Loaded by default, should not need to load data.
+    layerGroups.push({
+        id: "alert", layers: [
+            { id: "road-alerts-layer", uniqueField: "EventID", jsonUrl: config.roadAlerts },
+            { id: 'ferry-routes-points-layer', uniqueField: "FerryRouteID" },
+            { id: 'ferry-routes-lines-layer', uniqueField: "FerryRouteID" }
+        ]
+    }); // Loaded by default, should not need to load data.
     layerGroups.push({
         id: "restriction", layers: [
             { id: "point-restrictions-layer", uniqueField: "UniqueId", jsonUrl: config.pointRestrictions },
@@ -41,6 +59,7 @@ export const createLayerGroupInfos = (config: AppConfig): void => {
     layerGroups.push({ id: "weather", layers: [{ id: "weather-stations-layer", uniqueField: "WeatherStationId", jsonUrl: config.weatherStations }] });
     layerGroups.push({ id: "parkride", layers: [{ id: "park-ride-layer", uniqueField: "", jsonUrl: config.parkAndRides }] }); // TODO: need unique field
     layerGroups.push({ id: "restarea", layers: [{ id: "rest-areas-layer", uniqueField: "RestAreaId", jsonUrl: config.restAreas }] });
+    layerGroups.push({ id: "milepost", layers: [{ id: "mile-markers", uniqueField: "" }] })
 };
 
 const getGroupLayerInfo = (groupId: string): GroupLayerInfo => {
@@ -56,6 +75,12 @@ const getGroupLayerInfo = (groupId: string): GroupLayerInfo => {
     return result;
 }
 
+/**
+ * Get layer IDs from the layer group ID
+ * 
+ * @param groupId ID of the layer group
+ * @returns array of layer IDs
+ */
 export const getLayerIds = (groupId: string): string[] => {
     const result = layerGroups.find((item) => {
         return item.id === groupId;
@@ -72,6 +97,9 @@ export const getLayerIds = (groupId: string): string[] => {
     }
 }
 
+/**
+ * @param graphic
+ */
 export const resizeFeature = (graphic: Graphic): void => {
     const mapGraphic = buildGraphicsByType("CIMSymbol", graphic)
     addGraphicsByType("selectedGraphic", mapGraphic)
@@ -79,28 +107,35 @@ export const resizeFeature = (graphic: Graphic): void => {
 /**
  * Set the visibility of the specified layer in the layer list.
  * NOTE: The layer list need to be committed to the state store.
- * @param layerId 
- * @param visible 
- * @param layerList 
- * @returns 
+ *
+ * @param layer Layer
+ * @param layerInfo LayerInfo
+ * @param visible visibility: true/false
+ * @returns Layer status
  */
-export const setLayerVisibility = (layerId: string, visible: boolean, layerList: LayerInfo[]): LayerInfo[] => {
-    const result = layerList.find((item) => {
-        return item.id === layerId;
-    });
-    if (result) {
-        result.visible = visible;
+export const setLayerVisibility = async (layer: Layer, layerInfo: LayerInfo, visible: boolean): Promise<LayerStatus> => {
+    let outStatus = layerInfo.status;
+    if (layer.visible === visible) { return outStatus; }
+    else { layer.visible = visible }
+    if (visible && layerInfo.status !== LayerStatus.Loaded && layerInfo.isJson() && layerInfo.url) {
+        try {
+            const info = await reloadData(layerInfo.url, layer as FeatureLayer);
+            outStatus = info ? info.status : layerInfo.status;
+        } catch (ex) {
+            outStatus = LayerStatus.Failed;
+        }
     }
-    return layerList
+    return outStatus;
 }
 /**
  * Get a feature from the layer group.
+ *
  * @param uniqueValue 
  * Value from the unique field specified in the layerGroups.
  * @param groupId 
  * ID of the layer group (type). If the specified group has more than one layer, query is done against the first layer only.
- * @param map 
- * @returns 
+ * @param map ESRI map object
+ * @returns Graphic or nothing
  */
 export const getFeature = async (uniqueValue: number | string, groupId: string, map: WebMap): Promise<Graphic | undefined> => {
     const groupInfo = getGroupLayerInfo(groupId);
@@ -131,24 +166,24 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
     const query = fLayer.createQuery();
     const field = fLayer.getField(groupInfo.layers[0].uniqueField);
     query.where = `${groupInfo.layers[0].uniqueField} = `;
-    if(field.type=='string'){
-        if((uniqueValue as string).split("-").length>0){
-            const uniqueValues = (uniqueValue as string).split("-").map((value)=>{
-                if(value=="to"||value=="To"){
+    if (field.type == 'string') {
+        if ((uniqueValue as string).split("-").length > 0 && fLayer.title == "Mountain Pass Reports") {
+            const uniqueValues = (uniqueValue as string).split("-").map((value) => {
+                if (value == "to" || value == "To") {
                     return "to"
                 }
-                else{
-                    const properCase = (value[0].toLocaleUpperCase())+(value.substring(1).toLocaleLowerCase())
+                else {
+                    const properCase = (value[0].toLocaleUpperCase()) + (value.substring(1).toLocaleLowerCase())
                     return (properCase)
                 }
             })
-            query.where +=`'${(uniqueValues.join('-'))}'`;
+            query.where += `'${(uniqueValues.join('-'))}'`;
         }
-        else{
+        else {
             query.where += `'${uniqueValue}'`
         }
     }
-    else if(field.type=='date'){
+    else if (field.type == 'date') {
         query.where += `'${uniqueValue}'`
     }
     else {
@@ -161,13 +196,24 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
     }
 }
 
-export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: string,
+/**
+ * Initialize a feature layer
+ * 
+ * @param layerId Layer ID
+ * @param layerTitle Title
+ * @param renderer Renderer
+ * @param fields Array of field
+ * @param geometryType geometry type
+ * @param visible default visibility
+ * @param graphics (Optional) Array of graphics to load
+ * @returns Promise<FeatureLayer>
+ */
+export const initLayer = async (layerId: string, layerTitle: string,
     renderer: Renderer, fields: Field[], geometryType: "point" | "multipoint" | "polyline" | "polygon",
-    visible: boolean, loadOnce?: boolean): Promise<FeatureLayer> => {
+    visible: boolean, graphics?: Graphic[]): Promise<FeatureLayer> => {
     // Create Graphics from JSON...
-    let graphics: Graphic[] = [];
-    if (visible) {
-        graphics = await fetchJsonData(jsonUrl);
+    if (!graphics) {
+        graphics = [];
     }
     // Do not set the WSDOT unique ID as OID. The app might change them.
     // So create a new system generated field as OID.
@@ -194,52 +240,56 @@ export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: st
         geometryType: geometryType,
         spatialReference: SpatialReference.WebMercator,
     });
-    // Set event to load layer when it becomes visible...
-    setLayerEvent(layer, jsonUrl, loadOnce);
     return layer;
 }
 
-export const setLayerEvent = (layer: FeatureLayer, jsonUrl: string, loadOnce?: boolean): void => {
-    const handle = layer.watch("visible", (newValue, oldValue, propName, target) => {
-        const lyr = target as FeatureLayer;
-        if (newValue) {
-            reloadData(jsonUrl, lyr);
-            if (loadOnce) {
-                handle.remove();
-            }
-        }
-    });
-}
 // Keep track of what is loading, so prevent loading the same layer at the same time.
-let loadManager: { id: string, promise: Promise<void> }[] = [];
+let loadManager: { id: string, promise: Promise<LayerStatus | undefined> }[] = [];
 
-export const reloadData = async (jsonUrl: string, layer: FeatureLayer): Promise<void> => {
-    const reload = async (jsonUrl: string, layer: FeatureLayer): Promise<void> => {
+/**
+ * @param jsonUrl
+ * @param layer
+ */
+export const reloadData = async (jsonUrl: string, layer: FeatureLayer | undefined): Promise<LayerInfo | undefined> => {
+    if (!layer) { return; }
+    const reload = async (jsonUrl: string, layer: FeatureLayer): Promise<LayerStatus | undefined> => {
         if (!layer.visible) { return; }
+        let status: LayerStatus;
         // Fetch all features from JSON...
-        await fetchJsonData(jsonUrl).then(async (graphics) => {
+        try {
+            const graphics = await fetchJsonData(jsonUrl);
             if (graphics.length > 0) {
                 await replaceFeatures(layer, graphics);
             }
-            // Replace old with new features...
-        })
-
-
+            status = LayerStatus.Loaded;
+        } catch (ex) {
+            console.error(ex);
+            status = LayerStatus.Failed;
+        }
+        return status;
     }
     // Check if the layer is already being loaded currently or not...
     const runningProc = loadManager.find(x => x.id === layer.id);
     if (runningProc) {
-        // It is loading currently already, so wait until that finishes.
+        // Loading is in progress already, so wait until that finishes.
         await runningProc.promise;
-    } else {
-        // It is not loading now, so start loading.
-        const promise = reload(jsonUrl, layer);
-        loadManager.push({ id: layer.id, promise: promise });
-        await promise;
-        loadManager = loadManager.filter(x => x.id !== layer.id);
+    }
+    // Start loading.
+    const promise = reload(jsonUrl, layer);
+    loadManager.push({ id: layer.id, promise: promise });
+    const status = await promise;
+    loadManager = loadManager.filter(x => x.id !== layer.id);
+    if (status) {
+        const info = new LayerInfo(layer.id);
+        info.status = status;
+        return info;
     }
 }
 
+/**
+ * @param layer
+ * @param newFeatures
+ */
 export const replaceFeatures = async (layer: FeatureLayer, newFeatures: Graphic[]): Promise<void> => {
     // Delete existing features...
     const fs = await layer.queryFeatures();
@@ -249,10 +299,12 @@ export const replaceFeatures = async (layer: FeatureLayer, newFeatures: Graphic[
     layer.refresh();
 }
 
+/**
+ * @param jsonUrl
+ */
 export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
     // Fetch all features from JSON...
     const json = await fetchJson(jsonUrl);
-    //const json = await response.json();
     if (!isEsriFeatures(json)) {
         throw "Invalid JSON format. It is not ESRI Features JSON."
     }

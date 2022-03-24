@@ -5,6 +5,7 @@ import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 
 import * as layerUtil from "@/utils/layerUtil";
 import symbol from "@/symbols/BorderCrossingsSymbol"
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 const renderer = new simpleRenderer({
     symbol: symbol
 })
@@ -38,22 +39,39 @@ const fields = [
 ]
 
 let layer: FeatureLayer | undefined;
+export const layerId = "border-crossings-layer";
+const layerTitle = "Border Crossing Points";
 
-export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
-    layer = await layerUtil.initLayer(jsonUrl,
-        "border-crossings-layer",
-        "Border Crossing Points",
-        renderer,
-        fields,
-        "point",
-        false,
-    );
-    return layer;
+/**
+ * Initialize a layer
+ * 
+ * @param jsonUrl JSON URL
+ * @returns Promise<LayerInfo>
+ */
+export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
+    const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
+    try {
+        layer = await layerUtil.initLayer(
+            layerId,
+            layerTitle,
+            renderer,
+            fields,
+            "point",
+            false,
+        );
+    } catch (ex) {
+        console.error(ex);
+        layerInfo.status = LayerStatus.Failed;
+    }
+    return layerInfo;
 }
 
-const getLayer = (): FeatureLayer => {
+/**
+ *
+ */
+const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
-        throw "Border Crossings Layer is not ready yet!";
+        console.error("Border Crossings Layer is not ready yet!");
     }
     return layer;
 }

@@ -1,13 +1,4 @@
 import ExtentInfo from "./ExtentInfo";
-// import LayerInfo from "./LayerInfo";
-
-// interface SavedMapInfo {
-//     title: string;
-//     extent: ExtentInfo;
-//     layers: {i: string, v: boolean}[];
-//     basemap: string;
-//     selected: boolean;
-// }
 
 interface SavedMapInfo {
     t: string; // title

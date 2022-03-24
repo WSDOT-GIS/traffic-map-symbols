@@ -53,7 +53,6 @@ import { project } from "@arcgis/core/geometry/projection";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Extent from "@arcgis/core/geometry/Extent";
 
-import LayerInfo from "@/types/LayerInfo";
 import { getEsriExtent } from "./extentUtil";
 import { getBasemapInfo } from "@/layers/Basemaps";
 import BasemapInfo from "@/types/BasemapInfo";
@@ -63,6 +62,7 @@ import { RouteLocationNormalizedLoaded } from "vue-router";
 
 const queryStringKeys = ["extent", "namedextent", "base", "layer", "featuretype", "featureid"];
 // Read the URL query parameters...
+/** Current URL search parameters (aka, query string parameters). (window.location.search) */
 const params = new URLSearchParams(window.location.search);
 /**
  * Update query string in the URL.
@@ -99,11 +99,12 @@ if (removeKeys.length > 0) {
 }
 
 /**
- * Make specified layer visible.
- * @param layerList 
- * @route
+ * Get layer IDs of layers that should be visible from URL
+ *
+ * @param route URL routing
+ * @returns object of visible and invisible layer ID arrays 
  */
-export const setVisibleLayersFromUrl = (layerList: LayerInfo[], route: RouteLocationNormalizedLoaded): LayerInfo[] => {
+export const getLayerVisibilityFromUrl = (route: RouteLocationNormalizedLoaded): { visible: string[], invisible: string[] } => {
     let layers: string[] | undefined;
     // Flag to turn off layers shown by default. Currently only the Road Alert layer.
     let hideDefaultLyrs = false;
@@ -141,8 +142,10 @@ export const setVisibleLayersFromUrl = (layerList: LayerInfo[], route: RouteLoca
         }
         layers = layers.concat(validLayers);
     }
+    const layerIds: string[] = [];
+    const hideLayerIds: string[] = [];
     if (layers) {
-        const layerIds: string[] = [];
+        // const layerIds: string[] = [];
         layers.forEach((each) => {
             let ids: string[] | undefined;
             try {
@@ -153,26 +156,19 @@ export const setVisibleLayersFromUrl = (layerList: LayerInfo[], route: RouteLoca
             if (ids) {
                 layerIds.push(...ids);
             }
-        })
-        layerList.forEach((eachLyr) => {
-            if (layerIds.includes(eachLyr.id)) {
-                eachLyr.visible = true;
-            }
         });
         // Do not show alert layers...
         if (hideDefaultLyrs && !layers.includes("alert")) {
-            const lyrs2Hide = ['road-alerts-layer', 'road-closures-layer', 'ferry-routes-points-layer'];
-            lyrs2Hide.forEach((hideId) => {
-                const info = layerList.find((lyr) => lyr.id === hideId);
-                if (info) { info.visible = false; }
-            })
+            hideLayerIds.push(...getLayerIds("alert"));//'road-alerts-layer', 'road-closures-layer', 'ferry-routes-points-layer');
         }
     }
-    return layerList;
+    return { visible: layerIds, invisible: hideLayerIds };
 }
 /**
  * Check to make sure the ID is valid.
- * @param groupId Layer group ID
+ *
+ * @param name the name of a layer
+ * @returns Returns true if valid, false otherwise.
  */
 export const validateLayerName = (name: string): boolean => {
     let ids: string[] | undefined;
@@ -187,7 +183,10 @@ export const validateLayerName = (name: string): boolean => {
     else { return false; }
 }
 /**
- * Get feature ID.
+ * Get feature ID from a URL.
+ *
+ * @param route Route URL
+ * @returns Returns a feature ID string if one was found, null otherwise.
  */
 export const getFeatureIdFromUrl = (route: RouteLocationNormalizedLoaded): string | null => {
     let id: string | null;
@@ -200,7 +199,11 @@ export const getFeatureIdFromUrl = (route: RouteLocationNormalizedLoaded): strin
     return id;
 }
 /** 
- * Get feature type. 
+ * Get feature type based on the URL. 
+ *
+ * @param route Vue route object
+ * @returns Returns a feature type string if one can be determined from the URL. 
+ * Otherwise, returns null.
  */
 export const getFeatureTypeFromUrl = (route: RouteLocationNormalizedLoaded): string | null => {
     let type: string | null;
@@ -213,7 +216,9 @@ export const getFeatureTypeFromUrl = (route: RouteLocationNormalizedLoaded): str
     return type;
 }
 /**
- * Get feature type from the query string.
+ * Get feature type from the current browser URL search string.
+ *
+ * @returns returns the feature type if availabe, null otherwise.
  */
 const getFeatureTypeFromQuery = (): string | null => {
     let type: string | null = null;
@@ -232,9 +237,13 @@ const getFeatureTypeFromQuery = (): string | null => {
     }
     return type;
 }
-/**  Assign extent if it is specified.
-     Check namedextent property first, then check the extent property, if nothing or invalid, return full state.
-*/
+/**
+ * Assign extent if it is specified.
+ * Check namedextent property first, then check the extent property, if nothing or invalid, return full state.
+ *
+ * @param route Vue route URL object.
+ * @returns Returns the extent specified in the URL if available, or "full" if not specified or invalid.
+ */
 export const getExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Promise<Extent> => {
     let extent = await getNamedExtentFromUrl(route);
     if (!extent) {
@@ -280,6 +289,7 @@ export const getExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Pr
 /**
  * Get extent by name
  * Support route (area\<name>) and query parameter (?namedextent=<name>)
+ *
  * @param route 
  */
 const getNamedExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Promise<Extent | undefined> => {
@@ -310,10 +320,16 @@ const getNamedExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Prom
     return extent;
 }
 
+/**
+ * @param name
+ */
 export const validateAreaName = (name: string): boolean => {
     return ZoomExtentLayer.validateName(name);
 }
 
+/**
+ *
+ */
 export const getBasemapFromUrl = (): BasemapInfo => {
     const param = params.get("base");
     const name = param ? param : "";

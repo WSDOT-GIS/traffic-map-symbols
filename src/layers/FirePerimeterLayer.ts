@@ -1,35 +1,47 @@
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import firePerimeterSymbol from "@/symbols/FirePerimeterSymbol"
-// import fireIncidentLayer from "@/layers/FireIncidentLayer"
-// import Field from "@arcgis/core/layers/support/Field"
-// import Polygon from "@arcgis/core/geometry/Polygon"
-// import Extent from "@arcgis/core/geometry/Extent"
-// import Layer from "@arcgis/core/layers/Layer"
-// import SpatialReference from "@arcgis/core/geometry/SpatialReference"
-// import { mapView, webmap } from "@/esri-stuff/esriMap"
-// import Graphic from "@arcgis/core/Graphic"
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 
 const firePerimeterRenderer = new simpleRenderer({
     symbol: firePerimeterSymbol
 })
 let layer: FeatureLayer | undefined;
-export const initLayer = (url: string, firePerimeterIDs: string): FeatureLayer => {
-    layer = new FeatureLayer({
-        id: "fire-perimeters-layer",
-        renderer:firePerimeterRenderer,
-        url: url,
-        title: "Fire Perimeters",
-        visible: false,
-        definitionExpression: firePerimeterIDs
-    });
-    return layer
-    
+export const layerId = "fire-perimeters-layer";
+const layerTitle = "Fire Perimeters";
+
+/**
+ * @param url
+ * @param incidentNames
+ */
+export const initLayer = (url: string, incidentNames: string[]): LayerInfo => {
+    const layerInfo = new LayerInfo(layerId, layerTitle, url);
+    const queryString = "IncidentName IN('" + incidentNames.join("','") + "')";
+    console.log(queryString);
+    try {
+        layer = new FeatureLayer({
+            id: layerId,
+            renderer: firePerimeterRenderer,
+            url: url,
+            title: layerTitle,
+            visible: false,
+            definitionExpression: queryString
+        });
+    }
+    catch (ex) {
+        console.error(ex);
+        layer = undefined;
+        layerInfo.status = LayerStatus.Failed
+    }
+    return layerInfo;
 }
 
-const getLayer = (): FeatureLayer => {
+/**
+ *
+ */
+const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
-        throw "Fire Perimeters is not ready yet!";
+        console.error("Fire Perimeters is not ready yet!");
     }
     return layer;
 }

@@ -1,9 +1,10 @@
 import uniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer"
-import { alertSymbol, alertSymbolMedium, alertSymbolHigh, roadClosedSymbol, alertSymbolHighest } from "@/symbols/AlertSymbol"
+import { alertSymbol, alertSymbolMedium, roadClosedSymbol, alertSymbolHighest } from "@/symbols/AlertSymbol"
 import Field from "@arcgis/core/layers/support/Field"
 
 import * as layerUtil from "@/utils/layerUtil";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 import Graphic from "@arcgis/core/Graphic";
 
 const renderer = new uniqueValueRenderer({
@@ -32,16 +33,12 @@ const renderer = new uniqueValueRenderer({
     ]
 })
 
-// const roadAlertsClosureRenderer = new SimpleRenderer({
-//     symbol: roadClosedSymbol,
-// })
-
 const fields = [
-    new Field({
+    /*new Field({
         name: "AppGenId",
         alias: "AppGenId",
         type: "oid"
-    }),
+    }),*/
     new Field({
         name: "EventID", type: "integer", alias: "EventID"
     }),
@@ -76,27 +73,48 @@ const fields = [
     new Field({ name: "TMSOverlap", type: "integer", alias: "TMSOverlap" }),
     new Field({ name: "RegionID", type: "small-integer", alias: "RegionID" }),
     new Field({ name: "TravelCenterPriorityId", type: "small-integer", alias: "TravelCenterPriorityId" }),
+    new Field({ name: "lineMarker", type: "string", alias: "lineMarker"})
 ]
 
-let priorityLayer: FeatureLayer | undefined;
-let closureLayer: FeatureLayer | undefined;
+export const layerId = "road-alerts-layer";
+const layerTitle = "Road Alerts";
+
+let layer: FeatureLayer | undefined;
+
 /**
- * Initialize two road alert layers.
- * @param url 
- * Specify this if data should be loaded at start up. Otherwise not necessary.
- * @returns 
+ * Initialize a layer
+ * 
+ * @param jsonUrl JSON URL
+ * @returns LayerInfo
  */
- let layer: FeatureLayer | undefined;
- export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
-    layer = await layerUtil.initLayer(jsonUrl, "road-alerts-layer", "Road Alerts", renderer, fields, "point", true);
-    layer.orderBy = [{
-        field: "TravelCenterPriorityId",
-        order: "ascending"
-    }]
-    return layer;
+export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
+    const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
+    let graphics: Graphic[];
+
+    try {
+        graphics = await layerUtil.fetchJsonData(jsonUrl);
+        layerInfo.status = LayerStatus.Loaded;
+    } catch (ex) {
+        console.error(ex);
+        graphics = [];
+        layerInfo.status = LayerStatus.Failed;
+    }
+
+    try {
+        layer = await layerUtil.initLayer(layerId, layerTitle, renderer, fields, "point", true, graphics);
+        layer.orderBy = [{
+            field: "TravelCenterPriorityId",
+            order: "ascending"
+        }]
+    }
+    catch (ex) {
+        console.error(ex);
+        layerInfo.status = LayerStatus.Failed;
+    }
+    return layerInfo;
 }
 //**This happens here instead of in the layerutils because of the source distinciton. TODO: fix this**
-/** This is fixed now? **/
+/** This is fixed now? */
 // const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
 //     layer.watch("visible", (newValue) => {
 //         if (newValue) {
@@ -104,37 +122,11 @@ let closureLayer: FeatureLayer | undefined;
 //         }
 //     });
 // }
-const getLayer = (): FeatureLayer => {
+const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
-        throw "ParkRideLayer is not ready yet!";
+        console.error("Road Alerts layer is not ready yet!");
     }
     return layer;
 }
 
-// export default RoadAlertsLayer
 export default getLayer;
-
-export const reloadData = async (url: string): Promise<void> => {
-    const features = await getFeatures(url);
-    if (priorityLayer) {
-        layerUtil.replaceFeatures(priorityLayer, features.priority);
-    }
-    if (closureLayer) {
-        layerUtil.replaceFeatures(closureLayer, features.closure);
-    }
-}
-
-const getFeatures = async (url: string): Promise<{ priority: Graphic[], closure: Graphic[] }> => {
-    const graphics = await layerUtil.fetchJsonData(url);
-    let pGraphics: Graphic[] = [];
-    let cGraphics: Graphic[] = [];
-    // Priority features...
-    pGraphics = graphics.filter((each) => {
-        return each.attributes.EventCategoryDescription !== 'Closure'
-    });
-    // Closure features...
-    cGraphics = graphics.filter((each) => {
-        return each.attributes.EventCategoryDescription === 'Closure'
-    })
-    return { priority: pGraphics, closure: cGraphics };
-}

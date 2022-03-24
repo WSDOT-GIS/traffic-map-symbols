@@ -17,6 +17,8 @@ const renderer = new SimpleRenderer({
     })
 });
 
+// TODO: Use 3857 instead of deprecated 102100 wkid.
+
 const graphics = [
     // Seattle Metro...
     {
@@ -29,7 +31,7 @@ const graphics = [
                 [-13629746.45, 6023828.51],
                 [-13629746.45, 6068530.04]
             ]],
-            spatialReference: { wkid: 102100 }
+            spatialReference: { wkid: 3857 }
         },
         attributes: {
             "ObjectID": 1,
@@ -49,7 +51,7 @@ const graphics = [
                 [-13082872.63, 6077106.34],
                 [-13082872.63, 6039636.67]
             ]],
-            spatialReference: { wkid: 102100 }
+            spatialReference: { wkid: 3857 }
         },
         attributes: {
             "ObjectID": 2,
@@ -69,7 +71,7 @@ const graphics = [
                 [-13661045.09, 5740346.29],
                 [-13661045.09, 5715999.99]
             ]],
-            spatialReference: { wkid: 102100 }
+            spatialReference: { wkid: 3857 }
         },
         attributes: {
             "ObjectID": 3,
@@ -89,7 +91,7 @@ const graphics = [
                 [-13652280.94, 5993905.72],
                 [-13652280.94, 5964648.36]
             ]],
-            spatialReference: { wkid: 102100 }
+            spatialReference: { wkid: 3857 }
         },
         attributes: {
             "ObjectID": 4,
@@ -100,8 +102,9 @@ const graphics = [
     },
 ]
 
+export const layerId = "zoom-areas-layer";
 const layer = new FeatureLayer({
-    id: "zoom-areas-layer",
+    id: layerId,
     title: "Metro Areas",
     fields: [
         new Field({
@@ -136,6 +139,9 @@ const layer = new FeatureLayer({
 
 export default layer;
 
+/**
+ * @param id
+ */
 export const getFeatureById = async (id: number): Promise<Graphic> => {
     const query = layer.createQuery();
     query.where = "ObjectID =" + id;
@@ -149,7 +155,9 @@ export const getFeatureById = async (id: number): Promise<Graphic> => {
 /**
  * Get the extent feature by name.
  * Note: Case insenstive
+ *
  * @param name Name of the extent area
+ * @returns Returns the extent feature (graphic).
  */
 export const getFeatureByName = async (name: string): Promise<Graphic> => {
     const query = layer.createQuery();
@@ -165,7 +173,9 @@ export const getFeatureByName = async (name: string): Promise<Graphic> => {
 /**
  * Check to make sure the name is valid. 
  * NOTE: Case insensitive
+ *
  * @param name Name of the extent area
+ * @returns Returns true if the name is valid, false otherwise.
  */
 export const validateName = (name: string): boolean => {
     const result = graphics.find((item) => {

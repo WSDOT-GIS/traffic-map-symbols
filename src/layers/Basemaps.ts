@@ -2,40 +2,55 @@ import Basemap from "@arcgis/core/Basemap";
 import TileLayer from "@arcgis/core/layers/TileLayer";
 import BasemapInfo from "@/types/BasemapInfo";
 
+/**
+ *
+ */
 export const getDefaultBasemapInfo = (): BasemapInfo => { return basemaps[0] }
 // Array of basemaps. The first one is the default.
-let basemaps: BasemapInfo[] = []
-export const initBasemap = async (basemapString: string): Promise<void> => {
-    basemaps = [
-        {
-            name: "wsdot",
-            basemap: new Basemap({
-                baseLayers: [
-                    new TileLayer({
-                        url: basemapString,
-                    }),
-                ],
-                title: "WSDOT Basemap",
-                id: "wsdot-basemap",
+const basemaps: BasemapInfo[] = [];
+
+/**
+ * @param basemapUrl
+ */
+export const initBasemap = async (basemapUrl: string): Promise<void> => {
+    const wsdotBase = new Basemap({
+        baseLayers: [
+            new TileLayer({
+                url: basemapUrl,
             })
-        }, {
-            name: "satellite",
-            basemap: Basemap.fromId("satellite")
-        }
-    ]
+        ],
+        title: "WSDOT Basemap",
+        id: "wsdot-basemap",
+    });
+    basemaps.push({
+        name: "wsdot",
+        basemap: wsdotBase
+    })
+    // Satellite...
+    const imgBase = Basemap.fromId("satellite");
+    basemaps.push({
+        name: "satellite",
+        basemap: imgBase
+    })
 }
 
+/**
+ * @param name
+ */
 export const getBasemapInfo = (name: string): BasemapInfo => {
-    const results = basemaps.filter((x) => {
-        return x.name == name;
+    const result = basemaps.find((x) => {
+        return x.name === name;
     });
-    if (results.length > 0) {
-        return results[0];
+    if (result) {
+        return result;
     } else {
         return getDefaultBasemapInfo();
     }
 }
 // Select the next basemap info in the array.
+/**
+ * @param currentName
+ */
 export const toggleBasemapInfo = (currentName: string): BasemapInfo => {
     let idx = -1;
     for (let i = 0; i < basemaps.length; i++) {
@@ -52,10 +67,15 @@ export const toggleBasemapInfo = (currentName: string): BasemapInfo => {
         return basemaps[0];
     }
 }
-// Make sure the base map name is valid...
+/**
+ * Make sure the base map name is valid...
+ *
+ * @param name 
+ */
 export const validateBasemapName = (name: string): boolean => {
     const result = basemaps.filter((item) => {
         return item.name === name;
     })
     return result.length > 0;
 }
+

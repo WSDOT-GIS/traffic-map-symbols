@@ -5,6 +5,7 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as layerUtil from "@/utils/layerUtil";
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import symbol from "@/symbols/PointRestrictionsSymbol"
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 const renderer = new simpleRenderer({
     symbol: symbol
 })
@@ -63,44 +64,43 @@ const fields = [
 ]
 
 let layer: FeatureLayer | undefined;
+export const layerId = "point-restrictions-layer";
+const layerTitle = "Restriction Points";
 
-export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
-    layer = await layerUtil.initLayer(jsonUrl,
-        "point-restrictions-layer",
-        "Restriction Points",
-        renderer,
-        fields,
-        "point",
-        false,
-    );
-    return layer;
+/**
+ * Initialize a layer
+ * 
+ * @param jsonUrl JSON URL
+ * @returns Promise<LayerInfo>
+ */
+export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
+    const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
+    try {
+        layer = await layerUtil.initLayer(
+            layerId,
+            layerTitle,
+            renderer,
+            fields,
+            "point",
+            false,
+        );
+    }
+    catch (ex) {
+        console.error(ex);
+        layer = undefined;
+        layerInfo.status = LayerStatus.Failed
+    }
+    return layerInfo;
 }
 
-const getLayer = (): FeatureLayer => {
+/**
+ *
+ */
+const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
-        throw "PointRestrictionLayer is not ready yet!";
+        console.error("PointRestrictionLayer is not ready yet!");
     }
     return layer;
 }
-// let layer: GeoJSONLayer | undefined;
-
-// export const initLayer = (url: string): GeoJSONLayer => {
-//     layer = new GeoJSONLayer({
-//         id: "point-restrictions-layer",
-//         url: url,
-//         title: "Restriction Points",
-//         renderer: renderer,
-//         visible: false,
-//         fields: fields
-//     });
-//     return layer;
-// }
-
-// const getLayer = (): GeoJSONLayer => {
-//     if (!layer) {
-//         throw "PointRestrictionLayer is not ready yet!";
-//     }
-//     return layer;
-// }
 
 export default getLayer

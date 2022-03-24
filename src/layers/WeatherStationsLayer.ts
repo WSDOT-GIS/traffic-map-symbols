@@ -5,6 +5,7 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 import * as layerUtil from "@/utils/layerUtil";
 import MapView from "@arcgis/core/views/MapView";
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 
 const renderer = new SimpleRenderer({
     symbol: weatherStationSymbol
@@ -69,34 +70,52 @@ const fields = [
 ]
 
 let layer: FeatureLayer | undefined;
+export const layerId = "weather-stations-layer";
+const layerTitle = "Weather Stations";
 
-export const initLayer = async (jsonUrl: string, view: MapView): Promise<FeatureLayer> => {
-    layer = await layerUtil.initLayer(jsonUrl,
-        "weather-stations-layer",
-        "Weather Stations",
-        renderer,
-        fields,
-        "point",
-        false,
-        true
-    );
-    layer.definitionExpression = "WeatherNetworkPriority = 0"
-    view.watch("scale", (scale) => {
-        if (scale > 577790.554289) {
-            (layer as FeatureLayer).definitionExpression = "WeatherNetworkPriority = 0";
-            (layer as FeatureLayer).refresh()
-        }
-        else {
-            (layer as FeatureLayer).definitionExpression = "1=1";
-            (layer as FeatureLayer).refresh()
-        }
-    })
-    return layer;
+/**
+ * Initialize feature layer
+ * 
+ * @param jsonUrl JSON URL
+ * @param view MapView
+ * @returns LayerInfo
+ */
+export const initLayer = async (jsonUrl: string, view: MapView): Promise<LayerInfo> => {
+    const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
+    try {
+        layer = await layerUtil.initLayer(
+            layerId,
+            "Weather Stations",
+            renderer,
+            fields,
+            "point",
+            false,
+        );
+        layer.definitionExpression = "WeatherNetworkPriority = 0"
+        view.watch("scale", (scale) => {
+            if (scale > 577790.554289) {
+                (layer as FeatureLayer).definitionExpression = "WeatherNetworkPriority = 0";
+                (layer as FeatureLayer).refresh()
+            }
+            else {
+                (layer as FeatureLayer).definitionExpression = "1=1";
+                (layer as FeatureLayer).refresh()
+            }
+        })
+    } catch (ex) {
+        console.error(ex);
+        layer = undefined;
+        layerInfo.status = LayerStatus.Failed
+    }
+    return layerInfo;
 }
 
-const getLayer = (): FeatureLayer => {
+/**
+ *
+ */
+const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
-        throw "WeatherStationsLayer is not ready yet!";
+        console.error("WeatherStationsLayer is not ready yet!");
     }
     return layer;
 }

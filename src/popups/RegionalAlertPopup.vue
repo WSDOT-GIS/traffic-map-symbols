@@ -3,27 +3,32 @@ import { defineComponent, nextTick, PropType, ref, watch } from "vue";
 import Handles from "@arcgis/core/core/Handles";
 
 import PopupBase from "./PopupBase.vue";
-import FeatureLayer from "@/layers/RegionalAlertLayer";
 import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
+import { getLayer } from "@/esri-stuff/esriMap";
+import { useStore } from "@/store";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 export default defineComponent({
   components: { PopupBase },
+  emits: ["close"],
   props: {
     Featureset: {
       type: Object as PropType<FeaturesetInfo>,
       required: true,
     },
   },
-  setup(props) {
+  setup(props, context) {
+    const layerId = "regional-alert-layer";
+    const store = useStore();
     const feature = ref<FeatureInfo>();
     const layerIcons = layerListIcons;
     let esriHandles = new Handles();
 
     watch(props, () => {
-      if (props.Featureset.layerId === FeatureLayer().id) {
+      if (props.Featureset.layerId === layerId) {
         show();
       } else {
         close();
@@ -31,7 +36,12 @@ export default defineComponent({
     });
 
     const show = () => {
-      const layer = FeatureLayer();
+      const lyrStatus = store.getters.getLayerStatus(layerId);
+      if (lyrStatus !== "loaded") {
+        close();
+        return;
+      }
+      const layer = getLayer(layerId) as FeatureLayer;
       const setVal = () => {
         getFeatureInfoById(props.Featureset.ids[0], layer).then(
           //query feature layer for feature
@@ -68,9 +78,13 @@ export default defineComponent({
       );
     };
     // Setting features to undefined closes the popup...
-    const close = () => {
+    const close = (doNotify?: boolean) => {
       feature.value = undefined;
       esriHandles.removeAll();
+      // Let EsriMapView component know the popup is closed, so it won't show the popup again when the icon is moved.
+      if (doNotify) {
+        context.emit("close");
+      }
     };
     const getExtendedMessage = (feature: FeatureInfo): string => {
       let html = "";
@@ -80,10 +94,10 @@ export default defineComponent({
           <div>
             ${feature.attributes["ExtendedMessage"]}
           </div>
-        <br>`
+        <br>`;
       }
       return html;
-    }
+    };
     const getTitle = (feature: FeatureInfo): string => {
       return (
         feature.attributes["EventCategoryTypeDescription"] +
@@ -94,11 +108,12 @@ export default defineComponent({
       );
     };
     return {
+      layerId,
       feature,
       layerIcons,
       close,
       getTitle,
-      getExtendedMessage
+      getExtendedMessage,
     };
   },
 });
@@ -109,7 +124,8 @@ export default defineComponent({
     :IconSvg="layerIcons.find((x) => x.id === 'regional-alert-layer')?.paths"
     LightThemeColor="#8E09004D"
     DarkThemeColor="#8E0900"
-    :Features="[feature]"
+    :LayerId="layerId"
+    :Features="feature ? [feature] : []"
     :Config="{
       bannerText: { text: 'Emergency' },
       title: { custom: getTitle },
@@ -117,11 +133,11 @@ export default defineComponent({
         { label: 'Description', value: { fieldName: 'HeadlineMessage' } },
         { label: '', value: { fieldName: 'ExtendedMessage' } },
         {
-          label:'',
-          value:{
+          label: '',
+          value: {
             custom: getExtendedMessage,
-            isHTML: true
-          }
+            isHTML: true,
+          },
         },
         {
           label: 'Last Updated',
@@ -133,8 +149,6 @@ export default defineComponent({
         },
       ],
     }"
-    @close="close"
-  >
-  </PopupBase>
+    @close="close(true)"
+  ></PopupBase>
 </template>
-

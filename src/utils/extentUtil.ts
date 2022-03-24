@@ -22,16 +22,25 @@ const defaultExtents: ExtentInfo[] = [
     },
 ];
 
+/**
+ * @param id
+ */
 export const getExtentInfo = (id: string): ExtentInfo => {
     const result = defaultExtents.filter(x => x.id == id);
     return result[0];
 };
 
+/**
+ * @param name
+ */
 export const getEsriExtent = (name: string): Extent => {
     const info = getExtentInfo(name);
     return convert2EsriExtent(info);
 };
 
+/**
+ * @param extentInfo
+ */
 export const convert2EsriExtent = (extentInfo: ExtentInfo): Extent => {
     const extent = new Extent({
         xmin: extentInfo.xmin,
@@ -43,6 +52,9 @@ export const convert2EsriExtent = (extentInfo: ExtentInfo): Extent => {
     return extent;
 };
 
+/**
+ * @param extent
+ */
 export const convert2ExtentInfo = (extent: Extent): ExtentInfo => {
     const info: ExtentInfo = {
         xmin: extent.xmin,
@@ -54,9 +66,11 @@ export const convert2ExtentInfo = (extent: Extent): ExtentInfo => {
 };
 /**
  * Figure out the relative direction from the full extent.
+ *
  * @param mapXY 
  * Location to compare against the full extent.
- * @returns 
+ * @param extent An extent. If omitted, "full" extent is assumed.
+ * @returns A two character string that matches /[ins][iwe]/
  * First char: vertical direction = i/n/s (inside/north/south)
  * Second char: horizontal direction = i/w/e (inside/west/east)
  */
@@ -83,6 +97,9 @@ export const getOutOfBoundDirection = (mapXY: XY, extent?: ExtentInfo | Extent):
     return dir;
 }
 
+/**
+ *
+ */
 export const getOutOfExtentPolygons = (): Extent[] => {
     const displayExtent = getEsriExtent("full").expand(1.2);
     const xMin = -20000000;

@@ -9,6 +9,8 @@ import { getLineFromPointId } from "./featureInfoUtil";
 import CIMSymbol from "@arcgis/core/symbols/CIMSymbol";
 import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
+import Map from "@arcgis/core/Map";
+// import layer from "@/layers/ZoomExtentLayer";
 
 /**
  * 
@@ -61,26 +63,54 @@ export const buildGraphicsByType = (type: string, data: any): Graphic => {
     return graphic as Graphic
 
 }
+/**
+ * @param graphicType
+ * @param graphic
+ */
 export const addGraphicsByType = (graphicType: string, graphic: Graphic): void => {
     graphic.attributes = { graphicType: graphicType }
     mapView.graphics.add(graphic as Graphic)
 }
-export const displayPointInteractionGraphics = (layer: FeatureLayer, targetField: string, targetValue: string | number | undefined): void => {
-    layer.visible = true
-    layer.definitionExpression = `${targetField} = '${targetValue}'`
+/**
+ * @param layerId
+ * @param map
+ * @param targetField
+ * @param targetValue
+ */
+export const displayPointInteractionGraphics = (layerId: string, map: Map, targetField: string, targetValue: string | number | undefined): void => {
+    const layer = map.findLayerById(layerId);
+    if (!layer || layer.type != "feature") {
+        console.warn(`The specified layer, ${layerId}, is not available or not a feature layer.`);
+        return;
+    }
+    const fLyr = layer as FeatureLayer;
+    fLyr.visible = true
+    fLyr.definitionExpression = `${targetField} = '${targetValue}'`
     getLineFromPointId(
         targetField,
         targetValue as string,
-        layer
+        fLyr
     )
 }
-export const hidePointInteractionGraphics = (layer?: FeatureLayer): void => {
+/**
+ * @param layerId
+ * @param map
+ */
+export const hidePointInteractionGraphics = (layerId: string, map: Map): void => {
+    const layer = map.findLayerById(layerId);
+    if (!layer || layer.type != "feature") {
+        console.warn(`The specified layer, ${layerId}, is not available or not a feature layer.`);
+        return;
+    }
     const targetLayer = layer as FeatureLayer
     targetLayer.visible = false
     if (targetLayer) {
         targetLayer.definitionExpression = "1=0"; //remove line restriction symbol
     }
 }
+/**
+ * @param graphicType
+ */
 export const removeGraphicsByType = (graphicType: string): void => {
     switch (graphicType) {
         default: {

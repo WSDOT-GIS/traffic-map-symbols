@@ -1,3 +1,38 @@
+<script lang="ts">
+import { useStore } from "@/store";
+import { computed, defineComponent } from "vue";
+import { layerListIcons } from "@/symbols/IconDefinitions";
+import ToggleSwitchView from "./ToggleSwitchView.vue";
+import { getLayerIds } from "@/utils/layerUtil";
+
+export default defineComponent({
+  components: { ToggleSwitchView },
+  setup() {
+    const store = useStore();
+    const layerIcons = layerListIcons;
+    const layerList = computed(() => store.state.layerList);
+    //#region toggle layer on and off
+    const clickEvent = async (evt: { checked: boolean; value: string }) => {
+      const ids = evt.value.split(",");
+      store.dispatch("updateLayerVisibility", { ids: ids, visible: evt.checked });
+    };
+    const getLayerVisibility = (id: string): boolean => {
+      let visible = store.getters.getLayerVisibility(id);
+      if (visible === undefined) { visible = false;}
+      return visible;
+    };
+    const getLayerTitle = (id: string): string => {
+      let title = store.getters.getLayerTitle(id);
+      if (!title) {
+        title = "";
+      }
+      return title;
+    };
+
+    return { layerIcons, layerList, clickEvent, getLayerVisibility, getLayerTitle, getLayerIds };
+  },
+});
+</script>
 <template>
   <div id="layer-list-widget" title="Map Features" v-if="layerList.length > 0">
     <!-- Column headers -->
@@ -9,9 +44,9 @@
     <ToggleSwitchView
       @toggle="clickEvent"
       :Enabled="true"
-      :Checked="layerList[getLayerIndex('traffic-flow-layer')].visible"
-      :Value="getLayerIndex('traffic-flow-layer').toString()"
-      :Title="'Toggle ' + layerList[getLayerIndex('traffic-flow-layer')].title"
+      :Checked="getLayerVisibility('traffic-flow-layer')"
+      Value="traffic-flow-layer"
+      :Title="'Toggle ' + getLayerTitle('traffic-flow-layer')"
     >
       <template v-slot>
         <span class="layer-list-item-text">Traffic flow</span>
@@ -45,15 +80,9 @@
     <ToggleSwitchView
       @toggle="clickEvent"
       :Enabled="true"
-      :Checked="layerList[getLayerIndex('road-alerts-layer')].visible"
-      :Value="
-        getLayerIndex('road-alerts-layer').toString() +
-        ',' +
-        getLayerIndex('road-closures-layer').toString() +
-        ',' +
-        getLayerIndex('ferry-routes-points-layer').toString()
-      "
-      :Title="'Toggle ' + layerList[getLayerIndex('road-alerts-layer')].title"
+      :Checked="getLayerVisibility('road-alerts-layer')"
+      :Value="getLayerIds('alert').join(',')"
+      :Title="'Toggle ' + getLayerTitle('road-alerts-layer')"
     >
       <template v-slot>
         <span class="layer-list-item-text">Alerts</span>
@@ -96,18 +125,15 @@
       <ToggleSwitchView
         @toggle="clickEvent"
         :Enabled="true"
-        :Checked="layerList[getLayerIndex('traffic-camera-layer')].visible"
-        :Value="getLayerIndex('traffic-camera-layer').toString()"
-        :Title="'Toggle ' + layerList[getLayerIndex('traffic-camera-layer')].title"
+        :Checked="getLayerVisibility('traffic-camera-layer')"
+        Value="traffic-camera-layer"
+        :Title="'Toggle ' + getLayerTitle('traffic-camera-layer')"
       >
         <template v-slot>
           <div class="layer-list-item-label">
             <div
               class="layer-list-item-icon"
-              v-html="
-                layerIcons.find((x) => x.id == layerList[getLayerIndex('traffic-camera-layer')].id)
-                  ?.paths
-              "
+              v-html="layerIcons.find((x) => x.id == 'traffic-camera-layer')?.paths"
             ></div>
             <span class="layer-list-item-text">Cameras</span>
           </div>
@@ -119,13 +145,9 @@
       <ToggleSwitchView
         @toggle="clickEvent"
         :Enabled="true"
-        :Checked="layerList[getLayerIndex('point-restrictions-layer')].visible"
-        :Value="
-          getLayerIndex('point-restrictions-layer').toString() +
-          ',' +
-          getLayerIndex('line-restrictions-layer').toString()
-        "
-        Title="Toggle Truck Restrictions"
+        :Checked="getLayerVisibility('point-restrictions-layer')"
+        :Value="getLayerIds('restriction').join(',')"
+        :Title="'Toggle ' + getLayerTitle('point-restrictions-layer')"
       >
         <template v-slot>
           <div class="layer-list-item-label">
@@ -143,9 +165,9 @@
       <ToggleSwitchView
         @toggle="clickEvent"
         :Enabled="true"
-        :Checked="layerList[getLayerIndex('mountain-passes-layer')].visible"
-        :Value="getLayerIndex('mountain-passes-layer').toString()"
-        :Title="'Toggle ' + layerList[getLayerIndex('mountain-passes-layer')].title"
+        :Checked="getLayerVisibility('mountain-passes-layer')"
+        Value="mountain-passes-layer"
+        :Title="'Toggle ' + getLayerTitle('mountain-passes-layer')"
       >
         <template v-slot>
           <div class="layer-list-item-label">
@@ -163,9 +185,9 @@
       <ToggleSwitchView
         @toggle="clickEvent"
         :Enabled="true"
-        :Checked="layerList[getLayerIndex('weather-stations-layer')].visible"
-        :Value="getLayerIndex('weather-stations-layer').toString()"
-        :Title="'Toggle ' + layerList[getLayerIndex('weather-stations-layer')].title"
+        :Checked="getLayerVisibility('weather-stations-layer')"
+        Value="weather-stations-layer"
+        :Title="'Toggle ' + getLayerTitle('weather-stations-layer')"
       >
         <template v-slot>
           <div class="layer-list-item-label">
@@ -183,9 +205,9 @@
       <ToggleSwitchView
         @toggle="clickEvent"
         :Enabled="true"
-        :Checked="layerList[getLayerIndex('rest-areas-layer')].visible"
-        :Value="getLayerIndex('rest-areas-layer').toString()"
-        :Title="'Toggle ' + layerList[getLayerIndex('rest-areas-layer')].title"
+        :Checked="getLayerVisibility('rest-areas-layer')"
+        Value="rest-areas-layer"
+        :Title="'Toggle ' + getLayerTitle('rest-areas-layer')"
       >
         <template v-slot>
           <div class="layer-list-item-label">
@@ -203,9 +225,9 @@
       <ToggleSwitchView
         @toggle="clickEvent"
         :Enabled="true"
-        :Checked="layerList[getLayerIndex('park-ride-layer')].visible"
-        :Value="getLayerIndex('park-ride-layer').toString()"
-        :Title="'Toggle ' + layerList[getLayerIndex('park-ride-layer')].title"
+        :Checked="getLayerVisibility('park-ride-layer')"
+        Value="park-ride-layer"
+        :Title="'Toggle ' + getLayerTitle('park-ride-layer')"
       >
         <template v-slot>
           <div class="layer-list-item-label">
@@ -218,38 +240,14 @@
         </template>
       </ToggleSwitchView>
     </div>
-    <!-- Travel Times -->
-    <!-- <li class="w3-border-0 mapFeaturesLI" style="padding: 1px 0">
-        <ToggleSwitchView
-          @toggle="clickEvent"
-          :Enabled="true"
-          :Checked="layerList[getLayerIndex('travel-times-layer')].visible"
-          :Value="getLayerIndex('travel-times-layer').toString()"
-          :Title="
-            'Toggle ' + layerList[getLayerIndex('travel-times-layer')].title
-          "
-        >
-          <template v-slot>
-            <div
-              class="layer-list-item-icon"
-              v-html="
-                layerIcons.find((x) => x.id == 'travel-times-layer')?.paths
-              "
-            ></div>
-            <span class="layer-list-item-text">
-              Travel times</span
-            >
-          </template>
-        </ToggleSwitchView>
-      </li> -->
     <!--Border Crossings-->
     <div class="layer-list-row">
       <ToggleSwitchView
         @toggle="clickEvent"
         :Enabled="true"
-        :Checked="layerList[getLayerIndex('border-crossings-layer')].visible"
-        :Value="getLayerIndex('border-crossings-layer').toString()"
-        Title="Toggle Border Crossings"
+        :Checked="getLayerVisibility('border-crossings-layer')"
+        Value="border-crossings-layer"
+        :Title="'Toggle ' + getLayerTitle('border-crossings-layer')"
       >
         <template v-slot>
           <div class="layer-list-item-label">
@@ -267,13 +265,9 @@
       <ToggleSwitchView
         @toggle="clickEvent"
         :Enabled="true"
-        :Checked="layerList[getLayerIndex('fire-perimeters-layer')].visible"
-        :Value="
-          getLayerIndex('fire-perimeters-layer').toString() +
-          ',' +
-          getLayerIndex('fire-incidents-layer').toString()
-        "
-        Title="Toggle Wildland Fires"
+        :Checked="getLayerVisibility('fire-perimeters-layer')"
+        :Value="getLayerIds('fire').join(',')"
+        :Title="'Toggle ' + getLayerTitle('fire-perimeters-layer')"
       >
         <template v-slot>
           <div class="layer-list-item-label">
@@ -290,9 +284,9 @@
     <div class="layer-list-row">
       <ToggleSwitchView
         @toggle="clickEvent"
-        :Checked="layerList[getLayerIndex('mile-markers')].visible"
-        :Value="getLayerIndex('mile-markers').toString()"
-        :Title="'Toggle Mile Markers'"
+        :Checked="getLayerVisibility('mile-markers')"
+        Value="mile-markers"
+        :Title="'Toggle ' + getLayerTitle('mile-markers')"
         :Enabled="true"
       >
         <template v-slot>
@@ -308,53 +302,6 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import { store, useStore } from "@/store";
-import { defineComponent } from "vue";
-import { layerListIcons } from "@/symbols/IconDefinitions";
-import ToggleSwitchView from "./ToggleSwitchView.vue";
-
-export default defineComponent({
-  components: { ToggleSwitchView },
-  setup() {
-    const store = useStore();
-    const layerIcons = layerListIcons;
-    return { layerIcons, store };
-  },
-  computed: {
-    layerList() {
-      return store.state.layerList;
-    },
-  },
-  methods: {
-    //#region toggle layer on and off
-    clickEvent: async (evt: { checked: boolean; value: string }) => {
-      store.state.layerList.map((layer, index) => {
-        if (evt) {
-          const idxs = evt.value.split(",");
-          for (let i = 0; i < idxs.length; i++) {
-            if (index.toString() === idxs[i]) {
-              layer.visible = evt.checked;
-            }
-          }
-        }
-      });
-      store.commit("setLayerList", store.state.layerList);
-    },
-    getLayerIndex: (id: string): number => {
-      let layerIndex = -1;
-      store.state.layerList.map((val, index) => {
-        if (val.id == id) {
-          layerIndex = index;
-        }
-      });
-      return layerIndex;
-    },
-
-    //#endregion
-  },
-});
-</script>
 <style scoped>
 #layer-list-widget {
   padding-bottom: 16px;
