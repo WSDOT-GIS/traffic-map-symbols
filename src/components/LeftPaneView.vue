@@ -62,7 +62,7 @@ export default defineComponent({
     id="map-top-left-container-closed"
     class="w3-container w3-padding-small w3-card w3-white w3-button"
     @click="toggleDisplay"
-    :style="store.state.serviceAlerts.length>0?{top:35 + 'px'}:{top:0 + 'px'}"
+    :style="store.state.serviceAlertsBannerVisible?{top:35 + 'px'}:{top:0 + 'px'}"
   >
     <label class="map-left-panel-title-closed">Map Legend</label>
     <div class="map-left-panel-btn map-left-panel-open-btn w3-button">
