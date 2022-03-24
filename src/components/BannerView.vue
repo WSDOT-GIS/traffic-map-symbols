@@ -1,21 +1,3 @@
-<template>
-  <transition name="fade">
-    <div v-if="bannerVisible" id="warningBannerDiv">
-      <div id="warningBannerErrorLabel">
-        {{ `These layers are not available: ${serviceAlerts}` }}
-      </div>
-      <button
-        title="Close error banner"
-        aria-label="Close error banner"
-        id="error-banner-close-btn"
-        class="w3-button w3-display-right"
-        @click="removeServiceAlertBanner"
-      >
-        &times;
-      </button>
-    </div>
-  </transition>
-</template>
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from "vue";
 import { useStore } from "@/store";
@@ -36,6 +18,24 @@ export default defineComponent({
   },
 });
 </script>
+<template>
+  <transition name="fade">
+    <div v-if="bannerVisible" id="warningBannerDiv">
+      <div id="warningBannerErrorLabel">
+        {{ `These layers are not available: ${serviceAlerts}` }}
+      </div>
+      <button
+        title="Close error banner"
+        aria-label="Close error banner"
+        id="error-banner-close-btn"
+        class="w3-button w3-display-right"
+        @click="removeServiceAlertBanner"
+      >
+        &times;
+      </button>
+    </div>
+  </transition>
+</template>
 <style scoped>
 .fade-enter-active {
   transition: all 0.3s ease;
