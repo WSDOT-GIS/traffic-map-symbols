@@ -1,6 +1,6 @@
 {
   "wsdotRoot": "https://wsdot.wa.gov",
-  "basemap": "https://tiles.arcgis.com/tiles2/IYrj3otxNjPsrTRD/arcgis/rest/services/Travel_Center_Basemap/MapServer",
+  "basemap": "https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/Travel_Center_Basemap/MapServer",
   "cameras": "https://data.wsdot.wa.gov/travelcenter/Cameras.json",
   "lineRestrictions": "https://data.wsdot.wa.gov/travelcenter/LineRestrictions.json",
   "mountainPasses": "https://data.wsdot.wa.gov/travelcenter/MountainPasses.json",
