@@ -779,6 +779,7 @@ export default defineComponent({
     };
 
     return {
+      store,
       modalContainerRef,
       containerRef,
       contentContainerRef,
@@ -823,6 +824,7 @@ export default defineComponent({
       'popup-modal-container-show': smallMedia && propFeatures.length > 0 && propFeatures[0],
       'popup-modal-container-hide': smallMedia && (!propFeatures || propFeatures.length == 0),
     }"
+    :style="{ paddingTop: store.state.serviceAlertsBannerVisible ? '45px' : '15px' }"
   >
     <div
       ref="containerRef"
@@ -995,7 +997,6 @@ export default defineComponent({
 <style scoped>
 .popup-modal-container-show {
   display: block;
-  padding-top: 15px;
 }
 .popup-modal-container-hide {
   display: none;

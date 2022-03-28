@@ -79,7 +79,6 @@ import AlertView from "@/components/AlertView.vue";
 import AdView from "@/components/AdView.vue";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import { hasParentClass } from "@/utils/miscUtil";
-
 export default defineComponent({
   components: {
     ZoomPopupView,

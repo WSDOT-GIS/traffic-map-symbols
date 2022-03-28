@@ -109,10 +109,10 @@ export default defineComponent({
                   forecastsLoaded.value = "true";
                 });
               } else {
-                store.commit("addServiceAlert", "Weather forecast service is not availble.");
+                store.commit("addServiceAlert", "Weather Forecast");
               }
               feature.value = featureresult;
-            }).catch(() => store.commit("addServiceAlert", "Failed to retrieve weather forcast."));
+            }).catch(() => store.commit("addServiceAlert", "Weather Forecast"));
           }
         }
       );
