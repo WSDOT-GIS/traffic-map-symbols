@@ -34,6 +34,7 @@ import * as FerryRoutesReferenceLayer from "@/layers/ferryRoutesReferenceLayer"
 import * as LineFerryRoutesLayer from "@/layers/LineFerryRoutesLayer"
 import * as PointFerryRoutesLayer from "@/layers/PointFerryRoutesLayer"
 import * as AlertAreaLayer from "@/layers/AlertAreaLayer"
+import * as LinearClosuresLayer from "@/layers/LinearClosuresLayer"
 //
 import * as extentUtil from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
@@ -108,6 +109,7 @@ export const loadOperationalLayers = async (): Promise<LayerInfo[]> => {
     promises.push(CameraLayer.initLayer(config.cameras));
     promises.push(RoadAlertsLayer.initLayer(config.roadAlerts));
     promises.push(LineRoadAlertsLayer.initLayer(config.lineRoadAlerts))
+    promises.push(LinearClosuresLayer.initLayer(config.lineRoadAlerts))
     promises.map(eachPromise => eachPromise.catch(error => error));
     // Load sync ones...
     const infos: LayerInfo[] = [];
@@ -164,6 +166,8 @@ export const loadOperationalLayers = async (): Promise<LayerInfo[]> => {
     addToList(PointFerryRoutesLayer.default());
     addToList(RoadAlertsLayer.default());
     addToList(LineRoadAlertsLayer.default());
+    addToList(LinearClosuresLayer.default());
+    
     // The first one in the array will be displayed at the bottom of the map... 
     webmap.addMany(lyrs);
     // Store the default visibility...
@@ -215,6 +219,7 @@ export const refreshLayerData = async (): Promise<LayerInfo[]> => {
     promises.push(RegionalAlertLayer.reloadData(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries));
     promises.push(layerUtil.reloadData(config.roadAlerts, RoadAlertsLayer.default()));
     promises.push(layerUtil.reloadData(config.lineRoadAlerts, LineRoadAlertsLayer.default()));
+    promises.push(layerUtil.reloadData(config.lineRoadAlerts, LinearClosuresLayer.default()));
     promises.push(layerUtil.reloadData(config.pointRestrictions, PointRestrictionsLayer.default()));
     promises.push(layerUtil.reloadData(config.lineRestrictions, LineRestrictionsLayer.default()));
     promises.push(layerUtil.reloadData(config.mountainPasses, MountainLayer.default()));

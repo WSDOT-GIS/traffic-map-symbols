@@ -291,6 +291,7 @@ export default defineComponent({
                 if (hasParentClass(target, "alert-content") == false) {
                   hidePointInteractionGraphics("line-restrictions-layer", esriMap.webmap);
                   hidePointInteractionGraphics("ferry-routes-lines-layer", esriMap.webmap);
+                  hidePointInteractionGraphics("line-road-alerts-layer", esriMap.webmap);
                 }
                 // Not aggregate...
                 const id = g.getObjectId();
@@ -303,7 +304,7 @@ export default defineComponent({
                           "line-restrictions-layer",
                           esriMap.webmap,
                           "UniqueId",
-                          result?.attributes.UniqueId
+                          `${result?.attributes.UniqueId}`
                         )
                       }
                       if(g.layer.id === "road-alerts-layer"){
@@ -313,8 +314,8 @@ export default defineComponent({
                           "EventID",
                           result?.attributes.EventID
                         )
+                        showPopup(results2Show.layer.id, [id])
                       }
-                      showPopup(results2Show.layer.id, [id])
                     }
                     else {
                       showPopup(results2Show.layer.id, [id]);
@@ -328,7 +329,7 @@ export default defineComponent({
                       "ferry-routes-lines-layer",
                       esriMap.webmap,
                       "FerryRouteID",
-                      result?.attributes.FerryRouteID
+                      `${result?.attributes.FerryRouteID}`
                     );
                     showPopup(g.layer.id, [id]);
                   });
@@ -343,6 +344,7 @@ export default defineComponent({
             if (hasParentClass(target, "alert-content") == false) {
               hidePointInteractionGraphics("line-restrictions-layer", esriMap.webmap);
               hidePointInteractionGraphics("ferry-routes-lines-layer", esriMap.webmap);
+              hidePointInteractionGraphics("line-road-alerts-layer", esriMap.webmap);
               removeGraphicsByType("selectedGraphic");
               removeGraphicsByType("myLocation"); //remove "my location" graphic
               //No feature exist...

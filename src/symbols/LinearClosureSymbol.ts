@@ -1,10 +1,10 @@
 import SimpleLineSymbol from "@arcgis/core/symbols/SimpleLineSymbol";
 
-const lineAlertSymbol = new SimpleLineSymbol({
+const linearClosureSymbol = new SimpleLineSymbol({
     style: "solid",
-    color: [255, 255, 0,.9],
+    color: 'red',
     width: "15px",
     cap:"square"
     
 })
-export { lineAlertSymbol}
+export { linearClosureSymbol}

@@ -1,4 +1,4 @@
-import { lineAlertSymbol} from "../symbols/LineAlertSymbol"
+import { linearClosureSymbol} from "../symbols/LinearClosureSymbol"
 import Field from "@arcgis/core/layers/support/Field";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as layerUtil from "@/utils/layerUtil";
@@ -6,7 +6,7 @@ import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import Graphic from "@arcgis/core/Graphic";
 const renderer = new SimpleRenderer({
-    symbol: lineAlertSymbol
+    symbol: linearClosureSymbol
 })
 
 const fields = [
@@ -43,8 +43,7 @@ const layerTitle = "Road Alert Lines";
     }
 
     try {
-       // layer = await layerUtil.initLayer(jsonUrl, layerId, layerTitle, renderer, fields, "polyline", true, graphics,"EventCategoryDescription not in ('Closure')");
-       layer = await layerUtil.initLayer(jsonUrl, layerId, layerTitle, renderer, fields, "polyline", true, graphics,"1=0");
+        layer = await layerUtil.initLayer(jsonUrl, layerId, layerTitle, renderer, fields, "polyline", true, graphics,"EventCategoryDescription in ('Closure')");
         layer.orderBy = [{
             field: "TravelCenterPriorityId",
             order: "ascending"

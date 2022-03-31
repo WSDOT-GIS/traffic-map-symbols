@@ -85,12 +85,13 @@ export const displayPointInteractionGraphics = (layerId: string, map: Map, targe
     }
     const fLyr = layer as FeatureLayer;
     fLyr.visible = true
-    fLyr.definitionExpression = `${targetField} = '${targetValue}'`
-    getLineFromPointId(
+    fLyr.definitionExpression = `${targetField} in (${targetValue})`
+    fLyr.refresh()
+   /* getLineFromPointId(
         targetField,
         targetValue as string,
         fLyr
-    )
+    )*/
 }
 /**
  * @param layerId

@@ -197,10 +197,13 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
  */
 export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: string,
     renderer: Renderer, fields: Field[], geometryType: "point" | "multipoint" | "polyline" | "polygon",
-    visible: boolean, graphics?: Graphic[]): Promise<FeatureLayer> => {
+    visible: boolean, graphics?: Graphic[],definitionExpression?:string): Promise<FeatureLayer> => {
     // Create Graphics from JSON...
     if (!graphics) {
         graphics = [];
+    }
+    if(!definitionExpression){
+        definitionExpression='1=1'
     }
     //let graphics: Graphic[] = [];
     // if (visible) {
@@ -230,6 +233,7 @@ export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: st
         source: graphics,
         geometryType: geometryType,
         spatialReference: SpatialReference.WebMercator,
+        definitionExpression: definitionExpression
     });
     // Set event to load layer when it becomes visible...
     // if (graphics.length === 0) {
