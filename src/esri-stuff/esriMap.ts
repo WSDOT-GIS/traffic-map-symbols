@@ -107,9 +107,9 @@ export const loadOperationalLayers = async (): Promise<LayerInfo[]> => {
     promises.push(LineRestrictionsLayer.initLayer(config.lineRestrictions));
     promises.push(PointRestrictionsLayer.initLayer(config.pointRestrictions));
     promises.push(CameraLayer.initLayer(config.cameras));
-    promises.push(RoadAlertsLayer.initLayer(config.roadAlerts));
-    promises.push(LineRoadAlertsLayer.initLayer(config.lineRoadAlerts))
-    promises.push(LinearClosuresLayer.initLayer(config.lineRoadAlerts))
+    promises.push(RoadAlertsLayer.initLayer(config.currentRoadAlertPoint));
+    promises.push(LineRoadAlertsLayer.initLayer(config.currentRoadAlertLine))
+    promises.push(LinearClosuresLayer.initLayer(config.currentRoadClosureLine))
     promises.map(eachPromise => eachPromise.catch(error => error));
     // Load sync ones...
     const infos: LayerInfo[] = [];
@@ -216,10 +216,10 @@ export const loadRegionalAlert = async (): Promise<LayerInfo[]> => {
 export const refreshLayerData = async (): Promise<LayerInfo[]> => {
     const config = getConfig();
     const promises = [];
-    promises.push(RegionalAlertLayer.reloadData(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries));
-    promises.push(layerUtil.reloadData(config.roadAlerts, RoadAlertsLayer.default()));
-    promises.push(layerUtil.reloadData(config.lineRoadAlerts, LineRoadAlertsLayer.default()));
-    promises.push(layerUtil.reloadData(config.lineRoadAlerts, LinearClosuresLayer.default()));
+    promises.push(RegionalAlertLayer.reloadData(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries)); 
+    promises.push(layerUtil.reloadData(config.currentRoadAlertPoint, RoadAlertsLayer.default()));
+    promises.push(layerUtil.reloadData(config.currentRoadAlertLine, LineRoadAlertsLayer.default()));
+    promises.push(layerUtil.reloadData(config.currentRoadClosureLine, LinearClosuresLayer.default()));
     promises.push(layerUtil.reloadData(config.pointRestrictions, PointRestrictionsLayer.default()));
     promises.push(layerUtil.reloadData(config.lineRestrictions, LineRestrictionsLayer.default()));
     promises.push(layerUtil.reloadData(config.mountainPasses, MountainLayer.default()));

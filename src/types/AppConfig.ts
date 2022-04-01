@@ -10,8 +10,9 @@ interface AppConfig {
     parkAndRides: string;
     pointRestrictions: string;
     restAreas: string;
-    roadAlerts: string;
-    lineRoadAlerts: string;
+    currentRoadAlertPoint: string;
+    currentRoadAlertLine: string;
+    currentRoadClosureLine:string;
     borderCrossings: string;
     traffic: string;
     weatherStations: string;

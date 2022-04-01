@@ -29,8 +29,8 @@ export const createLayerGroupInfos = (config: AppConfig): void => {
     layerGroups.push({ id: "camera", layers: [{ id: "traffic-camera-layer", uniqueField: "CameraID", jsonUrl: config.cameras }] });
     layerGroups.push({ 
         id: "alert", layers: [
-            { id: "road-alerts-layer", uniqueField: "EventID", jsonUrl: config.roadAlerts },
-            { id: "line-road-alerts-layer", uniqueField: "EventID", jsonUrl: config.lineRoadAlerts }
+            { id: "road-alerts-layer", uniqueField: "EventID", jsonUrl: config.currentRoadAlertPoint },
+            { id: "line-road-alerts-layer", uniqueField: "EventID", jsonUrl: config.currentRoadAlertLine }
         ]
      }); // Loaded by default, should not need to load data.
     layerGroups.push({

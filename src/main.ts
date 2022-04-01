@@ -38,10 +38,11 @@ loadConfig().then((appConfig) => {
     app.use(Toast, {
         // You can set your default options here
         position: POSITION.BOTTOM_CENTER,
-        timeout: 10000,
+        timeout: 5000,
         maxToasts: 5,
         draggable: false,
-        hideProgressBar: true
+        hideProgressBar: true,
+        
     });
     app.mount('#app');
     app.provide('$appInsights', appInsights)
