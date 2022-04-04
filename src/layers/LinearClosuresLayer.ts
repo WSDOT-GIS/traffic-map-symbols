@@ -43,7 +43,7 @@ const layerTitle = "Road Alert Lines";
     }
 
     try {
-        layer = await layerUtil.initLayer(jsonUrl, layerId, layerTitle, renderer, fields, "polyline", true, graphics,"EventCategoryDescription in ('Closure')");
+        layer = await layerUtil.initLayer(layerId, layerTitle, renderer, fields, "polyline", true, graphics,"EventCategoryDescription in ('Closure')");
         layer.orderBy = [{
             field: "TravelCenterPriorityId",
             order: "ascending"

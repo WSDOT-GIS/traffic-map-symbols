@@ -33,6 +33,7 @@ import * as FerryRoutesReferenceLayer from "@/layers/ferryRoutesReferenceLayer"
 import * as LineFerryRoutesLayer from "@/layers/LineFerryRoutesLayer"
 import * as PointFerryRoutesLayer from "@/layers/PointFerryRoutesLayer"
 import * as AlertAreaLayer from "@/layers/AlertAreaLayer"
+import * as LineRoadAlertsLayer from "@/layers/LineRoadAlertsLayer"
 import * as LinearClosuresLayer from "@/layers/LinearClosuresLayer"
 //
 import * as extentUtil from "@/utils/extentUtil";

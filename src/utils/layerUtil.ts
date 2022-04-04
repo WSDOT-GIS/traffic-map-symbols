@@ -39,7 +39,8 @@ export const createLayerGroupInfos = (config: AppConfig): void => {
         id: "alert", layers: [
             { id: "road-alerts-layer", uniqueField: "EventID", jsonUrl: config.currentRoadAlertPoint },
             { id: 'ferry-routes-points-layer', uniqueField: "FerryRouteID" },
-            { id: 'ferry-routes-lines-layer', uniqueField: "FerryRouteID" }
+            { id: 'ferry-routes-lines-layer', uniqueField: "FerryRouteID" },
+            { id: 'line-road-alerts-layer', uniqueField: "EventID"}
         ]
     }); // Loaded by default, should not need to load data.
     layerGroups.push({
