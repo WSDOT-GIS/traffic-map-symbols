@@ -80,7 +80,7 @@ export default defineComponent({
       @toggle="clickEvent"
       :Enabled="true"
       :Checked="getLayerVisibility('road-alerts-layer')"
-      Value="road-alerts-layer,ferry-routes-points-layer,ferry-routes-lines-layer"
+      Value="road-alerts-layer,ferry-routes-points-layer,ferry-routes-lines-layer,line-road-alerts-layer"
       :Title="'Toggle ' + getLayerTitle('road-alerts-layer')"
     >
       <template v-slot>
