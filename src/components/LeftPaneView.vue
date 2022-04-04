@@ -1,58 +1,3 @@
-<template>
-  <transition name="left-pane-slide">
-    <div :style="store.state.serviceAlertsBannerVisible?{top:30 + 'px'}:{top:0 + 'px'}" id="map-top-left-container" v-if="isOpen" class="w3-card w3-white w3-col">
-      <div class="w3-container w3-border-0" ref="headerRef">
-        <div class="map-left-panel-title">Map Legend</div>
-        <div class="map-left-panel-btn map-left-panel-close-btn w3-button" @click="toggleDisplay">
-          <svg
-            id="expand"
-            xmlns="http://www.w3.org/2000/svg"
-            width="12"
-            height="12"
-            viewBox="0 0 32 32"
-            class="svg-icon"
-          >
-            <path
-              d="M31.047 28h-5l-12-12 12-12h5l-12 12 12 12zm-26-12l12-12h-5l-12 12 12 12h5l-12-12z"
-              style="fill: #007b5f"
-            />
-          </svg>
-        </div>
-      </div>
-      <div id="map-top-left-inner-container" class="w3-container" :style="{ maxHeight: maxHeight + 'px' }">
-        <!-- <hr class="horizontal-divider" /> -->
-        <LayerListView />
-        <!-- <hr class="horizontal-divider" /> -->
-        <SavedMapView :IsOpen="isOpen" />
-      </div>
-    </div>
-  </transition>
-  <div
-    v-if="!isOpen"
-    id="map-top-left-container-closed"
-    class="w3-container w3-padding-small w3-card w3-white w3-button"
-    @click="toggleDisplay"
-    :style="store.state.serviceAlerts.length>0?{top:35 + 'px'}:{top:0 + 'px'}"
-  >
-    <label class="map-left-panel-title-closed">Map Legend</label>
-    <div class="map-left-panel-btn map-left-panel-open-btn w3-button">
-      <svg
-        id="expand"
-        xmlns="http://www.w3.org/2000/svg"
-        width="12"
-        height="12"
-        viewBox="0 0 32 32"
-        class="svg-icon"
-      >
-        <path
-          d="M1.047 4h5l12 12-12 12h-5l12-12-12-12zm26 12l-12 12h5l12-12-12-12h-5l12 12z"
-          style="fill: #fff"
-        />
-      </svg>
-    </div>
-  </div>
-</template>
-
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from "vue";
 import { useStore } from "@/store";
@@ -83,7 +28,60 @@ export default defineComponent({
   }
 });
 </script>
-
+<template>
+  <transition name="left-pane-slide">
+    <div :style="store.state.serviceAlertsBannerVisible?{top:30 + 'px'}:{top:0 + 'px'}" 
+      id="map-top-left-container" 
+      v-if="isOpen" class="w3-card w3-white w3-col">
+      <div class="w3-container w3-border-0" ref="headerRef">
+        <div class="map-left-panel-title">Map Legend</div>
+        <div class="map-left-panel-btn map-left-panel-close-btn w3-button" @click="toggleDisplay">
+          <svg
+            id="expand"
+            xmlns="http://www.w3.org/2000/svg"
+            width="12"
+            height="12"
+            viewBox="0 0 32 32"
+            class="svg-icon"
+          >
+            <path
+              d="M31.047 28h-5l-12-12 12-12h5l-12 12 12 12zm-26-12l12-12h-5l-12 12 12 12h5l-12-12z"
+              style="fill: #007b5f"
+            />
+          </svg>
+        </div>
+      </div>
+      <div id="map-top-left-inner-container" class="w3-container" :style="{ maxHeight: maxHeight + 'px' }">
+        <LayerListView />
+        <SavedMapView :IsOpen="isOpen" />
+      </div>
+    </div>
+  </transition>
+  <div
+    v-if="!isOpen"
+    id="map-top-left-container-closed"
+    class="w3-container w3-padding-small w3-card w3-white w3-button"
+    @click="toggleDisplay"
+    :style="store.state.serviceAlertsBannerVisible?{top:35 + 'px'}:{top:0 + 'px'}"
+  >
+    <label class="map-left-panel-title-closed">Map Legend</label>
+    <div class="map-left-panel-btn map-left-panel-open-btn w3-button">
+      <svg
+        id="expand"
+        xmlns="http://www.w3.org/2000/svg"
+        width="12"
+        height="12"
+        viewBox="0 0 32 32"
+        class="svg-icon"
+      >
+        <path
+          d="M1.047 4h5l12 12-12 12h-5l12-12-12-12zm26 12l-12 12h5l12-12-12-12h-5l12 12z"
+          style="fill: #fff"
+        />
+      </svg>
+    </div>
+  </div>
+</template>
 <style scoped>
 #map-top-left-container {
   position: absolute;

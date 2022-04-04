@@ -38,12 +38,15 @@ export const layerId = "rest-areas-layer";
 const layerTitle = "Rest Areas";
 
 /**
- * @param jsonUrl
+ * Initialize a layer
+ * 
+ * @param jsonUrl JSON URL
+ * @returns Promise<LayerInfo>
  */
 export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
     try {
-        layer = await layerUtil.initLayer(jsonUrl, layerId, layerTitle, renderer, fields, "point", false);
+        layer = await layerUtil.initLayer(layerId, layerTitle, renderer, fields, "point", false);
     }
     catch (ex) {
         console.error(ex);

@@ -90,6 +90,7 @@ export default defineComponent({
     watch(mapSize, () => {
       setStyle();
     });
+    
     return {
       imgSrc,
       iconTitle,

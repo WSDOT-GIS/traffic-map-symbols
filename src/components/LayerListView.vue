@@ -3,6 +3,7 @@ import { useStore } from "@/store";
 import { computed, defineComponent } from "vue";
 import { layerListIcons } from "@/symbols/IconDefinitions";
 import ToggleSwitchView from "./ToggleSwitchView.vue";
+import { getLayerIds } from "@/utils/layerUtil";
 
 export default defineComponent({
   components: { ToggleSwitchView },
@@ -28,7 +29,7 @@ export default defineComponent({
       return title;
     };
 
-    return { layerIcons, layerList, clickEvent, getLayerVisibility, getLayerTitle };
+    return { layerIcons, layerList, clickEvent, getLayerVisibility, getLayerTitle, getLayerIds };
   },
 });
 </script>
@@ -80,7 +81,7 @@ export default defineComponent({
       @toggle="clickEvent"
       :Enabled="true"
       :Checked="getLayerVisibility('road-alerts-layer')"
-      Value="road-alerts-layer,ferry-routes-points-layer,ferry-routes-lines-layer,line-road-alerts-layer"
+      :Value="getLayerIds('alert').join(',')"
       :Title="'Toggle ' + getLayerTitle('road-alerts-layer')"
     >
       <template v-slot>
@@ -145,7 +146,7 @@ export default defineComponent({
         @toggle="clickEvent"
         :Enabled="true"
         :Checked="getLayerVisibility('point-restrictions-layer')"
-        Value="point-restrictions-layer,line-restrictions-layer"
+        :Value="getLayerIds('restriction').join(',')"
         :Title="'Toggle ' + getLayerTitle('point-restrictions-layer')"
       >
         <template v-slot>
@@ -265,7 +266,7 @@ export default defineComponent({
         @toggle="clickEvent"
         :Enabled="true"
         :Checked="getLayerVisibility('fire-perimeters-layer')"
-        Value="fire-perimeters-layer,fire-incidents-layer"
+        :Value="getLayerIds('fire').join(',')"
         :Title="'Toggle ' + getLayerTitle('fire-perimeters-layer')"
       >
         <template v-slot>

@@ -43,12 +43,15 @@ export const layerId = "border-crossings-layer";
 const layerTitle = "Border Crossing Points";
 
 /**
- * @param jsonUrl
+ * Initialize a layer
+ * 
+ * @param jsonUrl JSON URL
+ * @returns Promise<LayerInfo>
  */
 export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
     try {
-        layer = await layerUtil.initLayer(jsonUrl,
+        layer = await layerUtil.initLayer(
             layerId,
             layerTitle,
             renderer,

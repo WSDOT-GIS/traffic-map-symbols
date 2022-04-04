@@ -74,13 +74,16 @@ export const layerId = "weather-stations-layer";
 const layerTitle = "Weather Stations";
 
 /**
- * @param jsonUrl
- * @param view
+ * Initialize feature layer
+ * 
+ * @param jsonUrl JSON URL
+ * @param view MapView
+ * @returns LayerInfo
  */
 export const initLayer = async (jsonUrl: string, view: MapView): Promise<LayerInfo> => {
     const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
     try {
-        layer = await layerUtil.initLayer(jsonUrl,
+        layer = await layerUtil.initLayer(
             layerId,
             "Weather Stations",
             renderer,

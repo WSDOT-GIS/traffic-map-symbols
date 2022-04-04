@@ -79,7 +79,6 @@ import AlertView from "@/components/AlertView.vue";
 import AdView from "@/components/AdView.vue";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import { hasParentClass } from "@/utils/miscUtil";
-
 export default defineComponent({
   components: {
     ZoomPopupView,
@@ -101,7 +100,7 @@ export default defineComponent({
     ZoomButtonView,
     AlertView,
     AdView,
-    BannerView
+    BannerView,
   },
   setup() {
     const mapLoaded = ref<boolean>(false);
@@ -296,18 +295,24 @@ export default defineComponent({
                 // Not aggregate...
                 const id = g.getObjectId();
                 // get lines for restriciton point click
-                if (g.layer.id === "point-restrictions-layer"||g.layer.id === "road-alerts-layer") {
+                if (
+                  g.layer.id === "point-restrictions-layer" ||
+                  g.layer.id === "road-alerts-layer"
+                ) {
                   getFeatureInfoById(id, g.layer as FeatureLayer).then((result) => {
-                    if ( result?.attributes.lineMarker == "true" || result?.attributes.lineMarker == "True" ) {
-                      if(g.layer.id === "point-restrictions-layer"){
+                    if (
+                      result?.attributes.lineMarker == "true" ||
+                      result?.attributes.lineMarker == "True"
+                    ) {
+                      if (g.layer.id === "point-restrictions-layer") {
                         displayPointInteractionGraphics(
                           "line-restrictions-layer",
                           esriMap.webmap,
                           "UniqueId",
-                          `${result?.attributes.UniqueId}`
-                        )
+                          result?.attributes.UniqueId
+                        );
                       }
-                      if(g.layer.id === "road-alerts-layer"){
+                      if (g.layer.id === "road-alerts-layer") {
                         displayPointInteractionGraphics(
                           "line-road-alerts-layer",
                           esriMap.webmap,
@@ -364,6 +369,9 @@ export default defineComponent({
         width: esriMap.mapView.width,
         height: esriMap.mapView.height,
       });
+      esriMap.mapView.on("layerview-create-error", (event) => {
+        store.commit("addServiceAlert", event.layer.title);
+      })
       // Set basemap based on URL query parameter or display default...
       await initBasemap(appConfig.basemap);
       const basemapInfo = getBasemapFromUrl();
@@ -640,7 +648,7 @@ export default defineComponent({
       marginBottomContainer,
       displayToast,
       closePopup,
-      store
+      store,
     };
   },
 });
@@ -695,7 +703,7 @@ export default defineComponent({
   <RegionalAlertPopup :Featureset="popupFeatureset" @close="closePopup" />
   <FerryRoutesPopup :Featureset="popupFeatureset" :Alerts="ferryAlerts" />
   <LeftPaneView />
-  <BannerView/>
+  <BannerView />
 </template>
 
 <style scoped>

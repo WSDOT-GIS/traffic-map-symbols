@@ -33,7 +33,7 @@ export interface State {
     mediaSize: "s" | "l"; // TODO: add more as needed
     errors: string[]; // Shown in the toast.
     serviceAlerts: string[]; // Shown in the banner.
-    serviceAlertsBannerVisible:boolean;
+    serviceAlertsBannerVisible: boolean;
     isToastReady: boolean;
 }
 //
@@ -102,7 +102,7 @@ export const store = createStore<State>({
         lastError: state => {
             return state.errors[state.errors.length - 1];
         },
-        getServiceAlerts: state=>{
+        getServiceAlerts: state => {
             return state.serviceAlerts
         }
     },
@@ -117,17 +117,20 @@ export const store = createStore<State>({
                     }
                     basemapWatchHandles = [];
                     webmap.basemap = basemapInfo.basemap;
+                    if (webmap.basemap.loadStatus === "failed") {
+                        addServiceAlert(state, webmap.basemap.title);
+                    }
                     webmap.basemap.baseLayers.forEach(eachLyr => {
                         const handle = eachLyr.watch("loadStatus", (newValue, oldValue, propertyName, target) => {
                             const lyr = target as Layer;
                             if (newValue === "failed") {
-                                addServiceAlert(state, "Failed to load the base map layer: " + lyr.title);
+                                addServiceAlert(state, lyr.title);
                             }
                         });
                         basemapWatchHandles.push(handle);
                     });
                 } else {
-                    addServiceAlert(state, `The specified basemap, ${payload}, is not available.`);
+                    addServiceAlert(state, payload);
                 }
             }
         },
@@ -136,8 +139,11 @@ export const store = createStore<State>({
             state.basemap = basemapInfo.name;
             if (basemapInfo.basemap) {
                 webmap.basemap = basemapInfo.basemap;
+                if (webmap.basemap.loadStatus === "failed") {
+                    addServiceAlert(state, webmap.basemap.title);
+                }
             } else {
-                addServiceAlert(state, `The specified basemap, ${basemapInfo.name}, is not available.`);
+                addServiceAlert(state, webmap.basemap.title);
             }
         },
         setPointerX(state, payload) {
@@ -173,7 +179,7 @@ export const store = createStore<State>({
                     if (newInfo.status === LayerStatus.Failed) {
                         addServiceAlert(state, newInfo);
                     }
-                    else{removeServiceAlert(state, newInfo)}
+                    else { removeServiceAlert(state, newInfo) }
                 } else {
                     if (newInfo.title) { info.title = newInfo.title; }
                     if (newInfo.index) { info.index = newInfo.index; }
@@ -183,7 +189,7 @@ export const store = createStore<State>({
                         if (info.status !== LayerStatus.Failed && newInfo.status === LayerStatus.Failed) {
                             addServiceAlert(state, info);
                         }
-                        else{
+                        else {
                             removeServiceAlert(state, newInfo)
                         }
                         info.status = newInfo.status
@@ -220,10 +226,13 @@ export const store = createStore<State>({
                 if (info.status !== LayerStatus.Failed && payload.status === LayerStatus.Failed) {
                     addServiceAlert(state, info);
                 }
-                else{
-                    removeServiceAlert(state, info)
+                else {
+                    removeServiceAlert(state, info);
                 }
-                info.status = payload.status
+                info.status = payload.status;
+            }
+            else if (info.status === LayerStatus.Failed && info.visible) {
+                addServiceAlert(state, info);
             }
         },
         setCurrentExtent(state, payload) {
@@ -260,13 +269,12 @@ export const store = createStore<State>({
         addServiceAlert(state, msg: string) {
             addServiceAlert(state, msg);
         },
-        removeServiceAlert(state, msg: string){
+        removeServiceAlert(state, msg: string) {
             removeServiceAlert(state, msg);
         },
-        setServiceAlertBannerVisibility(state,visible:boolean){
-            setServiceAlertBannerVisibility(state,visible)
+        setServiceAlertBannerVisibility(state, visible: boolean) {
+            setServiceAlertBannerVisibility(state, visible)
         }
-
     },
     actions: {
         updateLayerVisibility({ commit, state }, payload?: { ids: string[], visible: boolean }) {
@@ -338,9 +346,6 @@ export const store = createStore<State>({
         showError({ state }, message: string) {
             showError(state, message);
         },
-        setServiceAlertBannerVisibility({ state },message:boolean) {
-            setServiceAlertBannerVisibility(state, message);
-        },
         // Set the flag to indicate the toast message is ready to be shown.
         // If there are errors happened earlier, show them now.
         setIsToastReady({ state, commit }) {
@@ -350,7 +355,6 @@ export const store = createStore<State>({
                     toast.error(item);
                 });
                 state.errors = [];
-                // Temporary...
             }
         }
     }
@@ -371,35 +375,31 @@ const showError = (state: State, message: string) => {
 const addServiceAlert = (state: State, alert: string | LayerInfo) => {
     let msg: string;
     if (alert instanceof LayerInfo) {
-        const name = alert.title ? alert.title : alert.id;
-        msg =name;
+        msg = alert.title ? alert.title : alert.id;
     } else {
         msg = alert;
     }
     if (state.serviceAlerts.findIndex(each => each === msg) < 0) {
         state.serviceAlerts.push(msg);
     }
-    console.warn(msg);
-    // Temporary... TODO: show in banner
-    if (state.isToastReady) {
-       // toast.warning(msg);
+    // If the banner was closed, open it again...
+    if (!state.serviceAlertsBannerVisible) {
+        setServiceAlertBannerVisibility(state, true);
     }
 }
-const  setServiceAlertBannerVisibility= (state:State,visible: boolean)=>{
-    state.serviceAlertsBannerVisible=visible
+const setServiceAlertBannerVisibility = (state: State, visible: boolean) => {
+    state.serviceAlertsBannerVisible = visible
 }
 const removeServiceAlert = (state: State, alert: string | LayerInfo) => {
     let msg: string;
     if (alert instanceof LayerInfo) {
-        const name = alert.title ? alert.title : alert.id;
-        msg =name;
+        msg = alert.title ? alert.title : alert.id;
     } else {
         msg = alert;
     }
     if (state.serviceAlerts.findIndex(each => each === msg) > -1) {
         const alertIndex = state.serviceAlerts.findIndex(each => each === msg)
-        state.serviceAlerts.splice(alertIndex,1);
-        console.log(state.serviceAlerts)
+        state.serviceAlerts.splice(alertIndex, 1);
     }
 }
 /**

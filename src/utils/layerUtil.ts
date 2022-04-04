@@ -13,26 +13,35 @@ import { fetchJson } from "@/utils/miscUtil";
 import { isEsriFeatures } from "@/utils/typeUtil";
 import Layer from "@arcgis/core/layers/Layer";
 /**
- *  Mapping between layer groups (type in URL query param) and layer IDs...
+ *  Specify which layers belong together (i.e. should be treated as if they are one layer) 
+ *  Layers in each group should have the same visibility and displayed as a single item in the table of contents
  *   - id
- *      ID for the layer group (type).
+ *      ID for the layer group.
  *   - layers 
- *      Popup is opened for the first layer in the layers array.
- *   - uniqueField
+ *      List of layers that belog to each group.
+ *      NOTE: Popup is opened for the first layer in the layers array.
+ *   - layers.id
+ *      Layer ID
+ *   - layer.uniqueField
  *      Unique field that is from the source database. Do not use ESRI ID (i.e. OID).
+ *   - layer.jsonUrl
+ *      URL of JSON file. Only applicable to those layers that loads JSON at runtime.
  */
 const layerGroups: GroupLayerInfo[] = [];
 /**
- * @param config
+ * Create the layer group list
+ * 
+ * @param config Application configuration to get the JSON URLs from.
  */
 export const createLayerGroupInfos = (config: AppConfig): void => {
     layerGroups.push({ id: "camera", layers: [{ id: "traffic-camera-layer", uniqueField: "CameraID", jsonUrl: config.cameras }] });
-    layerGroups.push({ 
+    layerGroups.push({
         id: "alert", layers: [
             { id: "road-alerts-layer", uniqueField: "EventID", jsonUrl: config.currentRoadAlertPoint },
-            { id: "line-road-alerts-layer", uniqueField: "EventID", jsonUrl: config.currentRoadAlertLine }
+            { id: 'ferry-routes-points-layer', uniqueField: "FerryRouteID" },
+            { id: 'ferry-routes-lines-layer', uniqueField: "FerryRouteID" }
         ]
-     }); // Loaded by default, should not need to load data.
+    }); // Loaded by default, should not need to load data.
     layerGroups.push({
         id: "restriction", layers: [
             { id: "point-restrictions-layer", uniqueField: "UniqueId", jsonUrl: config.pointRestrictions },
@@ -50,6 +59,7 @@ export const createLayerGroupInfos = (config: AppConfig): void => {
     layerGroups.push({ id: "weather", layers: [{ id: "weather-stations-layer", uniqueField: "WeatherStationId", jsonUrl: config.weatherStations }] });
     layerGroups.push({ id: "parkride", layers: [{ id: "park-ride-layer", uniqueField: "", jsonUrl: config.parkAndRides }] }); // TODO: need unique field
     layerGroups.push({ id: "restarea", layers: [{ id: "rest-areas-layer", uniqueField: "RestAreaId", jsonUrl: config.restAreas }] });
+    layerGroups.push({ id: "milepost", layers: [{ id: "mile-markers", uniqueField: "" }] })
 };
 
 const getGroupLayerInfo = (groupId: string): GroupLayerInfo => {
@@ -66,7 +76,10 @@ const getGroupLayerInfo = (groupId: string): GroupLayerInfo => {
 }
 
 /**
- * @param groupId
+ * Get layer IDs from the layer group ID
+ * 
+ * @param groupId ID of the layer group
+ * @returns array of layer IDs
  */
 export const getLayerIds = (groupId: string): string[] => {
     const result = layerGroups.find((item) => {
@@ -95,12 +108,10 @@ export const resizeFeature = (graphic: Graphic): void => {
  * Set the visibility of the specified layer in the layer list.
  * NOTE: The layer list need to be committed to the state store.
  *
- * @param layerId 
- * @param layer
- * @param layerInfo
- * @param visible 
- * @param layerList 
- * @returns 
+ * @param layer Layer
+ * @param layerInfo LayerInfo
+ * @param visible visibility: true/false
+ * @returns Layer status
  */
 export const setLayerVisibility = async (layer: Layer, layerInfo: LayerInfo, visible: boolean): Promise<LayerStatus> => {
     let outStatus = layerInfo.status;
@@ -123,8 +134,8 @@ export const setLayerVisibility = async (layer: Layer, layerInfo: LayerInfo, vis
  * Value from the unique field specified in the layerGroups.
  * @param groupId 
  * ID of the layer group (type). If the specified group has more than one layer, query is done against the first layer only.
- * @param map 
- * @returns 
+ * @param map ESRI map object
+ * @returns Graphic or nothing
  */
 export const getFeature = async (uniqueValue: number | string, groupId: string, map: WebMap): Promise<Graphic | undefined> => {
     const groupInfo = getGroupLayerInfo(groupId);
@@ -186,16 +197,18 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
 }
 
 /**
- * @param jsonUrl
- * @param layerId
- * @param layerTitle
- * @param renderer
- * @param fields
- * @param geometryType
- * @param visible
- * @param graphics
+ * Initialize a feature layer
+ * 
+ * @param layerId Layer ID
+ * @param layerTitle Title
+ * @param renderer Renderer
+ * @param fields Array of field
+ * @param geometryType geometry type
+ * @param visible default visibility
+ * @param graphics (Optional) Array of graphics to load
+ * @returns Promise<FeatureLayer>
  */
-export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: string,
+export const initLayer = async (layerId: string, layerTitle: string,
     renderer: Renderer, fields: Field[], geometryType: "point" | "multipoint" | "polyline" | "polygon",
     visible: boolean, graphics?: Graphic[],definitionExpression?:string): Promise<FeatureLayer> => {
     // Create Graphics from JSON...
@@ -235,22 +248,9 @@ export const initLayer = async (jsonUrl: string, layerId: string, layerTitle: st
         spatialReference: SpatialReference.WebMercator,
         definitionExpression: definitionExpression
     });
-    // Set event to load layer when it becomes visible...
-    // if (graphics.length === 0) {
-    //     setLayerEvent(layer, jsonUrl);
-    // }
     return layer;
 }
 
-// export const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
-//     const handle = layer.watch("visible", (newValue, oldValue, propName, target) => {
-//         const lyr = target as FeatureLayer;
-//         if (newValue) {
-//             reloadData(jsonUrl, lyr);
-//             handle.remove();
-//         }
-//     });
-// }
 // Keep track of what is loading, so prevent loading the same layer at the same time.
 let loadManager: { id: string, promise: Promise<LayerStatus | undefined> }[] = [];
 

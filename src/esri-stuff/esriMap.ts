@@ -18,7 +18,6 @@ import * as CameraLayer from "@/layers/CameraLayer";
 import * as PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
 import * as LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
 import * as RoadAlertsLayer from "@/layers/RoadAlertsLayer";
-import * as LineRoadAlertsLayer from "@/layers/LineRoadAlertsLayer";
 import * as WeatherLayer from "@/layers/WeatherStationsLayer";
 import * as MountainLayer from "@/layers/MountainPassesLayer";
 import * as FireIncidentsLayer from "@/layers/FireIncidentLayer";

@@ -6,7 +6,6 @@ import * as layerUtil from "@/utils/layerUtil";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
 import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 import Graphic from "@arcgis/core/Graphic";
-// import Graphic from "@arcgis/core/Graphic";
 
 const renderer = new uniqueValueRenderer({
     field: "TravelCenterPriorityId",
@@ -83,7 +82,10 @@ const layerTitle = "Road Alerts";
 let layer: FeatureLayer | undefined;
 
 /**
- * @param jsonUrl
+ * Initialize a layer
+ * 
+ * @param jsonUrl JSON URL
+ * @returns LayerInfo
  */
 export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
@@ -99,7 +101,7 @@ export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     }
 
     try {
-        layer = await layerUtil.initLayer(jsonUrl, layerId, layerTitle, renderer, fields, "point", true, graphics);
+        layer = await layerUtil.initLayer(layerId, layerTitle, renderer, fields, "point", true, graphics);
         layer.orderBy = [{
             field: "TravelCenterPriorityId",
             order: "ascending"
@@ -128,29 +130,3 @@ const getLayer = (): FeatureLayer | undefined => {
 }
 
 export default getLayer;
-
-
-// export const reloadData = async (url: string): Promise<void> => {
-//     const features = await getFeatures(url);
-//     if (priorityLayer) {
-//         layerUtil.replaceFeatures(priorityLayer, features.priority);
-//     }
-//     if (closureLayer) {
-//         layerUtil.replaceFeatures(closureLayer, features.closure);
-//     }
-// }
-
-// const getFeatures = async (url: string): Promise<{ priority: Graphic[], closure: Graphic[] }> => {
-//     const graphics = await layerUtil.fetchJsonData(url);
-//     let pGraphics: Graphic[] = [];
-//     let cGraphics: Graphic[] = [];
-//     // Priority features...
-//     pGraphics = graphics.filter((each) => {
-//         return each.attributes.EventCategoryDescription !== 'Closure'
-//     });
-//     // Closure features...
-//     cGraphics = graphics.filter((each) => {
-//         return each.attributes.EventCategoryDescription === 'Closure'
-//     })
-//     return { priority: pGraphics, closure: cGraphics };
-// }
