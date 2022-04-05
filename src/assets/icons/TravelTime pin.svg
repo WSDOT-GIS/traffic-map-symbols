@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="18"
+   height="24"
+   viewBox="0 0 18 24"
+   fill="none"
+   version="1.1"
+   id="svg4589"
+   sodipodi:docname="TravelTime pin.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <metadata
+     id="metadata4595">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs4593" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="2880"
+     inkscape:window-height="1526"
+     id="namedview4591"
+     showgrid="false"
+     inkscape:zoom="8"
+     inkscape:cx="53.21449"
+     inkscape:cy="6.7677877"
+     inkscape:window-x="2869"
+     inkscape:window-y="-11"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4589" />
+  <path
+     fill-rule="evenodd"
+     clip-rule="evenodd"
+     d="M15.3744 15.572C16.9969 13.921 18 11.6434 18 9.12809C18 4.08679 13.9706 0 9 0C4.02944 0 0 4.08679 0 9.12809C0 11.6429 1.00271 13.9202 2.62477 15.5712L8.17901 23.5543C8.57687 24.1261 9.42289 24.1261 9.82075 23.5543L15.3744 15.572Z"
+     fill="#FF6A13"
+     id="path4581"
+     style="fill:#b665d9;fill-opacity:1" />
+  <path
+     d="M16.75 9C16.75 13.2802 13.2802 16.75 9 16.75C4.71979 16.75 1.25 13.2802 1.25 9C1.25 4.71979 4.71979 1.25 9 1.25C13.2802 1.25 16.75 4.71979 16.75 9Z"
+     fill="#FF6A13"
+     stroke="white"
+     stroke-width="0.5"
+     id="path4583"
+     style="fill:#b665d9;fill-opacity:1" />
+  <circle
+     style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:1.52900004;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="path5140"
+     cx="9"
+     cy="9"
+     r="6.0453591" />
+  <circle
+     style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:1.09734523;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="path5161"
+     cx="9"
+     cy="9"
+     r="0.32520244" />
+  <path
+     style="fill:none;stroke:#ffffff;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     d="M 9,8.90625 V 4.375"
+     id="path5169"
+     inkscape:connector-curvature="0" />
+  <path
+     style="fill:none;stroke:#ffffff;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     d="m 9.125,9.25 2.171875,2.171875"
+     id="path5171"
+     inkscape:connector-curvature="0" />
+</svg>
