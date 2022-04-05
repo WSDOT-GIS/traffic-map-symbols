@@ -23,8 +23,8 @@ const fields = [
 ]
 
 let layer: FeatureLayer | undefined;
-export const layerId = "line-road-alerts-layer";
-const layerTitle = "Road Alert Lines";
+export const layerId = "linear-closures-layer";
+const layerTitle = "Linear Closures Lines";
 
 /**
  * @param jsonUrl

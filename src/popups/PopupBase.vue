@@ -407,7 +407,7 @@ export default defineComponent({
         // If this is not the initial load, then move popup along with map.
         if (!doPanMap) {
           // Recalculate top and let position...
-          const newTopLeft = calcTopLeft(h, w);
+          const newTopLeft = calcTopLeft(h, w, props.LayerId);
           setPosition(newTopLeft.top, newTopLeft.left);
         } else {
           doPanMap = false;
@@ -420,7 +420,7 @@ export default defineComponent({
               // Display below the feature...
               relativePosition.value = relativePositions.below;
             }
-            let newTopLeft = calcTopLeft(h, w);
+            let newTopLeft = calcTopLeft(h, w, props.LayerId);
             /*
              * Pan map so the popup is displayed within the map view,
              * and the top is visible.
@@ -434,7 +434,7 @@ export default defineComponent({
             ) {
               const bestPosition = getBestRelativePosition(h);
               relativePosition.value = bestPosition;
-              newTopLeft = calcTopLeft(h, w);
+              newTopLeft = calcTopLeft(h, w, props.LayerId);
               shiftXY = calcShiftXY(newTopLeft, h, w);
             }
 
@@ -511,7 +511,7 @@ export default defineComponent({
      * @param height
      * @param width
      */
-    const calcTopLeft = (height: number, width: number): { top: number; left: number } => {
+    const calcTopLeft = (height: number, width: number, layerID: string): { top: number; left: number } => {
       let newTop = 0;
       switch (relativePosition.value) {
         case relativePositions.below:
@@ -523,7 +523,12 @@ export default defineComponent({
           break;
         default:
           // Display above the feature by default...
-          newTop = screenY.value - height - 30;
+          if(layerID=="linear-closures-layer"){
+            newTop = screenY.value - height
+          }
+          else{
+            newTop = screenY.value - height - 30;
+          }
           if (!props.MapXY) {
             newTop -= 15;
           }

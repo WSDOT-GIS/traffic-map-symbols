@@ -45,6 +45,7 @@ import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
 import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
 import MountainPassesLayer from "@/layers/MountainPassesLayer";
 import RoadAlertsLayer from "@/layers/RoadAlertsLayer";
+import RoadClosuresLayer from "@/layers/LinearClosuresLayer"
 import RestAreasLayer from "@/layers/RestAreasLayer";
 import FireIncidentLayer from "@/layers/FireIncidentLayer";
 import RoadsReferenceLayer from "@/layers/RoadsReferenceLayer";
@@ -64,6 +65,7 @@ import MountainPassPopup from "@/popups/MountainPassPopup.vue";
 import WeatherStationsPopup from "@/popups/WeatherStationPopup.vue";
 import RestAreaPopup from "@/popups/RestAreaPopup.vue";
 import RoadAlertPopup from "@/popups/RoadAlertPopup.vue";
+import RoadClosurePopup from "@/popups/RoadClosurePopup.vue";
 import WildfirePointsPopup from "@/popups/WildfirePointsPopup.vue";
 import BorderCrossingPopup from "@/popups/BorderCrossingPopup.vue";
 import RegionalAlertPopup from "@/popups/RegionalAlertPopup.vue";
@@ -89,6 +91,7 @@ export default defineComponent({
     WeatherStationsPopup,
     RestAreaPopup,
     RoadAlertPopup,
+    RoadClosurePopup,
     WildfirePointsPopup,
     BorderCrossingPopup,
     RegionalAlertPopup,
@@ -183,6 +186,7 @@ export default defineComponent({
         BorderCrossingLayer(),
         RegionalAlertLayer(),
         PointFerryRoutesLayer(),
+        RoadClosuresLayer(),
         ZoomExtentLayer,
       ]);
       const opLayerOpts = {
@@ -698,6 +702,7 @@ export default defineComponent({
   <WeatherStationsPopup :Featureset="popupFeatureset" />
   <RestAreaPopup :Featureset="popupFeatureset" />
   <RoadAlertPopup :Featureset="popupFeatureset" />
+  <RoadClosurePopup :Featureset="popupFeatureset" />
   <WildfirePointsPopup :Featureset="popupFeatureset" />
   <BorderCrossingPopup :Featureset="popupFeatureset" />
   <RegionalAlertPopup :Featureset="popupFeatureset" @close="closePopup" />
