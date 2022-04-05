@@ -151,6 +151,8 @@ export const loadOperationalLayers = async (): Promise<LayerInfo[]> => {
     addToList(FerryRoutesReferenceLayer.default());
     addToList(TrafficLayer.default());
     addToList(LineFerryRoutesLayer.default());
+    addToList(LineRoadAlertsLayer.default());
+    addToList(LinearClosuresLayer.default());
     addToList(StateRouteShieldsLayer.default());
     addToList(FirePerimetersLayer.default());
     addToList(fireIncidentLayer);
@@ -165,8 +167,6 @@ export const loadOperationalLayers = async (): Promise<LayerInfo[]> => {
     addToList(CameraLayer.default());
     addToList(PointFerryRoutesLayer.default());
     addToList(RoadAlertsLayer.default());
-    addToList(LineRoadAlertsLayer.default());
-    addToList(LinearClosuresLayer.default());
     
     // The first one in the array will be displayed at the bottom of the map... 
     webmap.addMany(lyrs);
