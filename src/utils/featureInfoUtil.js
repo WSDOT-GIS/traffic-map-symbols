@@ -1,56 +1,48 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFeatureInfoByUniqueField = exports.getLineFromPointId = exports.getFeatureInfosByIds = exports.getFeatureInfoById = exports.getGraphicsInfoById = void 0;
-const tslib_1 = require("tslib");
-const projection_1 = require("@arcgis/core/geometry/projection");
-const SpatialReference_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/SpatialReference"));
-const getGraphicsInfoById = (graphic, layer) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+import { project } from "@arcgis/core/geometry/projection";
+import SpatialReference from "@arcgis/core/geometry/SpatialReference";
+export const getGraphicsInfoById = async (graphic, layer) => {
     const query = layer.createQuery();
     const idName = layer.objectIdField;
     const theid = graphic.getObjectId();
     query.where = `${idName} = ${theid}`;
     query.outFields = ["*"];
-    const response = yield layer.queryFeatures(query);
+    const response = await layer.queryFeatures(query);
     const g = response.features[0];
     if (g) {
         const info = convert2Info(g);
         return info;
     }
-});
-exports.getGraphicsInfoById = getGraphicsInfoById;
-const getFeatureInfoById = (id, layer) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+};
+export const getFeatureInfoById = async (id, layer) => {
     const query = layer.createQuery();
     const idName = layer.objectIdField;
     query.where = `${idName} = ${id}`;
     query.outFields = ["*"];
-    const response = yield layer.queryFeatures(query);
+    const response = await layer.queryFeatures(query);
     const g = response.features[0];
     if (g) {
         const info = convert2Info(g);
         return info;
     }
-});
-exports.getFeatureInfoById = getFeatureInfoById;
-const getFeatureInfosByIds = (ids, layer) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+};
+export const getFeatureInfosByIds = async (ids, layer) => {
     const query = layer.createQuery();
     const idName = layer.objectIdField;
     query.where = `${idName} IN ( ${ids.join(",")})`;
     query.outFields = ["*"];
-    const response = yield layer.queryFeatures(query);
+    const response = await layer.queryFeatures(query);
     const infos = response.features.map(convert2Info);
     return infos;
-});
-exports.getFeatureInfosByIds = getFeatureInfosByIds;
-const getLineFromPointId = (fieldName, value, layer) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+};
+export const getLineFromPointId = async (fieldName, value, layer) => {
     const query = layer.createQuery();
     // const field = layer.getField(fieldName);
     query.where = `${fieldName} = '${value}'`;
     query.returnGeometry = true;
-    const response = yield layer.queryFeatures(query);
+    const response = await layer.queryFeatures(query);
     return response;
-});
-exports.getLineFromPointId = getLineFromPointId;
-const getFeatureInfoByUniqueField = (fieldName, value, layer) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+};
+export const getFeatureInfoByUniqueField = async (fieldName, value, layer) => {
     const query = layer.createQuery();
     const field = layer.getField(fieldName);
     query.where = `${fieldName} = `;
@@ -61,14 +53,13 @@ const getFeatureInfoByUniqueField = (fieldName, value, layer) => tslib_1.__await
         query.where += value;
     }
     query.outFields = ["*"];
-    const response = yield layer.queryFeatures(query);
+    const response = await layer.queryFeatures(query);
     const g = response.features[0];
     if (g) {
         const info = convert2Info(g);
         return info;
     }
-});
-exports.getFeatureInfoByUniqueField = getFeatureInfoByUniqueField;
+};
 const convert2Info = (g) => {
     let mapPoint;
     // Get the mid/center point...
@@ -89,7 +80,7 @@ const convert2Info = (g) => {
         }
     }
     // Project to the map coordinate. Without doing this lat/long get passed.
-    const projPt = projection_1.project(mapPoint, SpatialReference_1.default.WebMercator);
+    const projPt = project(mapPoint, SpatialReference.WebMercator);
     const info = {
         layerId: g.layer.id,
         attributes: g.attributes,

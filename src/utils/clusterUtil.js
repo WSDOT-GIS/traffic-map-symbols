@@ -1,14 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getClusterExtent = exports.getIdsFromCluster = exports.clusterConfig = exports.clusterMaxScale = void 0;
-const tslib_1 = require("tslib");
-const FeatureReductionCluster_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/FeatureReductionCluster"));
-const CameraClusterSymbol_1 = tslib_1.__importDefault(require("@/symbols/CameraClusterSymbol"));
-const Extent_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/Extent"));
-exports.clusterMaxScale = 19000;
+import FeatureReductionCluster from "@arcgis/core/layers/support/FeatureReductionCluster";
+import clusterSymbol from "@/symbols/CameraClusterSymbol";
+import Extent from "@arcgis/core/geometry/Extent";
+export const clusterMaxScale = 19000;
 const defaultRadius = 60;
 const labelColor = "#005151";
-const clusterConfig = new FeatureReductionCluster_1.default({
+const clusterConfig = new FeatureReductionCluster({
     clusterRadius: defaultRadius,
     clusterMinSize: 20,
     clusterMaxSize: 36,
@@ -103,10 +99,10 @@ const clusterConfig = new FeatureReductionCluster_1.default({
         },
     ],
 });
-exports.clusterConfig = clusterConfig;
 // The symbol property is undocumented, so use with caution.
 // https://community.esri.com/t5/arcgis-api-for-javascript-ideas/arcgis-javascript-4-cluster-renderer/idc-p/1059638#M48
-clusterConfig.set("symbol", CameraClusterSymbol_1.default);
+clusterConfig.set("symbol", clusterSymbol);
+export { clusterConfig };
 /**
 Returns IDs of each feature if one of the following coditions is met:
 - maxCount is not set
@@ -114,13 +110,13 @@ Returns IDs of each feature if one of the following coditions is met:
 - All the features are at the identical location.
 Otherwise returns extent of all features.
 */
-const getIdsFromCluster = (clusterGraphic, layer, mapView, maxCount) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    const layerView = yield mapView.whenLayerView(layer);
+export const getIdsFromCluster = async (clusterGraphic, layer, mapView, maxCount) => {
+    const layerView = await mapView.whenLayerView(layer);
     const query = layerView.createQuery();
     // Object ID of the cluster...
     query.aggregateIds = [clusterGraphic.getObjectId()];
     query.outFields = [layer.objectIdField];
-    const result = yield layerView.queryFeatures(query);
+    const result = await layerView.queryFeatures(query);
     // let doReturnId = false;
     let extent;
     if (maxCount && result.features.length > maxCount) {
@@ -147,7 +143,7 @@ const getIdsFromCluster = (clusterGraphic, layer, mapView, maxCount) => tslib_1.
             }
         }
         if (minX !== maxX || minY !== maxY) {
-            extent = new Extent_1.default({
+            extent = new Extent({
                 xmin: minX,
                 xmax: maxX,
                 ymin: minY,
@@ -163,15 +159,14 @@ const getIdsFromCluster = (clusterGraphic, layer, mapView, maxCount) => tslib_1.
     else {
         return extent;
     }
-});
-exports.getIdsFromCluster = getIdsFromCluster;
-const getClusterExtent = (clusterGraphic, layer, mapView) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    const layerView = yield mapView.whenLayerView(layer);
+};
+export const getClusterExtent = async (clusterGraphic, layer, mapView) => {
+    const layerView = await mapView.whenLayerView(layer);
     const query = layerView.createQuery();
     // Object ID of the cluster...
     query.aggregateIds = [clusterGraphic.getObjectId()];
     query.outFields = [layer.objectIdField];
-    const result = yield layerView.queryFeatures(query);
+    const result = await layerView.queryFeatures(query);
     const pt0 = result.features[0].geometry;
     // Find out extent of all features...
     let minX = pt0.x;
@@ -201,7 +196,7 @@ const getClusterExtent = (clusterGraphic, layer, mapView) => tslib_1.__awaiter(v
         minY -= 1;
         maxY += 1;
     }
-    const extent = new Extent_1.default({
+    const extent = new Extent({
         xmin: minX,
         xmax: maxX,
         ymin: minY,
@@ -209,6 +204,5 @@ const getClusterExtent = (clusterGraphic, layer, mapView) => tslib_1.__awaiter(v
         spatialReference: pt0.spatialReference
     });
     return extent;
-});
-exports.getClusterExtent = getClusterExtent;
+};
 //# sourceMappingURL=clusterUtil.js.map

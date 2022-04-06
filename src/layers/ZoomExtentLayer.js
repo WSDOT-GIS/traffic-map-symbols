@@ -1,15 +1,11 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFeatureByName = exports.getFeatureById = void 0;
-const tslib_1 = require("tslib");
-const FeatureLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/FeatureLayer"));
-const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
-const SimpleFillSymbol_1 = tslib_1.__importDefault(require("@arcgis/core/symbols/SimpleFillSymbol"));
-const SpatialReference_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/SpatialReference"));
-const Field_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/Field"));
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
+import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol";
+import SpatialReference from "@arcgis/core/geometry/SpatialReference";
+import Field from "@arcgis/core/layers/support/Field";
 // Create a symbol for rendering the graphic
-const renderer = new SimpleRenderer_1.default({
-    symbol: new SimpleFillSymbol_1.default({
+const renderer = new SimpleRenderer({
+    symbol: new SimpleFillSymbol({
         style: "none",
         outline: {
             width: 2,
@@ -35,7 +31,7 @@ const graphics = [
             "ObjectID": 1,
             "Name": "Seattle",
             "Label": "Seattle",
-            "Note": ""
+            "Visible": 1
         }
     },
     // Spokane Metro...
@@ -55,7 +51,7 @@ const graphics = [
             "ObjectID": 2,
             "Name": "Spokane",
             "Label": "Spokane",
-            "Note": ""
+            "Visible": 1
         }
     },
     // Vancouver Metro...
@@ -75,64 +71,83 @@ const graphics = [
             "ObjectID": 3,
             "Name": "Vancouver",
             "Label": "Vancouver",
-            "Note": ""
+            "Visible": 1
+        }
+    },
+    // Tacoma Metro...
+    {
+        geometry: {
+            type: "polygon",
+            rings: [[
+                    [-13652280.94, 5964648.36],
+                    [-13613227.59, 5964648.36],
+                    [-13613227.59, 5993905.72],
+                    [-13652280.94, 5993905.72],
+                    [-13652280.94, 5964648.36]
+                ]],
+            spatialReference: { wkid: 102100 }
+        },
+        attributes: {
+            "ObjectID": 4,
+            "Name": "Tacoma",
+            "Label": "Tacoma",
+            "Visible": 0
         }
     },
 ];
-const layer = new FeatureLayer_1.default({
+const layer = new FeatureLayer({
     id: "zoom-areas-layer",
     title: "Metro Areas",
     fields: [
-        new Field_1.default({
+        new Field({
             name: "ObjectID",
             alias: "ObjectID",
             type: "oid"
         }),
-        new Field_1.default({
+        new Field({
             name: "Name",
             alias: "Name",
             type: "string"
         }),
-        new Field_1.default({
+        new Field({
             name: "Label",
             type: "string",
             alias: "Label"
         }),
-        new Field_1.default({
-            name: "Note",
-            type: "string",
-            alias: "Note"
+        new Field({
+            name: "Visible",
+            type: "small-integer",
+            alias: "Visible"
         })
     ],
     objectIdField: "ObjectID",
     geometryType: "polygon",
-    spatialReference: SpatialReference_1.default.WebMercator,
+    spatialReference: SpatialReference.WebMercator,
     renderer: renderer,
     source: graphics,
+    definitionExpression: "Visible = 1",
     maxScale: 300000
 });
-exports.default = layer;
-const getFeatureById = (id) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+export default layer;
+export const getFeatureById = async (id) => {
     const query = layer.createQuery();
     query.where = "ObjectID =" + id;
-    query.outFields = ["ObjectID", "Name", "Label", "Note"];
-    const response = yield layer.queryFeatures(query);
+    query.outFields = ["ObjectID", "Name", "Label", "Visible"];
+    const response = await layer.queryFeatures(query);
     if (response.features.length === 0) {
         throw "Failed to find the zoom extent with the specified ID: " + id + ".";
     }
     return response.features[0];
-});
-exports.getFeatureById = getFeatureById;
-const getFeatureByName = (name) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+};
+export const getFeatureByName = async (name) => {
     const query = layer.createQuery();
     const nameFormatted = name[0].toUpperCase() + name.slice(1).toLowerCase();
     query.where = `Name = '${nameFormatted}'`;
-    query.outFields = ["ObjectID", "Name", "Label", "Note"];
-    const response = yield layer.queryFeatures(query);
+    query.outFields = ["ObjectID", "Name", "Label", "Visible"];
+    const response = await layer.queryFeatures(query);
     if (response.features.length === 0) {
         throw "Failed to find the zoom extent with the specified name: '" + name + "'. Please make sure the spelling is correct.";
     }
     return response.features[0];
-});
-exports.getFeatureByName = getFeatureByName;
+};
 //# sourceMappingURL=ZoomExtentLayer.js.map

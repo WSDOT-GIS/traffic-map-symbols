@@ -1,85 +1,75 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.reloadData = exports.initLayer = void 0;
-const tslib_1 = require("tslib");
-// import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer"
-const UniqueValueRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/UniqueValueRenderer"));
-const AlertSymbol_1 = require("@/symbols/AlertSymbol");
-const Field_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/Field"));
-const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
-const layerUtil = tslib_1.__importStar(require("@/utils/layerUtil"));
-const renderer = new UniqueValueRenderer_1.default({
-    field: "EventPriorityID",
+import uniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
+import { alertSymbol, alertSymbolMedium, roadClosedSymbol, alertSymbolHighest } from "@/symbols/AlertSymbol";
+import Field from "@arcgis/core/layers/support/Field";
+import * as layerUtil from "@/utils/layerUtil";
+const renderer = new uniqueValueRenderer({
+    field: "TravelCenterPriorityId",
     uniqueValueInfos: [
         {
-            label: "HIGHEST IMPACT",
+            label: "CLOSURE",
             value: 1,
-            symbol: AlertSymbol_1.roadClosedSymbol
+            symbol: roadClosedSymbol
         },
         {
             label: "HIGH IMPACT",
             value: 2,
-            symbol: AlertSymbol_1.alertSymbolHigh
+            symbol: alertSymbolHighest
         },
         {
             label: "MODERATE IMPACT",
             value: 3,
-            symbol: AlertSymbol_1.alertSymbolMedium
+            symbol: alertSymbolMedium
         },
         {
             label: "LOW IMPACT",
             value: 4,
-            symbol: AlertSymbol_1.alertSymbol
+            symbol: alertSymbol
         },
-        {
-            label: "LOWEST IMPACT",
-            value: 5,
-            symbol: AlertSymbol_1.alertSymbol
-        }
     ]
 });
-const roadAlertsClosureRenderer = new SimpleRenderer_1.default({
-    symbol: AlertSymbol_1.roadClosedSymbol,
-});
+// const roadAlertsClosureRenderer = new SimpleRenderer({
+//     symbol: roadClosedSymbol,
+// })
 const fields = [
-    new Field_1.default({
+    new Field({
         name: "AppGenId",
         alias: "AppGenId",
         type: "oid"
     }),
-    new Field_1.default({
+    new Field({
         name: "EventID", type: "integer", alias: "EventID"
     }),
-    new Field_1.default({ name: "EventCategoryDescription", type: "string", alias: "EventCategoryDescription", length: 400 }),
-    new Field_1.default({ name: "EventCategoryTypeDescription", type: "string", alias: "EventCategoryTypeDescription", length: 400 }),
-    new Field_1.default({ name: "EventCategoryID", type: "integer", alias: "EventCategoryID" }),
-    new Field_1.default({ name: "CriticalEventIndicator", type: "small-integer", alias: "CriticalEventIndicator" }),
-    new Field_1.default({ name: "LastModifiedDate", type: "date", alias: "LastModifiedDate" }),
-    new Field_1.default({ name: "IconName", type: "string", alias: "IconName", length: 20 }),
-    new Field_1.default({ name: "EventPriorityID", type: "integer", alias: "EventPriorityID" }),
-    new Field_1.default({ name: "EventPriorityDescription", type: "string", alias: "EventPriorityDescription", length: 150 }),
-    new Field_1.default({ name: "Road", type: "string", alias: "Road", length: 50 }),
-    new Field_1.default({ name: "RoadDirection", type: "string", alias: "RoadDirection", length: 15 }),
-    new Field_1.default({ name: "RoadType", type: "string", alias: "RoadType", length: 1 }),
-    new Field_1.default({ name: "Latitude", type: "double", alias: "Latitude" }),
-    new Field_1.default({ name: "Longitude", type: "double", alias: "Longitude" }),
-    new Field_1.default({ name: "DisplayOrder", type: "integer", alias: "DisplayOrder" }),
-    new Field_1.default({ name: "HeadlineMessage", type: "string", alias: "HeadlineMessage", length: 8000 }),
-    new Field_1.default({ name: "ExtendedMessage", type: "string", alias: "ExtendedMessage", length: 5000 }),
-    new Field_1.default({ name: "LocationName", type: "string", alias: "LocationName", length: 20 }),
-    new Field_1.default({ name: "StartSRMP", type: "single", alias: "StartSRMP" }),
-    new Field_1.default({ name: "EndSRMP", type: "single", alias: "EndSRMP" }),
-    new Field_1.default({ name: "RecurringEvent", type: "integer", alias: "RecurringEvent" }),
-    new Field_1.default({
+    new Field({ name: "EventCategoryDescription", type: "string", alias: "EventCategoryDescription", length: 400 }),
+    new Field({ name: "EventCategoryTypeDescription", type: "string", alias: "EventCategoryTypeDescription", length: 400 }),
+    new Field({ name: "EventCategoryID", type: "integer", alias: "EventCategoryID" }),
+    new Field({ name: "CriticalEventIndicator", type: "small-integer", alias: "CriticalEventIndicator" }),
+    new Field({ name: "LastModifiedDate", type: "date", alias: "LastModifiedDate" }),
+    new Field({ name: "IconName", type: "string", alias: "IconName", length: 20 }),
+    new Field({ name: "EventPriorityID", type: "integer", alias: "EventPriorityID" }),
+    new Field({ name: "EventPriorityDescription", type: "string", alias: "EventPriorityDescription", length: 150 }),
+    new Field({ name: "Road", type: "string", alias: "Road", length: 50 }),
+    new Field({ name: "RoadDirection", type: "string", alias: "RoadDirection", length: 15 }),
+    new Field({ name: "RoadType", type: "string", alias: "RoadType", length: 1 }),
+    new Field({ name: "Latitude", type: "double", alias: "Latitude" }),
+    new Field({ name: "Longitude", type: "double", alias: "Longitude" }),
+    new Field({ name: "DisplayOrder", type: "integer", alias: "DisplayOrder" }),
+    new Field({ name: "HeadlineMessage", type: "string", alias: "HeadlineMessage", length: 8000 }),
+    new Field({ name: "ExtendedMessage", type: "string", alias: "ExtendedMessage", length: 5000 }),
+    new Field({ name: "LocationName", type: "string", alias: "LocationName", length: 20 }),
+    new Field({ name: "StartSRMP", type: "single", alias: "StartSRMP" }),
+    new Field({ name: "EndSRMP", type: "single", alias: "EndSRMP" }),
+    new Field({ name: "RecurringEvent", type: "integer", alias: "RecurringEvent" }),
+    new Field({
         name: "StartTime", type: "date", alias: "StartTime", length: 8
     }),
-    new Field_1.default({
+    new Field({
         name: "EndTime", type: "date", alias: "EndTime", length: 8
     }),
-    new Field_1.default({ name: "SourceSystemID", type: "integer", alias: "SourceSystemID" }),
-    new Field_1.default({ name: "SourceSystemEventID", type: "string", alias: "SourceSystemEventID", length: 50 }),
-    new Field_1.default({ name: "TMSOverlap", type: "integer", alias: "TMSOverlap" }),
-    new Field_1.default({ name: "RegionID", type: "small-integer", alias: "RegionID" }),
+    new Field({ name: "SourceSystemID", type: "integer", alias: "SourceSystemID" }),
+    new Field({ name: "SourceSystemEventID", type: "string", alias: "SourceSystemEventID", length: 50 }),
+    new Field({ name: "TMSOverlap", type: "integer", alias: "TMSOverlap" }),
+    new Field({ name: "RegionID", type: "small-integer", alias: "RegionID" }),
+    new Field({ name: "TravelCenterPriorityId", type: "small-integer", alias: "TravelCenterPriorityId" }),
 ];
 let priorityLayer;
 let closureLayer;
@@ -90,24 +80,23 @@ let closureLayer;
  * @returns
  */
 let layer;
-const initLayer = (jsonUrl) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    layer = yield layerUtil.initLayer(jsonUrl, "road-alerts-layer", "Road Alerts", renderer, fields, "point", true);
+export const initLayer = async (jsonUrl) => {
+    layer = await layerUtil.initLayer(jsonUrl, "road-alerts-layer", "Road Alerts", renderer, fields, "point", true);
     layer.orderBy = [{
-            field: "EventPriorityID",
+            field: "TravelCenterPriorityId",
             order: "ascending"
         }];
     return layer;
-});
-exports.initLayer = initLayer;
+};
 //**This happens here instead of in the layerutils because of the source distinciton. TODO: fix this**
 /** This is fixed now? **/
-const setLayerEvent = (layer, jsonUrl) => {
-    layer.watch("visible", (newValue) => {
-        if (newValue) {
-            exports.reloadData(jsonUrl);
-        }
-    });
-};
+// const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
+//     layer.watch("visible", (newValue) => {
+//         if (newValue) {
+//             reloadData(jsonUrl);
+//         }
+//     });
+// }
 const getLayer = () => {
     if (!layer) {
         throw "ParkRideLayer is not ready yet!";
@@ -115,19 +104,18 @@ const getLayer = () => {
     return layer;
 };
 // export default RoadAlertsLayer
-exports.default = getLayer;
-const reloadData = (url) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    const features = yield getFeatures(url);
+export default getLayer;
+export const reloadData = async (url) => {
+    const features = await getFeatures(url);
     if (priorityLayer) {
         layerUtil.replaceFeatures(priorityLayer, features.priority);
     }
     if (closureLayer) {
         layerUtil.replaceFeatures(closureLayer, features.closure);
     }
-});
-exports.reloadData = reloadData;
-const getFeatures = (url) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    const graphics = yield layerUtil.fetchJsonData(url);
+};
+const getFeatures = async (url) => {
+    const graphics = await layerUtil.fetchJsonData(url);
     let pGraphics = [];
     let cGraphics = [];
     // Priority features...
@@ -139,5 +127,5 @@ const getFeatures = (url) => tslib_1.__awaiter(void 0, void 0, void 0, function*
         return each.attributes.EventCategoryDescription === 'Closure';
     });
     return { priority: pGraphics, closure: cGraphics };
-});
+};
 //# sourceMappingURL=RoadAlertsLayer.js.map

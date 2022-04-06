@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.otherIcons = exports.layerListIcons = void 0;
 /* eslint-disable no-useless-escape */
 const layerListIcons = [
     {
@@ -306,7 +303,6 @@ const layerListIcons = [
     `
     },
 ];
-exports.layerListIcons = layerListIcons;
 const otherIcons = [
     {
         id: "statewide-alert-banner",
@@ -343,5 +339,5 @@ const otherIcons = [
     `
     }
 ];
-exports.otherIcons = otherIcons;
+export { layerListIcons, otherIcons };
 //# sourceMappingURL=IconDefinitions.js.map

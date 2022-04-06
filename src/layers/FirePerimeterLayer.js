@@ -1,10 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.initLayer = void 0;
-const tslib_1 = require("tslib");
-const FeatureLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/FeatureLayer"));
-const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
-const FirePerimeterSymbol_1 = tslib_1.__importDefault(require("@/symbols/FirePerimeterSymbol"));
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
+import firePerimeterSymbol from "@/symbols/FirePerimeterSymbol";
 // import fireIncidentLayer from "@/layers/FireIncidentLayer"
 // import Field from "@arcgis/core/layers/support/Field"
 // import Polygon from "@arcgis/core/geometry/Polygon"
@@ -13,12 +9,12 @@ const FirePerimeterSymbol_1 = tslib_1.__importDefault(require("@/symbols/FirePer
 // import SpatialReference from "@arcgis/core/geometry/SpatialReference"
 // import { mapView, webmap } from "@/esri-stuff/esriMap"
 // import Graphic from "@arcgis/core/Graphic"
-const firePerimeterRenderer = new SimpleRenderer_1.default({
-    symbol: FirePerimeterSymbol_1.default
+const firePerimeterRenderer = new simpleRenderer({
+    symbol: firePerimeterSymbol
 });
 let layer;
-const initLayer = (url, firePerimeterIDs) => {
-    layer = new FeatureLayer_1.default({
+export const initLayer = (url, firePerimeterIDs) => {
+    layer = new FeatureLayer({
         id: "fire-perimeters-layer",
         renderer: firePerimeterRenderer,
         url: url,
@@ -28,12 +24,11 @@ const initLayer = (url, firePerimeterIDs) => {
     });
     return layer;
 };
-exports.initLayer = initLayer;
 const getLayer = () => {
     if (!layer) {
         throw "Fire Perimeters is not ready yet!";
     }
     return layer;
 };
-exports.default = getLayer;
+export default getLayer;
 //# sourceMappingURL=FirePerimeterLayer.js.map

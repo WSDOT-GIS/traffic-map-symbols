@@ -1,15 +1,11 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchJsonData = exports.replaceFeatures = exports.reloadData = exports.setLayerEvent = exports.initLayer = exports.getFeature = exports.setLayerVisibility = exports.resizeFeature = exports.getLayerIds = exports.createLayerGroupInfos = void 0;
-const tslib_1 = require("tslib");
-const SpatialReference_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/SpatialReference"));
-const Graphic_1 = tslib_1.__importDefault(require("@arcgis/core/Graphic"));
-const graphicLayerUtil_1 = require("./graphicLayerUtil");
-const FeatureLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/FeatureLayer"));
-const geomJsonUtils = tslib_1.__importStar(require("@arcgis/core/geometry/support/jsonUtils"));
-const Field_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/Field"));
-const miscUtil_1 = require("@/utils/miscUtil");
-const typeUtil_1 = require("@/utils/typeUtil");
+import SpatialReference from "@arcgis/core/geometry/SpatialReference";
+import Graphic from "@arcgis/core/Graphic";
+import { addGraphicsByType, buildGraphicsByType } from "./graphicLayerUtil";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import * as geomJsonUtils from "@arcgis/core/geometry/support/jsonUtils";
+import Field from "@arcgis/core/layers/support/Field";
+import { fetchJson } from "@/utils/miscUtil";
+import { isEsriFeatures } from "@/utils/typeUtil";
 /**  Mapping between layer groups (type in URL query param) and layer IDs...
  *   * id
  *      ID for the layer group (type).
@@ -19,7 +15,7 @@ const typeUtil_1 = require("@/utils/typeUtil");
  *      Unique field that is from the source database. Do not use ESRI ID.
 */
 const layerGroups = [];
-const createLayerGroupInfos = (config) => {
+export const createLayerGroupInfos = (config) => {
     layerGroups.push({ id: "camera", layers: [{ id: "traffic-camera-layer", uniqueField: "CameraID", jsonUrl: config.cameras }] });
     layerGroups.push({ id: "alert", layers: [{ id: "road-alerts-layer", uniqueField: "EventID" }] }); // Loaded by default, should not need to load data.
     layerGroups.push({
@@ -38,9 +34,8 @@ const createLayerGroupInfos = (config) => {
     layerGroups.push({ id: "mountain", layers: [{ id: "mountain-passes-layer", uniqueField: "MountainPassId", jsonUrl: config.mountainPasses }] });
     layerGroups.push({ id: "weather", layers: [{ id: "weather-stations-layer", uniqueField: "WeatherStationId", jsonUrl: config.weatherStations }] });
     layerGroups.push({ id: "parkride", layers: [{ id: "park-ride-layer", uniqueField: "", jsonUrl: config.parkAndRides }] }); // TODO: need unique field
-    layerGroups.push({ id: "restarea", layers: [{ id: "rest-areas-layer", uniqueField: "", jsonUrl: config.restAreas }] }); // TODO: need unique field
+    layerGroups.push({ id: "restarea", layers: [{ id: "rest-areas-layer", uniqueField: "RestAreaId", jsonUrl: config.restAreas }] });
 };
-exports.createLayerGroupInfos = createLayerGroupInfos;
 const getGroupLayerInfo = (groupId) => {
     const result = layerGroups.find((item) => {
         return item.id === groupId;
@@ -50,7 +45,7 @@ const getGroupLayerInfo = (groupId) => {
     }
     return result;
 };
-const getLayerIds = (groupId) => {
+export const getLayerIds = (groupId) => {
     const result = layerGroups.find((item) => {
         return item.id === groupId;
     });
@@ -63,12 +58,10 @@ const getLayerIds = (groupId) => {
         throw "Failed to find layer IDs for " + groupId + ".";
     }
 };
-exports.getLayerIds = getLayerIds;
-const resizeFeature = (graphic, mapView) => {
-    const mapGraphic = graphicLayerUtil_1.buildGraphicsByType("CIMSymbol", graphic);
-    graphicLayerUtil_1.addGraphicsByType("selectedGraphic", mapGraphic);
+export const resizeFeature = (graphic) => {
+    const mapGraphic = buildGraphicsByType("CIMSymbol", graphic);
+    addGraphicsByType("selectedGraphic", mapGraphic);
 };
-exports.resizeFeature = resizeFeature;
 /**
  * Set the visibility of the specified layer in the layer list.
  * NOTE: The layer list need to be committed to the state store.
@@ -77,7 +70,7 @@ exports.resizeFeature = resizeFeature;
  * @param layerList
  * @returns
  */
-const setLayerVisibility = (layerId, visible, layerList) => {
+export const setLayerVisibility = (layerId, visible, layerList) => {
     const result = layerList.find((item) => {
         return item.id === layerId;
     });
@@ -86,7 +79,6 @@ const setLayerVisibility = (layerId, visible, layerList) => {
     }
     return layerList;
 };
-exports.setLayerVisibility = setLayerVisibility;
 /**
  * Get a feature from the layer group.
  * @param uniqueValue
@@ -96,19 +88,19 @@ exports.setLayerVisibility = setLayerVisibility;
  * @param map
  * @returns
  */
-const getFeature = (uniqueValue, groupId, map) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+export const getFeature = async (uniqueValue, groupId, map) => {
     const groupInfo = getGroupLayerInfo(groupId);
     const layer = map.findLayerById(groupInfo.layers[0].id);
     // Make sure the layer is loaded. If this is done too early, query does not resolve...
-    yield layer.when();
+    await layer.when();
     if (layer.type !== "feature") {
         throw layer.type + " is not supported.";
     }
     const fLayer = layer;
     fLayer.visible = true;
-    const ftrCount = yield fLayer.queryFeatureCount();
+    const ftrCount = await fLayer.queryFeatureCount();
     if (groupInfo.layers[0].jsonUrl && ftrCount === 0) {
-        yield exports.reloadData(groupInfo.layers[0].jsonUrl, fLayer);
+        await reloadData(groupInfo.layers[0].jsonUrl, fLayer);
         if (groupInfo.layers.length > 1) {
             for (const eachLyr of groupInfo.layers) {
                 if (eachLyr.id === groupInfo.layers[0].id) {
@@ -117,7 +109,7 @@ const getFeature = (uniqueValue, groupId, map) => tslib_1.__awaiter(void 0, void
                 const fLyr2 = map.findLayerById(eachLyr.id);
                 if (eachLyr.jsonUrl) {
                     fLyr2.visible = true;
-                    yield exports.reloadData(eachLyr.jsonUrl, fLyr2);
+                    await reloadData(eachLyr.jsonUrl, fLyr2);
                 }
             }
         }
@@ -131,18 +123,17 @@ const getFeature = (uniqueValue, groupId, map) => tslib_1.__awaiter(void 0, void
     else {
         query.where += uniqueValue;
     }
-    query.outFields = [fLayer.objectIdField];
-    const response = yield fLayer.queryFeatures(query);
+    query.outFields = [fLayer.objectIdField, groupInfo.layers[0].uniqueField];
+    const response = await fLayer.queryFeatures(query);
     if (response.features.length > 0) {
         return response.features[0];
     }
-});
-exports.getFeature = getFeature;
-const initLayer = (jsonUrl, layerId, layerTitle, renderer, fields, geometryType, visible) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+};
+export const initLayer = async (jsonUrl, layerId, layerTitle, renderer, fields, geometryType, visible, loadOnce) => {
     // Create Graphics from JSON...
     let graphics = [];
     if (visible) {
-        graphics = yield exports.fetchJsonData(jsonUrl);
+        graphics = await fetchJsonData(jsonUrl);
     }
     // Do not set the WSDOT unique ID as OID. The app might change them.
     // So create a new system generated field as OID.
@@ -153,12 +144,12 @@ const initLayer = (jsonUrl, layerId, layerTitle, renderer, fields, geometryType,
     if (foundOid) {
         oidField += 2;
     }
-    fields.push(new Field_1.default({
+    fields.push(new Field({
         name: oidField,
         alias: oidField,
         type: "oid"
     }));
-    const layer = new FeatureLayer_1.default({
+    const layer = new FeatureLayer({
         id: layerId,
         title: layerTitle,
         objectIdField: oidField,
@@ -167,69 +158,68 @@ const initLayer = (jsonUrl, layerId, layerTitle, renderer, fields, geometryType,
         visible: visible,
         source: graphics,
         geometryType: geometryType,
-        spatialReference: SpatialReference_1.default.WebMercator,
+        spatialReference: SpatialReference.WebMercator,
     });
     // Set event to load layer when it becomes visible...
-    exports.setLayerEvent(layer, jsonUrl);
+    setLayerEvent(layer, jsonUrl, loadOnce);
     return layer;
-});
-exports.initLayer = initLayer;
-const setLayerEvent = (layer, jsonUrl) => {
-    layer.watch("visible", (newValue, oldValue, propName, target) => {
+};
+export const setLayerEvent = (layer, jsonUrl, loadOnce) => {
+    const handle = layer.watch("visible", (newValue, oldValue, propName, target) => {
         const lyr = target;
         if (newValue) {
-            exports.reloadData(jsonUrl, lyr);
+            reloadData(jsonUrl, lyr);
+            if (loadOnce) {
+                handle.remove();
+            }
         }
     });
 };
-exports.setLayerEvent = setLayerEvent;
-// Keep track if what is loading, so prevent loading the same layer at the same time.
+// Keep track of what is loading, so prevent loading the same layer at the same time.
 let loadManager = [];
-const reloadData = (jsonUrl, layer) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    const reload = (jsonUrl, layer) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+export const reloadData = async (jsonUrl, layer) => {
+    const reload = async (jsonUrl, layer) => {
         if (!layer.visible) {
             return;
         }
         // Fetch all features from JSON...
-        yield exports.fetchJsonData(jsonUrl).then((graphics) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+        await fetchJsonData(jsonUrl).then(async (graphics) => {
             if (graphics.length > 0) {
-                yield exports.replaceFeatures(layer, graphics);
+                await replaceFeatures(layer, graphics);
             }
             // Replace old with new features...
-        }));
-    });
+        });
+    };
     // Check if the layer is already being loaded currently or not...
     const runningProc = loadManager.find(x => x.id === layer.id);
     if (runningProc) {
         // It is loading currently already, so wait until that finishes.
-        yield runningProc.promise;
+        await runningProc.promise;
     }
     else {
         // It is not loading now, so start loading.
         const promise = reload(jsonUrl, layer);
         loadManager.push({ id: layer.id, promise: promise });
-        yield promise;
+        await promise;
         loadManager = loadManager.filter(x => x.id !== layer.id);
     }
-});
-exports.reloadData = reloadData;
-const replaceFeatures = (layer, newFeatures) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+};
+export const replaceFeatures = async (layer, newFeatures) => {
     // Delete existing features...
-    const fs = yield layer.queryFeatures();
-    yield layer.applyEdits({ deleteFeatures: fs.features });
+    const fs = await layer.queryFeatures();
+    await layer.applyEdits({ deleteFeatures: fs.features });
     // Load features...
-    yield layer.applyEdits({ addFeatures: newFeatures });
+    await layer.applyEdits({ addFeatures: newFeatures });
     layer.refresh();
-});
-exports.replaceFeatures = replaceFeatures;
-const fetchJsonData = (jsonUrl) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+};
+export const fetchJsonData = async (jsonUrl) => {
     // Fetch all features from JSON...
-    const json = yield miscUtil_1.fetchJson(jsonUrl);
+    const json = await fetchJson(jsonUrl);
     //const json = await response.json();
-    if (!typeUtil_1.isEsriFeatures(json)) {
+    if (!isEsriFeatures(json)) {
         throw "Invalid JSON format. It is not ESRI Features JSON.";
     }
-    const sr = SpatialReference_1.default.fromJSON(json.spatialReference);
+    const sr = SpatialReference.fromJSON(json.spatialReference);
     // Create graphic out of each feature...
     const graphics = [];
     for (const each of json.features) {
@@ -239,13 +229,12 @@ const fetchJsonData = (jsonUrl) => tslib_1.__awaiter(void 0, void 0, void 0, fun
         }
         else {
             geom.spatialReference = sr;
-            graphics.push(new Graphic_1.default({
+            graphics.push(new Graphic({
                 geometry: geom,
                 attributes: each.attributes,
             }));
         }
     }
     return graphics;
-});
-exports.fetchJsonData = fetchJsonData;
+};
 //# sourceMappingURL=layerUtil.js.map

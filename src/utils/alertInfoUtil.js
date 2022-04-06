@@ -1,42 +1,35 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.reloadFerryAlerts = exports.getFerryAlerts = exports.initFerryAlerts = exports.getStateAlerts = exports.initStateAlerts = void 0;
-const tslib_1 = require("tslib");
-const miscUtil_1 = require("@/utils/miscUtil");
-const typeUtil_1 = require("@/utils/typeUtil");
+import { fetchJson } from "@/utils/miscUtil";
+import { isEsriRows } from "@/utils/typeUtil";
 /*** Statewide alerts *******************/
 let stateAlertUrl;
-const initStateAlerts = (url) => {
+export const initStateAlerts = (url) => {
     stateAlertUrl = url;
 };
-exports.initStateAlerts = initStateAlerts;
-const getStateAlerts = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+export const getStateAlerts = async () => {
     if (!stateAlertUrl) {
         throw "State alert URL is not set yet.";
     }
-    const json = yield miscUtil_1.fetchJson(stateAlertUrl);
+    const json = await fetchJson(stateAlertUrl);
     const alerts = [];
-    if (typeUtil_1.isEsriRows(json)) {
+    if (isEsriRows(json)) {
         json.features.forEach((each) => {
             alerts.push(each.attributes);
         });
     }
     return alerts;
-});
-exports.getStateAlerts = getStateAlerts;
+};
 /*** Ferry Alerts ***************/
 let ferryAlerts;
 let ferryAlertUrl;
-const initFerryAlerts = (url) => {
+export const initFerryAlerts = (url) => {
     ferryAlertUrl = url;
 };
-exports.initFerryAlerts = initFerryAlerts;
-const getFerryAlerts = (routeId) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+export const getFerryAlerts = async (routeId) => {
     if (!ferryAlertUrl) {
         throw "Ferry Alerts URL is not set yet.";
     }
     if (!ferryAlerts) {
-        yield exports.reloadFerryAlerts(true);
+        await reloadFerryAlerts(true);
     }
     let alerts;
     if (ferryAlerts) {
@@ -50,19 +43,17 @@ const getFerryAlerts = (routeId) => tslib_1.__awaiter(void 0, void 0, void 0, fu
         alerts = [];
     }
     return alerts;
-});
-exports.getFerryAlerts = getFerryAlerts;
-const reloadFerryAlerts = (force) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+};
+export const reloadFerryAlerts = async (force) => {
     if (!force && !ferryAlerts) {
         return;
     }
-    const json = yield miscUtil_1.fetchJson(ferryAlertUrl);
+    const json = await fetchJson(ferryAlertUrl);
     ferryAlerts = [];
-    if (typeUtil_1.isEsriRows(json)) {
+    if (isEsriRows(json)) {
         json.features.forEach((each) => {
             ferryAlerts === null || ferryAlerts === void 0 ? void 0 : ferryAlerts.push(each.attributes);
         });
     }
-});
-exports.reloadFerryAlerts = reloadFerryAlerts;
+};
 //# sourceMappingURL=alertInfoUtil.js.map

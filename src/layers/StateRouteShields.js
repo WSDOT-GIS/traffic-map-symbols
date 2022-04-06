@@ -1,11 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.initLayer = void 0;
-const tslib_1 = require("tslib");
-const TileLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/TileLayer"));
+import TileLayer from "@arcgis/core/layers/TileLayer";
 let layer;
-const initLayer = (url) => {
-    layer = new TileLayer_1.default({
+export const initLayer = (url) => {
+    layer = new TileLayer({
         id: "state-route-shields-layer",
         url: url,
         title: "State Route Shields",
@@ -13,12 +9,11 @@ const initLayer = (url) => {
     });
     return layer;
 };
-exports.initLayer = initLayer;
 const getLayer = () => {
     if (!layer) {
         throw "State Route Shields is not ready yet!";
     }
     return layer;
 };
-exports.default = getLayer;
+export default getLayer;
 //# sourceMappingURL=StateRouteShields.js.map

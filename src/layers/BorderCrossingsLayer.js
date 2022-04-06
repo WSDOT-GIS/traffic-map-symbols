@@ -1,53 +1,48 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.initLayer = void 0;
-const tslib_1 = require("tslib");
 // import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
-const Field_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/Field"));
-const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
-const layerUtil = tslib_1.__importStar(require("@/utils/layerUtil"));
-const BorderCrossingsSymbol_1 = tslib_1.__importDefault(require("@/symbols/BorderCrossingsSymbol"));
-const renderer = new SimpleRenderer_1.default({
-    symbol: BorderCrossingsSymbol_1.default
+import Field from "@arcgis/core/layers/support/Field";
+import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
+import * as layerUtil from "@/utils/layerUtil";
+import symbol from "@/symbols/BorderCrossingsSymbol";
+const renderer = new simpleRenderer({
+    symbol: symbol
 });
 const fields = [
-    new Field_1.default({
+    new Field({
         "name": "BorderCrossingDescription",
         "type": "string",
         "alias": "BorderCrossingDescription",
     }),
-    new Field_1.default({
+    new Field({
         "name": "StateRouteID",
         "type": "string",
         "alias": "State Route ID",
     }),
-    new Field_1.default({
+    new Field({
         "name": "WaitTimeText",
         "type": "string",
         "alias": "WaitTimeText",
     }),
-    new Field_1.default({
+    new Field({
         "name": "HTMLTable",
         "type": "string",
         "alias": "HTMLTable",
     }),
-    new Field_1.default({
+    new Field({
         "name": "BorderReadingTime",
         "type": "string",
         "alias": "Border Reading Time",
     })
 ];
 let layer;
-const initLayer = (jsonUrl) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    layer = yield layerUtil.initLayer(jsonUrl, "border-crossings-layer", "Border Crossing Points", renderer, fields, "point", false);
+export const initLayer = async (jsonUrl) => {
+    layer = await layerUtil.initLayer(jsonUrl, "border-crossings-layer", "Border Crossing Points", renderer, fields, "point", false);
     return layer;
-});
-exports.initLayer = initLayer;
+};
 const getLayer = () => {
     if (!layer) {
         throw "Border Crossings Layer is not ready yet!";
     }
     return layer;
 };
-exports.default = getLayer;
+export default getLayer;
 //# sourceMappingURL=BorderCrossingsLayer.js.map

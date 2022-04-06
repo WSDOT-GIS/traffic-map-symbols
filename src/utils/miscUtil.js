@@ -1,8 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchJson = exports.formatEpoch = void 0;
-const tslib_1 = require("tslib");
-const formatEpoch = (epoch, isTime) => {
+export const formatEpoch = (epoch, isTime) => {
     /* IT said date will be in UTC, so removed the workaround below. If necessary simply
               change all the methods to UTC... methods. */
     /* The date value is in local time, so do not let JS do time conversion.
@@ -22,18 +18,17 @@ const formatEpoch = (epoch, isTime) => {
     }
     return text;
 };
-exports.formatEpoch = formatEpoch;
 const formatDateTimePart = (part) => {
     return ("0" + part).slice(-2);
 };
-const fetchJson = (url, isUnicode) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    const response = yield fetch(url, { cache: "no-store" });
+export const fetchJson = async (url, isUnicode) => {
+    const response = await fetch(url, { cache: "no-store" });
     let json;
     if (isUnicode) {
-        json = yield response.json();
+        json = await response.json();
     }
     else {
-        const buffer = yield response.arrayBuffer();
+        const buffer = await response.arrayBuffer();
         /* I think the data is in Windows-1252 (or ISO-8859-1).
            The method: response.json() by always encode everything in UTF-8, so that mess up some characters.
            To avoid this, decode the buffer with specific encoding instead. */
@@ -42,6 +37,37 @@ const fetchJson = (url, isUnicode) => tslib_1.__awaiter(void 0, void 0, void 0, 
         json = JSON.parse(text);
     }
     return json;
-});
-exports.fetchJson = fetchJson;
+};
+/**
+ * Determines the media size
+ * @returns s: small, l:large (add more as needed)
+ */
+export const getMediaSize = () => {
+    if (window.matchMedia("(max-width: 600px)").matches
+        || window.matchMedia("(max-height: 400px)").matches) {
+        return "s";
+    }
+    else {
+        return "l";
+    }
+};
+export const WebMercator = {
+    "wkid": 3857
+};
+export const hasParentClass = (child, classname) => {
+    if (child) {
+        if (child.className.split(' ').indexOf(classname) >= 0)
+            return true;
+        try {
+            //Throws TypeError if child doesn't have parent any more
+            return hasParentClass(child.parentNode, classname);
+        }
+        catch (TypeError) {
+            return false;
+        }
+    }
+    else {
+        return false;
+    }
+};
 //# sourceMappingURL=miscUtil.js.map

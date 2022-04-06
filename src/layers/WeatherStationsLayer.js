@@ -1,74 +1,70 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.initLayer = void 0;
-const tslib_1 = require("tslib");
-const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
-const WeatherStationSymbol_1 = tslib_1.__importDefault(require("@/symbols/WeatherStationSymbol"));
-const Field_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/Field"));
-const layerUtil = tslib_1.__importStar(require("@/utils/layerUtil"));
-const renderer = new SimpleRenderer_1.default({
-    symbol: WeatherStationSymbol_1.default
+import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
+import weatherStationSymbol from "@/symbols/WeatherStationSymbol";
+import Field from "@arcgis/core/layers/support/Field";
+import * as layerUtil from "@/utils/layerUtil";
+const renderer = new SimpleRenderer({
+    symbol: weatherStationSymbol
 });
 const fields = [
-    new Field_1.default({
+    new Field({
         "name": "WeatherStationDescription",
         "type": "string",
         "alias": "WeatherStationDescription",
     }),
-    new Field_1.default({
+    new Field({
         "name": "WeatherStationId",
         "type": "integer",
         "alias": "WeatherStationId"
     }),
-    new Field_1.default({
+    new Field({
         "name": "SurfaceTemperature",
         "type": "string",
         "alias": "SurfaceTemperature",
     }),
-    new Field_1.default({
+    new Field({
         "name": "TemperatureFarhenheit",
         "type": "string",
         "alias": "TemperatureFarhenheit",
     }),
-    new Field_1.default({
+    new Field({
         "name": "TemperatureCelcius",
         "type": "string",
         "alias": "TemperatureCelcius",
     }),
-    new Field_1.default({
+    new Field({
         "name": "Visibility",
         "type": "string",
         "alias": "Visibility",
     }),
-    new Field_1.default({
+    new Field({
         "name": "WindSpeed",
         "type": "string",
         "alias": "WindSpeed",
     }),
-    new Field_1.default({
+    new Field({
         "name": "NWSZoneId",
         "type": "string",
         "alias": "NWSZoneId",
     }),
-    new Field_1.default({
+    new Field({
         "name": "CardinalCompassDirection",
         "type": "string",
         "alias": "CardinalCompassDirection",
     }),
-    new Field_1.default({
+    new Field({
         "name": "WeatherReportDateTime",
         "type": "date",
         "alias": "WeatherReportDateTime",
     }),
-    new Field_1.default({
+    new Field({
         "name": "WeatherNetworkPriority",
         "type": "double",
         "alias": "WeatherNetworkPriority",
     }),
 ];
 let layer;
-const initLayer = (jsonUrl, view) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    layer = yield layerUtil.initLayer(jsonUrl, "weather-stations-layer", "Weather Stations", renderer, fields, "point", false);
+export const initLayer = async (jsonUrl, view) => {
+    layer = await layerUtil.initLayer(jsonUrl, "weather-stations-layer", "Weather Stations", renderer, fields, "point", false, true);
     layer.definitionExpression = "WeatherNetworkPriority = 0";
     view.watch("scale", (scale) => {
         if (scale > 577790.554289) {
@@ -81,13 +77,12 @@ const initLayer = (jsonUrl, view) => tslib_1.__awaiter(void 0, void 0, void 0, f
         }
     });
     return layer;
-});
-exports.initLayer = initLayer;
+};
 const getLayer = () => {
     if (!layer) {
         throw "WeatherStationsLayer is not ready yet!";
     }
     return layer;
 };
-exports.default = getLayer;
+export default getLayer;
 //# sourceMappingURL=WeatherStationsLayer.js.map

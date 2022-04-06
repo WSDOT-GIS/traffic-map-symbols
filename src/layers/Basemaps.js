@@ -1,20 +1,15 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateBasemapName = exports.toggleBasemapInfo = exports.getBasemapInfo = exports.initBasemap = exports.getDefaultBasemapInfo = void 0;
-const tslib_1 = require("tslib");
-const Basemap_1 = tslib_1.__importDefault(require("@arcgis/core/Basemap"));
-const TileLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/TileLayer"));
-const getDefaultBasemapInfo = () => { return basemaps[0]; };
-exports.getDefaultBasemapInfo = getDefaultBasemapInfo;
+import Basemap from "@arcgis/core/Basemap";
+import TileLayer from "@arcgis/core/layers/TileLayer";
+export const getDefaultBasemapInfo = () => { return basemaps[0]; };
 // Array of basemaps. The first one is the default.
 let basemaps = [];
-const initBasemap = (basemapString) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+export const initBasemap = async (basemapString) => {
     basemaps = [
         {
             name: "wsdot",
-            basemap: new Basemap_1.default({
+            basemap: new Basemap({
                 baseLayers: [
-                    new TileLayer_1.default({
+                    new TileLayer({
                         url: basemapString,
                     }),
                 ],
@@ -23,12 +18,11 @@ const initBasemap = (basemapString) => tslib_1.__awaiter(void 0, void 0, void 0,
             })
         }, {
             name: "satellite",
-            basemap: Basemap_1.default.fromId("satellite")
+            basemap: Basemap.fromId("satellite")
         }
     ];
-});
-exports.initBasemap = initBasemap;
-const getBasemapInfo = (name) => {
+};
+export const getBasemapInfo = (name) => {
     const results = basemaps.filter((x) => {
         return x.name == name;
     });
@@ -36,12 +30,11 @@ const getBasemapInfo = (name) => {
         return results[0];
     }
     else {
-        return exports.getDefaultBasemapInfo();
+        return getDefaultBasemapInfo();
     }
 };
-exports.getBasemapInfo = getBasemapInfo;
 // Select the next basemap info in the array.
-const toggleBasemapInfo = (currentName) => {
+export const toggleBasemapInfo = (currentName) => {
     let idx = -1;
     for (let i = 0; i < basemaps.length; i++) {
         if (basemaps[i].name == currentName) {
@@ -56,13 +49,11 @@ const toggleBasemapInfo = (currentName) => {
         return basemaps[0];
     }
 };
-exports.toggleBasemapInfo = toggleBasemapInfo;
 // Make sure the base map name is valid...
-const validateBasemapName = (name) => {
+export const validateBasemapName = (name) => {
     const result = basemaps.filter((item) => {
         return item.name === name;
     });
     return result.length > 0;
 };
-exports.validateBasemapName = validateBasemapName;
 //# sourceMappingURL=Basemaps.js.map

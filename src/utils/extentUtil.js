@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOutOfBoundDirection = exports.convert2ExtentInfo = exports.convert2EsriExtent = exports.getEsriExtent = exports.getExtentInfo = void 0;
-const tslib_1 = require("tslib");
-const Extent_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/Extent"));
-const SpatialReference_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/SpatialReference"));
+import Extent from "@arcgis/core/geometry/Extent";
+import SpatialReference from "@arcgis/core/geometry/SpatialReference";
+import { WebMercator } from "./miscUtil";
 const defaultExtents = [
     {
         id: "full",
@@ -20,28 +17,25 @@ const defaultExtents = [
         xmax: -13014945.794, ymax: 6275274.968499999
     },
 ];
-const getExtentInfo = (id) => {
+export const getExtentInfo = (id) => {
     const result = defaultExtents.filter(x => x.id == id);
     return result[0];
 };
-exports.getExtentInfo = getExtentInfo;
-const getEsriExtent = (name) => {
-    const info = exports.getExtentInfo(name);
-    return exports.convert2EsriExtent(info);
+export const getEsriExtent = (name) => {
+    const info = getExtentInfo(name);
+    return convert2EsriExtent(info);
 };
-exports.getEsriExtent = getEsriExtent;
-const convert2EsriExtent = (extentInfo) => {
-    const extent = new Extent_1.default({
+export const convert2EsriExtent = (extentInfo) => {
+    const extent = new Extent({
         xmin: extentInfo.xmin,
         xmax: extentInfo.xmax,
         ymin: extentInfo.ymin,
         ymax: extentInfo.ymax,
-        spatialReference: SpatialReference_1.default.WebMercator
+        spatialReference: SpatialReference.WebMercator
     });
     return extent;
 };
-exports.convert2EsriExtent = convert2EsriExtent;
-const convert2ExtentInfo = (extent) => {
+export const convert2ExtentInfo = (extent) => {
     const info = {
         xmin: extent.xmin,
         xmax: extent.xmax,
@@ -50,7 +44,6 @@ const convert2ExtentInfo = (extent) => {
     };
     return info;
 };
-exports.convert2ExtentInfo = convert2ExtentInfo;
 /**
  * Figure out the relative direction from the full extent.
  * @param mapXY
@@ -59,9 +52,9 @@ exports.convert2ExtentInfo = convert2ExtentInfo;
  * First char: vertical direction = i/n/s (inside/north/south)
  * Second char: horizontal direction = i/w/e (inside/west/east)
  */
-const getOutOfBoundDirection = (mapXY, extent) => {
+export const getOutOfBoundDirection = (mapXY, extent) => {
     if (!extent) {
-        extent = exports.getExtentInfo("full");
+        extent = getExtentInfo("full");
     }
     let dir = "i"; // Inside
     // Check vertical...
@@ -84,5 +77,40 @@ const getOutOfBoundDirection = (mapXY, extent) => {
     }
     return dir;
 };
-exports.getOutOfBoundDirection = getOutOfBoundDirection;
+export const getOutOfExtentPolygons = () => {
+    const displayExtent = getEsriExtent("full").expand(1.2);
+    const xMin = -20000000;
+    const xMax = -1000000;
+    const yMin = 0;
+    const yMax = 20000000;
+    const extentW = new Extent({
+        xmin: xMin,
+        xmax: displayExtent.xmin,
+        ymin: yMin,
+        ymax: yMax,
+        spatialReference: WebMercator
+    });
+    const extentN = new Extent({
+        xmin: displayExtent.xmin,
+        xmax: displayExtent.xmax,
+        ymin: displayExtent.ymax,
+        ymax: yMax,
+        spatialReference: WebMercator
+    });
+    const extentE = new Extent({
+        xmin: displayExtent.xmax,
+        xmax: xMax,
+        ymin: yMin,
+        ymax: yMax,
+        spatialReference: WebMercator
+    });
+    const extentS = new Extent({
+        xmin: displayExtent.xmin,
+        xmax: displayExtent.xmax,
+        ymin: yMin,
+        ymax: displayExtent.ymin,
+        spatialReference: WebMercator
+    });
+    return [extentW, extentN, extentE, extentS];
+};
 //# sourceMappingURL=extentUtil.js.map

@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.regionGraphics = void 0;
-exports.regionGraphics = [
+export const regionGraphics = [
     // Colwitz
     {
         geometry: {

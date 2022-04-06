@@ -1,133 +1,127 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.centerFeatures = exports.reloadData = exports.initLayer = void 0;
-const tslib_1 = require("tslib");
-const FeatureLayer_1 = tslib_1.__importDefault(require("@arcgis/core/layers/FeatureLayer"));
-const SimpleRenderer_1 = tslib_1.__importDefault(require("@arcgis/core/renderers/SimpleRenderer"));
-const Graphic_1 = tslib_1.__importDefault(require("@arcgis/core/Graphic"));
-const SpatialReference_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/SpatialReference"));
-const Field_1 = tslib_1.__importDefault(require("@arcgis/core/layers/support/Field"));
-const RegionalAlertSymbol_1 = tslib_1.__importDefault(require("@/symbols/RegionalAlertSymbol"));
-const Polygon_1 = tslib_1.__importDefault(require("@arcgis/core/geometry/Polygon"));
-const AlertAreaLayer_1 = tslib_1.__importStar(require("./AlertAreaLayer"));
-const AlertAreaLayer_2 = require("@/layers/AlertAreaLayer");
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
+import Graphic from "@arcgis/core/Graphic";
+import SpatialReference from "@arcgis/core/geometry/SpatialReference";
+import Field from "@arcgis/core/layers/support/Field";
+import symbol from "@/symbols/RegionalAlertSymbol";
+import Polygon from "@arcgis/core/geometry/Polygon";
+import AlertAreaLayer, { getVisibleCenter, getFeatureById as getAreaById } from "./AlertAreaLayer";
+import { initLayer as initAreaLayer } from "@/layers/AlertAreaLayer";
 // Create a symbol for rendering the graphic
-const renderer = new SimpleRenderer_1.default({
-    symbol: RegionalAlertSymbol_1.default
+const renderer = new SimpleRenderer({
+    symbol: symbol
 });
 const fields = [
-    new Field_1.default({
-        name: "AppGenId", type: "oid", alias: "AppGenId"
-    }),
-    new Field_1.default({
+    // new Field({
+    //     name: "AppGenId", type: "oid", alias: "AppGenId"
+    // }),
+    new Field({
         name: "EventID",
         alias: "EventID",
-        type: "integer"
+        type: "oid"
     }),
-    new Field_1.default({
+    new Field({
         name: "CriticalEventIndicator",
         type: "integer",
         alias: "CriticalEventIndicator"
     }),
-    new Field_1.default({
+    new Field({
         name: "IconName",
         type: "string",
         alias: "IconName"
     }),
-    new Field_1.default({
+    new Field({
         name: "EventPriorityID",
         type: "integer",
         alias: "EventPriorityID"
     }),
-    new Field_1.default({
+    new Field({
         name: "EventPriorityDescription",
         type: "string",
         alias: "EventPriorityDescription"
     }),
     // County or Region
-    new Field_1.default({
+    new Field({
         name: "EventCategoryType",
         type: "string",
         alias: "EventCategoryType"
     }),
-    new Field_1.default({
+    new Field({
         name: "LastModifiedDate",
         type: "date",
         alias: "LastModifiedDate"
     }),
-    new Field_1.default({
+    new Field({
         name: "DisplayOrder",
         type: "integer",
         alias: "DisplayOrder"
     }),
-    new Field_1.default({
+    new Field({
         name: "LocationName",
         type: "string",
         alias: "LocationName"
     }),
-    new Field_1.default({
+    new Field({
         name: "HeadlineMessage",
         type: "string",
         alias: "HeadlineMessage"
     }),
-    new Field_1.default({
+    new Field({
         name: "ExtendedMessage",
         type: "string",
         alias: "ExtendedMessage"
     }),
     // County or Region ID depending on EventCategoryType.
-    new Field_1.default({
+    new Field({
         name: "CountyID",
         type: "integer",
         alias: "CountyID"
     }),
-    new Field_1.default({
+    new Field({
         name: "EventCategoryTypeDescription",
         type: "string",
         alias: "EventCategoryTypeDescription"
     }),
 ];
 let layer;
-const initLayer = (alertUrl, countyUrl, regionUrl) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    const fetchResults = yield fetchData(alertUrl, countyUrl, regionUrl);
-    layer = new FeatureLayer_1.default({
+export const initLayer = async (alertUrl, countyUrl, regionUrl) => {
+    const fetchResults = await fetchData(alertUrl, countyUrl, regionUrl);
+    layer = new FeatureLayer({
         id: "regional-alert-layer",
         title: "Regional Alerts",
         source: fetchResults.point,
         fields: fields,
-        objectIdField: "AppGenId",
+        objectIdField: "EventID",
         geometryType: "point",
-        spatialReference: SpatialReference_1.default.WebMercator,
+        spatialReference: SpatialReference.WebMercator,
         renderer: renderer,
     });
     // Create the area boundary layer...
-    const areaLayer = AlertAreaLayer_2.initLayer(fetchResults.polygon);
+    const areaLayer = initAreaLayer(fetchResults.polygon);
     return { point: layer, polygon: areaLayer };
-});
-exports.initLayer = initLayer;
+};
 const getLayer = () => {
     if (!layer) {
         throw "Regional Alert Layer is not ready yet!";
     }
     return layer;
 };
-exports.default = getLayer;
-const reloadData = (alertUrl, countyUrl, regionUrl) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    const fetchResults = yield fetchData(alertUrl, countyUrl, regionUrl);
+export default getLayer;
+export const reloadData = async (alertUrl, countyUrl, regionUrl) => {
+    const fetchResults = await fetchData(alertUrl, countyUrl, regionUrl);
     const pointLyr = getLayer();
     pointLyr.queryFeatures().then((featureSet) => {
         pointLyr.applyEdits({ deleteFeatures: featureSet.features }).then(() => {
             pointLyr.applyEdits({ addFeatures: fetchResults.point });
         });
     });
-    const polyLyr = AlertAreaLayer_1.default();
+    const polyLyr = AlertAreaLayer();
     polyLyr.queryFeatures().then((featureSet) => {
         polyLyr.applyEdits({ deleteFeatures: featureSet.features }).then(() => {
             polyLyr.applyEdits({ addFeatures: fetchResults.polygon });
         });
     });
-});
-exports.reloadData = reloadData;
+};
 /**
  * Fetch alerts from JSON, fetch boundaries from county or region map services, then create graphics.
  * @param alertUrl
@@ -135,10 +129,10 @@ exports.reloadData = reloadData;
  * @param regionUrl
  * @returns
  */
-const fetchData = (alertUrl, countyUrl, regionUrl) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+const fetchData = async (alertUrl, countyUrl, regionUrl) => {
     // Fetch all alerts from JSON...
-    let response = yield fetch(alertUrl);
-    let json = yield response.json();
+    let response = await fetch(alertUrl);
+    let json = await response.json();
     // Create graphic out of each alert...
     const pointGraphics = [];
     // Alert area polygons...
@@ -164,8 +158,8 @@ const fetchData = (alertUrl, countyUrl, regionUrl) => tslib_1.__awaiter(void 0, 
                 continue;
         }
         where += `=${each.attributes.CountyID}`;
-        response = yield fetch(`${url}/query?where=${encodeURIComponent(where)}&outFields=${nameField}&returnGeometry=true&outSR=3857&f=pjson`);
-        json = yield response.json();
+        response = await fetch(`${url}/query?where=${encodeURIComponent(where)}&outFields=${nameField}&returnGeometry=true&outSR=3857&f=pjson`);
+        json = await response.json();
         // Get centroid and set that as alert's geometry
         if (!json.features || json.features.length === 0) {
             console.error(`Failed to locate the regional alert: ${each.attributes.EventID}, 
@@ -174,15 +168,15 @@ const fetchData = (alertUrl, countyUrl, regionUrl) => tslib_1.__awaiter(void 0, 
         }
         else {
             const areaFeature = json.features[0];
-            const areaGeom = Polygon_1.default.fromJSON(areaFeature.geometry);
-            areaGeom.spatialReference = SpatialReference_1.default.fromJSON(json.spatialReference);
+            const areaGeom = Polygon.fromJSON(areaFeature.geometry);
+            areaGeom.spatialReference = SpatialReference.fromJSON(json.spatialReference);
             // Add an alert feature...
-            pointGraphics.push(new Graphic_1.default({
+            pointGraphics.push(new Graphic({
                 geometry: areaGeom.centroid,
                 attributes: each.attributes
             }));
             // Add the boundary to the Alert Area Layer with EventID
-            polyGraphics.push(new Graphic_1.default({
+            polyGraphics.push(new Graphic({
                 geometry: areaGeom,
                 attributes: {
                     EventID: each.attributes.EventID,
@@ -192,7 +186,7 @@ const fetchData = (alertUrl, countyUrl, regionUrl) => tslib_1.__awaiter(void 0, 
         }
     }
     return { point: pointGraphics, polygon: polyGraphics };
-});
+};
 // export const getFeatureById = async (id: number): Promise<Graphic> => {
 //     const layer = getLayer();
 //     const query = layer.createQuery();
@@ -201,29 +195,31 @@ const fetchData = (alertUrl, countyUrl, regionUrl) => tslib_1.__awaiter(void 0, 
 //     const response = await layer.queryFeatures(query);
 //     return response.features[0];
 // }
+// const debugX = -13669225.4615;
+// const debugY = 5938652.26065;
+// let debugCnt = 0;
 /**
  * Center the alert icon in the center of the region that is visible.
  * @param mapExtent
  * If specified, it will only consider the visible part of the polygon.
  */
-const centerFeatures = (mapExtent) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+export const centerFeatures = async (visibleExtent) => {
     const layer = getLayer();
     const query = layer.createQuery();
     query.where = "1=1";
     query.returnGeometry = true;
     query.outFields = ["EventID"];
-    const result = yield layer.queryFeatures(query);
+    const result = await layer.queryFeatures(query);
     const updatedFtrs = [];
     for (let i = 0; i < result.features.length; i++) {
         const feature = result.features[i];
         let newPt;
         const regionId = feature.attributes["EventID"];
-        if (mapExtent) {
-            const visibleArea = yield AlertAreaLayer_1.getVisibleArea(regionId, mapExtent);
-            newPt = visibleArea === null || visibleArea === void 0 ? void 0 : visibleArea.centroid;
+        if (visibleExtent) {
+            newPt = await getVisibleCenter(regionId, visibleExtent);
         }
         else {
-            const regionFtr = yield AlertAreaLayer_1.getFeatureById(regionId);
+            const regionFtr = await getAreaById(regionId);
             newPt = regionFtr.geometry.centroid;
         }
         if (newPt) {
@@ -231,7 +227,8 @@ const centerFeatures = (mapExtent) => tslib_1.__awaiter(void 0, void 0, void 0, 
             updatedFtrs.push(feature);
         }
     }
-    yield layer.applyEdits({ updateFeatures: updatedFtrs });
-});
-exports.centerFeatures = centerFeatures;
+    if (updatedFtrs.length > 0) {
+        layer.applyEdits({ updateFeatures: updatedFtrs });
+    }
+};
 //# sourceMappingURL=RegionalAlertLayer.js.map
