@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
+import { useRoute } from "vue-router";
 import { useStore } from "@/store";
 import { project } from "@arcgis/core/geometry/projection";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
@@ -16,11 +17,11 @@ import { mapView, zoomToMetroArea } from "@/esri-stuff/esriMap";
 import {
   getExtentFromUrl,
   getBasemapFromUrl,
-  setVisibleLayersFromUrl,
+  getLayerVisibilityFromUrl,
   getFeatureIdFromUrl,
   getFeatureTypeFromUrl,
 } from "@/utils/urlParamUtil";
-import { createLayerGroupInfos, getFeature, setLayerVisibility } from "@/utils/layerUtil";
+import { getFeature } from "@/utils/layerUtil";
 import {
   removeGraphicsByType,
   hidePointInteractionGraphics,
@@ -41,7 +42,6 @@ import { initBasemap } from "@/layers/Basemaps";
 import ParkRideLayer from "@/layers/ParkRideLayer";
 import CameraLayer, { toggleCluster } from "@/layers/CameraLayer";
 import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
-import LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
 import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
 import MountainPassesLayer from "@/layers/MountainPassesLayer";
 import RoadAlertsLayer from "@/layers/RoadAlertsLayer";
@@ -50,10 +50,10 @@ import FireIncidentLayer from "@/layers/FireIncidentLayer";
 import RoadsReferenceLayer from "@/layers/RoadsReferenceLayer";
 import BoundariesPlacesReferenceLayer from "@/layers/BoundariesPlacesReferenceLayer";
 import BorderCrossingLayer from "@/layers/BorderCrossingsLayer";
-import LineFerryRoutesLayer from "@/layers/LineFerryRoutesLayer";
 import PointFerryRoutesLayer from "@/layers/PointFerryRoutesLayer";
 import RegionalAlertLayer, {
   centerFeatures as centerRegionalAlerts,
+  layerId as regionalAlertLayerId,
 } from "@/layers/RegionalAlertLayer";
 /* Popups */
 import ZoomPopupView from "@/components/ZoomPopupView.vue";
@@ -70,6 +70,7 @@ import RegionalAlertPopup from "@/popups/RegionalAlertPopup.vue";
 import FerryRoutesPopup from "@/popups/FerryRoutesPopup.vue";
 /* Components */
 import LeftPaneView from "@/components/LeftPaneView.vue";
+import BannerView from "@/components/BannerView.vue";
 import BasemapView from "@/components/BasemapView.vue";
 import CoordinatesView from "@/components/CoordinatesView.vue";
 import MyLocationView from "@/components/MyLocationView.vue";
@@ -77,7 +78,7 @@ import ZoomButtonView from "@/components/ZoomButtonView.vue";
 import AlertView from "@/components/AlertView.vue";
 import AdView from "@/components/AdView.vue";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import {hasParentClass} from "@/utils/miscUtil"
+import { hasParentClass } from "@/utils/miscUtil";
 export default defineComponent({
   components: {
     ZoomPopupView,
@@ -99,24 +100,30 @@ export default defineComponent({
     ZoomButtonView,
     AlertView,
     AdView,
+    BannerView,
   },
   setup() {
     const mapLoaded = ref<boolean>(false);
     setTimeout(() => {
       mapLoaded.value = true;
     }, 9000);
+    const route = useRoute();
     const store = useStore();
     // Statewide alerts...
     const alerts = ref<AlertInfo[]>([]);
     const ferryAlerts = ref<FerryAlertInfo[]>([]);
     const config = getConfig();
     alertInfoUtil.initStateAlerts(config.stateAlerts);
-    alertInfoUtil.getStateAlerts().then((result) => {
-      alerts.value = result;
-    });
+    alertInfoUtil
+      .getStateAlerts()
+      .then((result) => {
+        alerts.value = result;
+      })
+      .catch((err) => {
+        store.commit("addServiceAlert", "Statewide alerts");
+        console.error(err);
+      });
     alertInfoUtil.initFerryAlerts(config.ferryAlerts);
-    // Build the list used by the URL query...
-    createLayerGroupInfos(config);
     // Zoom popup...
     const zoomPopupVisible = ref(false);
     const zoomPopupLabel = ref("");
@@ -162,23 +169,24 @@ export default defineComponent({
       mapDiv: HTMLDivElement,
       esriMap: typeof import("../esri-stuff/esriMap")
     ) => {
+      const lyrs = esriMap.validateLayerList([
+        ParkRideLayer(),
+        CameraLayer(),
+        PointRestrictionsLayer(),
+        WeatherStationsLayer(),
+        MountainPassesLayer(),
+        RestAreasLayer(),
+        RoadAlertsLayer(),
+        FireIncidentLayer(),
+        RoadsReferenceLayer(),
+        BoundariesPlacesReferenceLayer(),
+        BorderCrossingLayer(),
+        RegionalAlertLayer(),
+        PointFerryRoutesLayer(),
+        ZoomExtentLayer,
+      ]);
       const opLayerOpts = {
-        include: [
-          ParkRideLayer(),
-          CameraLayer(),
-          PointRestrictionsLayer(),
-          WeatherStationsLayer(),
-          MountainPassesLayer(),
-          RestAreasLayer(),
-          RoadAlertsLayer(),
-          FireIncidentLayer(),
-          RoadsReferenceLayer(),
-          BoundariesPlacesReferenceLayer(),
-          BorderCrossingLayer(),
-          RegionalAlertLayer(),
-          PointFerryRoutesLayer(),
-          ZoomExtentLayer,
-        ],
+        include: lyrs,
       };
       if (pointerMoveHandle) {
         pointerMoveHandle.remove();
@@ -227,9 +235,7 @@ export default defineComponent({
               if (arrayFound) {
                 arrayFound.results.push(eachResult);
               } else {
-                const layerInfo = store.state.layerList.find(
-                  (layerInfo) => layerInfo.id === eachResult.graphic.layer.id
-                );
+                const layerInfo = store.getters.getLayerInfo(eachResult.graphic.layer.id);
                 if (layerInfo) {
                   resultsByLayer.push({
                     info: layerInfo,
@@ -242,7 +248,7 @@ export default defineComponent({
             // Pick the top most layer...
             let maxIdx = 0;
             resultsByLayer.forEach((eachResultSet) => {
-              if (eachResultSet.info.index > maxIdx) {
+              if (eachResultSet.info.index && eachResultSet.info.index > maxIdx) {
                 maxIdx = eachResultSet.info.index;
               }
             });
@@ -281,24 +287,38 @@ export default defineComponent({
                 );
               } else {
                 const target = clickEvent.target as HTMLElement;
-                if (hasParentClass(target,"alert-content")==false) {
-                  hidePointInteractionGraphics(LineRestrictionsLayer());
-                  hidePointInteractionGraphics(LineFerryRoutesLayer());
+                if (hasParentClass(target, "alert-content") == false) {
+                  hidePointInteractionGraphics("line-restrictions-layer", esriMap.webmap);
+                  hidePointInteractionGraphics("ferry-routes-lines-layer", esriMap.webmap);
                 }
                 // Not aggregate...
                 const id = g.getObjectId();
                 // get lines for restriciton point click
-                if (g.layer.id === "point-restrictions-layer") {
+                if (
+                  g.layer.id === "point-restrictions-layer" ||
+                  g.layer.id === "road-alerts-layer"
+                ) {
                   getFeatureInfoById(id, g.layer as FeatureLayer).then((result) => {
                     if (
                       result?.attributes.lineMarker == "true" ||
                       result?.attributes.lineMarker == "True"
                     ) {
-                      displayPointInteractionGraphics(
-                        LineRestrictionsLayer(),
-                        "UniqueId",
-                        result?.attributes.UniqueId
-                      );
+                      if (g.layer.id === "point-restrictions-layer") {
+                        displayPointInteractionGraphics(
+                          "line-restrictions-layer",
+                          esriMap.webmap,
+                          "UniqueId",
+                          result?.attributes.UniqueId
+                        );
+                      }
+                      if (g.layer.id === "road-alerts-layer") {
+                        displayPointInteractionGraphics(
+                          "line-road-alerts-layer",
+                          esriMap.webmap,
+                          "EventID",
+                          result?.attributes.EventID
+                        );
+                      }
                       showPopup(results2Show.layer.id, [id]);
                     } else {
                       showPopup(results2Show.layer.id, [id]);
@@ -309,7 +329,8 @@ export default defineComponent({
                   // Display line...
                   getFeatureInfoById(id, g.layer as FeatureLayer).then((result) => {
                     displayPointInteractionGraphics(
-                      LineFerryRoutesLayer(),
+                      "ferry-routes-lines-layer",
+                      esriMap.webmap,
                       "FerryRouteID",
                       result?.attributes.FerryRouteID
                     );
@@ -323,12 +344,12 @@ export default defineComponent({
             }
           } else {
             const target = clickEvent.target as HTMLElement;
-            if (hasParentClass(target,"alert-content")==false) {
-              hidePointInteractionGraphics(LineRestrictionsLayer());
-              hidePointInteractionGraphics(LineFerryRoutesLayer());
+            if (hasParentClass(target, "alert-content") == false) {
+              hidePointInteractionGraphics("line-restrictions-layer", esriMap.webmap);
+              hidePointInteractionGraphics("ferry-routes-lines-layer", esriMap.webmap);
               removeGraphicsByType("selectedGraphic");
               removeGraphicsByType("myLocation"); //remove "my location" graphic
-                        //No feature exist...
+              //No feature exist...
               closePopup();
             }
           }
@@ -337,7 +358,7 @@ export default defineComponent({
     };
 
     onMounted(async () => {
-      const appConfig = await getConfig();
+      const appConfig = getConfig();
       const esriMap = await import("../esri-stuff/esriMap");
       mapDiv = document.getElementById("esri-map-view") as HTMLDivElement;
       esriMap.init(mapDiv);
@@ -345,19 +366,29 @@ export default defineComponent({
         width: esriMap.mapView.width,
         height: esriMap.mapView.height,
       });
+      esriMap.mapView.on("layerview-create-error", (event) => {
+        store.commit("addServiceAlert", event.layer.title);
+      })
       // Set basemap based on URL query parameter or display default...
       await initBasemap(appConfig.basemap);
       const basemapInfo = getBasemapFromUrl();
       store.commit("setBasemap", basemapInfo.name);
       // Read config, then load operational layers...
-      await esriMap.loadOperationalLayers();
+      const lyrInfos = await esriMap.loadOperationalLayers();
+      store.commit("setLayerInfos", lyrInfos);
       //set watcher to turn off initial loader screen
       const mapLayers = esriMap.getLayers() as Collection<Layer>;
       let vlPromises = [] as Array<Promise<LayerView>>;
       let loadedPromises = [] as Array<Promise<unknown>>;
+      const test: string[] = [];
       mapLayers.forEach((layer) => {
-        if (layer.type == "feature" && layer.id !== "ferry-routes-points-layer") {
+        if (
+          layer.type == "feature" &&
+          layer.id !== "ferry-routes-points-layer" &&
+          layer.loadStatus !== "failed"
+        ) {
           vlPromises.push(mapView.whenLayerView(layer));
+          test.push(layer.title);
         }
       });
       Promise.all(vlPromises).then((layerViews) => {
@@ -367,7 +398,7 @@ export default defineComponent({
         return Promise.all(loadedPromises)
           .then(() => {
             store.commit("setInitializing", {
-              isInitializing: false
+              isInitializing: false,
             }); /***TODO: use this to wait until non-feature layers are also ready***/
           })
           .catch((err) => {
@@ -376,17 +407,26 @@ export default defineComponent({
       });
       /* Set layer list here before the rest of the map is ready, so we can show the layer list UI early.
        * Otherwise user will see a map without layer list until everything is ready. */
-      store.commit("setLayerList");
+      store.dispatch("updateLayerVisibility");
       // Load regional alert after the other operations layers have been loaded so it won't slow down the map loading...
-      await esriMap.loadRegionalAlert();
-      // Update the layer list with regional alert layers.
-      store.commit("setLayerList");
+      const alertLyrInfos = await esriMap.loadRegionalAlert();
+      store.commit("setLayerInfos", alertLyrInfos);
+      // Store the layer indices in the state store...
+      store.dispatch("updateLayerIndices");
+      store.dispatch("watchLayers");
       // Set refresh interval for layers & alerts...
       setInterval(() => {
-        esriMap.refreshLayerData();
-        alertInfoUtil.getStateAlerts().then((result) => {
-          alerts.value = result;
-        });
+        esriMap
+          .refreshLayerData()
+          .then((layerInfos) => store.dispatch("updateLayerStatus", layerInfos));
+        alertInfoUtil
+          .getStateAlerts()
+          .then((result) => {
+            alerts.value = result;
+          })
+          .catch((err) => {
+            console.error(err);
+          });
         alertInfoUtil.reloadFerryAlerts();
       }, appConfig.layerRefreshMinute * 60000); //60000
       // Setup events on the operational layers...
@@ -396,61 +436,79 @@ export default defineComponent({
       // Gray out areas outside of the display area...
       esriMap.addOutOfExtentLayer();
       // Set layer visibility based on URL query...
-      const layerList = setVisibleLayersFromUrl(store.state.layerList);
-      store.commit("setLayerList", layerList);
+      const layerIds = getLayerVisibilityFromUrl(route);
+      store.dispatch("updateLayerVisibility", { ids: layerIds.visible, visible: true });
+      store.dispatch("updateLayerVisibility", { ids: layerIds.invisible, visible: false });
       // Set the initial map size in the state store...
       store.commit("setMapSize", {
         width: mapView.width,
         height: mapView.height,
       });
       // Set extent based on the URL query parameter...
-      esriMap.mapView.extent = await getExtentFromUrl();
+      esriMap.mapView.extent = await getExtentFromUrl(route);
       // Zoom, turn on layer and open popup if specified in URL query parameter...
-      const featureType = getFeatureTypeFromUrl();
-      const featureId = getFeatureIdFromUrl();
+      const featureType = getFeatureTypeFromUrl(route);
+      const featureId = getFeatureIdFromUrl(route);
       if (featureType && featureId) {
         // Make sure the map is ready, then search for the feature...
-        esriMap.mapView.when().then(() => {
-          getFeature(featureId, featureType, esriMap.webmap).then((result) => {
-            if (result) {
-              if (result.geometry.type !== "point") {
-                throw "The parameter, featuretype, only supports point feature type currently.";
-              } else {
-                if (featureType == "restriction") {
-                  displayPointInteractionGraphics(
-                    LineRestrictionsLayer(),
-                    "UniqueId",
-                    result?.attributes.UniqueId
-                  );
+        esriMap.mapView
+          .when()
+          .then(() => {
+            getFeature(featureId, featureType, esriMap.webmap).then((result) => {
+              if (result) {
+                if (result.geometry.type !== "point") {
+                  throw "The parameter, featuretype, only supports point feature type currently.";
+                } else {
+                  if (featureType == "restriction") {
+                    displayPointInteractionGraphics(
+                      "line-restrictions-layer",
+                      esriMap.webmap,
+                      "UniqueId",
+                      result?.attributes.UniqueId
+                    );
+                  }
                 }
-              }
-              // If the layer is not visible, turn it on...
-              if (!result.layer.visible) {
-                const layerList = setLayerVisibility(result.layer.id, true, store.state.layerList);
-                store.commit("setLayerList", layerList);
-              }
-              // Zoom in (zoom level differs depends on the device)...
-              let zoomLevel: number;
-              if (store.state.mediaSize === "s") {
-                zoomLevel = esriMap.getZoomLevel(-2).level;
+                // If the layer is not visible, turn it on...
+                if (!result.layer.visible) {
+                  store.dispatch("updateLayerVisibility", {
+                    ids: [result.layer.id],
+                    visible: true,
+                  });
+                }
+                // Zoom in (zoom level differs depends on the device)...
+                let zoomLevel: number;
+                if (store.state.mediaSize === "s") {
+                  zoomLevel = esriMap.getZoomLevel(-2).level;
+                } else {
+                  zoomLevel = esriMap.mapView.zoom + 4;
+                }
+                esriMap.tryZoomToPointAsync(result.geometry as Point, zoomLevel).then(() => {
+                  showPopup(result.layer.id, [result.getObjectId()]);
+                });
               } else {
-                zoomLevel = esriMap.mapView.zoom + 4;
+                console.error(
+                  "Failed to find the feature specified: " + featureType + ", " + featureId
+                );
               }
-              esriMap.tryZoomToPointAsync(result.geometry as Point, zoomLevel).then(() => {
-                showPopup(result.layer.id, [result.getObjectId()]);
+            });
+          })
+          .catch((error) => {
+            if (error.name.includes("webgl")) {
+              store.commit("setInitializing", {
+                isInitializing: true,
+                isLoading: false,
+                initializingMessage: "WebGL error",
+              });
+              console.warn("WebGL error");
+            } else {
+              console.warn("Failed to initialize map. Error: ", error);
+              store.commit("setInitializing", {
+                isInitializing: true,
+                isLoading: false,
+                initializingMessage: "Failed to initialize map. Error: " + error,
               });
             }
           });
-        }).catch(error => {
-          if (error.name.includes("webgl")) {
-              store.commit("setInitializing", { isInitializing: true, isLoading: false, initializingMessage: "WebGL error" });
-              console.warn("WebGL error");
-            }
-          else{
-            console.warn("Failed to initialize map. Error: ", error)
-            store.commit("setInitializing", { isInitializing: true, isLoading: false, initializingMessage: "Failed to initialize map. Error: "+error });
-          }
-        });
       }
       // Pointer move event handler...
       esriMap.mapView.on(["pointer-move"], (event) => {
@@ -525,7 +583,11 @@ export default defineComponent({
         if (!newValue) {
           return;
         }
-        centerRegionalAlerts(esriMap.mapView.extent);
+        // Center the regional alert icon inside the visible area.
+        // Except when the regional alert popup is open.
+        if (popupFeatureset.value.layerId !== regionalAlertLayerId) {
+          centerRegionalAlerts(esriMap.mapView.extent);
+        }
       });
     });
     //
@@ -556,7 +618,16 @@ export default defineComponent({
         }
       }
     };
-
+    /**
+     * Display error message
+     *
+     * @param event
+     */
+    const displayToast = (event: any) => {
+      if (event[0] == false) {
+        store.dispatch("showError", event[1].toString());
+      }
+    };
     return {
       bottomRightDiv,
       bottomLeftDiv,
@@ -568,12 +639,13 @@ export default defineComponent({
       zoomMetroEventHandler,
       popupXY,
       popupFeatureset,
-      closePopup,
       alerts,
       ferryAlerts,
       adjustBottomControls,
       marginBottomContainer,
-      mapLoaded,
+      displayToast,
+      closePopup,
+      store,
     };
   },
 });
@@ -604,7 +676,7 @@ export default defineComponent({
         <BasemapView />
       </div>
       <div class="map-bottom-right-container-column flex-column">
-        <MyLocationView />
+        <MyLocationView @locationFound="displayToast" />
         <ZoomButtonView />
       </div>
     </div>
@@ -625,19 +697,22 @@ export default defineComponent({
   <RoadAlertPopup :Featureset="popupFeatureset" />
   <WildfirePointsPopup :Featureset="popupFeatureset" />
   <BorderCrossingPopup :Featureset="popupFeatureset" />
-  <RegionalAlertPopup :Featureset="popupFeatureset" />
+  <RegionalAlertPopup :Featureset="popupFeatureset" @close="closePopup" />
   <FerryRoutesPopup :Featureset="popupFeatureset" :Alerts="ferryAlerts" />
   <LeftPaneView />
+  <BannerView />
 </template>
 
 <style scoped>
-@import "https://js.arcgis.com/4.19/@arcgis/core/assets/esri/themes/light/main.css";
+@import "https://js.arcgis.com/4.21/@arcgis/core/assets/esri/themes/light/main.css";
+
 #esri-map-view {
   padding: 0;
   margin: 0;
   height: 100%;
   width: 100%;
   touch-action: none;
+  overflow: hidden;
 }
 #map-bottom-right-container {
   display: inline-flex;

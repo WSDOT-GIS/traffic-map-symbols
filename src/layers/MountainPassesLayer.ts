@@ -5,6 +5,7 @@ import Field from "@arcgis/core/layers/support/Field"
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
 // import SpatialReference from "@arcgis/core/geometry/SpatialReference"
 import * as layerUtil from "@/utils/layerUtil";
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 // import Graphic from "@arcgis/core/Graphic"
 // import { getConfig } from "@/utils/appConfigUtil"
 
@@ -45,20 +46,40 @@ const fields = [
     new Field({ name: "PublicMessage1", type: "string", alias: "PublicMessage1", length: 300 }),
     new Field({ name: "TravelDirection2", type: "string", alias: "TravelDirection2", length: 20 }),
     new Field({ name: "PublicMessage2", type: "string", alias: "PublicMessage2", length: 300 }),
+    new Field({ name: "WebPageName", type: "string", alias: "WebPageName", length: 300 }),
 ]
 
 let layer: FeatureLayer | undefined;
+export const layerId = "mountain-passes-layer";
+const layerTitle = "Mountain Pass Reports";
 
-export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
-    layer = await layerUtil.initLayer(jsonUrl, "mountain-passes-layer", "Mountain Pass Reports",
-        renderer, fields, "point", false);
-    return layer;
+/**
+ * Initialize a layer
+ * 
+ * @param jsonUrl JSON URL
+ * @returns Promise<LayerInfo>
+ */
+export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
+    const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
+    try {
+        layer = await layerUtil.initLayer(layerId, layerTitle,
+            renderer, fields, "point", false);
+    }
+    catch (ex) {
+        console.error(ex);
+        layer = undefined;
+        layerInfo.status = LayerStatus.Failed
+    }
+    return layerInfo;
 
 }
 
-const getLayer = (): FeatureLayer => {
+/**
+ *
+ */
+const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
-        throw "MountainPassLayer is not ready yet!";
+        console.error("MountainPassLayer is not ready yet!");
     }
     return layer;
 }

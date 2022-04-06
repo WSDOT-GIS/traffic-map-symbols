@@ -1,17 +1,18 @@
 <script lang="ts">
-import { defineComponent, onBeforeUnmount, ref } from "vue";
-import EsriMapView from "./components/EsriMapView.vue";
+import { defineComponent, onBeforeUnmount, onMounted, onUpdated, ref } from "vue";
+// import EsriMapView from "./components/EsriMapView.vue";
 import HeaderView from "./components/HeaderView.vue";
 import FooterView from "./components/FooterView.vue";
 import { useStore } from "@/store";
 import { mapState } from "vuex";
 import SetupModal from "@/components/SetupModal.vue";
 import { getConfig } from "@/utils/appConfigUtil";
+import { useToast } from "vue-toastification";
 
 export default defineComponent({
   name: "App",
   components: {
-    EsriMapView,
+    // EsriMapView,
     HeaderView,
     SetupModal,
     FooterView,
@@ -19,6 +20,9 @@ export default defineComponent({
   setup() {
     const mapHeight = ref("500px");
     const store = useStore();
+
+   // const toast = useToast();
+    // const errors = computed(() => store.state.errors);
     const config = getConfig();
     const activeClass = "active";
     const disabledClass = "disabled";
@@ -37,7 +41,7 @@ export default defineComponent({
       if (navDiv && navDiv.offsetHeight) {
         navH = navDiv.offsetHeight;
       }
-      const h = window.innerHeight - headDiv.offsetHeight - navH - footDiv.offsetHeight;
+      const h = window.innerHeight - headDiv.offsetHeight - navH - footDiv.offsetHeight - 1;
       mapHeight.value = h + "px";
     };
     window.addEventListener("resize", resizeMapContainer);
@@ -45,14 +49,23 @@ export default defineComponent({
     onBeforeUnmount(() => {
       window.removeEventListener("resize", resizeMapContainer);
     });
+    
+    let wasUpdatedOnce = false;
+    onUpdated(() => {
+      if (!wasUpdatedOnce) {
+        wasUpdatedOnce = true;
+        // The toast cannot be displayed until the page and its content are ready.
+        store.dispatch("setIsToastReady");
+      }
+    });
 
     return {
       config,
       mapHeight,
-      store,
       resizeMapContainer,
       activeClass,
       disabledClass,
+
     };
   },
   computed: mapState(["isInitializing"]),
@@ -68,7 +81,8 @@ export default defineComponent({
       :class="[isInitializing ? disabledClass : activeClass]"
       :style="{ height: mapHeight, opacity: isInitializing ? 0.5 : 1 }"
     >
-      <EsriMapView />
+      <router-view />
+      <!-- <EsriMapView /> -->
     </div>
     <SetupModal v-if="isInitializing" />
   </main>
@@ -87,7 +101,6 @@ body,
   margin: 0;
   width: 100%;
   height: 100%;
-  /* overflow: hidden; */
   /** Got these from internal website */
   font-family: "Lato", sans-serif;
 }
@@ -108,11 +121,10 @@ hr.horizontal-divider {
   position: relative;
   width: 100%;
   height: 80%;
-  /* overflow: hidden; */
+  overflow: hidden;
 }
 
 #map-container > * {
   position: absolute;
 }
-
 </style>

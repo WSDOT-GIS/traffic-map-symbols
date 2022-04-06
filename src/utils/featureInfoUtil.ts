@@ -7,6 +7,10 @@ import { project } from "@arcgis/core/geometry/projection";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import FeatureSet from "@arcgis/core/tasks/support/FeatureSet";
+/**
+ * @param graphic
+ * @param layer
+ */
 export const getGraphicsInfoById = async (graphic: Graphic, layer: FeatureLayer): Promise<FeatureInfo | undefined> => {
     const query = layer.createQuery();
     const idName = layer.objectIdField;
@@ -21,6 +25,10 @@ export const getGraphicsInfoById = async (graphic: Graphic, layer: FeatureLayer)
     }
 }
 
+/**
+ * @param id
+ * @param layer
+ */
 export const getFeatureInfoById = async (id: number, layer: FeatureLayer): Promise<FeatureInfo | undefined> => {
     const query = layer.createQuery();
     const idName = layer.objectIdField;
@@ -34,6 +42,10 @@ export const getFeatureInfoById = async (id: number, layer: FeatureLayer): Promi
     }
 }
 
+/**
+ * @param ids
+ * @param layer
+ */
 export const getFeatureInfosByIds = async (ids: number[], layer: FeatureLayer): Promise<FeatureInfo[]> => {
     const query = layer.createQuery();
     const idName = layer.objectIdField;
@@ -44,14 +56,24 @@ export const getFeatureInfosByIds = async (ids: number[], layer: FeatureLayer): 
     return infos;
 }
 
+/**
+ * @param fieldName
+ * @param value
+ * @param layer
+ */
 export const getLineFromPointId = async (fieldName: string, value: number | string, layer: FeatureLayer): Promise<FeatureSet> => {
     const query = layer.createQuery();
-    // const field = layer.getField(fieldName);
     query.where = `${fieldName} = '${value}'`;
     query.returnGeometry = true
     const response = await layer.queryFeatures(query);
+    // console.log(response)
     return response
 }
+/**
+ * @param fieldName
+ * @param value
+ * @param layer
+ */
 export const getFeatureInfoByUniqueField = async (fieldName: string, value: number | string, layer: FeatureLayer): Promise<FeatureInfo | undefined> => {
     const query = layer.createQuery();
     const field = layer.getField(fieldName);

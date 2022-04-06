@@ -3,6 +3,7 @@ import Symbol from "@/symbols/ParkRideSymbol";
 import Field from "@arcgis/core/layers/support/Field";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as layerUtil from "@/utils/layerUtil";
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 
 const renderer = new SimpleRenderer({ symbol: Symbol });
 
@@ -45,47 +46,35 @@ const fields = [
 ]
 
 let layer: FeatureLayer | undefined;
-
-export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
-    layer = await layerUtil.initLayer(jsonUrl, "park-ride-layer", "Park and Rides", renderer, fields, "point", false, true);
-    return layer;
+export const layerId = "park-ride-layer";
+const layerTitle = "Park and Rides";
+/**
+ * Initialize a layer
+ * 
+ * @param jsonUrl JSON URL
+ * @returns Promise<LayerInfo>
+ */
+export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
+    const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
+    try {
+        layer = await layerUtil.initLayer(layerId, layerTitle, renderer, fields, "point", false);
+    }
+    catch (ex) {
+        console.error(ex);
+        layer = undefined;
+        layerInfo.status = LayerStatus.Failed
+    }
+    return layerInfo;
 }
 
-const getLayer = (): FeatureLayer => {
+/**
+ *
+ */
+const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
-        throw "ParkRideLayer is not ready yet!";
+        console.error("ParkRideLayer is not ready yet!");
     }
     return layer;
 }
-
-// let layer: GeoJSONLayer | undefined;
-
-// export const initLayer = (url: string): GeoJSONLayer => {
-//     layer = new GeoJSONLayer({
-//         id: "park-ride-layer",
-//         url: url,
-//         title: "Park and Rides",
-//         renderer: renderer,
-//         fields: fields,
-//         visible: false
-//     });
-//     return layer;
-// }
-
-// const getLayer = (): GeoJSONLayer => {
-//     if (!layer) {
-//         throw "ParkRideLayer is not ready yet!";
-//     }
-//     return layer;
-// }
-
-// const layer = new GeoJSONLayer({
-//     id: "park-ride-layer",
-//     url: "https://data.wsdot.wa.gov/travelcenter/ParkAndRides.json",
-//     title: "Park and Rides",
-//     renderer: renderer,
-//     fields: fields,
-//     visible: false
-// });
 
 export default getLayer

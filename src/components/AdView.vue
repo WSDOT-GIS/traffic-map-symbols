@@ -10,7 +10,6 @@
     &times;
   </div>
 </template>
-
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
 
@@ -23,6 +22,12 @@ export default defineComponent({
     },
   },
   setup(props, context) {
+    var page_ts = document.location.pathname.split('/');
+    var k1 = page_ts[1] || 'none';
+    var k2 = page_ts[2] || 'none';
+    var k3 = page_ts[3] || 'none';
+    var k4 = page_ts[4] || 'none';
+    var k5 = page_ts[5] || 'none';
     const containerDiv = ref<HTMLDivElement>();
     //
     window.googletag = window.googletag || { cmd: [] };
@@ -43,23 +48,28 @@ export default defineComponent({
       googletag.cmd.push(() => {
         // Define a size mapping object. The first parameter to addSize is
         // a viewport size, while the second is a list of allowed ad sizes.
-        var mapping = googletag
-          .sizeMapping()
-          .addSize([0, 0], [])
-          .addSize([320, 200], [320, 50])
-          .addSize([730, 200], [728, 90])
-          .addSize([1000, 200], [728, 90])
-          .build();
+        var mapping = googletag.sizeMapping()
+        .addSize([320, 200], [[320, 50], [300, 50]])
+        .addSize([730, 200], [728, 90])
+        .addSize([1000, 200],[728, 90])
+        .build();
         // Define the GPT slot
         gptAdSlots[0] = googletag
           .defineSlot(
             "/22447621233/WSDOT:driving-map:responsive",
-            [320, 50],
+            [[320, 50], [728, 90]],
             "div-gpt-ad-1632317155034-0"
           )
           .defineSizeMapping(mapping)
           .addService(googletag.pubads());
         googletag.pubads().enableSingleRequest();
+        googletag.pubads().collapseEmptyDivs();
+        googletag.pubads()
+          .setTargeting('key1', k1)
+          .setTargeting('key2', k2)
+          .setTargeting('key3', k3)
+          .setTargeting('key4', k4)
+          .setTargeting('key5', k5);
         // This event is fired whenever the on-screen percentage of an ad slot's area changes.
         // Catch this so the controls can reposition accordingly to avoid overlapping with the ad.
         googletag.pubads().addEventListener("slotVisibilityChanged", () => {

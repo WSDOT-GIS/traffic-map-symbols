@@ -1,3 +1,7 @@
+/**
+ * @param epoch
+ * @param isTime
+ */
 export const formatEpoch = (epoch: number, isTime?: boolean): string => {
     /* IT said date will be in UTC, so removed the workaround below. If necessary simply
               change all the methods to UTC... methods. */
@@ -25,8 +29,15 @@ const formatDateTimePart = (part: number) => {
     return ("0" + part).slice(-2);
 };
 
+/**
+ * @param url
+ * @param isUnicode
+ */
 export const fetchJson = async (url: string, isUnicode?: boolean): Promise<unknown> => {
     const response = await fetch(url, { cache: "no-store" });
+    if (response.status < 200 || response.status >= 300) {
+        throw new Error(`Fetch failed with code ${response.status}. URL: ${url}`);
+    }
     let json: unknown;
     if (isUnicode) {
         json = await response.json();
@@ -45,6 +56,7 @@ export const fetchJson = async (url: string, isUnicode?: boolean): Promise<unkno
 
 /**
  * Determines the media size
+ *
  * @returns s: small, l:large (add more as needed)
  */
 export const getMediaSize = (): "s" | "l" => {
@@ -60,18 +72,52 @@ export const getMediaSize = (): "s" | "l" => {
 export const WebMercator = {
     "wkid": 3857
 }
-export const hasParentClass = (child:HTMLElement, classname:string):boolean=>{
-    if(child){
-        if (child.className.split(' ').indexOf(classname) >= 0) return true;
+/**
+ * @param child
+ * @param classname
+ */
+export const hasParentClass = (child: HTMLElement, classname: string): boolean => {
+    if (child) {
+        // If the element is SVG, className is SVGAnimatedString object and throws an error on child.className.split().
+        if (typeof child.className === "string" && child.className.split(' ').indexOf(classname) >= 0) return true;
         try {
-        //Throws TypeError if child doesn't have parent any more
-        return hasParentClass(child.parentNode as HTMLElement, classname);
+            //Throws TypeError if child doesn't have parent any more
+            return hasParentClass(child.parentNode as HTMLElement, classname);
         } catch (TypeError) {
-        return false;
+            return false;
         }
     }
-    else{
+    else {
         return false
     }
- }
+}
+
+/**
+ * @param child
+ * @param id
+ */
+export const hasParent = (child: HTMLElement, id: string): boolean => {
+    if (child) {
+        if (child.id === id) return true;
+        try {
+            //Throws TypeError if child doesn't have parent any more
+            return hasParent(child.parentNode as HTMLElement, id);
+        } catch (TypeError) {
+            return false;
+        }
+    }
+    else {
+        return false
+    }
+}
+
+/**
+ *
+ */
+export const getGuid = (): string => {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
 

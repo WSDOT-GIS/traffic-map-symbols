@@ -1,6 +1,38 @@
+<script lang="ts">
+import { computed, defineComponent, ref, watch } from "vue";
+import { useStore } from "@/store";
+import LayerListView from "./LayerListView.vue";
+import SavedMapView from "./SavedMapView.vue";
+// import { isMobile } from "@/utils/mediaUtil";
+
+export default defineComponent({
+  components: { LayerListView, SavedMapView },
+  setup() {
+    const store = useStore();
+    const serviceAlerts = computed(()=>store.state.serviceAlerts)
+    const headerRef = ref<HTMLDivElement>();
+    const mapSize = computed(() => store.state.mapSize);
+    const maxHeight = ref(mapSize.value.height);
+    watch(mapSize, (size) => {
+      const headHeight = headerRef.value ? headerRef.value.offsetHeight : 50;
+      maxHeight.value = size.height - headHeight;
+    });
+    // If it is on small device, close it by default.
+    const isOpen = computed(() => store.state.leftPaneIsOpen);
+
+    const toggleDisplay = () => {
+      store.commit("setLeftPaneIsOpen", !store.state.leftPaneIsOpen);
+      //isOpen.value = !isOpen.value;
+    };
+    return { isOpen, maxHeight, toggleDisplay, headerRef,store, serviceAlerts };
+  }
+});
+</script>
 <template>
   <transition name="left-pane-slide">
-    <div id="map-top-left-container" v-if="isOpen" class="w3-card w3-white w3-col">
+    <div :style="store.state.serviceAlertsBannerVisible?{top:30 + 'px'}:{top:0 + 'px'}" 
+      id="map-top-left-container" 
+      v-if="isOpen" class="w3-card w3-white w3-col">
       <div class="w3-container w3-border-0" ref="headerRef">
         <div class="map-left-panel-title">Map Legend</div>
         <div class="map-left-panel-btn map-left-panel-close-btn w3-button" @click="toggleDisplay">
@@ -20,9 +52,7 @@
         </div>
       </div>
       <div id="map-top-left-inner-container" class="w3-container" :style="{ maxHeight: maxHeight + 'px' }">
-        <!-- <hr class="horizontal-divider" /> -->
         <LayerListView />
-        <!-- <hr class="horizontal-divider" /> -->
         <SavedMapView :IsOpen="isOpen" />
       </div>
     </div>
@@ -32,6 +62,7 @@
     id="map-top-left-container-closed"
     class="w3-container w3-padding-small w3-card w3-white w3-button"
     @click="toggleDisplay"
+    :style="store.state.serviceAlertsBannerVisible?{top:35 + 'px'}:{top:0 + 'px'}"
   >
     <label class="map-left-panel-title-closed">Map Legend</label>
     <div class="map-left-panel-btn map-left-panel-open-btn w3-button">
@@ -51,37 +82,6 @@
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
-import { useStore } from "@/store";
-import LayerListView from "./LayerListView.vue";
-import SavedMapView from "./SavedMapView.vue";
-// import { isMobile } from "@/utils/mediaUtil";
-
-export default defineComponent({
-  components: { LayerListView, SavedMapView },
-  setup() {
-    const store = useStore();
-    const headerRef = ref<HTMLDivElement>();
-    const mapSize = computed(() => store.state.mapSize);
-    const maxHeight = ref(mapSize.value.height);
-    watch(mapSize, (size) => {
-      const headHeight = headerRef.value ? headerRef.value.offsetHeight : 50;
-      maxHeight.value = size.height - headHeight;
-    });
-    // If it is on small device, close it by default.
-    const isOpen = computed(() => store.state.leftPaneIsOpen);
-
-    const toggleDisplay = () => {
-      store.commit("setLeftPaneIsOpen", !store.state.leftPaneIsOpen);
-      //isOpen.value = !isOpen.value;
-    };
-    return { isOpen, maxHeight, toggleDisplay, headerRef };
-  },
-});
-</script>
-
 <style scoped>
 #map-top-left-container {
   position: absolute;
@@ -90,7 +90,7 @@ export default defineComponent({
   width: 300px;
   /* overflow-y: auto; */
   border: 1px solid var(--color-gray20);
-  z-index: 9;
+  z-index: 10;
 }
 
 #map-top-left-container-closed {

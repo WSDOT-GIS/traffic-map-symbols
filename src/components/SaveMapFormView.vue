@@ -55,7 +55,9 @@ export default defineComponent({
       context.emit("close-save-map-form");
     };
     /**
-     * Support for pressing Enter key to save...
+     *     Support for pressing Enter key to save...
+     *
+     * @param event
      */
     const onKeyUp = (event: KeyboardEvent) => {
       /** keyCode property is deprecated, but not necessary supported,

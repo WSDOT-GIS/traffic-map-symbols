@@ -1,7 +1,7 @@
 <script lang="ts">
 import { computed, defineComponent, nextTick, onUpdated, PropType, ref, toRefs, watch } from "vue";
-import "vue3-carousel/dist/carousel.css";
-import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
+import { Splide, SplideSlide } from "@splidejs/vue-splide";
+import "@splidejs/splide/dist/css/themes/splide-default.min.css";
 import { useStore } from "@/store";
 import {
   mapView,
@@ -18,19 +18,15 @@ import XY from "@/types/XY";
 import ForecastListInfo from "@/types/ForecastListInfo";
 import MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
 import { getEsriExtent } from "@/utils/extentUtil";
-import { hasParentClass } from "@/utils/miscUtil";
+import { hasParentClass, hasParent } from "@/utils/miscUtil";
 
 export default defineComponent({
-  components: { Carousel, Slide, Pagination, Navigation, PopupRow },
+  components: { PopupRow, Splide, SplideSlide },
+  emits: ["close", "idxUpdate"],
   props: {
     // MapX & Y are only required to supersede the feature x/y.
     MapXY: {
       type: Object as PropType<XY>,
-      required: false,
-    },
-    Width: {
-      // "m (medium) or w (wide)"
-      type: String,
       required: false,
     },
     DarkThemeColor: {
@@ -53,30 +49,49 @@ export default defineComponent({
       type: String,
       required: false,
     },
+    LayerId: {
+      type: String,
+      required: true,
+    },
     Features: {
       type: Array as PropType<Array<FeatureInfo>>,
+      required: true,
+    },
+    Config: {
+      type: Object as PropType<PopupConfig>,
       required: true,
     },
     TravelDelay: {
       type: Number,
       required: false,
     },
-    Config: {
-      type: Object as PropType<PopupConfig>,
-      required: true,
-    },
     WeatherForecast: {
       type: Object as PropType<ForecastListInfo>,
+      required: false,
+    },
+    weatherForecastLoaded: {
+      type: String,
       required: false,
     },
   },
   setup(props, context) {
     // The DOM only exists while the visibility is true. Get it in onUpdate().
-    const cameraImageLoading = ref<boolean>();
-    if(props.Config.imageFieldName){//if the layer is the cameras layer
-      cameraImageLoading.value=true
-    }
+    //#region weather forecast loading setup
     const propWeatherForecast = ref<ForecastListInfo>();
+    propWeatherForecast.value = undefined;
+    const weatherForecastsLoaded = computed(() => {
+      return props.weatherForecastLoaded;
+    });
+    //#endregion
+
+    //#region image loading setup
+    const cameraImageLoading = ref<boolean>();
+    if (props.Config.imageFieldName) {
+      //if the layer is the cameras layer
+      cameraImageLoading.value = true;
+    }
+    //#endregion
+
     const modalContainerRef = ref<HTMLDivElement>();
     const containerRef = ref<HTMLDivElement>();
     const contentContainerRef = ref<HTMLDivElement>();
@@ -88,6 +103,7 @@ export default defineComponent({
     }
     const relativePosition = ref(relativePositions.above);
     const store = useStore();
+    const layerStatus = computed(() => store.getters.getLayerStatus(props.LayerId));
     const mapSize = computed(() => store.state.mapSize);
     const mapScale = computed(() => store.state.scale);
     const mapCenter = computed(() => store.state.center);
@@ -115,7 +131,7 @@ export default defineComponent({
     let numImgLoaded = 0;
     let wasUpdatedOnce = false;
     let doPanMap = true;
-    // let isPanning = false;
+    let isPanning = false;
     // Used to keep track of pages...
     const currentPage = ref(1);
     let pagePositions: {
@@ -154,44 +170,45 @@ export default defineComponent({
       numImgLoaded = 0;
       wasUpdatedOnce = false;
       doPanMap = true;
-      if(props.Config.imageFieldName){
-        cameraImageLoading.value=true
+      isPanning = false;
+      if (props.Config.imageFieldName) {
+        cameraImageLoading.value = true;
       }
-      
     });
-    // Picture carousel colors.
-    const pagenationStyle = computed(() => {
+    // Picture carousel CSS variables.
+    const splideStyles = computed(() => {
       return {
-        "--vc-nav-background-color": props.DarkThemeColor,
-        "--vc-pgn-active-color": props.DarkThemeColor,
-        "--vc-pgn-background-color": props.LightThemeColor,
+        "--dark-theme-color": props.DarkThemeColor,
+        "--light-theme-color": props.LightThemeColor,
+        "--splide-arrow-visibility": props.Features.length > 1 ? "visible" : "hidden",
+        "--splide-page-display": props.Features.length > 1 ? "block" : "none",
       };
     });
 
     const onClickAway = (event: PointerEvent | TouchEvent) => {
       const target = event.target as HTMLElement;
-      if (smallMedia.value) {
-        if (!hasParentClass(target, "alert-content")) {
+      if (!hasParentClass(target, "alert-content") && !hasParent(target, "alert-container-open")) {
+        if (smallMedia.value) {
           close();
-        }
-      } else {
-        /* On Desktop
-           - If user clicks on something other than the map (e.g. TOC, header, ...), then close the popup.
-           - If user clicks on map, then do not do anything here. */
-        if (event.type === "click" && !target.classList.contains("esri-view-surface")) {
-          if (!hasParentClass(target, "alert-content")) {
-            close();
-          }
-        } else if (event.type === "touchstart") {
-          // Touch event is handled here...
+        } else {
+          /* On Desktop
+             - If user clicks on something other than the map (e.g. TOC, header, ...), then close the popup.
+             - If user clicks on map, then do not do anything here. */
           if (
-            !target.classList.contains("esri-view-surface") &&
-            !(
-              target.nodeName === "CANVAS" &&
-              target.parentElement?.classList.contains("esri-view-surface")
-            )
+            event.type === "click" &&
+            !hasParentClass(target, "esri-view-surface") &&
+            target.id !== "map-container"
           ) {
             close();
+          } else if (event.type === "touchstart") {
+            // Touch event is handled here...
+            if (
+              !target.classList.contains("esri-view-surface") &&
+              target.nodeName !== "CANVAS" &&
+              !target.parentElement?.classList.contains("esri-view-surface")
+            ) {
+              close();
+            }
           }
         }
       }
@@ -210,7 +227,9 @@ export default defineComponent({
     watch([mapX, mapY], () => {
       setScreenXY();
     });
+    // Different feature is selected...
     watch(currentIdx, () => {
+      propWeatherForecast.value = undefined; //clear previous forecasts from last opened popup
       setWeatherForecast();
       context.emit("idxUpdate", currentIdx.value);
       setBadgeText();
@@ -225,17 +244,6 @@ export default defineComponent({
       }
       setScreenXY();
     });
-    // Watch scale change...
-    // watch(mapScale, () => {
-    //   // While map is being panned to show the popup, map sometimes zoom out as well resulting in scale change, so do not close popup.
-    //   // Only close if user intentionally change scales.
-    //   // if (!isPanning) {
-    //   //   close();
-    //   // } else {
-    //   //   setScreenXY();
-    //   // }
-    //   setScreenXY();
-    // });
     // Store the previous scale so it can detect if the center is moving due to zooming or panning.
     let prevScale = 0;
     // Watch map moving...
@@ -265,14 +273,12 @@ export default defineComponent({
     });
     // Image load happens later and change the size of the popup, so need to make adjustment after that...
     const onImgLoad = () => {
-      console.log("image loaded")
       numImgLoaded = numImgLoaded + 1;
-      isLoadComplete()
+      isImageLoadComplete();
       adjustPositionSize();
     };
     // Adjust position after the container DIV is available...
     onUpdated(() => {
-      console.log("image loaded")
       if (!containerRef.value || !contentContainerRef.value) {
         return;
       }
@@ -345,8 +351,8 @@ export default defineComponent({
     });
     //Assigns the weather forecast to the weather forecast ref
     const setWeatherForecast = () => {
-      if (props.WeatherForecast) {
-        propWeatherForecast.value = props.WeatherForecast;
+      if (props.Config.weatherForecast) {
+        propWeatherForecast.value = props.Config.weatherForecast;
       }
     };
 
@@ -375,11 +381,7 @@ export default defineComponent({
         // Container is null. It is not visible yet.
         return;
       }
-      // Wait for everything to load, then adjust.
-      /*if (!isLoadComplete()) {
-        // Not everything is loaded yet.
-        return;
-      }*/
+      if (isPanning) return;
       if (!props.Features || props.Features.length === 0 || !props.Features[0]) {
         // Nothing to show...
         return;
@@ -438,13 +440,12 @@ export default defineComponent({
 
             setPosition(newTopLeft.top, newTopLeft.left);
             if (Math.abs(shiftXY.x) >= 1 || Math.abs(shiftXY.y) >= 1) {
-              // isPanning = true;
+              isPanning = true;
               panMap(shiftXY.x, shiftXY.y).then(() => {
-                // isPanning = false;
+                isPanning = false;
                 setScreenXY();
                 // Check the popup position again and pan map more if necessary.
                 shiftXY = calcShiftXY(
-                  //{ top: popupTop.value, left: popupLeft.value },
                   {
                     top: parseInt(popupTopLeft.value.marginTop),
                     left: parseInt(popupTopLeft.value.marginLeft),
@@ -453,9 +454,9 @@ export default defineComponent({
                   w
                 );
                 if (shiftXY.x !== 0 || shiftXY.y !== 0) {
-                  // isPanning = true;
+                  isPanning = true;
                   panMap(shiftXY.x, shiftXY.y).then(() => {
-                    // isPanning = false;
+                    isPanning = false;
                     setScreenXY();
                   });
                 }
@@ -506,6 +507,9 @@ export default defineComponent({
     /**
      * Figure out the top and left position of the popup.
      * NOTE: Make sure to set the relativePosition before calling this.
+     *
+     * @param height
+     * @param width
      */
     const calcTopLeft = (height: number, width: number): { top: number; left: number } => {
       let newTop = 0;
@@ -529,6 +533,12 @@ export default defineComponent({
     };
     /**
      * Calulate how far map need to be moved so the top of the popup is visible within the map view.
+     *
+     * @param topLeft
+     * @param topLeft.top
+     * @param topLeft.left
+     * @param height
+     * @param width
      */
     const calcShiftXY = (
       topLeft: { top: number; left: number },
@@ -557,19 +567,25 @@ export default defineComponent({
     /**
      * Figure out if everything is loaded or not.
      */
-    const isLoadComplete = () => {//check if the loading is complete after each image loads
+    const isImageLoadComplete = (): boolean => {
+      //check if the loading is complete after each image loads
       let isComplete: boolean;
       if (props.Config.imageFieldName) {
         isComplete = numImgLoaded >= props.Features.length;
       } else {
         isComplete = wasUpdatedOnce;
       }
-      console.log('isLoadComplete: '+ isComplete)
-      if(props.Config.imageFieldName){
+      if (props.Config.imageFieldName) {
         cameraImageLoading.value = !isComplete;
       }
+      return isComplete;
     };
-    /** This sets the margin top and left of the popup container. */
+    /**
+     * This sets the margin top and left of the popup container.
+     *
+     * @param top
+     * @param left
+     */
     const setPosition = (top?: number, left?: number) => {
       // Adjust vertical position...
       if (top) {
@@ -729,8 +745,11 @@ export default defineComponent({
         }
       }
     };
-    /** If MapX and Y are provided, those values supersede the feature x/y.
+    /**
+     * If MapX and Y are provided, those values supersede the feature x/y.
      * Otherwise the feature x/y is used to determine the location of the popup.
+     *
+     * @param ignoreMapXY
      */
     const setMapXY = (ignoreMapXY?: boolean) => {
       if (!ignoreMapXY) {
@@ -747,17 +766,30 @@ export default defineComponent({
         }
       }
     };
+    /**
+     *
+     Catch the carousel spicture changes.
+     * @param splide 
+     *
+     * @param splide
+     * @param newIndex 
+     */
+    const onSplideMoved = (splide: unknown, newIndex: number) => {
+      currentIdx.value = newIndex;
+    };
+
     return {
+      store,
       modalContainerRef,
       containerRef,
       contentContainerRef,
+      layerStatus,
       relativePosition,
       popupTopLeft,
       maxHeight,
       currentIdx,
       close,
       adjustPositionSize,
-      pagenationStyle,
       onImgLoad,
       getBannerText,
       badgeText,
@@ -774,7 +806,10 @@ export default defineComponent({
       currentPage,
       onClickAway,
       cameraImageLoading,
-      isLoadComplete
+      isImageLoadComplete,
+      weatherForecastsLoaded,
+      onSplideMoved,
+      splideStyles,
     };
   },
 });
@@ -789,6 +824,7 @@ export default defineComponent({
       'popup-modal-container-show': smallMedia && propFeatures.length > 0 && propFeatures[0],
       'popup-modal-container-hide': smallMedia && (!propFeatures || propFeatures.length == 0),
     }"
+    :style="{ paddingTop: store.state.serviceAlertsBannerVisible ? '45px' : '15px' }"
   >
     <div
       ref="containerRef"
@@ -798,7 +834,7 @@ export default defineComponent({
         'popup-container-below': relativePosition === 'below',
         'w3-modal-content': smallMedia,
       }"
-      v-if="propFeatures.length > 0 && propFeatures[0]"
+      v-if="layerStatus === 'loaded' && propFeatures.length > 0 && propFeatures[0]"
       :style="popupTopLeft"
       v-click-away="onClickAway"
     >
@@ -813,7 +849,7 @@ export default defineComponent({
             }"
           >
             <div class="popup-banner-icon" v-html="IconSvg"></div>
-            <span class="popup-banner-text"> {{ getBannerText() }}</span>
+            <span class="popup-banner-text">{{ getBannerText() }}</span>
           </div>
           <div
             v-if="badgeText.length > 0"
@@ -850,7 +886,12 @@ export default defineComponent({
           <div v-if="Config.subtitle" class="popup-content w3-container">
             <PopupRow :Config="Config.subtitle" :Feature="Features[currentIdx]" />
           </div>
-          <div v-if="propWeatherForecast != undefined">
+          <div v-if="weatherForecastsLoaded == 'false'" class="w3-container loadingSpinnerDiv">
+            <img class="loadingSpinner" src="@/assets/loadingSpinner.gif" />
+            <label>Forecast loading...</label>
+            <label>{{}}</label>
+          </div>
+          <div v-if="weatherForecastsLoaded == 'true'">
             <div class="popup-content w3-container">
               <label class="popup-row-label">Forecast</label>
             </div>
@@ -879,6 +920,7 @@ export default defineComponent({
               </tr>
               <tr id="weatherForecastDescription">
                 <td
+                  ref="forecastDivs"
                   v-for="eachFeature in propWeatherForecast.forecasts"
                   :key="eachFeature.forecastNumber"
                 >
@@ -887,22 +929,28 @@ export default defineComponent({
               </tr>
             </table>
           </div>
-          <div v-show="cameraImageLoading" class="w3-container loadingSpinnerDiv" :style="cameraImageLoading?display='block':display='none'">
-            <img class="loadingSpinner"
-            src='@/assets/loadingSpinner.gif'/>
+          <div
+            v-show="cameraImageLoading && Config.imageFieldName"
+            class="w3-container loadingSpinnerDiv"
+            :style="cameraImageLoading ? (display = 'block') : (display = 'none')"
+          >
+            <img class="loadingSpinner" src="@/assets/loadingSpinner.gif" />
             <label>Camera images loading...</label>
           </div>
-          <div v-show="!cameraImageLoading">
-            <Carousel
-              v-if="Config.imageFieldName"
-              :items-to-show="1"
-              :wrapAround="true"
-              :mouseDrag="false"
-              :touchDrag="false"
-              @update:modelValue="currentIdx = $event"
-              :style="pagenationStyle"
+          <div v-show="!cameraImageLoading && Config.imageFieldName">
+            <Splide
+              :options="{
+                type: 'loop',
+                pagination: true,
+                classes: {
+                  arrow: 'splide__arrow splide-arrow',
+                  page: 'splide__pagination__page splide-pagination',
+                },
+              }"
+              @splide:moved="onSplideMoved"
+              :style="splideStyles"
             >
-              <Slide v-for="eachFeature in Features" :key="eachFeature.id">
+              <SplideSlide v-for="(eachFeature, idx) in Features" :key="idx">
                 <div class="carousel-item-container">
                   <img
                     class="popup-img"
@@ -912,12 +960,8 @@ export default defineComponent({
                     @error="$event.target.src = require('@/assets/no-image.png')"
                   />
                 </div>
-              </Slide>
-              <template #addons="{ slidesCount }">
-                <navigation v-if="slidesCount > 1" />
-                <pagination v-if="slidesCount > 1" />
-              </template>
-            </Carousel>
+              </SplideSlide>
+            </Splide>
           </div>
           <div class="travelDelayTime" v-if="propTravelDelay && propTravelDelay > 0">
             {{ `${propTravelDelay} minute delay` }}
@@ -953,13 +997,12 @@ export default defineComponent({
 <style scoped>
 .popup-modal-container-show {
   display: block;
-  padding-top: 15px;
 }
 .popup-modal-container-hide {
   display: none;
 }
 .popup-container {
-  z-index: 10;
+  z-index: 9;
   background-color: #fff;
   position: relative;
 }
@@ -1105,11 +1148,11 @@ export default defineComponent({
 .popup-content-section {
   margin-bottom: 8px;
 }
-.loadingSpinnerDiv{
+.loadingSpinnerDiv {
   display: flex;
   flex-direction: column;
 }
-.loadingSpinner{
+.loadingSpinner {
   width: 20%;
   height: auto;
   margin-left: auto;
@@ -1123,10 +1166,6 @@ export default defineComponent({
 }
 .carousel-item-container {
   width: 100%;
-}
-/* Hide the 1/3 of circle behind right & left arrow. */
-.carousel {
-  overflow: hidden;
 }
 #weatherForecastIcons #weatherForecastDescription {
   font-size: 5pt;
@@ -1173,7 +1212,6 @@ export default defineComponent({
 }
 </style>
 
-
 <style>
 /* The hidden pixel to indicate the vertical page breaks. */
 .popup-page-break {
@@ -1184,49 +1222,29 @@ export default defineComponent({
 .popup-inner-container {
   color: #000;
 }
-/* Right and left arrows to scroll the pictures. */
-.carousel__prev,
-.carousel__next {
-  top: 40%;
-  opacity: 0.7;
+/* Splide customizations */
+:root {
+  --dark-theme-color: transparent;
+  --light-theme-color: transparent;
+  --splide-arrow-visibility: hidden;
+  --splide-page-display: none;
 }
-.carousel__prev {
-  left: 20px;
+.splide-arrow {
+  background: var(--dark-theme-color);
+  visibility: var(--splide-arrow-visibility);
 }
-.carousel__next {
-  right: 20px;
+.splide-pagination {
+  background: var(--light-theme-color);
+  display: var(--splide-page-display);
 }
-.carousel__prev:hover {
-  filter: drop-shadow(2px 2px 3px rgb(0 0 0 / 0.5));
-  left: 17px;
-  top: 39%;
+.splide-pagination.is-active {
+  background: var(--dark-theme-color);
 }
-.carousel__next:hover {
-  filter: drop-shadow(-2px 2px 3px rgb(0 0 0 / 0.5));
-  right: 17px;
-  top: 39%;
+.splide__arrow svg {
+  fill: #fff;
 }
-.carousel__prev svg path {
-  d: path(
-    "M 16.500785,17.692215 10.752113,11.931001 16.500785,6.169785 14.731001,4.4 7.2,11.931001 14.731001,19.462 Z"
-  );
+.splide__pagination {
+  bottom: auto;
+  position: relative;
 }
-.carousel__next svg path {
-  d: path(
-    "M 7.8,6.1697845 13.548671,11.930999 7.8,17.692215 9.569783,19.462 17.100784,11.930999 9.569783,4.3999995 Z"
-  );
-}
-.carousel__pagination-button {
-  width: 10px;
-  height: 10px;
-  border-radius: 10px;
-}
-.carousel__pagination {
-  margin: 5px;
-  padding-left: 0;
-}
-/*https://github.com/ismail9k/vue3-carousel/issues/22 */
-/* .carousel__slide--visible {
-transform: rotateY(0);
-} */
 </style>

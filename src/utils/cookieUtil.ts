@@ -1,5 +1,9 @@
 const maxDays = 3650;
 
+/**
+ * @param name
+ * @param val
+ */
 export const setCookie = (name: string, val: string): void => {
     const date = new Date();
     // Set it expire in days
@@ -9,6 +13,9 @@ export const setCookie = (name: string, val: string): void => {
     
 }
 
+/**
+ * @param name
+ */
 export const getCookie = (name: string): string => {
     const value = "; " + document.cookie;
     const parts = value.split("; " + name + "=");
@@ -23,11 +30,17 @@ export const getCookie = (name: string): string => {
     return cookieValue;
 }
 
+/**
+ * @param name
+ */
 export const checkCookie = (name: string): boolean => {
     if (getCookie(name)) return true;
     else return false;
 }
 
+/**
+ * @param name
+ */
 export const deleteCookie = (name: string): void => {
     const date = new Date();
 

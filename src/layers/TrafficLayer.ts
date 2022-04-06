@@ -1,42 +1,43 @@
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 
 let layer: MapImageLayer | undefined;
+export const layerId = "traffic-flow-layer";
+const layerTitle = "Live Traffic Flow";
 
-export const initLayer = (url: string, refreshMinute: number): MapImageLayer => {
-    layer = new MapImageLayer({
-        id: "traffic-flow-layer",
-        url: url,
-        sublayers: [
-            { id: 6, visible: true, title: "Live Traffic Flow" }, // live traffic
-            // { id: 2, visible: false }, // incidents overview: critical and major incidents
-            // { id: 4, visible: true }, // incidents detail: critical, major, minor as well as low impact incidents
-        ],
-        refreshInterval: refreshMinute,
-    });
-    return layer;
+/**
+ * @param url
+ * @param refreshMinute
+ */
+export const initLayer = (url: string, refreshMinute: number): LayerInfo => {
+    const layerInfo = new LayerInfo(layerId, layerTitle, url);
+    try {
+        layer = new MapImageLayer({
+            id: layerId,
+            url: url,
+            sublayers: [
+                { id: 6, visible: true, title: "Live Traffic Flow" }, // live traffic
+                // { id: 2, visible: false }, // incidents overview: critical and major incidents
+                // { id: 4, visible: true }, // incidents detail: critical, major, minor as well as low impact incidents
+            ],
+            refreshInterval: refreshMinute,
+        });
+    } catch (ex) {
+        console.error(ex);
+        layer = undefined;
+        layerInfo.status = LayerStatus.Failed
+    }
+    return layerInfo;
 }
 
-const getLayer = (): MapImageLayer => {
+/**
+ *
+ */
+const getLayer = (): MapImageLayer | undefined => {
     if (!layer) {
-        throw "TrafficLayer is not ready yet!";
+        console.error("TrafficLayer is not ready yet!");
     }
     return layer;
 }
-
-// Proxy created in the Developer portal for the traffic service.
-// Using ERJ's configured proxy service.  Rate limit set to 100000/s to prevent 429 errors. 
-// const urlTraffic =
-//     "https://utility.arcgis.com/usrsvcs/appservices/G9CkczziK8rxtWpL/rest/services/World/Traffic/MapServer";
-
-// https://developers.arcgis.com/rest/network/api-reference/traffic-service.htm
-// const layer = new MapImageLayer({
-//     id: "traffic-flow-layer",
-//     url: urlTraffic,
-//     sublayers: [
-//         { id: 6, visible: true, title: "Live Traffic Flow" }, // live traffic
-//         // { id: 2, visible: false }, // incidents overview: critical and major incidents
-//         // { id: 4, visible: true }, // incidents detail: critical, major, minor as well as low impact incidents
-//     ],
-// });
 
 export default getLayer

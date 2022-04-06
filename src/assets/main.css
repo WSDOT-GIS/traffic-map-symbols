@@ -8,6 +8,12 @@ html {
 }
 
 /* mobile nav */
+.Vue-Toastification__toast.Vue-Toastification__toast--default.top-left{
+    background-color: red;
+    width: 50%;
+    max-width: 100%;
+    left: 300px;
+}
 
 @media all {
     @media (max-width: 991px) {

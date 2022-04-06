@@ -1,57 +1,6 @@
-<template>
-  <PopupBase
-    :IconSvg="layerIcons.find((x) => x.id === 'weather-stations-layer')?.paths"
-    LightThemeColor="#00515133"
-    DarkThemeColor="#005151"
-    :WeatherForecast="forecastList"
-    :Features="[feature]"
-    :Config="{
-      bannerText: { text: 'Weather station' },
-      title: { custom: getTitle },
-      subtitle: {
-        label: 'Location',
-        value: { custom: getSubtitle },
-      },
-      moreInfoURL: {
-        custom: getMoreInfoURL,
-      },
-      content: [
-        { label: 'Surface temp', value: { custom: getSurfTemp } },
-        { label: 'Air temp', value: { custom: getAirTemp } },
-        {
-          label: 'Visibility',
-          value: { custom: getVisibility },
-        },
-        {
-          label: 'Wind speed',
-          value: {
-            custom: getWindSpeed,
-          },
-        },
-        {
-          label: 'Wind dir.',
-          value: {
-            fieldName: 'CardinalCompassDirection',
-          },
-        },
-        {
-          label: 'Last updated',
-          value: {
-            fieldName: 'WeatherReportDateTime',
-            isDate: true,
-            isTime: true,
-          },
-        },
-      ],
-    }"
-    @close="close"
-  >
-  </PopupBase>
-</template>
 <script lang="ts">
 import { defineComponent, nextTick, PropType, ref, watch } from "vue";
 import PopupBase from "./PopupBase.vue";
-import FeatureLayer from "@/layers/WeatherStationsLayer";
 import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 import FeaturesetInfo from "@/types/FeaturesetInfo";
 import FeatureInfo from "@/types/FeatureInfo";
@@ -59,6 +8,14 @@ import { layerListIcons } from "@/symbols/IconDefinitions";
 import { getConfig } from "@/utils/appConfigUtil";
 import ForecastListInfo from "@/types/ForecastListInfo";
 import MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
+import { getLayer } from "@/esri-stuff/esriMap";
+import { useStore } from "@/store";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import * as projection from "@arcgis/core/geometry/projection";
+import SpatialReference from "@arcgis/core/geometry/SpatialReference";
+import * as webMercatorUtils from "@arcgis/core/geometry/support/webMercatorUtils";
+import Geometry from "@arcgis/core/geometry/Geometry";
+import Point from "@arcgis/core/geometry/Point";
 export default defineComponent({
   components: { PopupBase },
   props: {
@@ -68,11 +25,15 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const layerId = "weather-stations-layer";
+    const store = useStore();
     const feature = ref<FeatureInfo>();
     const layerIcons = layerListIcons;
     const forecastList = ref<ForecastListInfo>();
+    const subtitleRef = ref<string>("fetching location...")
+    const forecastsLoaded = ref<string>("false");
     watch(props, () => {
-      if (props.Featureset.layerId === FeatureLayer().id) {
+      if (props.Featureset.layerId === layerId) {
         //if clicked feature belongs to WeatherStations layer
         show();
       } else {
@@ -84,12 +45,20 @@ export default defineComponent({
       return `${name?.split(" on ")[0]}`;
     };
     const show = () => {
+      const lyrStatus = store.getters.getLayerStatus(layerId);
+      if (lyrStatus !== "loaded") {
+        close();
+        return;
+      }
+      const lyr = getLayer(layerId) as FeatureLayer;
       const setVal = () => {
-        getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(
+        getFeatureInfoById(props.Featureset.ids[0], lyr).then(
           //query feature layer for feature
           async (result) => {
             if (result) {
+              forecastsLoaded.value = "false";
               forecastList.value = undefined;
+              feature.value = result;
               getWeatherForecast(result);
             }
           }
@@ -111,16 +80,22 @@ export default defineComponent({
       feature.value = undefined;
     };
     const getWeatherForecast = async (featureresult: FeatureInfo) => {
-      getFeatureInfoById(props.Featureset.ids[0], FeatureLayer()).then(
+      const lyrStatus = store.getters.getLayerStatus(layerId);
+      if (lyrStatus !== "loaded") {
+        close();
+        return;
+      }
+      const lyr = getLayer(layerId) as FeatureLayer;
+      getFeatureInfoById(props.Featureset.ids[0], lyr).then(
         //query feature layer for feature
         async (response) => {
           if (response) {
             const featureNWSZoneId = response?.attributes?.NWSZoneId?.toString().replace(/\s/g, "");
             const config = getConfig();
             fetch(config.forecastExtendedAPI + featureNWSZoneId + "/").then((result) => {
-              if(result.status==200){
+              if (result.status >= 200 && result.status < 300) {
                 result.json().then((response) => {
-                  function mycomparator(a:any,b:any) {
+                  function mycomparator(a: any, b: any) {
                     return parseInt(a.forecastNumber, 10) - parseInt(b.forecastNumber, 10);
                   }
                   const sortedForecasts = response.forecastData.sort(mycomparator);
@@ -131,11 +106,13 @@ export default defineComponent({
                     nwsZoneRegionName: response.nwsZoneRegionName,
                     forecasts: sortedForecasts,
                   };
-                  
+                  forecastsLoaded.value = "true";
                 });
+              } else {
+                store.commit("addServiceAlert", "Weather Forecast");
               }
               feature.value = featureresult;
-            });
+            }).catch(() => store.commit("addServiceAlert", "Weather Forecast"));
           }
         }
       );
@@ -148,6 +125,13 @@ export default defineComponent({
         if (desc) {
           text = "on " + desc;
         }
+        else{
+          const webmerccoords = webMercatorUtils.xyToLngLat(
+            feature.mapPoint.x,
+            feature.mapPoint.y
+          )
+          text =`${webmerccoords[1].toFixed(6)}, ${webmerccoords[0].toFixed(6)}`
+        }
       }
       return text;
     };
@@ -155,7 +139,9 @@ export default defineComponent({
       const moreInfoObject = new Object({
         url: `/travel/real-time/Weather/${feature.attributes.WeatherStationId}`,
         text: "Learn more about the weather and forecast at ",
-        linkText: `${feature.attributes["WeatherStationDescription"]?.toString().split(" on ")[0]} station`,
+        linkText: `${
+          feature.attributes["WeatherStationDescription"]?.toString().split(" on ")[0]
+        } station`,
       }) as MoreInfoURLInfo;
       return moreInfoObject;
     };
@@ -164,11 +150,11 @@ export default defineComponent({
       if (feature) {
         const c = Number(feature.attributes["SurfaceTemperature"]);
         if (c && !isNaN(c)) {
-          //(6°C × 9/5) + 32 
+          //(6°C × 9/5) + 32
           // BUG 42968 - remove unit since Tom cannote tell what it is.
-          // const f = Math.round((c *(9/5))+32);
-          // text = combineNums(f, c, "°F", "°C");
-          text = c.toString();
+          const f = Math.round(c * (9 / 5) + 32);
+          text = combineNums(f, c, "°F", "°C");
+          //text = c.toString();
         }
       }
       return text;
@@ -215,8 +201,8 @@ export default defineComponent({
       }
       return text;
     };
-
     return {
+      layerId,
       feature,
       layerIcons,
       close,
@@ -228,8 +214,60 @@ export default defineComponent({
       getSubtitle,
       getMoreInfoURL,
       forecastList,
+      forecastsLoaded,
     };
   },
 });
 </script>
-
+<template>
+  <!-- <div>{{ forecastsLoaded }}</div> -->
+  <PopupBase
+    :IconSvg="layerIcons.find((x) => x.id === 'weather-stations-layer')?.paths"
+    LightThemeColor="#00515133"
+    DarkThemeColor="#005151"
+    :LayerId="layerId"
+    :Features="feature ? [feature] : []"
+    :Config="{
+      weatherForecast: forecastList,
+      bannerText: { text: 'Weather station' },
+      title: { custom: getTitle },
+      subtitle: {
+        label: 'Location',
+        value: { custom: getSubtitle },
+      },
+      moreInfoURL: {
+        custom: getMoreInfoURL,
+      },
+      content: [
+        { label: 'Surface temp', value: { custom: getSurfTemp } },
+        { label: 'Air temp', value: { custom: getAirTemp } },
+        {
+          label: 'Visibility',
+          value: { custom: getVisibility },
+        },
+        {
+          label: 'Wind speed',
+          value: {
+            custom: getWindSpeed,
+          },
+        },
+        {
+          label: 'Wind dir.',
+          value: {
+            fieldName: 'CardinalCompassDirection',
+          },
+        },
+        {
+          label: 'Last updated',
+          value: {
+            fieldName: 'WeatherReportDateTime',
+            isDate: true,
+            isTime: true,
+          },
+        },
+      ],
+    }"
+    :weatherForecastLoaded="forecastsLoaded"
+    @close="close"
+  ></PopupBase>
+</template>

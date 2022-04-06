@@ -4,7 +4,8 @@ import Field from "@arcgis/core/layers/support/Field";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 import * as layerUtil from "@/utils/layerUtil";
-import  symbol  from "@/symbols/TravelTimeSymbol"
+import symbol from "@/symbols/TravelTimeSymbol"
+import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 
 const renderer = new SimpleRenderer({
     symbol: symbol
@@ -39,22 +40,37 @@ const fields = [
 ]
 
 let layer: FeatureLayer | undefined;
+export const layerId = "travel-times-layer";
+const layerTitle = "Travel Times";
 
-export const initLayer = async (jsonUrl: string): Promise<FeatureLayer> => {
-    layer = await layerUtil.initLayer(jsonUrl, 
-        "travel-times-layer",
-        "Travel Times",
-        renderer,
-        fields,
-        "point",
-        false,
-    );
-    return layer;
+/**
+ * @param jsonUrl
+ */
+export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
+    const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
+    try {
+        layer = await layerUtil.initLayer(jsonUrl,
+            layerId,
+            layerTitle,
+            renderer,
+            fields,
+            "point",
+            false,
+        );
+    } catch (ex) {
+        console.error(ex);
+        layer = undefined;
+        layerInfo.status = LayerStatus.Failed
+    }
+    return layerInfo;
 }
 
-const getLayer = (): FeatureLayer => {
+/**
+ *
+ */
+const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
-        throw "TravelTimesLayer is not ready yet!";
+        console.error("TravelTimesLayer is not ready yet!");
     }
     return layer;
 }
