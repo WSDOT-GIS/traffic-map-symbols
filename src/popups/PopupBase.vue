@@ -523,7 +523,7 @@ export default defineComponent({
           break;
         default:
           // Display above the feature by default...
-          if(layerID=="linear-closures-layer"){
+          if(layerID=="linear-closures-layer"){//if this part stays, add feature geometry type to props use that for this conditional. This makes the pop ups display close to the line rather than offset the height of the point marker.
             newTop = screenY.value - height
           }
           else{
