@@ -21,7 +21,7 @@ loadConfig().then((appConfig) => {
             document.documentElement.style.setProperty('--color-primaryBrand100', '#FF6A13')
             document.documentElement.style.setProperty('--color-primaryBrand80', '#FF8842')
             document.documentElement.style.setProperty('--color-footerText', '#1d252d')
-            document.documentElement.style.setProperty('--color-footerBackground', '#ff670f')
+            document.documentElement.style.setProperty('--color-footerBackground', '#FF8F4E')
             
             break
         default:

@@ -7,6 +7,7 @@
       </li>
       <li>
         <a
+          class="footerContainer"
           data-entity-substitution="canonical"
           data-entity-type="node"
           data-entity-uuid="695c71b2-1d46-4c46-8254-43c89acc6a97"
@@ -16,7 +17,7 @@
         >
       </li>
       <li>
-        <a :href="WsdotRootUrl + '/about/policies/travel-information-disclaimer'">Disclaimer</a>
+        <a class="footerContainer" :href="WsdotRootUrl + '/about/policies/travel-information-disclaimer'">Disclaimer</a>
       </li>
     </ul>
   </footer>
