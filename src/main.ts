@@ -16,6 +16,14 @@ import { createLayerGroupInfos } from "./utils/layerUtil";
 
 // Load config before app starts...
 loadConfig().then((appConfig) => {
+    switch(appConfig.appTheme){//set theme colors
+        case 'Go Orange':
+            document.documentElement.style.setProperty('--color-primaryBrand100', '#FF6A13')
+            document.documentElement.style.setProperty('--color-primaryBrand80', '#FF8842')
+            break
+        default:
+            break
+    }
     const appInsights = new ApplicationInsights(
         {
             config: {

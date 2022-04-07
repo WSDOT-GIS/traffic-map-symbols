@@ -26,6 +26,7 @@ export default defineComponent({
     const config = getConfig();
     const activeClass = "active";
     const disabledClass = "disabled";
+    store.commit("setTheme",config.appTheme)
     store.commit("setInitializing", {
       isInitializing: true,
       isLoading: true,

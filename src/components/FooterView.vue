@@ -1,4 +1,5 @@
 <template>
+  <div v-if="appTheme=='Go Orange'" class="content-super-bottom-wrapper"></div><!--candy stripe bar for Go Orange styling-->
   <footer class="w3-container">
     <ul>
       <li>
@@ -22,8 +23,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-
+import { defineComponent, computed } from "vue";
+import { useStore } from "@/store";
 export default defineComponent({
    props: {
     WsdotRootUrl: {
@@ -31,6 +32,11 @@ export default defineComponent({
       required: true,
     },
   },
+  setup(){
+    const store = useStore();
+    const appTheme = computed(() => store.getters.getAppTheme());
+    return{appTheme}
+  }
 });
 </script>
 

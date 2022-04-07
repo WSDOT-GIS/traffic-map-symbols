@@ -336,3 +336,11 @@ button.btn-danger::hover {
     background-color: #0b354d;
     color: #f9f9a5;
 }
+html body .content-super-bottom-wrapper {/*used for Go Orange theme*/
+    background-color: #FFE9DC;
+    background-image: url("./icons/candy-stripe-bar.svg");
+    background-repeat: repeat-x;
+    background-position-y: bottom;
+    margin-bottom: 0px;
+    padding-bottom: 4px;
+}
