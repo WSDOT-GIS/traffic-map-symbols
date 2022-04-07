@@ -1,6 +1,6 @@
 <template>
   <div v-if="appTheme=='Go Orange'" class="content-super-bottom-wrapper"></div><!--candy stripe bar for Go Orange styling-->
-  <footer class="w3-container">
+  <footer class="w3-container footerContainer">
     <ul>
       <li>
         Copyright WSDOT&copy;
@@ -41,8 +41,11 @@ export default defineComponent({
 </script>
 
 <style>
+.footerContainer{
+  background-color: var(--color-footerBackground);
+}
 footer, footer ul li a {
-  color: #fff;
+  color: var(--color-footerText);
   background-color: var(--color-primaryBrand100);
 }
 footer ul li a:hover {

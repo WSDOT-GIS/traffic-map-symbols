@@ -20,6 +20,9 @@ loadConfig().then((appConfig) => {
         case 'Go Orange':
             document.documentElement.style.setProperty('--color-primaryBrand100', '#FF6A13')
             document.documentElement.style.setProperty('--color-primaryBrand80', '#FF8842')
+            document.documentElement.style.setProperty('--color-footerText', '#1d252d')
+            document.documentElement.style.setProperty('--color-footerBackground', '#ff670f')
+            
             break
         default:
             break
