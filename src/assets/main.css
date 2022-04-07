@@ -344,3 +344,12 @@ html body .content-super-bottom-wrapper {/*used for Go Orange theme*/
     margin-bottom: 0px;
     padding-bottom: 4px;
 }
+html body .menu--main li.workzoneSafetyLink a:before {
+    content: '';
+    background-image: url("./icons/workzone-safety-icon.png");
+    width: 37px;
+    height: 37px;
+    float: left;
+    background-repeat: no-repeat;
+    margin-top: -8px;
+  }
