@@ -46,7 +46,7 @@ export default defineComponent({
   background-color: var(--color-footerBackground);
 }
 footer, footer ul li a {
-  color: var(--color-footerText);
+  color: var(--color-themeText);
   background-color: var(--color-primaryBrand100);
 }
 footer ul li a:hover {

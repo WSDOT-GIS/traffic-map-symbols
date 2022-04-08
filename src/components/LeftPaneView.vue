@@ -46,7 +46,7 @@ export default defineComponent({
           >
             <path
               d="M31.047 28h-5l-12-12 12-12h5l-12 12 12 12zm-26-12l12-12h-5l-12 12 12 12h5l-12-12z"
-              style="fill: #007b5f"
+              style="fill: var(--color-primaryBrand100)"
             />
           </svg>
         </div>
