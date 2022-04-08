@@ -9,28 +9,47 @@ trigger:
 
 pool: Default
 
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '16.x'
-  displayName: 'Install Node.js'
+stages:
+- stage: Build
+  displayName: "Build the application"
+  jobs:
+  - job: Build
+    steps:
+    - task: NodeTool@0
+      name: InstallNode
+      inputs:
+        versionSpec: '16.x'
+      displayName: 'Install Node.js'
 
-- script: |
-    npm ci
-  displayName: 'npm ci'
-    
-- script: |
-    npm run build
-  displayName: 'npm build using $(Build.SourcesDirectory)'
-  workingDirectory: $(Build.SourcesDirectory)
+    - script: |
+        npm ci
+      name: npmci
+      displayName: 'Install dependencies'
 
-- task: CopyFiles@2
-  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
-  inputs:
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
-    Contents: 'dist/**'
+        
+    - script: |
+        npm run build
+      name: build
+      displayName: 'Run the npm build script using $(Build.SourcesDirectory)'
+      workingDirectory: $(Build.SourcesDirectory)
 
-- task: PublishBuildArtifacts@1
-  inputs: 
-    PathtoPublish: $(Build.ArtifactStagingDirectory) # dist files
-    ArtifactName: 'www' # output artifact named www
+- stage: PublishArtifacts
+  displayName: "Publish Artifacts"
+  dependsOn: Build
+  jobs:
+  - job: PublishArtifacts
+    displayName: "Publish Artifacts"
+    steps:
+    - task: CopyFiles@2
+      name: CopyFilesToArtifactStagingDirectory
+      displayName: 'Copy Files to artifact staging directory: "$(Build.ArtifactStagingDirectory)"'
+      inputs:
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        Contents: 'dist/**'
+
+    - task: PublishBuildArtifacts@1
+      name: PublishArtifacts
+      displayName: "Publish Artifacts"
+      inputs: 
+        PathtoPublish: $(Build.ArtifactStagingDirectory) # dist files
+        ArtifactName: 'www' # output artifact named www

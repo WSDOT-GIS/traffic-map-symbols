@@ -1,0 +1,19 @@
+version: "0.2"
+ignorePaths: [
+  wsdot-devops-pipeline-yaml-schema.json
+]
+dictionaryDefinitions: []
+dictionaries: []
+words:
+  - ArcGIS
+  - pwsh
+  - WSDOT
+ignoreWords:
+  - ERESOLVE
+  - npmrc
+  - netconfig
+  - browserslistrc
+  - doubleclick
+  - browserslist
+  - scripthost
+import: []

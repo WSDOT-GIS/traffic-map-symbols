@@ -18,6 +18,7 @@ Python scripts for updating JSON data used by the map application are in the `ex
 
 * Install [Node] 16, which is the ["Active LTS" version] as of this writing.
   * Build tools currently not compatible with Node 17 due to an [issue with Vue CLI].
+  * An issue has arisen relating to a change made to NPM in version 8.6.0. Details can be found [here](npm-8.6.0-peer-dependency-issue.md).
 * Recommended development environment is [Visual Studio Code].
   * See [Using Vue with Typescript] for details on how to set up Visual Studio Code for Vue projects.
   * The `.vscode/extensions.json` file is configured to recommend Visual Studio Code extensions for this project. You can view the recommended extensions in the *Extensions* panel (Ctrl + Shift + X).
@@ -71,8 +72,12 @@ dotnet serve
 
 ## Additional documentation
 
-* [Pacakges](packages.md)
-* [List of deprecated NPM pacakges currently in use by this project](deprecated-packages.md)
+* [Packages](packages.md)
+* [List of deprecated NPM packages currently in use by this project](deprecated-packages.md)
+
+## YAML schema file
+
+The file `wsdot-devops-pipeline-yaml-schema.json` was copied from <https://dev.azure.com/wsdot/_apis/distributedtask/yamlschema>. It is used by the ["Azure Pipelines" Visual Studio Code extension] to aid in editing the `azure-pipelines.yml` file.
 
 ## Build Status
 
@@ -93,3 +98,4 @@ dotnet serve
 [Using Vue with Typescript]:https://vuejs.org/guide/typescript/overview.html
 [Vue]:https://vuejs.org/
 [WSDOT Travel Center Map]:https://wsdot.com/travel/real-time/map/
+["Azure Pipelines" Visual Studio Code extension]:https://marketplace.visualstudio.com/items?itemName=ms-azure-devops.azure-pipelines
