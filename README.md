@@ -2,9 +2,20 @@
 
 This repository contains the source code for the [WSDOT Travel Center Map]
 
-## Python Scripts
+## Build Status
 
-Python scripts for updating JSON data used by the map application are in the `external_scripts` subfolder. This folder is ignored by Visual Studio Code when opening the root. To work on the Python scripts, you must open Visual Studio Code from the `external_scripts` subfolder.
+| branch           | status                                          |
+| ---------------- | ----------------------------------------------- |
+| *default branch* | [![Build Status][badge]][build]                 |
+| main             | [![Build Status][badge:main]][build:main]       |
+| Develop          | [![Build Status][badge:develop]][build:develop] |
+
+[badge]:https://dev.azure.com/WSDOT/TravelerInformation/_apis/build/status/Travel%20Center/TravelerInformationCoreMap
+[badge:main]:https://dev.azure.com/WSDOT/TravelerInformation/_apis/build/status/Travel%20Center/TravelerInformationCoreMap?branchName=main
+[badge:develop]:https://dev.azure.com/WSDOT/TravelerInformation/_apis/build/status/Travel%20Center/TravelerInformationCoreMap?branchName=Develop
+[build]:https://dev.azure.com/WSDOT/TravelerInformation/_build/latest?definitionId=804
+[build:main]:https://dev.azure.com/WSDOT/TravelerInformation/_build/latest?definitionId=804&branchName=main
+[build:develop]:https://dev.azure.com/WSDOT/TravelerInformation/_build/latest?definitionId=804&branchName=Develop
 
 ## This project is utilizing
 
@@ -16,12 +27,16 @@ Python scripts for updating JSON data used by the map application are in the `ex
 
 ### Prerequisites
 
-* Install [Node] 16, which is the ["Active LTS" version] as of this writing.
-  * Build tools currently not compatible with Node 17 due to an [issue with Vue CLI].
-  * An issue has arisen relating to a change made to NPM in version 8.6.0. Details can be found [here](npm-8.6.0-peer-dependency-issue.md).
+* Install [Node]. You can use [nvm-windows](#nvm-windows) to switch between different versions of Node.
 * Recommended development environment is [Visual Studio Code].
   * See [Using Vue with Typescript] for details on how to set up Visual Studio Code for Vue projects.
   * The `.vscode/extensions.json` file is configured to recommend Visual Studio Code extensions for this project. You can view the recommended extensions in the *Extensions* panel (Ctrl + Shift + X).
+
+### nvm-windows
+
+[nvm-windows] is a Node version manager for Windows. Allows switching between different versions of node. [Recommended by Microsoft's documentation][Install NodeJS on Windows]. Once installed, it can be accessed via the `nvm` command.
+
+:warning: Note that you must be running as an administrator for the `nvm` commands to work correctly.
 
 ### Setup
 
@@ -79,18 +94,9 @@ dotnet serve
 
 The file `wsdot-devops-pipeline-yaml-schema.json` was copied from <https://dev.azure.com/wsdot/_apis/distributedtask/yamlschema>. It is used by the ["Azure Pipelines" Visual Studio Code extension] to aid in editing the `azure-pipelines.yml` file.
 
-## Build Status
-
-| branch           | status                                                                                                                                                                                                                                                 |
-|------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| *default branch* | [![Build Status](https://dev.azure.com/WSDOT/TravelerInformation/_apis/build/status/Travel%20Center/TravelerInformationCoreMap)](https://dev.azure.com/WSDOT/TravelerInformation/_build/latest?definitionId=804)                                       |
-| main             | [![Build Status](https://dev.azure.com/WSDOT/TravelerInformation/_apis/build/status/Travel%20Center/TravelerInformationCoreMap?branchName=main)](https://dev.azure.com/WSDOT/TravelerInformation/_build/latest?definitionId=804&branchName=main)       |
-| Develop          | [![Build Status](https://dev.azure.com/WSDOT/TravelerInformation/_apis/build/status/Travel%20Center/TravelerInformationCoreMap?branchName=Develop)](https://dev.azure.com/WSDOT/TravelerInformation/_build/latest?definitionId=804&branchName=Develop) |
-
 ["Active LTS" version]:https://nodejs.org/en/about/releases/
 [ArcGIS API for JavaScript]:https://developers.arcgis.com/javascript/latest/
 [browserslist]:https://github.com/browserslist/browserslist
-[issue with Vue CLI]:https://github.com/vuejs/vue-cli/issues?q=is:issue+0308010C
 [dotnet-serve]:https://github.com/natemcmaster/dotnet-serve
 [Node]:https://nodejs.org/en/
 [TypeScript]:https://www.typescriptlang.org/
@@ -99,3 +105,5 @@ The file `wsdot-devops-pipeline-yaml-schema.json` was copied from <https://dev.a
 [Vue]:https://vuejs.org/
 [WSDOT Travel Center Map]:https://wsdot.com/travel/real-time/map/
 ["Azure Pipelines" Visual Studio Code extension]:https://marketplace.visualstudio.com/items?itemName=ms-azure-devops.azure-pipelines
+[nvm-windows]:https://github.com/coreybutler/nvm-windows
+[Install NodeJS on Windows]:https://docs.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows

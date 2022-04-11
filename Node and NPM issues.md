@@ -1,4 +1,23 @@
-# NPM Peer Dependency issue
+# Node and NPM issues
+
+- [Node and NPM issues](#node-and-npm-issues)
+  - [Node 17 incompatibility with `vue-cli-service`](#node-17-incompatibility-with-vue-cli-service)
+  - [NPM Peer Dependency issue](#npm-peer-dependency-issue)
+  - [References](#references)
+
+## Node 17 incompatibility with `vue-cli-service`
+
+Attempting to run `vue-cli-service` will fail under Node 17 unless the `--openssl-legacy-provider` flag is used with Node. This is a known [issue with Vue CLI].
+
+:warning: Azure DevOps will not allow you to specify `--openssl-legacy-provider` in the `NODE_OPTIONS` environment variable.
+
+    --openssl-legacy-provider is not allowed in NODE_OPTIONS
+
+See [Node v17.0.0 release notes, "OpenSSL 3.0"](https://nodejs.org/en/blog/release/v17.0.0/#openssl-3-0)
+
+[issue with Vue CLI]:https://github.com/vuejs/vue-cli/issues?q=is:issue+0308010C
+
+## NPM Peer Dependency issue
 
 A change to npm introduced at 8.6.0 caused `npm install` / `npm ci` to fail where it didn't before. This version of NPM changed the default behavior so that peer dependencies are now automatically installed by default.
 

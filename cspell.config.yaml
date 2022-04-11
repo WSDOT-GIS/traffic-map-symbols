@@ -1,7 +1,9 @@
 version: "0.2"
-ignorePaths: [
-  wsdot-devops-pipeline-yaml-schema.json
-]
+ignorePaths: 
+  - wsdot-devops-pipeline-yaml-schema.json
+  - package.json
+  - package-lock-json
+
 dictionaryDefinitions: []
 dictionaries: []
 words:
