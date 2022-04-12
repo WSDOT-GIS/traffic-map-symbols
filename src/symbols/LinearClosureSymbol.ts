@@ -9,98 +9,48 @@ const linearClosureSymbol = new SimpleLineSymbol({
     
 })
 const linearCIMClosureSymbol = new CIMSymbol({
-    data:{
-        type: "CIMSymbolReference",
-        symbol: {
-            type: "CIMLineSymbol",
-            symbolLayers: [
-                //line
-                {
-                type: "CIMSolidStroke",
-               /* effects: [{
-                    type: "CIMGeometricEffectDashes",
-                    dashTemplate: [2, 9],
-                    lineDashEnding: "FullGap",
-                    controlPointEnding: "NoConstraint"
-                }],*/
-                enable: true,
-                width: 6,
-                color: [0, 0, 0, 255]
-                },
-                //diagonal line
-                 {
-                    "type": "CIMVectorMarker",
-                    "enable": true,
-                    "anchorPointUnits": "Relative",
-                    "dominantSizeAxis3D": "Y",
-                    "rotateClockwise": true,
-                    "rotation": 45,
-                    "size": 10,
-                    "billboardMode3D": "FaceNearPlane",
-                    markerPlacement: {
-                        // places same size markers along the line
-                        type: "CIMMarkerPlacementAlongLineSameSize", 
-                        endings: "WithMarkers",
-                        placementTemplate: [50] // determines space between each arrow
-                     },
-                    "frame": {
-                      "xmin": -1.5,
-                      "ymin": -5,
-                      "xmax": 1.5,
-                      "ymax": 5
-                    },
-                    "markerGraphics": [
-                        //line for do not enter
-                      {
-                        "type": "CIMMarkerGraphic",
-                        "geometry": {
-                          "paths": [
-                            [
-                              [
-                                0,
-                                5
-                              ],
-                              [
-                                0,
-                                -5
-                              ],
-                              [
-                                5,
-                                -5
-                              ],
-                              [
-                                5,
-                                5
-                              ]
-                            ]
-                          ]
-                        },
-                        "symbol": {
-                          "type": "CIMLineSymbol",
-                          "symbolLayers": [
-                            {
-                              "type": "CIMSolidStroke",
-                              "enable": true,
-                              "capStyle": "Butt",
-                              "joinStyle": "Round",
-                              "lineStyle3D": "Strip",
-                              "miterLimit": 4,
-                              "width": 2,
-                              "color": [
-                                255,
-                                0,
-                                0,
-                                255
-                              ]
-                            }
-                          ]
-                        }
-                      }
-                    ],
-                    "respectFrame": true
-                  }
-            ]
+  data: {
+    type: "CIMSymbolReference",
+    symbol: {
+      type: "CIMLineSymbol",
+      symbolLayers: [
+        {
+          // white dashed layer at center of the line
+          type: "CIMSolidStroke",
+          effects: [
+            {
+              type: "CIMGeometricEffectDashes",
+              dashTemplate: [10, 20], // width of dashes and spacing between the dashes
+              lineDashEnding: "NoConstraint",
+              controlPointEnding: "NoConstraint"
+            },
+          ],
+          enable: true, // must be set to true in order for the symbol layer to be visible
+          capStyle: "Butt",
+          joinStyle: "Miter",
+          width: 5,
+          color: [255, 255, 255, 255]
+        },
+        {
+          // black layer that surrounds the dashes
+          type: "CIMSolidStroke",
+          enable: true,
+          capStyle: "Butt",
+          joinStyle: "Miter",
+          width: 5,
+          color: [0,0, 0, 255]
+        },
+        {
+          // black outline around the line symbol
+          type: "CIMSolidStroke",
+          enable: true,
+          capStyle: "Butt",
+          joinStyle: "Miter",
+          width: 6,
+          color: [0, 0, 0, 255]
         }
+      ]
     }
+  }
 })
 export { linearClosureSymbol, linearCIMClosureSymbol}
