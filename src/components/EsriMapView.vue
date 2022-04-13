@@ -173,6 +173,7 @@ export default defineComponent({
       esriMap: typeof import("../esri-stuff/esriMap")
     ) => {
       const lyrs = esriMap.validateLayerList([
+        RoadClosuresLayer(),
         ParkRideLayer(),
         CameraLayer(),
         PointRestrictionsLayer(),
@@ -186,7 +187,6 @@ export default defineComponent({
         BorderCrossingLayer(),
         RegionalAlertLayer(),
         PointFerryRoutesLayer(),
-        RoadClosuresLayer(),
         ZoomExtentLayer,
       ]);
       const opLayerOpts = {
