@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import {detectGoOrange} from './utils/themeUtil'
 import router from './router';
 import App from './App.vue'
 import VueClickAway from "vue3-click-away";
@@ -16,7 +17,16 @@ import { createLayerGroupInfos } from "./utils/layerUtil";
 
 // Load config before app starts...
 loadConfig().then((appConfig) => {
-    switch(appConfig.appTheme){//set theme colors
+    detectGoOrange().then((goOrangeResponse)=>{
+        if(goOrangeResponse){
+            document.documentElement.style.setProperty('--color-primaryBrand100', '#FF6A13')
+            document.documentElement.style.setProperty('--color-primaryBrand80', '#FF8842')
+            document.documentElement.style.setProperty('--color-footerBackground', '#FF8F4E')
+            document.documentElement.style.setProperty('--color-themeText', '#1d252dE')
+            store.commit("setTheme","Go Orange")
+        }
+    })
+    /*switch(appConfig.appTheme){//set theme colors
         case 'Go Orange':
             document.documentElement.style.setProperty('--color-primaryBrand100', '#FF6A13')
             document.documentElement.style.setProperty('--color-primaryBrand80', '#FF8842')
@@ -25,7 +35,7 @@ loadConfig().then((appConfig) => {
             break
         default:
             break
-    }
+    }*/
     const appInsights = new ApplicationInsights(
         {
             config: {

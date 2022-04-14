@@ -20,13 +20,11 @@ export default defineComponent({
   setup() {
     const mapHeight = ref("500px");
     const store = useStore();
-
    // const toast = useToast();
     // const errors = computed(() => store.state.errors);
     const config = getConfig();
     const activeClass = "active";
     const disabledClass = "disabled";
-    store.commit("setTheme",config.appTheme)
     store.commit("setInitializing", {
       isInitializing: true,
       isLoading: true,
