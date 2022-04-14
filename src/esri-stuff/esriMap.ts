@@ -146,13 +146,14 @@ export const loadOperationalLayers = async (): Promise<LayerInfo[]> => {
             lyrs.push(layer);
         }
     }
+    
     addToList(RoadsReferenceLayer.default());
     addToList(BoundariesPlacesReferenceLayer.default());
     addToList(FerryRoutesReferenceLayer.default());
     addToList(TrafficLayer.default());
+    addToList(LinearClosuresLayer.default());
     addToList(LineFerryRoutesLayer.default());
     addToList(LineRoadAlertsLayer.default());
-    addToList(LinearClosuresLayer.default());
     addToList(StateRouteShieldsLayer.default());
     addToList(FirePerimetersLayer.default());
     addToList(fireIncidentLayer);

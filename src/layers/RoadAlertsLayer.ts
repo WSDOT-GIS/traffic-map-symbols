@@ -29,7 +29,7 @@ const renderer = new uniqueValueRenderer({
             label: "LOW IMPACT",
             value: 4,
             symbol: alertSymbol
-        },
+        }
     ]
 })
 

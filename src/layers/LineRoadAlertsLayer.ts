@@ -1,12 +1,30 @@
-import { lineAlertSymbol} from "../symbols/LineAlertSymbol"
+import { lineAlertSymbolLow, lineAlertSymbolMedium, lineAlertSymbolHigh} from "../symbols/LineAlertSymbol"
 import Field from "@arcgis/core/layers/support/Field";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as layerUtil from "@/utils/layerUtil";
 import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import Graphic from "@arcgis/core/Graphic";
-const renderer = new SimpleRenderer({
-    symbol: lineAlertSymbol
+import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
+const renderer = new UniqueValueRenderer({
+    field:"TravelCenterPriorityId",
+    uniqueValueInfos: [
+        {
+            label: "HIGH IMPACT",
+            value: 2,
+            symbol: lineAlertSymbolHigh
+        },
+        {
+            label: "MODERATE IMPACT",
+            value: 3,
+            symbol: lineAlertSymbolMedium
+        },
+        {
+            label: "LOW IMPACT",
+            value: 4,
+            symbol: lineAlertSymbolLow
+        },
+    ]
 })
 
 const fields = [
