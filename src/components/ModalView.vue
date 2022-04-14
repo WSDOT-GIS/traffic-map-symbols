@@ -73,7 +73,7 @@ export default defineComponent({
 </script>
 <style scoped>
 header {
-  background-color: #33957f;
+  background-color:var(--color-primaryBrand80);
   color: #fff;
   height: 2em;
   display: flex;

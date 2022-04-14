@@ -35,6 +35,7 @@ export interface State {
     serviceAlerts: string[]; // Shown in the banner.
     serviceAlertsBannerVisible: boolean;
     isToastReady: boolean;
+    appTheme: string;
 }
 //
 const toast = useToast();
@@ -70,10 +71,14 @@ export const store = createStore<State>({
             errors: [],
             serviceAlerts: [],
             serviceAlertsBannerVisible: false,
-            isToastReady: false
+            isToastReady: false,
+            appTheme:"",
         }
     },
     getters: {
+        getAppTheme: (state) => () => {
+            return state.appTheme;
+        },
         getLayerInfo: (state) => (id: string) => {
             return getLayerInfo(state, id);
         },
@@ -107,6 +112,9 @@ export const store = createStore<State>({
         }
     },
     mutations: {
+        setTheme(state, payload: string){
+            state.appTheme = payload
+        },
         setBasemap(state, payload: string) {
             if (state.basemap != payload || !state.basemap) {
                 const basemapInfo = getBasemapInfo(payload);

@@ -1,11 +1,13 @@
 <template>
-  <footer class="w3-container">
+  <div v-if="appTheme=='Go Orange'" class="content-super-bottom-wrapper"></div><!--candy stripe bar for Go Orange styling-->
+  <footer class="w3-container footerContainer">
     <ul>
       <li>
         Copyright WSDOT&copy;
       </li>
       <li>
         <a
+          class="footerContainer"
           data-entity-substitution="canonical"
           data-entity-type="node"
           data-entity-uuid="695c71b2-1d46-4c46-8254-43c89acc6a97"
@@ -15,15 +17,15 @@
         >
       </li>
       <li>
-        <a :href="WsdotRootUrl + '/about/policies/travel-information-disclaimer'">Disclaimer</a>
+        <a class="footerContainer" :href="WsdotRootUrl + '/about/policies/travel-information-disclaimer'">Disclaimer</a>
       </li>
     </ul>
   </footer>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-
+import { defineComponent, computed } from "vue";
+import { useStore } from "@/store";
 export default defineComponent({
    props: {
     WsdotRootUrl: {
@@ -31,12 +33,20 @@ export default defineComponent({
       required: true,
     },
   },
+  setup(){
+    const store = useStore();
+    const appTheme = computed(() => store.getters.getAppTheme());
+    return{appTheme}
+  }
 });
 </script>
 
 <style>
+.footerContainer{
+  background-color: var(--color-footerBackground);
+}
 footer, footer ul li a {
-  color: #fff;
+  color: var(--color-themeText);
   background-color: var(--color-primaryBrand100);
 }
 footer ul li a:hover {
