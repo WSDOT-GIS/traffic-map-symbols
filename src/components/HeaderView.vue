@@ -21,9 +21,10 @@
     <div class="header-wrapper">
       <div class="logo-container">
         <div class="region region-header">
-          <a class="logo navbar-btn pull-left" :href="WsdotRootUrl" title="Home" rel="home"
-            ><img src="@/assets/wsdot-logo-white.svg" alt="Home" @load="onImgLoad()"
-          /></a>
+          <a class="logo navbar-btn pull-left" :href="WsdotRootUrl" title="Home" rel="home">
+            <img v-if="appTheme!='Go Orange'" src="@/assets/wsdot-logo-white.svg" alt="Home" @load="onImgLoad()"/>
+            <img v-if="appTheme=='Go Orange'" src="@/assets/wsdot-logo-black.svg" alt="Home" @load="onImgLoad()"/>
+          </a>
           <a class="name navbar-brand" :href="WsdotRootUrl" title="Home" rel="home">WSDOT</a>
 
           <!-- <a id="main-menu" href="#menu-schmenu" class="sidr-trigger"
