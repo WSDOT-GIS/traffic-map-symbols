@@ -17,7 +17,7 @@ import { createLayerGroupInfos } from "./utils/layerUtil";
 
 // Load config before app starts...
 loadConfig().then((appConfig) => {
-    detectGoOrange().then((goOrangeResponse)=>{
+    detectGoOrange().then((goOrangeResponse)=>{//apply go orange theme
         if(goOrangeResponse){
             document.documentElement.style.setProperty('--color-primaryBrand100', '#FF6A13')
             document.documentElement.style.setProperty('--color-primaryBrand80', '#FF8842')
