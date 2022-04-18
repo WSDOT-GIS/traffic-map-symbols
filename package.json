@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@analytics/google-analytics": "^0.5.3",
-    "@arcgis/core": "~4.21.2",
     "@microsoft/applicationinsights-web": "^2.7.3",
     "@splidejs/vue-splide": "^0.5.18",
     "analytics": "^0.8.0",
@@ -25,8 +24,9 @@
     "vuex": "^4.0.2"
   },
   "devDependencies": {
+    "@arcgis/core": "^4.23.7",
     "@arcgis/webpack-plugin": "^4.20.0",
-    "@types/arcgis-js-api": "~4.21.0",
+    "@types/arcgis-js-api": "^4.23.1",
     "@types/doubleclick-gpt": "^2019111201.0.2",
     "@types/webpack-env": "^1.16.3",
     "@typescript-eslint/eslint-plugin": "^5.11.0",
