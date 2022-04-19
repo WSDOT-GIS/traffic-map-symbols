@@ -412,6 +412,7 @@ export default defineComponent({
             console.error(err.message);
           });
       });
+      /*Set scale dependent rendering */
       watch(()=>store.state.scale, (scale)=> {
         updateScaleDependentRendering(RoadClosuresLayer() as FeatureLayer, scale as number)
       });
