@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --modern",
     "lint": "vue-cli-service lint --no-fix",
-    "lint:html": "vue-cli-service lint --no-fix --format html > dist/lint-results.html"
+    "lint:html": "vue-cli-service lint --no-fix --format html > dist/lint-results.html",
+    "tsc:symbols": "tsc --project symbols.tsconfig"
   },
   "dependencies": {
     "vue": "^3.2.33"
