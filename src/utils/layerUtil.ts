@@ -12,6 +12,7 @@ import AppConfig from "@/types/AppConfig";
 import { fetchJson } from "@/utils/miscUtil";
 import { isEsriFeatures } from "@/utils/typeUtil";
 import Layer from "@arcgis/core/layers/Layer";
+import {simpleClosuresRenderer, directionalClosuresRenderer} from "@/layers/LinearClosuresLayer"
 /**
  *  Specify which layers belong together (i.e. should be treated as if they are one layer) 
  *  Layers in each group should have the same visibility and displayed as a single item in the table of contents
@@ -333,5 +334,17 @@ export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
         }
     }
     return graphics;
+}
+export const updateScaleDependentRendering = (layer: FeatureLayer, scale: number)=>{
+    if(layer.title=="Linear Closures Lines"){
+        console.log("update linear closures renderer")
+        console.log(scale)
+        if(scale<=37000){
+            layer.renderer = directionalClosuresRenderer
+        }
+        else{
+            layer.renderer = simpleClosuresRenderer
+        }
+    }
 }
 

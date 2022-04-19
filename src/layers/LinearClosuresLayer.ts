@@ -1,14 +1,45 @@
-import { linearClosureSymbol, linearCIMClosureSymbol} from "../symbols/LinearClosureSymbol"
+import { linearCIMClosureSymbol, linearCIMClosureIncreasing, linearCIMClosureDecreasing, linearCIMClosureBoth} from "../symbols/LinearClosureSymbol"
 import Field from "@arcgis/core/layers/support/Field";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as layerUtil from "@/utils/layerUtil";
 import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import Graphic from "@arcgis/core/Graphic";
-const renderer = new SimpleRenderer({
+import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
+export const simpleClosuresRenderer = new SimpleRenderer({
     symbol: linearCIMClosureSymbol
 })
+export const directionalClosuresRenderer = new UniqueValueRenderer({
+    field:"RoadDirection",
+    uniqueValueInfos: [
+        {
+            label: "Northbound",
+            value: "Northbound",
+            symbol: linearCIMClosureIncreasing
+        },
+        {
+            label: "Southbound",
+            value: "Southbound",
+            symbol: linearCIMClosureDecreasing
+        },
+        {
+            label: "Westbound",
+            value: "Westbound",
+            symbol: linearCIMClosureDecreasing
+        },
+        {
+            label: "Eastbound",
+            value: "Eastbound",
+            symbol: linearCIMClosureIncreasing
+        },
+        {
+            label: "Both",
+            value: "Both",
+            symbol: linearCIMClosureBoth
 
+        }
+    ]
+})
 const fields = [
     /*new Field({ name: "AppGenId",alias: "AppGenId",type: "oid"}),*/
     new Field({ name: "EventID", type: "integer", alias: "EventID"}),
@@ -43,7 +74,7 @@ const layerTitle = "Linear Closures Lines";
     }
 
     try {
-        layer = await layerUtil.initLayer(layerId, layerTitle, renderer, fields, "polyline", true, graphics,"EventCategoryDescription in ('Closure')");
+        layer = await layerUtil.initLayer(layerId, layerTitle, simpleClosuresRenderer, fields, "polyline", true, graphics,"EventCategoryDescription in ('Closure')");
         layer.orderBy = [{
             field: "TravelCenterPriorityId",
             order: "ascending"
