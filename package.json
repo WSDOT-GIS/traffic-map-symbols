@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "@analytics/google-analytics": "^0.5.3",
-    "@arcgis/core": "<=4.22",
+    "@arcgis/core": "4.23",
     "@microsoft/applicationinsights-web": "^2.8.0",
     "@splidejs/vue-splide": "^0.6.3",
     "analytics": "^0.8.1",
