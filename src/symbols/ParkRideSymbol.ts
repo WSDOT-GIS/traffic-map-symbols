@@ -10,11 +10,10 @@ const symbol = new CIMSymbol({
         {
           "type": "CIMVectorMarker",
           "enable": true,
-          "anchorPointUnits": "Relative",
-          "dominantSizeAxis3D": "Y",
+          
           "size": 24,
           "offsetY": 12,//Half of symbol height
-          "billboardMode3D": "FaceNearPlane",
+          
           "frame": {
             "xmin": 0,
             "ymin": 0,
@@ -24,6 +23,8 @@ const symbol = new CIMSymbol({
           "markerGraphics": [
             {
               "type": "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
               "geometry": {
                 "rings": [
                   [
@@ -172,6 +173,8 @@ const symbol = new CIMSymbol({
             },
             {
               "type": "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
               "geometry": {
                 "rings": [
                   [
@@ -344,6 +347,8 @@ const symbol = new CIMSymbol({
             },
             {
               "type": "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
               "geometry": {
                 "rings": [
                   [
@@ -506,8 +511,6 @@ const symbol = new CIMSymbol({
                     "enable": true,
                     "capStyle": "Butt",
                     "joinStyle": "Miter",
-                    "lineStyle3D": "Strip",
-                    "miterLimit": 4,
                     "width": 0.5,
                     "color": [
                       255,
@@ -521,6 +524,8 @@ const symbol = new CIMSymbol({
             },
             {
               "type": "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
               "geometry": {
                 "rings": [
                   [
@@ -677,36 +682,6 @@ const symbol = new CIMSymbol({
           "scaleSymbolsProportionally": true,
 
           "respectFrame": true,
-          "clippingPath": {
-            "type": "CIMClippingPath",
-            "clippingType": "Intersect",
-            "path": {
-              "rings": [
-                [
-                  [
-                    0,
-                    0
-                  ],
-                  [
-                    18,
-                    0
-                  ],
-                  [
-                    18,
-                    24
-                  ],
-                  [
-                    0,
-                    24
-                  ],
-                  [
-                    0,
-                    0
-                  ]
-                ]
-              ]
-            }
-          }
         }
       ]
     }

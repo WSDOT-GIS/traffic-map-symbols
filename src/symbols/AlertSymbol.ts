@@ -2,29 +2,28 @@ import CIMSymbol from "@arcgis/core/symbols/CIMSymbol";
 const alertSymbol = new CIMSymbol({
   data:
   {
-      "type": "CIMSymbolReference",
-      "symbol": {
-          "type": "CIMPointSymbol",
-          "symbolLayers": [
+      type: "CIMSymbolReference",
+      symbol: {
+          type: "CIMPointSymbol",
+          symbolLayers: [
             {
-              "type": "CIMVectorMarker",
-              "enable": true,
-              "anchorPointUnits": "Relative",
-              "dominantSizeAxis3D": "Y",
-              "size": 24,
-              "offsetY": 12,//Half of symbol height
-              "billboardMode3D": "FaceNearPlane",
-              "frame": {
-                "xmin": 0,
-                "ymin": 0,
-                "xmax": 18,
-                "ymax": 24
+              type: "CIMVectorMarker",
+              enable: true,
+              size: 24,
+              offsetY: 12,//Half of symbol height
+              frame: {
+                xmin: 0,
+                ymin: 0,
+                xmax: 18,
+                ymax: 24
               },
-              "markerGraphics": [
+              markerGraphics: [
                 {
-                  "type": "CIMMarkerGraphic",
-                  "geometry": {
-                    "rings": [
+                  textString:'',
+                  primitiveName:'',
+                  type: "CIMMarkerGraphic",
+                  geometry: {
+                    rings: [
                       [
                         [
                           15.37,
@@ -153,13 +152,13 @@ const alertSymbol = new CIMSymbol({
                       ]
                     ]
                   },
-                  "symbol": {
-                    "type": "CIMPolygonSymbol",
-                    "symbolLayers": [
+                  symbol: {
+                    type: "CIMPolygonSymbol",
+                    symbolLayers: [
                       {
-                        "type": "CIMSolidFill",
-                        "enable": true,
-                        "color": [
+                        type: "CIMSolidFill",
+                        enable: true,
+                        color: [
                           255,
                           193,
                           7,
@@ -170,9 +169,11 @@ const alertSymbol = new CIMSymbol({
                   }
                 },
                 {
-                  "type": "CIMMarkerGraphic",
-                  "geometry": {
-                    "rings": [
+                  type: "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
+                  geometry: {
+                    rings: [
                       [
                         [
                           9,
@@ -309,13 +310,13 @@ const alertSymbol = new CIMSymbol({
                       ]
                     ]
                   },
-                  "symbol": {
-                    "type": "CIMPolygonSymbol",
-                    "symbolLayers": [
+                  symbol: {
+                    type: "CIMPolygonSymbol",
+                    symbolLayers: [
                       {
-                        "type": "CIMSolidFill",
-                        "enable": true,
-                        "color": [
+                        type: "CIMSolidFill",
+                        enable: true,
+                        color: [
                           255,
                           193,
                           7,
@@ -326,9 +327,11 @@ const alertSymbol = new CIMSymbol({
                   }
                 },
                 {
-                  "type": "CIMMarkerGraphic",
-                  "geometry": {
-                    "rings": [
+                  type: "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
+                  geometry: {
+                    rings: [
                       [
                         [
                           16.75,
@@ -465,18 +468,16 @@ const alertSymbol = new CIMSymbol({
                       ]
                     ]
                   },
-                  "symbol": {
-                    "type": "CIMPolygonSymbol",
-                    "symbolLayers": [
+                  symbol: {
+                    type: "CIMPolygonSymbol",
+                    symbolLayers: [
                       {
-                        "type": "CIMSolidStroke",
-                        "enable": true,
-                        "capStyle": "Butt",
-                        "joinStyle": "Miter",
-                        "lineStyle3D": "Strip",
-                        "miterLimit": 4,
-                        "width": 0.5,
-                        "color": [
+                        type: "CIMSolidStroke",
+                        enable: true,
+                        capStyle: "Butt",
+                        joinStyle: "Miter",
+                        width: 0.5,
+                        color: [
                           255,
                           255,
                           255,
@@ -487,9 +488,11 @@ const alertSymbol = new CIMSymbol({
                   }
                 },
                 {
-                  "type": "CIMMarkerGraphic",
-                  "geometry": {
-                    "rings": [
+                  type: "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
+                  geometry: {
+                    rings: [
                       [
                         [
                           8.98,
@@ -578,13 +581,13 @@ const alertSymbol = new CIMSymbol({
                       ]
                     ]
                   },
-                  "symbol": {
-                    "type": "CIMPolygonSymbol",
-                    "symbolLayers": [
+                  symbol: {
+                    type: "CIMPolygonSymbol",
+                    symbolLayers: [
                       {
-                        "type": "CIMSolidFill",
-                        "enable": true,
-                        "color": [
+                        type: "CIMSolidFill",
+                        enable: true,
+                        color: [
                           255,
                           255,
                           255,
@@ -595,9 +598,11 @@ const alertSymbol = new CIMSymbol({
                   }
                 },
                 {
-                  "type": "CIMMarkerGraphic",
-                  "geometry": {
-                    "rings": [
+                  type: "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
+                  geometry: {
+                    rings: [
                       [
                         [
                           9.59,
@@ -646,13 +651,13 @@ const alertSymbol = new CIMSymbol({
                       ]
                     ]
                   },
-                  "symbol": {
-                    "type": "CIMPolygonSymbol",
-                    "symbolLayers": [
+                  symbol: {
+                    type: "CIMPolygonSymbol",
+                    symbolLayers: [
                       {
-                        "type": "CIMSolidFill",
-                        "enable": true,
-                        "color": [
+                        type: "CIMSolidFill",
+                        enable: true,
+                        color: [
                           255,
                           255,
                           255,
@@ -663,39 +668,8 @@ const alertSymbol = new CIMSymbol({
                   }
                 }
               ],
-              "scaleSymbolsProportionally": true,
-              
-              "respectFrame": true,
-              "clippingPath": {
-                "type": "CIMClippingPath",
-                "clippingType": "Intersect",
-                "path": {
-                  "rings": [
-                    [
-                      [
-                        0,
-                        0
-                      ],
-                      [
-                        18,
-                        0
-                      ],
-                      [
-                        18,
-                        24
-                      ],
-                      [
-                        0,
-                        24
-                      ],
-                      [
-                        0,
-                        0
-                      ]
-                    ]
-                  ]
-                }
-              }
+              scaleSymbolsProportionally: true,
+              respectFrame: true,
             }
           ]
         }
@@ -704,29 +678,28 @@ const alertSymbol = new CIMSymbol({
 const alertSymbolMedium = new CIMSymbol({
     data:
     {
-        "type": "CIMSymbolReference",
-        "symbol": {
-            "type": "CIMPointSymbol",
-            "symbolLayers": [
+        type: "CIMSymbolReference",
+        symbol: {
+            type: "CIMPointSymbol",
+            symbolLayers: [
               {
-                "type": "CIMVectorMarker",
-                "enable": true,
-                "anchorPointUnits": "Relative",
-                "dominantSizeAxis3D": "Y",
-                "size": 24,
-                "offsetY": 12,//Half of symbol height
-                "billboardMode3D": "FaceNearPlane",
-                "frame": {
-                  "xmin": 0,
-                  "ymin": 0,
-                  "xmax": 18,
-                  "ymax": 24
+                type: "CIMVectorMarker",
+                enable: true,
+                size: 24,
+                offsetY: 12,//Half of symbol height
+                frame: {
+                  xmin: 0,
+                  ymin: 0,
+                  xmax: 18,
+                  ymax: 24
                 },
-                "markerGraphics": [
+                markerGraphics: [
                   {
-                    "type": "CIMMarkerGraphic",
-                    "geometry": {
-                      "rings": [
+                    type: "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
+                    geometry: {
+                      rings: [
                         [
                           [
                             15.37,
@@ -855,13 +828,13 @@ const alertSymbolMedium = new CIMSymbol({
                         ]
                       ]
                     },
-                    "symbol": {
-                      "type": "CIMPolygonSymbol",
-                      "symbolLayers": [
+                    symbol: {
+                      type: "CIMPolygonSymbol",
+                      symbolLayers: [
                         {
-                          "type": "CIMSolidFill",
-                          "enable": true,
-                          "color": [
+                          type: "CIMSolidFill",
+                          enable: true,
+                          color: [
                             255,193,7,255
                           ]
                         }
@@ -869,9 +842,11 @@ const alertSymbolMedium = new CIMSymbol({
                     }
                   },
                   {
-                    "type": "CIMMarkerGraphic",
-                    "geometry": {
-                      "rings": [
+                    type: "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
+                    geometry: {
+                      rings: [
                         [
                           [
                             9,
@@ -1008,13 +983,13 @@ const alertSymbolMedium = new CIMSymbol({
                         ]
                       ]
                     },
-                    "symbol": {
-                      "type": "CIMPolygonSymbol",
-                      "symbolLayers": [
+                    symbol: {
+                      type: "CIMPolygonSymbol",
+                      symbolLayers: [
                         {
-                          "type": "CIMSolidFill",
-                          "enable": true,
-                          "color": [
+                          type: "CIMSolidFill",
+                          enable: true,
+                          color: [
                             255,
                             106,
                             19,
@@ -1025,9 +1000,11 @@ const alertSymbolMedium = new CIMSymbol({
                     }
                   },
                   {
-                    "type": "CIMMarkerGraphic",
-                    "geometry": {
-                      "rings": [
+                    type: "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
+                    geometry: {
+                      rings: [
                         [
                           [
                             16.75,
@@ -1164,18 +1141,16 @@ const alertSymbolMedium = new CIMSymbol({
                         ]
                       ]
                     },
-                    "symbol": {
-                      "type": "CIMPolygonSymbol",
-                      "symbolLayers": [
+                    symbol: {
+                      type: "CIMPolygonSymbol",
+                      symbolLayers: [
                         {
-                          "type": "CIMSolidStroke",
-                          "enable": true,
-                          "capStyle": "Butt",
-                          "joinStyle": "Miter",
-                          "lineStyle3D": "Strip",
-                          "miterLimit": 4,
-                          "width": 0.5,
-                          "color": [
+                          type: "CIMSolidStroke",
+                          enable: true,
+                          capStyle: "Butt",
+                          joinStyle: "Miter",
+                          width: 0.5,
+                          color: [
                             255,
                             255,
                             255,
@@ -1186,9 +1161,11 @@ const alertSymbolMedium = new CIMSymbol({
                     }
                   },
                   {
-                    "type": "CIMMarkerGraphic",
-                    "geometry": {
-                      "rings": [
+                    type: "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
+                    geometry: {
+                      rings: [
                         [
                           [
                             8.98,
@@ -1277,13 +1254,13 @@ const alertSymbolMedium = new CIMSymbol({
                         ]
                       ]
                     },
-                    "symbol": {
-                      "type": "CIMPolygonSymbol",
-                      "symbolLayers": [
+                    symbol: {
+                      type: "CIMPolygonSymbol",
+                      symbolLayers: [
                         {
-                          "type": "CIMSolidFill",
-                          "enable": true,
-                          "color": [
+                          type: "CIMSolidFill",
+                          enable: true,
+                          color: [
                             255,
                             255,
                             255,
@@ -1294,9 +1271,11 @@ const alertSymbolMedium = new CIMSymbol({
                     }
                   },
                   {
-                    "type": "CIMMarkerGraphic",
-                    "geometry": {
-                      "rings": [
+                    type: "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
+                    geometry: {
+                      rings: [
                         [
                           [
                             9.59,
@@ -1345,13 +1324,13 @@ const alertSymbolMedium = new CIMSymbol({
                         ]
                       ]
                     },
-                    "symbol": {
-                      "type": "CIMPolygonSymbol",
-                      "symbolLayers": [
+                    symbol: {
+                      type: "CIMPolygonSymbol",
+                      symbolLayers: [
                         {
-                          "type": "CIMSolidFill",
-                          "enable": true,
-                          "color": [
+                          type: "CIMSolidFill",
+                          enable: true,
+                          color: [
                             255,
                             255,
                             255,
@@ -1362,39 +1341,8 @@ const alertSymbolMedium = new CIMSymbol({
                     }
                   }
                 ],
-                "scaleSymbolsProportionally": true,
-                
-                "respectFrame": true,
-                "clippingPath": {
-                  "type": "CIMClippingPath",
-                  "clippingType": "Intersect",
-                  "path": {
-                    "rings": [
-                      [
-                        [
-                          0,
-                          0
-                        ],
-                        [
-                          18,
-                          0
-                        ],
-                        [
-                          18,
-                          24
-                        ],
-                        [
-                          0,
-                          24
-                        ],
-                        [
-                          0,
-                          0
-                        ]
-                      ]
-                    ]
-                  }
-                }
+                scaleSymbolsProportionally: true,
+                respectFrame: true,
               }
             ]
           }
@@ -1402,29 +1350,28 @@ const alertSymbolMedium = new CIMSymbol({
 });const alertSymbolHigh = new CIMSymbol({
   data:
   {
-      "type": "CIMSymbolReference",
-      "symbol": {
-          "type": "CIMPointSymbol",
-          "symbolLayers": [
+      type: "CIMSymbolReference",
+      symbol: {
+          type: "CIMPointSymbol",
+          symbolLayers: [
             {
-              "type": "CIMVectorMarker",
-              "enable": true,
-              "anchorPointUnits": "Relative",
-              "dominantSizeAxis3D": "Y",
-              "size": 24,
-              "offsetY": 12,//Half of symbol height
-              "billboardMode3D": "FaceNearPlane",
-              "frame": {
-                "xmin": 0,
-                "ymin": 0,
-                "xmax": 18,
-                "ymax": 24
+              type: "CIMVectorMarker",
+              enable: true,
+              size: 24,
+              offsetY: 12,//Half of symbol height
+              frame: {
+                xmin: 0,
+                ymin: 0,
+                xmax: 18,
+                ymax: 24
               },
-              "markerGraphics": [
+              markerGraphics: [
                 {
-                  "type": "CIMMarkerGraphic",
-                  "geometry": {
-                    "rings": [
+                  type: "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
+                  geometry: {
+                    rings: [
                       [
                         [
                           15.37,
@@ -1553,13 +1500,13 @@ const alertSymbolMedium = new CIMSymbol({
                       ]
                     ]
                   },
-                  "symbol": {
-                    "type": "CIMPolygonSymbol",
-                    "symbolLayers": [
+                  symbol: {
+                    type: "CIMPolygonSymbol",
+                    symbolLayers: [
                       {
-                        "type": "CIMSolidFill",
-                        "enable": true,
-                        "color": [
+                        type: "CIMSolidFill",
+                        enable: true,
+                        color: [
                           255,
                           193,
                           7,
@@ -1570,9 +1517,11 @@ const alertSymbolMedium = new CIMSymbol({
                   }
                 },
                 {
-                  "type": "CIMMarkerGraphic",
-                  "geometry": {
-                    "rings": [
+                  type: "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
+                  geometry: {
+                    rings: [
                       [
                         [
                           9,
@@ -1709,13 +1658,13 @@ const alertSymbolMedium = new CIMSymbol({
                       ]
                     ]
                   },
-                  "symbol": {
-                    "type": "CIMPolygonSymbol",
-                    "symbolLayers": [
+                  symbol: {
+                    type: "CIMPolygonSymbol",
+                    symbolLayers: [
                       {
-                        "type": "CIMSolidFill",
-                        "enable": true,
-                        "color": [
+                        type: "CIMSolidFill",
+                        enable: true,
+                        color: [
                           220,53,69,255
                         ]
                       }
@@ -1723,9 +1672,11 @@ const alertSymbolMedium = new CIMSymbol({
                   }
                 },
                 {
-                  "type": "CIMMarkerGraphic",
-                  "geometry": {
-                    "rings": [
+                  type: "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
+                  geometry: {
+                    rings: [
                       [
                         [
                           16.75,
@@ -1862,18 +1813,16 @@ const alertSymbolMedium = new CIMSymbol({
                       ]
                     ]
                   },
-                  "symbol": {
-                    "type": "CIMPolygonSymbol",
-                    "symbolLayers": [
+                  symbol: {
+                    type: "CIMPolygonSymbol",
+                    symbolLayers: [
                       {
-                        "type": "CIMSolidStroke",
-                        "enable": true,
-                        "capStyle": "Butt",
-                        "joinStyle": "Miter",
-                        "lineStyle3D": "Strip",
-                        "miterLimit": 4,
-                        "width": 0.5,
-                        "color": [
+                        type: "CIMSolidStroke",
+                        enable: true,
+                        capStyle: "Butt",
+                        joinStyle: "Miter",
+                        width: 0.5,
+                        color: [
                           255,
                           255,
                           255,
@@ -1884,9 +1833,11 @@ const alertSymbolMedium = new CIMSymbol({
                   }
                 },
                 {
-                  "type": "CIMMarkerGraphic",
-                  "geometry": {
-                    "rings": [
+                  type: "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
+                  geometry: {
+                    rings: [
                       [
                         [
                           8.98,
@@ -1975,13 +1926,13 @@ const alertSymbolMedium = new CIMSymbol({
                       ]
                     ]
                   },
-                  "symbol": {
-                    "type": "CIMPolygonSymbol",
-                    "symbolLayers": [
+                  symbol: {
+                    type: "CIMPolygonSymbol",
+                    symbolLayers: [
                       {
-                        "type": "CIMSolidFill",
-                        "enable": true,
-                        "color": [
+                        type: "CIMSolidFill",
+                        enable: true,
+                        color: [
                           255,
                           255,
                           255,
@@ -1992,9 +1943,11 @@ const alertSymbolMedium = new CIMSymbol({
                   }
                 },
                 {
-                  "type": "CIMMarkerGraphic",
-                  "geometry": {
-                    "rings": [
+                  type: "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
+                  geometry: {
+                    rings: [
                       [
                         [
                           9.59,
@@ -2043,13 +1996,13 @@ const alertSymbolMedium = new CIMSymbol({
                       ]
                     ]
                   },
-                  "symbol": {
-                    "type": "CIMPolygonSymbol",
-                    "symbolLayers": [
+                  symbol: {
+                    type: "CIMPolygonSymbol",
+                    symbolLayers: [
                       {
-                        "type": "CIMSolidFill",
-                        "enable": true,
-                        "color": [
+                        type: "CIMSolidFill",
+                        enable: true,
+                        color: [
                           255,
                           255,
                           255,
@@ -2060,39 +2013,8 @@ const alertSymbolMedium = new CIMSymbol({
                   }
                 }
               ],
-              "scaleSymbolsProportionally": true,
-              
-              "respectFrame": true,
-              "clippingPath": {
-                "type": "CIMClippingPath",
-                "clippingType": "Intersect",
-                "path": {
-                  "rings": [
-                    [
-                      [
-                        0,
-                        0
-                      ],
-                      [
-                        18,
-                        0
-                      ],
-                      [
-                        18,
-                        24
-                      ],
-                      [
-                        0,
-                        24
-                      ],
-                      [
-                        0,
-                        0
-                      ]
-                    ]
-                  ]
-                }
-              }
+              scaleSymbolsProportionally: true,
+              respectFrame: true,
             }
           ]
         }
@@ -2101,29 +2023,31 @@ const alertSymbolMedium = new CIMSymbol({
 const alertSymbolHighest = new CIMSymbol({
   data:
   {
-      "type": "CIMSymbolReference",
-      "symbol": {
-          "type": "CIMPointSymbol",
-          "symbolLayers": [
+      type: "CIMSymbolReference",
+      symbol: {
+          type: "CIMPointSymbol",
+          symbolLayers: [
             {
-              "type": "CIMVectorMarker",
-              "enable": true,
-              "anchorPointUnits": "Relative",
-              "dominantSizeAxis3D": "Y",
-              "size": 24,
-              "offsetY": 12,//Half of symbol height
-              "billboardMode3D": "FaceNearPlane",
-              "frame": {
-                "xmin": 0,
-                "ymin": 0,
-                "xmax": 18,
-                "ymax": 24
+              type: "CIMVectorMarker",
+              enable: true,
+              
+              
+              size: 24,
+              offsetY: 12,//Half of symbol height
+              
+              frame: {
+                xmin: 0,
+                ymin: 0,
+                xmax: 18,
+                ymax: 24
               },
-              "markerGraphics": [
+              markerGraphics: [
                 {
-                  "type": "CIMMarkerGraphic",
-                  "geometry": {
-                    "rings": [
+                  type: "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
+                  geometry: {
+                    rings: [
                       [
                         [
                           15.37,
@@ -2252,13 +2176,13 @@ const alertSymbolHighest = new CIMSymbol({
                       ]
                     ]
                   },
-                  "symbol": {
-                    "type": "CIMPolygonSymbol",
-                    "symbolLayers": [
+                  symbol: {
+                    type: "CIMPolygonSymbol",
+                    symbolLayers: [
                       {
-                        "type": "CIMSolidFill",
-                        "enable": true,
-                        "color": [
+                        type: "CIMSolidFill",
+                        enable: true,
+                        color: [
                           255,
                           193,
                           7,
@@ -2269,9 +2193,11 @@ const alertSymbolHighest = new CIMSymbol({
                   }
                 },
                 {
-                  "type": "CIMMarkerGraphic",
-                  "geometry": {
-                    "rings": [
+                  type: "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
+                  geometry: {
+                    rings: [
                       [
                         [
                           9,
@@ -2408,13 +2334,13 @@ const alertSymbolHighest = new CIMSymbol({
                       ]
                     ]
                   },
-                  "symbol": {
-                    "type": "CIMPolygonSymbol",
-                    "symbolLayers": [
+                  symbol: {
+                    type: "CIMPolygonSymbol",
+                    symbolLayers: [
                       {
-                        "type": "CIMSolidFill",
-                        "enable": true,
-                        "color": [
+                        type: "CIMSolidFill",
+                        enable: true,
+                        color: [
                           179,11,0,255
                         ]
                       }
@@ -2422,9 +2348,11 @@ const alertSymbolHighest = new CIMSymbol({
                   }
                 },
                 {
-                  "type": "CIMMarkerGraphic",
-                  "geometry": {
-                    "rings": [
+                  type: "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
+                  geometry: {
+                    rings: [
                       [
                         [
                           16.75,
@@ -2561,18 +2489,18 @@ const alertSymbolHighest = new CIMSymbol({
                       ]
                     ]
                   },
-                  "symbol": {
-                    "type": "CIMPolygonSymbol",
-                    "symbolLayers": [
+                  symbol: {
+                    type: "CIMPolygonSymbol",
+                    symbolLayers: [
                       {
-                        "type": "CIMSolidStroke",
-                        "enable": true,
-                        "capStyle": "Butt",
-                        "joinStyle": "Miter",
-                        "lineStyle3D": "Strip",
-                        "miterLimit": 4,
-                        "width": 0.5,
-                        "color": [
+                        type: "CIMSolidStroke",
+                        enable: true,
+                        capStyle: "Butt",
+                        joinStyle: "Miter",
+                       
+                        
+                        width: 0.5,
+                        color: [
                           255,
                           255,
                           255,
@@ -2583,9 +2511,11 @@ const alertSymbolHighest = new CIMSymbol({
                   }
                 },
                 {
-                  "type": "CIMMarkerGraphic",
-                  "geometry": {
-                    "rings": [
+                  type: "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
+                  geometry: {
+                    rings: [
                       [
                         [
                           8.98,
@@ -2674,13 +2604,13 @@ const alertSymbolHighest = new CIMSymbol({
                       ]
                     ]
                   },
-                  "symbol": {
-                    "type": "CIMPolygonSymbol",
-                    "symbolLayers": [
+                  symbol: {
+                    type: "CIMPolygonSymbol",
+                    symbolLayers: [
                       {
-                        "type": "CIMSolidFill",
-                        "enable": true,
-                        "color": [
+                        type: "CIMSolidFill",
+                        enable: true,
+                        color: [
                           255,
                           255,
                           255,
@@ -2691,9 +2621,11 @@ const alertSymbolHighest = new CIMSymbol({
                   }
                 },
                 {
-                  "type": "CIMMarkerGraphic",
-                  "geometry": {
-                    "rings": [
+                  type: "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
+                  geometry: {
+                    rings: [
                       [
                         [
                           9.59,
@@ -2742,13 +2674,13 @@ const alertSymbolHighest = new CIMSymbol({
                       ]
                     ]
                   },
-                  "symbol": {
-                    "type": "CIMPolygonSymbol",
-                    "symbolLayers": [
+                  symbol: {
+                    type: "CIMPolygonSymbol",
+                    symbolLayers: [
                       {
-                        "type": "CIMSolidFill",
-                        "enable": true,
-                        "color": [
+                        type: "CIMSolidFill",
+                        enable: true,
+                        color: [
                           255,
                           255,
                           255,
@@ -2759,39 +2691,8 @@ const alertSymbolHighest = new CIMSymbol({
                   }
                 }
               ],
-              "scaleSymbolsProportionally": true,
-              
-              "respectFrame": true,
-              "clippingPath": {
-                "type": "CIMClippingPath",
-                "clippingType": "Intersect",
-                "path": {
-                  "rings": [
-                    [
-                      [
-                        0,
-                        0
-                      ],
-                      [
-                        18,
-                        0
-                      ],
-                      [
-                        18,
-                        24
-                      ],
-                      [
-                        0,
-                        24
-                      ],
-                      [
-                        0,
-                        0
-                      ]
-                    ]
-                  ]
-                }
-              }
+              scaleSymbolsProportionally: true,
+              respectFrame: true,
             }
           ]
         }
@@ -2800,29 +2701,31 @@ const alertSymbolHighest = new CIMSymbol({
 const roadClosedSymbol = new CIMSymbol({
   data:
   {
-      "type": "CIMSymbolReference",
-      "symbol": {
-          "type": "CIMPointSymbol",
-          "symbolLayers": [
+      type: "CIMSymbolReference",
+      symbol: {
+          type: "CIMPointSymbol",
+          symbolLayers: [
             {
-              "type": "CIMVectorMarker",
-              "enable": true,
-              "anchorPointUnits": "Relative",
-              "dominantSizeAxis3D": "Y",
-              "size": 24,
-              "offsetY": 12,//Half of symbol height
-              "billboardMode3D": "FaceNearPlane",
-              "frame": {
-                "xmin": 0,
-                "ymin": 0,
-                "xmax": 18,
-                "ymax": 24
+              type: "CIMVectorMarker",
+              enable: true,
+              
+              
+              size: 24,
+              offsetY: 12,//Half of symbol height
+              
+              frame: {
+                xmin: 0,
+                ymin: 0,
+                xmax: 18,
+                ymax: 24
               },
-              "markerGraphics": [
+              markerGraphics: [
                 {
-                  "type": "CIMMarkerGraphic",
-                  "geometry": {
-                    "rings": [
+                  type: "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
+                  geometry: {
+                    rings: [
                       [
                         [
                           15.37,
@@ -2951,13 +2854,13 @@ const roadClosedSymbol = new CIMSymbol({
                       ]
                     ]
                   },
-                  "symbol": {
-                    "type": "CIMPolygonSymbol",
-                    "symbolLayers": [
+                  symbol: {
+                    type: "CIMPolygonSymbol",
+                    symbolLayers: [
                       {
-                        "type": "CIMSolidFill",
-                        "enable": true,
-                        "color": [
+                        type: "CIMSolidFill",
+                        enable: true,
+                        color: [
                           255,
                           193,
                           7,
@@ -2968,9 +2871,11 @@ const roadClosedSymbol = new CIMSymbol({
                   }
                 },
                 {
-                  "type": "CIMMarkerGraphic",
-                  "geometry": {
-                    "rings": [
+                  type: "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
+                  geometry: {
+                    rings: [
                       [
                         [
                           9,
@@ -3107,13 +3012,13 @@ const roadClosedSymbol = new CIMSymbol({
                       ]
                     ]
                   },
-                  "symbol": {
-                    "type": "CIMPolygonSymbol",
-                    "symbolLayers": [
+                  symbol: {
+                    type: "CIMPolygonSymbol",
+                    symbolLayers: [
                       {
-                        "type": "CIMSolidFill",
-                        "enable": true,
-                        "color": [
+                        type: "CIMSolidFill",
+                        enable: true,
+                        color: [
                           29,37,45,
                           255
                         ]
@@ -3122,9 +3027,11 @@ const roadClosedSymbol = new CIMSymbol({
                   }
                 },
                 {
-                  "type": "CIMMarkerGraphic",
-                  "geometry": {
-                    "rings": [
+                  type: "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
+                  geometry: {
+                    rings: [
                       [
                         [
                           16.75,
@@ -3261,18 +3168,18 @@ const roadClosedSymbol = new CIMSymbol({
                       ]
                     ]
                   },
-                  "symbol": {
-                    "type": "CIMPolygonSymbol",
-                    "symbolLayers": [
+                  symbol: {
+                    type: "CIMPolygonSymbol",
+                    symbolLayers: [
                       {
-                        "type": "CIMSolidStroke",
-                        "enable": true,
-                        "capStyle": "Butt",
-                        "joinStyle": "Miter",
-                        "lineStyle3D": "Strip",
-                        "miterLimit": 4,
-                        "width": 0.5,
-                        "color": [
+                        type: "CIMSolidStroke",
+                        enable: true,
+                        capStyle: "Butt",
+                        joinStyle: "Miter",
+                       
+                        
+                        width: 0.5,
+                        color: [
                           255,
                           255,
                           255,
@@ -3283,9 +3190,11 @@ const roadClosedSymbol = new CIMSymbol({
                   }
                 },
                 {
-                  "type": "CIMMarkerGraphic",
-                  "geometry": {
-                    "rings": [
+                  type: "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
+                  geometry: {
+                    rings: [
                       [
                         [
                           8.98,
@@ -3374,13 +3283,13 @@ const roadClosedSymbol = new CIMSymbol({
                       ]
                     ]
                   },
-                  "symbol": {
-                    "type": "CIMPolygonSymbol",
-                    "symbolLayers": [
+                  symbol: {
+                    type: "CIMPolygonSymbol",
+                    symbolLayers: [
                       {
-                        "type": "CIMSolidFill",
-                        "enable": true,
-                        "color": [
+                        type: "CIMSolidFill",
+                        enable: true,
+                        color: [
                           255,
                           255,
                           255,
@@ -3391,9 +3300,11 @@ const roadClosedSymbol = new CIMSymbol({
                   }
                 },
                 {
-                  "type": "CIMMarkerGraphic",
-                  "geometry": {
-                    "rings": [
+                  type: "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
+                  geometry: {
+                    rings: [
                       [
                         [
                           9.59,
@@ -3442,13 +3353,13 @@ const roadClosedSymbol = new CIMSymbol({
                       ]
                     ]
                   },
-                  "symbol": {
-                    "type": "CIMPolygonSymbol",
-                    "symbolLayers": [
+                  symbol: {
+                    type: "CIMPolygonSymbol",
+                    symbolLayers: [
                       {
-                        "type": "CIMSolidFill",
-                        "enable": true,
-                        "color": [
+                        type: "CIMSolidFill",
+                        enable: true,
+                        color: [
                           255,
                           255,
                           255,
@@ -3459,39 +3370,8 @@ const roadClosedSymbol = new CIMSymbol({
                   }
                 }
               ],
-              "scaleSymbolsProportionally": true,
-              
-              "respectFrame": true,
-              "clippingPath": {
-                "type": "CIMClippingPath",
-                "clippingType": "Intersect",
-                "path": {
-                  "rings": [
-                    [
-                      [
-                        0,
-                        0
-                      ],
-                      [
-                        18,
-                        0
-                      ],
-                      [
-                        18,
-                        24
-                      ],
-                      [
-                        0,
-                        24
-                      ],
-                      [
-                        0,
-                        0
-                      ]
-                    ]
-                  ]
-                }
-              }
+              scaleSymbolsProportionally: true,
+              respectFrame: true
             }
           ]
         }

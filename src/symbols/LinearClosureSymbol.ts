@@ -22,7 +22,7 @@ const linearCIMClosureSymbol = new CIMSymbol({
               type: "CIMGeometricEffectDashes",
               dashTemplate: [10, 20], // width of dashes and spacing between the dashes
               lineDashEnding: "NoConstraint",
-              controlPointEnding: "NoConstraint"
+              offsetAlongLine: 0
             },
           ],
           enable: true, // must be set to true in order for the symbol layer to be visible

@@ -6,7 +6,8 @@
         "dbaeumer.vscode-eslint",
         "streetsidesoftware.code-spell-checker",
         "ms-azure-devops.azure-pipelines",
-        "ni.azdo-wiki-md"
+        "ni.azdo-wiki-md",
+        "maptz.regionfolder"
     ],
     "unwantedRecommendations": [
         "octref.vetur"

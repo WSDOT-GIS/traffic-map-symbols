@@ -10,15 +10,14 @@ const symbol = new CIMSymbol({
         {
           "type": "CIMVectorMarker",
           "enable": true,
-          "anchorPointUnits": "Relative",
-          "dominantSizeAxis3D": "Y",
+          
           "size": 24,
           "offsetY": 12,
           "anchorPoint": {
             "x": 0,
             "y": .11
           },
-          "billboardMode3D": "FaceNearPlane",
+          
           "frame": {
             "xmin": 0,
             "ymin": 0,
@@ -28,6 +27,8 @@ const symbol = new CIMSymbol({
           "markerGraphics": [
             {
               "type": "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
               "geometry": {
                 "rings": [
                   [
@@ -176,6 +177,8 @@ const symbol = new CIMSymbol({
             },
             {
               "type": "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
               "geometry": {
                 "rings": [
                   [
@@ -348,6 +351,8 @@ const symbol = new CIMSymbol({
             },
             {
               "type": "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
               "geometry": {
                 "rings": [
                   [
@@ -510,8 +515,6 @@ const symbol = new CIMSymbol({
                     "enable": true,
                     "capStyle": "Butt",
                     "joinStyle": "Miter",
-                    "lineStyle3D": "Strip",
-                    "miterLimit": 4,
                     "width": 0.5,
                     "color": [
                       255,
@@ -525,6 +528,8 @@ const symbol = new CIMSymbol({
             },
             {
               "type": "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
               "geometry": {
                 "x": 0,
                 "y": 0
@@ -535,12 +540,10 @@ const symbol = new CIMSymbol({
                   {
                     "type": "CIMVectorMarker",
                     "enable": true,
-                    "anchorPointUnits": "Relative",
-                    "dominantSizeAxis3D": "Z",
                     "offsetX": 9,
                     "offsetY": 12,
                     "size": 24,
-                    "billboardMode3D": "FaceNearPlane",
+                    
                     "frame": {
                       "xmin": 0,
                       "ymin": 0,
@@ -550,6 +553,8 @@ const symbol = new CIMSymbol({
                     "markerGraphics": [
                       {
                         "type": "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
                         "geometry": {
                           "x": 0,
                           "y": 0
@@ -560,12 +565,10 @@ const symbol = new CIMSymbol({
                             {
                               "type": "CIMVectorMarker",
                               "enable": true,
-                              "anchorPointUnits": "Relative",
-                              "dominantSizeAxis3D": "Z",
                               "offsetX": 9,
                               "offsetY": 12,
                               "size": 24,
-                              "billboardMode3D": "FaceNearPlane",
+                              
                               "frame": {
                                 "xmin": 0,
                                 "ymin": 0,
@@ -575,6 +578,8 @@ const symbol = new CIMSymbol({
                               "markerGraphics": [
                                 {
                                   "type": "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
                                   "geometry": {
                                     "rings": [
                                       [
@@ -635,6 +640,8 @@ const symbol = new CIMSymbol({
                                 },
                                 {
                                   "type": "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
                                   "geometry": {
                                     "rings": [
                                       [
@@ -699,6 +706,8 @@ const symbol = new CIMSymbol({
                                 },
                                 {
                                   "type": "CIMMarkerGraphic",
+                  textString:'',
+                  primitiveName:'',
                                   "geometry": {
                                     "rings": [
                                       [
@@ -870,41 +879,9 @@ const symbol = new CIMSymbol({
                               ],
                               "scaleSymbolsProportionally": true,
                               "respectFrame": true,
-                              "clippingPath": {
-                                "type": "CIMClippingPath",
-                                "clippingType": "Intersect",
-                                "path": {
-                                  "rings": [
-                                    [
-                                      [
-                                        0,
-                                        13.33
-                                      ],
-                                      [
-                                        10.67,
-                                        13.33
-                                      ],
-                                      [
-                                        10.67,
-                                        24
-                                      ],
-                                      [
-                                        0,
-                                        24
-                                      ],
-                                      [
-                                        0,
-                                        13.33
-                                      ]
-                                    ]
-                                  ]
-                                }
-                              }
                             }
                           ],
-                          "haloSize": 1,
                           "scaleX": 1,
-                          "angleAlignment": "Display"
                         }
                       }
                     ],
@@ -912,46 +889,12 @@ const symbol = new CIMSymbol({
                     "respectFrame": true
                   }
                 ],
-                "haloSize": 1,
                 "scaleX": 1,
-                "angleAlignment": "Display"
               }
             }
           ],
           "scaleSymbolsProportionally": true,
           "respectFrame": true,
-          "clippingPath": {
-            "type": "CIMClippingPath",
-            "clippingType": "Intersect",
-            "path": {
-              "rings": [
-                [
-                  [
-                    0,
-                    0
-                  ],
-                  [
-                    18,
-                    0
-                  ],
-                  [
-                    18,
-                    24
-                  ],
-                  [
-                    0,
-                    24
-                  ],
-                  [
-                    0,
-                    0
-                  ]
-                ]
-              ]
-            }
-          },
-
-
         }
       ]
     }
