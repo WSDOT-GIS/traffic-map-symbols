@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, ref, computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "@/store";
 import { project } from "@arcgis/core/geometry/projection";
@@ -21,7 +21,7 @@ import {
   getFeatureIdFromUrl,
   getFeatureTypeFromUrl,
 } from "@/utils/urlParamUtil";
-import { getFeature } from "@/utils/layerUtil";
+import { getFeature, updateScaleDependentRendering } from "@/utils/layerUtil";
 import {
   removeGraphicsByType,
   hidePointInteractionGraphics,
@@ -411,6 +411,10 @@ export default defineComponent({
           .catch((err) => {
             console.error(err.message);
           });
+      });
+      /*Set scale dependent rendering */
+      watch(()=>store.state.scale, (scale)=> {
+        updateScaleDependentRendering(RoadClosuresLayer() as FeatureLayer, scale as number)
       });
       /* Set layer list here before the rest of the map is ready, so we can show the layer list UI early.
        * Otherwise user will see a map without layer list until everything is ready. */
