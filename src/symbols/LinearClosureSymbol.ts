@@ -12,14 +12,12 @@ const linearCIMClosureSymbol = new CIMSymbol({
               type: "CIMGeometricEffectDashes",
               dashTemplate: [20, 20], // width of dashes and spacing between the dashes
               lineDashEnding: "NoConstraint",
-              controlPointEnding: "NoConstraint"
+              offsetAlongLine: 0
             }
           ],
           "enable": true,
           "capStyle": "Butt",
           "joinStyle": "Round",
-          "lineStyle3D": "Strip",
-          "miterLimit": 10,
           "width": 5.3,
           "color": [
             0,
@@ -34,8 +32,6 @@ const linearCIMClosureSymbol = new CIMSymbol({
           "colorLocked": true,
           "capStyle": "Butt",
           "joinStyle": "Round",
-          "lineStyle3D": "Strip",
-          "miterLimit": 10,
           "width": 4.6,
           "color": [
             255,
@@ -49,8 +45,6 @@ const linearCIMClosureSymbol = new CIMSymbol({
           "enable": true,
           "capStyle": "Butt",
           "joinStyle": "Round",
-          "lineStyle3D": "Strip",
-          "miterLimit": 10,
           "width": 5,
           "color": [
             0,
@@ -105,6 +99,8 @@ const linearCIMClosureIncreasing = new CIMSymbol({
           },
           markerGraphics: [{
             type: "CIMMarkerGraphic",
+            textString:"",
+            primitiveName:"",
             geometry: {
               rings: [
                 [
@@ -179,7 +175,7 @@ const linearCIMClosureDecreasing = new CIMSymbol({
               type: "CIMGeometricEffectDashes",
               dashTemplate: [20, 20], // width of dashes and spacing between the dashes
               lineDashEnding: "NoConstraint",
-              controlPointEnding: "NoConstraint"
+              offsetAlongLine: 0
             },
           ],
           enable: true, // must be set to true in order for the symbol layer to be visible
@@ -207,6 +203,8 @@ const linearCIMClosureDecreasing = new CIMSymbol({
           },
           markerGraphics: [{
             type: "CIMMarkerGraphic",
+            textString:"",
+            primitiveName:"",
             geometry: {
               rings: [
                 [
@@ -281,7 +279,8 @@ const linearCIMClosureBoth = new CIMSymbol({
               type: "CIMGeometricEffectDashes",
               dashTemplate: [20, 20], // width of dashes and spacing between the dashes
               lineDashEnding: "NoConstraint",
-              controlPointEnding: "NoConstraint"
+              
+              offsetAlongLine: 0
             },
           ],
           enable: true, // must be set to true in order for the symbol layer to be visible
@@ -309,6 +308,8 @@ const linearCIMClosureBoth = new CIMSymbol({
           },
           markerGraphics: [{
             type: "CIMMarkerGraphic",
+            textString:"",
+            primitiveName:"",
             geometry: {
               rings: [
                 [
@@ -366,6 +367,8 @@ const linearCIMClosureBoth = new CIMSymbol({
           },
           markerGraphics: [{
             type: "CIMMarkerGraphic",
+            textString:"",
+            primitiveName:"",
             geometry: {
               rings: [
                 [
