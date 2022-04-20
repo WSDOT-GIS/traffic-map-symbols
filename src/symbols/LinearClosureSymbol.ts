@@ -279,7 +279,6 @@ const linearCIMClosureBoth = new CIMSymbol({
               type: "CIMGeometricEffectDashes",
               dashTemplate: [20, 20], // width of dashes and spacing between the dashes
               lineDashEnding: "NoConstraint",
-              
               offsetAlongLine: 0
             },
           ],

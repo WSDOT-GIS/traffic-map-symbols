@@ -615,7 +615,8 @@ export const addOutOfExtentLayer = (): void => {
         style: "solid",
         color: [256, 256, 256, 0.95],
         outline: {
-            style: "none"
+            style: "solid",
+            color: [256, 256, 256, 0.95],
         }
     });
     const geoms = extentUtil.getOutOfExtentPolygons();
