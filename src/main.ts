@@ -1,22 +1,29 @@
-import { createApp } from 'vue'
-import {detectGoOrange} from './utils/themeUtil'
-import router from './router';
-import App from './App.vue'
-import VueClickAway from "vue3-click-away";
-import { ApplicationInsights } from '@microsoft/applicationinsights-web'
+//#region import css
 import "./assets/global.css"
 import "./assets/w3.css"
 import "./assets/main.css" // WATECH CSS
 // import "./assets/sidr.css" // WATECH CSS
+//#endregion
+//#region import vue stuff
+import router from './router';
+import App from './App.vue'
+import { createApp } from 'vue'
+import VueClickAway from "vue3-click-away";
 import { store, key } from "./store";
-import { loadConfig } from "./utils/appConfigUtil";
+//#endregion
+//#region import third party packages
+import { ApplicationInsights } from '@microsoft/applicationinsights-web'
 import Toast, { POSITION } from "vue-toastification";
-// Import the CSS or use your own!
 import "vue-toastification/dist/index.css";
+//#endregion
+//#region import utils
+import {detectGoOrange} from './utils/themeUtil'
+import { loadConfig } from "./utils/appConfigUtil";
 import { createLayerGroupInfos } from "./utils/layerUtil";
-
+//#endregion
 // Load config before app starts...
 loadConfig().then((appConfig) => {
+    //#region set theme and relevant colors
     detectGoOrange().then((goOrangeResponse)=>{//apply go orange theme
         if(goOrangeResponse){
             document.documentElement.style.setProperty('--color-primaryBrand100', '#FF6A13')
@@ -26,16 +33,8 @@ loadConfig().then((appConfig) => {
             store.commit("setTheme","Go Orange")
         }
     })
-    /*switch(appConfig.appTheme){//set theme colors
-        case 'Go Orange':
-            document.documentElement.style.setProperty('--color-primaryBrand100', '#FF6A13')
-            document.documentElement.style.setProperty('--color-primaryBrand80', '#FF8842')
-            document.documentElement.style.setProperty('--color-footerBackground', '#FF8F4E')
-            document.documentElement.style.setProperty('--color-themeText', '#1d252dE')
-            break
-        default:
-            break
-    }*/
+    //#endregion
+    //#region track app using MS Applicaton Insights
     const appInsights = new ApplicationInsights(
         {
             config: {
@@ -48,7 +47,7 @@ loadConfig().then((appConfig) => {
         })
     appInsights.loadAppInsights()
     appInsights.trackPageView()
-    //
+    //#endregion
     createLayerGroupInfos(appConfig);
     // adding store as a plugin while creating an app...
     const app = createApp(App)

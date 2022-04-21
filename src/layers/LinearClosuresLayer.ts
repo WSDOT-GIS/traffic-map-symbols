@@ -33,8 +33,8 @@ export const directionalClosuresRenderer = new UniqueValueRenderer({
             symbol: linearCIMClosureIncreasing
         },
         {
-            label: "Both",
-            value: "Both",
+            label: "Both Directions",
+            value: "Both Directions",
             symbol: linearCIMClosureBoth
 
         }
