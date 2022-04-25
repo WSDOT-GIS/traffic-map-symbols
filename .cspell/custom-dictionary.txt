@@ -4,6 +4,7 @@ Basemap
 Basemaps
 Featureset
 jsdoc
+lods
 multipoint
 pluggable
 pwsh
@@ -11,5 +12,10 @@ splidejs
 toastification
 vuex
 webmap
+Wilsonville
 wkid
 WSDOT
+xmax
+xmin
+ymax
+ymin

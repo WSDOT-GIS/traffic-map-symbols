@@ -54,10 +54,11 @@ export default defineComponent({
     const onClose = () => {
       context.emit("close-save-map-form");
     };
+    // eslint-disable-next-line jsdoc/require-param
     /**
-     *     Support for pressing Enter key to save...
+     * Support for pressing Enter key to save...
      *
-     * @param event
+     * @param event Keyboard event.
      */
     const onKeyUp = (event: KeyboardEvent) => {
       /** keyCode property is deprecated, but not necessary supported,

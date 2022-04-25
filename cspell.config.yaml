@@ -17,6 +17,7 @@ ignoreWords:
   - browserslist
   - browserslistrc
   - doubleclick
+  - geoms
   - lyrs
   - netconfig
   - npmrc
@@ -24,4 +25,5 @@ ignoreWords:
   - restarea
   - scripthost
   - splide
+  - tsbuildinfo
 import: []
