@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, onMounted, ref, computed, watch } from "vue";
+import { defineComponent, onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "@/store";
 import { project } from "@arcgis/core/geometry/projection";
@@ -45,7 +45,7 @@ import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
 import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
 import MountainPassesLayer from "@/layers/MountainPassesLayer";
 import RoadAlertsLayer from "@/layers/RoadAlertsLayer";
-import RoadClosuresLayer from "@/layers/LinearClosuresLayer"
+import RoadClosuresLayer from "@/layers/LinearClosuresLayer";
 import RestAreasLayer from "@/layers/RestAreasLayer";
 import FireIncidentLayer from "@/layers/FireIncidentLayer";
 import RoadsReferenceLayer from "@/layers/RoadsReferenceLayer";
@@ -173,7 +173,7 @@ export default defineComponent({
       esriMap: typeof import("../esri-stuff/esriMap")
     ) => {
       const lyrs = esriMap.validateLayerList([
-       // RoadClosuresLayer(),
+        // RoadClosuresLayer(),
         ParkRideLayer(),
         CameraLayer(),
         PointRestrictionsLayer(),
@@ -298,7 +298,7 @@ export default defineComponent({
                 }
                 // Not aggregate...
                 const id = g.getObjectId();
-                // get lines for restriciton point click
+                // get lines for restriction point click
                 if (
                   g.layer.id === "point-restrictions-layer" ||
                   g.layer.id === "road-alerts-layer"
@@ -322,11 +322,10 @@ export default defineComponent({
                           esriMap.webmap,
                           "EventID",
                           result?.attributes.EventID
-                        )
-                        showPopup(results2Show.layer.id, [id])
+                        );
+                        showPopup(results2Show.layer.id, [id]);
                       }
-                    }
-                    else {
+                    } else {
                       showPopup(results2Show.layer.id, [id]);
                     }
                   });
@@ -375,7 +374,7 @@ export default defineComponent({
       });
       esriMap.mapView.on("layerview-create-error", (event) => {
         store.commit("addServiceAlert", event.layer.title);
-      })
+      });
       // Set basemap based on URL query parameter or display default...
       await initBasemap(appConfig.basemap);
       const basemapInfo = getBasemapFromUrl();
@@ -413,9 +412,12 @@ export default defineComponent({
           });
       });
       /*Set scale dependent rendering */
-      watch(()=>store.state.scale, (scale)=> {
-        updateScaleDependentRendering(RoadClosuresLayer() as FeatureLayer, scale as number)
-      });
+      watch(
+        () => store.state.scale,
+        (scale) => {
+          updateScaleDependentRendering(RoadClosuresLayer() as FeatureLayer, scale as number);
+        }
+      );
       /* Set layer list here before the rest of the map is ready, so we can show the layer list UI early.
        * Otherwise user will see a map without layer list until everything is ready. */
       store.dispatch("updateLayerVisibility");
@@ -523,7 +525,7 @@ export default defineComponent({
       }
       // Pointer move event handler...
       esriMap.mapView.on(["pointer-move"], (event) => {
-        // Update current poitner x/y in the store...
+        // Update current pointer x/y in the store...
         let pt = esriMap.mapView.toMap({ x: event.x, y: event.y });
         store.commit("setPointerX", pt.longitude);
         store.commit("setPointerY", pt.latitude);
@@ -632,7 +634,7 @@ export default defineComponent({
     /**
      * Display error message
      *
-     * @param event
+     * @param event An event
      */
     const displayToast = (event: any) => {
       if (event[0] == false) {
