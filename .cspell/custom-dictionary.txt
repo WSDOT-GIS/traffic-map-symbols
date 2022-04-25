@@ -1,0 +1,15 @@
+# Custom Dictionary Words
+ArcGIS
+Basemap
+Basemaps
+Featureset
+jsdoc
+multipoint
+pluggable
+pwsh
+splidejs
+toastification
+vuex
+webmap
+wkid
+WSDOT

@@ -1,24 +1,27 @@
 version: "0.2"
+allowCompoundWords: true
 ignorePaths:
   - wsdot-devops-pipeline-yaml-schema.json
   - package.json
   - package-lock-json
-dictionaryDefinitions: []
-dictionaries: []
-words:
-  - ArcGIS
-  - multipoint
-  - pwsh
-  - wkid
-  - WSDOT
+dictionaryDefinitions:
+  - name: custom-dictionary
+    path: ./.cspell/custom-dictionary.txt
+    addWords: true
+    scope: null
+dictionaries:
+  - custom-dictionary
+words: []
 ignoreWords:
   - ERESOLVE
   - browserslist
   - browserslistrc
   - doubleclick
+  - lyrs
   - netconfig
   - npmrc
   - parkride
   - restarea
   - scripthost
+  - splide
 import: []
