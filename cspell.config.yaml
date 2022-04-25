@@ -1,21 +1,24 @@
 version: "0.2"
-ignorePaths: 
+ignorePaths:
   - wsdot-devops-pipeline-yaml-schema.json
   - package.json
   - package-lock-json
-
 dictionaryDefinitions: []
 dictionaries: []
 words:
   - ArcGIS
+  - multipoint
   - pwsh
+  - wkid
   - WSDOT
 ignoreWords:
   - ERESOLVE
-  - npmrc
-  - netconfig
+  - browserslist
   - browserslistrc
   - doubleclick
-  - browserslist
+  - netconfig
+  - npmrc
+  - parkride
+  - restarea
   - scripthost
 import: []
