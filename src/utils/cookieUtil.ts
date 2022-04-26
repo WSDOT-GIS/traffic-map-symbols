@@ -1,24 +1,35 @@
+/**
+ * Utilities for dealing with cookies.
+ */
+
+
+
 const maxDays = 3650;
 
 /**
- * @param name
- * @param val
+ * Sets a cookie
+ * 
+ * @param name name
+ * @param val value
  */
 export const setCookie = (name: string, val: string): void => {
     const date = new Date();
     // Set it expire in days
     date.setTime(date.getTime() + (maxDays * 24 * 60 * 60 * 1000));
     // Set it
-    document.cookie = name + "=" + val + "; expires=" + date.toUTCString() + "; path=/";
+    document.cookie = `${name}=${val}; expires=${date.toUTCString()}; path=/`;
     
 }
 
 /**
- * @param name
+ * Gets a cookie matching the given name.
+ * 
+ * @param name Name of cookie.
+ * @returns a string of the value corresponding to the given name.
  */
 export const getCookie = (name: string): string => {
-    const value = "; " + document.cookie;
-    const parts = value.split("; " + name + "=");
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
     let cookieValue = "";
     if (parts.length == 2) {
         const partsPop = parts.pop();
@@ -31,7 +42,10 @@ export const getCookie = (name: string): string => {
 }
 
 /**
- * @param name
+ * Checks to see if a cookie for the given name exits.
+ * 
+ * @param name A cookie name
+ * @returns A boolean value indicating if the cookie exists.
  */
 export const checkCookie = (name: string): boolean => {
     if (getCookie(name)) return true;
@@ -39,7 +53,9 @@ export const checkCookie = (name: string): boolean => {
 }
 
 /**
- * @param name
+ * Deletes the cookie corresponding to the input name.
+ * 
+ * @param name The name of the cookie to delete.
  */
 export const deleteCookie = (name: string): void => {
     const date = new Date();
@@ -48,7 +64,7 @@ export const deleteCookie = (name: string): void => {
     date.setTime(date.getTime() + (-1 * 24 * 60 * 60 * 1000));
 
     // Set it
-    document.cookie = name + "=; expires=" + date.toUTCString() + "; path=/";
+    document.cookie = `${name}=; expires=${date.toUTCString()}; path=/`;
 }
 
 // const getBytes = (val: string): number => {
