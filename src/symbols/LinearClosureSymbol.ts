@@ -10,7 +10,7 @@ const linearCIMClosureSymbol = new CIMSymbol({
           effects: [
             {
               type: "CIMGeometricEffectDashes",
-              dashTemplate: [20, 20], // width of dashes and spacing between the dashes
+              dashTemplate: [30, 30], // width of dashes and spacing between the dashes
               lineDashEnding: "NoConstraint",
               offsetAlongLine: 0
             }
@@ -69,7 +69,7 @@ const linearCIMClosureIncreasing = new CIMSymbol({
           effects: [
             {
               type: "CIMGeometricEffectDashes",
-              dashTemplate: [20, 20], // width of dashes and spacing between the dashes
+              dashTemplate: [30, 30], // width of dashes and spacing between the dashes
               lineDashEnding: "NoConstraint",
               offsetAlongLine: 0
             },
@@ -88,7 +88,7 @@ const linearCIMClosureIncreasing = new CIMSymbol({
           markerPlacement: {
             type: "CIMMarkerPlacementAlongLineSameSize", // places same size markers along the line
             offsetAlongLine: 10,
-            placementTemplate: [20], // determines space between each arrow
+            placementTemplate: [30], // determines space between each arrow
             angleToLine: true // symbol will maintain its angle to the line when map is rotated
           },
           frame: {
@@ -173,7 +173,7 @@ const linearCIMClosureDecreasing = new CIMSymbol({
           effects: [
             {
               type: "CIMGeometricEffectDashes",
-              dashTemplate: [20, 20], // width of dashes and spacing between the dashes
+              dashTemplate: [30, 30], // width of dashes and spacing between the dashes
               lineDashEnding: "NoConstraint",
               offsetAlongLine: 0
             },
@@ -192,7 +192,7 @@ const linearCIMClosureDecreasing = new CIMSymbol({
           markerPlacement: {
             type: "CIMMarkerPlacementAlongLineSameSize", // places same size markers along the line
             offsetAlongLine: 10,
-            placementTemplate: [20], // determines space between each arrow
+            placementTemplate: [30], // determines space between each arrow
             angleToLine: true // symbol will maintain its angle to the line when map is rotated
           },
           frame: {
@@ -277,7 +277,7 @@ const linearCIMClosureBoth = new CIMSymbol({
           effects: [
             {
               type: "CIMGeometricEffectDashes",
-              dashTemplate: [20, 20], // width of dashes and spacing between the dashes
+              dashTemplate: [30, 30], // width of dashes and spacing between the dashes
               lineDashEnding: "NoConstraint",
               offsetAlongLine: 0
             },
@@ -296,7 +296,7 @@ const linearCIMClosureBoth = new CIMSymbol({
           markerPlacement: {
             type: "CIMMarkerPlacementAlongLineSameSize", // places same size markers along the line
             offsetAlongLine: 10,
-            placementTemplate: [20], // determines space between each arrow
+            placementTemplate: [30, 30], // determines space between each arrow
             angleToLine: true // symbol will maintain its angle to the line when map is rotated
           },
           frame: {
@@ -355,7 +355,7 @@ const linearCIMClosureBoth = new CIMSymbol({
           markerPlacement: {
             type: "CIMMarkerPlacementAlongLineSameSize", // places same size markers along the line
             offsetAlongLine: 10,
-            placementTemplate: [20], // determines space between each arrow
+            placementTemplate: [30, 30], // determines space between each arrow
             angleToLine: true // symbol will maintain its angle to the line when map is rotated
           },
           frame: {
