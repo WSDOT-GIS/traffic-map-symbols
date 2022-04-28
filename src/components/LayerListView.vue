@@ -334,16 +334,16 @@ export default defineComponent({
   text-align: left;
 }
 #slowLegendCell {
-  background-color: #c80000;
+  background-color: #e6002e;
 }
 #slowMediumLegendCell {
-  background-color: #ffaa00;
+  background-color: #ec8d00;
 }
 #mediumFastLegendCell {
-  background-color: #ffff00;
+  background-color: #e9d14c;
 }
 #fastLegendCell {
-  background-color: #00d700;
+  background-color: #6dccac;
 }
 .trafficLegendSymbolDiv {
   height: 8px;
