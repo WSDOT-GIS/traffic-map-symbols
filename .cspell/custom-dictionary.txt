@@ -3,12 +3,14 @@ ArcGIS
 Basemap
 Basemaps
 brotli
+deconfliction
 Divs
 Featureset
 id
 jsdoc
 lods
 multipoint
+Noto
 pluggable
 pwsh
 sodipodi
@@ -16,6 +18,7 @@ splidejs
 srid
 srmp
 toastification
+ttype
 vuex
 watech
 webmap

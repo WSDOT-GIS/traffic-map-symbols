@@ -8,7 +8,7 @@
           <td><img class="loadingSpinner" src="@/assets/loadingSpinner.gif"></td>
         </tr>
         <tr>
-          <td><label class="setupLabel">{{initiaizingMessage}}</label></td>
+          <td><label class="setupLabel">{{initializingMessage}}</label></td>
         </tr>
       </table>
     </div> 
@@ -49,7 +49,7 @@ export default defineComponent({
       displayStyle,
     };
   },
-  computed: mapState(["initiaizingMessage"]),
+  computed: mapState(["initializingMessage"]),
 });
 </script>
 

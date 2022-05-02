@@ -95,11 +95,12 @@ export const getFeatureById = async (eventId: number): Promise<Graphic | undefin
 }
 /**
  * Get the center of the visible part of the alert polygon.
- * NOTE: Using polygon-cripping package instead of ESRI to reduce the initial file size.
+ * NOTE: Using polygon-clipping package instead of ESRI to reduce the initial file size.
  *
- * @param eventId 
- * @param visibleExtent 
- * @returns 
+ * @param eventId Event ID
+ * @param visibleExtent Visible Extent
+ * @returns Returns the centroid of the polygon that intersects the feature specified by the {@link eventId}.
+ * If there is no feature matching {@link eventId}, then undefined is returned.
  */
 export const getVisibleCenter = async (eventId: number, visibleExtent: Extent): Promise<Point | undefined> => {
     const g = await getFeatureById(eventId);

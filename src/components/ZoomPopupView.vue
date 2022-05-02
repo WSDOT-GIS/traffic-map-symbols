@@ -19,7 +19,7 @@ export default defineComponent({
   props: {
     Visible: {
       type: Boolean,
-      requied: true,
+      required: true,
     },
     PositionX: {
       type: Number,

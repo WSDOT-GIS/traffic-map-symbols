@@ -84,7 +84,7 @@ export default defineComponent({
             numF = num;
             numC = Math.ceil((num - 32) * 0.5556);
             break;
-          case "Celcius" as string:
+          case "Celcius" as string: // cspell: disable-line
             numC = num;
             numF = Math.ceil(num * 1.8 + 32);
             break;

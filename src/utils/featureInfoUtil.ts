@@ -14,8 +14,8 @@ import FeatureSet from "@arcgis/core/tasks/support/FeatureSet";
 export const getGraphicsInfoById = async (graphic: Graphic, layer: FeatureLayer): Promise<FeatureInfo | undefined> => {
     const query = layer.createQuery();
     const idName = layer.objectIdField;
-    const theid = graphic.getObjectId()
-    query.where = `${idName} = ${theid}`;
+    const theId = graphic.getObjectId()
+    query.where = `${idName} = ${theId}`;
     query.outFields = ["*"];
     const response = await layer.queryFeatures(query);
     const g = response.features[0];

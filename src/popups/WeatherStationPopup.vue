@@ -95,10 +95,10 @@ export default defineComponent({
             fetch(config.forecastExtendedAPI + featureNWSZoneId + "/").then((result) => {
               if (result.status >= 200 && result.status < 300) {
                 result.json().then((response) => {
-                  function mycomparator(a: any, b: any) {
+                  function myComparator(a: any, b: any) {
                     return parseInt(a.forecastNumber, 10) - parseInt(b.forecastNumber, 10);
                   }
-                  const sortedForecasts = response.forecastData.sort(mycomparator);
+                  const sortedForecasts = response.forecastData.sort(myComparator);
                   forecastList.value = {
                     nwsZoneId: response.nwsZoneId,
                     forecastDateTime: response.forecastDateTime,
@@ -126,11 +126,11 @@ export default defineComponent({
           text = "on " + desc;
         }
         else{
-          const webmerccoords = webMercatorUtils.xyToLngLat(
+          const webMercatorCoords = webMercatorUtils.xyToLngLat(
             feature.mapPoint.x,
             feature.mapPoint.y
           )
-          text =`${webmerccoords[1].toFixed(6)}, ${webmerccoords[0].toFixed(6)}`
+          text =`${webMercatorCoords[1].toFixed(6)}, ${webMercatorCoords[0].toFixed(6)}`
         }
       }
       return text;
@@ -153,7 +153,7 @@ export default defineComponent({
           //(6°C × 9/5) + 32
           // BUG 42968 - remove unit since Tom cannote tell what it is.
           const f = Math.round(c * (9 / 5) + 32);
-          text = combineNums(f, c, "°F", "°C");
+          text = combineNumbers(f, c, "°F", "°C");
           //text = c.toString();
         }
       }
@@ -163,9 +163,9 @@ export default defineComponent({
     const getAirTemp = (feature: FeatureInfo) => {
       let text = naText;
       if (feature) {
-        const f = Number(feature.attributes["TemperatureFarhenheit"]);
-        const c = Number(feature.attributes["TemperatureCelcius"]);
-        text = combineNums(f, c, "°F", "°C");
+        const f = Number(feature.attributes["TemperatureFarhenheit"]); // cspell: disable-line
+        const c = Number(feature.attributes["TemperatureCelcius"]); // cspell: disable-line
+        text = combineNumbers(f, c, "°F", "°C");
       }
       return text;
     };
@@ -185,7 +185,7 @@ export default defineComponent({
       return text;
     };
 
-    const combineNums = (num1: number, num2: number, unit1: string, unit2: string) => {
+    const combineNumbers = (num1: number, num2: number, unit1: string, unit2: string) => {
       let text = "";
       if (num1 && !isNaN(num1)) {
         text = `${num1}${unit1}`;

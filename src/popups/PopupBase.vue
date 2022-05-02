@@ -537,7 +537,7 @@ export default defineComponent({
       return { top: newTop, left: newLeft };
     };
     /**
-     * Calulate how far map need to be moved so the top of the popup is visible within the map view.
+     * Calculate how far map need to be moved so the top of the popup is visible within the map view.
      *
      * @param topLeft
      * @param topLeft.top
@@ -771,13 +771,11 @@ export default defineComponent({
         }
       }
     };
+    
     /**
-     *
-     Catch the carousel spicture changes.
-     * @param splide 
-     *
-     * @param splide
-     * @param newIndex 
+     * Catch the carousel's picture changes.
+     * @param splide Splide
+     * @param newIndex New Index
      */
     const onSplideMoved = (splide: unknown, newIndex: number) => {
       currentIdx.value = newIndex;

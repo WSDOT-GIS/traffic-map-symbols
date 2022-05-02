@@ -154,7 +154,7 @@ export const getFeatureById = async (id: number): Promise<Graphic> => {
 }
 /**
  * Get the extent feature by name.
- * Note: Case insenstive
+ * Note: Case insensitive
  *
  * @param name Name of the extent area
  * @returns Returns the extent feature (graphic).

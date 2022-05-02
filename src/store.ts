@@ -27,7 +27,7 @@ export interface State {
     isMobileMenuOpen: boolean;
     isInitializing: boolean;
     isLoading: boolean;
-    initiaizingMessage: string;
+    initializingMessage: string;
     leftPaneIsOpen: boolean;
     /** s: small, l:large */
     mediaSize: "s" | "l"; // TODO: add more as needed
@@ -65,7 +65,7 @@ export const store = createStore<State>({
             isMobileMenuOpen: false,
             isInitializing: false,
             isLoading: false,
-            initiaizingMessage: "",
+            initializingMessage: "",
             leftPaneIsOpen: getMediaSize() !== "s",
             mediaSize: getMediaSize(),
             errors: [],
@@ -261,7 +261,7 @@ export const store = createStore<State>({
         setInitializing(state, payload: InitializingInfo) {
             payload.isInitializing != undefined ? state.isInitializing = payload.isInitializing : null
             payload.isLoading != undefined ? state.isLoading = payload.isLoading : null
-            payload.initializingMessage ? state.initiaizingMessage = payload.initializingMessage : null
+            payload.initializingMessage ? state.initializingMessage = payload.initializingMessage : null
         },
         setLeftPaneIsOpen(state, payload) {
             state.leftPaneIsOpen = payload;

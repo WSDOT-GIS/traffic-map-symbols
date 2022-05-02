@@ -2,7 +2,7 @@
 import "./assets/global.css"
 import "./assets/w3.css"
 import "./assets/main.css" // WATECH CSS
-// import "./assets/sidr.css" // WATECH CSS
+// import "./assets/sidr.css" // WATECH CSS // cspell:disable-line
 //#endregion
 //#region import vue stuff
 import router from './router';
@@ -34,7 +34,7 @@ loadConfig().then((appConfig) => {
         }
     })
     //#endregion
-    //#region track app using MS Applicaton Insights
+    //#region track app using MS Application Insights
     const appInsights = new ApplicationInsights(
         {
             config: {

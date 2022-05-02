@@ -27,14 +27,21 @@ const fields = [
         "type": "string",
         "alias": "SurfaceTemperature",
     }),
+    // Disabled spell checking on a few lines, since we can't fix the
+    // spelling errors because the things they are referencing are also
+    // misspelled.
     new Field({
+        // cspell:disable-next-line
         "name": "TemperatureFarhenheit",
         "type": "string",
+        // cspell:disable-next-line
         "alias": "TemperatureFarhenheit",
     }),
     new Field({
+        // cspell:disable-next-line
         "name": "TemperatureCelcius",
         "type": "string",
+        // cspell:disable-next-line
         "alias": "TemperatureCelcius",
     }),
     new Field({

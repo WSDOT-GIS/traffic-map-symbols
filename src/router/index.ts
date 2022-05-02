@@ -26,7 +26,7 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: '/feature/:featuretype/:featureid',
+    path: '/feature/:featuretype/:featureid', // cspell: disable-line
     name: 'Feature',
     component: EsriMapView,
     beforeEnter: (to) => {

@@ -113,8 +113,8 @@ export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     }
     return layerInfo;
 }
-//**This happens here instead of in the layerutils because of the source distinciton. TODO: fix this**
-/** This is fixed now? */
+//**This happens here instead of in the layerutils because of the source distinction. TODO: fix this**
+//** TODO: This is fixed now? */
 // const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
 //     layer.watch("visible", (newValue) => {
 //         if (newValue) {

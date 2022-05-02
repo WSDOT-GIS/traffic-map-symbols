@@ -285,7 +285,7 @@ export const centerFeatures = async (visibleExtent?: Extent): Promise<void> => {
     query.returnGeometry = true;
     query.outFields = ["EventID"];
     const result = await layer.queryFeatures(query);
-    const updatedFtrs: Graphic[] = [];
+    const updatedFeatures: Graphic[] = [];
     for (let i = 0; i < result.features.length; i++) {
         const feature = result.features[i];
         let newPt: Point | undefined;
@@ -300,10 +300,10 @@ export const centerFeatures = async (visibleExtent?: Extent): Promise<void> => {
         }
         if (newPt) {
             feature.geometry = newPt;
-            updatedFtrs.push(feature);
+            updatedFeatures.push(feature);
         }
     }
-    if (updatedFtrs.length > 0) {
-        layer.applyEdits({ updateFeatures: updatedFtrs });
+    if (updatedFeatures.length > 0) {
+        layer.applyEdits({ updateFeatures: updatedFeatures });
     }
 }
