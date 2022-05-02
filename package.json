@@ -7,6 +7,7 @@
     "build": "vue-cli-service build --modern",
     "lint": "vue-cli-service lint --no-fix",
     "lint:html": "vue-cli-service lint --no-fix --format html > dist/lint-results.html",
+    "spell-ci": "cspell **/* --fail-fast --no-progress --no-summary",
     "tsc:symbols": "tsc --project symbols.tsconfig"
   },
   "dependencies": {

@@ -14,6 +14,7 @@ declare const PINs: string[];
 declare const trafficwaySegmentData: any[]
 declare namespace JSX {
     interface IntrinsicElements {
+        // cspell: disable-next-line
         heyo: any
     }
 }

@@ -117,7 +117,7 @@ clusterConfig.set("symbol", clusterSymbol);
 export { clusterConfig }
 
 /**  
-Returns IDs of each feature if one of the following coditions is met:
+Returns IDs of each feature if one of the following conditions is met:
 - maxCount is not set 
 - The number of features is less than the maxCount.
 - All the features are at the identical location.

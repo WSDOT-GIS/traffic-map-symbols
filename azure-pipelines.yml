@@ -32,5 +32,6 @@ steps:
 
 - task: PublishBuildArtifacts@1
   inputs: 
+    # cspell: disable-next-line
     PathtoPublish: $(Build.ArtifactStagingDirectory) # dist files
     ArtifactName: 'www' # output artifact named www

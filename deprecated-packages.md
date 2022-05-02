@@ -9,7 +9,7 @@ Most of these are nested dependencies, not direct dependencies listed in the `pa
 | har-validator | 5.1.5   | @analytics/google-analytics google | this library is no longer supported                                                                                                                                                         |
 | uuid          | 3.4.0   | universal-analytics                | Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details. |
 | request       | 2.88.2  | @analytics/google-analytics        | request has been deprecated, see https://github.com/request/request/issues/3142                                                                                                             |
-
+<!-- cspell: disable -->
     har-validator@5.1.5 dev
     node_modules/har-validator
     har-validator@"~5.1.3" from request@2.88.2
@@ -52,3 +52,4 @@ Most of these are nested dependencies, not direct dependencies listed in the `pa
         universal-analytics@"^0.4.20" from @analytics/google-analytics@0.5.3
         node_modules/@analytics/google-analytics
         dev @analytics/google-analytics@"^0.5.3" from the root project
+<!-- cspell: enable -->
