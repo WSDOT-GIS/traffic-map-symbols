@@ -49,13 +49,13 @@ const layerTitle = "Travel Times";
 export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
     try {
-        layer = await layerUtil.initLayer(jsonUrl,
+        layer = await layerUtil.initLayer(
             layerId,
             layerTitle,
             renderer,
             fields,
             "point",
-            false,
+            false
         );
     } catch (ex) {
         console.error(ex);
