@@ -10,6 +10,9 @@ export default defineComponent({
       if (alerts.length > 0) {
         store.commit("setServiceAlertBannerVisibility", true);
       }
+      else{
+        store.commit("setServiceAlertBannerVisibility", false);
+      }
     });
     const bannerVisible = computed(() => store.state.serviceAlertsBannerVisible);
     const removeServiceAlertBanner = () => store.commit("setServiceAlertBannerVisibility", false);
