@@ -215,3 +215,4 @@ $RECYCLE.BIN/
 
 .cspellcache
 **/*Symbols/*Index/*
+**/*.js.map
