@@ -75,7 +75,28 @@ export const initLayer = (url: string): LayerInfo => {
             renderer: renderer,
             visible: true,
             labelsVisible: false,
-            definitionExpression: "Display <> 'Keller South to Keller North'"
+            definitionExpression: "Display <> 'Keller South to Keller North'",
+            dynamicDataSource: {
+                type: "data-layer",
+                dataSource: {
+                  type: "join-table",
+                  leftTableSource: {
+                    type: "map-layer",
+                    mapLayerId: 2
+                  },
+                  rightTableSource: {
+                    type: "data-layer",
+                    dataSource: {
+                      type: "table",
+                      workspaceId: "CensusFileGDBWorkspaceID",
+                      dataSourceName: "ancestry"
+                    }
+                  },
+                  leftTableKey: "STATE_NAME",
+                  rightTableKey: "State",
+                  joinType: "left-outer-join"
+                }
+            }
         });
     }
     catch (ex) {
