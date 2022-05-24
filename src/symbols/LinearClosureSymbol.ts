@@ -288,7 +288,7 @@ const linearCIMClosureBoth = new CIMSymbol({
           width: 5,
           color: [255, 255, 255, 255]
         },
-        {
+        /*{
           // arrow symbol right
           type: "CIMVectorMarker",
           enable: true,
@@ -405,7 +405,7 @@ const linearCIMClosureBoth = new CIMSymbol({
               }]
             }
           }]
-        },
+        },*/
         {
           // black layer that surrounds the dashes
           type: "CIMSolidStroke",
