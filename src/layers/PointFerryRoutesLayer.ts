@@ -3,6 +3,7 @@ import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import Field from "@arcgis/core/layers/support/Field";
 import { alertSymbol } from "@/symbols/AlertSymbol"
 import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
+import { getFerryAlerts, reloadFerryAlerts } from "@/utils/alertInfoUtil";
 
 const renderer = new simpleRenderer({
     symbol: alertSymbol
@@ -67,37 +68,19 @@ const layerTitle = "Ferry Routes Points";
 export const initLayer = (url: string): LayerInfo => {
     const layerInfo = new LayerInfo(layerId, layerTitle, url);
     try {
-        layer = new FeatureLayer({
-            id: layerId,
-            url: url,
-            title: layerTitle,
-            fields: fields,
-            renderer: renderer,
-            visible: true,
-            labelsVisible: false,
-            definitionExpression: "Display <> 'Keller South to Keller North'",
-            dynamicDataSource: {
-                type: "data-layer",
-                dataSource: {
-                  type: "join-table",
-                  leftTableSource: {
-                    type: "map-layer",
-                    mapLayerId: 2
-                  },
-                  rightTableSource: {
-                    type: "data-layer",
-                    dataSource: {
-                      type: "table",
-                      workspaceId: "CensusFileGDBWorkspaceID",
-                      dataSourceName: "ancestry"
-                    }
-                  },
-                  leftTableKey: "STATE_NAME",
-                  rightTableKey: "State",
-                  joinType: "left-outer-join"
-                }
-            }
-        });
+        getFerryAlerts("all").then((alerts)=>{
+            const alertsWithProps = [...new Set(alerts.map((alert)=>{return alert.FerryRouteId}))].toString()
+            layer = new FeatureLayer({
+                id: layerId,
+                url: url,
+                title: layerTitle,
+                fields: fields,
+                renderer: renderer,
+                visible: true,
+                labelsVisible: false,
+                definitionExpression: `FerryRouteId IN (${alertsWithProps})`
+            });
+        })
     }
     catch (ex) {
         console.error(ex);

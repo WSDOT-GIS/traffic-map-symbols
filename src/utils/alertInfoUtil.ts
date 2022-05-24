@@ -51,7 +51,7 @@ export const initFerryAlerts = (url: string): void => {
  * @param routeId Route identifier.
  * @returns an array of {@link FerryAlertInfo} objects.
  */
-export const getFerryAlerts = async (routeId: number): Promise<FerryAlertInfo[]> => {
+export const getFerryAlerts = async (routeId: number|"all"): Promise<FerryAlertInfo[]> => {
     if (!ferryAlertUrl) {
         throw "Ferry Alerts URL is not set yet.";
     }
@@ -60,11 +60,17 @@ export const getFerryAlerts = async (routeId: number): Promise<FerryAlertInfo[]>
     }
     let alerts: FerryAlertInfo[];
     if (ferryAlerts) {
-        alerts = ferryAlerts.filter((each) => {
-            return each.FerryRouteId === routeId;
-        }).sort((a, b) => {
-            return a.SortOrder - b.SortOrder;
-        })
+        if(routeId!="all"){
+            alerts = ferryAlerts.filter((each) => {
+                return each.FerryRouteId === routeId;
+            }).sort((a, b) => {
+                return a.SortOrder - b.SortOrder;
+            })
+        }
+        else{
+            alerts = ferryAlerts 
+        }
+        
     } else {
         alerts = [];
     }
