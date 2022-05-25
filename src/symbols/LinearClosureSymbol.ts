@@ -18,7 +18,7 @@ const linearCIMClosureSymbol = new CIMSymbol({
           "enable": true,
           "capStyle": "Butt",
           "joinStyle": "Round",
-          "width": 5.3,
+          "width": 9.3,
           "color": [
             0,
             0,
@@ -32,7 +32,7 @@ const linearCIMClosureSymbol = new CIMSymbol({
           "colorLocked": true,
           "capStyle": "Butt",
           "joinStyle": "Round",
-          "width": 4.6,
+          "width": 8.6,
           "color": [
             255,
             255,
@@ -45,7 +45,7 @@ const linearCIMClosureSymbol = new CIMSymbol({
           "enable": true,
           "capStyle": "Butt",
           "joinStyle": "Round",
-          "width": 5,
+          "width": 9,
           "color": [
             0,
             0,
@@ -77,7 +77,7 @@ const linearCIMClosureIncreasing = new CIMSymbol({
           enable: true, // must be set to true in order for the symbol layer to be visible
           capStyle: "Butt",
           joinStyle: "Miter",
-          width: 5,
+          width: 7,
           color: [255, 255, 255, 255]
         },
         {
@@ -145,7 +145,7 @@ const linearCIMClosureIncreasing = new CIMSymbol({
           enable: true,
           capStyle: "Butt",
           joinStyle: "Miter",
-          width: 5,
+          width: 7,
           color: [0,0, 0, 255]
         },
         {
@@ -154,7 +154,7 @@ const linearCIMClosureIncreasing = new CIMSymbol({
           enable: true,
           capStyle: "Butt",
           joinStyle: "Miter",
-          width: 6,
+          width: 8,
           color: [0, 0, 0, 255]
         }
       ]
@@ -181,7 +181,7 @@ const linearCIMClosureDecreasing = new CIMSymbol({
           enable: true, // must be set to true in order for the symbol layer to be visible
           capStyle: "Butt",
           joinStyle: "Miter",
-          width: 5,
+          width: 7,
           color: [255, 255, 255, 255]
         },
         {
@@ -249,7 +249,7 @@ const linearCIMClosureDecreasing = new CIMSymbol({
           enable: true,
           capStyle: "Butt",
           joinStyle: "Miter",
-          width: 5,
+          width: 7,
           color: [0,0, 0, 255]
         },
         {
@@ -258,7 +258,7 @@ const linearCIMClosureDecreasing = new CIMSymbol({
           enable: true,
           capStyle: "Butt",
           joinStyle: "Miter",
-          width: 6,
+          width: 8,
           color: [0, 0, 0, 255]
         }
       ]
@@ -285,7 +285,7 @@ const linearCIMClosureBoth = new CIMSymbol({
           enable: true, // must be set to true in order for the symbol layer to be visible
           capStyle: "Butt",
           joinStyle: "Miter",
-          width: 5,
+          width: 7,
           color: [255, 255, 255, 255]
         },
         /*{
@@ -412,7 +412,7 @@ const linearCIMClosureBoth = new CIMSymbol({
           enable: true,
           capStyle: "Butt",
           joinStyle: "Miter",
-          width: 5,
+          width: 7,
           color: [0,0, 0, 255]
         },
         {
@@ -421,7 +421,7 @@ const linearCIMClosureBoth = new CIMSymbol({
           enable: true,
           capStyle: "Butt",
           joinStyle: "Miter",
-          width: 6,
+          width: 8,
           color: [0, 0, 0, 255]
         }
       ]
