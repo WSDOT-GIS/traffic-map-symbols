@@ -63,7 +63,10 @@ export const layerId = "ferry-routes-points-layer";
 const layerTitle = "Ferry Routes Points";
 
 /**
- * @param url
+ * Initializes the layer.
+ * 
+ * @param url Layer URL
+ * @returns Layer info object
  */
 export const initLayer = (url: string): LayerInfo => {
     const layerInfo = new LayerInfo(layerId, layerTitle, url);
@@ -91,7 +94,9 @@ export const initLayer = (url: string): LayerInfo => {
 }
 
 /**
- *
+ * Gets the feature layer
+ * 
+ * @returns Returns the feature layer if ready, or undefined otherwise.
  */
 const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
