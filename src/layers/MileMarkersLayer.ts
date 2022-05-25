@@ -29,9 +29,7 @@ export const initLayer = (url: string): LayerInfo => {
     return layerInfo;
 }
 
-/**
- *
- */
+
 const getLayer = (): VectorTileLayer | undefined => {
     if (!layer) {
         console.error("MileMarkers is not ready yet!");

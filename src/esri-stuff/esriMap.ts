@@ -631,9 +631,7 @@ export const highlightFeature = (featureInfo: FeatureInfo): void => {
     })
 }
 
-/**
- *
- */
+
 export const removeHighlight = (): void => {
     if (highlight) {
         highlight.remove();

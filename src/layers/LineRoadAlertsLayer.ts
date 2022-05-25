@@ -44,9 +44,7 @@ let layer: FeatureLayer | undefined;
 export const layerId = "line-road-alerts-layer";
 const layerTitle = "Road Alert Lines";
 
-/**
- * @param jsonUrl
- */
+
  export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
     let graphics: Graphic[];
@@ -75,9 +73,7 @@ const layerTitle = "Road Alert Lines";
     return layerInfo;
 }
 
-/**
- *
- */
+
 const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
         console.error("LineRoadAlertsLayer is not ready yet!");

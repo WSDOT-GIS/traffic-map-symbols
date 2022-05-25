@@ -138,9 +138,7 @@ export const initLayer = async (alertUrl: string, countyUrl: string, regionUrl: 
     return [pointInfo, areaInfo];
 }
 
-/**
- *
- */
+
 const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
         console.error("Regional Alert Layer is not ready yet!");

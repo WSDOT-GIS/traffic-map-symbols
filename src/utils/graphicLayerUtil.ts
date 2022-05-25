@@ -109,9 +109,7 @@ export const hidePointInteractionGraphics = (layerId: string, map: Map): void =>
         targetLayer.definitionExpression = "1=0"; //remove line restriction symbol
     }
 }
-/**
- * @param graphicType
- */
+
 export const removeGraphicsByType = (graphicType: string): void => {
     switch (graphicType) {
         default: {

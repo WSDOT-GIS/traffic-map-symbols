@@ -57,9 +57,7 @@ let layer: FeatureLayer | undefined;
 export const layerId = "linear-closures-layer";
 const layerTitle = "Linear Closures Lines";
 
-/**
- * @param jsonUrl
- */
+
  export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
     let graphics: Graphic[];
@@ -87,9 +85,7 @@ const layerTitle = "Linear Closures Lines";
     return layerInfo;
 }
 
-/**
- *
- */
+
 const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
         console.error("LineRoadAlertsLayer is not ready yet!");

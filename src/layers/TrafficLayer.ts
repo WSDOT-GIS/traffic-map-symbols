@@ -30,9 +30,7 @@ export const initLayer = (url: string, refreshMinute: number): LayerInfo => {
     return layerInfo;
 }
 
-/**
- *
- */
+
 const getLayer = (): MapImageLayer | undefined => {
     if (!layer) {
         console.error("TrafficLayer is not ready yet!");

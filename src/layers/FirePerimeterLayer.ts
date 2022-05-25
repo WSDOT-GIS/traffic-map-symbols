@@ -36,9 +36,7 @@ export const initLayer = (url: string, incidentNames: string[]): LayerInfo => {
     return layerInfo;
 }
 
-/**
- *
- */
+
 const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
         console.error("Fire Perimeters is not ready yet!");
