@@ -6,8 +6,11 @@ export const layerId = "traffic-flow-layer";
 const layerTitle = "Live Traffic Flow";
 
 /**
- * @param url
- * @param refreshMinute
+ * Initializes the Traffic Layer
+ * 
+ * @param url @see  {@link __esri.MapImageLayerProperties.url}
+ * @param refreshMinute Refresh interval in minutes. @see {@link  __esri.RefreshableLayerProperties.refreshInterval}
+ * @returns Returns Traffic {@link LayerInfo}
  */
 export const initLayer = (url: string, refreshMinute: number): LayerInfo => {
     const layerInfo = new LayerInfo(layerId, layerTitle, url);
@@ -31,6 +34,11 @@ export const initLayer = (url: string, refreshMinute: number): LayerInfo => {
 }
 
 
+/**
+ * Gets the Traffic MapImageLayer
+ * 
+ * @returns Returns the Traffic layer if it has been initialized, undefined otherwise.
+ */
 const getLayer = (): MapImageLayer | undefined => {
     if (!layer) {
         console.error("TrafficLayer is not ready yet!");
