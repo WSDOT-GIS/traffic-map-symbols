@@ -2,12 +2,12 @@
     "recommendations": [
         "eg2.vscode-npm-script",
         "davidanson.vscode-markdownlint",
-        "johnsoncodehk.volar",
         "dbaeumer.vscode-eslint",
         "streetsidesoftware.code-spell-checker",
         "ms-azure-devops.azure-pipelines",
         "ni.azdo-wiki-md",
-        "maptz.regionfolder"
+        "maptz.regionfolder",
+        "Vue.volar"
     ],
     "unwantedRecommendations": [
         "octref.vetur"
