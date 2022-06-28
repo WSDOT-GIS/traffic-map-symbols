@@ -44,9 +44,7 @@ let layer: FeatureLayer | undefined;
 export const layerId = "alert-area-layer"; 
 const layerTitle = "Alert Areas";
 
-/**
- * @param features
- */
+
 export const initLayer = (features: Graphic[]): LayerInfo => {
     const layerInfo = new LayerInfo(layerId, layerTitle);
     try {
@@ -69,9 +67,7 @@ export const initLayer = (features: Graphic[]): LayerInfo => {
     return layerInfo;
 }
 
-/**
- *
- */
+
 const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
         console.error("Alert Area Layer is not ready yet!");
@@ -81,9 +77,7 @@ const getLayer = (): FeatureLayer | undefined => {
 
 export default getLayer;
 
-/**
- * @param eventId
- */
+
 export const getFeatureById = async (eventId: number): Promise<Graphic | undefined> => {
     const layer = getLayer();
     if (!layer) { return; }

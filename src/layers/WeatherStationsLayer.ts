@@ -117,9 +117,7 @@ export const initLayer = async (jsonUrl: string, view: MapView): Promise<LayerIn
     return layerInfo;
 }
 
-/**
- *
- */
+
 const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
         console.error("WeatherStationsLayer is not ready yet!");

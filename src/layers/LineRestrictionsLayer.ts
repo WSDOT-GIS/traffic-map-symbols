@@ -97,9 +97,7 @@ export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     return layerInfo;
 }
 
-/**
- *
- */
+
 const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
         console.error("LineRestrictionLayer is not ready yet!");

@@ -23,9 +23,7 @@ export enum LayerStatus {
 
 export default LayerInfo;
 
-/**
- * @param obj
- */
+
 export const isLayerInfo = (obj: unknown): obj is LayerInfo => {
     if ((obj as LayerInfo).id) {
         return true;
@@ -33,9 +31,7 @@ export const isLayerInfo = (obj: unknown): obj is LayerInfo => {
     return false;
 }
 
-/**
- * @param esriStatus
- */
+
 export const esriStatus2LayerStatus = (esriStatus: string): LayerStatus | undefined => {
     const status = esriStatus as LayerStatus;
     if (Object.values(LayerStatus).indexOf(status) < 0) {
