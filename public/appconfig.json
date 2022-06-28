@@ -29,7 +29,7 @@
   "roadAlerts": "https://data.wsdot.wa.gov/travelcenter/RoadAlerts.json",
   "stateAlerts": "https://data.wsdot.wa.gov/travelcenter/StatewideAlerts.json",
   "stateRouteShieldsLayer": "https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/Travel_Center_Highway_Shields/MapServer",
-  "traffic": "https://utility.arcgis.com/usrsvcs/appservices/G9CkczziK8rxtWpL/rest/services/World/Traffic/MapServer",
+  "traffic": "https://utility.arcgis.com/usrsvcs/appservices/WvQqGbFhaYoQDtdL/rest/services/World/Traffic/MapServer",
   "travelTimes": "https://data.wsdot.wa.gov/travelcenter/TravelTimes.json",
   "weatherStations": "https://data.wsdot.wa.gov/travelcenter/WeatherStations.json",
   "wsdotRoot": "https://wsdot.wa.gov"
