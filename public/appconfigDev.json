@@ -1,6 +1,6 @@
 {
     "appTheme": "Default",
-    "basemap": "https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/Travel_Center_Map/MapServer",
+    "basemap": "https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/Travel_Center_Basemap/MapServer",
     "borderCrossings": "https://data.wsdot.wa.gov/travelcenter/dev/BorderCrossingTimes.json",
     "cameras": "https://data.wsdot.wa.gov/travelcenter/dev/Cameras.json",
     "currentRoadAlertLine": "https://data.wsdot.wa.gov/travelcenter/dev/CurrentRoadAlertLine.json",
