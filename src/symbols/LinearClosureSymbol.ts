@@ -18,7 +18,7 @@ const linearCIMClosureSymbol = new CIMSymbol({
           "enable": true,
           "capStyle": "Butt",
           "joinStyle": "Round",
-          "width": 9.3,
+          "width": 5,
           "color": [
             0,
             0,
@@ -32,7 +32,7 @@ const linearCIMClosureSymbol = new CIMSymbol({
           "colorLocked": true,
           "capStyle": "Butt",
           "joinStyle": "Round",
-          "width": 8.6,
+          "width": 4,
           "color": [
             255,
             255,
@@ -45,13 +45,32 @@ const linearCIMClosureSymbol = new CIMSymbol({
           "enable": true,
           "capStyle": "Butt",
           "joinStyle": "Round",
-          "width": 9,
+          "width": 5,
           "color": [
             0,
             0,
             0,
             255
           ]
+        },
+        {
+          "type": "CIMSolidStroke",
+          "enable": true,
+          "capStyle": "Butt",
+          "joinStyle": "Round",
+          "width": 13.5,
+          "color": [
+            243,
+            245,
+            249,
+            255
+          ]
+          /*"color": [
+            243,
+            0,
+            0,
+            255
+          ]*/
         }
       ]
     }
@@ -156,6 +175,25 @@ const linearCIMClosureIncreasing = new CIMSymbol({
           joinStyle: "Miter",
           width: 8,
           color: [0, 0, 0, 255]
+        },
+        {
+          "type": "CIMSolidStroke",
+          "enable": true,
+          "capStyle": "Butt",
+          "joinStyle": "Round",
+          "width": 9,
+          "color": [
+            243,
+            245,
+            249,
+            255
+          ]
+          /*"color": [
+            243,
+            0,
+            0,
+            255
+          ]*/
         }
       ]
     }
@@ -258,8 +296,27 @@ const linearCIMClosureDecreasing = new CIMSymbol({
           enable: true,
           capStyle: "Butt",
           joinStyle: "Miter",
-          width: 8,
+          width: 9,
           color: [0, 0, 0, 255]
+        },
+        {
+          "type": "CIMSolidStroke",
+          "enable": true,
+          "capStyle": "Butt",
+          "joinStyle": "Round",
+          "width": 13,
+          "color": [
+            243,
+            245,
+            249,
+            255
+          ]
+          /*"color": [
+            243,
+            0,
+            0,
+            255
+          ]*/
         }
       ]
     }
@@ -423,6 +480,25 @@ const linearCIMClosureBoth = new CIMSymbol({
           joinStyle: "Miter",
           width: 8,
           color: [0, 0, 0, 255]
+        },
+        {
+          "type": "CIMSolidStroke",
+          "enable": true,
+          "capStyle": "Butt",
+          "joinStyle": "Round",
+          "width": 12,
+          "color": [
+            243,
+            245,
+            249,
+            255
+          ]
+          /*"color": [
+            243,
+            0,
+            0,
+            255
+          ]*/
         }
       ]
     }
