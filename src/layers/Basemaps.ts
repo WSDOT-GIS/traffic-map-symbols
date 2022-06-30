@@ -3,16 +3,29 @@ import TileLayer from "@arcgis/core/layers/TileLayer";
 import BasemapInfo from "@/types/BasemapInfo";
 
 
+/**
+ *
+ */
 export const getDefaultBasemapInfo = (): BasemapInfo => { return basemaps[0] }
 // Array of basemaps. The first one is the default.
 const basemaps: BasemapInfo[] = [];
 
 
+/**
+ *
+ * @param basemapUrl
+ */
 export const initBasemap = async (basemapUrl: string): Promise<void> => {
     const wsdotBase = new Basemap({
         baseLayers: [
             new TileLayer({
                 url: basemapUrl,
+                fullExtent: {
+                    xmin: -1.3891559256092608E7,
+                    ymin: 5706937.852318868,
+                    xmax: -1.3014361668641614E7,
+                    ymax: 6283349.610269983
+                }
             })
         ],
         title: "WSDOT Basemap",
@@ -31,6 +44,10 @@ export const initBasemap = async (basemapUrl: string): Promise<void> => {
 }
 
 
+/**
+ *
+ * @param name
+ */
 export const getBasemapInfo = (name: string): BasemapInfo => {
     const result = basemaps.find((x) => {
         return x.name === name;
@@ -43,6 +60,10 @@ export const getBasemapInfo = (name: string): BasemapInfo => {
 }
 // Select the next basemap info in the array.
 
+/**
+ *
+ * @param currentName
+ */
 export const toggleBasemapInfo = (currentName: string): BasemapInfo => {
     let idx = -1;
     for (let i = 0; i < basemaps.length; i++) {

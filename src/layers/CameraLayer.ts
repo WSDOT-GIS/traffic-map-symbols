@@ -92,6 +92,9 @@ export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
 }
 
 
+/**
+ *
+ */
 const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
         console.error("CameraLayer is not ready yet!");
@@ -118,6 +121,10 @@ export const toggleCluster = (newScale: number, oldScale: number): void => {
 }
 
 
+/**
+ *
+ * @param scale
+ */
 export const setCluster = (scale: number): void => {
     if (!layer) { return }
     if (layer.featureReduction) {

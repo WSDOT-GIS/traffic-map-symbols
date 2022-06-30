@@ -3,6 +3,10 @@ import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 let layer: MapImageLayer | undefined;
 
 
+/**
+ *
+ * @param url
+ */
 export const initLayer = (url: string): MapImageLayer => {
     layer = new MapImageLayer({
         id: "esri-reference-layer",
@@ -14,6 +18,9 @@ export const initLayer = (url: string): MapImageLayer => {
 }
 
 
+/**
+ *
+ */
 const getLayer = (): MapImageLayer => {
     if (!layer) {
         throw "ESRI Reference is not ready yet!";

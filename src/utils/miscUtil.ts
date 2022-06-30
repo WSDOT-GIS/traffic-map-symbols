@@ -97,13 +97,13 @@ export const WebMercator = {
  * @param classname CSS class name
  * @returns true or false indicating if the element's parent is in this class.
  */
-export const hasParentClass = (child: HTMLElement, classname: string): boolean => {
+export const hasParentClass = (child: Element | null, classname: string): boolean => {
     if (child) {
         // If the element is SVG, className is SVGAnimatedString object and throws an error on child.className.split().
         if (typeof child.className === "string" && child.className.split(' ').indexOf(classname) >= 0) return true;
         try {
             //Throws TypeError if child doesn't have parent any more
-            return hasParentClass(child.parentNode as HTMLElement, classname);
+            return hasParentClass(child.parentNode as Element | null, classname);
         } catch (TypeError) {
             return false;
         }

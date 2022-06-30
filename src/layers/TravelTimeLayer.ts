@@ -44,6 +44,10 @@ export const layerId = "travel-times-layer";
 const layerTitle = "Travel Times";
 
 
+/**
+ *
+ * @param jsonUrl
+ */
 export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
     try {
@@ -64,6 +68,9 @@ export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
 }
 
 
+/**
+ *
+ */
 const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
         console.error("TravelTimesLayer is not ready yet!");

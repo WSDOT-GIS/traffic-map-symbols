@@ -110,6 +110,10 @@ export const hidePointInteractionGraphics = (layerId: string, map: Map): void =>
     }
 }
 
+/**
+ *
+ * @param graphicType
+ */
 export const removeGraphicsByType = (graphicType: string): void => {
     switch (graphicType) {
         default: {

@@ -67,6 +67,9 @@ export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
 }
 
 
+/**
+ *
+ */
 const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
         console.error("Border Crossings Layer is not ready yet!");

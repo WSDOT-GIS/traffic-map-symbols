@@ -140,6 +140,10 @@ const layer = new FeatureLayer({
 export default layer;
 
 
+/**
+ *
+ * @param id
+ */
 export const getFeatureById = async (id: number): Promise<Graphic> => {
     const query = layer.createQuery();
     query.where = "ObjectID =" + id;

@@ -22,12 +22,12 @@ export default defineComponent({
     },
   },
   setup(props, context) {
-    var page_ts = document.location.pathname.split('/');
-    var k1 = page_ts[1] || 'none';
-    var k2 = page_ts[2] || 'none';
-    var k3 = page_ts[3] || 'none';
-    var k4 = page_ts[4] || 'none';
-    var k5 = page_ts[5] || 'none';
+    const page_ts = document.location.pathname.split('/');
+    const k1 = page_ts[1] || 'none';
+    const k2 = page_ts[2] || 'none';
+    const k3 = page_ts[3] || 'none';
+    const k4 = page_ts[4] || 'none';
+    const k5 = page_ts[5] || 'none';
     const containerDiv = ref<HTMLDivElement>();
     //
     window.googletag = window.googletag || { cmd: [] };
@@ -48,7 +48,7 @@ export default defineComponent({
       googletag.cmd.push(() => {
         // Define a size mapping object. The first parameter to addSize is
         // a viewport size, while the second is a list of allowed ad sizes.
-        var mapping = googletag.sizeMapping()
+        const mapping = googletag.sizeMapping()
         .addSize([320, 200], [[320, 50], [300, 50]])
         .addSize([730, 200], [728, 90])
         .addSize([1000, 200],[728, 90])

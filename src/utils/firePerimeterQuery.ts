@@ -2,6 +2,10 @@ import Graphic from "@arcgis/core/Graphic";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 
+/**
+ *
+ * @param fireIncidentLayer
+ */
 const firePerimeterFeatureIDs = async (fireIncidentLayer: FeatureLayer): Promise<string> => {
     const fireIncidentQuery = fireIncidentLayer.createQuery();
     fireIncidentQuery.outFields = ["IncidentName"];

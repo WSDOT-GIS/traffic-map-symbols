@@ -61,7 +61,8 @@ export default defineComponent({
      * @param event Keyboard event.
      */
     const onKeyUp = (event: KeyboardEvent) => {
-      /** keyCode property is deprecated, but not necessary supported,
+      /**
+       * keyCode property is deprecated, but not necessary supported,
        * so check both.
        * key = Enter
        * keyCode = 13

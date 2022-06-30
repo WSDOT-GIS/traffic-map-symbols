@@ -6,6 +6,10 @@ export const layerId = "boundaries-places-reference-layer";
 const layerTitle = "ESRI Boundaries and Places Reference";
 
 
+/**
+ *
+ * @param url
+ */
 export const initLayer = (url: string): LayerInfo => {
     const layerInfo = new LayerInfo(layerId, layerTitle, url);
     try {
@@ -23,6 +27,9 @@ export const initLayer = (url: string): LayerInfo => {
 }
 
 
+/**
+ *
+ */
 const getLayer = (): MapImageLayer | undefined => {
     if (!layer) {
         console.error("ESRI Boundaries and Places Reference is not ready yet!");

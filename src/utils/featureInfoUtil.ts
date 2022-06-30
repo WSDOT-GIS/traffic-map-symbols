@@ -6,7 +6,7 @@ import Polygon from "@arcgis/core/geometry/Polygon";
 import { project } from "@arcgis/core/geometry/projection";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import FeatureSet from "@arcgis/core/tasks/support/FeatureSet";
+import FeatureSet from "@arcgis/core/rest/support/FeatureSet";
 /**
  * @param graphic
  * @param layer

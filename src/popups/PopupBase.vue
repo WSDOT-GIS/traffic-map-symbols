@@ -510,6 +510,7 @@ export default defineComponent({
      *
      * @param height
      * @param width
+     * @param layerID
      */
     const calcTopLeft = (height: number, width: number, layerID: string): { top: number; left: number } => {
       let newTop = 0;
@@ -533,7 +534,7 @@ export default defineComponent({
             newTop -= 15;
           }
       }
-      let newLeft = screenX.value - width / 2;
+      const newLeft = screenX.value - width / 2;
       return { top: newTop, left: newLeft };
     };
     /**
@@ -774,6 +775,7 @@ export default defineComponent({
     
     /**
      * Catch the carousel's picture changes.
+     *
      * @param splide Splide
      * @param newIndex New Index
      */

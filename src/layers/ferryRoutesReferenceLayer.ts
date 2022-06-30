@@ -5,6 +5,10 @@ export const layerId = "ferry-routes-reference-layer";
 const layerTitle = "Ferry Routes Reference";
 
 
+/**
+ *
+ * @param url
+ */
 export const initLayer = (url: string): LayerInfo => {
     const layerInfo = new LayerInfo(layerId, layerTitle, url);
     try {
@@ -22,6 +26,9 @@ export const initLayer = (url: string): LayerInfo => {
 }
 
 
+/**
+ *
+ */
 const getLayer = (): TileLayer | undefined => {
     if (!layer) {
         console.error("Ferry Routes Reference is not ready yet!");

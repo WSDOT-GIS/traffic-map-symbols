@@ -321,11 +321,18 @@ const getNamedExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Prom
 }
 
 
+/**
+ *
+ * @param name
+ */
 export const validateAreaName = (name: string): boolean => {
     return ZoomExtentLayer.validateName(name);
 }
 
 
+/**
+ *
+ */
 export const getBasemapFromUrl = (): BasemapInfo => {
     const param = params.get("base");
     const name = param ? param : "";
