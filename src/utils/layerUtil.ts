@@ -260,7 +260,8 @@ export const initLayer = async (layerId: string, layerTitle: string,
         source: graphics,
         geometryType: geometryType,
         spatialReference: SpatialReference.WebMercator,
-        definitionExpression: definitionExpression
+        definitionExpression: definitionExpression,
+        copyright: undefined
     });
     return layer;
 }
@@ -365,8 +366,8 @@ export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
  */
 export const updateScaleDependentRendering = (layer: FeatureLayer, scale: number) => {
     if (layer.title == "Linear Closures Lines") {
-        console.log("update linear closures renderer")
-        console.log(scale)
+        //console.log("update linear closures renderer")
+        //console.log(scale)
         if (scale <= 37000) {
             layer.renderer = directionalClosuresRenderer
         }

@@ -57,7 +57,7 @@ export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
             renderer,
             fields,
             "point",
-            false,
+            false
         );
     } catch (ex) {
         console.error(ex);

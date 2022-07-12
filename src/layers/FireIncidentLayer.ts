@@ -28,7 +28,8 @@ export const initLayer = (url: string): LayerInfo => {
             renderer: fireIncidentRenderer,
             visible: false,
             definitionExpression: "POOState= 'US-WA'",
-            labelsVisible: false
+            labelsVisible: false,
+            copyright: undefined
         });
     }
     catch (ex) {

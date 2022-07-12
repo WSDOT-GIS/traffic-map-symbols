@@ -25,7 +25,8 @@ export const initLayer = (url: string, incidentNames: string[]): LayerInfo => {
             url: url,
             title: layerTitle,
             visible: false,
-            definitionExpression: queryString
+            definitionExpression: queryString,
+            copyright: undefined
         });
     }
     catch (ex) {

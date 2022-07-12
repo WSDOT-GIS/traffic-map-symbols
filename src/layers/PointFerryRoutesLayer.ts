@@ -81,7 +81,8 @@ export const initLayer = (url: string): LayerInfo => {
                 renderer: renderer,
                 visible: true,
                 labelsVisible: false,
-                definitionExpression: `FerryRouteId IN (${alertsWithProps})`
+                definitionExpression: `FerryRouteId IN (${alertsWithProps})`,
+                copyright:undefined
             });
         })
     }

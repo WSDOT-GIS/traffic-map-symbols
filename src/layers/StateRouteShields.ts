@@ -18,6 +18,7 @@ export const initLayer = (url: string): LayerInfo => {
             url: url,
             title: "State Route Shields",
             visible: true,
+            copyright: undefined,
         });
     }
     catch (ex) {

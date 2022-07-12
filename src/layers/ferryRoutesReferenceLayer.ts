@@ -17,6 +17,7 @@ export const initLayer = (url: string): LayerInfo => {
             url: url,
             title: layerTitle,
             visible: false,
+            copyright: undefined
         });
     } catch (ex) {
         console.error(ex);

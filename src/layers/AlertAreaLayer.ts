@@ -61,6 +61,7 @@ export const initLayer = (features: Graphic[]): LayerInfo => {
             spatialReference: SpatialReference.WebMercator,
             renderer: renderer,
             source: features,
+            copyright: undefined
         });
     }
     catch (ex) {

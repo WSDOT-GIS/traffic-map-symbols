@@ -134,7 +134,8 @@ const layer = new FeatureLayer({
     renderer: renderer,
     source: graphics,
     definitionExpression: "Visible = 1",
-    maxScale: 300000
+    maxScale: 300000,
+    copyright: undefined
 });
 
 export default layer;
