@@ -88,11 +88,11 @@ dotnet serve
 ## Additional documentation
 
 * [Packages](packages.md)
-* [List of deprecated NPM packages currently in use by this project](deprecated-packages.md)
 
+<!-- 
 ## YAML schema file
 
-The file `wsdot-devops-pipeline-yaml-schema.json` was copied from <https://dev.azure.com/wsdot/_apis/distributedtask/yamlschema>. It is used by the ["Azure Pipelines" Visual Studio Code extension] to aid in editing the `azure-pipelines.yml` file.
+The file `wsdot-devops-pipeline-yaml-schema.json` was copied from <https://dev.azure.com/wsdot/_apis/distributedtask/yamlschema>. It is used by the ["Azure Pipelines" Visual Studio Code extension] to aid in editing the `azure-pipelines.yml` file. -->
 
 ["Active LTS" version]:https://nodejs.org/en/about/releases/
 [ArcGIS API for JavaScript]:https://developers.arcgis.com/javascript/latest/
