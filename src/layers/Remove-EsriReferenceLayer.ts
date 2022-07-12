@@ -13,6 +13,7 @@ export const initLayer = (url: string): MapImageLayer => {
         url: url,
         title: "ESRI Reference",
         visible: true,
+        copyright: undefined
     });
     return layer;
 }

@@ -25,7 +25,7 @@ export const initBasemap = async (basemapUrl: string): Promise<void> => {
                     ymin: 5706937.852318868,
                     xmax: -1.3014361668641614E7,
                     ymax: 6283349.610269983
-                }
+                },
             })
         ],
         title: "WSDOT Basemap",

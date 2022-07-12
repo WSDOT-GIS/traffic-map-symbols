@@ -82,7 +82,7 @@ export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
             renderer,
             fields,
             "polyline",
-            false,
+            false
         );
     }
     catch (ex) {
