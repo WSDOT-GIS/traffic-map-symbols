@@ -540,11 +540,9 @@ export default defineComponent({
     /**
      * Calculate how far map need to be moved so the top of the popup is visible within the map view.
      *
-     * @param topLeft - 
-     * @param topLeft.top - 
-     * @param topLeft.left - 
-     * @param height - 
-     * @param width - 
+     * @param topLeft - top and left number values.
+     * @param height - height
+     * @param width - width
      */
     const calcShiftXY = (
       topLeft: { top: number; left: number },

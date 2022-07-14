@@ -288,7 +288,7 @@ export const getExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Pr
 }
 /**
  * Get extent by name
- * Support route (area\<name>) and query parameter (?namedextent=<name>)
+ * Support route (area\<name\>) and query parameter (?namedextent=\<name\>)
  *
  * @param route  - 
  */

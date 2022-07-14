@@ -9,7 +9,7 @@ export const formattedEpochRe = /\d{4}\/\d{2}\/\d{2}(?: \d{2}:\d{2} [AP]M)?/
  * 
  * @param epoch  - Epoch
  * @param isTime  - Indicates if the epoch is a time.
- * @returns epoch as a string. MM/DD/YYYY HH:mm {AM|PM}
+ * @returns epoch as a string. MM/DD/YYYY HH:mm  \{AM|PM\}
  */
 export const formatEpoch = (epoch: number, isTime?: boolean): string => {
     /* IT said date will be in UTC, so removed the workaround below. If necessary simply

@@ -75,7 +75,7 @@ export const createLayerGroupInfos = (config: AppConfig): void => {
  * 
  * @param groupId  - Group ID
  * @returns The group matching the Group ID.
- * @throws {RangeError} Thrown if {@param groupId}  - is not one of the expected values.
+ * @throws {@link RangeError} Thrown if {@link groupId}  - is not one of the expected values.
  */
 const getGroupLayerInfo = (groupId: string): GroupLayerInfo => {
     const result = layerGroups.find((item) => item.id === groupId);
@@ -332,7 +332,7 @@ export const replaceFeatures = async (layer: FeatureLayer, newFeatures: Graphic[
  * 
  * @param jsonUrl  - URL for a JSON file
  * @returns An array of {@link Graphic} objects.
- * @throws {TypeError} Thrown if the JSON is not in Esri features format.
+ * @throws {@link TypeError} Thrown if the JSON is not in Esri features format.
  */
 export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
     // Fetch all features from JSON...
