@@ -3,6 +3,9 @@
   "version": "1.0.8",
   "private": true,
   "scripts": {
+    "prepare": "npm run docs",
+    "dotnet-serve": "dotnet serve --path-base /Travel/Real-time/Map/ --directory dist",
+    "docs": "typedoc",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --modern",
     "lint": "vue-cli-service lint --no-fix",
@@ -34,6 +37,9 @@
     "eslint-plugin-vue": "^9.2.0",
     "polygon-clipping": "^0.15.3",
     "source-map": "^0.7.4",
+    "typedoc": "^0.23.7",
+    "typedoc-plugin-coverage": "^2.0.0",
+    "typedoc-plugin-markdown": "^3.13.3",
     "typescript": "^4.7.4",
     "vue-cli-plugin-compression": "^1.2.0",
     "vue-cli-plugin-webpack-bundle-analyzer": "^4.0.0",
@@ -45,5 +51,23 @@
   },
   "prettier": {
     "printWidth": 100
-  }
+  },
+  "description": "This repository contains the source code for the [WSDOT Travel Center Map]",
+  "main": "src/main.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://WSDOT@dev.azure.com/WSDOT/TravelerInformation/_git/TravelerInformationCoreMap"
+  },
+  "keywords": [
+    "wsdot",
+    "travel",
+    "traffic",
+    "borders",
+    "weather"
+  ],
+  "author": "",
+  "license": "Unlicense"
 }

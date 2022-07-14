@@ -359,7 +359,7 @@ export const zoomToExtent = async (extent: Extent): Promise<void> => {
 /**
  * A zoom level and scale
  */
-interface ZoomLevel {
+export interface ZoomLevel {
     /** zoom level */
     level: number,
     /** zoom scale */

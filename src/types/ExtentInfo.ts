@@ -1,5 +1,5 @@
-type VerticalDirection = "i" | "n" | "s";
-type HorizontalDirection = "i" | "w" | "e";
+export type VerticalDirection = "i" | "n" | "s";
+export type HorizontalDirection = "i" | "w" | "e";
 
 /**
  * A string representing extent directions.

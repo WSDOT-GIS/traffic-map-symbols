@@ -1,14 +1,14 @@
 /**
  * Represents rows returned from an Esri query.
  */
-type EsriRows = {
+export type EsriRows = {
     features: { attributes: Record<string, unknown> }[]
 }
 
 /**
  * Represents results of a feature layer query.
  */
-type EsriFeatures = {
+export type EsriFeatures = {
     spatialReference: { wkid: number, latestWkid: number },
     features: {
         attributes: Record<string, unknown>,
