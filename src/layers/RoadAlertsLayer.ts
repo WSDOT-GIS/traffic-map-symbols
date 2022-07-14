@@ -84,7 +84,7 @@ let layer: FeatureLayer | undefined;
 /**
  * Initialize a layer
  * 
- * @param jsonUrl JSON URL
+ * @param jsonUrl  - JSON URL
  * @returns LayerInfo
  */
 export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {

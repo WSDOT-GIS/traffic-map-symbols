@@ -83,8 +83,8 @@ const layerTitle = "Weather Stations";
 /**
  * Initialize feature layer
  * 
- * @param jsonUrl JSON URL
- * @param view MapView
+ * @param jsonUrl  - JSON URL
+ * @param view  - MapView
  * @returns LayerInfo
  */
 export const initLayer = async (jsonUrl: string, view: MapView): Promise<LayerInfo> => {

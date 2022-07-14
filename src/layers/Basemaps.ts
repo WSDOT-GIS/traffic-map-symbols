@@ -11,10 +11,7 @@ export const getDefaultBasemapInfo = (): BasemapInfo => { return basemaps[0] }
 const basemaps: BasemapInfo[] = [];
 
 
-/**
- *
- * @param basemapUrl
- */
+
 export const initBasemap = async (basemapUrl: string): Promise<void> => {
     const wsdotBase = new Basemap({
         baseLayers: [
@@ -44,10 +41,7 @@ export const initBasemap = async (basemapUrl: string): Promise<void> => {
 }
 
 
-/**
- *
- * @param name
- */
+
 export const getBasemapInfo = (name: string): BasemapInfo => {
     const result = basemaps.find((x) => {
         return x.name === name;
@@ -60,10 +54,7 @@ export const getBasemapInfo = (name: string): BasemapInfo => {
 }
 // Select the next basemap info in the array.
 
-/**
- *
- * @param currentName
- */
+
 export const toggleBasemapInfo = (currentName: string): BasemapInfo => {
     let idx = -1;
     for (let i = 0; i < basemaps.length; i++) {
@@ -83,7 +74,7 @@ export const toggleBasemapInfo = (currentName: string): BasemapInfo => {
 /**
  * Make sure the base map name is valid...
  *
- * @param name 
+ * @param name  - 
  */
 export const validateBasemapName = (name: string): boolean => {
     const result = basemaps.filter((item) => {

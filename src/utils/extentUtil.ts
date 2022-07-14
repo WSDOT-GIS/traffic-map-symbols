@@ -25,7 +25,7 @@ const defaultExtents: ExtentInfo[] = [
 /**
  * Gets extent info matching given id.
  * 
- * @param id One of the ids from {@link defaultExtents}.
+ * @param id  - One of the ids from {@link defaultExtents}.
  * @returns Extent info
  */
 export const getExtentInfo = (id: string): ExtentInfo => {
@@ -36,7 +36,7 @@ export const getExtentInfo = (id: string): ExtentInfo => {
 /**
  * Gets an extent by name.
  * 
- * @param name name of extent
+ * @param name  - name of extent
  * @returns an extent.
  */
 export const getEsriExtent = (name: string): Extent => {
@@ -47,7 +47,7 @@ export const getEsriExtent = (name: string): Extent => {
 /**
  * Converts an {@link ExtentInfo} to an {@link Extent}.
  * 
- * @param extentInfo extent info
+ * @param extentInfo  - extent info
  * @returns Esri Extent.
  */
 export const convert2EsriExtent = (extentInfo: ExtentInfo): Extent => {
@@ -64,7 +64,7 @@ export const convert2EsriExtent = (extentInfo: ExtentInfo): Extent => {
 /**
  * Converts an {@link Extent} to an {@link ExtentInfo}
  * 
- * @param extent An {@link Extent}
+ * @param extent  - An {@link Extent}
  * @returns an {@link ExtentInfo}
  */
 export const convert2ExtentInfo = (extent: Extent): ExtentInfo => {
@@ -79,9 +79,9 @@ export const convert2ExtentInfo = (extent: Extent): ExtentInfo => {
 /**
  * Figure out the relative direction from the full extent.
  *
- * @param mapXY 
+ * @param mapXY  - 
  * Location to compare against the full extent.
- * @param extent An extent. If omitted, "full" extent is assumed.
+ * @param extent  - An extent. If omitted, "full" extent is assumed.
  * @returns A two character string that matches /[ins][iwe]/
  * First char: vertical direction = i/n/s (inside/north/south)
  * Second char: horizontal direction = i/w/e (inside/west/east)

@@ -8,8 +8,8 @@ const layerTitle = "Live Traffic Flow";
 /**
  * Initializes the Traffic Layer
  * 
- * @param url @see  {@link __esri.MapImageLayerProperties.url}
- * @param refreshMinute Refresh interval in minutes. @see {@link  __esri.RefreshableLayerProperties.refreshInterval}
+ * @param url  - @see  {@link __esri.MapImageLayerProperties.url}
+ * @param refreshMinute  - Refresh interval in minutes. @see {@link  __esri.RefreshableLayerProperties.refreshInterval}
  * @returns Returns Traffic {@link LayerInfo}
  */
 export const initLayer = (url: string, refreshMinute: number): LayerInfo => {

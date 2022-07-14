@@ -9,7 +9,7 @@ let stateAlertUrl: string;
 /**
  * Initialize state alerts
  * 
- * @param url State Alert URL
+ * @param url  - State Alert URL
  */
 export const initStateAlerts = (url: string): void => {
     stateAlertUrl = url;
@@ -39,7 +39,7 @@ let ferryAlertUrl: string;
 /**
  * Initialize the ferry alerts.
  * 
- * @param url Ferry alerts URL
+ * @param url  - Ferry alerts URL
  */
 export const initFerryAlerts = (url: string): void => {
     ferryAlertUrl = url;
@@ -48,7 +48,7 @@ export const initFerryAlerts = (url: string): void => {
 /**
  * Get the ferry alerts corresponding to the given route ID.
  * 
- * @param routeId Route identifier.
+ * @param routeId  - Route identifier.
  * @returns an array of {@link FerryAlertInfo} objects.
  */
 export const getFerryAlerts = async (routeId: number|"all"): Promise<FerryAlertInfo[]> => {
@@ -80,7 +80,7 @@ export const getFerryAlerts = async (routeId: number|"all"): Promise<FerryAlertI
 /**
  * Reloads the ferry alerts.
  * 
- * @param force Forces the alerts to be reloaded even if they have already been loaded.
+ * @param force  - Forces the alerts to be reloaded even if they have already been loaded.
  */
 export const reloadFerryAlerts = async (force?: boolean): Promise<void> => {
     if (!force && !ferryAlerts) {

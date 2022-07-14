@@ -11,8 +11,8 @@ export const layerId = "fire-perimeters-layer";
 const layerTitle = "Fire Perimeters";
 
 /**
- * @param url
- * @param incidentNames
+ * @param url - 
+ * @param incidentNames - 
  */
 export const initLayer = (url: string, incidentNames: string[]): LayerInfo => {
     const layerInfo = new LayerInfo(layerId, layerTitle, url);

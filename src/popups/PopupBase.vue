@@ -508,9 +508,9 @@ export default defineComponent({
      * Figure out the top and left position of the popup.
      * NOTE: Make sure to set the relativePosition before calling this.
      *
-     * @param height
-     * @param width
-     * @param layerID
+     * @param height - 
+     * @param width - 
+     * @param layerID - 
      */
     const calcTopLeft = (height: number, width: number, layerID: string): { top: number; left: number } => {
       let newTop = 0;
@@ -540,11 +540,11 @@ export default defineComponent({
     /**
      * Calculate how far map need to be moved so the top of the popup is visible within the map view.
      *
-     * @param topLeft
-     * @param topLeft.top
-     * @param topLeft.left
-     * @param height
-     * @param width
+     * @param topLeft - 
+     * @param topLeft.top - 
+     * @param topLeft.left - 
+     * @param height - 
+     * @param width - 
      */
     const calcShiftXY = (
       topLeft: { top: number; left: number },
@@ -589,8 +589,8 @@ export default defineComponent({
     /**
      * This sets the margin top and left of the popup container.
      *
-     * @param top
-     * @param left
+     * @param top - 
+     * @param left - 
      */
     const setPosition = (top?: number, left?: number) => {
       // Adjust vertical position...
@@ -755,7 +755,7 @@ export default defineComponent({
      * If MapX and Y are provided, those values supersede the feature x/y.
      * Otherwise the feature x/y is used to determine the location of the popup.
      *
-     * @param ignoreMapXY
+     * @param ignoreMapXY - 
      */
     const setMapXY = (ignoreMapXY?: boolean) => {
       if (!ignoreMapXY) {
@@ -776,8 +776,8 @@ export default defineComponent({
     /**
      * Catch the carousel's picture changes.
      *
-     * @param splide Splide
-     * @param newIndex New Index
+     * @param splide  - Splide
+     * @param newIndex  - New Index
      */
     const onSplideMoved = (splide: unknown, newIndex: number) => {
       currentIdx.value = newIndex;

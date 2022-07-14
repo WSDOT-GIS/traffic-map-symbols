@@ -65,7 +65,7 @@ const layerTitle = "Ferry Routes Points";
 /**
  * Initializes the layer.
  * 
- * @param url Layer URL
+ * @param url  - Layer URL
  * @returns Layer info object
  */
 export const initLayer = (url: string): LayerInfo => {

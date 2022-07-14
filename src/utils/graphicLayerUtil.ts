@@ -14,8 +14,8 @@ import Map from "@arcgis/core/Map";
 
 /**
  * 
- * @param type The type of data being passed: "coordinates" or "CIMSymbol"
- * @param data The data object
+ * @param type  - The type of data being passed: "coordinates" or "CIMSymbol"
+ * @param data  - The data object
  * @returns A graphic
  */
 export const buildGraphicsByType = (type: string, data: any): Graphic => {
@@ -64,18 +64,18 @@ export const buildGraphicsByType = (type: string, data: any): Graphic => {
 
 }
 /**
- * @param graphicType
- * @param graphic
+ * @param graphicType - 
+ * @param graphic - 
  */
 export const addGraphicsByType = (graphicType: string, graphic: Graphic): void => {
     graphic.attributes = { graphicType: graphicType }
     mapView.graphics.add(graphic as Graphic)
 }
 /**
- * @param layerId
- * @param map
- * @param targetField
- * @param targetValue
+ * @param layerId - 
+ * @param map - 
+ * @param targetField - 
+ * @param targetValue - 
  */
 export const displayPointInteractionGraphics = (layerId: string, map: Map, targetField: string, targetValue: string | number | undefined): void => {
     const layer = map.findLayerById(layerId);
@@ -94,8 +94,8 @@ export const displayPointInteractionGraphics = (layerId: string, map: Map, targe
     )*/
 }
 /**
- * @param layerId
- * @param map
+ * @param layerId - 
+ * @param map - 
  */
 export const hidePointInteractionGraphics = (layerId: string, map: Map): void => {
     const layer = map.findLayerById(layerId);
@@ -110,10 +110,7 @@ export const hidePointInteractionGraphics = (layerId: string, map: Map): void =>
     }
 }
 
-/**
- *
- * @param graphicType
- */
+
 export const removeGraphicsByType = (graphicType: string): void => {
     switch (graphicType) {
         default: {

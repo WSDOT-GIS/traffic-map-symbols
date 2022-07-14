@@ -22,7 +22,7 @@ type EsriFeatures = {
  * - "features" is an array
  * - Every item in "features" has an "attributes" property.
  * 
- * @param obj An object to be tested.
+ * @param obj  - An object to be tested.
  * @returns True if object is {@link:EsriRows}, false otherwise.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -40,7 +40,7 @@ export const isEsriRows = (obj: any): obj is EsriRows => {
  *      - "attributes"
  *      - "geometry"
  * 
- * @param obj An object to be tested.
+ * @param obj  - An object to be tested.
  * @returns Returns true if it the object is an {@link:EsriFeatures} object, false otherwise.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

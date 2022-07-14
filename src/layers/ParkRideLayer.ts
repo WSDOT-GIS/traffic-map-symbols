@@ -51,7 +51,7 @@ const layerTitle = "Park and Rides";
 /**
  * Initialize a layer
  * 
- * @param jsonUrl JSON URL
+ * @param jsonUrl  - JSON URL
  * @returns Promise<LayerInfo>
  */
 export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {

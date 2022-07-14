@@ -21,10 +21,7 @@ const layerTitle = "Ferry Routes"
 // ]
 
 
-/**
- *
- * @param url
- */
+
 export const initLayer = async (url: string): Promise<LayerInfo> => {
     const layerInfo = new LayerInfo(layerId, layerTitle, url);
     try {
