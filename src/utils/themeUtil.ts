@@ -16,6 +16,21 @@ export const SAFETY_CSS_SELECTOR = "link[href*='safety.css'][rel='stylesheet']";
  * @param url  - URL to search for go orange CSS links
  * @param selector  - CSS selector that will be used with {@link Document.querySelectorAll}
  * @returns Returns an array of links that match, or null if no matching CSS links were found in the document.
+ * @example
+ *  //#region set theme and relevant colors
+ * ```typescript
+ * import {detectGoOrange} from './utils/themeUtil';
+ * 
+ * detectGoOrange().then((goOrangeResponse)=>{//apply go orange theme
+ *     if(goOrangeResponse){
+ *         document.documentElement.style.setProperty('--color-primaryBrand100', '#FF6A13')
+ *         document.documentElement.style.setProperty('--color-primaryBrand80', '#FF8842')
+ *         document.documentElement.style.setProperty('--color-footerBackground', '#FF8F4E')
+ *         document.documentElement.style.setProperty('--color-themeText', '#1d252dE')
+ *         store.commit("setTheme","Go Orange")
+ *     }
+ * })
+ * ```
  */
 export async function detectGoOrange(url = "https://www.wsdot.wa.gov", selector: string = SAFETY_CSS_SELECTOR) {
     const response = await fetch(url);
