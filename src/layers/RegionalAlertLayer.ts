@@ -99,9 +99,9 @@ interface AlertFetchResult {
 }
 
 /**
- * @param alertUrl
- * @param countyUrl
- * @param regionUrl
+ * @param alertUrl - 
+ * @param countyUrl - 
+ * @param regionUrl - 
  */
 export const initLayer = async (alertUrl: string, countyUrl: string, regionUrl: string):
     Promise<LayerInfo[]> => {
@@ -152,9 +152,9 @@ const getLayer = (): FeatureLayer | undefined => {
 export default getLayer;
 
 /**
- * @param alertUrl
- * @param countyUrl
- * @param regionUrl
+ * @param alertUrl - 
+ * @param countyUrl - 
+ * @param regionUrl - 
  */
 export const reloadData = async (alertUrl: string, countyUrl: string, regionUrl: string):
     Promise<LayerInfo[]> => {
@@ -202,9 +202,9 @@ export const reloadData = async (alertUrl: string, countyUrl: string, regionUrl:
 /**
  * Fetch alerts from JSON, fetch boundaries from county or region map services, then create graphics.
  *
- * @param alertUrl 
- * @param countyUrl 
- * @param regionUrl 
+ * @param alertUrl  - 
+ * @param countyUrl  - 
+ * @param regionUrl  - 
  * @returns 
  */
 const fetchData = async (alertUrl: string, countyUrl: string, regionUrl: string):
@@ -274,9 +274,9 @@ const fetchData = async (alertUrl: string, countyUrl: string, regionUrl: string)
 /**
  * Center the alert icon in the center of the region that is visible.
  *
- * @param mapExtent 
+ * @param mapExtent  - 
  * If specified, it will only consider the visible part of the polygon.
- * @param visibleExtent
+ * @param visibleExtent - 
  */
 export const centerFeatures = async (visibleExtent?: Extent): Promise<void> => {
     const layer = getLayer();

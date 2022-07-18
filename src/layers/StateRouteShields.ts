@@ -6,10 +6,7 @@ export const layerId = "state-route-shields-layer";
 const layerTitle = "State Route Shields";
 
 
-/**
- *
- * @param url
- */
+
 export const initLayer = (url: string): LayerInfo => {
     const layerInfo = new LayerInfo(layerId, layerTitle, url);
     try {

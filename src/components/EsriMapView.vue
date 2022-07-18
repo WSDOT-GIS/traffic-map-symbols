@@ -648,7 +648,7 @@ export default defineComponent({
     /**
      * Display error message
      *
-     * @param event An event
+     * @param event  - An event
      */
     const displayToast = (event: LocationFoundEvent) => {
       if (event[0] == false) {

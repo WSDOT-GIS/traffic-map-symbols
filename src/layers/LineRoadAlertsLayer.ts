@@ -3,7 +3,6 @@ import Field from "@arcgis/core/layers/support/Field";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as layerUtil from "@/utils/layerUtil";
 import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
-import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import Graphic from "@arcgis/core/Graphic";
 import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
 const renderer = new UniqueValueRenderer({
@@ -47,7 +46,7 @@ const layerTitle = "Road Alert Lines";
 
  /**
   *
-  * @param jsonUrl
+  * @param jsonUrl - 
   */
  export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);

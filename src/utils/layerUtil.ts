@@ -38,7 +38,7 @@ const layerGroups: GroupLayerInfo[] = [];
 /**
  * Create the layer group list
  * 
- * @param config Application configuration to get the JSON URLs from.
+ * @param config  - Application configuration to get the JSON URLs from.
  */
 export const createLayerGroupInfos = (config: AppConfig): void => {
     layerGroups.push({ id: "camera", layers: [{ id: "traffic-camera-layer", uniqueField: "CameraID", jsonUrl: config.cameras }] });
@@ -73,9 +73,9 @@ export const createLayerGroupInfos = (config: AppConfig): void => {
 /**
  * Gets group layer info for the specified group ID
  * 
- * @param groupId Group ID
+ * @param groupId  - Group ID
  * @returns The group matching the Group ID.
- * @throws {RangeError} Thrown if {@param groupId} is not one of the expected values.
+ * @throws {@link RangeError} Thrown if {@link groupId}  - is not one of the expected values.
  */
 const getGroupLayerInfo = (groupId: string): GroupLayerInfo => {
     const result = layerGroups.find((item) => item.id === groupId);
@@ -89,7 +89,7 @@ const getGroupLayerInfo = (groupId: string): GroupLayerInfo => {
 /**
  * Get layer IDs from the layer group ID
  * 
- * @param groupId ID of the layer group
+ * @param groupId  - ID of the layer group
  * @returns array of layer IDs
  */
 export const getLayerIds = (groupId: string): string[] => {
@@ -111,7 +111,7 @@ export const getLayerIds = (groupId: string): string[] => {
 /**
  * Resizes a graphic
  * 
- * @param graphic A graphic
+ * @param graphic  - A graphic
  */
 export const resizeFeature = (graphic: Graphic): void => {
     const mapGraphic = buildGraphicsByType("CIMSymbol", graphic)
@@ -121,9 +121,9 @@ export const resizeFeature = (graphic: Graphic): void => {
  * Set the visibility of the specified layer in the layer list.
  * NOTE: The layer list need to be committed to the state store.
  *
- * @param layer Layer
- * @param layerInfo LayerInfo
- * @param visible visibility: true/false
+ * @param layer  - Layer
+ * @param layerInfo  - LayerInfo
+ * @param visible  - visibility: true/false
  * @returns Layer status
  */
 export const setLayerVisibility = async (layer: Layer, layerInfo: LayerInfo, visible: boolean): Promise<LayerStatus> => {
@@ -143,11 +143,11 @@ export const setLayerVisibility = async (layer: Layer, layerInfo: LayerInfo, vis
 /**
  * Get a feature from the layer group.
  *
- * @param uniqueValue 
+ * @param uniqueValue  - 
  * Value from the unique field specified in the layerGroups.
- * @param groupId 
+ * @param groupId  - 
  * ID of the layer group (type). If the specified group has more than one layer, query is done against the first layer only.
- * @param map ESRI map object
+ * @param map  - ESRI map object
  * @returns Graphic or nothing
  */
 export const getFeature = async (uniqueValue: number | string, groupId: string, map: WebMap): Promise<Graphic | undefined> => {
@@ -212,14 +212,14 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
 /**
  * Initialize a feature layer
  * 
- * @param layerId Layer ID
- * @param layerTitle Title
- * @param renderer Renderer
- * @param fields Array of field
- * @param geometryType geometry type
- * @param visible default visibility
- * @param graphics (Optional) Array of graphics to load
- * @param definitionExpression Selection expression.
+ * @param layerId  - Layer ID
+ * @param layerTitle  - Title
+ * @param renderer  - Renderer
+ * @param fields  - Array of field
+ * @param geometryType  - geometry type
+ * @param visible  - default visibility
+ * @param graphics  - (Optional) Array of graphics to load
+ * @param definitionExpression  - Selection expression.
  * @returns Promise<FeatureLayer>
  */
 export const initLayer = async (layerId: string, layerTitle: string,
@@ -272,8 +272,8 @@ let loadManager: { id: string, promise: Promise<LayerStatus | undefined> }[] = [
 /**
  * Reloads the data for a layer from the JSON URL.
  * 
- * @param jsonUrl URL of JSON data
- * @param layer A feature Layer
+ * @param jsonUrl  - URL of JSON data
+ * @param layer  - A feature Layer
  * @returns Either a {@link LayerInfo} or undefined.
  */
 export const reloadData = async (jsonUrl: string, layer: FeatureLayer | undefined): Promise<LayerInfo | undefined> => {
@@ -315,8 +315,8 @@ export const reloadData = async (jsonUrl: string, layer: FeatureLayer | undefine
 /**
  * Replaces the features in a feature layer.
  * 
- * @param layer A feature layer
- * @param newFeatures The new features that will replace the current ones.
+ * @param layer  - A feature layer
+ * @param newFeatures  - The new features that will replace the current ones.
  */
 export const replaceFeatures = async (layer: FeatureLayer, newFeatures: Graphic[]): Promise<void> => {
     // Delete existing features...
@@ -330,9 +330,9 @@ export const replaceFeatures = async (layer: FeatureLayer, newFeatures: Graphic[
 /**
  * Fetches JSON data and converts them to graphics.
  * 
- * @param jsonUrl URL for a JSON file
+ * @param jsonUrl  - URL for a JSON file
  * @returns An array of {@link Graphic} objects.
- * @throws {TypeError} Thrown if the JSON is not in Esri features format.
+ * @throws {@link TypeError} Thrown if the JSON is not in Esri features format.
  */
 export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
     // Fetch all features from JSON...
@@ -361,8 +361,8 @@ export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
 /**
  * Updates scale dependent rendering.
  * 
- * @param layer layer
- * @param scale scale
+ * @param layer  - layer
+ * @param scale  - scale
  */
 export const updateScaleDependentRendering = (layer: FeatureLayer, scale: number) => {
     if (layer.title == "Linear Closures Lines") {

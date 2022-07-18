@@ -76,7 +76,7 @@ mapView.ui.remove("zoom");
 /**
  * Initialize the map view
  * 
- * @param container Container HTML Element
+ * @param container  - Container HTML Element
  */
 export const init = (container: HTMLDivElement): void => {
     mapView.container = container;
@@ -183,7 +183,7 @@ export const loadOperationalLayers = async (): Promise<LayerInfo[]> => {
 /**
  * Filter out the layers that did not load.
  *
- * @param list List of layers to validate
+ * @param list  - List of layers to validate
  * @returns An array of valid layers.
  */
 export const validateLayerList = (list: (Layer | undefined)[]): Layer[] => {
@@ -193,7 +193,7 @@ export const validateLayerList = (list: (Layer | undefined)[]): Layer[] => {
 /**
  * Type guard for the layer object
  *
- * @param layer An object that may or may not be a layer.
+ * @param layer  - An object that may or may not be a layer.
  * @returns A boolean indicating if the input is a layer.
  */
 export const isLayer = (layer: Layer | undefined): layer is Layer => {
@@ -245,8 +245,8 @@ export const refreshLayerData = async (): Promise<LayerInfo[]> => {
 /**
  * Attempts to zoom to a point
  * 
- * @param point A point
- * @param numLevels The number of levels
+ * @param point  - A point
+ * @param numLevels  - The number of levels
  * @returns True if successful, false otherwise.
  */
 export const tryZoomToPoint = (point: Point, numLevels?: number): boolean => {
@@ -266,8 +266,8 @@ export const tryZoomToPoint = (point: Point, numLevels?: number): boolean => {
 /**
  * Zoom centered at the specified location
  *
- * @param point The center location
- * @param zoomLevel The zoom level to zoom into.
+ * @param point  - The center location
+ * @param zoomLevel  - The zoom level to zoom into.
  * If numLevels is also specified, that will take precedence over this value.
  * @returns A boolean promise indicating of the zoom successfully occurred.
  */
@@ -293,7 +293,7 @@ export const tryZoomToPointAsync = async (point: Point, zoomLevel: number): Prom
 /**
  * Zoom to the maximum level at the specified point.
  * 
- * @param point The point to zoom to
+ * @param point  - The point to zoom to
  */
 export const zoomToMax = async (point: Point): Promise<void> => {
     await mapView.goTo({
@@ -310,7 +310,7 @@ export const zoomToMax = async (point: Point): Promise<void> => {
 /**
  * Zooms to the metro area of the given extent.
  * 
- * @param extent An extent
+ * @param extent  - An extent
  */
 export const zoomToMetroArea = (extent: Extent): void => {
     mapView.extent = extent.expand(2);
@@ -331,7 +331,7 @@ export const zoomToMetroArea = (extent: Extent): void => {
 /**
  * Zooms to a given extent.
  * 
- * @param extent An extent to zoom to.
+ * @param extent  - An extent to zoom to.
  */
 export const zoomToExtent = async (extent: Extent): Promise<void> => {
     await mapView.goTo(extent, {
@@ -359,7 +359,7 @@ export const zoomToExtent = async (extent: Extent): Promise<void> => {
 /**
  * A zoom level and scale
  */
-interface ZoomLevel {
+export interface ZoomLevel {
     /** zoom level */
     level: number,
     /** zoom scale */
@@ -371,7 +371,7 @@ let zoomLevels: ZoomLevel[];
 /**
  * Get the scale by the number levels from the minimum scale.
  *
- * @param numLevelsFromMin Number of levels from the minimum scale. 
+ * @param numLevelsFromMin  - Number of levels from the minimum scale. 
  * For example, 0 is the min scale. 3 is the fourth level from the min scale.
  * You can also specify number of levels from the maximum scale by using the negative value.
  * For example -1 is the max scale. -2 is the second level from the max scale.
@@ -404,8 +404,8 @@ export const getZoomLevel = (numLevelsFromMin: number): ZoomLevel => {
 /**
  * Converts map coordinates to screen coordinates.
  * 
- * @param mapX X coordinate
- * @param mapY Y coordinate
+ * @param mapX  - X coordinate
+ * @param mapY  - Y coordinate
  * @returns a point object.
  */
 export const toScreenXY = (mapX: number, mapY: number): { x: number, y: number } => {
@@ -417,8 +417,8 @@ export const toScreenXY = (mapX: number, mapY: number): { x: number, y: number }
 /**
  * Converts X and Y coordinates to a {@link Point} object.
  * 
- * @param mapX X
- * @param mapY Y
+ * @param mapX  - X
+ * @param mapY  - Y
  * @returns a Point object.
  */
 export const toPoint = (mapX: number, mapY: number): Point => {
@@ -431,8 +431,8 @@ export const toPoint = (mapX: number, mapY: number): Point => {
 /**
  * Check the new extent after panning against the max extent allowed and report the direction from the extent.
  *
- * @param shiftX Shift X
- * @param shiftY Shift Y
+ * @param shiftX  - Shift X
+ * @param shiftY  - Shift Y
  * @returns A string matching the pattern /[ins][iwe]/
  * - First char: vertical direction = i/n/s (inside/north/south)
  * - Second char: horizontal direction = i/w/e (inside/west/east)
@@ -451,9 +451,9 @@ export const checkPannedExtent = (shiftX: number, shiftY: number): ExtentDirecti
 /**
  * Pan Map using GoTo()
  *
- * @param shiftX 
+ * @param shiftX  - 
  * positive = pan east, negative = pan west
- * @param shiftY
+ * @param shiftY - 
  * Positive = pan south, negative = pan north
  * @returns 
  * If successful or exception, return true/false. Otherwise return the actual amount pan was panned.
@@ -503,7 +503,7 @@ export const panMap = async (shiftX: number, shiftY: number): Promise<{ actualSh
 /**
  * Gets the layer with the specified "id"
  * 
- * @param id Layer ID
+ * @param id  - Layer ID
  * @returns A Layer.
  */
 export const getLayer = (id: string): Layer => {
@@ -523,9 +523,9 @@ export const getLayers = (): Collection<Layer> => {
  * - The number of features is less than the maxCount.
  * - All the features are at the identical location.
  *
- * @param clusterGraphic Cluster Graphic
- * @param layer Layer
- * @param maxCount Max count
+ * @param clusterGraphic  - Cluster Graphic
+ * @param layer  - Layer
+ * @param maxCount  - Max count
  * @returns An array of IDs or undefined
  */
 export const getIdsFromCluster = async (clusterGraphic: Graphic, layer: Layer, maxCount?: number): Promise<number[] | undefined> => {
@@ -564,9 +564,9 @@ export const getIdsFromCluster = async (clusterGraphic: Graphic, layer: Layer, m
 /**
  * Converts pixel to meters
  * 
- * @param distancePixel distance pixel
- * @param screenPoint screen point
- * @param mapPoint map point
+ * @param distancePixel  - distance pixel
+ * @param screenPoint  - screen point
+ * @param mapPoint  - map point
  * @returns distance in meters
  */
 export const pixel2meter = (distancePixel: number, screenPoint?: XY, mapPoint?: Point): number => {
@@ -614,7 +614,7 @@ let highlight: __esri.Handle;
 /**
  * Highlights the specified feature.
  * 
- * @param featureInfo Feature info to be highlighted.
+ * @param featureInfo  - Feature info to be highlighted.
  */
 export const highlightFeature = (featureInfo: FeatureInfo): void => {
     const layer = getLayer(featureInfo.layerId) as FeatureLayer;

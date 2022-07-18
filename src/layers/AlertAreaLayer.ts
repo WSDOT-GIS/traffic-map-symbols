@@ -45,10 +45,7 @@ export const layerId = "alert-area-layer";
 const layerTitle = "Alert Areas";
 
 
-/**
- *
- * @param features
- */
+
 export const initLayer = (features: Graphic[]): LayerInfo => {
     const layerInfo = new LayerInfo(layerId, layerTitle);
     try {
@@ -86,10 +83,7 @@ const getLayer = (): FeatureLayer | undefined => {
 export default getLayer;
 
 
-/**
- *
- * @param eventId
- */
+
 export const getFeatureById = async (eventId: number): Promise<Graphic | undefined> => {
     const layer = getLayer();
     if (!layer) { return; }
@@ -103,8 +97,8 @@ export const getFeatureById = async (eventId: number): Promise<Graphic | undefin
  * Get the center of the visible part of the alert polygon.
  * NOTE: Using polygon-clipping package instead of ESRI to reduce the initial file size.
  *
- * @param eventId Event ID
- * @param visibleExtent Visible Extent
+ * @param eventId  - Event ID
+ * @param visibleExtent  - Visible Extent
  * @returns Returns the centroid of the polygon that intersects the feature specified by the {@link eventId}.
  * If there is no feature matching {@link eventId}, then undefined is returned.
  */

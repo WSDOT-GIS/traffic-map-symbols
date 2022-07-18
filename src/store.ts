@@ -176,8 +176,8 @@ export const store = createStore<State>({
         /**
          * Add LayerInfos if not exist already, or update the existing ones.
          *
-         * @param state 
-         * @param payload 
+         * @param state  - 
+         * @param payload  - 
          */
         setLayerInfos(state, payload: LayerInfo[]) {
             payload.forEach(newInfo => {
@@ -208,14 +208,8 @@ export const store = createStore<State>({
         /**
          * Update a layer info in the layer list
          *
-         * @param state 
-         * @param payload Set the properties that need to be updated, and leave others undefined. Undefined properties will not be updated. 
-         * @param payload.id
-         * @param payload.title
-         * @param payload.index
-         * @param payload.url
-         * @param payload.visible
-         * @param payload.status
+         * @param state  - State
+         * @param payload  - Set the properties that need to be updated, and leave others undefined. Undefined properties will not be updated. 
          */
         updateLayerInfo(state, payload: {
             id: string, title?: string, index?: number, url?: string, visible?: boolean,
@@ -316,10 +310,6 @@ export const store = createStore<State>({
          * Setup layer watch handlers to keep track of layer status.
          * If it is JSON layer, only use the layer's loadStatus property if it is "Failed". Otherwise the status is updated when JSON is fetched.
          * If it is not a JSON layer, use the layer's loadStatus property.
-         *
-         * @param root0
-         * @param root0.commit
-         * @param root0.state
          */
         watchLayers({ commit, state }) {
             if (layerWatchHandles) {
@@ -413,7 +403,7 @@ const removeServiceAlert = (state: State, alert: string | LayerInfo) => {
 /**
  * Clone the target of proxy (i.e. removing the reactivity)
  *
- * @param proxy The reactive object
+ * @param proxy  - The reactive object
  * @returns Non-reactive copy of the object
  */
 export const cloneProxyTarget = <T>(proxy: T): T => {

@@ -2,6 +2,12 @@
 
 This repository contains the source code for the [WSDOT Travel Center Map]
 
+## TypeDoc generated code documentation
+
+[![documentation coverage badge](docs/coverage.svg)][docs]
+
+[docs]:docs/README.md
+
 ## Build Status
 
 | branch           | status                                          |
@@ -73,7 +79,7 @@ You can use the [dotnet-serve] tool to test the production build on your local m
 
 You can install [dotnet-serve] using the following command, which uses the `.config/dotnet-tools.json` file.
 
-```pwsh
+```powershell
 dotnet tools restore
 ```
 
@@ -81,13 +87,13 @@ dotnet tools restore
 
 The following command will run [dotnet-serve] with the settings defined in `.netconfig`.
 
-```pwsh
+```powershell
 dotnet serve
 ```
 
 ## Additional documentation
 
-* [Packages](packages.md)
+* [Packages](./packages.md)
 
 <!-- 
 ## YAML schema file

@@ -3,7 +3,7 @@ import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import Field from "@arcgis/core/layers/support/Field";
 import { alertSymbol } from "@/symbols/AlertSymbol"
 import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
-import { getFerryAlerts, reloadFerryAlerts } from "@/utils/alertInfoUtil";
+import { getFerryAlerts } from "@/utils/alertInfoUtil";
 
 const renderer = new simpleRenderer({
     symbol: alertSymbol
@@ -65,7 +65,7 @@ const layerTitle = "Ferry Routes Points";
 /**
  * Initializes the layer.
  * 
- * @param url Layer URL
+ * @param url  - Layer URL
  * @returns Layer info object
  */
 export const initLayer = (url: string): LayerInfo => {

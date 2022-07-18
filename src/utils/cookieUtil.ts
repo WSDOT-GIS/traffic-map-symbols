@@ -9,8 +9,8 @@ const maxDays = 3650;
 /**
  * Sets a cookie
  * 
- * @param name name
- * @param val value
+ * @param name  - name
+ * @param val  - value
  */
 export const setCookie = (name: string, val: string): void => {
     const date = new Date();
@@ -24,7 +24,7 @@ export const setCookie = (name: string, val: string): void => {
 /**
  * Gets a cookie matching the given name.
  * 
- * @param name Name of cookie.
+ * @param name  - Name of cookie.
  * @returns a string of the value corresponding to the given name.
  */
 export const getCookie = (name: string): string => {
@@ -44,7 +44,7 @@ export const getCookie = (name: string): string => {
 /**
  * Checks to see if a cookie for the given name exits.
  * 
- * @param name A cookie name
+ * @param name  - A cookie name
  * @returns A boolean value indicating if the cookie exists.
  */
 export const checkCookie = (name: string): boolean => {
@@ -55,7 +55,7 @@ export const checkCookie = (name: string): boolean => {
 /**
  * Deletes the cookie corresponding to the input name.
  * 
- * @param name The name of the cookie to delete.
+ * @param name  - The name of the cookie to delete.
  */
 export const deleteCookie = (name: string): void => {
     const date = new Date();

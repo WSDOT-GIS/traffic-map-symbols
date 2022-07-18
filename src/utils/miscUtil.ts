@@ -7,9 +7,9 @@ export const formattedEpochRe = /\d{4}\/\d{2}\/\d{2}(?: \d{2}:\d{2} [AP]M)?/
 /**
  * Formats an epoch.
  * 
- * @param epoch Epoch
- * @param isTime Indicates if the epoch is a time.
- * @returns epoch as a string. MM/DD/YYYY HH:mm {AM|PM}
+ * @param epoch  - Epoch
+ * @param isTime  - Indicates if the epoch is a time.
+ * @returns epoch as a string. MM/DD/YYYY HH:mm  \{AM|PM\}
  */
 export const formatEpoch = (epoch: number, isTime?: boolean): string => {
     /* IT said date will be in UTC, so removed the workaround below. If necessary simply
@@ -37,7 +37,7 @@ export const formatEpoch = (epoch: number, isTime?: boolean): string => {
 /**
  * Formats a number to be padded with zeros if only a single digit
  * 
- * @param part A number.
+ * @param part  - A number.
  * @returns A two-digit representation of the input number.
  */
 const formatDateTimePart = (part: number) => {
@@ -47,8 +47,8 @@ const formatDateTimePart = (part: number) => {
 /**
  * Fetches JSON from a URL.
  * 
- * @param url JSON URL
- * @param isUnicode Indicates if JSON is in utf-8 (true) or "windows-1252" (false)
+ * @param url  - JSON URL
+ * @param isUnicode  - Indicates if JSON is in utf-8 (true) or "windows-1252" (false)
  * @returns An object parsed from the JSON data.
  */
 export const fetchJson = async (url: string, isUnicode?: boolean): Promise<unknown> => {
@@ -93,8 +93,8 @@ export const WebMercator = {
 /**
  * Determines if the HTML element has a parent with a specific class.
  * 
- * @param child HTML element
- * @param classname CSS class name
+ * @param child  - HTML element
+ * @param classname  - CSS class name
  * @returns true or false indicating if the element's parent is in this class.
  */
 export const hasParentClass = (child: Element | null, classname: string): boolean => {
@@ -116,8 +116,8 @@ export const hasParentClass = (child: Element | null, classname: string): boolea
 /**
  * Determines if the HTML element has a parent with the given "id" attribute.
  * 
- * @param child An HTML element
- * @param id An "id" attribute value.
+ * @param child  - An HTML element
+ * @param id  - An "id" attribute value.
  * @returns a boolean indicating if the parent is present.
  */
 export const hasParent = (child: HTMLElement, id: string): boolean => {

@@ -1,14 +1,14 @@
 /**
  * Represents rows returned from an Esri query.
  */
-type EsriRows = {
+export type EsriRows = {
     features: { attributes: Record<string, unknown> }[]
 }
 
 /**
  * Represents results of a feature layer query.
  */
-type EsriFeatures = {
+export type EsriFeatures = {
     spatialReference: { wkid: number, latestWkid: number },
     features: {
         attributes: Record<string, unknown>,
@@ -17,13 +17,13 @@ type EsriFeatures = {
 }
 
 /**
- * Determines if an object is an {@link:EsriRows}.
+ * Determines if an object is an {@link EsriRows}.
  * - Contains "features" property.
  * - "features" is an array
  * - Every item in "features" has an "attributes" property.
  * 
- * @param obj An object to be tested.
- * @returns True if object is {@link:EsriRows}, false otherwise.
+ * @param obj  - An object to be tested.
+ * @returns True if object is {@link EsriRows}, false otherwise.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isEsriRows = (obj: any): obj is EsriRows => {
@@ -40,8 +40,8 @@ export const isEsriRows = (obj: any): obj is EsriRows => {
  *      - "attributes"
  *      - "geometry"
  * 
- * @param obj An object to be tested.
- * @returns Returns true if it the object is an {@link:EsriFeatures} object, false otherwise.
+ * @param obj  - An object to be tested.
+ * @returns Returns true if it the object is an {@link EsriFeatures} object, false otherwise.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isEsriFeatures = (obj: any): obj is EsriFeatures => {

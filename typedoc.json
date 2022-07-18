@@ -1,0 +1,14 @@
+{
+    "$schema": "https://typedoc.org/schema.json",
+    "readme": "none",
+    "cleanOutputDir": true,
+    "entryPointStrategy": "expand",
+    "githubPages": false,
+    "entryPoints": [
+        "./src"
+    ],
+    "plugin": [
+        "typedoc-plugin-markdown",
+        "typedoc-plugin-coverage"
+    ]
+}
