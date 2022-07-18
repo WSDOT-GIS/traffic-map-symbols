@@ -4,13 +4,13 @@
     "cache": {
         "useCache": true
     },
-    "showStatus": false,
     "files": [
         "**/*.{ts,vue,md}",
         "**/*.d.ts"
     ],
     "useGitignore": true,
     "ignorePaths": [
+        "docs",
         "cspell.json",
         "**/*.gdb",
         "**/*.tbx",

@@ -4,14 +4,14 @@
   "private": true,
   "scripts": {
     "prepare": "npm run docs",
-    "clean": "git clean -dfx -e node_modules", 
+    "clean": "git clean -dfx -e node_modules",
     "dotnet-serve": "dotnet serve --path-base /Travel/Real-time/Map/ --directory dist",
     "docs": "typedoc",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --modern",
     "lint": "vue-cli-service lint --no-fix",
     "lint:html": "vue-cli-service lint --no-fix --format html > dist/lint-results.html",
-    "spell-ci": "cspell **/* --fail-fast --no-progress --no-summary",
+    "spell-ci": "cspell lint **/* --fail-fast --no-progress --no-summary",
     "tsc:symbols": "tsc --project symbols.tsconfig"
   },
   "dependencies": {
@@ -33,6 +33,7 @@
     "@vue/eslint-config-typescript": "^11.0.0",
     "analytics": "^0.8.1",
     "core-js": "^3.23.4",
+    "cspell": "^6.3.0",
     "eslint": "^8.19.0",
     "eslint-plugin-tsdoc": "^0.2.16",
     "eslint-plugin-vue": "^9.2.0",
