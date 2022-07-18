@@ -43,7 +43,7 @@ export async function detectGoOrange(url = "https://www.wsdot.wa.gov", selector:
  * 
  * @param markup  - HTML markup that will be parsed by {@link DomParser}
  * @param selector  - CSS selector that will be used with {@link Document.querySelectorAll}
- * @returns Returns a {@link NodeList} of links that match, or null if no matching CSS links were found in the document.
+ * @returns Returns a {@link https://developer.mozilla.org/en-US/docs/Web/API/NodeList|NodeList} of links that match, or null if no matching CSS links were found in the document.
  */
 export function detectThemeCss<T extends Element>(markup: string, selector: string  = SAFETY_CSS_SELECTOR) {
     const domParser = new DOMParser();

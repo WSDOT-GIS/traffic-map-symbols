@@ -37,6 +37,23 @@ src/utils/themeUtil.ts:11
 
 Fetches a webpage and looks for specific CSS links.
 
+**`Example`**
+
+//#region set theme and relevant colors
+```typescript
+import {detectGoOrange} from './utils/themeUtil';
+
+detectGoOrange().then((goOrangeResponse)=>{//apply go orange theme
+    if(goOrangeResponse){
+        document.documentElement.style.setProperty('--color-primaryBrand100', '#FF6A13')
+        document.documentElement.style.setProperty('--color-primaryBrand80', '#FF8842')
+        document.documentElement.style.setProperty('--color-footerBackground', '#FF8F4E')
+        document.documentElement.style.setProperty('--color-themeText', '#1d252dE')
+        store.commit("setTheme","Go Orange")
+    }
+})
+```
+
 #### Parameters
 
 | Name | Type | Default value | Description |
@@ -75,4 +92,4 @@ Looks for specific CSS links in an HTML document.
 
 ``null`` \| `NodeListOf`<`T`\>
 
-Returns a NodeList of links that match, or null if no matching CSS links were found in the document.
+Returns a [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) of links that match, or null if no matching CSS links were found in the document.

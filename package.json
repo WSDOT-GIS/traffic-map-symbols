@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "prepare": "npm run docs",
+    "clean": "git clean -dfx -e node_modules", 
     "dotnet-serve": "dotnet serve --path-base /Travel/Real-time/Map/ --directory dist",
     "docs": "typedoc",
     "serve": "vue-cli-service serve",
