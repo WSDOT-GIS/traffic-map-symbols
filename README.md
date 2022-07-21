@@ -2,12 +2,6 @@
 
 This repository contains the source code for the [WSDOT Travel Center Map]
 
-## TypeDoc generated code documentation
-
-[![documentation coverage badge](docs/coverage.svg)][docs]
-
-[docs]:docs/README.md
-
 ## Build Status
 
 | branch           | status                                          |
@@ -22,6 +16,12 @@ This repository contains the source code for the [WSDOT Travel Center Map]
 [build]:https://dev.azure.com/WSDOT/TravelerInformation/_build/latest?definitionId=804
 [build:main]:https://dev.azure.com/WSDOT/TravelerInformation/_build/latest?definitionId=804&branchName=main
 [build:develop]:https://dev.azure.com/WSDOT/TravelerInformation/_build/latest?definitionId=804&branchName=Develop
+
+## TypeDoc generated code documentation
+
+[![documentation coverage badge](docs/coverage.svg)][docs]
+
+[docs]:docs/README.md
 
 ## This project is utilizing
 
