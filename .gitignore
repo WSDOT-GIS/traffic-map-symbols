@@ -47,7 +47,6 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
-docs/
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
@@ -204,3 +203,5 @@ $RECYCLE.BIN/
 **/*Symbols/*Index/*
 **/*.js.map
 **/src/**/*.js
+**/docs
+!**/docs/coverage.svg
