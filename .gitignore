@@ -205,3 +205,7 @@ $RECYCLE.BIN/
 **/src/**/*.js
 **/docs
 !**/docs/coverage.svg
+
+# Exclude lighthouse reports
+**/*.report.html
+lhreport.*
