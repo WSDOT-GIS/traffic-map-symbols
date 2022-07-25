@@ -33,7 +33,9 @@ export const SAFETY_CSS_SELECTOR = "link[href*='safety.css'][rel='stylesheet']";
  * ```
  */
 export async function detectGoOrange(url = "https://www.wsdot.wa.gov", selector: string = SAFETY_CSS_SELECTOR) {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+        mode: "no-cors"
+    });
     const markup = await response.text();
     return detectThemeCss(markup, selector);
 }

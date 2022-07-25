@@ -8,7 +8,7 @@
     "dotnet-serve": "dotnet serve --path-base /Travel/Real-time/Map/ --directory dist",
     "docs": "typedoc",
     "serve": "vue-cli-service serve",
-    "lighthouse": "npm tools/run-lighthouse.mjs",
+    "lighthouse": "node ./tools/run-lighthouse.mjs",
     "build": "vue-cli-service build --modern",
     "lint": "vue-cli-service lint --no-fix",
     "lint:html": "vue-cli-service lint --no-fix --format html > dist/lint-results.html",
