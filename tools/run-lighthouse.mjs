@@ -106,9 +106,6 @@ async function runLighthouse(url, vueServe) {
     vueServe.kill();
 }
 
-const timerLabel = "operation";
-time(timerLabel);
-
 (async () => {
     console.log("Starting vue-cli-service serve...");
     const vueServe = exec("npx vue-cli-service serve --mode production");
@@ -127,6 +124,5 @@ time(timerLabel);
     });
 })();
 
-timeEnd(timerLabel);
 
 
