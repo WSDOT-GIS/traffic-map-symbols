@@ -6,33 +6,23 @@
     <transition name="slide">
       <div v-if="isOpen" class="sidebar-panel">
         <!-- Links from id="sidr-existing-content". Removed the classes. -->
-            <div>
-            <a :href="WsdotRootUrl + '/travel'" data-drupal-link-system-path="node/403"
-              >Travel<span class="caret"></span
-            ></a></div>
-            <div>
-            <a
-              :href="WsdotRootUrl + '/construction-planning'"
-              data-drupal-link-system-path="node/404"
-              >Construction &amp; planning<span class="caret"></span
-            ></a></div>
-          <div>
-            <a :href="WsdotRootUrl + '/business-wsdot'" data-drupal-link-system-path="node/405"
-              >Business with WSDOT<span class="caret"></span
-            ></a>
-          </div>
-          <div>
-            <a
-              :href="WsdotRootUrl + '/engineering-standards'"
-              data-drupal-link-system-path="node/406"
-              >Engineering &amp; standards<span class="caret"></span
-            ></a>
-          </div>
-          <div>
-            <a :href="WsdotRootUrl + '/about'" data-drupal-link-system-path="node/53"
-              >About<span class="caret"></span
-            ></a>
-          </div>
+        <div>
+          <a :href="WsdotRootUrl + '/travel'" data-drupal-link-system-path="node/403">Travel</a>
+        </div>
+        <div>
+          <a :href="WsdotRootUrl + '/construction-planning'" data-drupal-link-system-path="node/404">Construction &amp;
+            planning</a>
+        </div>
+        <div>
+          <a :href="WsdotRootUrl + '/business-wsdot'" data-drupal-link-system-path="node/405">Business with WSDOT</a>
+        </div>
+        <div>
+          <a :href="WsdotRootUrl + '/engineering-standards'" data-drupal-link-system-path="node/406">Engineering &amp;
+            standards</a>
+        </div>
+        <div>
+          <a :href="WsdotRootUrl + '/about'" data-drupal-link-system-path="node/53">About</a>
+        </div>
       </div>
     </transition>
   </div>
@@ -82,6 +72,7 @@ export default defineComponent({
   transition: right 0.2s ease 0s;
   right: 0px;
 }
+
 .sidebar-backdrop {
   background-color: rgba(0, 0, 0, 0.5);
   width: 100vw;
@@ -147,21 +138,6 @@ export default defineComponent({
 .sidebar-panel div a:visited {
   color: #1d252d;
 }
-
-.sidebar-panel div a .caret {
-  /*display: none; */
-  border: none;
-}
-.sidebar-panel div a .caret:after {
-  content: '\f078';
-  font-family: "Font Awesome 5 Pro";
-  position: absolute;
-  color: #007B5F;
-  right: 5px;
-  font-weight: 600;
-  top: 12px;
-}
-
 .sidebar-panel div:focus,
 .sidebar-panel div:hover {
   text-decoration: underline;
@@ -184,6 +160,7 @@ export default defineComponent({
   .sidebar-panel {
     width: 300px;
   }
+
   .sidebar-close-icon {
     right: 320px;
   }
