@@ -8,7 +8,6 @@ import lighthouse from "lighthouse";
 import chromeLauncher from "chrome-launcher"
 import { exec } from "node:child_process"
 import { exit } from "process";
-import { time, timeEnd } from "console";
 
 /**
  * Extracts the local URL from a `vue-cli-service serve` stderr message.
