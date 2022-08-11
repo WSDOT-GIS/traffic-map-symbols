@@ -7,14 +7,64 @@
 			"problemMatcher": [
 				"$tsc"
 			],
+			"icon": {
+				"id": "package",
+				"color": "terminal.ansiCyan"
+			},
 			"group": "build",
-			"label": "tsc: build - tsconfig.json"
+			"label": "tsc: build",
+			"detail": "Typescript build"
 		},
 		{
 			"label": "vuejs: start",
+			"group": "build",
+			"detail": "Starts the Vue server, watching for changes",
 			"type": "npm",
 			"script": "serve",
 			"isBackground": true
 		},
+		{
+			"type": "npm",
+			"icon": {
+				"id": "trashcan",
+				"color": "terminal.ansiRed"
+			},
+			"script": "clean",
+			"problemMatcher": [],
+			"label": "npm: clean",
+			"detail": "Deletes all files that are not part of git repo, excluding the node_modules folder."
+		},
+		{
+			"type": "npm",
+			"script": "docs",
+			"icon": {
+				"id": "book",
+				"color": "terminal.ansiGreen"
+			},
+			"label": "run typedoc",
+			"detail": "Generates documentation files using typedoc"
+		},
+		{
+			"type": "shell",
+			"label": "dotnet-serve",
+			"detail": "Uses dotnet-serve to serve files from 'dist' directory.",
+			"command": "dotnet serve --path-base /Travel/Real-time/Map/ --directory dist",
+			"icon": {
+				"id": "browser",
+				"color": "terminal.ansiBlue"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "lighthouse",
+			"icon": {
+				"id": "checklist",
+				"color": "terminal.ansiMagenta"
+			},
+			"detail": "Run the lighthouse tool to check performance issues, etc.",
+			"type": "shell",
+			"command": "node ./tools/run-lighthouse.mjs",
+			"problemMatcher": []
+		}
 	]
 }
