@@ -40,7 +40,11 @@
 			"type": "shell",
 			"label": "dotnet-serve",
 			"detail": "Uses dotnet-serve to serve files from 'dist' directory.",
-			"command": "dotnet serve --path-base /Travel/Real-time/Map/ --directory dist",
+			"command": "dotnet-serve",
+			"args": [
+				"--path-base=/Travel/Real-time/Map/", 
+				"--directory=dist"
+			],
 			"icon": {
 				"id": "browser",
 				"color": "terminal.ansiBlue"
