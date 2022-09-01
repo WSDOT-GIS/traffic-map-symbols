@@ -2,6 +2,35 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"label": "Test configs",
+			"detail": "Tests the configuration files to see if their URLs are reachable and to see if any config files are missing properties that the others have.",
+			"icon": {
+				"id": "beaker",
+				"color": "terminal.ansiGreen"
+			},
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"ts-node", 
+				"--esm",
+				"./tools/test-config.mts"
+			],
+			"problemMatcher": [
+				// {
+				// 	"pattern":[
+				// 		{
+				// 			"regexp": "^(\\w+) Fetching from (\\w+): (https?://.+) failed.$",
+				// 			"file": 1,
+				// 			"location": 2,
+				// 			"message": 3
+				// 		},
+						
+				// 	],
+				// 	 "source": "config test"
+				// }
+			]
+		},
+		{
 			"label": "vuejs: start",
 			"icon": {
 				"id": "eye-watch"
