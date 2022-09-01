@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es2017",
+    "target": "es2020",
     "module": "esnext",
     "strict": true,
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
+    "resolveJsonModule": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -21,7 +22,7 @@
       ]
     },
     "lib": [
-      "ES2019",
+      "ES2020",
       "dom",
       "dom.iterable",
       "scripthost"
