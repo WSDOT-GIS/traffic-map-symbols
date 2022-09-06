@@ -1,6 +1,6 @@
 /**
  * Tests the configuration files to see if their URLs are valid.
- * 
+ *
  * @example
  * ```pwsh
  * C:\Users\YourUserName\source\repos\TravelerInformationCoreMap [develop-config-test ≡ +0 ~1 -0 !]> npx ts-node --esm .\tools\test-config.mts
@@ -28,11 +28,14 @@
  */
 
 import { env } from "node:process";
+import { mkdir, writeFile } from "node:fs/promises";
+import { join } from "node:path";
 import appConfig from "../public/appconfig.json" assert { type: "json" };
 import appConfigPro from "../public/appconfigPro.json" assert { type: "json" };
 import appConfigQA from "../public/appconfigQA.json" assert { type: "json" };
 import appConfigDev from "../public/appconfigDev.json" assert { type: "json" };
 
+// Need to disable this for testing intranet resources.
 env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 
 type AppConfig = Record<string, unknown> &
@@ -48,6 +51,7 @@ type TestResult = {
   errorMessage: string | null;
   causeName: string | null;
   causeMessage: string | null;
+  cleanedUrl: string | null;
   url: string;
 };
 
@@ -62,6 +66,59 @@ const propertyNames = new Set<string>();
 
 /** Matches a URL with http or https protocol */
 const urlRe = /^https?:\/\//i;
+
+/**
+ * Creates a "cleaned-up" version of the input URL by removing
+ * unnecessary search parameters.
+ * @param configName - Configuration name
+ * @param propertyName - Property Name
+ * @param url - URL
+ * @returns A URL if there are search parameters that could be removed. Null otherwise.
+ */
+function detectUnneededSearchParams(configName: string, propertyName: string, url: string | URL) {
+  const unneededIfNoGeometry = ["geometryType", "spatialRel"];
+  const unneededIfFalse = [
+    "applyVCSProjection",
+    "returnIdsOnly",
+    "returnUniqueIdsOnly",
+    "returnCountOnly",
+    "returnExtentOnly",
+    "returnQueryGeometry",
+    "returnDistinctValues",
+  ];
+  url = url instanceof URL ? url : new URL(url);
+  const unneeded = new Array<string>();
+  const geometryParamHasValue =
+    url.searchParams.has("geometry") && url.searchParams.get("geometry");
+
+  for (const [key, value] of url.searchParams) {
+    if (
+      value === "" ||
+      value === null ||
+      (value === "false" && key in unneededIfFalse) ||
+      (!geometryParamHasValue && key in unneededIfNoGeometry)
+    ) {
+      unneeded.push(key);
+    }
+  }
+  let newUrl: URL | null = null;
+
+  if (unneeded.length > 0) {
+    newUrl = new URL(url);
+    console.group(
+      `${configName}: ${propertyName}\nThe following search parameters appear to be unnecessary ${
+        url.href.split("?")[0]
+      }:`
+    );
+    for (const key of unneeded) {
+      console.log(key);
+      newUrl.searchParams.delete(key);
+    }
+    console.groupEnd();
+  }
+
+  return newUrl;
+}
 
 /**
  * Detects if the URL ends in "MapServer", and if it does,
@@ -83,6 +140,7 @@ function ensureMapServiceUrlHasFParamIfNeeded(url: string) {
 }
 
 async function testUrl(configName: string, propertyName: string, url: string): Promise<TestResult> {
+  const cleanedUrl = detectUnneededSearchParams(configName, propertyName, url);
   const modifiedUrl = ensureMapServiceUrlHasFParamIfNeeded(url);
 
   try {
@@ -105,6 +163,7 @@ async function testUrl(configName: string, propertyName: string, url: string): P
       errorMessage: null,
       causeName: null,
       causeMessage: null,
+      cleanedUrl: cleanedUrl?.href || null,
       url: modifiedUrl.href,
     };
   } catch (error) {
@@ -129,6 +188,7 @@ async function testUrl(configName: string, propertyName: string, url: string): P
       errorMessage: error.message,
       causeName,
       causeMessage,
+      cleanedUrl: cleanedUrl?.href || null,
       url: modifiedUrl.href,
     };
   }
@@ -184,7 +244,16 @@ function* getMissingPropertyNames(
   }
 }
 
-const testResults = await Promise.all(testConfigs(false));
+let testResults = (await Promise.all(testConfigs(false))).filter((tr) => tr) as TestResult[];
+testResults = testResults.sort((a, b) => {
+  if (a.configName === b.configName) {
+    return 0;
+  } else if (a.configName > b.configName) {
+    return 1;
+  } else {
+    return 0;
+  }
+});
 
 console.table(
   testResults
@@ -202,4 +271,40 @@ const missingProperties = [...getMissingPropertyNames(configs, propertyNames)];
 if (missingProperties.length) {
   console.log("The following properties are not present in all configuration files.");
   console.table(missingProperties);
+}
+
+// Update configs with cleaned URLs.
+for (const tr of testResults.filter((tr) => tr) as TestResult[]) {
+  const config = configs.get(tr.configName) as AppConfig;
+  if (config && tr.cleanedUrl) {
+    config[tr.propertyName] = tr.cleanedUrl;
+  }
+}
+
+try {
+  // Create the output directory. If it already exists,
+  // then nothing will happen.
+  const outDir = "newConfigs";
+  await mkdir(outDir, {
+    recursive: true,
+  });
+
+  // Initializing an array of promises for file writes.
+  const promises = new Array<Promise<void>>();
+  // Write new config files to output directory.
+  for (const [name, config] of configs) {
+    const json = JSON.stringify(config, undefined, 2);
+    const outPath = join(outDir, `${name}.json`);
+    const promise = writeFile(outPath, json, {
+      encoding: "utf8",
+    });
+    promises.push(promise);
+    promise.then(
+      () => console.log(`Created file ${outPath}.`),
+      (reason) => console.error(`Failed to create ${outPath}`, reason)
+    );
+  }
+  await Promise.allSettled(promises);
+} catch (error) {
+  console.error(error);
 }
