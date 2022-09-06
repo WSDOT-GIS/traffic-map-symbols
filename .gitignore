@@ -209,3 +209,6 @@ $RECYCLE.BIN/
 # Exclude lighthouse reports
 **/*.report.html
 lhreport.*
+
+# Exclude generated configs
+newConfigs
