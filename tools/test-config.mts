@@ -27,9 +27,20 @@
  * ```
  */
 
+import { constants } from "node:fs";
 import { env } from "node:process";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, writeFile, access } from "node:fs/promises";
 import { join } from "node:path";
+import {
+  simplifyUrl,
+  compareUrlResults,
+  TestResult,
+  testUrl,
+  IsOnlyOldSucceeded,
+  IsOnlyNewSucceeded,
+  CompareUrlResultsFailureResult,
+  WhichSucceeded,
+} from "./url-utils.mjs";
 import appConfig from "../public/appconfig.json" assert { type: "json" };
 import appConfigPro from "../public/appconfigPro.json" assert { type: "json" };
 import appConfigQA from "../public/appconfigQA.json" assert { type: "json" };
@@ -38,193 +49,72 @@ import appConfigDev from "../public/appconfigDev.json" assert { type: "json" };
 // Need to disable this for testing intranet resources.
 env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 
-type AppConfig = Record<string, unknown> &
+type AppConfig = Record<string, string | number> &
   Partial<typeof appConfig & typeof appConfigPro & typeof appConfigQA & typeof appConfigDev>;
 
-type TestResult = {
-  configName: string;
-  propertyName: string;
-  ok: boolean;
-  status: number | null;
-  statusText: string | null;
-  errorName: string | null;
-  errorMessage: string | null;
-  causeName: string | null;
-  causeMessage: string | null;
-  cleanedUrl: string | null;
-  url: string;
-};
-
-const configs = new Map<string, AppConfig>([
+const originalConfigs = new Map<string, AppConfig>([
   ["appConfig", appConfig],
   ["appConfigPro", appConfigPro],
   ["appConfigQA", appConfigQA],
   ["appConfigDev", appConfigDev],
 ]);
 
-const propertyNames = new Set<string>();
-
 /** Matches a URL with http or https protocol */
 const urlRe = /^https?:\/\//i;
 
 /**
- * Creates a "cleaned-up" version of the input URL by removing
- * unnecessary search parameters.
- * @param configName - Configuration name
- * @param propertyName - Property Name
- * @param url - URL
- * @returns A URL if there are search parameters that could be removed. Null otherwise.
+ * Gets a set of all the property names defined in the
+ * given {@link AppConfig} objects.
+ * @param configs
+ * @returns
  */
-function detectUnneededSearchParams(configName: string, propertyName: string, url: string | URL) {
-  const unneededIfNoGeometry = ["geometryType", "spatialRel"];
-  const unneededIfFalse = [
-    "applyVCSProjection",
-    "returnIdsOnly",
-    "returnUniqueIdsOnly",
-    "returnCountOnly",
-    "returnExtentOnly",
-    "returnQueryGeometry",
-    "returnDistinctValues",
-  ];
-  url = url instanceof URL ? url : new URL(url);
-  const unneeded = new Array<string>();
-  const geometryParamHasValue =
-    url.searchParams.has("geometry") && url.searchParams.get("geometry");
-
-  for (const [key, value] of url.searchParams) {
-    if (
-      value === "" ||
-      value === null ||
-      (value === "false" && key in unneededIfFalse) ||
-      (!geometryParamHasValue && key in unneededIfNoGeometry)
-    ) {
-      unneeded.push(key);
+function getAllAppConfigPropertyNames(...configs: AppConfig[]) {
+  const output = new Set<string>();
+  for (const config of configs) {
+    for (const key in config) {
+      if (Object.prototype.hasOwnProperty.call(config, key)) {
+        output.add(key);
+      }
     }
   }
-  let newUrl: URL | null = null;
-
-  if (unneeded.length > 0) {
-    newUrl = new URL(url);
-    console.group(
-      `${configName}: ${propertyName}\nThe following search parameters appear to be unnecessary ${
-        url.href.split("?")[0]
-      }:`
-    );
-    for (const key of unneeded) {
-      console.log(key);
-      newUrl.searchParams.delete(key);
-    }
-    console.groupEnd();
-  }
-
-  return newUrl;
+  return output;
 }
 
 /**
- * Detects if the URL ends in "MapServer", and if it does,
- * adds "f=json" search parameter. This is because some map
- * services have their directory browsing disabled.
- * If it is not a MapServer URL, the original URL is returned.
- * @param url - A URL.
- * @returns A URL.
+ * An array of three elements:
+ *
+ * index   | name      | description
+ * -----  :|-----------|:------------
+ * `0`     | name      | config property name
+ * `1`     | oldConfig | original {@link AppConfig}
+ * `2`     | newConfig | new {@link AppConfig}
  */
-function ensureMapServiceUrlHasFParamIfNeeded(url: string) {
-  const mapServiceUrlRe = /\/MapServer\/?$/i;
-  const inputUrl = new URL(url);
-  const match = inputUrl.pathname.match(mapServiceUrlRe);
-  if (!match) {
-    return inputUrl;
-  }
-  inputUrl.searchParams.set("f", "json");
-  return inputUrl;
-}
+type ConfigDifferences = [name: string, oldConfig: string, newConfig: string];
 
-async function testUrl(configName: string, propertyName: string, url: string): Promise<TestResult> {
-  const cleanedUrl = detectUnneededSearchParams(configName, propertyName, url);
-  const modifiedUrl = ensureMapServiceUrlHasFParamIfNeeded(url);
+function* getDifferentConfigSettings(oldConfig: AppConfig, newConfig: AppConfig) {
+  const settingNames = getAllAppConfigPropertyNames(oldConfig, newConfig);
 
-  try {
-    let result = await fetch(modifiedUrl, {
-      method: "HEAD",
-    });
-    // If "HEAD" request is not supported, status 405, "Method Not Allowed", is returned.
-    // In this case, do a regular "GET" request.
-    if (result.status === 405) {
-      result = await fetch(modifiedUrl, { method: "GET" });
-    }
-    const { ok, status, statusText } = result;
-    return {
-      configName,
-      propertyName,
-      ok,
-      status,
-      statusText,
-      errorName: null,
-      errorMessage: null,
-      causeName: null,
-      causeMessage: null,
-      cleanedUrl: cleanedUrl?.href || null,
-      url: modifiedUrl.href,
-    };
-  } catch (error) {
-    if (!(error instanceof Error)) {
-      throw error;
-    }
-    let causeName: string | null = null;
-    let causeMessage: string | null = null;
-    if (error.cause) {
-      if (error.cause instanceof Error) {
-        causeName = error.cause.name;
-        causeMessage = error.cause.message;
-      }
-    }
-    return {
-      configName,
-      propertyName,
-      ok: false,
-      status: null,
-      statusText: null,
-      errorName: error.name,
-      errorMessage: error.message,
-      causeName,
-      causeMessage,
-      cleanedUrl: cleanedUrl?.href || null,
-      url: modifiedUrl.href,
-    };
-  }
-}
-
-function testUrlProperties(appConfig: AppConfig, configName: string, skipFetch = false) {
-  const promises = new Array<Promise<TestResult | void>>();
-  for (const propertyName in appConfig) {
-    if (Object.prototype.hasOwnProperty.call(appConfig, propertyName)) {
-      propertyNames.add(propertyName);
-      const value = appConfig[propertyName];
-      if (typeof value !== "string" || !urlRe.test(value)) {
-        continue;
-      }
-
-      const promise = skipFetch ? Promise.resolve() : testUrl(configName, propertyName, value);
-
-      promises.push(promise);
+  for (const name of settingNames) {
+    const valueA = (oldConfig as Record<string, string>)[name];
+    const valueB = (newConfig as Record<string, string>)[name];
+    if (valueA !== valueB) {
+      yield [name, valueA, valueB] as ConfigDifferences;
     }
   }
-  return promises;
-}
-
-function testConfigs(skipFetch = false) {
-  const promises = new Array<Promise<TestResult | void>>();
-  for (const [configName, config] of configs) {
-    promises.push(...testUrlProperties(config, configName, skipFetch));
-  }
-  return promises;
 }
 
 type MissingPropertyResult = Record<string, string | boolean>;
 
+/**
+ * Detects which properties (if any) specified in {@link propertyNames}
+ * are not present in {@link configs}.
+ * @param configs - A mapping of configs to config names.
+ * @param propertyNames - A set of property names.
+ * @yields - An object that specifies which properties are missing in the config.
+ */
 function* getMissingPropertyNames(
   configs: Map<string, AppConfig>,
-  propertyNames: Set<keyof AppConfig>
+  propertyNames: Iterable<keyof AppConfig>
 ) {
   for (const propertyName of propertyNames) {
     const record: MissingPropertyResult = {
@@ -244,67 +134,301 @@ function* getMissingPropertyNames(
   }
 }
 
-let testResults = (await Promise.all(testConfigs(false))).filter((tr) => tr) as TestResult[];
-testResults = testResults.sort((a, b) => {
-  if (a.configName === b.configName) {
-    return 0;
-  } else if (a.configName > b.configName) {
-    return 1;
-  } else {
-    return 0;
-  }
-});
+interface IteratePropertyNonUrlResult {
+  propertyName: string;
+  propertyValue: unknown;
+  isUrl: false;
+}
 
-console.table(
-  testResults
-    .filter((result) => !result || !result.ok)
-    .map((result) => {
-      if (result) {
-        result.url = result.url.substring(0, 200);
+interface IteratePropertyUrlResult {
+  propertyName: string;
+  propertyValue: string;
+  isUrl: true;
+}
+
+type IteratePropertyResult = IteratePropertyUrlResult | IteratePropertyNonUrlResult;
+
+function* iterateProperties(appConfig: AppConfig, skipNonUrls = false) {
+  for (const propertyName in appConfig) {
+    if (Object.prototype.hasOwnProperty.call(appConfig, propertyName)) {
+      const propertyValue = appConfig[propertyName];
+      let isUrl = false;
+      if (typeof propertyValue === "string" && urlRe.test(propertyValue)) {
+        isUrl = true;
       }
-      return result;
-    })
-);
-
-const missingProperties = [...getMissingPropertyNames(configs, propertyNames)];
-
-if (missingProperties.length) {
-  console.log("The following properties are not present in all configuration files.");
-  console.table(missingProperties);
-}
-
-// Update configs with cleaned URLs.
-for (const tr of testResults.filter((tr) => tr) as TestResult[]) {
-  const config = configs.get(tr.configName) as AppConfig;
-  if (config && tr.cleanedUrl) {
-    config[tr.propertyName] = tr.cleanedUrl;
+      if (!isUrl && skipNonUrls) {
+        continue;
+      }
+      yield { propertyName, propertyValue, isUrl } as IteratePropertyResult;
+    }
   }
 }
+
+function GetSuccessfulUrl(
+  result: CompareUrlResultsFailureResult<string>,
+  oldUrl: URL,
+  simplifiedUrl: URL
+) {
+  let url: URL | null = null;
+  let whichSucceeded: WhichSucceeded = WhichSucceeded.BOTH_FAILED;
+  if (IsOnlyOldSucceeded(result)) {
+    url = oldUrl;
+    whichSucceeded = WhichSucceeded.OLD_SUCCEEDED;
+  } else if (IsOnlyNewSucceeded(result)) {
+    url = simplifiedUrl;
+    whichSucceeded = WhichSucceeded.NEW_SUCCEEDED;
+  }
+  return { url, whichSucceeded };
+}
+
+interface ConfigProperty {
+  configName: string;
+  propertyName: keyof AppConfig;
+  propertyValue: AppConfig[keyof AppConfig];
+}
+
+interface TestUnchangedUrlPropertiesResult extends ConfigProperty {
+  testResult: TestResult;
+}
+
+interface TestChangedUrlPropertiesResult extends ConfigProperty {
+  whichSucceeded: WhichSucceeded;
+}
+
+function isChangedUrlPropertyResult(c: ConfigProperty): c is TestChangedUrlPropertiesResult {
+  return Object.prototype.hasOwnProperty.call(c, "whichSucceeded");
+}
+
+async function testUnchangedUrlProperty(
+  propertyValue: string,
+  configName: string,
+  propertyName: string
+) {
+  const testResult = await testUrl(propertyValue);
+  return {
+    configName,
+    propertyName,
+    propertyValue,
+    testResult,
+  } as TestUnchangedUrlPropertiesResult;
+}
+
+/**
+ * For a property in a config that had its URL simplified:
+ * 1. Fetch the results of both the old and new URL
+ * 2. Determine if the old a/o new URL fetch succeeded.
+ *  - If they both succeeded, return the new URL if the
+ *    output of both is the same, old URL if they differ.
+ *  - If the new URL request fails, return the old URL
+ * @param oldUrl - Original URL
+ * @param simplifiedUrl - Simplified version of {@link oldUrl }.
+ * @param configName - The name of the configuration
+ * @param propertyName - The name of the property that the URL came from.
+ * @returns
+ */
+async function testChangedUrlProperty(
+  oldUrl: URL,
+  simplifiedUrl: URL,
+  configName: string,
+  propertyName: string
+): Promise<TestChangedUrlPropertiesResult> {
+  const compareUrlResultsPromise = compareUrlResults(oldUrl, simplifiedUrl);
+  compareUrlResultsPromise.then(r => {
+    console.group(`Comparison of URLs for ${propertyName} of ${configName}`);
+    if (typeof r === "number") {
+      const areIdentical = r === 0;
+      const msg = `URL's responses are ${areIdentical ? "identical" : "different"}.`;
+      if (!areIdentical) {
+        console.debug(msg, {
+          config: configName,
+          property: propertyName,
+          "old URL": oldUrl,
+          "simplified URL": simplifiedUrl
+        });
+      } else {
+        console.debug(msg);
+      }
+    } else {
+      // const [oldResult, newResult] = r
+      r.forEach((result, i) => {
+        if (result.status === "rejected") {
+          const oldOrNew = i === 0 ? "old" : "new";
+          console.debug(`The ${oldOrNew} URL's request failed.`);
+        }
+      })
+    }
+    console.groupEnd();
+  })
+  const result = await compareUrlResultsPromise;
+  let url: URL;
+  let whichSucceeded: WhichSucceeded = WhichSucceeded.BOTH_FAILED;
+  let propertyValue: string;
+  if (typeof result === "number") {
+    url = result === 0 ? simplifiedUrl : oldUrl;
+    whichSucceeded = WhichSucceeded.BOTH_SUCCEEDED;
+    propertyValue = (result === 0 ? url : oldUrl).href;
+  } else {
+    const getUrlResult = GetSuccessfulUrl(result, oldUrl, simplifiedUrl);
+    whichSucceeded = getUrlResult.whichSucceeded;
+    propertyValue = (getUrlResult.url || oldUrl).href;
+  }
+  return {
+    configName,
+    propertyName,
+    propertyValue,
+    whichSucceeded,
+  };
+}
+
+/**
+ * Result of a test of a configs properties.
+ */
+interface PropertiesTestResult {
+  /** config name */
+  name: string,
+  /** old config */
+  oldConfig: AppConfig,
+  /** new config, or null if there were no changes. */
+  newConfig: AppConfig | null,
+  /** The number of properties that were changed. */
+  changedPropertyCount: number;
+}
+
+async function testPropertiesOfConfig(config: AppConfig, configName: string) {
+  console.group(`${testPropertiesOfConfig.name}: ${configName}`);
+  const configPromises = new Array<Promise<ConfigProperty>>();
+  const propertiesIterator = iterateProperties(config, false);
+  for (const { propertyName, propertyValue, isUrl } of propertiesIterator) {
+    if (!isUrl) {
+      console.debug(`Property ${propertyName}'s value does not appear to be a URL: ${propertyValue}. Skipping to next property.`);
+      continue;
+    }
+
+    const oldUrl = new URL(propertyValue);
+    const [simplifiedUrl, removedParams] = simplifyUrl(oldUrl);
+
+    if (removedParams) {
+      console.debug(`The following parameters have been removed from the ${propertyName} URL:`);
+      console.table(removedParams, ["parameter", "reason"]);
+      const compareResultPromise = testChangedUrlProperty(
+        oldUrl,
+        simplifiedUrl,
+        configName,
+        propertyName
+      );
+      configPromises.push(compareResultPromise);
+    } else {
+      const testResultPromise = testUnchangedUrlProperty(propertyValue, configName, propertyName);
+      configPromises.push(testResultPromise);
+    }
+  }
+
+  // Create new object and then assign property values
+  // to create a copy of the old config object.
+  const newConfig = copyObject(config) as typeof config;
+
+  let changedPropertyCount = 0;
+
+  for await (const configProperty of configPromises) {
+    if (isChangedUrlPropertyResult(configProperty) && urlHasChanged(configProperty)) {
+      changedPropertyCount++;
+      newConfig[configProperty.propertyName] = configProperty.propertyValue;
+    }
+  }
+  console.groupEnd();
+  return {
+    name: configName,
+    oldConfig: config,
+    newConfig: changedPropertyCount ? newConfig : null,
+    changedPropertyCount: changedPropertyCount
+   } as PropertiesTestResult;
+}
+
+function copyObject(config: Record<string, unknown>) {
+  const newConfig: typeof config = {};
+  for (const propName in config) {
+    if (Object.prototype.hasOwnProperty.call(config, propName)) {
+      const value = config[propName];
+      newConfig[propName] = value;
+    }
+  }
+  return newConfig;
+}
+
+/**
+ * Determines if the URL of a config property has been simplified, and
+ * that the simplified URL returned the same results as the original
+ * version.
+ * @param configProperty - Test result.
+ * @returns True if the URL was changed successfully, false otherwise.
+ */
+function urlHasChanged(configProperty: TestChangedUrlPropertiesResult) {
+  return hasBitflagValue(configProperty.whichSucceeded, WhichSucceeded.NEW_SUCCEEDED);
+}
+
+/**
+ * @see {@link https://www.w3schools.com/js/js_bitwise.asp}
+ * @param value
+ * @param flag
+ * @returns A boolean value indicating if value contains flag.
+ * ```typescript
+ * return (value & flag) === flag
+ * ```
+ */
+function hasBitflagValue(value: number, flag: number) {
+  return (value & flag) === flag;
+}
+
+function testPropertiesOfConfigs(configs: Map<string, AppConfig>) {
+
+  const output = new Array<Promise<PropertiesTestResult>>();
+  for (const [configName, config] of configs) {
+    const testResultsPromise = testPropertiesOfConfig(config, configName);
+    output.push(testResultsPromise);
+  }
+
+  return output;
+}
+
+async function testConfigsAndWriteChanges(outDir: string, space: number | string | undefined = 4) {
+
+  const changedConfigsMap = testPropertiesOfConfigs(originalConfigs);
+
+  for await (const configResult of changedConfigsMap) {
+    
+    console.log(`${configResult.changedPropertyCount} propert${configResult.changedPropertyCount === 1 ? "y" : "ies"} have changed in ${configResult.name}:`);
+
+    if (!configResult.newConfig) {
+      continue;
+    }
+    
+    const filename = `${configResult.name}.json`
+    const filePath = join(outDir, filename);
+    console.log(`Writing updated config to ${filePath}.`);
+
+    const jsonText = JSON.stringify(configResult.newConfig, undefined, space);
+
+    try {
+      writeFile(filePath, jsonText, {
+        encoding: "utf-8",
+      });
+    } catch (error) {
+      console.error(`Unable to write config data to ${filePath}`, error);
+    }
+  }
+}
+
+const outDir = "newConfigs";
 
 try {
-  // Create the output directory. If it already exists,
-  // then nothing will happen.
-  const outDir = "newConfigs";
-  await mkdir(outDir, {
-    recursive: true,
-  });
-
-  // Initializing an array of promises for file writes.
-  const promises = new Array<Promise<void>>();
-  // Write new config files to output directory.
-  for (const [name, config] of configs) {
-    const json = JSON.stringify(config, undefined, 2);
-    const outPath = join(outDir, `${name}.json`);
-    const promise = writeFile(outPath, json, {
-      encoding: "utf8",
-    });
-    promises.push(promise);
-    promise.then(
-      () => console.log(`Created file ${outPath}.`),
-      (reason) => console.error(`Failed to create ${outPath}`, reason)
-    );
-  }
-  await Promise.allSettled(promises);
+  await access(outDir, constants.O_DIRECTORY)
 } catch (error) {
-  console.error(error);
+  console.log(`Could not access ${outDir}. Creating as new directory.`);
+  mkdir(outDir, {
+    recursive: true,
+    mode: constants.O_CREAT
+  });
 }
+
+
+testConfigsAndWriteChanges(outDir, 4);
