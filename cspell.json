@@ -5,7 +5,7 @@
         "useCache": true
     },
     "files": [
-        "**/*.{ts,vue,md}",
+        "**/*.{ts,mts,vue,md}",
         "**/*.d.ts"
     ],
     "useGitignore": true,
