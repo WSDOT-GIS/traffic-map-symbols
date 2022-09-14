@@ -40,32 +40,51 @@ export default defineComponent({
   },
   setup(props, context) {
     const config = getConfig();
-    const analytics = Analytics({
-      app: 'WSDOT',
-      plugins: [
-        googleAnalytics({
-          trackingId: config.googleAnalyticsID,
-        })
-      ]
-    })
+    let analytics:any;
+    try{
+      analytics = Analytics({
+        app: 'WSDOT',
+        plugins: [
+          googleAnalytics({
+            measurementIds:['G-RBQE8K3PSW']
+          })
+        ]
+      })
+    }
+    catch(e){
+      console.log(e)
+    }
+    
     const onToggle = (evt: Event) => {
       const target = evt.currentTarget as HTMLInputElement;
-      const sendToggleOn = ()=>{analytics.track('toggle', {
+      const sendToggleOn = ()=>{
+        try{
+          analytics.track('toggle', {
           category: 'Layer',
           label: props.Title+"-"+"On",
           value: 1
         })
+        }
+        catch(e){
+          console.log(e)
+        }
+        
       }
-      const sendToggleOff = ()=>{analytics.track('toggle', {
-          category: 'Layer',
-          label: props.Title+"-"+"Off",
-          value: 1
-        })
+      const sendToggleOff = ()=>{
+        try{
+            analytics.track('toggle', {
+            category: 'Layer',
+            label: props.Title+"-"+"Off",
+            value: 1
+          })
+        }
+        catch(e){
+          console.log(e)
+        }
       }
       target.checked==true?sendToggleOn():sendToggleOff()
       context.emit("toggle", { checked: target.checked, value: target.value });
     };
-    
     return { onToggle };
   },
 });
