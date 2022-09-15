@@ -15,20 +15,7 @@
 				"--esm",
 				"./tools/test-config.mts"
 			],
-			"problemMatcher": [
-				// {
-				// 	"pattern":[
-				// 		{
-				// 			"regexp": "^(\\w+) Fetching from (\\w+): (https?://.+) failed.$",
-				// 			"file": 1,
-				// 			"location": 2,
-				// 			"message": 3
-				// 		},
-						
-				// 	],
-				// 	 "source": "config test"
-				// }
-			]
+			"problemMatcher": []
 		},
 		{
 			"label": "vuejs: start",
