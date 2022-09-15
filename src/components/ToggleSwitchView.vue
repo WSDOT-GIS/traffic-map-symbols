@@ -46,13 +46,13 @@ export default defineComponent({
         app: 'WSDOT',
         plugins: [
           googleAnalytics({
-            measurementIds:['G-RBQE8K3PSW']
+            measurementIds:[config.googleAnalyticsID]
           })
         ]
       })
     }
     catch(e){
-      console.log(e)
+      console.error(e)
     }
     
     const onToggle = (evt: Event) => {
@@ -66,7 +66,7 @@ export default defineComponent({
         })
         }
         catch(e){
-          console.log(e)
+          console.error(e)
         }
         
       }
