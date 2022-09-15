@@ -15,7 +15,7 @@
   "fireIncidents": "https://services3.arcgis.com/T4QMspbfLg3qTGWY/ArcGIS/rest/services/Current_WildlandFire_Locations/FeatureServer/0/",
   "firePerimeters": "https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/Current_WildlandFire_Perimeters/FeatureServer/0",
   "forecastExtendedAPI": "https://wsdot.com/travel/real-time/service/api/Forecast/",
-  "googleAnalyticsID": "UA-970887-21",
+  "googleAnalyticsID": "G-RBQE8K3PSW",
   "layerRefreshMinute": 5,
   "lineRestrictions": "https://data.wsdot.wa.gov/travelcenter/LineRestrictions.json",
   "mileMarkers": "https://tiles.arcgis.com/tiles/IYrj3otxNjPsrTRD/arcgis/rest/services/Travel_Center_Milepost_Values/VectorTileServer",
