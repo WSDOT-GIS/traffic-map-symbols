@@ -16,9 +16,10 @@
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
-import Analytics from 'analytics';
+import {Analytics} from 'analytics';
 import googleAnalytics from '@analytics/google-analytics';
 import { getConfig } from "@/utils/appConfigUtil";
+import { GtagEvent } from "vue-gtag";
 export default defineComponent({
   props: {
     Checked: {
@@ -41,6 +42,7 @@ export default defineComponent({
   setup(props, context) {
     const config = getConfig();
     let analytics:any;
+    let gtag:GtagEvent
     try{
       analytics = Analytics({
         app: 'WSDOT',
@@ -59,6 +61,7 @@ export default defineComponent({
       const target = evt.currentTarget as HTMLInputElement;
       const sendToggleOn = ()=>{
         try{
+          gtag('toggle',{'event_category':'Layer','event_label':props.Title+"-"+"On",'value':1})
           analytics.track('toggle', {
           category: 'Layer',
           label: props.Title+"-"+"On",
@@ -72,6 +75,7 @@ export default defineComponent({
       }
       const sendToggleOff = ()=>{
         try{
+          
             analytics.track('toggle', {
             category: 'Layer',
             label: props.Title+"-"+"Off",
@@ -85,7 +89,7 @@ export default defineComponent({
       target.checked==true?sendToggleOn():sendToggleOff()
       context.emit("toggle", { checked: target.checked, value: target.value });
     };
-    return { onToggle };
+    return { onToggle};
   },
 });
 </script>

@@ -14,7 +14,8 @@
     "baseUrl": ".", 
     "types": [
       "webpack-env",
-      "doubleclick-gpt"
+      "doubleclick-gpt",
+      "@types/gtag.js"
     ],
     "paths": {
       "@/*": [

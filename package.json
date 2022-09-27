@@ -17,7 +17,8 @@
     "tsc:symbols": "tsc --project symbols.tsconfig"
   },
   "dependencies": {
-    "vue": "^3.2.38"
+    "vue": "^3.2.38",
+    "vue-gtag": "^2.0.1"
   },
   "devDependencies": {
     "@analytics/google-analytics": "^1.0.3",
@@ -26,6 +27,7 @@
     "@microsoft/applicationinsights-web": "^2.8.6",
     "@splidejs/vue-splide": "^0.6.7",
     "@types/doubleclick-gpt": "^2019111201.0.2",
+    "@types/gtag.js": "^0.0.11",
     "@types/webpack-env": "^1.18.0",
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "@typescript-eslint/parser": "^5.36.1",
