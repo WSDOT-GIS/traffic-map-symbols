@@ -2,6 +2,7 @@ import AppConfig from "@/types/AppConfig"
 
 let appConfig: AppConfig | undefined;
 
+
 /**
  *
  */
@@ -15,14 +16,15 @@ export const loadConfig = async (): Promise<AppConfig> => {
         if (idx >= 0) {
             dir = href.substring(0, idx + rootPath.length);
         }
-        //const fetchResponse = await fetch(dir + "/appConfigDev.json");
-        const fetchResponse = await fetch(dir + "/appConfig.json");
+        const fetchResponse = await fetch(dir + "/appconfig_NewService.json");
+        //const fetchResponse = await fetch(dir + "/appConfig.json");
         const config = await fetchResponse.json();
         appConfig = config as AppConfig;
     }
     return appConfig;
 
 }
+
 
 /**
  *

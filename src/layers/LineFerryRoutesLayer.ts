@@ -20,9 +20,8 @@ const layerTitle = "Ferry Routes"
 //     }),
 // ]
 
-/**
- * @param url
- */
+
+
 export const initLayer = async (url: string): Promise<LayerInfo> => {
     const layerInfo = new LayerInfo(layerId, layerTitle, url);
     try {
@@ -35,7 +34,8 @@ export const initLayer = async (url: string): Promise<LayerInfo> => {
             visible: false,
             labelsVisible: false,
             source: graphics,
-            definitionExpression: '1=0'
+            definitionExpression: '1=0',
+            copyright: undefined
         });
     }
     catch (ex) {
@@ -45,6 +45,7 @@ export const initLayer = async (url: string): Promise<LayerInfo> => {
     }
     return layerInfo;
 }
+
 
 /**
  *

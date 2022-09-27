@@ -11,8 +11,8 @@ export const layerId = "fire-perimeters-layer";
 const layerTitle = "Fire Perimeters";
 
 /**
- * @param url
- * @param incidentNames
+ * @param url - 
+ * @param incidentNames - 
  */
 export const initLayer = (url: string, incidentNames: string[]): LayerInfo => {
     const layerInfo = new LayerInfo(layerId, layerTitle, url);
@@ -25,7 +25,8 @@ export const initLayer = (url: string, incidentNames: string[]): LayerInfo => {
             url: url,
             title: layerTitle,
             visible: false,
-            definitionExpression: queryString
+            definitionExpression: queryString,
+            copyright: undefined
         });
     }
     catch (ex) {
@@ -35,6 +36,7 @@ export const initLayer = (url: string, incidentNames: string[]): LayerInfo => {
     }
     return layerInfo;
 }
+
 
 /**
  *

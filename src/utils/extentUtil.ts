@@ -1,7 +1,7 @@
 import Extent from "@arcgis/core/geometry/Extent";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 
-import ExtentInfo from "@/types/ExtentInfo";
+import ExtentInfo, { ExtentDirections } from "@/types/ExtentInfo";
 import XY from "@/types/XY";
 import { WebMercator } from "./miscUtil";
 
@@ -23,7 +23,10 @@ const defaultExtents: ExtentInfo[] = [
 ];
 
 /**
- * @param id
+ * Gets extent info matching given id.
+ * 
+ * @param id  - One of the ids from {@link defaultExtents}.
+ * @returns Extent info
  */
 export const getExtentInfo = (id: string): ExtentInfo => {
     const result = defaultExtents.filter(x => x.id == id);
@@ -31,7 +34,10 @@ export const getExtentInfo = (id: string): ExtentInfo => {
 };
 
 /**
- * @param name
+ * Gets an extent by name.
+ * 
+ * @param name  - name of extent
+ * @returns an extent.
  */
 export const getEsriExtent = (name: string): Extent => {
     const info = getExtentInfo(name);
@@ -39,7 +45,10 @@ export const getEsriExtent = (name: string): Extent => {
 };
 
 /**
- * @param extentInfo
+ * Converts an {@link ExtentInfo} to an {@link Extent}.
+ * 
+ * @param extentInfo  - extent info
+ * @returns Esri Extent.
  */
 export const convert2EsriExtent = (extentInfo: ExtentInfo): Extent => {
     const extent = new Extent({
@@ -53,7 +62,10 @@ export const convert2EsriExtent = (extentInfo: ExtentInfo): Extent => {
 };
 
 /**
- * @param extent
+ * Converts an {@link Extent} to an {@link ExtentInfo}
+ * 
+ * @param extent  - An {@link Extent}
+ * @returns an {@link ExtentInfo}
  */
 export const convert2ExtentInfo = (extent: Extent): ExtentInfo => {
     const info: ExtentInfo = {
@@ -67,14 +79,14 @@ export const convert2ExtentInfo = (extent: Extent): ExtentInfo => {
 /**
  * Figure out the relative direction from the full extent.
  *
- * @param mapXY 
+ * @param mapXY  - 
  * Location to compare against the full extent.
- * @param extent An extent. If omitted, "full" extent is assumed.
+ * @param extent  - An extent. If omitted, "full" extent is assumed.
  * @returns A two character string that matches /[ins][iwe]/
  * First char: vertical direction = i/n/s (inside/north/south)
  * Second char: horizontal direction = i/w/e (inside/west/east)
  */
-export const getOutOfBoundDirection = (mapXY: XY, extent?: ExtentInfo | Extent): string => {
+export const getOutOfBoundDirection = (mapXY: XY, extent?: ExtentInfo | Extent): ExtentDirections => {
     if (!extent) {
         extent = getExtentInfo("full");
     }
@@ -94,11 +106,13 @@ export const getOutOfBoundDirection = (mapXY: XY, extent?: ExtentInfo | Extent):
     } else {
         dir += "i";
     }
-    return dir;
+    return dir as ExtentDirections;
 }
 
 /**
- *
+ * Get out of extent polygons
+ * 
+ * @returns an array of extents.
  */
 export const getOutOfExtentPolygons = (): Extent[] => {
     const displayExtent = getEsriExtent("full").expand(1.2);

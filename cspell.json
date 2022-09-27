@@ -1,0 +1,58 @@
+{
+    "version": "0.2",
+    "allowCompoundWords": true,
+    "cache": {
+        "useCache": true
+    },
+    "files": [
+        "**/*.{ts,mts,vue,md}",
+        "**/*.d.ts"
+    ],
+    "useGitignore": true,
+    "ignorePaths": [
+        "docs",
+        "cspell.json",
+        "**/*.gdb",
+        "**/*.tbx",
+        "**/*.atbx",
+        "**/*.svg",
+        "**/*.stylx",
+        "**/*.aprx",
+        "wsdot-devops-pipeline-yaml-schema.json",
+        "package.json",
+        "package-lock-json"
+    ],
+    "dictionaryDefinitions": [
+        {
+            "name": "custom-dictionary",
+            "path": "./.cspell/custom-dictionary.txt",
+            "addWords": true,
+            "scope": "workspace"
+        }
+    ],
+    "dictionaries": [
+        "custom-dictionary"
+    ],
+    "words": [],
+    "ignoreWords": [
+        "ERESOLVE",
+        "Nums",
+        "browserslist",
+        "browserslistrc",
+        "doubleclick",
+        "featureid",
+        "geoms",
+        "jurdsg",
+        "jurlbl",
+        "lyrs",
+        "netconfig",
+        "npmrc",
+        "parkride",
+        "pjson",
+        "restarea",
+        "scripthost",
+        "splide",
+        "tsbuildinfo"
+    ],
+    "import": []
+}

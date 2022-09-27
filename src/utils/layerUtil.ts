@@ -12,34 +12,42 @@ import AppConfig from "@/types/AppConfig";
 import { fetchJson } from "@/utils/miscUtil";
 import { isEsriFeatures } from "@/utils/typeUtil";
 import Layer from "@arcgis/core/layers/Layer";
+import { simpleClosuresRenderer, directionalClosuresRenderer } from "@/layers/LinearClosuresLayer"
 /**
  *  Specify which layers belong together (i.e. should be treated as if they are one layer) 
  *  Layers in each group should have the same visibility and displayed as a single item in the table of contents
  *   - id
+ *       
  *      ID for the layer group.
  *   - layers 
- *      List of layers that belog to each group.
+ *       
+ *      List of layers that belong to each group.
+ *       
  *      NOTE: Popup is opened for the first layer in the layers array.
  *   - layers.id
+ *       
  *      Layer ID
  *   - layer.uniqueField
+ *       
  *      Unique field that is from the source database. Do not use ESRI ID (i.e. OID).
  *   - layer.jsonUrl
+ *       
  *      URL of JSON file. Only applicable to those layers that loads JSON at runtime.
  */
 const layerGroups: GroupLayerInfo[] = [];
 /**
  * Create the layer group list
  * 
- * @param config Application configuration to get the JSON URLs from.
+ * @param config  - Application configuration to get the JSON URLs from.
  */
 export const createLayerGroupInfos = (config: AppConfig): void => {
     layerGroups.push({ id: "camera", layers: [{ id: "traffic-camera-layer", uniqueField: "CameraID", jsonUrl: config.cameras }] });
     layerGroups.push({
         id: "alert", layers: [
-            { id: "road-alerts-layer", uniqueField: "EventID", jsonUrl: config.roadAlerts },
+            { id: "road-alerts-layer", uniqueField: "EventID", jsonUrl: config.currentRoadAlertPoint },
             { id: 'ferry-routes-points-layer', uniqueField: "FerryRouteID" },
-            { id: 'ferry-routes-lines-layer', uniqueField: "FerryRouteID" }
+            { id: 'ferry-routes-lines-layer', uniqueField: "FerryRouteID" },
+            { id: 'line-road-alerts-layer', uniqueField: "EventID" }
         ]
     }); // Loaded by default, should not need to load data.
     layerGroups.push({
@@ -62,15 +70,18 @@ export const createLayerGroupInfos = (config: AppConfig): void => {
     layerGroups.push({ id: "milepost", layers: [{ id: "mile-markers", uniqueField: "" }] })
 };
 
+/**
+ * Gets group layer info for the specified group ID
+ * 
+ * @param groupId  - Group ID
+ * @returns The group matching the Group ID.
+ * @throws {@link RangeError} Thrown if {@link groupId}  - is not one of the expected values.
+ */
 const getGroupLayerInfo = (groupId: string): GroupLayerInfo => {
-    const result = layerGroups.find((item) => {
-        return item.id === groupId;
-    });
+    const result = layerGroups.find((item) => item.id === groupId);
     if (!result) {
-        const ids = layerGroups.map((item) => {
-            return item.id;
-        })
-        throw `${groupId} is an invalid feature type. The valid IDs are: ${ids.join(', ')}.`;
+        const ids = layerGroups.map((item) => item.id);
+        throw new RangeError(`${groupId} is an invalid feature type. The valid IDs are: ${ids.join(', ')}.`);
     }
     return result;
 }
@@ -78,7 +89,7 @@ const getGroupLayerInfo = (groupId: string): GroupLayerInfo => {
 /**
  * Get layer IDs from the layer group ID
  * 
- * @param groupId ID of the layer group
+ * @param groupId  - ID of the layer group
  * @returns array of layer IDs
  */
 export const getLayerIds = (groupId: string): string[] => {
@@ -98,7 +109,9 @@ export const getLayerIds = (groupId: string): string[] => {
 }
 
 /**
- * @param graphic
+ * Resizes a graphic
+ * 
+ * @param graphic  - A graphic
  */
 export const resizeFeature = (graphic: Graphic): void => {
     const mapGraphic = buildGraphicsByType("CIMSymbol", graphic)
@@ -108,9 +121,9 @@ export const resizeFeature = (graphic: Graphic): void => {
  * Set the visibility of the specified layer in the layer list.
  * NOTE: The layer list need to be committed to the state store.
  *
- * @param layer Layer
- * @param layerInfo LayerInfo
- * @param visible visibility: true/false
+ * @param layer  - Layer
+ * @param layerInfo  - LayerInfo
+ * @param visible  - visibility: true/false
  * @returns Layer status
  */
 export const setLayerVisibility = async (layer: Layer, layerInfo: LayerInfo, visible: boolean): Promise<LayerStatus> => {
@@ -130,11 +143,11 @@ export const setLayerVisibility = async (layer: Layer, layerInfo: LayerInfo, vis
 /**
  * Get a feature from the layer group.
  *
- * @param uniqueValue 
+ * @param uniqueValue  - 
  * Value from the unique field specified in the layerGroups.
- * @param groupId 
+ * @param groupId  - 
  * ID of the layer group (type). If the specified group has more than one layer, query is done against the first layer only.
- * @param map ESRI map object
+ * @param map  - ESRI map object
  * @returns Graphic or nothing
  */
 export const getFeature = async (uniqueValue: number | string, groupId: string, map: WebMap): Promise<Graphic | undefined> => {
@@ -199,22 +212,30 @@ export const getFeature = async (uniqueValue: number | string, groupId: string, 
 /**
  * Initialize a feature layer
  * 
- * @param layerId Layer ID
- * @param layerTitle Title
- * @param renderer Renderer
- * @param fields Array of field
- * @param geometryType geometry type
- * @param visible default visibility
- * @param graphics (Optional) Array of graphics to load
+ * @param layerId  - Layer ID
+ * @param layerTitle  - Title
+ * @param renderer  - Renderer
+ * @param fields  - Array of field
+ * @param geometryType  - geometry type
+ * @param visible  - default visibility
+ * @param graphics  - (Optional) Array of graphics to load
+ * @param definitionExpression  - Selection expression.
  * @returns Promise<FeatureLayer>
  */
 export const initLayer = async (layerId: string, layerTitle: string,
     renderer: Renderer, fields: Field[], geometryType: "point" | "multipoint" | "polyline" | "polygon",
-    visible: boolean, graphics?: Graphic[]): Promise<FeatureLayer> => {
+    visible: boolean, graphics?: Graphic[], definitionExpression?: string): Promise<FeatureLayer> => {
     // Create Graphics from JSON...
     if (!graphics) {
         graphics = [];
     }
+    if (!definitionExpression) {
+        definitionExpression = '1=1'
+    }
+    //let graphics: Graphic[] = [];
+    // if (visible) {
+    //     graphics = await fetchJsonData(jsonUrl);
+    // }
     // Do not set the WSDOT unique ID as OID. The app might change them.
     // So create a new system generated field as OID.
     let oidField = "AppGenId";
@@ -239,6 +260,8 @@ export const initLayer = async (layerId: string, layerTitle: string,
         source: graphics,
         geometryType: geometryType,
         spatialReference: SpatialReference.WebMercator,
+        definitionExpression: definitionExpression,
+        copyright: undefined
     });
     return layer;
 }
@@ -247,8 +270,11 @@ export const initLayer = async (layerId: string, layerTitle: string,
 let loadManager: { id: string, promise: Promise<LayerStatus | undefined> }[] = [];
 
 /**
- * @param jsonUrl
- * @param layer
+ * Reloads the data for a layer from the JSON URL.
+ * 
+ * @param jsonUrl  - URL of JSON data
+ * @param layer  - A feature Layer
+ * @returns Either a {@link LayerInfo} or undefined.
  */
 export const reloadData = async (jsonUrl: string, layer: FeatureLayer | undefined): Promise<LayerInfo | undefined> => {
     if (!layer) { return; }
@@ -287,8 +313,10 @@ export const reloadData = async (jsonUrl: string, layer: FeatureLayer | undefine
 }
 
 /**
- * @param layer
- * @param newFeatures
+ * Replaces the features in a feature layer.
+ * 
+ * @param layer  - A feature layer
+ * @param newFeatures  - The new features that will replace the current ones.
  */
 export const replaceFeatures = async (layer: FeatureLayer, newFeatures: Graphic[]): Promise<void> => {
     // Delete existing features...
@@ -300,13 +328,17 @@ export const replaceFeatures = async (layer: FeatureLayer, newFeatures: Graphic[
 }
 
 /**
- * @param jsonUrl
+ * Fetches JSON data and converts them to graphics.
+ * 
+ * @param jsonUrl  - URL for a JSON file
+ * @returns An array of {@link Graphic} objects.
+ * @throws {@link TypeError} Thrown if the JSON is not in Esri features format.
  */
 export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
     // Fetch all features from JSON...
     const json = await fetchJson(jsonUrl);
     if (!isEsriFeatures(json)) {
-        throw "Invalid JSON format. It is not ESRI Features JSON."
+        throw new TypeError("Invalid JSON format. It is not ESRI Features JSON.")
     }
     const sr = SpatialReference.fromJSON(json.spatialReference);
     // Create graphic out of each feature...
@@ -324,5 +356,24 @@ export const fetchJsonData = async (jsonUrl: string): Promise<Graphic[]> => {
         }
     }
     return graphics;
+}
+
+/**
+ * Updates scale dependent rendering.
+ * 
+ * @param layer  - layer
+ * @param scale  - scale
+ */
+export const updateScaleDependentRendering = (layer: FeatureLayer, scale: number) => {
+    if (layer.title == "Linear Closures Lines") {
+        //console.log("update linear closures renderer")
+        //console.log(scale)
+        if (scale <= 37000) {
+            layer.renderer = directionalClosuresRenderer
+        }
+        else {
+            layer.renderer = simpleClosuresRenderer
+        }
+    }
 }
 

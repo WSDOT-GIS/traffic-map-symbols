@@ -21,9 +21,10 @@
     <div class="header-wrapper">
       <div class="logo-container">
         <div class="region region-header">
-          <a class="logo navbar-btn pull-left" :href="WsdotRootUrl" title="Home" rel="home"
-            ><img src="@/assets/wsdot-logo-white.svg" alt="Home" @load="onImgLoad()"
-          /></a>
+          <a class="logo navbar-btn pull-left" :href="WsdotRootUrl" title="Home" rel="home">
+            <img v-if="appTheme!='Go Orange'" src="@/assets/wsdot-logo-white.svg" alt="Home" @load="onImgLoad()"/>
+            <img v-if="appTheme=='Go Orange'" src="@/assets/wsdot-logo-black.svg" alt="Home" @load="onImgLoad()"/>
+          </a>
           <a class="name navbar-brand" :href="WsdotRootUrl" title="Home" rel="home">WSDOT</a>
 
           <!-- <a id="main-menu" href="#menu-schmenu" class="sidr-trigger"
@@ -68,6 +69,13 @@
               <li class="last">
                 <a :href="WsdotRootUrl + '/about'" data-drupal-link-system-path="node/53">About</a>
               </li>
+              <li v-if="appTheme=='Go Orange'" class="workzoneSafetyLink">
+                <a
+                  :href="WsdotRootUrl + '/about/events-programs/give-em-brake'" 
+                  data-drupal-link-system-path="node/87"
+                  >We're orange for safety</a
+                >
+              </li>
             </ul>
           </div>
         </nav>
@@ -79,7 +87,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { useStore } from "@/store";
+import { defineComponent, computed } from "vue";
 import BurgerView from "./BurgerView.vue";
 import SidebarView from "./SidebarView.vue";
 
@@ -94,11 +103,13 @@ export default defineComponent({
   // https://v3.vuejs.org/guide/component-custom-events.html#defining-custom-events
   emits: ["onLoadComplete"],
   setup(props, context) {
+    const store = useStore();
+    const appTheme = computed(() => (store.getters.getAppTheme()));
     // DOT icon is loaded slightly later, so let the app know when that is complete.
     const onImgLoad = () => {
       context.emit("onLoadComplete");
     };
-    return { onImgLoad };
+    return { onImgLoad, appTheme };
   },
 });
 </script>
@@ -109,6 +120,9 @@ export default defineComponent({
 }
 .logo.navbar-btn.pull-left {
   text-align: left;
+}
+#header {
+    background-color: var(--color-primaryBrand100);
 }
 @media screen and (max-width: 991px) {
   #burger-menu {

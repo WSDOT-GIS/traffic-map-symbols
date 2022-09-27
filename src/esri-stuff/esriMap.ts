@@ -33,6 +33,8 @@ import * as FerryRoutesReferenceLayer from "@/layers/ferryRoutesReferenceLayer"
 import * as LineFerryRoutesLayer from "@/layers/LineFerryRoutesLayer"
 import * as PointFerryRoutesLayer from "@/layers/PointFerryRoutesLayer"
 import * as AlertAreaLayer from "@/layers/AlertAreaLayer"
+import * as LineRoadAlertsLayer from "@/layers/LineRoadAlertsLayer"
+import * as LinearClosuresLayer from "@/layers/LinearClosuresLayer"
 //
 import * as extentUtil from "@/utils/extentUtil";
 import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
@@ -42,6 +44,7 @@ import { getBasemapInfo } from "@/layers/Basemaps";
 import XY from "@/types/XY";
 import * as layerUtil from "@/utils/layerUtil";
 import LayerInfo, { isLayerInfo } from "@/types/LayerInfo";
+import { ExtentDirections } from "@/types/ExtentInfo";
 
 esriConfig.request.useIdentity = false
 const fullExtent = extentUtil.getEsriExtent("full");
@@ -71,7 +74,9 @@ export const mapView = new MapView({
 mapView.ui.remove("zoom");
 //
 /**
- * @param container
+ * Initialize the map view
+ * 
+ * @param container  - Container HTML Element
  */
 export const init = (container: HTMLDivElement): void => {
     mapView.container = container;
@@ -105,7 +110,9 @@ export const loadOperationalLayers = async (): Promise<LayerInfo[]> => {
     promises.push(LineRestrictionsLayer.initLayer(config.lineRestrictions));
     promises.push(PointRestrictionsLayer.initLayer(config.pointRestrictions));
     promises.push(CameraLayer.initLayer(config.cameras));
-    promises.push(RoadAlertsLayer.initLayer(config.roadAlerts));
+    promises.push(RoadAlertsLayer.initLayer(config.currentRoadAlertPoint));
+    promises.push(LineRoadAlertsLayer.initLayer(config.currentRoadAlertLine))
+    promises.push(LinearClosuresLayer.initLayer(config.currentRoadClosureLine))
     promises.map(eachPromise => eachPromise.catch(error => error));
     // Load sync ones...
     const infos: LayerInfo[] = [];
@@ -142,11 +149,14 @@ export const loadOperationalLayers = async (): Promise<LayerInfo[]> => {
             lyrs.push(layer);
         }
     }
+    
     addToList(RoadsReferenceLayer.default());
     addToList(BoundariesPlacesReferenceLayer.default());
     addToList(FerryRoutesReferenceLayer.default());
     addToList(TrafficLayer.default());
+    addToList(LinearClosuresLayer.default());
     addToList(LineFerryRoutesLayer.default());
+    addToList(LineRoadAlertsLayer.default());
     addToList(StateRouteShieldsLayer.default());
     addToList(FirePerimetersLayer.default());
     addToList(fireIncidentLayer);
@@ -161,6 +171,7 @@ export const loadOperationalLayers = async (): Promise<LayerInfo[]> => {
     addToList(CameraLayer.default());
     addToList(PointFerryRoutesLayer.default());
     addToList(RoadAlertsLayer.default());
+    
     // The first one in the array will be displayed at the bottom of the map... 
     webmap.addMany(lyrs);
     // Store the default visibility...
@@ -172,7 +183,8 @@ export const loadOperationalLayers = async (): Promise<LayerInfo[]> => {
 /**
  * Filter out the layers that did not load.
  *
- * @param list List of layers to validate
+ * @param list  - List of layers to validate
+ * @returns An array of valid layers.
  */
 export const validateLayerList = (list: (Layer | undefined)[]): Layer[] => {
     const validLyrs: Layer[] = list.filter(isLayer);
@@ -181,7 +193,8 @@ export const validateLayerList = (list: (Layer | undefined)[]): Layer[] => {
 /**
  * Type guard for the layer object
  *
- * @param layer 
+ * @param layer  - An object that may or may not be a layer.
+ * @returns A boolean indicating if the input is a layer.
  */
 export const isLayer = (layer: Layer | undefined): layer is Layer => {
     return !!layer;
@@ -209,8 +222,10 @@ export const loadRegionalAlert = async (): Promise<LayerInfo[]> => {
 export const refreshLayerData = async (): Promise<LayerInfo[]> => {
     const config = getConfig();
     const promises = [];
-    promises.push(RegionalAlertLayer.reloadData(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries));
-    promises.push(layerUtil.reloadData(config.roadAlerts, RoadAlertsLayer.default()));
+    promises.push(RegionalAlertLayer.reloadData(config.regionalAlerts, config.countyBoundaries, config.regionBoundaries)); 
+    promises.push(layerUtil.reloadData(config.currentRoadAlertPoint, RoadAlertsLayer.default()));
+    promises.push(layerUtil.reloadData(config.currentRoadAlertLine, LineRoadAlertsLayer.default()));
+    promises.push(layerUtil.reloadData(config.currentRoadClosureLine, LinearClosuresLayer.default()));
     promises.push(layerUtil.reloadData(config.pointRestrictions, PointRestrictionsLayer.default()));
     promises.push(layerUtil.reloadData(config.lineRestrictions, LineRestrictionsLayer.default()));
     promises.push(layerUtil.reloadData(config.mountainPasses, MountainLayer.default()));
@@ -228,8 +243,11 @@ export const refreshLayerData = async (): Promise<LayerInfo[]> => {
 };
 
 /**
- * @param point
- * @param numLevels
+ * Attempts to zoom to a point
+ * 
+ * @param point  - A point
+ * @param numLevels  - The number of levels
+ * @returns True if successful, false otherwise.
  */
 export const tryZoomToPoint = (point: Point, numLevels?: number): boolean => {
     let isSuccess = true;
@@ -248,10 +266,10 @@ export const tryZoomToPoint = (point: Point, numLevels?: number): boolean => {
 /**
  * Zoom centered at the specified location
  *
- * @param point The center location
- * @param zoomLevel The zoom level to zoom into.
+ * @param point  - The center location
+ * @param zoomLevel  - The zoom level to zoom into.
  * If numLevels is also specified, that will take precedence over this value.
- * @returns A boolean promise indicating of the zoom sucessfully occured.
+ * @returns A boolean promise indicating of the zoom successfully occurred.
  */
 export const tryZoomToPointAsync = async (point: Point, zoomLevel: number): Promise<boolean> => {
     let isSuccess = true;
@@ -273,7 +291,9 @@ export const tryZoomToPointAsync = async (point: Point, zoomLevel: number): Prom
 }
 
 /**
- * @param point
+ * Zoom to the maximum level at the specified point.
+ * 
+ * @param point  - The point to zoom to
  */
 export const zoomToMax = async (point: Point): Promise<void> => {
     await mapView.goTo({
@@ -288,7 +308,9 @@ export const zoomToMax = async (point: Point): Promise<void> => {
 }
 
 /**
- * @param extent
+ * Zooms to the metro area of the given extent.
+ * 
+ * @param extent  - An extent
  */
 export const zoomToMetroArea = (extent: Extent): void => {
     mapView.extent = extent.expand(2);
@@ -307,7 +329,9 @@ export const zoomToMetroArea = (extent: Extent): void => {
 };
 
 /**
- * @param extent
+ * Zooms to a given extent.
+ * 
+ * @param extent  - An extent to zoom to.
  */
 export const zoomToExtent = async (extent: Extent): Promise<void> => {
     await mapView.goTo(extent, {
@@ -335,7 +359,7 @@ export const zoomToExtent = async (extent: Extent): Promise<void> => {
 /**
  * A zoom level and scale
  */
-interface ZoomLevel {
+export interface ZoomLevel {
     /** zoom level */
     level: number,
     /** zoom scale */
@@ -347,7 +371,7 @@ let zoomLevels: ZoomLevel[];
 /**
  * Get the scale by the number levels from the minimum scale.
  *
- * @param numLevelsFromMin Number of levels from the minimum scale. 
+ * @param numLevelsFromMin  - Number of levels from the minimum scale. 
  * For example, 0 is the min scale. 3 is the fourth level from the min scale.
  * You can also specify number of levels from the maximum scale by using the negative value.
  * For example -1 is the max scale. -2 is the second level from the max scale.
@@ -378,8 +402,11 @@ export const getZoomLevel = (numLevelsFromMin: number): ZoomLevel => {
 }
 
 /**
- * @param mapX
- * @param mapY
+ * Converts map coordinates to screen coordinates.
+ * 
+ * @param mapX  - X coordinate
+ * @param mapY  - Y coordinate
+ * @returns a point object.
  */
 export const toScreenXY = (mapX: number, mapY: number): { x: number, y: number } => {
     const pt = toPoint(mapX, mapY);
@@ -388,23 +415,29 @@ export const toScreenXY = (mapX: number, mapY: number): { x: number, y: number }
 }
 
 /**
- * @param mapX
- * @param mapY
+ * Converts X and Y coordinates to a {@link Point} object.
+ * 
+ * @param mapX  - X
+ * @param mapY  - Y
+ * @returns a Point object.
  */
 export const toPoint = (mapX: number, mapY: number): Point => {
     const pt = new Point({ x: mapX, y: mapY, spatialReference: mapView.spatialReference });
     return pt;
 }
+
+
+
 /**
  * Check the new extent after panning against the max extent allowed and report the direction from the extent.
  *
- * @param shiftX 
- * @param shiftY 
- * @returns
- * First char: vertical direction = i/n/s (inside/north/south)
- * Second char: horizontal direction = i/w/e (inside/west/east)
+ * @param shiftX  - Shift X
+ * @param shiftY  - Shift Y
+ * @returns A string matching the pattern /[ins][iwe]/
+ * - First char: vertical direction = i/n/s (inside/north/south)
+ * - Second char: horizontal direction = i/w/e (inside/west/east)
  */
-export const checkPannedExtent = (shiftX: number, shiftY: number): string => {
+export const checkPannedExtent = (shiftX: number, shiftY: number): ExtentDirections => {
     const topLeft = mapView.toMap({ x: -1 * shiftX, y: -1 * shiftY });
     const bottomRight = mapView.toMap({ x: mapView.width - shiftX, y: mapView.height - shiftY });
     const topLeftDir = extentUtil.getOutOfBoundDirection(topLeft, fullExtent);
@@ -413,14 +446,14 @@ export const checkPannedExtent = (shiftX: number, shiftY: number): string => {
     let outOfBoundsDir = shiftY > 0 ? topLeftDir[0] : bottomRightDir[0];
     // Positive = panning east/right => check the left, otherwise check the right side...
     outOfBoundsDir += shiftX > 0 ? topLeftDir[1] : bottomRightDir[1];
-    return outOfBoundsDir;
+    return outOfBoundsDir as ExtentDirections;
 }
 /**
  * Pan Map using GoTo()
  *
- * @param shiftX 
+ * @param shiftX  - 
  * positive = pan east, negative = pan west
- * @param shiftY
+ * @param shiftY - 
  * Positive = pan south, negative = pan north
  * @returns 
  * If successful or exception, return true/false. Otherwise return the actual amount pan was panned.
@@ -468,26 +501,31 @@ export const panMap = async (shiftX: number, shiftY: number): Promise<{ actualSh
 }
 
 /**
- * @param id
+ * Gets the layer with the specified "id"
+ * 
+ * @param id  - Layer ID
+ * @returns A Layer.
  */
 export const getLayer = (id: string): Layer => {
     return webmap.findLayerById(id);
 }
 /**
- *
+ * Gets the webmap layers.
+ * 
+ * @returns A collection of layers.
  */
 export const getLayers = (): Collection<Layer> => {
     return webmap.layers;
 }
 /**  
- * NOTE: This function only returns each feature if one of the following coditions is met:
+ * NOTE: This function only returns each feature if one of the following conditions is met:
  * - maxCount is not set  * 
  * - The number of features is less than the maxCount.
  * - All the features are at the identical location.
  *
- * @param clusterGraphic
- * @param layer
- * @param maxCount
+ * @param clusterGraphic  - Cluster Graphic
+ * @param layer  - Layer
+ * @param maxCount  - Max count
  * @returns An array of IDs or undefined
  */
 export const getIdsFromCluster = async (clusterGraphic: Graphic, layer: Layer, maxCount?: number): Promise<number[] | undefined> => {
@@ -524,9 +562,12 @@ export const getIdsFromCluster = async (clusterGraphic: Graphic, layer: Layer, m
 }
 
 /**
- * @param distancePixel
- * @param screenPoint
- * @param mapPoint
+ * Converts pixel to meters
+ * 
+ * @param distancePixel  - distance pixel
+ * @param screenPoint  - screen point
+ * @param mapPoint  - map point
+ * @returns distance in meters
  */
 export const pixel2meter = (distancePixel: number, screenPoint?: XY, mapPoint?: Point): number => {
     if (!screenPoint && mapPoint) {
@@ -569,8 +610,11 @@ export const pixel2meter = (distancePixel: number, screenPoint?: XY, mapPoint?: 
 // }
 /** Highlight feature */
 let highlight: __esri.Handle;
+
 /**
- * @param featureInfo
+ * Highlights the specified feature.
+ * 
+ * @param featureInfo  - Feature info to be highlighted.
  */
 export const highlightFeature = (featureInfo: FeatureInfo): void => {
     const layer = getLayer(featureInfo.layerId) as FeatureLayer;
@@ -587,6 +631,7 @@ export const highlightFeature = (featureInfo: FeatureInfo): void => {
     })
 }
 
+
 /**
  *
  */
@@ -599,13 +644,17 @@ export const removeHighlight = (): void => {
 // const outOfExtentLayer = new GraphicsLayer();
 // const displayExtent = extentUtil.getEsriExtent("full").expand(1.2);
 
+/**
+ * Adds out of extent layer
+ */
 export const addOutOfExtentLayer = (): void => {
     const outOfExtentLayer = new GraphicsLayer();
     const symbol = new SimpleFillSymbol({
         style: "solid",
         color: [256, 256, 256, 0.95],
         outline: {
-            style: "none"
+            style: "solid",
+            color: [256, 256, 256, 0.95],
         }
     });
     const geoms = extentUtil.getOutOfExtentPolygons();

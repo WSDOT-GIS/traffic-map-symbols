@@ -407,7 +407,7 @@ export default defineComponent({
         // If this is not the initial load, then move popup along with map.
         if (!doPanMap) {
           // Recalculate top and let position...
-          const newTopLeft = calcTopLeft(h, w);
+          const newTopLeft = calcTopLeft(h, w, props.LayerId);
           setPosition(newTopLeft.top, newTopLeft.left);
         } else {
           doPanMap = false;
@@ -420,7 +420,7 @@ export default defineComponent({
               // Display below the feature...
               relativePosition.value = relativePositions.below;
             }
-            let newTopLeft = calcTopLeft(h, w);
+            let newTopLeft = calcTopLeft(h, w, props.LayerId);
             /*
              * Pan map so the popup is displayed within the map view,
              * and the top is visible.
@@ -434,7 +434,7 @@ export default defineComponent({
             ) {
               const bestPosition = getBestRelativePosition(h);
               relativePosition.value = bestPosition;
-              newTopLeft = calcTopLeft(h, w);
+              newTopLeft = calcTopLeft(h, w, props.LayerId);
               shiftXY = calcShiftXY(newTopLeft, h, w);
             }
 
@@ -508,10 +508,11 @@ export default defineComponent({
      * Figure out the top and left position of the popup.
      * NOTE: Make sure to set the relativePosition before calling this.
      *
-     * @param height
-     * @param width
+     * @param height - 
+     * @param width - 
+     * @param layerID - 
      */
-    const calcTopLeft = (height: number, width: number): { top: number; left: number } => {
+    const calcTopLeft = (height: number, width: number, layerID: string): { top: number; left: number } => {
       let newTop = 0;
       switch (relativePosition.value) {
         case relativePositions.below:
@@ -523,22 +524,25 @@ export default defineComponent({
           break;
         default:
           // Display above the feature by default...
-          newTop = screenY.value - height - 30;
+          if(layerID=="linear-closures-layer"){//if this part stays, add feature geometry type to props use that for this conditional. This makes the pop ups display close to the line rather than offset the height of the point marker.
+            newTop = screenY.value - height
+          }
+          else{
+            newTop = screenY.value - height - 30;
+          }
           if (!props.MapXY) {
             newTop -= 15;
           }
       }
-      let newLeft = screenX.value - width / 2;
+      const newLeft = screenX.value - width / 2;
       return { top: newTop, left: newLeft };
     };
     /**
-     * Calulate how far map need to be moved so the top of the popup is visible within the map view.
+     * Calculate how far map need to be moved so the top of the popup is visible within the map view.
      *
-     * @param topLeft
-     * @param topLeft.top
-     * @param topLeft.left
-     * @param height
-     * @param width
+     * @param topLeft - top and left number values.
+     * @param height - height
+     * @param width - width
      */
     const calcShiftXY = (
       topLeft: { top: number; left: number },
@@ -583,8 +587,8 @@ export default defineComponent({
     /**
      * This sets the margin top and left of the popup container.
      *
-     * @param top
-     * @param left
+     * @param top - 
+     * @param left - 
      */
     const setPosition = (top?: number, left?: number) => {
       // Adjust vertical position...
@@ -749,7 +753,7 @@ export default defineComponent({
      * If MapX and Y are provided, those values supersede the feature x/y.
      * Otherwise the feature x/y is used to determine the location of the popup.
      *
-     * @param ignoreMapXY
+     * @param ignoreMapXY - 
      */
     const setMapXY = (ignoreMapXY?: boolean) => {
       if (!ignoreMapXY) {
@@ -766,13 +770,12 @@ export default defineComponent({
         }
       }
     };
+    
     /**
+     * Catch the carousel's picture changes.
      *
-     Catch the carousel spicture changes.
-     * @param splide 
-     *
-     * @param splide
-     * @param newIndex 
+     * @param splide  - Splide
+     * @param newIndex  - New Index
      */
     const onSplideMoved = (splide: unknown, newIndex: number) => {
       currentIdx.value = newIndex;

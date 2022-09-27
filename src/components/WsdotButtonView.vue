@@ -68,7 +68,7 @@ button {
 }
 .filled-button {
   background-color: var(--color-primaryBrand100);
-  color: #fff;
+  color: var(--color-themeText);
   border: 1px solid var(--color-primaryBrand100);
 }
 .not-filled-button {

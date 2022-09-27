@@ -8,11 +8,8 @@ html {
 }
 
 /* mobile nav */
-.Vue-Toastification__toast.Vue-Toastification__toast--default.top-left{
-    background-color: red;
-    width: 50%;
-    max-width: 100%;
-    left: 300px;
+.Vue-Toastification__toast.Vue-Toastification__toast--error.bottom-center{
+    background-color: firebrick;
 }
 
 @media all {
@@ -336,3 +333,20 @@ button.btn-danger::hover {
     background-color: #0b354d;
     color: #f9f9a5;
 }
+html body .content-super-bottom-wrapper {/*used for Go Orange theme*/
+    background-color: #FFE9DC;
+    background-image: url("./icons/candy-stripe-bar.svg");
+    background-repeat: repeat-x;
+    background-position-y: bottom;
+    margin-bottom: 0px;
+    padding-bottom: 4px;
+}
+html body .menu--main li.workzoneSafetyLink a:before {
+    content: '';
+    background-image: url("./icons/workzone-safety-icon.png");
+    width: 37px;
+    height: 37px;
+    float: left;
+    background-repeat: no-repeat;
+    margin-top: -8px;
+  }

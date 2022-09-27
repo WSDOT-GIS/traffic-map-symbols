@@ -74,7 +74,7 @@ export default defineComponent({
     const getTemp = (feature: FeatureInfo): string | undefined => {
       //const num = feature.attributes["Temperature"] as string;
       const unit = feature.attributes["TemperatureUnit"] as string;
-      let num = 100;
+      const num = 100;
       //const unit = "Fahrenheit" as string
       if (num) {
         let numF;
@@ -84,12 +84,12 @@ export default defineComponent({
             numF = num;
             numC = Math.ceil((num - 32) * 0.5556);
             break;
-          case "Celcius" as string:
+          case "Celcius" as string: // cspell: disable-line
             numC = num;
             numF = Math.ceil(num * 1.8 + 32);
             break;
         }
-        let text = `${numF}°F / ${numC}°C`;
+        const text = `${numF}°F / ${numC}°C`;
         return text;
       } else {
         return undefined;
@@ -112,7 +112,7 @@ export default defineComponent({
             meterNum = num;
             break;
         }
-        let text = `${ftNum}ft / ${meterNum}m`;
+        const text = `${ftNum}ft / ${meterNum}m`;
         return text;
       } else {
         return "";

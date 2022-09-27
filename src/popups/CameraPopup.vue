@@ -34,7 +34,7 @@ export default defineComponent({
     const getDirection = (feature: FeatureInfo): string => {
       let newVal = "";
       if (features.value.length > 0) {
-        let val = feature.attributes["CompassDirection"] as string;
+        const val = feature.attributes["CompassDirection"] as string;
         if (val) {
           switch(val){
             case "N":

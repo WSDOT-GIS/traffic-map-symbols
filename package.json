@@ -1,50 +1,86 @@
 {
   "name": "wsdot-travel-center-map",
-  "version": "1.0.5",
+  "version": "1.0.8",
   "private": true,
   "scripts": {
+    "prepare": "npm run docs",
+    "test-configs": "ts-node --esm ./tools/test-config.mts",
+    "clean": "git clean -dfx -e node_modules",
+    "dotnet-serve": "dotnet serve --path-base /Travel/Real-time/Map/ --directory dist",
+    "docs": "typedoc",
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "lint:html": "vue-cli-service lint --format html > dist/lint-results.html"
+    "lighthouse": "node ./tools/run-lighthouse.mjs",
+    "build": "vue-cli-service build --modern",
+    "lint": "vue-cli-service lint --no-fix",
+    "lint:html": "vue-cli-service lint --no-fix --format html > dist/lint-results.html",
+    "spell-ci": "cspell lint **/* --fail-fast --no-progress --no-summary",
+    "tsc:symbols": "tsc --project symbols.tsconfig"
   },
   "dependencies": {
-    "@analytics/google-analytics": "^0.5.3",
-    "@arcgis/core": "~4.21.2",
-    "@microsoft/applicationinsights-web": "^2.7.3",
-    "@splidejs/vue-splide": "^0.5.18",
-    "analytics": "^0.8.0",
-    "core-js": "^3.21.0",
-    "polygon-clipping": "^0.15.3",
-    "vue": "^3.2.30",
-    "vue-fragment": "^1.5.2",
-    "vue-responsive-components": "^0.2.3",
-    "vue-router": "^4.0.12",
-    "vue-toastification": "^2.0.0-rc.5",
-    "vue3-click-away": "^1.2.1",
-    "vuex": "^4.0.2"
+    "vue": "^3.2.38",
+    "vue-gtag": "^2.0.1"
   },
   "devDependencies": {
-    "@arcgis/webpack-plugin": "^4.20.0",
-    "@types/arcgis-js-api": "~4.21.0",
+    "@analytics/google-analytics": "^1.0.3",
+    "@arcgis/core": "^4.24.7",
+    "@arcgis/webpack-plugin": "^4.22.0",
+    "@microsoft/applicationinsights-web": "^2.8.6",
+    "@splidejs/vue-splide": "^0.6.7",
     "@types/doubleclick-gpt": "^2019111201.0.2",
-    "@types/webpack-env": "^1.16.3",
-    "@typescript-eslint/eslint-plugin": "^5.11.0",
-    "@typescript-eslint/parser": "^5.11.0",
-    "@vue/cli-plugin-babel": "^4.5.15",
-    "@vue/cli-plugin-eslint": "^4.5.15",
-    "@vue/cli-plugin-typescript": "^4.5.15",
-    "@vue/cli-service": "^4.5.16",
-    "@vue/eslint-config-typescript": "^10.0.0",
-    "eslint": "^7.0.0",
-    "eslint-plugin-jsdoc": "^37.9.1",
-    "eslint-plugin-vue": "^8.4.1",
-    "source-map": "^0.7.3",
-    "typescript": "^4.6.0",
-    "vue-cli-plugin-compression": "~1.1.5",
-    "vue-cli-plugin-webpack-bundle-analyzer": "~4.0.0"
+    "@types/gtag.js": "^0.0.11",
+    "@types/webpack-env": "^1.18.0",
+    "@typescript-eslint/eslint-plugin": "^5.36.1",
+    "@typescript-eslint/parser": "^5.36.1",
+    "@vue/cli-plugin-eslint": "^5.0.8",
+    "@vue/cli-plugin-typescript": "^5.0.8",
+    "@vue/cli-service": "^5.0.8",
+    "@vue/eslint-config-typescript": "^11.0.0",
+    "analytics": "^0.8.1",
+    "chrome-launcher": "^0.15.1",
+    "core-js": "^3.25.0",
+    "cspell": "^6.8.1",
+    "eslint": "^8.23.0",
+    "eslint-plugin-tsdoc": "^0.2.16",
+    "eslint-plugin-vue": "^9.4.0",
+    "lighthouse": "^9.6.6",
+    "polygon-clipping": "^0.15.3",
+    "source-map": "^0.7.4",
+    "ts-node": "^10.9.1",
+    "typedoc": "^0.23.12",
+    "typedoc-plugin-coverage": "^2.0.0",
+    "typedoc-plugin-markdown": "^3.13.5",
+    "typescript": "^4.8.2",
+    "vue-cli-plugin-compression": "^2.0.0",
+    "vue-cli-plugin-webpack-bundle-analyzer": "^4.0.0",
+    "vue-responsive-components": "^0.2.3",
+    "vue-router": "^4.1.5",
+    "vue-toastification": "^2.0.0-rc.5",
+    "vue3-click-away": "^1.2.4",
+    "vuex": "^4.0.2",
+    "webpack": "^5.74.0"
   },
   "prettier": {
     "printWidth": 100
-  }
+  },
+  "description": "This repository contains the source code for the [WSDOT Travel Center Map]",
+  "main": "src/main.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://WSDOT@dev.azure.com/WSDOT/TravelerInformation/_git/TravelerInformationCoreMap"
+  },
+  "keywords": [
+    "wsdot",
+    "travel",
+    "traffic",
+    "borders",
+    "weather"
+  ],
+  "override": {
+    "intl-messageformat-parser": "@formatjs/icu-messageformat-parser"
+  },
+  "author": "",
+  "license": "Unlicense"
 }

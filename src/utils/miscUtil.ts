@@ -1,6 +1,15 @@
 /**
- * @param epoch
- * @param isTime
+ * Miscellaneous utilities
+ */
+
+export const formattedEpochRe = /\d{4}\/\d{2}\/\d{2}(?: \d{2}:\d{2} [AP]M)?/
+
+/**
+ * Formats an epoch.
+ * 
+ * @param epoch  - Epoch
+ * @param isTime  - Indicates if the epoch is a time.
+ * @returns epoch as a string. MM/DD/YYYY HH:mm  \{AM|PM\}
  */
 export const formatEpoch = (epoch: number, isTime?: boolean): string => {
     /* IT said date will be in UTC, so removed the workaround below. If necessary simply
@@ -15,23 +24,32 @@ export const formatEpoch = (epoch: number, isTime?: boolean): string => {
         let hours = date.getHours();
         const minutes = date.getMinutes();
         // Check whether AM or PM
-        const ampm = hours >= 12 ? "PM" : "AM";
+        const amOrPM = hours >= 12 ? "PM" : "AM";
         // Find current hour in AM-PM Format
         hours = hours % 12;
         // To display "0" as "12"
         hours = hours ? hours : 12;
-        text += ` ${formatDateTimePart(hours)}:${formatDateTimePart(minutes)} ${ampm}`;
+        text += ` ${formatDateTimePart(hours)}:${formatDateTimePart(minutes)} ${amOrPM}`;
     }
     return text;
 }
 
+/**
+ * Formats a number to be padded with zeros if only a single digit
+ * 
+ * @param part  - A number.
+ * @returns A two-digit representation of the input number.
+ */
 const formatDateTimePart = (part: number) => {
     return ("0" + part).slice(-2);
 };
 
 /**
- * @param url
- * @param isUnicode
+ * Fetches JSON from a URL.
+ * 
+ * @param url  - JSON URL
+ * @param isUnicode  - Indicates if JSON is in utf-8 (true) or "windows-1252" (false)
+ * @returns An object parsed from the JSON data.
  */
 export const fetchJson = async (url: string, isUnicode?: boolean): Promise<unknown> => {
     const response = await fetch(url, { cache: "no-store" });
@@ -73,16 +91,19 @@ export const WebMercator = {
     "wkid": 3857
 }
 /**
- * @param child
- * @param classname
+ * Determines if the HTML element has a parent with a specific class.
+ * 
+ * @param child  - HTML element
+ * @param classname  - CSS class name
+ * @returns true or false indicating if the element's parent is in this class.
  */
-export const hasParentClass = (child: HTMLElement, classname: string): boolean => {
+export const hasParentClass = (child: Element | null, classname: string): boolean => {
     if (child) {
         // If the element is SVG, className is SVGAnimatedString object and throws an error on child.className.split().
         if (typeof child.className === "string" && child.className.split(' ').indexOf(classname) >= 0) return true;
         try {
             //Throws TypeError if child doesn't have parent any more
-            return hasParentClass(child.parentNode as HTMLElement, classname);
+            return hasParentClass(child.parentNode as Element | null, classname);
         } catch (TypeError) {
             return false;
         }
@@ -93,8 +114,11 @@ export const hasParentClass = (child: HTMLElement, classname: string): boolean =
 }
 
 /**
- * @param child
- * @param id
+ * Determines if the HTML element has a parent with the given "id" attribute.
+ * 
+ * @param child  - An HTML element
+ * @param id  - An "id" attribute value.
+ * @returns a boolean indicating if the parent is present.
  */
 export const hasParent = (child: HTMLElement, id: string): boolean => {
     if (child) {
@@ -112,9 +136,12 @@ export const hasParent = (child: HTMLElement, id: string): boolean => {
 }
 
 /**
- *
+ * Generates a GUID
+ * 
+ * @returns a GUID
  */
 export const getGuid = (): string => {
+    // cspell: disable-next-line
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);

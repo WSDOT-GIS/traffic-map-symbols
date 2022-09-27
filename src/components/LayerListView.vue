@@ -336,12 +336,15 @@ export default defineComponent({
 #slowLegendCell {
   background-color: #e6002e;
 }
+
 #slowMediumLegendCell {
   background-color: #ec8d00;
 }
+
 #mediumFastLegendCell {
   background-color: #e9d14c;
 }
+
 #fastLegendCell {
   background-color: #6dccac;
 }

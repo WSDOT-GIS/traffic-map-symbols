@@ -31,14 +31,14 @@ export default defineComponent({
         close();
       }
     });
-    const getMoreInfoURL = (): MoreInfoURLInfo => {
+    /*const getMoreInfoURL = (): MoreInfoURLInfo => {
       const moreInfoObject = new Object({
         url: `https://www.th.gov.bc.ca/ATIS/index.htm`,
         text: "Get the",
         linkText: "Southbound wait time",
       }) as MoreInfoURLInfo;
       return moreInfoObject;
-    };
+    };*/
     const getTitle = (feature: FeatureInfo): string => {
       return `SR ${feature.attributes["StateRouteID"] as string}`;
     };
@@ -72,7 +72,7 @@ export default defineComponent({
       layerId,
       feature,
       close,
-      getMoreInfoURL,
+      //getMoreInfoURL,
       layerIcons,
       getTitle,
     };
@@ -96,9 +96,9 @@ export default defineComponent({
           value: { fieldName: 'BorderReadingTime', isTime: true, isDate: true },
         },
       ],
-      moreInfoURL: {
+      /*moreInfoURL: {
         custom: getMoreInfoURL,
-      },
+      },*/
     }"
     @close="close"
   >

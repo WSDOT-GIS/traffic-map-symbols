@@ -6,16 +6,16 @@ import Polygon from "@arcgis/core/geometry/Polygon";
 import { project } from "@arcgis/core/geometry/projection";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import FeatureSet from "@arcgis/core/tasks/support/FeatureSet";
+import FeatureSet from "@arcgis/core/rest/support/FeatureSet";
 /**
- * @param graphic
- * @param layer
+ * @param graphic - 
+ * @param layer - 
  */
 export const getGraphicsInfoById = async (graphic: Graphic, layer: FeatureLayer): Promise<FeatureInfo | undefined> => {
     const query = layer.createQuery();
     const idName = layer.objectIdField;
-    const theid = graphic.getObjectId()
-    query.where = `${idName} = ${theid}`;
+    const theId = graphic.getObjectId()
+    query.where = `${idName} = ${theId}`;
     query.outFields = ["*"];
     const response = await layer.queryFeatures(query);
     const g = response.features[0];
@@ -26,8 +26,8 @@ export const getGraphicsInfoById = async (graphic: Graphic, layer: FeatureLayer)
 }
 
 /**
- * @param id
- * @param layer
+ * @param id - 
+ * @param layer - 
  */
 export const getFeatureInfoById = async (id: number, layer: FeatureLayer): Promise<FeatureInfo | undefined> => {
     const query = layer.createQuery();
@@ -43,8 +43,8 @@ export const getFeatureInfoById = async (id: number, layer: FeatureLayer): Promi
 }
 
 /**
- * @param ids
- * @param layer
+ * @param ids - 
+ * @param layer - 
  */
 export const getFeatureInfosByIds = async (ids: number[], layer: FeatureLayer): Promise<FeatureInfo[]> => {
     const query = layer.createQuery();
@@ -57,9 +57,9 @@ export const getFeatureInfosByIds = async (ids: number[], layer: FeatureLayer): 
 }
 
 /**
- * @param fieldName
- * @param value
- * @param layer
+ * @param fieldName - 
+ * @param value - 
+ * @param layer - 
  */
 export const getLineFromPointId = async (fieldName: string, value: number | string, layer: FeatureLayer): Promise<FeatureSet> => {
     const query = layer.createQuery();
@@ -70,9 +70,9 @@ export const getLineFromPointId = async (fieldName: string, value: number | stri
     return response
 }
 /**
- * @param fieldName
- * @param value
- * @param layer
+ * @param fieldName - 
+ * @param value - 
+ * @param layer - 
  */
 export const getFeatureInfoByUniqueField = async (fieldName: string, value: number | string, layer: FeatureLayer): Promise<FeatureInfo | undefined> => {
     const query = layer.createQuery();

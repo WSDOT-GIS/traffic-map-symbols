@@ -13,7 +13,7 @@ These packages are used directly by the application itself.
   - [@microsoft/applicationinsights-web](https://docs.microsoft.com/en-us/azure/azure-monitor/app/javascript)
 - [@arcgis/core](https://developers.arcgis.com/javascript/latest/es-modules/)
 - [@splidejs/vue-splide](https://splidejs.com/integration/vue-splide/)
-  - This is used to provide the photo carosel.
+  - This is used to provide the photo carousel.
 - [core-js](https://github.com/zloirock/core-js)
 - [polygon-clipping](https://github.com/mfogel/polygon-clipping)
 - [vue](https://v3.vuejs.org/)
@@ -28,7 +28,7 @@ These packages are used directly by the application itself.
 
 ## Dev Dependencies
 
-These pacakges are not directly used by the application. They are tools used by developers.
+These packages are not directly used by the application. They are tools used by developers.
 
 - [@arcgis/webpack-plugin](https://www.npmjs.com/package/@arcgis/webpack-plugin)
 - [@typescript-eslint/eslint-plugin](https://www.npmjs.com/package/@typescript-eslint/eslint-plugin)

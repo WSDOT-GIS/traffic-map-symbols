@@ -5,15 +5,18 @@ import { isEsriRows } from "@/utils/typeUtil"
 
 /*** Statewide alerts *******************/
 let stateAlertUrl: string;
+
 /**
- * @param url
+ * Initialize state alerts
+ * 
+ * @param url  - State Alert URL
  */
 export const initStateAlerts = (url: string): void => {
     stateAlertUrl = url;
 }
 
 /**
- *
+ * Gets the state alerts.
  */
 export const getStateAlerts = async (): Promise<AlertInfo[]> => {
     if (!stateAlertUrl) {
@@ -34,16 +37,21 @@ let ferryAlerts: FerryAlertInfo[] | undefined;
 let ferryAlertUrl: string;
 
 /**
- * @param url
+ * Initialize the ferry alerts.
+ * 
+ * @param url  - Ferry alerts URL
  */
 export const initFerryAlerts = (url: string): void => {
     ferryAlertUrl = url;
 }
 
 /**
- * @param routeId
+ * Get the ferry alerts corresponding to the given route ID.
+ * 
+ * @param routeId  - Route identifier.
+ * @returns an array of {@link FerryAlertInfo} objects.
  */
-export const getFerryAlerts = async (routeId: number): Promise<FerryAlertInfo[]> => {
+export const getFerryAlerts = async (routeId: number|"all"): Promise<FerryAlertInfo[]> => {
     if (!ferryAlertUrl) {
         throw "Ferry Alerts URL is not set yet.";
     }
@@ -52,11 +60,17 @@ export const getFerryAlerts = async (routeId: number): Promise<FerryAlertInfo[]>
     }
     let alerts: FerryAlertInfo[];
     if (ferryAlerts) {
-        alerts = ferryAlerts.filter((each) => {
-            return each.FerryRouteId === routeId;
-        }).sort((a, b) => {
-            return a.SortOrder - b.SortOrder;
-        })
+        if(routeId!="all"){
+            alerts = ferryAlerts.filter((each) => {
+                return each.FerryRouteId === routeId;
+            }).sort((a, b) => {
+                return a.SortOrder - b.SortOrder;
+            })
+        }
+        else{
+            alerts = ferryAlerts 
+        }
+        
     } else {
         alerts = [];
     }
@@ -64,7 +78,9 @@ export const getFerryAlerts = async (routeId: number): Promise<FerryAlertInfo[]>
 }
 
 /**
- * @param force
+ * Reloads the ferry alerts.
+ * 
+ * @param force  - Forces the alerts to be reloaded even if they have already been loaded.
  */
 export const reloadFerryAlerts = async (force?: boolean): Promise<void> => {
     if (!force && !ferryAlerts) {

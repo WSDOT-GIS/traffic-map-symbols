@@ -1,6 +1,8 @@
 /**
- * @file Manages custom URLs for the application.
+ * Manages custom URLs for the application.
  * @see {@link https://router.vuejs.org/}
+ * 
+ * @packageDocumentation
  */
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import EsriMapView from '../components/EsriMapView.vue'
@@ -26,7 +28,7 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: '/feature/:featuretype/:featureid',
+    path: '/feature/:featuretype/:featureid', // cspell: disable-line
     name: 'Feature',
     component: EsriMapView,
     beforeEnter: (to) => {

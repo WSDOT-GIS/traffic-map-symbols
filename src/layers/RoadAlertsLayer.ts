@@ -29,7 +29,7 @@ const renderer = new uniqueValueRenderer({
             label: "LOW IMPACT",
             value: 4,
             symbol: alertSymbol
-        },
+        }
     ]
 })
 
@@ -39,7 +39,7 @@ const fields = [
         alias: "AppGenId",
         type: "oid"
     }),*/
-    new Field({
+    /*new Field({
         name: "EventID", type: "integer", alias: "EventID"
     }),
     new Field({ name: "EventCategoryDescription", type: "string", alias: "EventCategoryDescription", length: 400 }),
@@ -73,7 +73,19 @@ const fields = [
     new Field({ name: "TMSOverlap", type: "integer", alias: "TMSOverlap" }),
     new Field({ name: "RegionID", type: "small-integer", alias: "RegionID" }),
     new Field({ name: "TravelCenterPriorityId", type: "small-integer", alias: "TravelCenterPriorityId" }),
-    new Field({ name: "lineMarker", type: "string", alias: "lineMarker"})
+    new Field({ name: "lineMarker", type: "string", alias: "lineMarker"})*/
+
+        /*new Field({ name: "AppGenId",alias: "AppGenId",type: "oid"}),*/
+    new Field({ name: "EventID", type: "integer", alias: "EventID"}),
+    new Field({ name: "EventCategoryDescription", type: "string", alias: "EventCategoryDescription", length: 400 }),
+    new Field({ name: "TravelCenterPriorityId", type: "small-integer", alias: "TravelCenterPriorityId" }),
+    new Field({ name: "EventCategoryTypeDescription", type: "string", alias: "EventCategoryTypeDescription", length: 400 }),
+    new Field({ name: "EventPriorityID", type: "integer", alias: "EventPriorityID" }),
+    new Field({ name: "Road", type: "string", alias: "Road", length: 50 }),
+    new Field({ name: "RoadDirection", type: "string", alias: "RoadDirection", length: 15 }),
+    new Field({ name: "HeadlineMessage", type: "string", alias: "HeadlineMessage", length: 8000 }),
+    new Field({ name: "LastModifiedDate", type: "date", alias: "LastModifiedDate" })
+
 ]
 
 export const layerId = "road-alerts-layer";
@@ -84,7 +96,7 @@ let layer: FeatureLayer | undefined;
 /**
  * Initialize a layer
  * 
- * @param jsonUrl JSON URL
+ * @param jsonUrl  - JSON URL
  * @returns LayerInfo
  */
 export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
@@ -113,8 +125,8 @@ export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     }
     return layerInfo;
 }
-//**This happens here instead of in the layerutils because of the source distinciton. TODO: fix this**
-/** This is fixed now? */
+//**This happens here instead of in the layerutils because of the source distinction. TODO: fix this**
+//** TODO: This is fixed now? */
 // const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
 //     layer.watch("visible", (newValue) => {
 //         if (newValue) {
@@ -122,6 +134,9 @@ export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
 //         }
 //     });
 // }
+/**
+ *
+ */
 const getLayer = (): FeatureLayer | undefined => {
     if (!layer) {
         console.error("Road Alerts layer is not ready yet!");

@@ -101,7 +101,7 @@ if (removeKeys.length > 0) {
 /**
  * Get layer IDs of layers that should be visible from URL
  *
- * @param route URL routing
+ * @param route  - URL routing
  * @returns object of visible and invisible layer ID arrays 
  */
 export const getLayerVisibilityFromUrl = (route: RouteLocationNormalizedLoaded): { visible: string[], invisible: string[] } => {
@@ -167,7 +167,7 @@ export const getLayerVisibilityFromUrl = (route: RouteLocationNormalizedLoaded):
 /**
  * Check to make sure the ID is valid.
  *
- * @param name the name of a layer
+ * @param name  - the name of a layer
  * @returns Returns true if valid, false otherwise.
  */
 export const validateLayerName = (name: string): boolean => {
@@ -185,7 +185,7 @@ export const validateLayerName = (name: string): boolean => {
 /**
  * Get feature ID from a URL.
  *
- * @param route Route URL
+ * @param route  - Route URL
  * @returns Returns a feature ID string if one was found, null otherwise.
  */
 export const getFeatureIdFromUrl = (route: RouteLocationNormalizedLoaded): string | null => {
@@ -201,7 +201,7 @@ export const getFeatureIdFromUrl = (route: RouteLocationNormalizedLoaded): strin
 /** 
  * Get feature type based on the URL. 
  *
- * @param route Vue route object
+ * @param route  - Vue route object
  * @returns Returns a feature type string if one can be determined from the URL. 
  * Otherwise, returns null.
  */
@@ -241,7 +241,7 @@ const getFeatureTypeFromQuery = (): string | null => {
  * Assign extent if it is specified.
  * Check namedextent property first, then check the extent property, if nothing or invalid, return full state.
  *
- * @param route Vue route URL object.
+ * @param route  - Vue route URL object.
  * @returns Returns the extent specified in the URL if available, or "full" if not specified or invalid.
  */
 export const getExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Promise<Extent> => {
@@ -288,9 +288,9 @@ export const getExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Pr
 }
 /**
  * Get extent by name
- * Support route (area\<name>) and query parameter (?namedextent=<name>)
+ * Support route (area\<name\>) and query parameter (?namedextent=\<name\>)
  *
- * @param route 
+ * @param route  - 
  */
 const getNamedExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Promise<Extent | undefined> => {
     let param: string | null;
@@ -320,12 +320,12 @@ const getNamedExtentFromUrl = async (route: RouteLocationNormalizedLoaded): Prom
     return extent;
 }
 
-/**
- * @param name
- */
+
+
 export const validateAreaName = (name: string): boolean => {
     return ZoomExtentLayer.validateName(name);
 }
+
 
 /**
  *

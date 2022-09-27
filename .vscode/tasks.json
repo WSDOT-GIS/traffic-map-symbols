@@ -1,0 +1,113 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Test configs",
+			"detail": "Tests the configuration files to see if their URLs are reachable and to see if any config files are missing properties that the others have.",
+			"icon": {
+				"id": "beaker",
+				"color": "terminal.ansiGreen"
+			},
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"ts-node", 
+				"--esm",
+				"./tools/test-config.mts"
+			],
+			"problemMatcher": []
+		},
+		{
+			"label": "vuejs: start",
+			"icon": {
+				"id": "eye-watch"
+			},
+			"group": "build",
+			"detail": "Starts the Vue server, watching for changes",
+			"type": "npm",
+			"script": "serve",
+			"problemMatcher": [
+				"$tsc-watch"
+			],
+			"isBackground": true
+		},
+		{
+			"type": "npm",
+			"icon": {
+				"id": "trashcan",
+				"color": "terminal.ansiRed"
+			},
+			"script": "clean",
+			"problemMatcher": [],
+			"label": "npm: clean",
+			"detail": "Deletes all files that are not part of git repo, excluding the node_modules folder."
+		},
+		{
+			"type": "npm",
+			"script": "docs",
+			"icon": {
+				"id": "book",
+				"color": "terminal.ansiGreen"
+			},
+			"label": "run typedoc",
+			"detail": "Generates documentation files using typedoc"
+		},
+		{
+			"type": "shell",
+			"label": "dotnet-serve",
+			"detail": "Uses dotnet-serve to serve files from 'dist' directory.",
+			"command": "dotnet-serve",
+			"args": [
+				"--path-base=/Travel/Real-time/Map/", 
+				"--directory=dist"
+			],
+			"icon": {
+				"id": "browser",
+				"color": "terminal.ansiBlue"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "lighthouse",
+			"icon": {
+				"id": "checklist",
+				"color": "terminal.ansiMagenta"
+			},
+			"detail": "Run the lighthouse tool to check performance issues, etc.",
+			"type": "shell",
+			"command": "node ./tools/run-lighthouse.mjs",
+			"problemMatcher": []
+		},
+		{
+			"type": "npm",
+			"script": "lint",
+			"icon": {
+				"id": "checklist",
+				"color": "terminal.ansiYellow"
+			},
+			"problemMatcher": [
+				"$eslint-compact",
+				"$eslint-stylish"
+			],
+			"label": "npm: lint",
+			"detail": "vue-cli-service lint --no-fix"
+		},
+		{
+			"label": "Build",
+			"detail": "Production Vue build",
+			"type": "npm",
+			"script": "build",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": [
+				"$tsc"
+			],
+			"icon": {
+				"id": "package",
+				"color": "terminal.ansiGreen"
+			}
+		}
+	]
+}

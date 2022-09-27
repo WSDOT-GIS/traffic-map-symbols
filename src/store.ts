@@ -27,7 +27,7 @@ export interface State {
     isMobileMenuOpen: boolean;
     isInitializing: boolean;
     isLoading: boolean;
-    initiaizingMessage: string;
+    initializingMessage: string;
     leftPaneIsOpen: boolean;
     /** s: small, l:large */
     mediaSize: "s" | "l"; // TODO: add more as needed
@@ -35,6 +35,7 @@ export interface State {
     serviceAlerts: string[]; // Shown in the banner.
     serviceAlertsBannerVisible: boolean;
     isToastReady: boolean;
+    appTheme: string;
 }
 //
 const toast = useToast();
@@ -64,16 +65,20 @@ export const store = createStore<State>({
             isMobileMenuOpen: false,
             isInitializing: false,
             isLoading: false,
-            initiaizingMessage: "",
+            initializingMessage: "",
             leftPaneIsOpen: getMediaSize() !== "s",
             mediaSize: getMediaSize(),
             errors: [],
             serviceAlerts: [],
             serviceAlertsBannerVisible: false,
-            isToastReady: false
+            isToastReady: false,
+            appTheme:"",
         }
     },
     getters: {
+        getAppTheme: (state) => () => {
+            return state.appTheme;
+        },
         getLayerInfo: (state) => (id: string) => {
             return getLayerInfo(state, id);
         },
@@ -107,6 +112,9 @@ export const store = createStore<State>({
         }
     },
     mutations: {
+        setTheme(state, payload: string){
+            state.appTheme = payload
+        },
         setBasemap(state, payload: string) {
             if (state.basemap != payload || !state.basemap) {
                 const basemapInfo = getBasemapInfo(payload);
@@ -168,8 +176,8 @@ export const store = createStore<State>({
         /**
          * Add LayerInfos if not exist already, or update the existing ones.
          *
-         * @param state 
-         * @param payload 
+         * @param state  - 
+         * @param payload  - 
          */
         setLayerInfos(state, payload: LayerInfo[]) {
             payload.forEach(newInfo => {
@@ -200,14 +208,8 @@ export const store = createStore<State>({
         /**
          * Update a layer info in the layer list
          *
-         * @param state 
-         * @param payload Set the properties that need to be updated, and leave others undefined. Undefined properties will not be updated. 
-         * @param payload.id
-         * @param payload.title
-         * @param payload.index
-         * @param payload.url
-         * @param payload.visible
-         * @param payload.status
+         * @param state  - State
+         * @param payload  - Set the properties that need to be updated, and leave others undefined. Undefined properties will not be updated. 
          */
         updateLayerInfo(state, payload: {
             id: string, title?: string, index?: number, url?: string, visible?: boolean,
@@ -253,7 +255,7 @@ export const store = createStore<State>({
         setInitializing(state, payload: InitializingInfo) {
             payload.isInitializing != undefined ? state.isInitializing = payload.isInitializing : null
             payload.isLoading != undefined ? state.isLoading = payload.isLoading : null
-            payload.initializingMessage ? state.initiaizingMessage = payload.initializingMessage : null
+            payload.initializingMessage ? state.initializingMessage = payload.initializingMessage : null
         },
         setLeftPaneIsOpen(state, payload) {
             state.leftPaneIsOpen = payload;
@@ -308,10 +310,6 @@ export const store = createStore<State>({
          * Setup layer watch handlers to keep track of layer status.
          * If it is JSON layer, only use the layer's loadStatus property if it is "Failed". Otherwise the status is updated when JSON is fetched.
          * If it is not a JSON layer, use the layer's loadStatus property.
-         *
-         * @param root0
-         * @param root0.commit
-         * @param root0.state
          */
         watchLayers({ commit, state }) {
             if (layerWatchHandles) {
@@ -405,7 +403,7 @@ const removeServiceAlert = (state: State, alert: string | LayerInfo) => {
 /**
  * Clone the target of proxy (i.e. removing the reactivity)
  *
- * @param proxy The reactive object
+ * @param proxy  - The reactive object
  * @returns Non-reactive copy of the object
  */
 export const cloneProxyTarget = <T>(proxy: T): T => {

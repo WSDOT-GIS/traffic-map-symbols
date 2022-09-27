@@ -74,7 +74,7 @@ const layerTitle = "Cameras";
 /**
  * Initialize a layer
  * 
- * @param jsonUrl JSON URL
+ * @param jsonUrl  - JSON URL
  * @returns Promise<LayerInfo>
  */
 export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
@@ -91,6 +91,7 @@ export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     return layerInfo;
 }
 
+
 /**
  *
  */
@@ -104,8 +105,8 @@ const getLayer = (): FeatureLayer | undefined => {
 export default getLayer
 
 /**
- * @param newScale
- * @param oldScale
+ * @param newScale - 
+ * @param oldScale - 
  */
 // Watch scale change...
 export const toggleCluster = (newScale: number, oldScale: number): void => {
@@ -119,9 +120,8 @@ export const toggleCluster = (newScale: number, oldScale: number): void => {
     }
 }
 
-/**
- * @param scale
- */
+
+
 export const setCluster = (scale: number): void => {
     if (!layer) { return }
     if (layer.featureReduction) {

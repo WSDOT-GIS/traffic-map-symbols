@@ -45,7 +45,7 @@ const layerTitle = "Border Crossing Points";
 /**
  * Initialize a layer
  * 
- * @param jsonUrl JSON URL
+ * @param jsonUrl  - JSON URL
  * @returns Promise<LayerInfo>
  */
 export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
@@ -57,7 +57,7 @@ export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
             renderer,
             fields,
             "point",
-            false,
+            false
         );
     } catch (ex) {
         console.error(ex);
@@ -65,6 +65,7 @@ export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
     }
     return layerInfo;
 }
+
 
 /**
  *

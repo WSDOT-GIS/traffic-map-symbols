@@ -5,9 +5,8 @@ let layer: TileLayer | undefined;
 export const layerId = "state-route-shields-layer";
 const layerTitle = "State Route Shields";
 
-/**
- * @param url
- */
+
+
 export const initLayer = (url: string): LayerInfo => {
     const layerInfo = new LayerInfo(layerId, layerTitle, url);
     try {
@@ -16,6 +15,7 @@ export const initLayer = (url: string): LayerInfo => {
             url: url,
             title: "State Route Shields",
             visible: true,
+            copyright: undefined,
         });
     }
     catch (ex) {
@@ -25,6 +25,7 @@ export const initLayer = (url: string): LayerInfo => {
     }
     return layerInfo;
 }
+
 
 /**
  *

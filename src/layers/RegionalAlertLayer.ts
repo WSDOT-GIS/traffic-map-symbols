@@ -99,9 +99,9 @@ interface AlertFetchResult {
 }
 
 /**
- * @param alertUrl
- * @param countyUrl
- * @param regionUrl
+ * @param alertUrl - 
+ * @param countyUrl - 
+ * @param regionUrl - 
  */
 export const initLayer = async (alertUrl: string, countyUrl: string, regionUrl: string):
     Promise<LayerInfo[]> => {
@@ -138,6 +138,7 @@ export const initLayer = async (alertUrl: string, countyUrl: string, regionUrl: 
     return [pointInfo, areaInfo];
 }
 
+
 /**
  *
  */
@@ -151,9 +152,9 @@ const getLayer = (): FeatureLayer | undefined => {
 export default getLayer;
 
 /**
- * @param alertUrl
- * @param countyUrl
- * @param regionUrl
+ * @param alertUrl - 
+ * @param countyUrl - 
+ * @param regionUrl - 
  */
 export const reloadData = async (alertUrl: string, countyUrl: string, regionUrl: string):
     Promise<LayerInfo[]> => {
@@ -201,9 +202,9 @@ export const reloadData = async (alertUrl: string, countyUrl: string, regionUrl:
 /**
  * Fetch alerts from JSON, fetch boundaries from county or region map services, then create graphics.
  *
- * @param alertUrl 
- * @param countyUrl 
- * @param regionUrl 
+ * @param alertUrl  - 
+ * @param countyUrl  - 
+ * @param regionUrl  - 
  * @returns 
  */
 const fetchData = async (alertUrl: string, countyUrl: string, regionUrl: string):
@@ -273,9 +274,9 @@ const fetchData = async (alertUrl: string, countyUrl: string, regionUrl: string)
 /**
  * Center the alert icon in the center of the region that is visible.
  *
- * @param mapExtent 
+ * @param mapExtent  - 
  * If specified, it will only consider the visible part of the polygon.
- * @param visibleExtent
+ * @param visibleExtent - 
  */
 export const centerFeatures = async (visibleExtent?: Extent): Promise<void> => {
     const layer = getLayer();
@@ -285,7 +286,7 @@ export const centerFeatures = async (visibleExtent?: Extent): Promise<void> => {
     query.returnGeometry = true;
     query.outFields = ["EventID"];
     const result = await layer.queryFeatures(query);
-    const updatedFtrs: Graphic[] = [];
+    const updatedFeatures: Graphic[] = [];
     for (let i = 0; i < result.features.length; i++) {
         const feature = result.features[i];
         let newPt: Point | undefined;
@@ -300,10 +301,10 @@ export const centerFeatures = async (visibleExtent?: Extent): Promise<void> => {
         }
         if (newPt) {
             feature.geometry = newPt;
-            updatedFtrs.push(feature);
+            updatedFeatures.push(feature);
         }
     }
-    if (updatedFtrs.length > 0) {
-        layer.applyEdits({ updateFeatures: updatedFtrs });
+    if (updatedFeatures.length > 0) {
+        layer.applyEdits({ updateFeatures: updatedFeatures });
     }
 }

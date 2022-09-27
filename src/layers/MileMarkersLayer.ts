@@ -8,7 +8,7 @@ const layerTitle = "Mile Markers";
 /**
  * Initialize the layer
  * 
- * @param url
+ * @param url - 
  * @returns LayerInfo
  */
 export const initLayer = (url: string): LayerInfo => {
@@ -18,7 +18,7 @@ export const initLayer = (url: string): LayerInfo => {
             id: layerId,
             url: url,
             title: layerTitle,
-            visible: false,
+            visible: false
         });
     }
     catch (ex) {
@@ -28,6 +28,7 @@ export const initLayer = (url: string): LayerInfo => {
     }
     return layerInfo;
 }
+
 
 /**
  *

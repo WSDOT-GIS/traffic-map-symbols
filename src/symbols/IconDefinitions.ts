@@ -344,6 +344,31 @@ const otherIcons: IconInfo[] = [
     <path d="m17.247 22.237c-0.12435 0.17715-0.1908 0.3855-0.1908 0.59865 6e-4 0.2856 0.12 0.5592 0.3321 0.76125 0.2121 0.2019 0.4995 0.3156 0.79935 0.3162 0.2238 0 0.4425-0.06315 0.6285-0.18165 0.18615-0.11835 0.33105-0.28665 0.4167-0.48345 0.08565-0.19695 0.10815-0.41355 0.0645-0.62265-0.0438-0.20895-0.1515-0.40095-0.30975-0.5517-0.15825-0.1506-0.3597-0.2532-0.5793-0.2949-0.21945-0.04155-0.44685-0.02025-0.65355 0.06135-0.20685 0.0816-0.38355 0.2196-0.50775 0.3969z" fill="#dc3545" stroke-width="1.5"/>
     </svg>
     `
+  },
+  {
+    id: "linear-closures-layer",
+    paths:`
+    <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="24" height="24" viewBox="0 0 24 24" fill="none" version="1.1" id="svg851" sodipodi:docname="DoNotEnterIcon.svg" inkscape:version="0.92.3 (2405546, 2018-03-11)">
+      <metadata id="metadata857">
+        <rdf:RDF>
+          <cc:Work rdf:about="">
+            <dc:format>image/svg+xml</dc:format>
+            <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+            <dc:title/>
+          </cc:Work>
+        </rdf:RDF>
+      </metadata>
+      <defs id="defs855"/>
+      <sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="2880" inkscape:window-height="1526" id="namedview853" showgrid="false" inkscape:zoom="4.8945048" inkscape:cx="30.590263" inkscape:cy="28.661117" inkscape:window-x="2869" inkscape:window-y="-11" inkscape:window-maximized="1" inkscape:current-layer="svg851"/>
+      <path d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12Z" fill="#E885B4" id="path837" style="fill:#ff0000"/>
+      <path d="M22.4167 11.8233C22.4167 17.4861 17.7565 22.083 12 22.083C6.24354 22.083 1.58334 17.4861 1.58334 11.8233C1.58334 6.16057 6.24354 1.56369 12 1.56369C17.7565 1.56369 22.4167 6.16057 22.4167 11.8233Z" id="path839" stroke-width="0.5" stroke="white" fill="#E885B4" style="fill:#ffffff"/>
+      <line x1="3.4" y1="11.1586" x2="20.7033" y2="11.1586" stroke="white" stroke-width="0.8" stroke-linecap="square" stroke-dasharray="5 5" id="line841"/>
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M16.4042 4.1C16.4812 3.96667 16.6737 3.96667 16.7506 4.1L19.2039 8.34911C19.2809 8.48244 19.1846 8.64911 19.0307 8.64911H17.224V16.531C17.224 16.6414 17.1344 16.731 17.024 16.731H16.1309C16.0204 16.731 15.9309 16.6414 15.9309 16.531V8.64911H14.1242C13.9703 8.64911 13.874 8.48244 13.951 8.34911L16.4042 4.1Z" fill="white" id="path843"/>
+      <circle cx="12.0522" cy="11.5586" r="2.58619" fill="white" id="circle847"/>
+      <path style="fill:#ff0000;stroke:#ff0000;stroke-width:1.727;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="M 17.332591,17.000591 6.8535329,6.5215331" id="path4536" inkscape:connector-curvature="0"/>
+      <circle style="fill:none;fill-opacity:1;stroke:#ff0000;stroke-width:1.4;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.99633699" id="path4574" cx="12.105416" cy="11.677508" r="7.7021828"/>
+    </svg>
+    `
   }
 ]
 export { layerListIcons, otherIcons }

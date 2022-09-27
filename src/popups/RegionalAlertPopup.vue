@@ -25,7 +25,7 @@ export default defineComponent({
     const store = useStore();
     const feature = ref<FeatureInfo>();
     const layerIcons = layerListIcons;
-    let esriHandles = new Handles();
+    const esriHandles = new Handles();
 
     watch(props, () => {
       if (props.Featureset.layerId === layerId) {

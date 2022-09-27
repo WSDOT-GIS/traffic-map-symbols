@@ -69,9 +69,9 @@ export default defineComponent({
     };
     const getHOVTime = (feature: FeatureInfo): string => {
       let HOVTime;
-      var now = new Date;
-      var utc_timestamp = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
-      var difference = utc_timestamp - ((feature.attributes.TimeUpdated as number) + 1000 * 7 * 60 * 60);
+      const now = new Date;
+      const utc_timestamp = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
+      const difference = utc_timestamp - ((feature.attributes.TimeUpdated as number) + 1000 * 7 * 60 * 60);
       if ((difference / 1000 / 60) > 60) {
         HOVTime = "Not Available"
         TravelDelay.value = 0
@@ -83,9 +83,9 @@ export default defineComponent({
     };
     const getCurrentTime = (feature: FeatureInfo): string => {
       let currentTime;
-      var now = new Date;
-      var utc_timestamp = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
-      var difference = utc_timestamp - ((feature.attributes.TimeUpdated as number) + 1000 * 7 * 60 * 60);//converts feature time from PST to GMT
+      const now = new Date;
+      const utc_timestamp = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
+      const difference = utc_timestamp - ((feature.attributes.TimeUpdated as number) + 1000 * 7 * 60 * 60);//converts feature time from PST to GMT
       if ((difference / 1000 / 60) > 60) {
         currentTime = "Not Available"
         TravelDelay.value = 0

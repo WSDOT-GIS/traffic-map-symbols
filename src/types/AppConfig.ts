@@ -10,8 +10,9 @@ interface AppConfig {
     parkAndRides: string;
     pointRestrictions: string;
     restAreas: string;
-    roadAlerts: string;
-    lineRoadAlerts: string;
+    currentRoadAlertPoint: string;
+    currentRoadAlertLine: string;
+    currentRoadClosureLine:string;
     borderCrossings: string;
     traffic: string;
     weatherStations: string;
@@ -39,7 +40,8 @@ interface AppConfig {
     ferryAlerts: string,
     // Layer refresh interval in minutes...
     layerRefreshMinute: number;
-    googleAnalyticsID: string
+    googleAnalyticsID: string;
+    appTheme: string
 }
 
 export default AppConfig;

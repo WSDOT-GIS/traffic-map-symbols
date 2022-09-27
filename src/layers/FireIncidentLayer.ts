@@ -13,9 +13,8 @@ let layer: FeatureLayer | undefined;
 export const layerId = "fire-incidents-layer";
 const layerTitle = "Fire Incidents";
 
-/**
- * @param url
- */
+
+
 export const initLayer = (url: string): LayerInfo => {
     const layerInfo = new LayerInfo(layerId, layerTitle, url);
     try {
@@ -26,7 +25,8 @@ export const initLayer = (url: string): LayerInfo => {
             renderer: fireIncidentRenderer,
             visible: false,
             definitionExpression: "POOState= 'US-WA'",
-            labelsVisible: false
+            labelsVisible: false,
+            copyright: undefined
         });
     }
     catch (ex) {
@@ -36,6 +36,7 @@ export const initLayer = (url: string): LayerInfo => {
     }
     return layerInfo;
 }
+
 
 /**
  *
@@ -48,6 +49,7 @@ const getLayer = (): FeatureLayer | undefined => {
 }
 
 export default getLayer
+
 
 /**
  *

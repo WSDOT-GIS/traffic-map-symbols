@@ -4,15 +4,30 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 trigger:
-# - develop
-- none
+- main
+- Develop
 
 pool: Default
 
+variables:
+  npm_config_cache: $(Pipeline.Workspace)/.npm
+
 steps:
+
+- task: Cache@2
+  inputs:
+    key: 'npm | "$(Agent.OS)" | package-lock.json'
+    restoreKeys: |
+       npm | "$(Agent.OS)"
+    path: $(npm_config_cache)
+  displayName: Cache npm
+  enabled: false
+  continueOnError: true
+
 - task: NodeTool@0
   inputs:
-    versionSpec: '16.x'
+    versionSpec: '18.x'
+    checkLatest: true
   displayName: 'Install Node.js'
 
 - script: |
@@ -32,5 +47,6 @@ steps:
 
 - task: PublishBuildArtifacts@1
   inputs: 
+    # cspell: disable-next-line
     PathtoPublish: $(Build.ArtifactStagingDirectory) # dist files
     ArtifactName: 'www' # output artifact named www
