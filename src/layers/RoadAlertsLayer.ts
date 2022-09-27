@@ -39,7 +39,7 @@ const fields = [
         alias: "AppGenId",
         type: "oid"
     }),*/
-    new Field({
+    /*new Field({
         name: "EventID", type: "integer", alias: "EventID"
     }),
     new Field({ name: "EventCategoryDescription", type: "string", alias: "EventCategoryDescription", length: 400 }),
@@ -73,7 +73,19 @@ const fields = [
     new Field({ name: "TMSOverlap", type: "integer", alias: "TMSOverlap" }),
     new Field({ name: "RegionID", type: "small-integer", alias: "RegionID" }),
     new Field({ name: "TravelCenterPriorityId", type: "small-integer", alias: "TravelCenterPriorityId" }),
-    new Field({ name: "lineMarker", type: "string", alias: "lineMarker"})
+    new Field({ name: "lineMarker", type: "string", alias: "lineMarker"})*/
+
+        /*new Field({ name: "AppGenId",alias: "AppGenId",type: "oid"}),*/
+    new Field({ name: "EventID", type: "integer", alias: "EventID"}),
+    new Field({ name: "EventCategoryDescription", type: "string", alias: "EventCategoryDescription", length: 400 }),
+    new Field({ name: "TravelCenterPriorityId", type: "small-integer", alias: "TravelCenterPriorityId" }),
+    new Field({ name: "EventCategoryTypeDescription", type: "string", alias: "EventCategoryTypeDescription", length: 400 }),
+    new Field({ name: "EventPriorityID", type: "integer", alias: "EventPriorityID" }),
+    new Field({ name: "Road", type: "string", alias: "Road", length: 50 }),
+    new Field({ name: "RoadDirection", type: "string", alias: "RoadDirection", length: 15 }),
+    new Field({ name: "HeadlineMessage", type: "string", alias: "HeadlineMessage", length: 8000 }),
+    new Field({ name: "LastModifiedDate", type: "date", alias: "LastModifiedDate" })
+
 ]
 
 export const layerId = "road-alerts-layer";

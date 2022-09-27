@@ -20,6 +20,7 @@ import "vue-toastification/dist/index.css";
 import {detectGoOrange} from './utils/themeUtil'
 import { loadConfig } from "./utils/appConfigUtil";
 import { createLayerGroupInfos } from "./utils/layerUtil";
+import VueGtag from "vue-gtag";
 //#endregion
 // Load config before app starts...
 loadConfig().then((appConfig) => {
@@ -62,6 +63,11 @@ loadConfig().then((appConfig) => {
         draggable: false,
         hideProgressBar: true,
         
+    });
+    app.use(VueGtag, {
+        property: {
+          id: "G-RBQE8K3PSW"
+        }
     });
     app.mount('#app');
     app.provide('$appInsights', appInsights)
