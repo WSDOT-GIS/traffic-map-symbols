@@ -60,20 +60,9 @@ export default defineComponent({
     const onToggle = (evt: Event) => {
       const target = evt.currentTarget as HTMLInputElement;
       const sendToggleOn = ()=>{
+       
         try{
-          window.gtag("event",`XLSM`)
-          /*analytics.track('toggle', {
-          category: 'Layer',
-          label: props.Title+"-"+"On",
-          value: 1
-        })*/
-        console.log(props.Title+"-"+"On")
-        }
-        catch(e){
-          console.error(e)
-        }
-        try{
-          window.gtag("event",'toggle')
+          window.gtag("event",'Toggle_Cameras_On')
           /*analytics.track('toggle', {
           category: 'Layer',
           label: props.Title+"-"+"On",
@@ -87,7 +76,7 @@ export default defineComponent({
       }
       const sendToggleOff = ()=>{
         try{
-            window.gtag("event",`toggle`)
+            window.gtag("event",`Toggle_Cameras_Off`)
             /*analytics.track('toggle', {
             category: 'Layer',
             label: props.Title+"-"+"Off",
