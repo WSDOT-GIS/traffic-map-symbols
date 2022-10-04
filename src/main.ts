@@ -65,7 +65,7 @@ loadConfig().then((appConfig) => {
         
     });
     app.use(VueGtag, {
-        property: {
+        config: {
           id: "G-RBQE8K3PSW"
         }
     });
