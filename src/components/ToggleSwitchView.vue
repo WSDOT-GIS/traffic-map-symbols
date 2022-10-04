@@ -59,17 +59,14 @@ export default defineComponent({
     const onToggle = (evt: Event) => {
       const target = evt.currentTarget as HTMLInputElement;
       const sendToggleOn = ()=>{
-       
         try{
-          console.log(window)
-          event('click',{toggle_map_layer_on: props.Title})
+          event('toggle_map_layer_on',{'toggle_layer': props.Title})
           //window.gtag('event','toggle_on')
           /*analytics.track('toggle', {
           category: 'Layer',
           label: props.Title+"-"+"On",
           value: 1
         })*/
-        console.log(props.Title+"-"+"On")
         }
         catch(e){
           console.error(e)
@@ -77,8 +74,7 @@ export default defineComponent({
       }
       const sendToggleOff = ()=>{
         try{
-          console.log(window.gtag)
-          event('click',{'toggle_map_layer_off': props.Title})
+          event('toggle_map_layer_off',{'toggle_layer': props.Title})
             /*analytics.track('toggle', {
             category: 'Layer',
             label: props.Title+"-"+"Off",
