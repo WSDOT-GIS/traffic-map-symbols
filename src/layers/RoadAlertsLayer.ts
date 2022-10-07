@@ -84,7 +84,8 @@ const fields = [
     new Field({ name: "Road", type: "string", alias: "Road", length: 50 }),
     new Field({ name: "RoadDirection", type: "string", alias: "RoadDirection", length: 15 }),
     new Field({ name: "HeadlineMessage", type: "string", alias: "HeadlineMessage", length: 8000 }),
-    new Field({ name: "LastModifiedDate", type: "date", alias: "LastModifiedDate" })
+    new Field({ name: "LastModifiedDate", type: "date", alias: "LastModifiedDate" }),
+    new Field({ name: "lineMarker", type: "string", alias: "lineMarker"})
 
 ]
 
