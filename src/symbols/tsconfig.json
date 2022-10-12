@@ -1,0 +1,21 @@
+// This TypeScript configuration is for compiling only the CIM symbol definitions.
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "composite": true,
+    "rootDir": "..",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "module": "NodeNext",
+    "moduleDetection": "auto",
+    "moduleResolution": "Node",
+  },
+  "extends": "../../tsconfig.json",
+  "include": [
+    ".",
+    "../types/IconInfo.ts"
+  ]
+}

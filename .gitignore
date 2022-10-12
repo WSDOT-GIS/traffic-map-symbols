@@ -201,6 +201,8 @@ $RECYCLE.BIN/
 
 .cspellcache
 **/*Symbols/*Index/*
+src/symbols/*.d.ts
+src/types/*.d.ts
 **/*.js.map
 **/src/**/*.js
 **/docs
