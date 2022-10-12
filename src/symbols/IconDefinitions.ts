@@ -1,4 +1,4 @@
-import IconInfo from "@/types/IconInfo"
+import type { IconInfo } from "../types/IconInfo"
 /* eslint-disable no-useless-escape */
 
 /** Defines icons for layer list */
@@ -347,7 +347,7 @@ const otherIcons: IconInfo[] = [
   },
   {
     id: "linear-closures-layer",
-    paths:`
+    paths: `
     <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="24" height="24" viewBox="0 0 24 24" fill="none" version="1.1" id="svg851" sodipodi:docname="DoNotEnterIcon.svg" inkscape:version="0.92.3 (2405546, 2018-03-11)">
       <metadata id="metadata857">
         <rdf:RDF>

@@ -6,3 +6,5 @@ interface IconInfo {
     paths: string;
 }
 export default IconInfo;
+
+export type {IconInfo}
