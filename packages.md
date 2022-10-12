@@ -6,9 +6,9 @@ These are packages used by this project.
 
 These packages are used directly by the application itself.
 
-- [Analytics](https://www.npmjs.com/package/Analytics)
+- [Analytics](https://www.npmjs.com/package/analytics)
   - [analytics](https://getanalytics.io/)
-    - Analytics is a lightweight abstraction library for tracking page views, custom events, & identify visitors. It is pluggable & designed to work with any [third-party analytics tool](https://getanalytics.io/plugins/) or your own backend.
+    - > Analytics is a lightweight abstraction library for tracking page views, custom events, & identify visitors. It is pluggable & designed to work with any [third-party analytics tool](https://getanalytics.io/plugins/) or your own backend.
   - [@analytics/google-analytics](https://getanalytics.io/plugins/google-analytics/)
   - [@microsoft/applicationinsights-web](https://docs.microsoft.com/en-us/azure/azure-monitor/app/javascript)
 - [@arcgis/core](https://developers.arcgis.com/javascript/latest/es-modules/)
@@ -22,9 +22,9 @@ These packages are used directly by the application itself.
   - [vue-toastification](https://vue-toastification.maronato.dev/)
     - :warning: As of the time of writing this document, this project is currently using a release candidate version for compatibility with Vue 3.
   - [vue3-click-away](https://github.com/VinceG/vue-click-away)
-    - *Detect if a click event happened outside of an element.*
+    - > Detect if a click event happened outside of an element.
   - [vuex](https://vuex.vuejs.org/)
-    - *Vuex is a state management pattern + library for Vue.js applications. It serves as a centralized store for all the components in an application, with rules ensuring that the state can only be mutated in a predictable fashion.*
+    - > Vuex is a state management pattern + library for Vue.js applications. It serves as a centralized store for all the components in an application, with rules ensuring that the state can only be mutated in a predictable fashion.
 
 ## Dev Dependencies
 
