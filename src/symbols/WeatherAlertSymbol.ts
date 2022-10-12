@@ -1,6 +1,6 @@
 
-// import IconInfo from "@/types/IconInfo"
-// import { layerListIcons } from "@/symbols/IconDefinitions"
+// import IconInfo from "../types/IconInfo"
+// import { layerListIcons } from "../symbols/IconDefinitions"
 import CIMSymbol from "@arcgis/core/symbols/CIMSymbol"
 
 const weatherStationSymbol = new CIMSymbol({

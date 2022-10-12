@@ -1,8 +1,8 @@
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
-import { ferryRoutesSymbol } from "@/symbols/FerryRoutesSymbol"
-import * as layerUtil from "@/utils/layerUtil";
-import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
+import { ferryRoutesSymbol } from "../symbols/FerryRoutesSymbol"
+import * as layerUtil from "../utils/layerUtil";
+import LayerInfo, { LayerStatus } from "../types/LayerInfo";
 
 const renderer = new simpleRenderer({
     symbol: ferryRoutesSymbol

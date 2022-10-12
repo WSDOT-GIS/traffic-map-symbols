@@ -1,5 +1,5 @@
 import PictureMarkerSymbol from "@arcgis/core/symbols/PictureMarkerSymbol";
-import { layerListIcons } from "@/symbols/IconDefinitions"
+import { layerListIcons } from "../symbols/IconDefinitions"
 import CIMSymbol from "@arcgis/core/symbols/CIMSymbol";
 const symbol = new CIMSymbol({
   data: {

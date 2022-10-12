@@ -2,10 +2,10 @@
 import Field from "@arcgis/core/layers/support/Field";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
-import * as layerUtil from "@/utils/layerUtil";
+import * as layerUtil from "../utils/layerUtil";
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
-import symbol from "@/symbols/PointRestrictionsSymbol"
-import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
+import symbol from "../symbols/PointRestrictionsSymbol"
+import LayerInfo, { LayerStatus } from "../types/LayerInfo";
 const renderer = new simpleRenderer({
     symbol: symbol
 })

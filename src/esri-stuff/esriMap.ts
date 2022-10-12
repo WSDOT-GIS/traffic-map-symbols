@@ -12,39 +12,39 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import esriConfig from "@arcgis/core/config";
 // Layers
-import * as TrafficLayer from "@/layers/TrafficLayer";
-import * as ParkRideLayer from "@/layers/ParkRideLayer";
-import * as CameraLayer from "@/layers/CameraLayer";
-import * as PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
-import * as LineRestrictionsLayer from "@/layers/LineRestrictionsLayer";
-import * as RoadAlertsLayer from "@/layers/RoadAlertsLayer";
-import * as WeatherLayer from "@/layers/WeatherStationsLayer";
-import * as MountainLayer from "@/layers/MountainPassesLayer";
-import * as FireIncidentsLayer from "@/layers/FireIncidentLayer";
-import * as FirePerimetersLayer from "@/layers/FirePerimeterLayer";
-import * as MileMakersLayer from "@/layers/MileMarkersLayer";
-import * as RoadsReferenceLayer from "@/layers/RoadsReferenceLayer"
-import * as BoundariesPlacesReferenceLayer from "@/layers/BoundariesPlacesReferenceLayer"
-import * as StateRouteShieldsLayer from "@/layers/StateRouteShields"
-import * as BorderCrossingsLayer from "@/layers/BorderCrossingsLayer"
-import * as RegionalAlertLayer from "@/layers/RegionalAlertLayer";
-import * as RestAreasLayer from "@/layers/RestAreasLayer";
-import * as FerryRoutesReferenceLayer from "@/layers/ferryRoutesReferenceLayer"
-import * as LineFerryRoutesLayer from "@/layers/LineFerryRoutesLayer"
-import * as PointFerryRoutesLayer from "@/layers/PointFerryRoutesLayer"
-import * as AlertAreaLayer from "@/layers/AlertAreaLayer"
-import * as LineRoadAlertsLayer from "@/layers/LineRoadAlertsLayer"
-import * as LinearClosuresLayer from "@/layers/LinearClosuresLayer"
+import * as TrafficLayer from "../layers/TrafficLayer";
+import * as ParkRideLayer from "../layers/ParkRideLayer";
+import * as CameraLayer from "../layers/CameraLayer";
+import * as PointRestrictionsLayer from "../layers/PointRestrictionsLayer";
+import * as LineRestrictionsLayer from "../layers/LineRestrictionsLayer";
+import * as RoadAlertsLayer from "../layers/RoadAlertsLayer";
+import * as WeatherLayer from "../layers/WeatherStationsLayer";
+import * as MountainLayer from "../layers/MountainPassesLayer";
+import * as FireIncidentsLayer from "../layers/FireIncidentLayer";
+import * as FirePerimetersLayer from "../layers/FirePerimeterLayer";
+import * as MileMakersLayer from "../layers/MileMarkersLayer";
+import * as RoadsReferenceLayer from "../layers/RoadsReferenceLayer"
+import * as BoundariesPlacesReferenceLayer from "../layers/BoundariesPlacesReferenceLayer"
+import * as StateRouteShieldsLayer from "../layers/StateRouteShields"
+import * as BorderCrossingsLayer from "../layers/BorderCrossingsLayer"
+import * as RegionalAlertLayer from "../layers/RegionalAlertLayer";
+import * as RestAreasLayer from "../layers/RestAreasLayer";
+import * as FerryRoutesReferenceLayer from "../layers/ferryRoutesReferenceLayer"
+import * as LineFerryRoutesLayer from "../layers/LineFerryRoutesLayer"
+import * as PointFerryRoutesLayer from "../layers/PointFerryRoutesLayer"
+import * as AlertAreaLayer from "../layers/AlertAreaLayer"
+import * as LineRoadAlertsLayer from "../layers/LineRoadAlertsLayer"
+import * as LinearClosuresLayer from "../layers/LinearClosuresLayer"
 //
-import * as extentUtil from "@/utils/extentUtil";
-import ZoomExtentLayer from "@/layers/ZoomExtentLayer";
-import FeatureInfo from "@/types/FeatureInfo";
-import { getConfig } from "@/utils/appConfigUtil";
-import { getBasemapInfo } from "@/layers/Basemaps";
-import XY from "@/types/XY";
-import * as layerUtil from "@/utils/layerUtil";
-import LayerInfo, { isLayerInfo } from "@/types/LayerInfo";
-import { ExtentDirections } from "@/types/ExtentInfo";
+import * as extentUtil from "../utils/extentUtil";
+import ZoomExtentLayer from "../layers/ZoomExtentLayer";
+import FeatureInfo from "../types/FeatureInfo";
+import { getConfig } from "../utils/appConfigUtil";
+import { getBasemapInfo } from "../layers/Basemaps";
+import XY from "../types/XY";
+import * as layerUtil from "../utils/layerUtil";
+import LayerInfo, { isLayerInfo } from "../types/LayerInfo";
+import { ExtentDirections } from "../types/ExtentInfo";
 
 esriConfig.request.useIdentity = false
 const fullExtent = extentUtil.getEsriExtent("full");

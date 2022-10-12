@@ -1,4 +1,4 @@
-import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
+import LayerInfo, { LayerStatus } from "../types/LayerInfo";
 import VectorTileLayer from "@arcgis/core/layers/VectorTileLayer";
 
 let layer: VectorTileLayer | undefined;

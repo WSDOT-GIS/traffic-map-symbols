@@ -1,9 +1,9 @@
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
-import Symbol from "@/symbols/ParkRideSymbol";
+import Symbol from "../symbols/ParkRideSymbol";
 import Field from "@arcgis/core/layers/support/Field";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import * as layerUtil from "@/utils/layerUtil";
-import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
+import * as layerUtil from "../utils/layerUtil";
+import LayerInfo, { LayerStatus } from "../types/LayerInfo";
 
 const renderer = new SimpleRenderer({ symbol: Symbol });
 

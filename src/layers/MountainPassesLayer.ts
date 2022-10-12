@@ -1,13 +1,13 @@
 // import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer"
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
-import mountainPassSymbol from "@/symbols/MountainPassSymbol"
+import mountainPassSymbol from "../symbols/MountainPassSymbol"
 import Field from "@arcgis/core/layers/support/Field"
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
 // import SpatialReference from "@arcgis/core/geometry/SpatialReference"
-import * as layerUtil from "@/utils/layerUtil";
-import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
+import * as layerUtil from "../utils/layerUtil";
+import LayerInfo, { LayerStatus } from "../types/LayerInfo";
 // import Graphic from "@arcgis/core/Graphic"
-// import { getConfig } from "@/utils/appConfigUtil"
+// import { getConfig } from "../utils/appConfigUtil"
 
 const renderer = new simpleRenderer({
     symbol: mountainPassSymbol

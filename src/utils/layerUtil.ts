@@ -1,4 +1,4 @@
-import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
+import LayerInfo, { LayerStatus } from "../types/LayerInfo";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Graphic from "@arcgis/core/Graphic";
 import WebMap from "@arcgis/core/Map";
@@ -7,12 +7,12 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as geomJsonUtils from "@arcgis/core/geometry/support/jsonUtils";
 import Renderer from "@arcgis/core/renderers/Renderer";
 import Field from "@arcgis/core/layers/support/Field";
-import GroupLayerInfo from "@/types/GroupLayerInfo";
-import AppConfig from "@/types/AppConfig";
-import { fetchJson } from "@/utils/miscUtil";
-import { isEsriFeatures } from "@/utils/typeUtil";
+import GroupLayerInfo from "../types/GroupLayerInfo";
+import AppConfig from "../types/AppConfig";
+import { fetchJson } from "../utils/miscUtil";
+import { isEsriFeatures } from "../utils/typeUtil";
 import Layer from "@arcgis/core/layers/Layer";
-import { simpleClosuresRenderer, directionalClosuresRenderer } from "@/layers/LinearClosuresLayer"
+import { simpleClosuresRenderer, directionalClosuresRenderer } from "../layers/LinearClosuresLayer"
 /**
  *  Specify which layers belong together (i.e. should be treated as if they are one layer) 
  *  Layers in each group should have the same visibility and displayed as a single item in the table of contents

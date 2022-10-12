@@ -54,10 +54,10 @@ import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Extent from "@arcgis/core/geometry/Extent";
 
 import { getEsriExtent } from "./extentUtil";
-import { getBasemapInfo } from "@/layers/Basemaps";
-import BasemapInfo from "@/types/BasemapInfo";
+import { getBasemapInfo } from "../layers/Basemaps";
+import BasemapInfo from "../types/BasemapInfo";
 import { getLayerIds } from "./layerUtil";
-import * as ZoomExtentLayer from "@/layers/ZoomExtentLayer";
+import * as ZoomExtentLayer from "../layers/ZoomExtentLayer";
 import { RouteLocationNormalizedLoaded } from "vue-router";
 
 const queryStringKeys = ["extent", "namedextent", "base", "layer", "featuretype", "featureid"];

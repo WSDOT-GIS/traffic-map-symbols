@@ -1,7 +1,7 @@
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
-import fireIncidentSymbol from "@/symbols/FireIncidentSymbol"
-import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
+import fireIncidentSymbol from "../symbols/FireIncidentSymbol"
+import LayerInfo, { LayerStatus } from "../types/LayerInfo";
 import Graphic from "@arcgis/core/Graphic";
 
 

@@ -1,4 +1,4 @@
-import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
+import LayerInfo, { LayerStatus } from "../types/LayerInfo";
 import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 
 let layer: MapImageLayer | undefined;

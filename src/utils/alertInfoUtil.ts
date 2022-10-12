@@ -1,7 +1,7 @@
-import AlertInfo from "@/types/AlertInfo";
-import FerryAlertInfo from "@/types/FerryAlertInfo";
-import { fetchJson } from "@/utils/miscUtil"
-import { isEsriRows } from "@/utils/typeUtil"
+import AlertInfo from "../types/AlertInfo";
+import FerryAlertInfo from "../types/FerryAlertInfo";
+import { fetchJson } from "../utils/miscUtil"
+import { isEsriRows } from "../utils/typeUtil"
 
 /*** Statewide alerts *******************/
 let stateAlertUrl: string;

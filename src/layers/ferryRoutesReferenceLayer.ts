@@ -1,4 +1,4 @@
-import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
+import LayerInfo, { LayerStatus } from "../types/LayerInfo";
 import TileLayer from "@arcgis/core/layers/TileLayer";
 let layer: TileLayer | undefined;
 export const layerId = "ferry-routes-reference-layer";

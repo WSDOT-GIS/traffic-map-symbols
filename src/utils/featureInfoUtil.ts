@@ -1,5 +1,5 @@
 import Graphic from "@arcgis/core/Graphic";
-import FeatureInfo from "@/types/FeatureInfo";
+import FeatureInfo from "../types/FeatureInfo";
 // import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import Point from "@arcgis/core/geometry/Point";
 import Polygon from "@arcgis/core/geometry/Polygon";

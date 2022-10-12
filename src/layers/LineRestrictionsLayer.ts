@@ -3,8 +3,8 @@ import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
 import Field from "@arcgis/core/layers/support/Field";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
-import * as layerUtil from "@/utils/layerUtil";
-import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
+import * as layerUtil from "../utils/layerUtil";
+import LayerInfo, { LayerStatus } from "../types/LayerInfo";
 
 const renderer = new UniqueValueRenderer({
     field: "TType",
