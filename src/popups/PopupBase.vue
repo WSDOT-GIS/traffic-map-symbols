@@ -11,12 +11,12 @@ import {
   highlightFeature,
   removeHighlight,
 } from "@/esri-stuff/esriMap";
-import FeatureInfo from "@/types/FeatureInfo";
-import PopupConfig from "@/types/PopupConfig";
+import type FeatureInfo from "@/types/FeatureInfo";
+import type PopupConfig from "@/types/PopupConfig";
 import PopupRow from "./PopupRow.vue";
-import XY from "@/types/XY";
-import ForecastListInfo from "@/types/ForecastListInfo";
-import MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
+import type XY from "@/types/XY";
+import type ForecastListInfo from "@/types/ForecastListInfo";
+import type MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
 import { getEsriExtent } from "@/utils/extentUtil";
 import { hasParentClass, hasParent } from "@/utils/miscUtil";
 

@@ -2,15 +2,15 @@
 import { defineComponent, PropType, ref, watch } from "vue";
 import PopupBase from "./PopupBase.vue";
 import { getFeatureInfoById } from "@/utils/featureInfoUtil";
-import FeaturesetInfo from "@/types/FeaturesetInfo";
-import FeatureInfo from "@/types/FeatureInfo";
+import type FeaturesetInfo from "@/types/FeaturesetInfo";
+import type FeatureInfo from "@/types/FeatureInfo";
 import { layerListIcons } from "@/symbols/IconDefinitions";
 import { getFerryAlerts } from "@/utils/alertInfoUtil";
-import PopupConfig from "@/types/PopupConfig";
+import type PopupConfig from "@/types/PopupConfig";
 import { formatEpoch } from "@/utils/miscUtil";
 import { getLayer } from "@/esri-stuff/esriMap";
 import { useStore } from "@/store";
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import type FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 export default defineComponent({
   components: { PopupBase },

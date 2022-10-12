@@ -5,14 +5,14 @@ import { useRoute } from "vue-router";
 import { useStore } from "@/store";
 import { project } from "@arcgis/core/geometry/projection";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
-import { Geometry } from "@arcgis/core/geometry";
-import Graphic from "@arcgis/core/Graphic";
-import Layer from "@arcgis/core/layers/Layer";
-import Point from "@arcgis/core/geometry/Point";
-import Extent from "@arcgis/core/geometry/Extent";
-import LayerView from "@arcgis/core/views/layers/LayerView";
+import type { Geometry } from "@arcgis/core/geometry";
+import type Graphic from "@arcgis/core/Graphic";
+import type Layer from "@arcgis/core/layers/Layer";
+import type Point from "@arcgis/core/geometry/Point";
+import type Extent from "@arcgis/core/geometry/Extent";
+import type LayerView from "@arcgis/core/views/layers/LayerView";
 import { whenFalseOnce } from "@arcgis/core/core/watchUtils";
-import Collection from "@arcgis/core/core/Collection";
+import type Collection from "@arcgis/core/core/Collection";
 import { getConfig } from "@/utils/appConfigUtil";
 import { mapView, zoomToMetroArea } from "@/esri-stuff/esriMap";
 import {
@@ -30,12 +30,12 @@ import {
 } from "@/utils/graphicLayerUtil";
 import ZoomExtentLayer, { getFeatureById as getZoomFeatureById } from "@/layers/ZoomExtentLayer";
 import { clusterMaxScale, getClusterExtent } from "@/utils/clusterUtil";
-import LayerInfo from "@/types/LayerInfo";
-import FeaturesetInfo from "@/types/FeaturesetInfo";
-import XY from "@/types/XY";
+import type LayerInfo from "@/types/LayerInfo";
+import type FeaturesetInfo from "@/types/FeaturesetInfo";
+import type XY from "@/types/XY";
 import * as alertInfoUtil from "@/utils/alertInfoUtil";
-import AlertInfo from "@/types/AlertInfo";
-import FerryAlertInfo from "@/types/FerryAlertInfo";
+import type AlertInfo from "@/types/AlertInfo";
+import type FerryAlertInfo from "@/types/FerryAlertInfo";
 import { getFeatureInfoById } from "@/utils/featureInfoUtil";
 /* Basemap */
 import { initBasemap } from "@/layers/Basemaps";
@@ -80,7 +80,7 @@ import MyLocationView from "@/components/MyLocationView.vue";
 import ZoomButtonView from "@/components/ZoomButtonView.vue";
 import AlertView from "@/components/AlertView.vue";
 import AdView from "@/components/AdView.vue";
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import type FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import { hasParentClass } from "@/utils/miscUtil";
 
 type LocationFoundEvent = [boolean, "success" | string];

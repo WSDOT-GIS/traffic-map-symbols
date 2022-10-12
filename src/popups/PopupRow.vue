@@ -1,6 +1,6 @@
 <script lang="ts">
-import FeatureInfo from "@/types/FeatureInfo";
-import PopupRowConfig from "@/types/PopupRowConfig";
+import type FeatureInfo from "@/types/FeatureInfo";
+import type PopupRowConfig from "@/types/PopupRowConfig";
 import { formatEpoch } from "@/utils/miscUtil";
 import { defineComponent, PropType, ref, watch } from "vue";
 

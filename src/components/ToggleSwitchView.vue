@@ -19,7 +19,7 @@ import { defineComponent } from "vue";
 import {Analytics} from 'analytics';
 import googleAnalytics from '@analytics/google-analytics';
 import { getConfig } from "@/utils/appConfigUtil";
-import { GtagEvent } from "vue-gtag";
+import type { GtagEvent } from "vue-gtag";
 export default defineComponent({
   props: {
     Checked: {

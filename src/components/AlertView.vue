@@ -53,7 +53,7 @@
 <script lang="ts">
 import { computed, defineComponent, onUpdated, PropType, ref, watch } from "vue";
 import { useStore } from "@/store";
-import AlertInfo from "@/types/AlertInfo";
+import type AlertInfo from "@/types/AlertInfo";
 import { formatEpoch } from "@/utils/miscUtil";
 import { otherIcons } from "@/symbols/IconDefinitions";
 
