@@ -1,22 +1,16 @@
 <template>
   <label class="Toggle" :title="Title">
     <div>
-    <slot></slot>
+      <slot></slot>
     </div>
-    <input :disabled='!Enabled'
-      type="checkbox"
-      name="toggle"
-      class='Toggle__input'
-      @change="onToggle"
-      :checked="Checked"
-      :value="Value"
-    />
+    <input :disabled='!Enabled' type="checkbox" name="toggle" class='Toggle__input' @change="onToggle"
+      :checked="Checked" :value="Value" />
     <span class="Toggle__display" hidden> </span>
   </label>
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
-import {Analytics} from 'analytics';
+import { Analytics, AnalyticsInstance } from 'analytics';
 import googleAnalytics from '@analytics/google-analytics';
 import { getConfig } from "@/utils/appConfigUtil";
 import type { GtagEvent } from "vue-gtag";
@@ -41,55 +35,60 @@ export default defineComponent({
   },
   setup(props, context) {
     const config = getConfig();
-    let analytics:any;
-    let gtag:GtagEvent
-    try{
+    let analytics: AnalyticsInstance | undefined;
+    try {
       analytics = Analytics({
         app: 'WSDOT',
         plugins: [
           googleAnalytics({
-            measurementIds:[config.googleAnalyticsID]
+            measurementIds: [config.googleAnalyticsID]
           })
         ]
       })
     }
-    catch(e){
+    catch (e) {
       console.error(e)
     }
-    
+
     const onToggle = (evt: Event) => {
       const target = evt.currentTarget as HTMLInputElement;
-      const sendToggleOn = ()=>{
-        try{
-          gtag('toggle',{'event_category':'Layer','event_label':props.Title+"-"+"On",'value':1})
-          analytics.track('toggle', {
-          category: 'Layer',
-          label: props.Title+"-"+"On",
-          value: 1
-        })
+      const sendToggleOn = () => {
+        try {
+          window.gtag("event", "toggle", { 'event_category': 'Layer', 'event_label': `${props.Title}-On`, 'value': 1 })
+
         }
-        catch(e){
-          console.error(e)
+        catch (e) {
+          if (e instanceof TypeError && e.message == "gtag is not a function") {
+            console.debug("gtag", window.gtag);
+            console.warn(e.message, e)
+          } else {
+            console.error(e)
+          }
         }
-        
-      }
-      const sendToggleOff = ()=>{
-        try{
-          
-            analytics.track('toggle', {
+        analytics?.track('toggle', {
             category: 'Layer',
-            label: props.Title+"-"+"Off",
+            label: props.Title + "-" + "On",
+            value: 1
+          })
+
+      }
+      const sendToggleOff = () => {
+        try {
+
+          analytics?.track('toggle', {
+            category: 'Layer',
+            label: `${props.Title}-Off`,
             value: 1
           })
         }
-        catch(e){
+        catch (e) {
           console.log(e)
         }
       }
-      target.checked==true?sendToggleOn():sendToggleOff()
+      target.checked == true ? sendToggleOn() : sendToggleOff()
       context.emit("toggle", { checked: target.checked, value: target.value });
     };
-    return { onToggle};
+    return { onToggle };
   },
 });
 </script>
@@ -152,7 +151,7 @@ export default defineComponent({
 }
 
 .Toggle:focus .Toggle__display,
-.Toggle__input:focus + .Toggle__display {
+.Toggle__input:focus+.Toggle__display {
   outline: 1px dotted #212121;
   outline: 1px auto -webkit-focus-ring-color;
   outline-offset: 2px;
@@ -160,22 +159,22 @@ export default defineComponent({
 
 .Toggle:focus,
 .Toggle:focus:not(:focus-visible) .Toggle__display,
-.Toggle__input:focus:not(:focus-visible) + .Toggle__display {
+.Toggle__input:focus:not(:focus-visible)+.Toggle__display {
   outline: 0;
 }
 
 .Toggle[aria-pressed="true"] .Toggle__display,
-.Toggle__input:checked + .Toggle__display {
+.Toggle__input:checked+.Toggle__display {
   background-color: var(--color-primaryBrand100);
 }
 
 .Toggle[aria-pressed="true"] .Toggle__display::before,
-.Toggle__input:checked + .Toggle__display::before {
+.Toggle__input:checked+.Toggle__display::before {
   transform: translate(60%, -50%);
 }
 
 .Toggle[disabled] .Toggle__display,
-.Toggle__input:disabled + .Toggle__display {
+.Toggle__input:disabled+.Toggle__display {
   opacity: 0.6;
   filter: grayscale(40%);
   cursor: not-allowed;
@@ -186,8 +185,8 @@ export default defineComponent({
   right: var(--offset);
 }
 
-[dir="rtl"] .Toggle[aria-pressed="true"] + .Toggle__display::before,
-[dir="rtl"] .Toggle__input:checked + .Toggle__display::before {
+[dir="rtl"] .Toggle[aria-pressed="true"]+.Toggle__display::before,
+[dir="rtl"] .Toggle__input:checked+.Toggle__display::before {
   transform: translate(-100%, -50%);
 }
 </style>
