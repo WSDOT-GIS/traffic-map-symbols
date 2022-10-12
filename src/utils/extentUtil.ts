@@ -1,8 +1,9 @@
 import Extent from "@arcgis/core/geometry/Extent";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 
-import ExtentInfo, { ExtentDirections } from "../types/ExtentInfo";
-import XY from "../types/XY";
+import type ExtentInfo from "../types/ExtentInfo";
+import type { ExtentDirections } from "../types/ExtentInfo";
+import type XY from "../types/XY";
 import { WebMercator } from "./miscUtil";
 
 const defaultExtents: ExtentInfo[] = [

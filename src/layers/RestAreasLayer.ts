@@ -1,5 +1,5 @@
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import type FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import symbol from "../symbols/RestAreasSymbol";
 import Field from "@arcgis/core/layers/support/Field";
 

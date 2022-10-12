@@ -1,11 +1,11 @@
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol";
-import Graphic from "@arcgis/core/Graphic";
+import type Graphic from "@arcgis/core/Graphic";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Field from "@arcgis/core/layers/support/Field";
-import Extent from "@arcgis/core/geometry/Extent";
-import Point from "@arcgis/core/geometry/Point";
+import type Extent from "@arcgis/core/geometry/Extent";
+import type Point from "@arcgis/core/geometry/Point";
 import Polygon from "@arcgis/core/geometry/Polygon";
 
 import * as pc from "polygon-clipping";

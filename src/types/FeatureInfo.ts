@@ -1,6 +1,4 @@
-// import Graphic from "@arcgis/core/Graphic";
-// import CIMSymbol from "@arcgis/core/symbols/CIMSymbol";
-import RowInfo from "./RowInfo";
+import type RowInfo from "./RowInfo";
 
 
 interface FeatureInfo {

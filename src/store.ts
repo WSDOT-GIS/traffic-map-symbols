@@ -1,16 +1,16 @@
-import { InjectionKey } from "vue";
+import type { InjectionKey } from "vue";
 import { createStore, useStore as baseUseStore, Store } from "vuex";
 import { useToast } from "vue-toastification";
 import Extent from "@arcgis/core/geometry/Extent";
 import { webmap, mapView } from "./esri-stuff/esriMap";
 import { getBasemapInfo, toggleBasemapInfo } from "./layers/Basemaps";
-import ExtentInfo from "./types/ExtentInfo";
+import type ExtentInfo from "./types/ExtentInfo";
 import { convert2EsriExtent, convert2ExtentInfo } from "./utils/extentUtil";
 import LayerInfo, { esriStatus2LayerStatus, LayerStatus } from "./types/LayerInfo";
-import { InitializingInfo } from "./types/InitializingInfo";
+import type { InitializingInfo } from "./types/InitializingInfo";
 import { getMediaSize } from "./utils/miscUtil";
 import { setLayerVisibility } from "./utils/layerUtil";
-import Layer from "@arcgis/core/layers/Layer";
+import type Layer from "@arcgis/core/layers/Layer";
 
 // Reference - https://next.vuex.vuejs.org/guide/typescript-support.html#typing-usestore-composition-function
 // define typings for the store state...

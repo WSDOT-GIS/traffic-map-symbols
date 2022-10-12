@@ -2,13 +2,13 @@ import WebMap from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
 import Point from "@arcgis/core/geometry/Point";
 import { whenTrue } from "@arcgis/core/core/watchUtils";
-import TileLayer from "@arcgis/core/layers/TileLayer";
-import Extent from "@arcgis/core/geometry/Extent";
-import Collection from "@arcgis/core/core/Collection";
+import type TileLayer from "@arcgis/core/layers/TileLayer";
+import type Extent from "@arcgis/core/geometry/Extent";
+import type Collection from "@arcgis/core/core/Collection";
 import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol";
-import Layer from "@arcgis/core/layers/Layer";
+import type Layer from "@arcgis/core/layers/Layer";
 import Graphic from "@arcgis/core/Graphic";
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import type FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import esriConfig from "@arcgis/core/config";
 // Layers
@@ -38,13 +38,13 @@ import * as LinearClosuresLayer from "../layers/LinearClosuresLayer"
 //
 import * as extentUtil from "../utils/extentUtil";
 import ZoomExtentLayer from "../layers/ZoomExtentLayer";
-import FeatureInfo from "../types/FeatureInfo";
+import type FeatureInfo from "../types/FeatureInfo";
 import { getConfig } from "../utils/appConfigUtil";
 import { getBasemapInfo } from "../layers/Basemaps";
-import XY from "../types/XY";
+import type XY from "../types/XY";
 import * as layerUtil from "../utils/layerUtil";
 import LayerInfo, { isLayerInfo } from "../types/LayerInfo";
-import { ExtentDirections } from "../types/ExtentInfo";
+import type { ExtentDirections } from "../types/ExtentInfo";
 
 esriConfig.request.useIdentity = false
 const fullExtent = extentUtil.getEsriExtent("full");

@@ -1,6 +1,6 @@
 import Basemap from "@arcgis/core/Basemap";
 import TileLayer from "@arcgis/core/layers/TileLayer";
-import BasemapInfo from "../types/BasemapInfo";
+import type BasemapInfo from "../types/BasemapInfo";
 
 
 /**

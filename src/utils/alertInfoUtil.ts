@@ -1,5 +1,5 @@
-import AlertInfo from "../types/AlertInfo";
-import FerryAlertInfo from "../types/FerryAlertInfo";
+import type AlertInfo from "../types/AlertInfo";
+import type FerryAlertInfo from "../types/FerryAlertInfo";
 import { fetchJson } from "../utils/miscUtil"
 import { isEsriRows } from "../utils/typeUtil"
 

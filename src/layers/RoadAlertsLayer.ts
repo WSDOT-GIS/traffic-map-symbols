@@ -3,9 +3,9 @@ import { alertSymbol, alertSymbolMedium, roadClosedSymbol, alertSymbolHighest } 
 import Field from "@arcgis/core/layers/support/Field"
 
 import * as layerUtil from "../utils/layerUtil";
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
+import type FeatureLayer from "@arcgis/core/layers/FeatureLayer"
 import LayerInfo, { LayerStatus } from "../types/LayerInfo";
-import Graphic from "@arcgis/core/Graphic";
+import type Graphic from "@arcgis/core/Graphic";
 
 const renderer = new uniqueValueRenderer({
     field: "TravelCenterPriorityId",

@@ -1,12 +1,12 @@
 import FeatureReductionCluster from "@arcgis/core/layers/support/FeatureReductionCluster";
 import clusterSymbol from "../symbols/CameraClusterSymbol";
-import Graphic from "@arcgis/core/Graphic";
+import type Graphic from "@arcgis/core/Graphic";
 // import Layer from "@arcgis/core/layers/Layer";
 // import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
-import Point from "@arcgis/core/geometry/Point";
-import MapView from "@arcgis/core/views/MapView";
+import type Point from "@arcgis/core/geometry/Point";
+import type MapView from "@arcgis/core/views/MapView";
 import Extent from "@arcgis/core/geometry/Extent";
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import type FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 export const clusterMaxScale = 19000;
 const defaultRadius = 60;

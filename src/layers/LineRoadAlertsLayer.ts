@@ -1,9 +1,9 @@
 import { lineAlertSymbolLow, lineAlertSymbolMedium, lineAlertSymbolHigh} from "../symbols/LineAlertSymbol"
 import Field from "@arcgis/core/layers/support/Field";
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import type FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as layerUtil from "../utils/layerUtil";
 import LayerInfo, { LayerStatus } from "../types/LayerInfo";
-import Graphic from "@arcgis/core/Graphic";
+import type Graphic from "@arcgis/core/Graphic";
 import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
 const renderer = new UniqueValueRenderer({
     field:"TravelCenterPriorityId",

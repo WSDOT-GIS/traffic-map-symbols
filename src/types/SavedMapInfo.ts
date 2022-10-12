@@ -1,4 +1,4 @@
-import ExtentInfo from "./ExtentInfo";
+import type ExtentInfo from "./ExtentInfo";
 
 interface SavedMapInfo {
     t: string; // title

@@ -4,12 +4,11 @@ import Point from "@arcgis/core/geometry/Point";
 import Graphic from "@arcgis/core/Graphic";
 import { mapView } from "../esri-stuff/esriMap";
 import { MyLocationSymbol } from "../symbols/MyLocationSymbol";
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import { getLineFromPointId } from "./featureInfoUtil";
+import type FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import CIMSymbol from "@arcgis/core/symbols/CIMSymbol";
-import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
-import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
-import Map from "@arcgis/core/Map";
+import type UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
+import type SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
+import type Map from "@arcgis/core/Map";
 // import layer from "../layers/ZoomExtentLayer";
 
 /**

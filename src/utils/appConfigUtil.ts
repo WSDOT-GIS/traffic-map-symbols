@@ -1,4 +1,4 @@
-import AppConfig from "../types/AppConfig"
+import type AppConfig from "../types/AppConfig"
 
 let appConfig: AppConfig | undefined;
 

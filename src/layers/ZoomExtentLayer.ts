@@ -1,7 +1,7 @@
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol";
-import Graphic from "@arcgis/core/Graphic";
+import type Graphic from "@arcgis/core/Graphic";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Field from "@arcgis/core/layers/support/Field";
 

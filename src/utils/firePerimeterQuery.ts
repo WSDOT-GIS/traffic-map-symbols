@@ -1,5 +1,5 @@
-import Graphic from "@arcgis/core/Graphic";
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import type Graphic from "@arcgis/core/Graphic";
+import type FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 
 

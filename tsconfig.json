@@ -11,7 +11,8 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
-    "baseUrl": ".", 
+    "baseUrl": ".",
+    "importsNotUsedAsValues": "error",
     "types": [
       "webpack-env",
       "doubleclick-gpt",

@@ -1,10 +1,10 @@
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import weatherStationSymbol from "../symbols/WeatherStationSymbol"
 import Field from "@arcgis/core/layers/support/Field";
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import type FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 import * as layerUtil from "../utils/layerUtil";
-import MapView from "@arcgis/core/views/MapView";
+import type MapView from "@arcgis/core/views/MapView";
 import LayerInfo, { LayerStatus } from "../types/LayerInfo";
 
 const renderer = new SimpleRenderer({

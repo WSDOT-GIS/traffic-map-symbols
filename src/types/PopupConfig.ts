@@ -1,7 +1,7 @@
-import FeatureInfo from "./FeatureInfo";
-import ForecastListInfo from "./ForecastListInfo";
-import MoreInfoURLInfo from "./MoreInfoURLInfo";
-import PopupRowConfig from "./PopupRowConfig";
+import type FeatureInfo from "./FeatureInfo";
+import type ForecastListInfo from "./ForecastListInfo";
+import type MoreInfoURLInfo from "./MoreInfoURLInfo";
+import type PopupRowConfig from "./PopupRowConfig";
 
 interface PopupConfig {
     // Text for the banner

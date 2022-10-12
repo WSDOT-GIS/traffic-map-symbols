@@ -1,6 +1,6 @@
 // import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import Field from "@arcgis/core/layers/support/Field";
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import type FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 
 import * as layerUtil from "../utils/layerUtil";

@@ -1,12 +1,12 @@
-import Graphic from "@arcgis/core/Graphic";
-import FeatureInfo from "../types/FeatureInfo";
+import type Graphic from "@arcgis/core/Graphic";
+import type FeatureInfo from "../types/FeatureInfo";
 // import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
-import Point from "@arcgis/core/geometry/Point";
-import Polygon from "@arcgis/core/geometry/Polygon";
+import type Point from "@arcgis/core/geometry/Point";
+import type Polygon from "@arcgis/core/geometry/Polygon";
 import { project } from "@arcgis/core/geometry/projection";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import FeatureSet from "@arcgis/core/rest/support/FeatureSet";
+import type FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import type FeatureSet from "@arcgis/core/rest/support/FeatureSet";
 /**
  * @param graphic - 
  * @param layer - 

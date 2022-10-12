@@ -1,17 +1,17 @@
 import LayerInfo, { LayerStatus } from "../types/LayerInfo";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Graphic from "@arcgis/core/Graphic";
-import WebMap from "@arcgis/core/Map";
+import type WebMap from "@arcgis/core/Map";
 import { addGraphicsByType, buildGraphicsByType } from "./graphicLayerUtil";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as geomJsonUtils from "@arcgis/core/geometry/support/jsonUtils";
-import Renderer from "@arcgis/core/renderers/Renderer";
+import type Renderer from "@arcgis/core/renderers/Renderer";
 import Field from "@arcgis/core/layers/support/Field";
-import GroupLayerInfo from "../types/GroupLayerInfo";
-import AppConfig from "../types/AppConfig";
+import type GroupLayerInfo from "../types/GroupLayerInfo";
+import type AppConfig from "../types/AppConfig";
 import { fetchJson } from "../utils/miscUtil";
 import { isEsriFeatures } from "../utils/typeUtil";
-import Layer from "@arcgis/core/layers/Layer";
+import type Layer from "@arcgis/core/layers/Layer";
 import { simpleClosuresRenderer, directionalClosuresRenderer } from "../layers/LinearClosuresLayer"
 /**
  *  Specify which layers belong together (i.e. should be treated as if they are one layer) 

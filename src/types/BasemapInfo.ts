@@ -1,4 +1,4 @@
-import Basemap from "@arcgis/core/Basemap";
+import type Basemap from "@arcgis/core/Basemap";
 
 interface BasemapInfo {
     name: string;
