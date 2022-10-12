@@ -22,7 +22,7 @@ const routes: Array<RouteRecordRaw> = [
       const p = to.params.layername;
       const name = typeof p === 'string' ? p : p[0];
       if (!urlParamUtil.validateLayerName(name)) {
-        console.error("Invalid layer was specified: " + name + ". Redirecting to the default page.")
+        console.error(`Invalid layer was specified: ${name}. Redirecting to the default page.`)
         return '/';
       }
     }
@@ -35,7 +35,7 @@ const routes: Array<RouteRecordRaw> = [
       const p = to.params.featuretype;
       const name = typeof p === 'string' ? p : p[0];
       if (!urlParamUtil.validateLayerName(name)) {
-        console.error("Invalid feature type was specified: " + name + ". Redirecting to the default page.")
+        console.error(`Invalid feature type was specified: ${name}. Redirecting to the default page.`)
         return '/';
       }
     }
@@ -48,7 +48,7 @@ const routes: Array<RouteRecordRaw> = [
       const p = to.params.areaname;
       const name = typeof p === 'string' ? p : p[0];
       if (!urlParamUtil.validateAreaName(name)) {
-        console.error("Invalid area was specified: " + name + ". Redirecting to the default page.");
+        console.error(`Invalid area was specified: ${name}. Redirecting to the default page.`);
         return '/';
       }
     }
