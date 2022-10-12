@@ -14,7 +14,8 @@
     "lint": "vue-cli-service lint --no-fix",
     "lint:html": "vue-cli-service lint --no-fix --format html > dist/lint-results.html",
     "spell-ci": "cspell lint **/* --fail-fast --no-progress --no-summary",
-    "tsc:symbols": "tsc --project symbols.tsconfig"
+    "tsc:symbols": "tsc --project symbols.tsconfig",
+    "dump-svg": "ts-node --esm ./tools/dump-svg.mts"
   },
   "dependencies": {
     "vue": "^3.2.40",
