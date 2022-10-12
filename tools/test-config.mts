@@ -42,6 +42,7 @@ import {
   WhichSucceeded,
 } from "./url-utils.mjs";
 import appConfig from "../public/appconfig.json" assert { type: "json" };
+import appConfig_NewService from "../public/appconfig_NewService.json"  assert { type: "json" };
 import appConfigPro from "../public/appconfigPro.json" assert { type: "json" };
 import appConfigQA from "../public/appconfigQA.json" assert { type: "json" };
 import appConfigDev from "../public/appconfigDev.json" assert { type: "json" };
@@ -57,6 +58,7 @@ const originalConfigs = new Map<string, AppConfig>([
   ["appConfigPro", appConfigPro],
   ["appConfigQA", appConfigQA],
   ["appConfigDev", appConfigDev],
+  ["appConfig_NewService", appConfig_NewService]
 ]);
 
 /** Matches a URL with http or https protocol */
@@ -91,6 +93,12 @@ function getAllAppConfigPropertyNames(...configs: AppConfig[]) {
  */
 type ConfigDifferences = [name: string, oldConfig: string, newConfig: string];
 
+/**
+ * Compares the properties of two {@link AppConfig}s, yielding the name and
+ * values of only the properties that differ.
+ * @param oldConfig - old config
+ * @param newConfig - new config
+ */
 function* getDifferentConfigSettings(oldConfig: AppConfig, newConfig: AppConfig) {
   const settingNames = getAllAppConfigPropertyNames(oldConfig, newConfig);
 
@@ -148,6 +156,12 @@ interface IteratePropertyUrlResult {
 
 type IteratePropertyResult = IteratePropertyUrlResult | IteratePropertyNonUrlResult;
 
+/**
+ * Iterates through the properties of an app configuration, yielding property
+ * name, value, and a bool indicating if the value is a URL.
+ * @param appConfig - An application configuration
+ * @param skipNonUrls - Set to true to only yield properties that are URLs, ignoring others.
+ */
 function* iterateProperties(appConfig: AppConfig, skipNonUrls = false) {
   for (const propertyName in appConfig) {
     if (Object.prototype.hasOwnProperty.call(appConfig, propertyName)) {
@@ -390,6 +404,11 @@ function testPropertiesOfConfigs(configs: Map<string, AppConfig>) {
   return output;
 }
 
+/**
+ * Tests configs and writes updated versions to a new directory.
+ * @param outDir - Directory where the modified config files will be written to
+ * @param space - Value passed to the {@link JSON.stringify} function's `space` parameter.
+ */
 async function testConfigsAndWriteChanges(outDir: string, space: number | string | undefined = 4) {
 
   const changedConfigsMap = testPropertiesOfConfigs(originalConfigs);
