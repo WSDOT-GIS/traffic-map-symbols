@@ -76,7 +76,7 @@ const layerTitle = "Linear Closures Lines";
     }
 
     try {
-        layer = await layerUtil.initLayer(layerId, layerTitle, simpleClosuresRenderer, fields, "polyline", true, graphics,"EventCategoryDescription in ('Closure')");
+        layer = await layerUtil.initLayer(layerId, layerTitle, simpleClosuresRenderer, fields, "polyline", true, graphics,"1=1");
         layer.orderBy = [{
             field: "TravelCenterPriorityId",
             order: "ascending"
