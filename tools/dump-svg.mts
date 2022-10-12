@@ -16,7 +16,9 @@ import type { IconInfo } from "../src/types/IconInfo.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const svgDir = join(dirname(__dirname), "src", "symbols", "svg");
-await mkdir(svgDir);
+await mkdir(svgDir, {
+    recursive: true
+});
 console.log(svgDir);
 
 /**
@@ -45,7 +47,7 @@ const promises: ReturnType<typeof writeFile>[] = [];
 for (const [folderName, iconInfos] of iconSets) {
     const folderPath = join(svgDir, folderName);
     // Make the folder if it doesn't already exist.
-    await mkdir(folderPath);
+    await mkdir(folderPath, {recursive: true});
     for (const iconInfo of iconInfos) {
         process(folderPath, iconInfo)
     }
