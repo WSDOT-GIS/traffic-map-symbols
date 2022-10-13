@@ -1,4 +1,7 @@
-import * as symbols from "../src/symbols/index";
+// This script is a WIP. Currently fails with import error
+// when importing from @arcgis/core
+
+import * as symbols from "../src/symbols/index.js";
 
 
 for (const key in symbols) {
