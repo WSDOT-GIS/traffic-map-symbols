@@ -1,9 +1,9 @@
 <script lang="ts">
 import { useStore } from "@/store";
 import { computed, defineComponent } from "vue";
-import { layerListIcons } from "@/symbols/IconDefinitions";
+import { layerListIcons } from "../symbols/IconDefinitions";
 import ToggleSwitchView from "./ToggleSwitchView.vue";
-import { getLayerIds } from "@/utils/layerUtil";
+import { getLayerIds } from "../utils/layerUtil";
 
 export default defineComponent({
   components: { ToggleSwitchView },
