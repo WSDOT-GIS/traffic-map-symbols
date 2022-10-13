@@ -1,12 +1,13 @@
 import Graphic from "@arcgis/core/Graphic";
 import FeatureInfo from "@/types/FeatureInfo";
 // import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
-import Point from "@arcgis/core/geometry/Point";
-import Polygon from "@arcgis/core/geometry/Polygon";
-import { project } from "@arcgis/core/geometry/projection";
+import type Point from "@arcgis/core/geometry/Point";
+import type Polygon from "@arcgis/core/geometry/Polygon";
+import { project, load, isLoaded } from "@arcgis/core/geometry/projection";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import FeatureSet from "@arcgis/core/rest/support/FeatureSet";
+import type FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import type FeatureSet from "@arcgis/core/rest/support/FeatureSet";
+
 /**
  * @param graphic - 
  * @param layer - 
@@ -52,7 +53,7 @@ export const getFeatureInfosByIds = async (ids: number[], layer: FeatureLayer): 
     query.where = `${idName} IN ( ${ids.join(",")})`;
     query.outFields = ["*"];
     const response = await layer.queryFeatures(query);
-    const infos = response.features.map(convert2Info);
+    const infos = Promise.all(response.features.map(convert2Info));
     return infos;
 }
 
@@ -92,7 +93,7 @@ export const getFeatureInfoByUniqueField = async (fieldName: string, value: numb
     }
 }
 
-const convert2Info = (g: Graphic) => {
+const convert2Info = async (g: Graphic) => {
     let mapPoint: Point;
     // Get the mid/center point...
     switch (g.geometry.type) {
@@ -112,6 +113,9 @@ const convert2Info = (g: Graphic) => {
         }
     }
     // Project to the map coordinate. Without doing this lat/long get passed.
+    if (!isLoaded()) {
+        await load();
+    }
     const projPt = project(
         mapPoint,
         SpatialReference.WebMercator
