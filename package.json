@@ -3,18 +3,17 @@
   "version": "1.0.8",
   "private": true,
   "scripts": {
-    "prepare": "npm run docs",
+    "prepare": "tsc --build",
     "test-configs": "ts-node --esm ./tools/test-config.mts",
     "clean": "git clean -dfx -e node_modules",
     "dotnet-serve": "dotnet serve --path-base /Travel/Real-time/Map/ --directory dist",
     "docs": "typedoc",
     "serve": "vue-cli-service serve",
     "lighthouse": "node ./tools/run-lighthouse.mjs",
-    "build": "vue-cli-service build --modern",
+    "build": "vue-cli-service build",
     "lint": "vue-cli-service lint --no-fix",
     "lint:html": "vue-cli-service lint --no-fix --format html > dist/lint-results.html",
     "spell-ci": "cspell lint **/* --fail-fast --no-progress --no-summary",
-    "tsc:symbols": "tsc --project symbols.tsconfig",
     "dump-svg": "ts-node --esm ./tools/dump-svg.mts"
   },
   "dependencies": {
