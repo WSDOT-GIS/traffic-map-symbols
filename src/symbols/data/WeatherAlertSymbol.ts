@@ -1,4 +1,4 @@
-const weatherStationSymbol = {
+const weatherStationSymbol: __esri.CIMSymbolProperties = {
   data: {
     type: "CIMSymbolReference",
     symbol: {
