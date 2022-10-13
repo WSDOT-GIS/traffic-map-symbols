@@ -796,7 +796,8 @@ const symbol: __esri.CIMSymbolProperties = {
           }
     }
 }
-
+export {symbol}
+export default symbol;
 
 // export const clusterSymbol: __esri.CIMSymbolProperties = {
 //     data:
