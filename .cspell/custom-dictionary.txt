@@ -6,6 +6,7 @@ brotli
 deconfliction
 Divs
 Featureset
+gtag
 id
 jsdoc
 lods
@@ -13,6 +14,7 @@ multipoint
 Noto
 pluggable
 pwsh
+repost
 sodipodi
 splidejs
 srid
@@ -24,6 +26,7 @@ watech
 webmap
 Wilsonville
 wkid
+wmts
 wsdot
 xmax
 xmin

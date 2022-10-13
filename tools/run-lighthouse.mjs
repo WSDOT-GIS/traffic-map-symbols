@@ -46,6 +46,7 @@ async function runLighthouse(url, vueServe) {
     const chrome = await chromeLauncher.launch({
         // See https://github.com/GoogleChrome/chrome-launcher/blob/master/docs/chrome-flags-for-tools.md
         chromeFlags: [
+            // cspell:disable
             '--headless',
             "--allow-insecure-localhost",
             "--disable-client-side-phishing-detection", //  Disables client-side phishing detection
@@ -82,7 +83,7 @@ async function runLighthouse(url, vueServe) {
             "--disable-sync", //  Disable syncing to a Google account
             // "--enable-crash-reporter-for-testing", //  Used for turning on Breakpad crash reporting in a debug environment where crash reporting is typically compiled but disabled.
             "--metrics-recording-only", //  Disable reporting to UMA, but allows for collection
-
+            // cspell:enable
         ]
     });
     // const options = { logLevel: 'info', output: 'html', onlyCategories: ['performance'], port: chrome.port };
@@ -94,6 +95,7 @@ async function runLighthouse(url, vueServe) {
 
     // `.report` is the HTML report as a string
     const reportHtml = runnerResult.report;
+    // cspell:disable-next-line
     const reportFileName = 'lhreport.html';
     await writeFile(reportFileName, reportHtml);
 

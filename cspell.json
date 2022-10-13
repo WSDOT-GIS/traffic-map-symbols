@@ -12,15 +12,27 @@
     "ignorePaths": [
         "docs",
         "cspell.json",
+        "*.css",
         "**/*.gdb",
         "**/*.tbx",
         "**/*.atbx",
         "**/*.svg",
         "**/*.stylx",
         "**/*.aprx",
+        "**/*.ppkx",
         "wsdot-devops-pipeline-yaml-schema.json",
         "package.json",
-        "package-lock-json"
+        "package-lock-json",
+        "**/assets/TravelInformation2DSymbols"
+    ],
+    "patterns": [
+        {
+            "name": "gtag_id",
+            "pattern": "\\bG-\\S+\\b"
+        }
+    ],
+    "ignoreRegExpList": [
+        "gtag_id"
     ],
     "dictionaryDefinitions": [
         {
