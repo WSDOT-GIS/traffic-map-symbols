@@ -326,7 +326,7 @@ export default defineComponent({
                           "line-restrictions-layer",
                           esriMap.webmap,
                           "UniqueId",
-                          result?.attributes.UniqueId
+                          `'${result?.attributes.UniqueId}'`
                         );
                       }
                       if (g.layer.id === "road-alerts-layer") {
