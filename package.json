@@ -16,8 +16,8 @@
     "tsc:symbols": "tsc --project symbols.tsconfig"
   },
   "dependencies": {
-    "@arcgis/core": "4.23.0",
-    "@arcgis/webpack-plugin": "4.22.0",
+    "@arcgis/core": "~4.23.7",
+    "@arcgis/webpack-plugin": "~4.22.0",
     "save-dev": "^0.0.1-security",
     "vue": "^3.2.40",
     "vue-gtag": "^2.0.1"
