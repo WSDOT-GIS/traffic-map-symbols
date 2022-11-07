@@ -4,15 +4,18 @@ import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol";
 import Graphic from "@arcgis/core/Graphic";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Field from "@arcgis/core/layers/support/Field";
+import symbol from "@/symbols/ParkRideSymbol";
 
 
 // Create a symbol for rendering the graphic
 const renderer = new SimpleRenderer({
     symbol: new SimpleFillSymbol({
-        style: "none",
+        color: [ 0,0,255, 0.125 ],
+        style: "solid",
         outline: {
             width: 2,
             color: "blue"
+            
         }
     })
 });

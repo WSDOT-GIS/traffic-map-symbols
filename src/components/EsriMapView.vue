@@ -529,31 +529,49 @@ export default defineComponent({
         };
         esriMap.mapView.hitTest(event, opts).then((response) => {
           // check if a feature is returned from the zoom layer...
-          if (response.results.length) {
-            // Show custom popup...
-            zoomPopupX.value = event.x;
-            zoomPopupY.value = event.y;
-            const zoomGraphic = response.results[0].graphic;
-            zoomPopupVisible.value = true;
-            // Set zoom popup properties...
-            const id = zoomGraphic.attributes["ObjectID"];
-            getZoomFeatureById(id).then((response) => {
-              const geom = project(response.geometry, SpatialReference.WebMercator) as Geometry;
-              // Users get lost zooming in too tight, so zoom to larger area...
-              zoomExtent = geom.extent;
-              zoomPopupLabel.value = response.attributes.Label;
-            });
-            mapDiv.style.cursor = "zoom-in";
-            if (!zoomEventIsOn) {
-              mapDiv.addEventListener("click", zoomMetroEventHandler);
-              zoomEventIsOn = true;
-            }
-          } else {
-            // Resume normal map operation...
-            zoomPopupVisible.value = false;
-            if (zoomEventIsOn) {
-              mapDiv.removeEventListener("click", zoomMetroEventHandler);
-              zoomEventIsOn = false;
+          if(store.state.mediaSize=="l"){
+            if (response.results.length) {
+              const featurerings = response.results[0].graphic.geometry.get("rings") as Array<Array<Array<number>>>
+             
+              const mapPoint = new Point({
+                //x: response.results[0].graphic.geometry.extent.xmax,
+                //y: response.results[0].graphic.geometry.extent.xmin,
+                x: featurerings[0][2][0],
+                y: featurerings[0][2][1],
+                spatialReference: response.results[0].graphic.geometry.spatialReference
+              })
+              const screenPoint =mapView.toScreen(
+                mapPoint
+              )
+             // console.log( [event.x,screenPoint.x])
+             // console.log( [event.y,screenPoint.y])
+              // Show custom popup...
+              //zoomPopupX.value = event.x;
+              //zoomPopupY.value = event.y;
+              zoomPopupX.value = screenPoint.x;
+              zoomPopupY.value = screenPoint.y;
+              const zoomGraphic = response.results[0].graphic;
+              zoomPopupVisible.value = true;
+              // Set zoom popup properties...
+              const id = zoomGraphic.attributes["ObjectID"];
+              getZoomFeatureById(id).then((response) => {
+                const geom = project(response.geometry, SpatialReference.WebMercator) as Geometry;
+                // Users get lost zooming in too tight, so zoom to larger area...
+                zoomExtent = geom.extent;
+                zoomPopupLabel.value = response.attributes.Label;
+              });
+              //mapDiv.style.cursor = "zoom-in";
+              if (!zoomEventIsOn) {
+                mapDiv.addEventListener("click", zoomMetroEventHandler);
+                zoomEventIsOn = true;
+              }
+            } else {
+              // Resume normal map operation...
+              zoomPopupVisible.value = false;
+              if (zoomEventIsOn) {
+                mapDiv.removeEventListener("click", zoomMetroEventHandler);
+                zoomEventIsOn = false;
+              }
             }
           }
         });
