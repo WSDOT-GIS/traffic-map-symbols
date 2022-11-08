@@ -19,7 +19,7 @@ import { defineComponent } from "vue";
 import {Analytics} from 'analytics';
 import googleAnalytics from '@analytics/google-analytics';
 import { getConfig } from "@/utils/appConfigUtil";
-import { GtagEvent } from "vue-gtag";
+import { event } from "vue-gtag";
 export default defineComponent({
   props: {
     Checked: {
@@ -41,8 +41,7 @@ export default defineComponent({
   },
   setup(props, context) {
     const config = getConfig();
-    let analytics:any;
-    let gtag:GtagEvent
+    /*let analytics:any;
     try{
       analytics = Analytics({
         app: 'WSDOT',
@@ -55,32 +54,32 @@ export default defineComponent({
     }
     catch(e){
       console.error(e)
-    }
+    }*/
     
     const onToggle = (evt: Event) => {
       const target = evt.currentTarget as HTMLInputElement;
       const sendToggleOn = ()=>{
         try{
-          gtag('toggle',{'event_category':'Layer','event_label':props.Title+"-"+"On",'value':1})
-          analytics.track('toggle', {
+          event('toggle_map_layer_on',{'toggle_layer': props.Title})
+          //window.gtag('event','toggle_on')
+          /*analytics.track('toggle', {
           category: 'Layer',
           label: props.Title+"-"+"On",
           value: 1
-        })
+        })*/
         }
         catch(e){
           console.error(e)
         }
-        
       }
       const sendToggleOff = ()=>{
         try{
-          
-            analytics.track('toggle', {
+          event('toggle_map_layer_off',{'toggle_layer': props.Title})
+            /*analytics.track('toggle', {
             category: 'Layer',
             label: props.Title+"-"+"Off",
             value: 1
-          })
+          })*/
         }
         catch(e){
           console.log(e)

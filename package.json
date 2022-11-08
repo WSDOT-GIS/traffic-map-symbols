@@ -3,7 +3,6 @@
   "version": "1.0.8",
   "private": true,
   "scripts": {
-    "prepare": "npm run docs",
     "test-configs": "ts-node --esm ./tools/test-config.mts",
     "clean": "git clean -dfx -e node_modules",
     "dotnet-serve": "dotnet serve --path-base /Travel/Real-time/Map/ --directory dist",
@@ -17,13 +16,14 @@
     "tsc:symbols": "tsc --project symbols.tsconfig"
   },
   "dependencies": {
+    "@arcgis/core": "~4.23.7",
+    "@arcgis/webpack-plugin": "~4.22.0",
+    "save-dev": "^0.0.1-security",
     "vue": "^3.2.40",
     "vue-gtag": "^2.0.1"
   },
   "devDependencies": {
     "@analytics/google-analytics": "^1.0.3",
-    "@arcgis/core": "^4.24.7",
-    "@arcgis/webpack-plugin": "^4.22.0",
     "@microsoft/applicationinsights-web": "^2.8.8",
     "@splidejs/vue-splide": "^0.6.12",
     "@types/doubleclick-gpt": "^2019111201.0.2",
