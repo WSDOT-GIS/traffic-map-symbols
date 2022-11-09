@@ -1,6 +1,5 @@
 <script lang="ts">
-
-import { defineComponent, onMounted, ref, watch } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "@/store";
 import { project } from "@arcgis/core/geometry/projection";
@@ -11,7 +10,7 @@ import Layer from "@arcgis/core/layers/Layer";
 import Point from "@arcgis/core/geometry/Point";
 import Extent from "@arcgis/core/geometry/Extent";
 import LayerView from "@arcgis/core/views/layers/LayerView";
-import { whenFalseOnce } from "@arcgis/core/core/watchUtils";
+import * as WatchUtils from "@arcgis/core/core/watchUtils.js";
 import Collection from "@arcgis/core/core/Collection";
 import { getConfig } from "@/utils/appConfigUtil";
 import { mapView, zoomToMetroArea } from "@/esri-stuff/esriMap";
@@ -22,7 +21,7 @@ import {
   getFeatureIdFromUrl,
   getFeatureTypeFromUrl,
 } from "@/utils/urlParamUtil";
-import { getFeature, updateScaleDependentRendering } from "@/utils/layerUtil";
+import { getFeature } from "@/utils/layerUtil";
 import {
   removeGraphicsByType,
   hidePointInteractionGraphics,
@@ -46,7 +45,7 @@ import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
 import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
 import MountainPassesLayer from "@/layers/MountainPassesLayer";
 import RoadAlertsLayer from "@/layers/RoadAlertsLayer";
-import RoadClosuresLayer from "@/layers/LinearClosuresLayer";
+import RoadClosuresLayer from "@/layers/LinearClosuresLayer"
 import RestAreasLayer from "@/layers/RestAreasLayer";
 import FireIncidentLayer from "@/layers/FireIncidentLayer";
 import RoadsReferenceLayer from "@/layers/RoadsReferenceLayer";
@@ -82,10 +81,6 @@ import AlertView from "@/components/AlertView.vue";
 import AdView from "@/components/AdView.vue";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import { hasParentClass } from "@/utils/miscUtil";
-
-type LocationFoundEvent = [boolean, "success" | string];
-
-
 export default defineComponent({
   components: {
     ZoomPopupView,
@@ -178,7 +173,7 @@ export default defineComponent({
       esriMap: typeof import("../esri-stuff/esriMap")
     ) => {
       const lyrs = esriMap.validateLayerList([
-        // RoadClosuresLayer(),
+        RoadClosuresLayer(),
         ParkRideLayer(),
         CameraLayer(),
         PointRestrictionsLayer(),
@@ -201,7 +196,7 @@ export default defineComponent({
         pointerMoveHandle.remove();
         pointerMoveHandle = undefined;
       }
-      pointerMoveHandle = mapView.on("pointer-move", (event) => {
+      pointerMoveHandle = mapView.on(["pointer-move"], (event) => {
         // Change pointer when the cursor is on a feature...
         mapView.hitTest(event, opLayerOpts).then((response) => {
           if (response.results.length > 0) {
@@ -225,13 +220,10 @@ export default defineComponent({
           if (response.results.length) {
             // Check if metro area layer was clicked on...
             const zoomExtentResult = response.results.filter((each) => {
-              return each.type === "graphic" && each.graphic.layer === ZoomExtentLayer;
+              return each.graphic.layer === ZoomExtentLayer;
             });
             if (zoomExtentResult.length) {
-              const zeResult = zoomExtentResult[0];
-              if (zeResult.type === "graphic") {
-                zoomToMetroArea(zeResult.graphic.geometry.extent);
-              }
+              zoomToMetroArea(zoomExtentResult[0].graphic.geometry.extent);
               return;
             }
             // Operational layer was clicked...
@@ -240,12 +232,7 @@ export default defineComponent({
               layer: Layer;
               results: { graphic: Graphic; mapPoint: Point }[];
             }[] = [];
-
-
-            for (const eachResult of response.results) {
-              // Skip results that aren't GraphicHit.
-              if (eachResult.type !== "graphic") continue;
-
+            response.results.forEach((eachResult) => {
               const arrayFound = resultsByLayer.find(
                 (eachArray) => eachArray.layer === eachResult.graphic.layer
               );
@@ -261,7 +248,7 @@ export default defineComponent({
                   });
                 }
               }
-            }
+            });
             // Pick the top most layer...
             let maxIdx = 0;
             resultsByLayer.forEach((eachResultSet) => {
@@ -303,15 +290,15 @@ export default defineComponent({
                   }
                 );
               } else {
-                const target = (clickEvent.native as PointerEvent).target;
-                if (target && target instanceof Element && hasParentClass(target, "alert-content") == false) {
+                const target = clickEvent.target as HTMLElement;
+                if (hasParentClass(target, "alert-content") == false) {
                   hidePointInteractionGraphics("line-restrictions-layer", esriMap.webmap);
                   hidePointInteractionGraphics("ferry-routes-lines-layer", esriMap.webmap);
                   hidePointInteractionGraphics("line-road-alerts-layer", esriMap.webmap);
                 }
                 // Not aggregate...
                 const id = g.getObjectId();
-                // get lines for restriction point click
+                // get lines for restriciton point click
                 if (
                   g.layer.id === "point-restrictions-layer" ||
                   g.layer.id === "road-alerts-layer"
@@ -326,7 +313,7 @@ export default defineComponent({
                           "line-restrictions-layer",
                           esriMap.webmap,
                           "UniqueId",
-                          result?.attributes.UniqueId
+                          `'${result?.attributes.UniqueId}'`
                         );
                       }
                       if (g.layer.id === "road-alerts-layer") {
@@ -335,10 +322,11 @@ export default defineComponent({
                           esriMap.webmap,
                           "EventID",
                           result?.attributes.EventID
-                        );
-                        showPopup(results2Show.layer.id, [id]);
+                        )
+                        showPopup(results2Show.layer.id, [id])
                       }
-                    } else {
+                    }
+                    else {
                       showPopup(results2Show.layer.id, [id]);
                     }
                   });
@@ -361,8 +349,8 @@ export default defineComponent({
               }
             }
           } else {
-            const target = (clickEvent.native as PointerEvent).target;
-            if (target && target instanceof Element && hasParentClass(target, "alert-content") == false) {
+            const target = clickEvent.target as HTMLElement;
+            if (hasParentClass(target, "alert-content") == false) {
               hidePointInteractionGraphics("line-restrictions-layer", esriMap.webmap);
               hidePointInteractionGraphics("ferry-routes-lines-layer", esriMap.webmap);
               hidePointInteractionGraphics("line-road-alerts-layer", esriMap.webmap);
@@ -387,7 +375,7 @@ export default defineComponent({
       });
       esriMap.mapView.on("layerview-create-error", (event) => {
         store.commit("addServiceAlert", event.layer.title);
-      });
+      })
       // Set basemap based on URL query parameter or display default...
       await initBasemap(appConfig.basemap);
       const basemapInfo = getBasemapFromUrl();
@@ -412,7 +400,7 @@ export default defineComponent({
       });
       Promise.all(vlPromises).then((layerViews) => {
         layerViews.forEach((layerView) => {
-          loadedPromises.push(whenFalseOnce(layerView, "updating"));
+          loadedPromises.push(WatchUtils.whenFalseOnce(layerView, "updating"));
         });
         return Promise.all(loadedPromises)
           .then(() => {
@@ -424,13 +412,6 @@ export default defineComponent({
             console.error(err.message);
           });
       });
-      /*Set scale dependent rendering */
-      watch(
-        () => store.state.scale,
-        (scale) => {
-          updateScaleDependentRendering(RoadClosuresLayer() as FeatureLayer, scale as number);
-        }
-      );
       /* Set layer list here before the rest of the map is ready, so we can show the layer list UI early.
        * Otherwise user will see a map without layer list until everything is ready. */
       store.dispatch("updateLayerVisibility");
@@ -537,8 +518,8 @@ export default defineComponent({
           });
       }
       // Pointer move event handler...
-      esriMap.mapView.on("pointer-move", (event) => {
-        // Update current pointer x/y in the store...
+      esriMap.mapView.on(["pointer-move"], (event) => {
+        // Update current poitner x/y in the store...
         const pt = esriMap.mapView.toMap({ x: event.x, y: event.y });
         store.commit("setPointerX", pt.longitude);
         store.commit("setPointerY", pt.latitude);
@@ -548,31 +529,49 @@ export default defineComponent({
         };
         esriMap.mapView.hitTest(event, opts).then((response) => {
           // check if a feature is returned from the zoom layer...
-          if (response.results.length && response.results[0].type === "graphic") {
-            // Show custom popup...
-            zoomPopupX.value = event.x;
-            zoomPopupY.value = event.y;
-            const zoomGraphic = response.results[0].graphic;
-            zoomPopupVisible.value = true;
-            // Set zoom popup properties...
-            const id = zoomGraphic.attributes["ObjectID"];
-            getZoomFeatureById(id).then((response) => {
-              const geom = project(response.geometry, SpatialReference.WebMercator) as Geometry;
-              // Users get lost zooming in too tight, so zoom to larger area...
-              zoomExtent = geom.extent;
-              zoomPopupLabel.value = response.attributes.Label;
-            });
-            mapDiv.style.cursor = "zoom-in";
-            if (!zoomEventIsOn) {
-              mapDiv.addEventListener("click", zoomMetroEventHandler);
-              zoomEventIsOn = true;
-            }
-          } else {
-            // Resume normal map operation...
-            zoomPopupVisible.value = false;
-            if (zoomEventIsOn) {
-              mapDiv.removeEventListener("click", zoomMetroEventHandler);
-              zoomEventIsOn = false;
+          if(store.state.mediaSize=="l"){
+            if (response.results.length) {
+              const featurerings = response.results[0].graphic.geometry.get("rings") as Array<Array<Array<number>>>
+             
+              const mapPoint = new Point({
+                //x: response.results[0].graphic.geometry.extent.xmax,
+                //y: response.results[0].graphic.geometry.extent.xmin,
+                x: featurerings[0][2][0],
+                y: featurerings[0][2][1],
+                spatialReference: response.results[0].graphic.geometry.spatialReference
+              })
+              const screenPoint =mapView.toScreen(
+                mapPoint
+              )
+             // console.log( [event.x,screenPoint.x])
+             // console.log( [event.y,screenPoint.y])
+              // Show custom popup...
+              //zoomPopupX.value = event.x;
+              //zoomPopupY.value = event.y;
+              zoomPopupX.value = screenPoint.x;
+              zoomPopupY.value = screenPoint.y;
+              const zoomGraphic = response.results[0].graphic;
+              zoomPopupVisible.value = true;
+              // Set zoom popup properties...
+              const id = zoomGraphic.attributes["ObjectID"];
+              getZoomFeatureById(id).then((response) => {
+                const geom = project(response.geometry, SpatialReference.WebMercator) as Geometry;
+                // Users get lost zooming in too tight, so zoom to larger area...
+                zoomExtent = geom.extent;
+                zoomPopupLabel.value = response.attributes.Label;
+              });
+              //mapDiv.style.cursor = "zoom-in";
+              if (!zoomEventIsOn) {
+                mapDiv.addEventListener("click", zoomMetroEventHandler);
+                zoomEventIsOn = true;
+              }
+            } else {
+              // Resume normal map operation...
+              zoomPopupVisible.value = false;
+              if (zoomEventIsOn) {
+                mapDiv.removeEventListener("click", zoomMetroEventHandler);
+                zoomEventIsOn = false;
+              }
             }
           }
         });
@@ -644,13 +643,12 @@ export default defineComponent({
         }
       }
     };
-
     /**
      * Display error message
      *
-     * @param event  - An event
+     * @param event
      */
-    const displayToast = (event: LocationFoundEvent) => {
+    const displayToast = (event: any) => {
       if (event[0] == false) {
         store.dispatch("showError", event[1].toString());
       }
@@ -681,15 +679,23 @@ export default defineComponent({
 <template>
   <div id="esri-map-view"></div>
   <AlertView :Alerts="alerts" />
-  <div id="map-bottom-left-container" class="w3-display-bottomleft w3-container" ref="bottomLeftDiv"
-    :style="{ marginBottom: marginBottomContainer }">
+  <div
+    id="map-bottom-left-container"
+    class="w3-display-bottomleft w3-container"
+    ref="bottomLeftDiv"
+    :style="{ marginBottom: marginBottomContainer }"
+  >
     <CoordinatesView />
   </div>
   <div id="map-bottom-center-container" class="w3-display-bottommiddle" ref="bottomCtrDiv">
     <AdView @onResize="adjustBottomControls" />
   </div>
-  <div id="map-bottom-right-container" class="w3-display-bottomright" ref="bottomRightDiv"
-    :style="{ marginBottom: marginBottomContainer }">
+  <div
+    id="map-bottom-right-container"
+    class="w3-display-bottomright"
+    ref="bottomRightDiv"
+    :style="{ marginBottom: marginBottomContainer }"
+  >
     <div class="map-bottom-right-container-row flex-row">
       <div class="map-bottom-right-container-column flex-column">
         <BasemapView />
@@ -700,8 +706,13 @@ export default defineComponent({
       </div>
     </div>
   </div>
-  <ZoomPopupView :Visible="zoomPopupVisible" :PositionX="zoomPopupX" :PositionY="zoomPopupY" :Label="zoomPopupLabel"
-    @clicked="zoomMetroEventHandler"></ZoomPopupView>
+  <ZoomPopupView
+    :Visible="zoomPopupVisible"
+    :PositionX="zoomPopupX"
+    :PositionY="zoomPopupY"
+    :Label="zoomPopupLabel"
+    @clicked="zoomMetroEventHandler"
+  ></ZoomPopupView>
   <CameraPopup :MapXY="popupXY" :Featureset="popupFeatureset" />
   <ParkRidePopup :Featureset="popupFeatureset" />
   <PointRestrictionPopup :Featureset="popupFeatureset" />
@@ -719,7 +730,7 @@ export default defineComponent({
 </template>
 
 <style scoped>
-@import "https://js.arcgis.com/4.24/@arcgis/core/assets/esri/themes/light/main.css";
+@import "https://js.arcgis.com/4.21/@arcgis/core/assets/esri/themes/light/main.css";
 
 #esri-map-view {
   padding: 0;
@@ -729,7 +740,6 @@ export default defineComponent({
   touch-action: none;
   overflow: hidden;
 }
-
 #map-bottom-right-container {
   display: inline-flex;
   margin-bottom: 16px;
@@ -741,8 +751,7 @@ export default defineComponent({
   width: 100%;
   justify-content: flex-end;
   flex-direction: rtl;
-  align-items: flex-end;
-  /* move columns to rightmost end of row */
+  align-items: flex-end; /* move columns to rightmost end of row */
 }
 
 .map-bottom-right-container-column {
@@ -751,11 +760,9 @@ export default defineComponent({
   justify-content: flex-end;
   align-items: center;
 }
-
 #map-bottom-center-container {
   margin-bottom: 16px;
 }
-
 .esri-zoom {
   display: none;
 }
