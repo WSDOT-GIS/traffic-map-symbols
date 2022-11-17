@@ -6,10 +6,10 @@ import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import Graphic from "@arcgis/core/Graphic";
 import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
-export const simpleClosuresRenderer = new SimpleRenderer({
+export const simpleClosuresRenderer: SimpleRenderer = new SimpleRenderer({
     symbol: linearCIMClosureSymbol
 })
-export const directionalClosuresRenderer = new UniqueValueRenderer({
+export const directionalClosuresRenderer: UniqueValueRenderer = new UniqueValueRenderer({
     field:"RoadDirection",
     uniqueValueInfos: [
         {
