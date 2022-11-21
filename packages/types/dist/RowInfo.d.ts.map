@@ -1,1 +1,0 @@
-{"version":3,"file":"RowInfo.d.ts","sourceRoot":"","sources":["../RowInfo.ts"],"names":[],"mappings":"AAAA,UAAU,OAAO;IACb,OAAO,EAAE,MAAM,CAAC;IAChB,UAAU,EAAE;QAAE,CAAC,GAAG,EAAE,MAAM,GAAG,MAAM,GAAG,MAAM,GAAG,SAAS,CAAA;KAAE,CAAC;CAC9D;AAED,eAAe,OAAO,CAAC"}

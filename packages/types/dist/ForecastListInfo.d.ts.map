@@ -1,1 +1,0 @@
-{"version":3,"file":"ForecastListInfo.d.ts","sourceRoot":"","sources":["../ForecastListInfo.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,YAAY,MAAM,gBAAgB,CAAA;AAE9C,UAAU,gBAAgB;IACtB,SAAS,EAAC,YAAY,EAAE,CAAC;IACzB,gBAAgB,EAAE,MAAM,CAAC;IACzB,0BAA0B,EAAE,MAAM,CAAC;IACnC,SAAS,EAAE,MAAM,CAAC;IAClB,iBAAiB,EAAE,MAAM,CAAC;CAC7B;AACD,eAAe,gBAAgB,CAAA"}
