@@ -65,8 +65,7 @@ loadConfig().then((appConfig) => {
         
     });
     app.use(VueGtag, {
-        property: {
-          /* cspell:disable-next-line */
+        config: {
           id: "G-RBQE8K3PSW"
         }
     });

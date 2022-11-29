@@ -45,7 +45,7 @@ export default defineComponent({
       @toggle="clickEvent"
       :Enabled="true"
       :Checked="getLayerVisibility('traffic-flow-layer')"
-      Value="traffic-flow-layer"
+      :Value="getLayerIds('traffic-flow').join(',')"
       :Title="'Toggle ' + getLayerTitle('traffic-flow-layer')"
     >
       <template v-slot>

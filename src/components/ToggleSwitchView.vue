@@ -13,7 +13,7 @@ import { defineComponent } from "vue";
 import { Analytics, AnalyticsInstance } from 'analytics';
 import googleAnalytics from '@analytics/google-analytics';
 import { getConfig } from "@/utils/appConfigUtil";
-import type { GtagEvent } from "vue-gtag";
+import { event } from "vue-gtag";
 export default defineComponent({
   props: {
     Checked: {
@@ -35,8 +35,8 @@ export default defineComponent({
   },
   setup(props, context) {
     const config = getConfig();
-    let analytics: AnalyticsInstance | undefined;
-    try {
+    /*let analytics:any;
+    try{
       analytics = Analytics({
         app: 'WSDOT',
         plugins: [
@@ -48,14 +48,19 @@ export default defineComponent({
     }
     catch (e) {
       console.error(e)
-    }
-
+    }*/
+    
     const onToggle = (evt: Event) => {
       const target = evt.currentTarget as HTMLInputElement;
-      const sendToggleOn = () => {
-        try {
-          window.gtag("event", "toggle", { 'event_category': 'Layer', 'event_label': `${props.Title}-On`, 'value': 1 })
-
+      const sendToggleOn = ()=>{
+        try{
+          event('toggle_map_layer_on',{'toggle_layer': props.Title})
+          //window.gtag('event','toggle_on')
+          /*analytics.track('toggle', {
+          category: 'Layer',
+          label: props.Title+"-"+"On",
+          value: 1
+        })*/
         }
         catch (e) {
           if (e instanceof TypeError && e.message == "gtag is not a function") {
@@ -65,21 +70,15 @@ export default defineComponent({
             console.error(e)
           }
         }
-        analytics?.track('toggle', {
-            category: 'Layer',
-            label: props.Title + "-" + "On",
-            value: 1
-          })
-
       }
-      const sendToggleOff = () => {
-        try {
-
-          analytics?.track('toggle', {
+      const sendToggleOff = ()=>{
+        try{
+          event('toggle_map_layer_off',{'toggle_layer': props.Title})
+            /*analytics.track('toggle', {
             category: 'Layer',
             label: `${props.Title}-Off`,
             value: 1
-          })
+          })*/
         }
         catch (e) {
           console.log(e)

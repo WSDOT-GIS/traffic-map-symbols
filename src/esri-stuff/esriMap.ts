@@ -62,6 +62,8 @@ export const mapView = new MapView({
         // Limit the map navigation. 
         // Note: This still allows navigation beyond the extent, but not infinitely.
         geometry: fullExtent,
+        minScale:4622324.434309,
+        maxScale:9027.977411
     },
     highlightOptions: {
         color: "#00ffff", // Fill color

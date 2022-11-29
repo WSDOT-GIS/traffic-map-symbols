@@ -6,10 +6,10 @@ import LayerInfo, { LayerStatus } from "../types/LayerInfo";
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import type Graphic from "@arcgis/core/Graphic";
 import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
-export const simpleClosuresRenderer = new SimpleRenderer({
+export const simpleClosuresRenderer: SimpleRenderer = new SimpleRenderer({
     symbol: linearCIMClosureSymbol
 })
-export const directionalClosuresRenderer = new UniqueValueRenderer({
+export const directionalClosuresRenderer: UniqueValueRenderer = new UniqueValueRenderer({
     field:"RoadDirection",
     uniqueValueInfos: [
         {
@@ -76,7 +76,7 @@ const layerTitle = "Linear Closures Lines";
     }
 
     try {
-        layer = await layerUtil.initLayer(layerId, layerTitle, simpleClosuresRenderer, fields, "polyline", true, graphics,"EventCategoryDescription in ('Closure')");
+        layer = await layerUtil.initLayer(layerId, layerTitle, simpleClosuresRenderer, fields, "polyline", true, graphics,"1=1");
         layer.orderBy = [{
             field: "TravelCenterPriorityId",
             order: "ascending"

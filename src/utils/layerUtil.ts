@@ -7,12 +7,14 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as geomJsonUtils from "@arcgis/core/geometry/support/jsonUtils";
 import type Renderer from "@arcgis/core/renderers/Renderer";
 import Field from "@arcgis/core/layers/support/Field";
-import type GroupLayerInfo from "../types/GroupLayerInfo";
-import type AppConfig from "../types/AppConfig";
-import { fetchJson } from "../utils/miscUtil";
-import { isEsriFeatures } from "../utils/typeUtil";
-import type Layer from "@arcgis/core/layers/Layer";
-import { simpleClosuresRenderer, directionalClosuresRenderer } from "../layers/LinearClosuresLayer"
+import GroupLayerInfo from "@/types/GroupLayerInfo";
+import AppConfig from "@/types/AppConfig";
+import { fetchJson } from "@/utils/miscUtil";
+import { isEsriFeatures } from "@/utils/typeUtil";
+import Layer from "@arcgis/core/layers/Layer";
+import { simpleClosuresRenderer, directionalClosuresRenderer } from "@/layers/LinearClosuresLayer"
+import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
+import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 /**
  *  Specify which layers belong together (i.e. should be treated as if they are one layer) 
  *  Layers in each group should have the same visibility and displayed as a single item in the table of contents
@@ -60,6 +62,12 @@ export const createLayerGroupInfos = (config: AppConfig): void => {
         id: "fire", layers: [
             { id: "fire-incidents-layer", uniqueField: "UniqueFireIdentifier" },
             { id: "fire-perimeters-layer", uniqueField: "UniqueFireIdentifier" }
+        ]
+    });
+    layerGroups.push({
+        id: "traffic-flow", layers: [
+            { id: "traffic-flow-layer", uniqueField: "" },
+            { id: "linear-closures-layer", uniqueField: "EventID" }
         ]
     });
     layerGroups.push({ id: "time", layers: [{ id: "travel-times-layer", uniqueField: "TravelTimesID", jsonUrl: config.travelTimes }] });
@@ -369,10 +377,10 @@ export const updateScaleDependentRendering = (layer: FeatureLayer, scale: number
         //console.log("update linear closures renderer")
         //console.log(scale)
         if (scale <= 37000) {
-            layer.renderer = directionalClosuresRenderer
+            layer.renderer = directionalClosuresRenderer as UniqueValueRenderer
         }
         else {
-            layer.renderer = simpleClosuresRenderer
+            layer.renderer = simpleClosuresRenderer as SimpleRenderer
         }
     }
 }
