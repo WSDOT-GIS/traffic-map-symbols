@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import { useStore } from "@/store";
+import { useStore } from "../store";
 import { project } from "@arcgis/core/geometry/projection";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import { Geometry } from "@arcgis/core/geometry";
@@ -12,75 +12,75 @@ import Extent from "@arcgis/core/geometry/Extent";
 import LayerView from "@arcgis/core/views/layers/LayerView";
 import * as WatchUtils from "@arcgis/core/core/watchUtils.js";
 import Collection from "@arcgis/core/core/Collection";
-import { getConfig } from "@/utils/appConfigUtil";
-import { mapView, zoomToMetroArea } from "@/esri-stuff/esriMap";
+import { getConfig } from "../utils/appConfigUtil";
+import { mapView, zoomToMetroArea } from "../esri-stuff/esriMap";
 import {
   getExtentFromUrl,
   getBasemapFromUrl,
   getLayerVisibilityFromUrl,
   getFeatureIdFromUrl,
   getFeatureTypeFromUrl,
-} from "@/utils/urlParamUtil";
-import { getFeature } from "@/utils/layerUtil";
+} from "../utils/urlParamUtil";
+import { getFeature } from "../utils/layerUtil";
 import {
   removeGraphicsByType,
   hidePointInteractionGraphics,
   displayPointInteractionGraphics,
-} from "@/utils/graphicLayerUtil";
-import ZoomExtentLayer, { getFeatureById as getZoomFeatureById } from "@/layers/ZoomExtentLayer";
-import { clusterMaxScale, getClusterExtent } from "@/utils/clusterUtil";
-import type LayerInfo from "@/types/LayerInfo";
-import type FeaturesetInfo from "@/types/FeaturesetInfo";
-import type XY from "@/types/XY";
-import * as alertInfoUtil from "@/utils/alertInfoUtil";
-import type AlertInfo from "@/types/AlertInfo";
-import type FerryAlertInfo from "@/types/FerryAlertInfo";
-import { getFeatureInfoById } from "@/utils/featureInfoUtil";
+} from "../utils/graphicLayerUtil";
+import ZoomExtentLayer, { getFeatureById as getZoomFeatureById } from "../layers/ZoomExtentLayer";
+import { clusterMaxScale, getClusterExtent } from "../utils/clusterUtil";
+import type LayerInfo from "../types/LayerInfo";
+import type FeaturesetInfo from "../types/FeaturesetInfo";
+import type XY from "../types/XY";
+import * as alertInfoUtil from "../utils/alertInfoUtil";
+import type AlertInfo from "../types/AlertInfo";
+import type FerryAlertInfo from "../types/FerryAlertInfo";
+import { getFeatureInfoById } from "../utils/featureInfoUtil";
 /* Basemap */
-import { initBasemap } from "@/layers/Basemaps";
+import { initBasemap } from "../layers/Basemaps";
 /* Layers for popup */
-import ParkRideLayer from "@/layers/ParkRideLayer";
-import CameraLayer, { toggleCluster } from "@/layers/CameraLayer";
-import PointRestrictionsLayer from "@/layers/PointRestrictionsLayer";
-import WeatherStationsLayer from "@/layers/WeatherStationsLayer";
-import MountainPassesLayer from "@/layers/MountainPassesLayer";
-import RoadAlertsLayer from "@/layers/RoadAlertsLayer";
-import RoadClosuresLayer from "@/layers/LinearClosuresLayer"
-import RestAreasLayer from "@/layers/RestAreasLayer";
-import FireIncidentLayer from "@/layers/FireIncidentLayer";
-import RoadsReferenceLayer from "@/layers/RoadsReferenceLayer";
-import BoundariesPlacesReferenceLayer from "@/layers/BoundariesPlacesReferenceLayer";
-import BorderCrossingLayer from "@/layers/BorderCrossingsLayer";
-import PointFerryRoutesLayer from "@/layers/PointFerryRoutesLayer";
+import ParkRideLayer from "../layers/ParkRideLayer";
+import CameraLayer, { toggleCluster } from "../layers/CameraLayer";
+import PointRestrictionsLayer from "../layers/PointRestrictionsLayer";
+import WeatherStationsLayer from "../layers/WeatherStationsLayer";
+import MountainPassesLayer from "../layers/MountainPassesLayer";
+import RoadAlertsLayer from "../layers/RoadAlertsLayer";
+import RoadClosuresLayer from "../layers/LinearClosuresLayer"
+import RestAreasLayer from "../layers/RestAreasLayer";
+import FireIncidentLayer from "../layers/FireIncidentLayer";
+import RoadsReferenceLayer from "../layers/RoadsReferenceLayer";
+import BoundariesPlacesReferenceLayer from "../layers/BoundariesPlacesReferenceLayer";
+import BorderCrossingLayer from "../layers/BorderCrossingsLayer";
+import PointFerryRoutesLayer from "../layers/PointFerryRoutesLayer";
 import RegionalAlertLayer, {
   centerFeatures as centerRegionalAlerts,
   layerId as regionalAlertLayerId,
-} from "@/layers/RegionalAlertLayer";
+} from "../layers/RegionalAlertLayer";
 /* Popups */
-import ZoomPopupView from "@/components/ZoomPopupView.vue";
-import CameraPopup from "@/popups/CameraPopup.vue";
-import ParkRidePopup from "@/popups/ParkAndRidePopup.vue";
-import PointRestrictionPopup from "@/popups/PointRestrictionPopup.vue";
-import MountainPassPopup from "@/popups/MountainPassPopup.vue";
-import WeatherStationsPopup from "@/popups/WeatherStationPopup.vue";
-import RestAreaPopup from "@/popups/RestAreaPopup.vue";
-import RoadAlertPopup from "@/popups/RoadAlertPopup.vue";
-import RoadClosurePopup from "@/popups/RoadClosurePopup.vue";
-import WildfirePointsPopup from "@/popups/WildfirePointsPopup.vue";
-import BorderCrossingPopup from "@/popups/BorderCrossingPopup.vue";
-import RegionalAlertPopup from "@/popups/RegionalAlertPopup.vue";
-import FerryRoutesPopup from "@/popups/FerryRoutesPopup.vue";
+import ZoomPopupView from "../components/ZoomPopupView.vue";
+import CameraPopup from "../popups/CameraPopup.vue";
+import ParkRidePopup from "../popups/ParkAndRidePopup.vue";
+import PointRestrictionPopup from "../popups/PointRestrictionPopup.vue";
+import MountainPassPopup from "../popups/MountainPassPopup.vue";
+import WeatherStationsPopup from "../popups/WeatherStationPopup.vue";
+import RestAreaPopup from "../popups/RestAreaPopup.vue";
+import RoadAlertPopup from "../popups/RoadAlertPopup.vue";
+import RoadClosurePopup from "../popups/RoadClosurePopup.vue";
+import WildfirePointsPopup from "../popups/WildfirePointsPopup.vue";
+import BorderCrossingPopup from "../popups/BorderCrossingPopup.vue";
+import RegionalAlertPopup from "../popups/RegionalAlertPopup.vue";
+import FerryRoutesPopup from "../popups/FerryRoutesPopup.vue";
 /* Components */
-import LeftPaneView from "@/components/LeftPaneView.vue";
-import BannerView from "@/components/BannerView.vue";
-import BasemapView from "@/components/BasemapView.vue";
-import CoordinatesView from "@/components/CoordinatesView.vue";
-import MyLocationView from "@/components/MyLocationView.vue";
-import ZoomButtonView from "@/components/ZoomButtonView.vue";
-import AlertView from "@/components/AlertView.vue";
-import AdView from "@/components/AdView.vue";
+import LeftPaneView from "../components/LeftPaneView.vue";
+import BannerView from "../components/BannerView.vue";
+import BasemapView from "../components/BasemapView.vue";
+import CoordinatesView from "../components/CoordinatesView.vue";
+import MyLocationView from "../components/MyLocationView.vue";
+import ZoomButtonView from "../components/ZoomButtonView.vue";
+import AlertView from "../components/AlertView.vue";
+import AdView from "../components/AdView.vue";
 import type FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import { hasParentClass } from "@/utils/miscUtil";
+import { hasParentClass } from "../utils/miscUtil";
 export default defineComponent({
   components: {
     ZoomPopupView,

@@ -1,13 +1,13 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, watch } from "vue";
 import PopupBase from "./PopupBase.vue";
-import { getFeatureInfoById } from "@/utils/featureInfoUtil";
-import type FeaturesetInfo from "@/types/FeaturesetInfo";
-import type FeatureInfo from "@/types/FeatureInfo";
-import { layerListIcons } from "@/symbols/IconDefinitions";
-import type MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
-import { getLayer } from "@/esri-stuff/esriMap";
-import { useStore } from "@/store";
+import { getFeatureInfoById } from "../utils/featureInfoUtil";
+import type FeaturesetInfo from "../types/FeaturesetInfo";
+import type FeatureInfo from "../types/FeatureInfo";
+import { layerListIcons } from "../symbols/IconDefinitions";
+import type MoreInfoURLInfo from "../types/MoreInfoURLInfo";
+import { getLayer } from "../esri-stuff/esriMap";
+import { useStore } from "../store";
 import type FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 export default defineComponent({

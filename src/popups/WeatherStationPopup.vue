@@ -1,15 +1,15 @@
 <script lang="ts">
 import { defineComponent, nextTick, PropType, ref, watch } from "vue";
 import PopupBase from "./PopupBase.vue";
-import { getFeatureInfoById } from "@/utils/featureInfoUtil";
-import type FeaturesetInfo from "@/types/FeaturesetInfo";
-import type FeatureInfo from "@/types/FeatureInfo";
-import { layerListIcons } from "@/symbols/IconDefinitions";
-import { getConfig } from "@/utils/appConfigUtil";
-import type ForecastListInfo from "@/types/ForecastListInfo";
-import type MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
-import { getLayer } from "@/esri-stuff/esriMap";
-import { useStore } from "@/store";
+import { getFeatureInfoById } from "../utils/featureInfoUtil";
+import type FeaturesetInfo from "../types/FeaturesetInfo";
+import type FeatureInfo from "../types/FeatureInfo";
+import { layerListIcons } from "../symbols/IconDefinitions";
+import { getConfig } from "../utils/appConfigUtil";
+import type ForecastListInfo from "../types/ForecastListInfo";
+import type MoreInfoURLInfo from "../types/MoreInfoURLInfo";
+import { getLayer } from "../esri-stuff/esriMap";
+import { useStore } from "../store";
 import type FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as projection from "@arcgis/core/geometry/projection";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";

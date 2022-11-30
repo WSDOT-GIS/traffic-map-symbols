@@ -87,7 +87,7 @@
 </template>
 
 <script lang="ts">
-import { useStore } from "@/store";
+import { useStore } from "../store";
 import { defineComponent, computed } from "vue";
 import BurgerView from "./BurgerView.vue";
 import SidebarView from "./SidebarView.vue";

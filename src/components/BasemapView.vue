@@ -1,7 +1,7 @@
 <script lang="ts">
-import { useStore } from "@/store";
+import { useStore } from "../store";
 import { computed, defineComponent, ref, watch } from "vue";
-import MapButtonView from "@/components/MapButtonView.vue";
+import MapButtonView from "../components/MapButtonView.vue";
 
 /* eslint @typescript-eslint/no-var-requires: "off" */
 export default defineComponent({

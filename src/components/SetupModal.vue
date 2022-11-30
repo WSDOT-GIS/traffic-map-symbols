@@ -16,7 +16,7 @@
 </template>
 <script lang="ts">
 import { computed, defineComponent, onUpdated, ref, watch } from "vue";
-import { useStore } from "@/store";
+import { useStore } from "../store";
 import {mapState} from "vuex"
 export default defineComponent({
   //component that loads overtop the rest of the app to display the loading spinner and any initialization errors.

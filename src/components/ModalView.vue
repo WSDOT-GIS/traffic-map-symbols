@@ -33,7 +33,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, toRefs, watch } from "vue";
-import WsdotButtonView from "@/components/WsdotButtonView.vue";
+import WsdotButtonView from "../components/WsdotButtonView.vue";
 
 export default defineComponent({
   components: { WsdotButtonView },

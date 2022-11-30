@@ -2,7 +2,7 @@
 import { computed, defineComponent, nextTick, onUpdated, PropType, ref, toRefs, watch } from "vue";
 import { Splide, SplideSlide } from "@splidejs/vue-splide";
 import "@splidejs/splide/dist/css/themes/splide-default.min.css";
-import { useStore } from "@/store";
+import { useStore } from "../store";
 import {
   mapView,
   toScreenXY,
@@ -10,15 +10,15 @@ import {
   checkPannedExtent,
   highlightFeature,
   removeHighlight,
-} from "@/esri-stuff/esriMap";
-import type FeatureInfo from "@/types/FeatureInfo";
-import type PopupConfig from "@/types/PopupConfig";
+} from "../esri-stuff/esriMap";
+import type FeatureInfo from "../types/FeatureInfo";
+import type PopupConfig from "../types/PopupConfig";
 import PopupRow from "./PopupRow.vue";
-import type XY from "@/types/XY";
-import type ForecastListInfo from "@/types/ForecastListInfo";
-import type MoreInfoURLInfo from "@/types/MoreInfoURLInfo";
-import { getEsriExtent } from "@/utils/extentUtil";
-import { hasParentClass, hasParent } from "@/utils/miscUtil";
+import type XY from "../types/XY";
+import type ForecastListInfo from "../types/ForecastListInfo";
+import type MoreInfoURLInfo from "../types/MoreInfoURLInfo";
+import { getEsriExtent } from "../utils/extentUtil";
+import { hasParentClass, hasParent } from "../utils/miscUtil";
 
 export default defineComponent({
   components: { PopupRow, Splide, SplideSlide },

@@ -2,14 +2,14 @@
 import { defineComponent, nextTick, PropType, ref, watch } from "vue";
 
 import PopupBase from "./PopupBase.vue";
-import type FeaturesetInfo from "@/types/FeaturesetInfo";
-import { getFeatureInfosByIds } from "@/utils/featureInfoUtil";
-import { getLayer } from "@/esri-stuff/esriMap";
-// import FeatureLayer from "@/layers/CameraLayer";
-import type FeatureInfo from "@/types/FeatureInfo";
-import { layerListIcons } from "@/symbols/IconDefinitions";
-import type XY from "@/types/XY";
-import { useStore } from "@/store";
+import type FeaturesetInfo from "../types/FeaturesetInfo";
+import { getFeatureInfosByIds } from "../utils/featureInfoUtil";
+import { getLayer } from "../esri-stuff/esriMap";
+// import FeatureLayer from "../layers/CameraLayer";
+import type FeatureInfo from "../types/FeatureInfo";
+import { layerListIcons } from "../symbols/IconDefinitions";
+import type XY from "../types/XY";
+import { useStore } from "../store";
 import type FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 export default defineComponent({

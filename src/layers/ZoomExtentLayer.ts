@@ -4,7 +4,7 @@ import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol";
 import type Graphic from "@arcgis/core/Graphic";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference";
 import Field from "@arcgis/core/layers/support/Field";
-import symbol from "@/symbols/ParkRideSymbol";
+import symbol from "../symbols/ParkRideSymbol";
 
 
 // Create a symbol for rendering the graphic

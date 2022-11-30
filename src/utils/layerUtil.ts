@@ -7,12 +7,12 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as geomJsonUtils from "@arcgis/core/geometry/support/jsonUtils";
 import type Renderer from "@arcgis/core/renderers/Renderer";
 import Field from "@arcgis/core/layers/support/Field";
-import GroupLayerInfo from "@/types/GroupLayerInfo";
-import AppConfig from "@/types/AppConfig";
-import { fetchJson } from "@/utils/miscUtil";
-import { isEsriFeatures } from "@/utils/typeUtil";
+import GroupLayerInfo from "../types/GroupLayerInfo";
+import AppConfig from "../types/AppConfig";
+import { fetchJson } from "../utils/miscUtil";
+import { isEsriFeatures } from "../utils/typeUtil";
 import Layer from "@arcgis/core/layers/Layer";
-import { simpleClosuresRenderer, directionalClosuresRenderer } from "@/layers/LinearClosuresLayer"
+import { simpleClosuresRenderer, directionalClosuresRenderer } from "../layers/LinearClosuresLayer"
 import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 /**

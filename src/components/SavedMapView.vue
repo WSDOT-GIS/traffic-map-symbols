@@ -1,14 +1,14 @@
 <script lang="ts">
 import { computed, defineComponent, nextTick, onMounted, onUpdated, ref, watch } from "vue";
 
-import type SavedMapInfo from "@/types/SavedMapInfo";
-import { setCookie, getCookie } from "@/utils/cookieUtil";
-import { cloneProxyTarget, useStore } from "@/store";
-import WsdotButtonView from "@/components/WsdotButtonView.vue";
-import SaveMapFormView from "@/components/SaveMapFormView.vue";
+import type SavedMapInfo from "../types/SavedMapInfo";
+import { setCookie, getCookie } from "../utils/cookieUtil";
+import { cloneProxyTarget, useStore } from "../store";
+import WsdotButtonView from "../components/WsdotButtonView.vue";
+import SaveMapFormView from "../components/SaveMapFormView.vue";
 
-import { validateBasemapName } from "@/layers/Basemaps";
-import { defaultLayerProps } from "@/esri-stuff/esriMap";
+import { validateBasemapName } from "../layers/Basemaps";
+import { defaultLayerProps } from "../esri-stuff/esriMap";
 
 export default defineComponent({
   components: { WsdotButtonView, SaveMapFormView },

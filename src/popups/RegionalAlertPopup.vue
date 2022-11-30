@@ -3,12 +3,12 @@ import { defineComponent, nextTick, PropType, ref, watch } from "vue";
 import Handles from "@arcgis/core/core/Handles";
 
 import PopupBase from "./PopupBase.vue";
-import { getFeatureInfoById } from "@/utils/featureInfoUtil";
-import type FeaturesetInfo from "@/types/FeaturesetInfo";
-import type FeatureInfo from "@/types/FeatureInfo";
-import { layerListIcons } from "@/symbols/IconDefinitions";
-import { getLayer } from "@/esri-stuff/esriMap";
-import { useStore } from "@/store";
+import { getFeatureInfoById } from "../utils/featureInfoUtil";
+import type FeaturesetInfo from "../types/FeaturesetInfo";
+import type FeatureInfo from "../types/FeatureInfo";
+import { layerListIcons } from "../symbols/IconDefinitions";
+import { getLayer } from "../esri-stuff/esriMap";
+import { useStore } from "../store";
 import type FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 export default defineComponent({
