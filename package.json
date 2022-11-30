@@ -3,6 +3,7 @@
   "version": "1.0.8",
   "private": true,
   "scripts": {
+    "prepare": "tsc --build",
     "test-configs": "ts-node --esm ./tools/test-config.mts",
     "clean": "git clean -dfx -e node_modules",
     "dotnet-serve": "dotnet serve --path-base /Travel/Real-time/Map/ --directory dist",
