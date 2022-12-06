@@ -83,7 +83,6 @@ const linearCIMClosureIncreasing: __esri.CIMSymbolProperties = {
       type: "CIMLineSymbol",
       symbolLayers: [
         {
-          // white dashed layer at center of the line
           type: "CIMSolidStroke",
           effects: [
             {
@@ -100,7 +99,6 @@ const linearCIMClosureIncreasing: __esri.CIMSymbolProperties = {
           color: [255, 255, 255, 255]
         },
         {
-          // arrow symbol right
           type: "CIMVectorMarker",
           enable: true,
           size: 5,
@@ -143,7 +141,6 @@ const linearCIMClosureIncreasing: __esri.CIMSymbolProperties = {
               ]
             },
             symbol: {
-              // black fill for the arrow symbol
               type: "CIMPolygonSymbol",
               symbolLayers: [{
                 type: "CIMSolidFill",
@@ -159,7 +156,6 @@ const linearCIMClosureIncreasing: __esri.CIMSymbolProperties = {
           }]
         },
         {
-          // black layer that surrounds the dashes
           type: "CIMSolidStroke",
           enable: true,
           capStyle: "Butt",
@@ -168,7 +164,6 @@ const linearCIMClosureIncreasing: __esri.CIMSymbolProperties = {
           color: [0,0, 0, 255]
         },
         {
-          // black outline around the line symbol
           type: "CIMSolidStroke",
           enable: true,
           capStyle: "Butt",
@@ -206,7 +201,6 @@ const linearCIMClosureDecreasing: __esri.CIMSymbolProperties = {
       type: "CIMLineSymbol",
       symbolLayers: [
         {
-          // white dashed layer at center of the line
           type: "CIMSolidStroke",
           effects: [
             {
@@ -223,7 +217,6 @@ const linearCIMClosureDecreasing: __esri.CIMSymbolProperties = {
           color: [255, 255, 255, 255]
         },
         {
-          // arrow symbol left
           type: "CIMVectorMarker",
           enable: true,
           size: 5,
@@ -266,7 +259,6 @@ const linearCIMClosureDecreasing: __esri.CIMSymbolProperties = {
               ]
             },
             symbol: {
-              // black fill for the arrow symbol
               type: "CIMPolygonSymbol",
               symbolLayers: [{
                 type: "CIMSolidFill",
@@ -282,7 +274,6 @@ const linearCIMClosureDecreasing: __esri.CIMSymbolProperties = {
           }]
         },
         {
-          // black layer that surrounds the dashes
           type: "CIMSolidStroke",
           enable: true,
           capStyle: "Butt",
@@ -291,7 +282,6 @@ const linearCIMClosureDecreasing: __esri.CIMSymbolProperties = {
           color: [0,0, 0, 255]
         },
         {
-          // black outline around the line symbol
           type: "CIMSolidStroke",
           enable: true,
           capStyle: "Butt",
@@ -329,7 +319,6 @@ const linearCIMClosureBoth: __esri.CIMSymbolProperties = {
       type: "CIMLineSymbol",
       symbolLayers: [
         {
-          // white dashed layer at center of the line
           type: "CIMSolidStroke",
           effects: [
             {
@@ -346,7 +335,6 @@ const linearCIMClosureBoth: __esri.CIMSymbolProperties = {
           color: [255, 255, 255, 255]
         },
         /*{
-          // arrow symbol right
           type: "CIMVectorMarker",
           enable: true,
           size: 5,
@@ -389,7 +377,6 @@ const linearCIMClosureBoth: __esri.CIMSymbolProperties = {
               ]
             },
             symbol: {
-              // black fill for the arrow symbol
               type: "CIMPolygonSymbol",
               symbolLayers: [{
                 type: "CIMSolidFill",
@@ -405,7 +392,6 @@ const linearCIMClosureBoth: __esri.CIMSymbolProperties = {
           }]
         },
         {
-          // arrow symbol left
           type: "CIMVectorMarker",
           enable: true,
           size: 5,
@@ -448,7 +434,6 @@ const linearCIMClosureBoth: __esri.CIMSymbolProperties = {
               ]
             },
             symbol: {
-              // black fill for the arrow symbol
               type: "CIMPolygonSymbol",
               symbolLayers: [{
                 type: "CIMSolidFill",
@@ -464,7 +449,6 @@ const linearCIMClosureBoth: __esri.CIMSymbolProperties = {
           }]
         },*/
         {
-          // black layer that surrounds the dashes
           type: "CIMSolidStroke",
           enable: true,
           capStyle: "Butt",
@@ -473,7 +457,6 @@ const linearCIMClosureBoth: __esri.CIMSymbolProperties = {
           color: [0,0, 0, 255]
         },
         {
-          // black outline around the line symbol
           type: "CIMSolidStroke",
           enable: true,
           capStyle: "Butt",

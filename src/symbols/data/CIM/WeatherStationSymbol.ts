@@ -1,6 +1,4 @@
 
-// import IconInfo from "../types/IconInfo"
-// import { layerListIcons } from "../symbols/IconDefinitions"
 
 
 const weatherStationSymbol: __esri.CIMSymbolProperties = {

@@ -1,5 +1,3 @@
-// import PictureMarkerSymbol from "@arcgis/core/symbols/PictureMarkerSymbol";
-// import {layerListIcons} from "../symbols/IconDefinitions"
 
 const symbol: __esri.CIMSymbolProperties = {
   data: {
