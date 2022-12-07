@@ -1,7 +1,7 @@
-import SimpleMarkerSymbol from "@arcgis/core/symbols/SimpleMarkerSymbol";
 
 
-const symbol = new SimpleMarkerSymbol({
+const symbol = {
+    type: "simple-marker",
     style: "circle",
     color: [0, 0, 0, 0],
     size: "26px",
@@ -9,7 +9,7 @@ const symbol = new SimpleMarkerSymbol({
         color: "#00ffff",
         width: 2  // points
     }
-})
+};
 
 export default symbol;
 

@@ -1,5 +1,9 @@
-import type { IconInfo } from "../types/IconInfo"
 /* eslint-disable no-useless-escape */
+
+interface IconInfo {
+  id: string,
+  paths: `${string | ""}<svg${string}</svg>${string | ""}`
+}
 
 /** Defines icons for layer list */
 const layerListIcons: IconInfo[] = [
