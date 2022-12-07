@@ -1,6 +1,6 @@
 
 
-const symbol: __esri.CIMSymbolProperties = {
+const symbol = {
     data:
     {
         "type": "CIMSymbolReference",

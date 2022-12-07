@@ -1,5 +1,5 @@
 
-export const MyLocationSymbol: __esri.SimpleMarkerSymbolProperties = {
+export const MyLocationSymbol = {
     type: "simple-marker",
     color: [100, 100, 255], // Orange
     outline: {

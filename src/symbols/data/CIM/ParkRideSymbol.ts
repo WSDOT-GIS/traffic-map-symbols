@@ -1,5 +1,5 @@
 
-const symbol: __esri.CIMSymbolProperties = {
+const symbol = {
   data: {
     type: "CIMSymbolReference",
     symbol: {
@@ -687,3 +687,4 @@ const symbol: __esri.CIMSymbolProperties = {
 }
 
 export default symbol
+

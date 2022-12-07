@@ -1,7 +1,7 @@
 
 
 
-const weatherStationSymbol: __esri.CIMSymbolProperties = {
+const weatherStationSymbol = {
   data: {
     type: "CIMSymbolReference",
     symbol: {
@@ -971,3 +971,4 @@ const weatherStationSymbol: __esri.CIMSymbolProperties = {
 }
 
 export default weatherStationSymbol
+

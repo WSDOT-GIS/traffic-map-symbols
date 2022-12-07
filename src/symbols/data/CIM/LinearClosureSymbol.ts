@@ -1,5 +1,5 @@
 
-const linearCIMClosureSymbol: __esri.CIMSymbolProperties = {
+const linearCIMClosureSymbol = {
   data: {
     type: "CIMSymbolReference",
     symbol: {
@@ -76,7 +76,7 @@ const linearCIMClosureSymbol: __esri.CIMSymbolProperties = {
     }
   }
 }
-const linearCIMClosureIncreasing: __esri.CIMSymbolProperties = {
+const linearCIMClosureIncreasing = {
   data: {
     type: "CIMSymbolReference",
     symbol: {
@@ -194,7 +194,7 @@ const linearCIMClosureIncreasing: __esri.CIMSymbolProperties = {
     }
   }
 }
-const linearCIMClosureDecreasing: __esri.CIMSymbolProperties = {
+const linearCIMClosureDecreasing = {
   data: {
     type: "CIMSymbolReference",
     symbol: {
@@ -312,7 +312,7 @@ const linearCIMClosureDecreasing: __esri.CIMSymbolProperties = {
     }
   }
 }
-const linearCIMClosureBoth: __esri.CIMSymbolProperties = {
+const linearCIMClosureBoth = {
   data: {
     type: "CIMSymbolReference",
     symbol: {
@@ -488,3 +488,4 @@ const linearCIMClosureBoth: __esri.CIMSymbolProperties = {
   }
 }
 export { linearCIMClosureSymbol, linearCIMClosureIncreasing, linearCIMClosureDecreasing, linearCIMClosureBoth}
+

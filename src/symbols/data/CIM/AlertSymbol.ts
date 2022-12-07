@@ -1,5 +1,5 @@
 
-const alertSymbol: __esri.CIMSymbolProperties = {
+const alertSymbol = {
   data:
   {
       type: "CIMSymbolReference",
@@ -675,7 +675,7 @@ const alertSymbol: __esri.CIMSymbolProperties = {
         }
   }
 }
-const alertSymbolMedium: __esri.CIMSymbolProperties = {
+const alertSymbolMedium = {
     data:
     {
         type: "CIMSymbolReference",
@@ -1348,7 +1348,7 @@ const alertSymbolMedium: __esri.CIMSymbolProperties = {
           }
     }
 }
-const alertSymbolHigh: __esri.CIMSymbolProperties = {
+const alertSymbolHigh = {
   data:
   {
       type: "CIMSymbolReference",
@@ -2021,7 +2021,7 @@ const alertSymbolHigh: __esri.CIMSymbolProperties = {
         }
   }
 }
-const alertSymbolHighest: __esri.CIMSymbolProperties = {
+const alertSymbolHighest = {
   data:
   {
       type: "CIMSymbolReference",
@@ -2699,7 +2699,7 @@ const alertSymbolHighest: __esri.CIMSymbolProperties = {
         }
   }
 }
-const roadClosedSymbol: __esri.CIMSymbolProperties = {
+const roadClosedSymbol = {
   data:
   {
       type: "CIMSymbolReference",
