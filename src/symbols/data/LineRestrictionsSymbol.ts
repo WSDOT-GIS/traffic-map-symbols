@@ -1,15 +1,15 @@
-import SimpleLineSymbol from "@arcgis/core/symbols/SimpleLineSymbol";
+const roadRestrictionLine = {
+    type: "simple-line",
+    style: "solid",
+    color: [204, 32, 156, 0.7],
+    width: "15px",
+    cap: "square"
 
-const roadRestrictionLine = new SimpleLineSymbol({
+};
+const bridgeRestrictionLine = {
+    type: "simple-line",
     style: "solid",
-    color: [204,32,156,0.7],
+    color: [204, 32, 156, 0.7],
     width: "15px",
-    cap:"square"
-    
-})
-const bridgeRestrictionLine = new SimpleLineSymbol({
-    style: "solid",
-    color: [204,32,156,0.7],
-    width: "15px",
-})
+};
 export { roadRestrictionLine, bridgeRestrictionLine }
