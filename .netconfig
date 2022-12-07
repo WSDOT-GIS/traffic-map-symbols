@@ -1,6 +1,0 @@
-[serve]
-	open-browser
-	gzip
-	brotli
-	tls
-	cors
