@@ -81,6 +81,7 @@ import AlertView from "@/components/AlertView.vue";
 import AdView from "@/components/AdView.vue";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import { hasParentClass } from "@/utils/miscUtil";
+import { showPopup, closePopup } from "@/utils/popupUtil";
 export default defineComponent({
   components: {
     ZoomPopupView,
@@ -151,19 +152,8 @@ export default defineComponent({
     // Feature Popup...
     const popupXY = ref<XY | undefined>();
     const popupFeatureset = ref<FeaturesetInfo>({ layerId: "", ids: [] });
-    // Set popup props...
-    const showPopup = (layerId: string, ids: number[], pt?: Point) => {
-      popupFeatureset.value = { layerId: layerId, ids: ids };
-      if (pt) {
-        popupXY.value = { x: pt.x, y: pt.y };
-      } else {
-        popupXY.value = undefined;
-      }
-      store.commit("setInitializing", { isInitializing: false });
-    };
-    const closePopup = () => {
-      popupFeatureset.value = { layerId: "", ids: [] };
-      popupXY.value = undefined;
+    const closePopupFunction = () => {
+      closePopup(popupFeatureset,popupXY)
     };
     // Setup events on the operational layers...
     let pointerMoveHandle: { remove: () => void } | undefined;
@@ -279,7 +269,7 @@ export default defineComponent({
                   const ids = results.features.map((eachFeature) => {
                     return eachFeature.getObjectId();
                   });
-                  showPopup(g.layer.id, ids);
+                  showPopup(g.layer.id, ids,popupFeatureset,popupXY);
                 });
               }
               // Deal with cluster...
@@ -323,11 +313,11 @@ export default defineComponent({
                           "EventID",
                           result?.attributes.EventID
                         )
-                        showPopup(results2Show.layer.id, [id])
+                        showPopup(results2Show.layer.id, [id],popupFeatureset,popupXY)
                       }
                     }
                     else {
-                      showPopup(results2Show.layer.id, [id]);
+                      showPopup(results2Show.layer.id, [id],popupFeatureset,popupXY);
                     }
                   });
                 }
@@ -340,10 +330,10 @@ export default defineComponent({
                       "FerryRouteID",
                       `${result?.attributes.FerryRouteID}`
                     );
-                    showPopup(g.layer.id, [id]);
+                    showPopup(g.layer.id, [id],popupFeatureset,popupXY);
                   });
                 } else {
-                  showPopup(results2Show.layer.id, [id]);
+                  showPopup(results2Show.layer.id, [id],popupFeatureset,popupXY);
                 }
                 removeGraphicsByType("selectedGraphic");
               }
@@ -357,7 +347,7 @@ export default defineComponent({
               removeGraphicsByType("selectedGraphic");
               removeGraphicsByType("myLocation"); //remove "my location" graphic
               //No feature exist...
-              closePopup();
+              closePopup(popupFeatureset,popupXY);
             }
           }
         });
@@ -490,7 +480,7 @@ export default defineComponent({
                   zoomLevel = esriMap.mapView.zoom + 4;
                 }
                 esriMap.tryZoomToPointAsync(result.geometry as Point, zoomLevel).then(() => {
-                  showPopup(result.layer.id, [result.getObjectId()]);
+                  showPopup(result.layer.id, [result.getObjectId()],popupFeatureset,popupXY);
                 });
               } else {
                 console.error(
@@ -669,7 +659,7 @@ export default defineComponent({
       adjustBottomControls,
       marginBottomContainer,
       displayToast,
-      closePopup,
+      closePopupFunction,
       store,
     };
   },
@@ -723,7 +713,7 @@ export default defineComponent({
   <RoadClosurePopup :Featureset="popupFeatureset" />
   <WildfirePointsPopup :Featureset="popupFeatureset" />
   <BorderCrossingPopup :Featureset="popupFeatureset" />
-  <RegionalAlertPopup :Featureset="popupFeatureset" @close="closePopup" />
+  <RegionalAlertPopup :Featureset="popupFeatureset" @close="closePopupFunction" />
   <FerryRoutesPopup :Featureset="popupFeatureset" :Alerts="ferryAlerts" />
   <LeftPaneView />
   <BannerView />
