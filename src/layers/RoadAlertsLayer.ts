@@ -1,10 +1,10 @@
 import uniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer"
-import { alertSymbol, alertSymbolMedium, roadClosedSymbol, alertSymbolHighest } from "@/symbols/AlertSymbol"
+import { alertSymbol, alertSymbolMedium, roadClosedSymbol, alertSymbolHighest } from "../symbols/AlertSymbol"
 import Field from "@arcgis/core/layers/support/Field"
 
-import * as layerUtil from "@/utils/layerUtil";
+import * as layerUtil from "../utils/layerUtil";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
-import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
+import LayerInfo, { LayerStatus } from "../types/LayerInfo";
 import Graphic from "@arcgis/core/Graphic";
 
 const renderer = new uniqueValueRenderer({

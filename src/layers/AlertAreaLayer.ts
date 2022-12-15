@@ -9,7 +9,7 @@ import Point from "@arcgis/core/geometry/Point";
 import Polygon from "@arcgis/core/geometry/Polygon";
 
 import * as pc from "polygon-clipping";
-import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
+import LayerInfo, { LayerStatus } from "../types/LayerInfo";
 
 // Create a symbol for rendering the graphic
 const renderer = new SimpleRenderer({

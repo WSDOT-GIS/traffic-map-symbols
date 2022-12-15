@@ -1,4 +1,4 @@
-import ForecastInfo from "@/types/ForecastInfo"
+import ForecastInfo from "../types/ForecastInfo"
 
 interface ForecastListInfo {
     forecasts:ForecastInfo[];

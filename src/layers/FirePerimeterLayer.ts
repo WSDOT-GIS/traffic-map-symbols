@@ -1,7 +1,7 @@
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
-import firePerimeterSymbol from "@/symbols/FirePerimeterSymbol"
-import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
+import firePerimeterSymbol from "../symbols/FirePerimeterSymbol"
+import LayerInfo, { LayerStatus } from "../types/LayerInfo";
 
 const firePerimeterRenderer = new simpleRenderer({
     symbol: firePerimeterSymbol

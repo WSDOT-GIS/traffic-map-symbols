@@ -1,9 +1,9 @@
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
 import simpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import Field from "@arcgis/core/layers/support/Field";
-import { alertSymbol } from "@/symbols/AlertSymbol"
-import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
-import { getFerryAlerts } from "@/utils/alertInfoUtil";
+import { alertSymbol } from "../symbols/AlertSymbol"
+import LayerInfo, { LayerStatus } from "../types/LayerInfo";
+import { getFerryAlerts } from "../utils/alertInfoUtil";
 
 const renderer = new simpleRenderer({
     symbol: alertSymbol

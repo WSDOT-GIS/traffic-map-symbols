@@ -3,9 +3,9 @@ import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import Field from "@arcgis/core/layers/support/Field";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
-import * as layerUtil from "@/utils/layerUtil";
-import symbol from "@/symbols/TravelTimeSymbol"
-import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
+import * as layerUtil from "../utils/layerUtil";
+import symbol from "../symbols/TravelTimeSymbol"
+import LayerInfo, { LayerStatus } from "../types/LayerInfo";
 
 const renderer = new SimpleRenderer({
     symbol: symbol

@@ -1,5 +1,5 @@
 import Point from "@arcgis/core/geometry/Point";
-import { useStore } from "@/store";
+import { useStore } from "../store";
 const store = useStore();
 export const showPopup = (layerId: string, ids: number[], popupFeatureset:any, popupXY:any, pt?: Point) => {
     popupFeatureset.value = { layerId: layerId, ids: ids };

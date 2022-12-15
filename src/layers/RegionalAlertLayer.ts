@@ -7,10 +7,10 @@ import Extent from "@arcgis/core/geometry/Extent";
 import Point from "@arcgis/core/geometry/Point";
 import Polygon from "@arcgis/core/geometry/Polygon";
 
-import symbol from "@/symbols/RegionalAlertSymbol";
+import symbol from "../symbols/RegionalAlertSymbol";
 import AlertAreaLayer, { getVisibleCenter, getFeatureById as getAreaById, layerId as areaLayerId } from "./AlertAreaLayer";
-import { initLayer as initAreaLayer } from "@/layers/AlertAreaLayer";
-import LayerInfo, { LayerStatus } from "@/types/LayerInfo";
+import { initLayer as initAreaLayer } from "../layers/AlertAreaLayer";
+import LayerInfo, { LayerStatus } from "../types/LayerInfo";
 
 
 // Create a symbol for rendering the graphic

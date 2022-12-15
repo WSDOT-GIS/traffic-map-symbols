@@ -1,4 +1,4 @@
-import IconInfo from "@/types/IconInfo"
+import IconInfo from "../types/IconInfo"
 /* eslint-disable no-useless-escape */
 
 /** Defines icons for layer list */

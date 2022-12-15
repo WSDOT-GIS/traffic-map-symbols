@@ -1,5 +1,5 @@
 import FeatureReductionCluster from "@arcgis/core/layers/support/FeatureReductionCluster";
-import clusterSymbol from "@/symbols/CameraClusterSymbol";
+import clusterSymbol from "../symbols/CameraClusterSymbol";
 import Graphic from "@arcgis/core/Graphic";
 // import Layer from "@arcgis/core/layers/Layer";
 // import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
