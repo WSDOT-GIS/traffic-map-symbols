@@ -91,6 +91,15 @@ The following command will run [dotnet-serve] with the settings defined in `.net
 dotnet serve
 ```
 
+## Visual Studio Code Tasks
+
+1. Press either **F1** or **Ctrl + Shift + P** to bring up command pallette.
+2. Start typing *Tasks: Run Task* until you see it in the drop down, then select it.
+
+You should now see a list of tasks you can run as shown below.
+
+![Screen recording of running tasks](VSCodeTasks.gif)
+
 ## Additional documentation
 
 * [Packages](./packages.md)
