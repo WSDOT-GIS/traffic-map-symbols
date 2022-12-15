@@ -13,7 +13,8 @@
     "lint": "vue-cli-service lint --no-fix",
     "lint:html": "vue-cli-service lint --no-fix --format html > dist/lint-results.html",
     "spell-ci": "cspell lint **/* --fail-fast --no-progress --no-summary",
-    "tsc:symbols": "tsc --project symbols.tsconfig"
+    "tsc:symbols": "tsc --project symbols.tsconfig",
+    "optimize-svg": "pwsh .\\tools\\Optimize-SVG.ps1"
   },
   "dependencies": {
     "@arcgis/core": "~4.23.7",
@@ -45,6 +46,7 @@
     "lighthouse": "^9.6.7",
     "polygon-clipping": "^0.15.3",
     "source-map": "^0.7.4",
+    "svgo": "^3.0.2",
     "ts-node": "^10.9.1",
     "typedoc": "^0.23.16",
     "typedoc-plugin-coverage": "^2.0.0",
