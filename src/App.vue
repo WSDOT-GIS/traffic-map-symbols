@@ -3,7 +3,7 @@ import { defineComponent, onBeforeUnmount, onUpdated, ref } from "vue";
 // import EsriMapView from "./components/EsriMapView.vue";
 import HeaderView from "./components/HeaderView.vue";
 import FooterView from "./components/FooterView.vue";
-import { useStore } from "@/store";
+import { useStore } from "./store";
 import { mapState } from "vuex";
 import SetupModal from "./components/SetupModal.vue";
 import { getConfig } from "./utils/appConfigUtil";
