@@ -1,9 +1,9 @@
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from "vue";
-import { useStore } from "@/store";
+import { useStore } from "../store";
 import LayerListView from "./LayerListView.vue";
 import SavedMapView from "./SavedMapView.vue";
-// import { isMobile } from "@/utils/mediaUtil";
+// import { isMobile } from "../utils/mediaUtil";
 
 export default defineComponent({
   components: { LayerListView, SavedMapView },

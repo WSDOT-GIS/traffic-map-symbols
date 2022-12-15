@@ -10,7 +10,7 @@
 <script lang="ts">
 import { computed, defineComponent } from "vue";
 import { mapState } from "vuex";
-import { useStore } from "@/store";
+import { useStore } from "../store";
 
 export default defineComponent({
   computed: mapState(["pointerX", "pointerY"]),

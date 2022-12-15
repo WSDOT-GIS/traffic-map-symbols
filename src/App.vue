@@ -5,8 +5,8 @@ import HeaderView from "./components/HeaderView.vue";
 import FooterView from "./components/FooterView.vue";
 import { useStore } from "@/store";
 import { mapState } from "vuex";
-import SetupModal from "@/components/SetupModal.vue";
-import { getConfig } from "@/utils/appConfigUtil";
+import SetupModal from "./components/SetupModal.vue";
+import { getConfig } from "./utils/appConfigUtil";
 
 export default defineComponent({
   name: "App",

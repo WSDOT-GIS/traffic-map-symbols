@@ -36,8 +36,8 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { mapView } from "../esri-stuff/esriMap";
-import { useStore } from "@/store";
-import MapButtonView from "@/components/MapButtonView.vue";
+import { useStore } from "../store";
+import MapButtonView from "../components/MapButtonView.vue";
 import {
   addGraphicsByType,
   removeGraphicsByType,

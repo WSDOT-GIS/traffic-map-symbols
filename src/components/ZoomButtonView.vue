@@ -14,8 +14,8 @@
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
-import { mapView } from "@/esri-stuff/esriMap";
-import MapButtonView from "@/components/MapButtonView.vue";
+import { mapView } from "../esri-stuff/esriMap";
+import MapButtonView from "../components/MapButtonView.vue";
 
 export default defineComponent({
   components: { MapButtonView },

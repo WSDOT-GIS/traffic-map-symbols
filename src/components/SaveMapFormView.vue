@@ -30,7 +30,7 @@
 <script lang="ts">
 import { defineComponent, ref, toRefs, watch } from "vue";
 
-import ModalView from "@/components/ModalView.vue";
+import ModalView from "../components/ModalView.vue";
 
 export default defineComponent({
   components: { ModalView },
