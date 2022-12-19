@@ -1,11 +1,9 @@
-
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12Z" fill="#96359F"/>
-      <path d="M22.4167 11.8231C22.4167 17.4859 17.7565 22.0828 12 22.0828C6.24354 22.0828 1.58334 17.4859 1.58334 11.8231C1.58334 6.16036 6.24354 1.56348 12 1.56348C17.7565 1.56348 22.4167 6.16036 22.4167 11.8231Z" fill="#96359F" stroke="white" stroke-width="0.5"/>
-      <line x1="8.5" y1="4.00015" x2="8.5" y2="19.0002" stroke="white"/>
-      <line x1="10.8" y1="4.3" x2="10.8" y2="18.7" stroke="white" stroke-width="0.6" stroke-linecap="round" stroke-dasharray="3 3"/>
-      <line x1="13.5" y1="4" x2="13.5" y2="19" stroke="white"/>
-      <circle cx="15.5" cy="12.3333" r="2.93333" fill="#96359F" stroke="white" stroke-width="0.8"/>
-      <path d="M15.5006 10.6667V12.3772L16.6673 13.3333" stroke="white" stroke-width="0.8" stroke-linecap="round"/>
-      </svg>
-      
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
+    <path fill="#96359F" d="M24 12c0 6.627-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0s12 5.373 12 12Z"/>
+    <path fill="#96359F" stroke="#fff" stroke-width=".5" d="M22.417 11.823c0 5.663-4.66 10.26-10.417 10.26-5.756 0-10.417-4.597-10.417-10.26 0-5.663 4.66-10.26 10.417-10.26 5.756 0 10.417 4.597 10.417 10.26Z"/>
+    <path stroke="#fff" d="M8.5 4v15"/>
+    <path stroke="#fff" stroke-dasharray="3 3" stroke-linecap="round" stroke-width=".6" d="M10.8 4.3v14.4"/>
+    <path stroke="#fff" d="M13.5 4v15"/>
+    <circle cx="15.5" cy="12.333" r="2.933" fill="#96359F" stroke="#fff" stroke-width=".8"/>
+    <path stroke="#fff" stroke-linecap="round" stroke-width=".8" d="M15.5 10.667v1.71l1.167.956"/>
+</svg>
