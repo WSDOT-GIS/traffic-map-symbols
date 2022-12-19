@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-escape */
 
-interface IconInfo {
+export interface IconInfo {
   id: string,
   paths: `${string | ""}<svg${string}</svg>${string | ""}`
 }
@@ -376,3 +376,5 @@ const otherIcons: IconInfo[] = [
   }
 ]
 export { layerListIcons, otherIcons }
+
+export default { layerListIcons, otherIcons }

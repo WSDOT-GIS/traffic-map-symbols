@@ -10,8 +10,7 @@
 import { writeFile, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import IconDefinitions from "../src/symbols/IconDefinitions.js";
-import type { IconInfo } from "../src/types/IconInfo.js";
+import { layerListIcons, otherIcons, IconInfo } from "../src/symbols/IconDefinitions.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -32,9 +31,6 @@ function process(folder: string, iconDef: IconInfo) {
     promises.push(writePromise);
 }
 
-const { layerListIcons, otherIcons } = IconDefinitions;
-
-
 // Mapping of IconInfo arrays to folder names.
 const iconSets = new Map([
     ["layerList", layerListIcons],
@@ -47,7 +43,7 @@ const promises: ReturnType<typeof writeFile>[] = [];
 for (const [folderName, iconInfos] of iconSets) {
     const folderPath = join(svgDir, folderName);
     // Make the folder if it doesn't already exist.
-    await mkdir(folderPath, {recursive: true});
+    await mkdir(folderPath, { recursive: true });
     for (const iconInfo of iconInfos) {
         process(folderPath, iconInfo)
     }
