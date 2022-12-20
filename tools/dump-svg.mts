@@ -10,7 +10,7 @@
 import { writeFile, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { layerListIcons, otherIcons, IconInfo } from "../src/symbols/IconDefinitions.js";
+import { layerListIcons, otherIcons, type IconInfo } from "../src/symbols/IconDefinitions.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
