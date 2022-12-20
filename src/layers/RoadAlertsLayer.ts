@@ -1,0 +1,148 @@
+import uniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer"
+import { alertSymbol, alertSymbolMedium, roadClosedSymbol, alertSymbolHighest } from "../symbols/AlertSymbol"
+import Field from "@arcgis/core/layers/support/Field"
+
+import * as layerUtil from "../utils/layerUtil";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer"
+import LayerInfo, { LayerStatus } from "../types/LayerInfo";
+import Graphic from "@arcgis/core/Graphic";
+
+const renderer = new uniqueValueRenderer({
+    field: "TravelCenterPriorityId",
+    uniqueValueInfos: [
+        {
+            label: "CLOSURE",
+            value: 1,
+            symbol: roadClosedSymbol
+        },
+        {
+            label: "HIGH IMPACT",
+            value: 2,
+            symbol: alertSymbolHighest
+        },
+        {
+            label: "MODERATE IMPACT",
+            value: 3,
+            symbol: alertSymbolMedium
+        },
+        {
+            label: "LOW IMPACT",
+            value: 4,
+            symbol: alertSymbol
+        }
+    ]
+})
+
+const fields = [
+    /*new Field({
+        name: "AppGenId",
+        alias: "AppGenId",
+        type: "oid"
+    }),*/
+    /*new Field({
+        name: "EventID", type: "integer", alias: "EventID"
+    }),
+    new Field({ name: "EventCategoryDescription", type: "string", alias: "EventCategoryDescription", length: 400 }),
+    new Field({ name: "EventCategoryTypeDescription", type: "string", alias: "EventCategoryTypeDescription", length: 400 }),
+    new Field({ name: "EventCategoryID", type: "integer", alias: "EventCategoryID" }),
+    new Field({ name: "CriticalEventIndicator", type: "small-integer", alias: "CriticalEventIndicator" }),
+    new Field({ name: "LastModifiedDate", type: "date", alias: "LastModifiedDate" }),
+    new Field({ name: "IconName", type: "string", alias: "IconName", length: 20 }),
+    new Field({ name: "EventPriorityID", type: "integer", alias: "EventPriorityID" }),
+    new Field({ name: "EventPriorityDescription", type: "string", alias: "EventPriorityDescription", length: 150 }),
+    new Field({ name: "Road", type: "string", alias: "Road", length: 50 }),
+    new Field({ name: "RoadDirection", type: "string", alias: "RoadDirection", length: 15 }),
+    new Field({ name: "RoadType", type: "string", alias: "RoadType", length: 1 }),
+    new Field({ name: "Latitude", type: "double", alias: "Latitude" }),
+    new Field({ name: "Longitude", type: "double", alias: "Longitude" }),
+    new Field({ name: "DisplayOrder", type: "integer", alias: "DisplayOrder" }),
+    new Field({ name: "HeadlineMessage", type: "string", alias: "HeadlineMessage", length: 8000 }),
+    new Field({ name: "ExtendedMessage", type: "string", alias: "ExtendedMessage", length: 5000 }),
+    new Field({ name: "LocationName", type: "string", alias: "LocationName", length: 20 }),
+    new Field({ name: "StartSRMP", type: "single", alias: "StartSRMP" }),
+    new Field({ name: "EndSRMP", type: "single", alias: "EndSRMP" }),
+    new Field({ name: "RecurringEvent", type: "integer", alias: "RecurringEvent" }),
+    new Field({
+        name: "StartTime", type: "date", alias: "StartTime", length: 8
+    }),
+    new Field({
+        name: "EndTime", type: "date", alias: "EndTime", length: 8
+    }),
+    new Field({ name: "SourceSystemID", type: "integer", alias: "SourceSystemID" }),
+    new Field({ name: "SourceSystemEventID", type: "string", alias: "SourceSystemEventID", length: 50 }),
+    new Field({ name: "TMSOverlap", type: "integer", alias: "TMSOverlap" }),
+    new Field({ name: "RegionID", type: "small-integer", alias: "RegionID" }),
+    new Field({ name: "TravelCenterPriorityId", type: "small-integer", alias: "TravelCenterPriorityId" }),
+    new Field({ name: "lineMarker", type: "string", alias: "lineMarker"})*/
+
+        /*new Field({ name: "AppGenId",alias: "AppGenId",type: "oid"}),*/
+    new Field({ name: "EventID", type: "integer", alias: "EventID"}),
+    new Field({ name: "EventCategoryDescription", type: "string", alias: "EventCategoryDescription", length: 400 }),
+    new Field({ name: "TravelCenterPriorityId", type: "small-integer", alias: "TravelCenterPriorityId" }),
+    new Field({ name: "EventCategoryTypeDescription", type: "string", alias: "EventCategoryTypeDescription", length: 400 }),
+    new Field({ name: "EventPriorityID", type: "integer", alias: "EventPriorityID" }),
+    new Field({ name: "Road", type: "string", alias: "Road", length: 50 }),
+    new Field({ name: "RoadDirection", type: "string", alias: "RoadDirection", length: 15 }),
+    new Field({ name: "HeadlineMessage", type: "string", alias: "HeadlineMessage", length: 8000 }),
+    new Field({ name: "LastModifiedDate", type: "date", alias: "LastModifiedDate" }),
+    new Field({ name: "lineMarker", type: "string", alias: "lineMarker"})
+
+]
+
+export const layerId = "road-alerts-layer";
+const layerTitle = "Road Alerts";
+
+let layer: FeatureLayer | undefined;
+
+/**
+ * Initialize a layer
+ * 
+ * @param jsonUrl  - JSON URL
+ * @returns LayerInfo
+ */
+export const initLayer = async (jsonUrl: string): Promise<LayerInfo> => {
+    const layerInfo = new LayerInfo(layerId, layerTitle, jsonUrl);
+    let graphics: Graphic[];
+
+    try {
+        graphics = await layerUtil.fetchJsonData(jsonUrl);
+        layerInfo.status = LayerStatus.Loaded;
+    } catch (ex) {
+        console.error(ex);
+        graphics = [];
+        layerInfo.status = LayerStatus.Failed;
+    }
+
+    try {
+        layer = await layerUtil.initLayer(layerId, layerTitle, renderer, fields, "point", true, graphics);
+        layer.orderBy = [{
+            field: "TravelCenterPriorityId",
+            order: "ascending"
+        }]
+    }
+    catch (ex) {
+        console.error(ex);
+        layerInfo.status = LayerStatus.Failed;
+    }
+    return layerInfo;
+}
+//**This happens here instead of in the layerutils because of the source distinction. TODO: fix this**
+//** TODO: This is fixed now? */
+// const setLayerEvent = (layer: FeatureLayer, jsonUrl: string): void => {
+//     layer.watch("visible", (newValue) => {
+//         if (newValue) {
+//             reloadData(jsonUrl);
+//         }
+//     });
+// }
+/**
+ *
+ */
+const getLayer = (): FeatureLayer | undefined => {
+    if (!layer) {
+        console.error("Road Alerts layer is not ready yet!");
+    }
+    return layer;
+}
+
+export default getLayer;
