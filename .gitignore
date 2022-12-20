@@ -214,3 +214,5 @@ lhreport.*
 
 # Exclude generated configs
 newConfigs
+.mailmap
+Process-Emails.ps1
