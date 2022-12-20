@@ -28,7 +28,7 @@ import TruckRestrictionSymbol from "./CIM/TruckRestrictionSymbol.js"
 import WeatherAlertSymbol from "./CIM/WeatherAlertSymbol.js"
 import WeatherStationSymbol from "./CIM/WeatherStationSymbol.js"
 
-export type CimSymbol = 
+export type CimSymbolDefinition = 
     typeof alertSymbol |
     typeof alertSymbolHigh |
     typeof alertSymbolHighest |
@@ -82,7 +82,7 @@ export {
     WeatherStationSymbol,
 }
 
-export const symbolMap = new Map<string, CimSymbol>([
+export const symbolMap = new Map<string, CimSymbolDefinition>([
     ["alertSymbol", alertSymbol],
     ["alertSymbolHigh", alertSymbolHigh],
     ["alertSymbolHighest", alertSymbolHighest],

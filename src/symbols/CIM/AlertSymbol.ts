@@ -1320,3 +1320,4 @@ const roadClosedSymbol = {
   },
 };
 export { alertSymbol, alertSymbolMedium, alertSymbolHigh, alertSymbolHighest, roadClosedSymbol };
+export default { alertSymbol, alertSymbolMedium, alertSymbolHigh, alertSymbolHighest, roadClosedSymbol };
