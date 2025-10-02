@@ -1,16 +1,17 @@
 {
   "name": "traveler-info-symbols",
-  "private": "true",
+  "private": true,
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "scripts": {
-    
-  },
+  "scripts": {},
   "author": "Jeff Jacobson",
   "license": "Unlicense",
   "devDependencies": {
-    "svgo": "^3.0.2",
-    "typescript": "^4.9.3"
+    "@types/bun": "latest",
+    "oxlint": "^1.19.0",
+    "oxlint-tsgolint": "^0.2.0",
+    "svgo": "^4.0.0",
+    "typescript": "^5.9.3"
   }
 }
