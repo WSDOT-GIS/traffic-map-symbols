@@ -4,7 +4,9 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "scripts": {},
+  "scripts": {
+    "lint": "oxlint --type-aware"
+  },
   "author": "Jeff Jacobson",
   "license": "Unlicense",
   "devDependencies": {
