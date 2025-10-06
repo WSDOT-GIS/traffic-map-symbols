@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<metadata xml:lang="en">
+    <Esri>
+        <CreaDate>20251006</CreaDate>
+        <CreaTime>13400100</CreaTime>
+        <ArcGISFormat>1.0</ArcGISFormat>
+        <SyncOnce>TRUE</SyncOnce>
+        <scaleRange>
+            <minScale>5000000</minScale>
+            <maxScale>5000</maxScale>
+        </scaleRange>
+        <ArcGISProfile>ISO19139</ArcGISProfile>
+    </Esri>
+    <dataIdInfo>
+        <idPurp>Defines styles for use with the WSDOT Travel Center Map</idPurp>
+        <idAbs>Defines styles for use with the WSDOT Travel Center Map</idAbs>
+        <idCredit>Washington State Department of Transportation</idCredit>
+        <idCitation>
+            <resTitle>WSDOT Travel Center Map styles</resTitle>
+        </idCitation>
+        <searchKeys>
+            <keyword>WSDOT</keyword>
+            <keyword>travel</keyword>
+            <keyword>information</keyword>
+            <keyword>center</keyword>
+            <keyword>transportation</keyword>
+        </searchKeys>
+    </dataIdInfo>
+    <mdHrLv>
+        <ScopeCd value="005" />
+    </mdHrLv>
+    <mdDateSt Sync="TRUE">20251006</mdDateSt>
+</metadata>

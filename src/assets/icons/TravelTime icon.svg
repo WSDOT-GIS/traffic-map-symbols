@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
-    <path fill="#FF6A13" d="M24 12c0 6.627-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0s12 5.373 12 12Z" style="fill:#b665d9;fill-opacity:1"/>
-    <path fill="#FF6A13" stroke="#fff" stroke-width=".5" d="M22.417 11.832c0 5.667-4.66 10.267-10.417 10.267-5.756 0-10.417-4.6-10.417-10.267S6.243 1.565 12 1.565c5.756 0 10.417 4.6 10.417 10.267Z" style="fill:#b665d9;fill-opacity:1"/>
-    <g transform="translate(-34.71 9.65) scale(1.35094)">
-        <circle cx="34.576" cy="1.627" r="6.045" style="fill:none;fill-opacity:1;stroke:#fff;stroke-width:1.52900004;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
-        <circle cx="34.576" cy="1.627" r=".325" style="fill:#fff;fill-opacity:1;stroke:#fff;stroke-width:1.09734523;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
-        <path d="M34.576 1.533v-4.53m.125 4.874 2.172 2.172" style="fill:none;stroke:#fff;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
-    </g>
-</svg>

@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
-    <path fill="#E885B4" d="M24 12c0 6.627-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0s12 5.373 12 12Z"/>
-    <path fill="#E885B4" stroke="#fff" stroke-width=".5" d="M22.417 11.823c0 5.663-4.66 10.26-10.417 10.26-5.756 0-10.417-4.597-10.417-10.26 0-5.662 4.66-10.26 10.417-10.26 5.756 0 10.417 4.598 10.417 10.26Z"/>
-    <path stroke="#fff" stroke-dasharray="5 5" stroke-linecap="square" stroke-width=".8" d="M3.4 11.159h17.303"/>
-    <path fill="#fff" fill-rule="evenodd" d="M16.404 4.1a.2.2 0 0 1 .347 0l2.453 4.25a.2.2 0 0 1-.173.3h-1.807v7.881a.2.2 0 0 1-.2.2h-.893a.2.2 0 0 1-.2-.2V8.649h-1.807a.2.2 0 0 1-.173-.3L16.404 4.1ZM7.08 7.68a.2.2 0 0 0-.2.2v6.588H5.074a.2.2 0 0 0-.174.3l2.454 4.25a.2.2 0 0 0 .346 0l2.453-4.25a.2.2 0 0 0-.173-.3H8.173V7.879a.2.2 0 0 0-.2-.2H7.08Z" clip-rule="evenodd"/>
-    <circle cx="12.052" cy="11.559" r="2.586" fill="#fff"/>
-    <path stroke="#E885B4" stroke-linecap="square" stroke-linejoin="round" stroke-width=".5" d="m10.76 12.146 1.122.706 1.464-2.587"/>
-</svg>

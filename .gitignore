@@ -200,19 +200,21 @@ $RECYCLE.BIN/
 # Custom rules (everything added below won't be overriden by 'Generate .gitignore File' if you use 'Update' option)
 
 .cspellcache
-src/symbols/*.d.ts
-src/types/*.d.ts
-**/*.js.map
-*.d.ts.map
-**/src/**/*.js
-**/docs
-!**/docs/coverage.svg
-
-# Exclude lighthouse reports
-**/*.report.html
-lhreport.*
 
 # Exclude generated configs
-newConfigs
 .mailmap
 Process-Emails.ps1
+
+# ArcGIS Pro
+
+**/.backups
+**/Index
+
+# Currently we don't need to save the default geodatabase or ArcGIS Pro project file,
+# but that could possibly change in the future, in which case we would remove these
+# items.
+*.geodatabase
+*.aprx
+*.*-conch
+*.*-shm
+*.*-wal
