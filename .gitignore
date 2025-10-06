@@ -215,4 +215,6 @@ Process-Emails.ps1
 # items.
 *.geodatabase
 *.aprx
-
+*.*-conch
+*.*-shm
+*.*-wal
