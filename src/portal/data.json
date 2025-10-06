@@ -1,0 +1,345 @@
+{
+    "items": [
+        {
+            "name": "border-crossing",
+            "title": "Border Crossing",
+            "itemType": "pointSymbol",
+            "dimensionality": "flat",
+            "category": "WSDOT Traveler Info",
+            "tags": [
+                "rgb",
+                "pink"
+            ],
+            "formats": [
+                "web2d",
+                "cim"
+            ],
+            "cimRef": "./resources/styles/cim/border-crossing.json",
+            "thumbnail": {
+                "href": "./resources/styles/thumbnails/border-crossing.png"
+            }
+        },
+        {
+            "name": "Mountain Pass Report",
+            "title": "Mountain Pass Report",
+            "itemType": "pointSymbol",
+            "dimensionality": "flat",
+            "category": "WSDOT Traveler Info",
+            "tags": [
+                "pin",
+                "mountain"
+            ],
+            "formats": [
+                "web2d",
+                "cim"
+            ],
+            "cimRef": "./resources/styles/cim/Mountain Pass Report.json",
+            "thumbnail": {
+                "href": "./resources/styles/thumbnails/Mountain Pass Report.png"
+            }
+        },
+        {
+            "name": "Truck Restriction",
+            "title": "Truck Restriction",
+            "itemType": "pointSymbol",
+            "dimensionality": "flat",
+            "category": "WSDOT Traveler Info",
+            "tags": [
+                "truck,vehicle,restriction"
+            ],
+            "formats": [
+                "web2d",
+                "cim"
+            ],
+            "cimRef": "./resources/styles/cim/Truck Restriction.json",
+            "thumbnail": {
+                "href": "./resources/styles/thumbnails/Truck Restriction.png"
+            }
+        },
+        {
+            "name": "Weather Station",
+            "title": "Weather Station",
+            "itemType": "pointSymbol",
+            "dimensionality": "flat",
+            "category": "WSDOT Traveler Info",
+            "tags": [
+                "rgb",
+                "blue",
+                "weather",
+                "station"
+            ],
+            "formats": [
+                "web2d",
+                "cim"
+            ],
+            "cimRef": "./resources/styles/cim/Weather Station.json",
+            "thumbnail": {
+                "href": "./resources/styles/thumbnails/Weather Station.png"
+            }
+        },
+        {
+            "name": "Camera",
+            "title": "Camera",
+            "itemType": "pointSymbol",
+            "dimensionality": "flat",
+            "category": "WSDOT Traveler Info",
+            "tags": [
+                "rgb",
+                "blue",
+                "camera"
+            ],
+            "formats": [
+                "web2d",
+                "cim"
+            ],
+            "cimRef": "./resources/styles/cim/Camera.json",
+            "thumbnail": {
+                "href": "./resources/styles/thumbnails/Camera.png"
+            }
+        },
+        {
+            "name": "Road Alert 4",
+            "title": "Road Alert 4 (Low)",
+            "itemType": "pointSymbol",
+            "dimensionality": "flat",
+            "category": "WSDOT Traveler Info",
+            "tags": [
+                "rgb",
+                "orange",
+                "low",
+                "4"
+            ],
+            "formats": [
+                "web2d",
+                "cim"
+            ],
+            "cimRef": "./resources/styles/cim/Road Alert 4.json",
+            "thumbnail": {
+                "href": "./resources/styles/thumbnails/Road Alert 4.png"
+            }
+        },
+        {
+            "name": "Road Alert 1",
+            "title": "Road Alert 1 (Closure)",
+            "itemType": "pointSymbol",
+            "dimensionality": "flat",
+            "category": "WSDOT Traveler Info",
+            "tags": [
+                "rgb",
+                "gray",
+                "closure",
+                "1"
+            ],
+            "formats": [
+                "web2d",
+                "cim"
+            ],
+            "cimRef": "./resources/styles/cim/Road Alert 1.json",
+            "thumbnail": {
+                "href": "./resources/styles/thumbnails/Road Alert 1.png"
+            }
+        },
+        {
+            "name": "Road Alert 2",
+            "title": "Road Alert 2 (High)",
+            "itemType": "pointSymbol",
+            "dimensionality": "flat",
+            "category": "WSDOT Traveler Info",
+            "tags": [
+                "rgb",
+                "red",
+                "high",
+                "2"
+            ],
+            "formats": [
+                "web2d",
+                "cim"
+            ],
+            "cimRef": "./resources/styles/cim/Road Alert 2.json",
+            "thumbnail": {
+                "href": "./resources/styles/thumbnails/Road Alert 2.png"
+            }
+        },
+        {
+            "name": "Road Alert 3",
+            "title": "Road Alert 3 (Medium)",
+            "itemType": "pointSymbol",
+            "dimensionality": "flat",
+            "category": "WSDOT Traveler Info",
+            "tags": [
+                "rgb",
+                "orange",
+                "medium",
+                "3"
+            ],
+            "formats": [
+                "web2d",
+                "cim"
+            ],
+            "cimRef": "./resources/styles/cim/Road Alert 3.json",
+            "thumbnail": {
+                "href": "./resources/styles/thumbnails/Road Alert 3.png"
+            }
+        },
+        {
+            "name": "Express Lane Marker",
+            "title": "Express Lane",
+            "itemType": "pointSymbol",
+            "dimensionality": "flat",
+            "category": "WSDOT Traveler Info",
+            "tags": [
+                "rgb",
+                "black",
+                "express",
+                "lane"
+            ],
+            "formats": [
+                "web2d",
+                "cim"
+            ],
+            "cimRef": "./resources/styles/cim/Express Lane Marker.json",
+            "thumbnail": {
+                "href": "./resources/styles/thumbnails/Express Lane Marker.png"
+            }
+        },
+        {
+            "name": "Express Lane - Northbound_1",
+            "title": "Express Lane - Northbound",
+            "itemType": "lineSymbol",
+            "dimensionality": "flat",
+            "category": "WSDOT Traveler Info",
+            "tags": [
+                "multilayer",
+                "along",
+                "express",
+                "lane",
+                "northbound",
+                "north",
+                "line"
+            ],
+            "formats": [
+                "web2d",
+                "cim"
+            ],
+            "cimRef": "./resources/styles/cim/Express Lane - Northbound_1.json",
+            "thumbnail": {
+                "href": "./resources/styles/thumbnails/Express Lane - Northbound_1.png"
+            }
+        },
+        {
+            "name": "Express Lane - Southbound_1",
+            "title": "Express Lane - Southbound",
+            "itemType": "lineSymbol",
+            "dimensionality": "flat",
+            "category": "WSDOT Traveler Info",
+            "tags": [
+                "multilayer",
+                "along",
+                "express",
+                "lane",
+                "southbound",
+                "south",
+                "line"
+            ],
+            "formats": [
+                "web2d",
+                "cim"
+            ],
+            "cimRef": "./resources/styles/cim/Express Lane - Southbound_1.json",
+            "thumbnail": {
+                "href": "./resources/styles/thumbnails/Express Lane - Southbound_1.png"
+            }
+        },
+        {
+            "name": "Road Alert 1 (Closure)",
+            "title": "Road Alert 1 (Closure)",
+            "itemType": "lineSymbol",
+            "dimensionality": "flat",
+            "category": "WSDOT Traveler Info",
+            "tags": [
+                "rgb",
+                "gray",
+                "multilayer",
+                "closure",
+                "1"
+            ],
+            "formats": [
+                "web2d",
+                "cim"
+            ],
+            "cimRef": "./resources/styles/cim/Road Alert 1 (Closure).json",
+            "thumbnail": {
+                "href": "./resources/styles/thumbnails/Road Alert 1 (Closure).png"
+            }
+        },
+        {
+            "name": "Road Alert 2 (High)",
+            "title": "Road Alert 2 (High)",
+            "itemType": "lineSymbol",
+            "dimensionality": "flat",
+            "category": "WSDOT Traveler Info",
+            "tags": [
+                "rgb",
+                "red",
+                "multilayer",
+                "high",
+                "2",
+                "alert"
+            ],
+            "formats": [
+                "web2d",
+                "cim"
+            ],
+            "cimRef": "./resources/styles/cim/Road Alert 2 (High).json",
+            "thumbnail": {
+                "href": "./resources/styles/thumbnails/Road Alert 2 (High).png"
+            }
+        },
+        {
+            "name": "Road Alert Medium",
+            "title": "Road Alert Medium",
+            "itemType": "lineSymbol",
+            "dimensionality": "flat",
+            "category": "WSDOT Traveler Info",
+            "tags": [
+                "rgb",
+                "orange",
+                "multilayer",
+                "medium",
+                "alert"
+            ],
+            "formats": [
+                "web2d",
+                "cim"
+            ],
+            "cimRef": "./resources/styles/cim/Road Alert Medium.json",
+            "thumbnail": {
+                "href": "./resources/styles/thumbnails/Road Alert Medium.png"
+            }
+        },
+        {
+            "name": "Road Alert 4 (Low)",
+            "title": "Road Alert 4 (Low)",
+            "itemType": "lineSymbol",
+            "dimensionality": "flat",
+            "category": "WSDOT Traveler Info",
+            "tags": [
+                "rgb",
+                "orange",
+                "multilayer",
+                "low",
+                "4",
+                "alert"
+            ],
+            "formats": [
+                "web2d",
+                "cim"
+            ],
+            "cimRef": "./resources/styles/cim/Road Alert 4 (Low).json",
+            "thumbnail": {
+                "href": "./resources/styles/thumbnails/Road Alert 4 (Low).png"
+            }
+        }
+    ],
+    "cimVersion": "3.5.0"
+}
