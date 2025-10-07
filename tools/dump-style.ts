@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 
 import { join as joinPath } from "node:path";
-import { Database } from "bun:sqlite";
+import { Database, type SQLQueryBindings } from "bun:sqlite";
 
 const dbPath = joinPath(import.meta.dir, "../travel-info.stylx");
 
@@ -143,11 +143,11 @@ class StyleItem implements StyleItemRow {
 /**
  * Retrieves an array of StyleItem objects from an ArcGIS Style (.stylx) file, which is a SQLite database.
  * @param stylxPath The path to the ".stylx" file.
- * @returns An array of StyleItem objects.
+ * @yields {@link StyleItem}.
  */
-function getStyleItems(stylxPath: string) {
-	let styleItems: StyleItem[];
-
+function* getStyleItems(
+	stylxPath: string,
+): Generator<StyleItem, void, unknown> {
 	{
 		using db = new Database(stylxPath);
 		const queryStatement = `
@@ -163,14 +163,14 @@ SELECT
 JOIN CLASSES c ON c.ID = CLASS
 ORDER BY CLASS`;
 
-		const query = db.query(queryStatement).as(StyleItem);
-		styleItems = query.all();
+		const query = db.query<StyleItemRow, SQLQueryBindings>(queryStatement);
+		for (const row of query) {
+			yield new StyleItem(row);
+		}
 	}
-
-	return styleItems;
 }
 
-const styleItems = getStyleItems(dbPath);
+const styleItems = [...getStyleItems(dbPath)];
 
 console.table(
 	styleItems.map((obj) => {
