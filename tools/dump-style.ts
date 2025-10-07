@@ -1,9 +1,13 @@
 #!/usr/bin/env bun
 
-import { join as joinPath } from "node:path";
+import { file, stdout } from "bun";
+import { join as joinPath, dirname } from "node:path";
+import { mkdir } from "node:fs/promises";
 import { Database, type SQLQueryBindings } from "bun:sqlite";
 
-const dbPath = joinPath(import.meta.dir, "../travel-info.stylx");
+const rootPath = dirname(import.meta.dir);
+
+const dbPath = joinPath(rootPath, "travel-info.stylx");
 
 /**
  * | ID | Name                     |
@@ -179,5 +183,27 @@ const groupedStyleItems = Object.groupBy(
 	({ className }) => className,
 );
 
-// Dump output to console.
-console.log(JSON.stringify(groupedStyleItems, undefined, "\t"));
+const outDir = joinPath(rootPath, "src", "CIM");
+
+const filePromises: Promise<string>[] = [];
+
+for (const [groupName, styles] of Object.entries(groupedStyleItems)) {
+	const groupDir = joinPath(outDir, groupName);
+	await mkdir(groupDir, { recursive: true });
+
+	const writeCimFile = async ({ key, cim }: StyleItem): Promise<string> => {
+		const cimPath = joinPath(groupDir, `${key}.json`);
+		const f = file(cimPath);
+		const lines = await f.write(JSON.stringify(cim, undefined, "\t"));
+		stdout.write(`Wrote ${lines} bytes to ${cimPath}\n`);
+		return cimPath;
+	};
+	const styleFiles = styles.map(writeCimFile);
+
+	filePromises.push(...styleFiles);
+}
+
+await Promise.all(filePromises);
+
+// // Dump output to console.
+// console.log(JSON.stringify(groupedStyleItems, undefined, "\t"));
