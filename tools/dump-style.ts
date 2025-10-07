@@ -192,9 +192,27 @@ for (const [groupName, styles] of Object.entries(groupedStyleItems)) {
 	await mkdir(groupDir, { recursive: true });
 
 	const writeCimFile = async ({ key, cim }: StyleItem): Promise<string> => {
+		let cimJson = JSON.stringify(cim, undefined, "\t");
+		try {
+			const { default: CIMSymbol } = await import(
+				"@arcgis/core/symbols/CIMSymbol.js"
+			);
+			const symbol = new CIMSymbol({
+				data: {
+					type: "CIMSymbolReference",
+					symbol: cim as unknown as
+						| __esri.CIMPointSymbol
+						| __esri.CIMLineSymbol,
+				},
+			});
+			cimJson = JSON.stringify(symbol);
+		} catch (error) {
+			console.error(`Error importing ${key} CIM to CIMSymbol object`, error);
+			throw error;
+		}
 		const cimPath = joinPath(groupDir, `${key}.json`);
 		const f = file(cimPath);
-		const lines = await f.write(JSON.stringify(cim, undefined, "\t"));
+		const lines = await f.write(cimJson);
 		stdout.write(`Wrote ${lines} bytes to ${cimPath}\n`);
 		return cimPath;
 	};
