@@ -1,6 +1,4 @@
 {
-    "plugins": [
-        "@prettier/plugin-oxc"
-    ],
-    "useTabs": true
+	"plugins": ["@prettier/plugin-oxc"],
+	"useTabs": true
 }
