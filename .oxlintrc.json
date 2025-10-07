@@ -1,11 +1,11 @@
 {
-    "plugins": [
-        "eslint",
-        "typescript",
-        "unicorn",
-        "oxc",
-        "import",
-        "jsdoc",
-        "promise"
-    ]
+	"plugins": [
+		"eslint",
+		"typescript",
+		"unicorn",
+		"oxc",
+		"import",
+		"jsdoc",
+		"promise"
+	]
 }

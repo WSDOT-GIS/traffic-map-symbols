@@ -1,0 +1,22 @@
+{
+	"type": "CIMFixedColorRamp",
+	"colors": [
+		{
+			"type": "CIMRGBColor",
+			"values": [29, 37, 45, 100]
+		},
+		{
+			"type": "CIMRGBColor",
+			"values": [179, 11, 0, 100]
+		},
+		{
+			"type": "CIMRGBColor",
+			"values": [255, 106, 19, 100]
+		},
+		{
+			"type": "CIMRGBColor",
+			"values": [255, 193, 7, 100]
+		}
+	],
+	"arrangement": "Default"
+}
