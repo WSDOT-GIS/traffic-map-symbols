@@ -140,10 +140,17 @@ class StyleItem implements StyleItemRow {
 		return tags.length ? new Set(tags) : null;
 	}
 }
+/**
+ * Retrieves an array of StyleItem objects from an ArcGIS Style (.stylx) file, which is a SQLite database.
+ * @param stylxPath The path to the ".stylx" file.
+ * @returns An array of StyleItem objects.
+ */
+function getStyleItems(stylxPath: string) {
+	let styleItems: StyleItem[];
 
-{
-	using db = new Database(dbPath);
-	const queryStatement = `
+	{
+		using db = new Database(stylxPath);
+		const queryStatement = `
 SELECT 
        KEY as key,
        i.ID as id,
@@ -156,19 +163,26 @@ SELECT
 JOIN CLASSES c ON c.ID = CLASS
 ORDER BY CLASS`;
 
-	const query = db.query(queryStatement).as(StyleItem);
-	console.table(
-		query.all().map((obj) => {
-			return {
-				key: obj.key,
-				id: obj.id,
-				class: obj.class,
-				category: obj.category,
-				name: obj.name,
-				tags: obj.tagSet,
-				cim: obj.cim,
-			};
-		}),
-		["key", "id", "class", "category", "name", "tags"],
-	);
+		const query = db.query(queryStatement).as(StyleItem);
+		styleItems = query.all();
+	}
+
+	return styleItems;
 }
+
+const styleItems = getStyleItems(dbPath);
+
+console.table(
+	styleItems.map((obj) => {
+		return {
+			key: obj.key,
+			id: obj.id,
+			class: obj.class,
+			category: obj.category,
+			name: obj.name,
+			tags: obj.tagSet,
+			cim: obj.cim,
+		};
+	}),
+	["key", "id", "class", "category", "name", "tags"],
+);
