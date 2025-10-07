@@ -1,15 +1,7 @@
 {
 	"name": "traveler-info-symbols",
-	"private": true,
 	"version": "1.0.0",
-	"description": "",
-	"type": "module",
-	"scripts": {
-		"lint": "oxlint --type-aware",
-		"dump": "bun ./tools/dump-style.ts"
-	},
 	"author": "Jeff Jacobson",
-	"license": "Unlicense",
 	"devDependencies": {
 		"@prettier/plugin-oxc": "^0.0.4",
 		"@types/bun": "latest",
@@ -18,5 +10,16 @@
 		"prettier": "^3.6.2",
 		"svgo": "^4.0.0",
 		"typescript": "^5.9.3"
+	},
+	"description": "",
+	"license": "Unlicense",
+	"private": true,
+	"scripts": {
+		"lint": "oxlint --type-aware",
+		"dump": "bun ./tools/dump-style.ts"
+	},
+	"type": "module",
+	"optionalDependencies": {
+		"@arcgis/core": "^4.33.14"
 	}
 }
