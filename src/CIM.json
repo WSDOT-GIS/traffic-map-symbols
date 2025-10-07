@@ -85,7 +85,7 @@
 			}
 		},
 		{
-			"key": "Express Lane - Northbound",
+			"key": "Express Lane - Color - Northbound",
 			"id": 17,
 			"className": "Color",
 			"category": "WSDOT Traveler Info",
@@ -109,7 +109,7 @@
 			}
 		},
 		{
-			"key": "Express Lane - Southbound",
+			"key": "Express Lane - Color - Southbound",
 			"id": 18,
 			"className": "Color",
 			"category": "WSDOT Traveler Info",
@@ -133,7 +133,7 @@
 			}
 		},
 		{
-			"key": "Truck Restriction_1",
+			"key": "Truck Restriction Color",
 			"id": 21,
 			"className": "Color",
 			"category": "WSDOT Traveler Info",
@@ -160,12 +160,19 @@
 	],
 	"Color Scheme": [
 		{
-			"key": "Alert Colors",
+			"key": "Alert Color Ramp",
 			"id": 9,
 			"className": "Color Scheme",
 			"category": "WSDOT Traveler Info",
 			"name": "Alert Colors",
-			"tags": [],
+			"tags": [
+				"rgb",
+				"alert",
+				"red",
+				"orange",
+				"yellow",
+				"black"
+			],
 			"cim": {
 				"type": "CIMFixedColorRamp",
 				"colors": [
@@ -212,7 +219,7 @@
 	],
 	"Point Symbol": [
 		{
-			"key": "border-crossing",
+			"key": "Border Crossing",
 			"id": 1,
 			"className": "Point Symbol",
 			"category": "WSDOT Traveler Info",
@@ -7004,7 +7011,7 @@
 	],
 	"Line Symbol": [
 		{
-			"key": "Express Lane - Northbound_1",
+			"key": "Express Lane - Line Symbol -Northbound",
 			"id": 19,
 			"className": "Line Symbol",
 			"category": "WSDOT Traveler Info",
@@ -7165,7 +7172,7 @@
 			}
 		},
 		{
-			"key": "Express Lane - Southbound_1",
+			"key": "Express Lane - Line Symbol - Southbound",
 			"id": 20,
 			"className": "Line Symbol",
 			"category": "WSDOT Traveler Info",
@@ -8730,7 +8737,7 @@
 			}
 		},
 		{
-			"key": "Road Alert Medium",
+			"key": "Road Alert 3 (Medium)",
 			"id": 24,
 			"className": "Line Symbol",
 			"category": "WSDOT Traveler Info",
@@ -8740,7 +8747,8 @@
 				"orange",
 				"multilayer",
 				"medium",
-				"alert"
+				"alert",
+				"3"
 			],
 			"cim": {
 				"type": "CIMLineSymbol",
