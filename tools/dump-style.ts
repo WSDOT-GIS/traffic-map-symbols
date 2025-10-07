@@ -147,6 +147,7 @@ function* getStyleItems(
 	stylxPath: string,
 ): Generator<StyleItem, void, unknown> {
 	{
+		// Open the database
 		using db = new Database(stylxPath);
 		const queryStatement = `
 SELECT 
@@ -161,33 +162,22 @@ SELECT
 JOIN CLASSES c ON c.ID = CLASS
 ORDER BY CLASS`;
 
+		// Execute the query.
 		const query = db.query<StyleItemRow, SQLQueryBindings>(queryStatement);
+		// Yield each row as a StyleItem.
+		// query.all() was not used because it
+		// does not call the object's constructor
 		for (const row of query) {
 			yield new StyleItem(row);
 		}
 	}
 }
 
-// const styleItems = [...getStyleItems(dbPath)];
-
+// Group into classes (e.g., "Point Symbol", "Color", etc.)
 const groupedStyleItems = Object.groupBy(
 	getStyleItems(dbPath),
 	({ className }) => className,
 );
 
+// Dump output to console.
 console.log(JSON.stringify(groupedStyleItems, undefined, "\t"));
-
-// console.table(
-// 	styleItems.map((obj) => {
-// 		return {
-// 			key: obj.key,
-// 			id: obj.id,
-// 			class: obj.class,
-// 			category: obj.category,
-// 			name: obj.name,
-// 			tags: obj.tagSet,
-// 			cim: obj.cim,
-// 		};
-// 	}),
-// 	["key", "id", "class", "category", "name", "tags"],
-// );
