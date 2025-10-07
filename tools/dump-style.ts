@@ -61,7 +61,7 @@ interface StyleItemRow {
 	/**
 	 * The type of item
 	 */
-	class: ClassName;
+	className: ClassName;
 	/**
 	 * example: "WSDOT Traveler Info"
 	 */
@@ -84,7 +84,7 @@ interface StyleItemRow {
 /**
  * A class representing a style definition.
  */
-class StyleItem implements StyleItemRow {
+class StyleItem implements Omit<StyleItemRow, "tags" | "cimJson"> {
 	/**
 	 * Unique string identifier
 	 */
@@ -96,7 +96,7 @@ class StyleItem implements StyleItemRow {
 	/**
 	 * The type of item
 	 */
-	class: ClassName;
+	className: ClassName;
 	/**
 	 * example: "WSDOT Traveler Info"
 	 */
@@ -109,36 +109,34 @@ class StyleItem implements StyleItemRow {
 	 * semicolon-separated list of tags.
 	 * example: "rgb;orange;multilayer;low;4;alert"
 	 */
-	tags: string;
+	tags: string[];
 	/**
-	 * CIM definition JSON string
+	 * CIM definition
 	 */
-	cimJson: string;
+	cim: Record<string, unknown>;
 
 	/**
-	 * Not actually called by bun query.asClass function.
-	 * Only defined here to stop TypeScript from complaining
-	 * about not initializing the properties.
+	 * Creates a new instance.
 	 * @param row properties
 	 */
 	constructor(row: StyleItemRow) {
 		this.category = row.category;
-		this.cimJson = row.cimJson;
-		this.class = row.class;
+		this.cim = JSON.parse(row.cimJson);
+		this.className = row.className;
 		this.id = row.id;
 		this.key = row.key;
 		this.name = row.name;
-		this.tags = row.tags;
+		this.tags = row.tags.split(";").filter((t) => !!t);
 	}
 
-	public get cim(): Record<string, unknown> {
-		return JSON.parse(this.cimJson);
-	}
+	// public get cim(): Record<string, unknown> {
+	// 	return JSON.parse(this.cimJson);
+	// }
 
-	public get tagSet() {
-		const tags = this.tags.split(";").filter((t) => !!t);
-		return tags.length ? new Set(tags) : null;
-	}
+	// public get tagSet() {
+	// 	const tags = this.tags.split(";").filter((t) => !!t);
+	// 	return tags.length ? new Set(tags) : null;
+	// }
 }
 /**
  * Retrieves an array of StyleItem objects from an ArcGIS Style (.stylx) file, which is a SQLite database.
@@ -154,7 +152,7 @@ function* getStyleItems(
 SELECT 
        KEY as key,
        i.ID as id,
-       c.NAME as class,
+       c.NAME as className,
        CATEGORY as category,
        i.NAME as name,
        TAGS as tags,
@@ -170,19 +168,26 @@ ORDER BY CLASS`;
 	}
 }
 
-const styleItems = [...getStyleItems(dbPath)];
+// const styleItems = [...getStyleItems(dbPath)];
 
-console.table(
-	styleItems.map((obj) => {
-		return {
-			key: obj.key,
-			id: obj.id,
-			class: obj.class,
-			category: obj.category,
-			name: obj.name,
-			tags: obj.tagSet,
-			cim: obj.cim,
-		};
-	}),
-	["key", "id", "class", "category", "name", "tags"],
+const groupedStyleItems = Object.groupBy(
+	getStyleItems(dbPath),
+	({ className }) => className,
 );
+
+console.log(JSON.stringify(groupedStyleItems, undefined, "\t"));
+
+// console.table(
+// 	styleItems.map((obj) => {
+// 		return {
+// 			key: obj.key,
+// 			id: obj.id,
+// 			class: obj.class,
+// 			category: obj.category,
+// 			name: obj.name,
+// 			tags: obj.tagSet,
+// 			cim: obj.cim,
+// 		};
+// 	}),
+// 	["key", "id", "class", "category", "name", "tags"],
+// );
