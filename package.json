@@ -5,7 +5,8 @@
 	"description": "",
 	"type": "module",
 	"scripts": {
-		"lint": "oxlint --type-aware"
+		"lint": "oxlint --type-aware",
+		"dump": "bun ./tools/dump-style.ts"
 	},
 	"author": "Jeff Jacobson",
 	"license": "Unlicense",
