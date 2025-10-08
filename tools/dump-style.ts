@@ -1,9 +1,9 @@
 #!/usr/bin/env bun
 
 import { file, stdout } from "bun";
-import { join as joinPath, dirname } from "node:path";
-import { mkdir } from "node:fs/promises";
 import { Database, type SQLQueryBindings } from "bun:sqlite";
+import { mkdir } from "node:fs/promises";
+import { dirname, join as joinPath } from "node:path";
 
 const rootPath = dirname(import.meta.dir);
 
