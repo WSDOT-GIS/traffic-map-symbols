@@ -90,6 +90,23 @@ async function writeCimJsonFromSvg(
 	};
 }
 
+const hasSvgExtension = (s: string): boolean => /.svg$/i.test(s);
+
+const isSvgFile = (dirEnt: Dirent<string>): boolean =>
+	dirEnt.isFile() && hasSvgExtension(dirEnt.name);
+
+function getFilePath(dirEnt: Dirent<string>): string {
+	return join(dirEnt.parentPath, dirEnt.name);
+}
+
+async function getSvgFilePaths(dirPath: string): Promise<string[]> {
+	const dirEnts = await readdir(dirPath, {
+		withFileTypes: true,
+		recursive: true,
+	});
+	return dirEnts.filter(isSvgFile).map(getFilePath);
+}
+
 // Example invocation when running with Bun:
 if (import.meta.main) {
 	const args = process.argv.slice(2);
@@ -111,16 +128,6 @@ if (import.meta.main) {
 			dirs.push(arg);
 		}
 	}
-
-	const isSvgFile = (f: Dirent<string>): boolean =>
-		f.isFile() && f.name.endsWith(".svg");
-
-	const getFilePath = (f: Dirent<string>): string => join(f.parentPath, f.name);
-
-	const getSvgFilePaths = async (d: string): Promise<string[]> =>
-		(await readdir(d, { withFileTypes: true, recursive: true }))
-			.filter(isSvgFile)
-			.map(getFilePath);
 
 	// Get all of the SVG files in the directories
 	const dirSvgs = (await Promise.all(dirs.map(getSvgFilePaths))).flat();
