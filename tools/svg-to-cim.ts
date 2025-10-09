@@ -10,6 +10,9 @@ interface CIMSymbolResponse extends Record<string, unknown> {
 	[key: string]: unknown;
 }
 
+const defaultServiceUrl =
+	"https://utility.arcgisonline.com/arcgis/rest/services/Utilities/Symbols/SymbolServer/generateSymbol/";
+
 /**
  * Calls the ArcGIS generateSymbol REST API with a given SVG file.
  * @param svgFilePath - Local path to the SVG file to upload
@@ -18,7 +21,7 @@ interface CIMSymbolResponse extends Record<string, unknown> {
  */
 export async function generateSymbol(
 	svgFilePath: string,
-	serviceUrl = "https://utility.arcgisonline.com/arcgis/rest/services/Utilities/Symbols/SymbolServer/generateSymbol/",
+	serviceUrl = defaultServiceUrl,
 ): Promise<CIMSymbolResponse> {
 	// Construct endpoint URL
 	const url = new URL(serviceUrl);
@@ -54,6 +57,37 @@ export async function generateSymbol(
 
 	const data = (await resp.json()) as CIMSymbolResponse;
 	return data;
+}
+
+interface WriteCimResult {
+	svgPath: string;
+	cimPath: string;
+	byteCount: number;
+}
+
+async function writeCimJsonFromSvg(
+	svgPath: string,
+	url = defaultServiceUrl,
+): Promise<WriteCimResult> {
+	let byteCount: number = 0;
+	const cimPath = svgPath.replace(".svg", ".json");
+	// Skip generating CIM JSON file if a file with the same name already exists.
+	if (await exists(cimPath)) {
+		Bun.stderr.write(`File already exists: ${cimPath}\n`);
+		return {
+			svgPath,
+			cimPath,
+			byteCount,
+		};
+	}
+	const cim = await generateSymbol(svgPath, url);
+	byteCount = await Bun.write(cimPath, JSON.stringify(cim, undefined, "\t"));
+	Bun.stderr.write(`Wrote ${byteCount} bytes to ${cimPath}\n`);
+	return {
+		svgPath,
+		cimPath,
+		byteCount,
+	};
 }
 
 // Example invocation when running with Bun:
@@ -94,36 +128,9 @@ if (import.meta.main) {
 	// Add the SVG files to the list
 	svgs.push(...dirSvgs);
 
-	interface WriteCimResult {
-		svgPath: string;
-		cimPath: string;
-		byteCount: number;
-	}
-
-	async function writeCimJsonFromSvg(svgPath: string): Promise<WriteCimResult> {
-		let byteCount: number = 0;
-		const cimPath = svgPath.replace(".svg", ".json");
-		// Skip generating CIM JSON file if a file with the same name already exists.
-		if (await exists(cimPath)) {
-			Bun.stderr.write(`File already exists: ${cimPath}\n`);
-			return {
-				svgPath,
-				cimPath,
-				byteCount,
-			};
-		}
-		const cim = await generateSymbol(svgPath, url);
-		byteCount = await Bun.write(cimPath, JSON.stringify(cim, undefined, "\t"));
-		Bun.stderr.write(`Wrote ${byteCount} bytes to ${cimPath}\n`);
-		return {
-			svgPath,
-			cimPath,
-			byteCount,
-		};
-	}
 	// Generate the symbols
 
-	const promises = svgs.map(writeCimJsonFromSvg);
+	const promises = svgs.map((svg) => writeCimJsonFromSvg(svg, url));
 
 	await Promise.all(promises);
 }
