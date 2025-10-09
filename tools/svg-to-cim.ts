@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 
 import type { Dirent } from "node:fs";
-import { readFile, readdir } from "node:fs/promises";
+import { exists, readFile, readdir } from "node:fs/promises";
 import { basename, join } from "node:path";
 
 interface CIMSymbolResponse extends Record<string, unknown> {
@@ -94,23 +94,36 @@ if (import.meta.main) {
 	// Add the SVG files to the list
 	svgs.push(...dirSvgs);
 
-	// Generate the symbols
-	// await Promise.all(svgs.map((svgPath) => generateSymbol(svgPath, url)));
+	interface WriteCimResult {
+		svgPath: string;
+		cimPath: string;
+		byteCount: number;
+	}
 
-	const promises = svgs.map(async (svgPath) => {
-		const cim = await generateSymbol(svgPath, url);
+	async function writeCimJsonFromSvg(svgPath: string): Promise<WriteCimResult> {
+		let byteCount: number = 0;
 		const cimPath = svgPath.replace(".svg", ".json");
-		const byteCount = await Bun.write(
-			cimPath,
-			JSON.stringify(cim, undefined, "\t"),
-		);
+		// Skip generating CIM JSON file if a file with the same name already exists.
+		if (await exists(cimPath)) {
+			Bun.stderr.write(`File already exists: ${cimPath}\n`);
+			return {
+				svgPath,
+				cimPath,
+				byteCount,
+			};
+		}
+		const cim = await generateSymbol(svgPath, url);
+		byteCount = await Bun.write(cimPath, JSON.stringify(cim, undefined, "\t"));
 		Bun.stderr.write(`Wrote ${byteCount} bytes to ${cimPath}\n`);
 		return {
 			svgPath,
 			cimPath,
 			byteCount,
 		};
-	});
+	}
+	// Generate the symbols
+
+	const promises = svgs.map(writeCimJsonFromSvg);
 
 	await Promise.all(promises);
 }
