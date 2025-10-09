@@ -113,15 +113,4 @@ if (import.meta.main) {
 	});
 
 	await Promise.all(promises);
-
-	// (async () => {
-	// 	try {
-	// 		const svgPath = "src/svg/markers/alerts/1-closure.svg";
-	// 		const result = await generateSymbol(svgPath);
-	// 		console.log("GenerateSymbol result:", JSON.stringify(result, null, 2));
-	// 	} catch (err) {
-	// 		console.error("Error in generateSymbol:", err);
-	// 		process.exit(1);
-	// 	}
-	// })();
 }
