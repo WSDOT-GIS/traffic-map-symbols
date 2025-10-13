@@ -85,6 +85,69 @@ interface StyleItemRow {
 	cimJson: string;
 }
 
+interface CIMRGBColor {
+	type: "CIMRGBColor";
+	values: number[];
+}
+
+function isCimRgbColor(item: unknown): item is CIMRGBColor {
+	return (
+		typeof item === "object" &&
+		item !== null &&
+		"type" in item &&
+		item.type === "CIMRGBColor" &&
+		"values" in item &&
+		Array.isArray(item.values)
+	);
+}
+
+const bannedProperties = [
+	"angleAlignment",
+	"clippingPath",
+	"haloSize",
+] as const;
+
+type BannedPropertyName = (typeof bannedProperties)[number] | `${string}3D`;
+
+function isBannedProperty(key: string): key is BannedPropertyName {
+	return (
+		bannedProperties.includes(key as (typeof bannedProperties)[number]) ||
+		key.endsWith("3D")
+	);
+}
+
+function isCimVectorMarker(
+	item: unknown,
+): item is __esri.CIMVectorMarker & { name?: string } {
+	return (
+		typeof item === "object" &&
+		item !== null &&
+		"type" in item &&
+		item.type === "CIMVectorMarker"
+	);
+}
+
+/**
+ * Custom JSON serializer to remove or correct CIM properties
+ * to be compatible with ArcGIS Maps SDK for JavaScript.
+ * @param key - name of property
+ * @param value - value of property
+ * @returns The value that will be assigned to the property with a name matching {@link key}.
+ */
+function reviver(key: string, value: unknown) {
+	if (isBannedProperty(key)) {
+		return;
+	}
+	if (key === "color" && isCimRgbColor(value)) {
+		return value.values.slice(0, 3);
+	}
+	if (isCimVectorMarker(value)) {
+		value.name = undefined;
+	}
+
+	return value;
+}
+
 /**
  * A class representing a style definition.
  */
@@ -125,7 +188,7 @@ class StyleItem implements Omit<StyleItemRow, "tags" | "cimJson"> {
 	 */
 	constructor(row: StyleItemRow) {
 		this.category = row.category;
-		this.cim = JSON.parse(row.cimJson);
+		this.cim = JSON.parse(row.cimJson, reviver);
 		this.className = row.className;
 		this.id = row.id;
 		this.key = row.key;
@@ -183,7 +246,7 @@ const groupedStyleItems = Object.groupBy(
 	({ className }) => className,
 );
 
-const outDir = joinPath(rootPath, "src", "CIM");
+const outDir = joinPath(rootPath, "src", "CIM from stylx");
 
 const filePromises: Promise<string>[] = [];
 
