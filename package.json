@@ -5,7 +5,7 @@
 	"devDependencies": {
 		"@prettier/plugin-oxc": "^0.0.4",
 		"@types/bun": "latest",
-		"oxlint": "^1.21.0",
+		"oxlint": "^1.23.0",
 		"oxlint-tsgolint": "^0.2.0",
 		"prettier": "^3.6.2",
 		"svgo": "^4.0.0",

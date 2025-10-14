@@ -276,7 +276,7 @@ for (const [groupName, styles] of Object.entries(groupedStyleItems)) {
 		const cimPath = joinPath(groupDir, `${key}.json`);
 		const f = file(cimPath);
 		const lines = await f.write(cimJson);
-		stdout.write(`Wrote ${lines} bytes to ${cimPath}\n`);
+		await stdout.write(`Wrote ${lines} bytes to ${cimPath}\n`);
 		return cimPath;
 	};
 	const styleFiles = styles.map(writeCimFile);

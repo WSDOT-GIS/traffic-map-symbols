@@ -73,7 +73,7 @@ async function writeCimJsonFromSvg(
 	const cimPath = svgPath.replace(".svg", ".json");
 	// Skip generating CIM JSON file if a file with the same name already exists.
 	if (await exists(cimPath)) {
-		Bun.stderr.write(`File already exists: ${cimPath}\n`);
+		await Bun.stderr.write(`File already exists: ${cimPath}\n`);
 		return {
 			svgPath,
 			cimPath,
@@ -82,7 +82,7 @@ async function writeCimJsonFromSvg(
 	}
 	const cim = await generateSymbol(svgPath, url);
 	byteCount = await Bun.write(cimPath, JSON.stringify(cim, undefined, "\t"));
-	Bun.stderr.write(`Wrote ${byteCount} bytes to ${cimPath}\n`);
+	await Bun.stderr.write(`Wrote ${byteCount} bytes to ${cimPath}\n`);
 	return {
 		svgPath,
 		cimPath,
