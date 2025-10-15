@@ -12,7 +12,7 @@
         "svgo": "^4.0.0",
         "typescript": "^5.9.3",
       },
-      "optionalDependencies": {
+      "peerDependencies": {
         "@arcgis/core": "^4.33.14",
       },
     },

@@ -19,7 +19,7 @@
 		"dump": "bun ./tools/dump-style.ts"
 	},
 	"type": "module",
-	"optionalDependencies": {
+	"peerDependencies": {
 		"@arcgis/core": "^4.33.14"
 	}
 }
