@@ -1,1 +1,9 @@
-{"type":"CIMSymbolReference","symbol":{"type":"CIMRGBColor","values":[255,193,7,100]}}
+{
+	"type": "CIMRGBColor",
+	"values": [
+		255,
+		193,
+		7,
+		100
+	]
+}

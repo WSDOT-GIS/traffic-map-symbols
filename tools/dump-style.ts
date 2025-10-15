@@ -5,6 +5,7 @@ import { Database, type SQLQueryBindings } from "bun:sqlite";
 import { mkdir } from "node:fs/promises";
 import { dirname, join as joinPath } from "node:path";
 import { StyleItem, type StyleItemRow } from "../src/stylx";
+import { cimToJson } from "../src/serialization";
 
 const rootPath = dirname(import.meta.dir);
 
@@ -59,7 +60,11 @@ async function writeCimFile(
 	{ key, cim }: StyleItem,
 	groupDir: string,
 ): Promise<string> {
-	const cimJson = JSON.stringify(cim, undefined, "\t");
+	const cimJson = cimToJson(cim, {
+		removeUnsupportedProperties: true,
+		wrapSymbolInCimSymbolReference: true,
+		space: "\t",
+	}); // JSON.stringify(cim, undefined, "\t");
 	const cimPath = joinPath(groupDir, `${key}.json`);
 	const f = file(cimPath);
 	const lines = await f.write(cimJson);
@@ -76,5 +81,4 @@ for (const [groupName, styles] of Object.entries(groupedStyleItems)) {
 
 await Promise.all(filePromises);
 
-// // Dump output to console.
-// console.log(JSON.stringify(groupedStyleItems, undefined, "\t"));
+console.log("Done!");
