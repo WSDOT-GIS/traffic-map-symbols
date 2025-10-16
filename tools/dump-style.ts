@@ -1,147 +1,16 @@
 #!/usr/bin/env bun
 
 import { file, stdout } from "bun";
-import { join as joinPath, dirname } from "node:path";
-import { mkdir } from "node:fs/promises";
 import { Database, type SQLQueryBindings } from "bun:sqlite";
+import { mkdir } from "node:fs/promises";
+import { join as joinPath } from "node:path";
+import {
+	cimToJson,
+	parseIndentCliOption,
+	type CimToJsonOptions,
+} from "../src/serialization";
+import { StyleItem, type StyleItemRow } from "../src/stylx";
 
-const rootPath = dirname(import.meta.dir);
-
-const dbPath = joinPath(rootPath, "travel-info.stylx");
-
-/**
- * | ID | Name                     |
- * |---:|:-------------------------|
- * |  1 | Color                    |
- * |  2 | Color Scheme             |
- * |  3 | Point Symbol             |
- * |  4 | Line Symbol              |
- * |  5 | Polygon Symbol           |
- * |  6 | Text Symbol              |
- * |  7 | North Arrow              |
- * |  8 | Scale Bar                |
- * |  9 | Standard Label Placement |
- * | 10 | Maplex Label Placement   |
- * | 11 | Grid                     |
- * | 12 | Mesh Symbol              |
- * | 13 | Legend                   |
- * | 14 | Table Frame              |
- * | 15 | Map Surround             |
- * | 17 | Legend Item              |
- * | 18 | Table Frame Field        |
- * | 19 | Area Legend Patch        |
- * | 20 | Line Legend Patch        |
- */
-type ClassName =
-	| "Color"
-	| "Color Scheme"
-	| "Point Symbol"
-	| "Line Symbol"
-	| "Polygon Symbol"
-	| "Text Symbol"
-	| "North Arrow"
-	| "Scale Bar"
-	| "Standard Label Placement"
-	| "Maplex Label Placement"
-	| "Grid"
-	| "Mesh Symbol"
-	| "Legend"
-	| "Table Frame"
-	| "Map Surround"
-	| "Legend Item"
-	| "Table Frame Field"
-	| "Area Legend Patch"
-	| "Line Legend Patch";
-
-interface StyleItemRow {
-	/**
-	 * Unique string identifier
-	 */
-	key: string;
-	/**
-	 * Unique integer identifier
-	 */
-	id: number;
-	/**
-	 * The type of item
-	 */
-	className: ClassName;
-	/**
-	 * example: "WSDOT Traveler Info"
-	 */
-	category: string;
-	/**
-	 * example: "Road Alert 4 (Low)"
-	 */
-	name: string;
-	/**
-	 * semicolon-separated list of tags.
-	 * example: "rgb;orange;multilayer;low;4;alert"
-	 */
-	tags: string;
-	/**
-	 * CIM definition JSON string
-	 */
-	cimJson: string;
-}
-
-/**
- * A class representing a style definition.
- */
-class StyleItem implements Omit<StyleItemRow, "tags" | "cimJson"> {
-	/**
-	 * Unique string identifier
-	 */
-	key: string;
-	/**
-	 * Unique integer identifier
-	 */
-	id: number;
-	/**
-	 * The type of item
-	 */
-	className: ClassName;
-	/**
-	 * example: "WSDOT Traveler Info"
-	 */
-	category: string;
-	/**
-	 * example: "Road Alert 4 (Low)"
-	 */
-	name: string;
-	/**
-	 * semicolon-separated list of tags.
-	 * example: "rgb;orange;multilayer;low;4;alert"
-	 */
-	tags: string[];
-	/**
-	 * CIM definition
-	 */
-	cim: Record<string, unknown>;
-
-	/**
-	 * Creates a new instance.
-	 * @param row properties
-	 */
-	constructor(row: StyleItemRow) {
-		this.category = row.category;
-		this.cim = JSON.parse(row.cimJson);
-		this.className = row.className;
-		this.id = row.id;
-		this.key = row.key;
-		this.name = row.name;
-		this.tags = row.tags.split(";").filter((t) => !!t);
-	}
-
-	// public get cim(): Record<string, unknown> {
-	// 	return JSON.parse(this.cimJson);
-	// }
-
-	// public get tagSet() {
-	// 	const tags = this.tags.split(";").filter((t) => !!t);
-	// 	return tags.length ? new Set(tags) : null;
-	// }
-}
 /**
  * Retrieves an array of StyleItem objects from an ArcGIS Style (.stylx) file, which is a SQLite database.
  * @param stylxPath The path to the ".stylx" file.
@@ -153,7 +22,17 @@ function* getStyleItems(
 	{
 		// Open the database
 		using db = new Database(stylxPath);
-		const queryStatement = `
+		yield* queryStyleItems(db);
+	}
+}
+
+/**
+ * Retrieves an array of StyleItem objects from an ArcGIS Style (.stylx) file, which is a SQLite database.
+ * @param db - The stylx database to query.
+ * @yields {@link StyleItem}.
+ */
+function* queryStyleItems(db: Database): Generator<StyleItem, void, unknown> {
+	const queryStatement = `
 SELECT 
        KEY as key,
        i.ID as id,
@@ -166,44 +45,102 @@ SELECT
 JOIN CLASSES c ON c.ID = CLASS
 ORDER BY CLASS`;
 
-		// Execute the query.
-		const query = db.query<StyleItemRow, SQLQueryBindings>(queryStatement);
-		// Yield each row as a StyleItem.
-		// query.all() was not used because it
-		// does not call the object's constructor
-		for (const row of query) {
-			yield new StyleItem(row);
-		}
+	// Execute the query.
+	const query = db.query<StyleItemRow, SQLQueryBindings>(queryStatement);
+	// Yield each row as a StyleItem.
+	// query.all() was not used because it
+	// does not call the object's constructor
+	for (const row of query) {
+		yield new StyleItem(row);
 	}
 }
 
-// Group into classes (e.g., "Point Symbol", "Color", etc.)
-const groupedStyleItems = Object.groupBy(
-	getStyleItems(dbPath),
-	({ className }) => className,
-);
-
-const outDir = joinPath(rootPath, "src", "CIM");
-
-const filePromises: Promise<string>[] = [];
-
-for (const [groupName, styles] of Object.entries(groupedStyleItems)) {
-	const groupDir = joinPath(outDir, groupName);
-	await mkdir(groupDir, { recursive: true });
-
-	const writeCimFile = async ({ key, cim }: StyleItem): Promise<string> => {
-		const cimPath = joinPath(groupDir, `${key}.json`);
-		const f = file(cimPath);
-		const lines = await f.write(JSON.stringify(cim, undefined, "\t"));
-		stdout.write(`Wrote ${lines} bytes to ${cimPath}\n`);
-		return cimPath;
-	};
-	const styleFiles = styles.map(writeCimFile);
-
-	filePromises.push(...styleFiles);
+/**
+ * Write's CIM JSON files from an ArcGIS Style (.stylx) file to JSON files.
+ * @param styleItem Row from SQL query of `*.stylx` file SQLite database.
+ * @param outDir Output directory
+ * @param options Options to control
+ * @returns Path to the written file
+ */
+async function writeCimFile(
+	styleItem: StyleItem,
+	outDir: string,
+	options: CimToJsonOptions,
+): Promise<string> {
+	const { cim, key } = styleItem;
+	const cimJson = cimToJson(cim, options);
+	const cimPath = joinPath(outDir, `${key}.json`);
+	const f = file(cimPath);
+	const lines = await f.write(cimJson);
+	await stdout.write(`Wrote ${lines} bytes to ${cimPath}\n`);
+	return cimPath;
 }
 
-await Promise.all(filePromises);
+// This section is only run if this script is being run directly as a script.
+// Provides command-line interface (CLI).
+if (import.meta.main) {
+	const { Command } = await import("@commander-js/extra-typings");
 
-// // Dump output to console.
-// console.log(JSON.stringify(groupedStyleItems, undefined, "\t"));
+	const program = new Command()
+		.description("Dumps CIM JSON files from an ArcGIS Style (.stylx) file.")
+		.argument("<stylx-file>", "Path to the .stylx file")
+		.argument("<output-dir>", "Path to the output directory")
+		.option(
+			"-x, --exclude-unsupported",
+			"Exclude CIM properties that are not supported by ArcGIS Maps SDK for JavaScript.",
+		)
+		.option(
+			"-r, --wrap-symbol-in-cim-symbol-reference",
+			"Wrap CIM symbol JSON in a CIMSymbolReference object.",
+		)
+		.option(
+			"-i, --indent <indent>",
+			'Number of spaces to indent JSON output. Valid values are "space", "tab", or a number.',
+			"2",
+		);
+
+	program.parse();
+
+	const [stylxPath, outDir] = program.args as [string, string];
+	const {
+		excludeUnsupported: removeUnsupportedProperties,
+		wrapSymbolInCimSymbolReference,
+		indent,
+	} = program.opts();
+
+	const space = parseIndentCliOption(indent);
+
+	// Initialize an array of promises for the file operations, which will be
+	// run asynchronously.
+	const filePromises: Promise<string>[] = [];
+
+	/*
+	Extract style JSON strings from the stylx database, then
+	group into classes (e.g., "Point Symbol", "Color", etc.)
+	*/
+	const groupedStyleItems = Object.groupBy(
+		getStyleItems(stylxPath),
+		({ className }) => className,
+	);
+
+	// Enumerate through each of the CIM JSON string groups...
+	for (const [groupName, styles] of Object.entries(groupedStyleItems)) {
+		// Specify the output path for the CIM files, based on the group/class name.
+		const groupDir = joinPath(outDir, groupName);
+		// Create the directory if it does not already exist.
+		await mkdir(groupDir, { recursive: true });
+		// Create a promise for each JSON string, writing it to a file.
+		const styleFiles = styles.map((s) =>
+			writeCimFile(s, groupDir, {
+				removeUnsupportedProperties,
+				wrapSymbolInCimSymbolReference,
+				space,
+			}),
+		);
+		// Add the file write promises to the array.
+		filePromises.push(...styleFiles);
+	}
+	// Wait for all file write operations to complete.
+	await Promise.all(filePromises);
+	console.log("Done!");
+}
