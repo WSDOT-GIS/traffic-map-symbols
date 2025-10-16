@@ -4,8 +4,8 @@ import { file, stdout } from "bun";
 import { Database, type SQLQueryBindings } from "bun:sqlite";
 import { mkdir } from "node:fs/promises";
 import { dirname, join as joinPath } from "node:path";
-import { StyleItem, type StyleItemRow } from "../src/stylx";
 import { cimToJson } from "../src/serialization";
+import { StyleItem, type StyleItemRow } from "../src/stylx";
 
 const rootPath = dirname(import.meta.dir);
 
