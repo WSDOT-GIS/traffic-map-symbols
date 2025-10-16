@@ -3,7 +3,7 @@
 import { file, stdout } from "bun";
 import { Database, type SQLQueryBindings } from "bun:sqlite";
 import { mkdir } from "node:fs/promises";
-import { dirname, join as joinPath } from "node:path";
+import { join as joinPath } from "node:path";
 import { cimToJson, type CimToJsonOptions } from "../src/serialization";
 import { StyleItem, type StyleItemRow } from "../src/stylx";
 
@@ -51,19 +51,29 @@ ORDER BY CLASS`;
 	}
 }
 
+/**
+ * Write's CIM JSON files from an ArcGIS Style (.stylx) file to JSON files.
+ * @param styleItem Row from SQL query of `*.stylx` file SQLite database.
+ * @param outDir Output directory
+ * @param options Options to control
+ * @returns Path to the written file
+ */
 async function writeCimFile(
-	{ key, cim }: StyleItem,
-	groupDir: string,
+	styleItem: StyleItem,
+	outDir: string,
 	options: CimToJsonOptions,
 ): Promise<string> {
+	const { cim, key } = styleItem;
 	const cimJson = cimToJson(cim, options);
-	const cimPath = joinPath(groupDir, `${key}.json`);
+	const cimPath = joinPath(outDir, `${key}.json`);
 	const f = file(cimPath);
 	const lines = await f.write(cimJson);
 	await stdout.write(`Wrote ${lines} bytes to ${cimPath}\n`);
 	return cimPath;
 }
 
+// This section is only run if this script is being run directly as a script.
+// Provides command-line interface (CLI).
 if (import.meta.main) {
 	const { Command } = await import("commander");
 
@@ -74,11 +84,11 @@ if (import.meta.main) {
 		.argument("<stylx-file>", "Path to the .stylx file")
 		.argument("<output-dir>", "Path to the output directory")
 		.option(
-			"--exclude-unsupported, -x",
+			"-x, --exclude-unsupported",
 			"Exclude CIM properties that are not supported by ArcGIS Maps SDK for JavaScript.",
 		)
 		.option(
-			"--wrap-symbol-in-cim-symbol-reference, -r",
+			"-r, --wrap-symbol-in-cim-symbol-reference",
 			"Wrap CIM symbol JSON in a CIMSymbolReference object.",
 		);
 
@@ -89,6 +99,12 @@ if (import.meta.main) {
 
 	console.log(options);
 
+	/*
+	Make sure the required arguments are provided.
+	Command.js will actually take care of this,
+	but TypeScript will complain if we don't do it 
+	here as well.
+	*/
 	if (!stylxPath) {
 		throw new Error("stylx-file is required");
 	}
@@ -97,25 +113,36 @@ if (import.meta.main) {
 		throw new Error("output-dir is required");
 	}
 
+	// Initialize an array of promises for the file operations, which will be
+	// run asynchronously.
 	const filePromises: Promise<string>[] = [];
 
-	// Group into classes (e.g., "Point Symbol", "Color", etc.)
+	/*
+	Extract style JSON strings from the stylx database, then
+	group into classes (e.g., "Point Symbol", "Color", etc.)
+	*/
 	const groupedStyleItems = Object.groupBy(
 		getStyleItems(stylxPath),
 		({ className }) => className,
 	);
 
+	// Enumerate through each of the CIM JSON string groups...
 	for (const [groupName, styles] of Object.entries(groupedStyleItems)) {
+		// Specify the output path for the CIM files, based on the group/class name.
 		const groupDir = joinPath(outDir, groupName);
+		// Create the directory if it does not already exist.
 		await mkdir(groupDir, { recursive: true });
+		// Create a promise for each JSON string, writing it to a file.
 		const styleFiles = styles.map((s) =>
 			writeCimFile(s, groupDir, {
 				removeUnsupportedProperties: options.excludeUnsupported,
 				wrapSymbolInCimSymbolReference: options.wrapSymbolInCimSymbolReference,
 			}),
 		);
+		// Add the file write promises to the array.
 		filePromises.push(...styleFiles);
 	}
+	// Wait for all file write operations to complete.
 	await Promise.all(filePromises);
 	console.log("Done!");
 }
