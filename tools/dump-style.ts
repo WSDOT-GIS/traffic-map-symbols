@@ -4,7 +4,7 @@ import { file, stdout } from "bun";
 import { Database, type SQLQueryBindings } from "bun:sqlite";
 import { mkdir } from "node:fs/promises";
 import { dirname, join as joinPath } from "node:path";
-import { cimToJson } from "../src/serialization";
+import { cimToJson, type CimToJsonOptions } from "../src/serialization";
 import { StyleItem, type StyleItemRow } from "../src/stylx";
 
 /**
@@ -54,12 +54,9 @@ ORDER BY CLASS`;
 async function writeCimFile(
 	{ key, cim }: StyleItem,
 	groupDir: string,
+	options: CimToJsonOptions,
 ): Promise<string> {
-	const cimJson = cimToJson(cim, {
-		removeUnsupportedProperties: true,
-		wrapSymbolInCimSymbolReference: true,
-		space: "\t",
-	}); // JSON.stringify(cim, undefined, "\t");
+	const cimJson = cimToJson(cim, options);
 	const cimPath = joinPath(groupDir, `${key}.json`);
 	const f = file(cimPath);
 	const lines = await f.write(cimJson);
@@ -75,11 +72,22 @@ if (import.meta.main) {
 	program
 		.description("Dumps CIM JSON files from an ArcGIS Style (.stylx) file.")
 		.argument("<stylx-file>", "Path to the .stylx file")
-		.argument("<output-dir>", "Path to the output directory");
+		.argument("<output-dir>", "Path to the output directory")
+		.option(
+			"--exclude-unsupported, -x",
+			"Exclude CIM properties that are not supported by ArcGIS Maps SDK for JavaScript.",
+		)
+		.option(
+			"--wrap-symbol-in-cim-symbol-reference, -r",
+			"Wrap CIM symbol JSON in a CIMSymbolReference object.",
+		);
 
 	program.parse();
 
 	const [stylxPath, outDir] = program.args;
+	const options = program.opts();
+
+	console.log(options);
 
 	if (!stylxPath) {
 		throw new Error("stylx-file is required");
@@ -100,7 +108,12 @@ if (import.meta.main) {
 	for (const [groupName, styles] of Object.entries(groupedStyleItems)) {
 		const groupDir = joinPath(outDir, groupName);
 		await mkdir(groupDir, { recursive: true });
-		const styleFiles = styles.map((s) => writeCimFile(s, groupDir));
+		const styleFiles = styles.map((s) =>
+			writeCimFile(s, groupDir, {
+				removeUnsupportedProperties: options.excludeUnsupported,
+				wrapSymbolInCimSymbolReference: options.wrapSymbolInCimSymbolReference,
+			}),
+		);
 		filePromises.push(...styleFiles);
 	}
 	await Promise.all(filePromises);
