@@ -108,7 +108,7 @@ export interface CimToJsonOptions {
 	 */
 	removeUnsupportedProperties?: boolean;
 	/**
-	 * If `true`, the symbol will be wrapped in a {@link __esri.CIMSymbolReference} object.
+	 * If `true`, the symbol will be wrapped in a {@link CIMSymbolReference} object.
 	 */
 	wrapSymbolInCimSymbolReference?: boolean;
 	/**
@@ -137,4 +137,26 @@ export function cimToJson(item: unknown, options?: CimToJsonOptions) {
 		} as __esri.CIMSymbolReference;
 	}
 	return JSON.stringify(objectToSerialize, reviver, options?.space);
+}
+
+/**
+ * For use with CLI scripts to parse JSON indentation options.
+ * @param indent - A string to serve as the indentation.
+ * @returns - A number of spaces to indent nested objects, or a string to serve as the indentation, or `undefined`.
+ */
+export function parseIndentCliOption(
+	indent: string | undefined,
+): Parameters<typeof JSON.stringify>[2] {
+	if (typeof indent === "string") {
+		if (indent === "tab") {
+			return "\t";
+		}
+		if (indent === "space") {
+			return " ";
+		}
+		if (/^\d+$/.test(indent)) {
+			return parseInt(indent, 10);
+		}
+	}
+	return indent;
 }

@@ -23,6 +23,7 @@
 		"@arcgis/core": "^4.33.14"
 	},
 	"dependencies": {
+		"@commander-js/extra-typings": "^14.0.0",
 		"commander": "^14.0.1"
 	}
 }

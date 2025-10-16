@@ -2,7 +2,13 @@
 
 import type { Dirent } from "node:fs";
 import { exists, readFile, readdir } from "node:fs/promises";
-import { basename, join } from "node:path";
+import { basename, join, relative } from "node:path";
+import { cwd } from "node:process";
+import {
+	type CimToJsonOptions,
+	cimToJson,
+	parseIndentCliOption,
+} from "../src/serialization";
 
 interface CIMSymbolResponse extends Record<string, unknown> {
 	type: `CIM${string}Symbol`;
@@ -68,9 +74,14 @@ interface WriteCimResult {
 async function writeCimJsonFromSvg(
 	svgPath: string,
 	url = defaultServiceUrl,
+	outDir?: string,
+	options?: CimToJsonOptions,
 ): Promise<WriteCimResult> {
 	let byteCount: number = 0;
-	const cimPath = svgPath.replace(".svg", ".json");
+	let cimPath = relative(cwd(), svgPath.replace(".svg", ".json"));
+	if (outDir) {
+		cimPath = join(outDir, basename(cimPath));
+	}
 	// Skip generating CIM JSON file if a file with the same name already exists.
 	if (await exists(cimPath)) {
 		await Bun.stderr.write(`File already exists: ${cimPath}\n`);
@@ -81,7 +92,8 @@ async function writeCimJsonFromSvg(
 		};
 	}
 	const cim = await generateSymbol(svgPath, url);
-	byteCount = await Bun.write(cimPath, JSON.stringify(cim, undefined, "\t"));
+	const jsonString = cimToJson(cim, options);
+	byteCount = await Bun.write(cimPath, jsonString);
 	await Bun.stderr.write(`Wrote ${byteCount} bytes to ${cimPath}\n`);
 	return {
 		svgPath,
@@ -92,14 +104,13 @@ async function writeCimJsonFromSvg(
 
 const hasSvgExtension = (s: string): boolean => /.svg$/i.test(s);
 
-const isSvgFile = (dirEnt: Dirent<string>): boolean =>
-	dirEnt.isFile() && hasSvgExtension(dirEnt.name);
-
-function getFilePath(dirEnt: Dirent<string>): string {
-	return join(dirEnt.parentPath, dirEnt.name);
-}
-
 async function getSvgFilePaths(dirPath: string): Promise<string[]> {
+	const isSvgFile = (dirEnt: Dirent<string>): boolean =>
+		dirEnt.isFile() && hasSvgExtension(dirEnt.name);
+
+	function getFilePath(dirEnt: Dirent<string>): string {
+		return join(dirEnt.parentPath, dirEnt.name);
+	}
 	const dirEnts = await readdir(dirPath, {
 		withFileTypes: true,
 		recursive: true,
@@ -107,22 +118,48 @@ async function getSvgFilePaths(dirPath: string): Promise<string[]> {
 	return dirEnts.filter(isSvgFile).map(getFilePath);
 }
 
-// Example invocation when running with Bun:
 if (import.meta.main) {
-	const args = process.argv.slice(2);
+	const { Command } = await import("@commander-js/extra-typings");
+	const program = new Command()
+		.description("Generate CIM JSON files from SVG files.")
+		.argument("<svg-files-or-directory>...", "SVG files to process")
+		.option("-o, --out-dir <output-dir>", "Path to the output directory")
+		.option(
+			"-u, --url <url>",
+			"URL of the generateSymbol endpoint",
+			defaultServiceUrl,
+		)
+		.option(
+			"-x, --exclude-unsupported",
+			"Exclude CIM properties that are not supported by ArcGIS Maps SDK for JavaScript.",
+		)
+		.option(
+			"-r, --wrap-symbol-in-cim-symbol-reference",
+			"Wrap CIM symbol JSON in a CIMSymbolReference object.",
+		)
+		.option(
+			"-i, --indent <indent>",
+			"Number of spaces to indent JSON output",
+			"2",
+		);
+	program.parse();
 
-	const urlParamRe = /(?<=^--url=|\s+).*$/;
-	let url: string | undefined;
-	let dirs: string[] = [];
-	let svgs: string[] = [];
+	const paths = program.args;
 
-	for (const arg of args) {
-		// If the arg starts with "--url=", use it as the URL
-		// Skip if url has already been assigned a value.
-		const match = url ? arg.match(urlParamRe) : null;
-		if (match) {
-			url = match[0];
-		} else if (arg.endsWith(".svg")) {
+	const {
+		indent,
+		url,
+		outDir,
+		excludeUnsupported,
+		wrapSymbolInCimSymbolReference,
+	} = program.opts();
+
+	// Split the paths into directories and SVG files
+	const dirs: string[] = [];
+	const svgs: string[] = [];
+
+	for (const arg of paths) {
+		if (hasSvgExtension(arg)) {
 			svgs.push(arg);
 		} else {
 			dirs.push(arg);
@@ -137,7 +174,13 @@ if (import.meta.main) {
 
 	// Generate the symbols
 
-	const promises = svgs.map((svg) => writeCimJsonFromSvg(svg, url));
+	const promises = svgs.map((svg) =>
+		writeCimJsonFromSvg(svg, url, outDir, {
+			removeUnsupportedProperties: excludeUnsupported,
+			wrapSymbolInCimSymbolReference,
+			space: parseIndentCliOption(indent),
+		}),
+	);
 
 	await Promise.all(promises);
 }

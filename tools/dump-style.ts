@@ -4,7 +4,11 @@ import { file, stdout } from "bun";
 import { Database, type SQLQueryBindings } from "bun:sqlite";
 import { mkdir } from "node:fs/promises";
 import { join as joinPath } from "node:path";
-import { cimToJson, type CimToJsonOptions } from "../src/serialization";
+import {
+	cimToJson,
+	parseIndentCliOption,
+	type CimToJsonOptions,
+} from "../src/serialization";
 import { StyleItem, type StyleItemRow } from "../src/stylx";
 
 /**
@@ -75,11 +79,9 @@ async function writeCimFile(
 // This section is only run if this script is being run directly as a script.
 // Provides command-line interface (CLI).
 if (import.meta.main) {
-	const { Command } = await import("commander");
+	const { Command } = await import("@commander-js/extra-typings");
 
-	const program = new Command();
-
-	program
+	const program = new Command()
 		.description("Dumps CIM JSON files from an ArcGIS Style (.stylx) file.")
 		.argument("<stylx-file>", "Path to the .stylx file")
 		.argument("<output-dir>", "Path to the output directory")
@@ -90,28 +92,23 @@ if (import.meta.main) {
 		.option(
 			"-r, --wrap-symbol-in-cim-symbol-reference",
 			"Wrap CIM symbol JSON in a CIMSymbolReference object.",
+		)
+		.option(
+			"-i, --indent <indent>",
+			'Number of spaces to indent JSON output. Valid values are "space", "tab", or a number.',
+			"2",
 		);
 
 	program.parse();
 
-	const [stylxPath, outDir] = program.args;
-	const options = program.opts();
+	const [stylxPath, outDir] = program.args as [string, string];
+	const {
+		excludeUnsupported: removeUnsupportedProperties,
+		wrapSymbolInCimSymbolReference,
+		indent,
+	} = program.opts();
 
-	console.log(options);
-
-	/*
-	Make sure the required arguments are provided.
-	Command.js will actually take care of this,
-	but TypeScript will complain if we don't do it 
-	here as well.
-	*/
-	if (!stylxPath) {
-		throw new Error("stylx-file is required");
-	}
-
-	if (!outDir) {
-		throw new Error("output-dir is required");
-	}
+	const space = parseIndentCliOption(indent);
 
 	// Initialize an array of promises for the file operations, which will be
 	// run asynchronously.
@@ -135,8 +132,9 @@ if (import.meta.main) {
 		// Create a promise for each JSON string, writing it to a file.
 		const styleFiles = styles.map((s) =>
 			writeCimFile(s, groupDir, {
-				removeUnsupportedProperties: options.excludeUnsupported,
-				wrapSymbolInCimSymbolReference: options.wrapSymbolInCimSymbolReference,
+				removeUnsupportedProperties,
+				wrapSymbolInCimSymbolReference,
+				space,
 			}),
 		);
 		// Add the file write promises to the array.
