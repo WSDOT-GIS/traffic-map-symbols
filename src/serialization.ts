@@ -2,6 +2,8 @@
 
 type CimRgbColorTuple = [r: number, g: number, b: number, alphaPercent: number];
 
+export type RgbaTuple = [r: number, g: number, b: number, a: number];
+
 interface CimObject extends Record<string, unknown> {
 	type: `CIM${string}`;
 }
@@ -15,7 +17,7 @@ interface CimRgbColor extends CimObject {
 	values: CimRgbColorTuple;
 }
 
-export function toRgbaTuple(cimRgbColor: CimRgbColor) {
+export function toRgbaTuple(cimRgbColor: CimRgbColor): RgbaTuple {
 	const {
 		values: [r, g, b, apct],
 	} = cimRgbColor;

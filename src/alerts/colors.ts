@@ -1,19 +1,21 @@
+import type { RgbaTuple } from "../serialization";
+
 /**
  * Alert color: closure
  */
-export const closure = [29, 37, 45, 1];
+export const closure: RgbaTuple = [29, 37, 45, 1];
 /**
  * Alert color: high
  */
-export const high = [179, 11, 0, 1];
+export const high: RgbaTuple = [179, 11, 0, 1];
 /**
  * Alert color: medium
  */
-export const medium = [255, 106, 19, 1];
+export const medium: RgbaTuple = [255, 106, 19, 1];
 /**
  * Alert color: low
  */
-export const low = [255, 193, 7, 1];
+export const low: RgbaTuple = [255, 193, 7, 1];
 
 /**
  * A mapping of alert values to their integer equivalents.
