@@ -21,5 +21,8 @@
 	"type": "module",
 	"peerDependencies": {
 		"@arcgis/core": "^4.33.14"
+	},
+	"dependencies": {
+		"commander": "^14.0.1"
 	}
 }

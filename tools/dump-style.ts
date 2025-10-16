@@ -7,10 +7,6 @@ import { dirname, join as joinPath } from "node:path";
 import { cimToJson } from "../src/serialization";
 import { StyleItem, type StyleItemRow } from "../src/stylx";
 
-const rootPath = dirname(import.meta.dir);
-
-const dbPath = joinPath(rootPath, "travel-info.stylx");
-
 /**
  * Retrieves an array of StyleItem objects from an ArcGIS Style (.stylx) file, which is a SQLite database.
  * @param stylxPath The path to the ".stylx" file.
@@ -22,7 +18,17 @@ function* getStyleItems(
 	{
 		// Open the database
 		using db = new Database(stylxPath);
-		const queryStatement = `
+		yield* queryStyleItems(db);
+	}
+}
+
+/**
+ * Retrieves an array of StyleItem objects from an ArcGIS Style (.stylx) file, which is a SQLite database.
+ * @param db - The stylx database to query.
+ * @yields {@link StyleItem}.
+ */
+function* queryStyleItems(db: Database): Generator<StyleItem, void, unknown> {
+	const queryStatement = `
 SELECT 
        KEY as key,
        i.ID as id,
@@ -35,26 +41,15 @@ SELECT
 JOIN CLASSES c ON c.ID = CLASS
 ORDER BY CLASS`;
 
-		// Execute the query.
-		const query = db.query<StyleItemRow, SQLQueryBindings>(queryStatement);
-		// Yield each row as a StyleItem.
-		// query.all() was not used because it
-		// does not call the object's constructor
-		for (const row of query) {
-			yield new StyleItem(row);
-		}
+	// Execute the query.
+	const query = db.query<StyleItemRow, SQLQueryBindings>(queryStatement);
+	// Yield each row as a StyleItem.
+	// query.all() was not used because it
+	// does not call the object's constructor
+	for (const row of query) {
+		yield new StyleItem(row);
 	}
 }
-
-// Group into classes (e.g., "Point Symbol", "Color", etc.)
-const groupedStyleItems = Object.groupBy(
-	getStyleItems(dbPath),
-	({ className }) => className,
-);
-
-const outDir = joinPath(rootPath, "src", "CIM from stylx");
-
-const filePromises: Promise<string>[] = [];
 
 async function writeCimFile(
 	{ key, cim }: StyleItem,
@@ -72,13 +67,42 @@ async function writeCimFile(
 	return cimPath;
 }
 
-for (const [groupName, styles] of Object.entries(groupedStyleItems)) {
-	const groupDir = joinPath(outDir, groupName);
-	await mkdir(groupDir, { recursive: true });
-	const styleFiles = styles.map((s) => writeCimFile(s, groupDir));
-	filePromises.push(...styleFiles);
+if (import.meta.main) {
+	const { Command } = await import("commander");
+
+	const program = new Command();
+
+	program
+		.description("Dumps CIM JSON files from an ArcGIS Style (.stylx) file.")
+		.argument("<stylx-file>", "Path to the .stylx file")
+		.argument("<output-dir>", "Path to the output directory");
+
+	program.parse();
+
+	const [stylxPath, outDir] = program.args;
+
+	if (!stylxPath) {
+		throw new Error("stylx-file is required");
+	}
+
+	if (!outDir) {
+		throw new Error("output-dir is required");
+	}
+
+	const filePromises: Promise<string>[] = [];
+
+	// Group into classes (e.g., "Point Symbol", "Color", etc.)
+	const groupedStyleItems = Object.groupBy(
+		getStyleItems(stylxPath),
+		({ className }) => className,
+	);
+
+	for (const [groupName, styles] of Object.entries(groupedStyleItems)) {
+		const groupDir = joinPath(outDir, groupName);
+		await mkdir(groupDir, { recursive: true });
+		const styleFiles = styles.map((s) => writeCimFile(s, groupDir));
+		filePromises.push(...styleFiles);
+	}
+	await Promise.all(filePromises);
+	console.log("Done!");
 }
-
-await Promise.all(filePromises);
-
-console.log("Done!");
