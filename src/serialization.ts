@@ -76,16 +76,6 @@ function isCimSymbol(item: unknown): item is CimSymbol {
 	);
 }
 
-function isCimObject(item: unknown): item is CimObject {
-	return (
-		typeof item === "object" &&
-		item != null &&
-		"type" in item &&
-		typeof item.type === "string" &&
-		item.type.startsWith("CIM")
-	);
-}
-
 /**
  * Custom JSON serializer reviver functin to remove or correct CIM properties
  * to be compatible with ArcGIS Maps SDK for JavaScript.
