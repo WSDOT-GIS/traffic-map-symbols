@@ -3,7 +3,6 @@
 import type { Dirent } from "node:fs";
 import { exists, readFile, readdir } from "node:fs/promises";
 import { basename, join, relative } from "node:path";
-import { cwd } from "node:process";
 import {
 	type CimToJsonOptions,
 	cimToJson,
@@ -71,16 +70,27 @@ interface WriteCimResult {
 	byteCount: number;
 }
 
+interface WriteCimToJsonFromSvgOptoins extends CimToJsonOptions {
+	outDir?: string;
+	relativeToDir?: string;
+}
+
 async function writeCimJsonFromSvg(
 	svgPath: string,
 	url = defaultServiceUrl,
-	outDir?: string,
-	options?: CimToJsonOptions,
+	options?: WriteCimToJsonFromSvgOptoins,
 ): Promise<WriteCimResult> {
 	let byteCount: number = 0;
-	let cimPath = relative(cwd(), svgPath.replace(".svg", ".json"));
+	let cimPath = svgPath.replace(".svg", ".json");
+	const outDir = options?.outDir;
+	const relativeToDir = options?.relativeToDir;
+
+	if (relativeToDir) {
+		cimPath = relative(cimPath, relativeToDir);
+	}
+
 	if (outDir) {
-		cimPath = join(outDir, basename(cimPath));
+		cimPath = join(outDir, cimPath);
 	}
 	// Skip generating CIM JSON file if a file with the same name already exists.
 	if (await exists(cimPath)) {
@@ -123,7 +133,10 @@ if (import.meta.main) {
 	const program = new Command()
 		.description("Generate CIM JSON files from SVG files.")
 		.argument("<svg-files-or-directory>...", "SVG files to process")
-		.option("-o, --out-dir <output-dir>", "Path to the output directory")
+		.option(
+			"-o, --out-dir <output-dir>",
+			"Path to the output directory. If omitted, JSON files will be placed in the same directory as their corresponding SVG files.",
+		)
 		.option(
 			"-u, --url <url>",
 			"URL of the generateSymbol endpoint",
@@ -175,7 +188,8 @@ if (import.meta.main) {
 	// Generate the symbols
 
 	const promises = svgs.map((svg) =>
-		writeCimJsonFromSvg(svg, url, outDir, {
+		writeCimJsonFromSvg(svg, url, {
+			outDir,
 			removeUnsupportedProperties: excludeUnsupported,
 			wrapSymbolInCimSymbolReference,
 			space: parseIndentCliOption(indent),
