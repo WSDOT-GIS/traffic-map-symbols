@@ -1,9 +1,4 @@
 {
 	"type": "CIMRGBColor",
-	"values": [
-		179,
-		11,
-		0,
-		100
-	]
+	"values": [179, 11, 0, 100]
 }
