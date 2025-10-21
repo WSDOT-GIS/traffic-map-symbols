@@ -1,0 +1,89 @@
+{
+	"type": "CIMLineSymbol",
+	"symbolLayers": [
+		{
+			"type": "CIMSolidStroke",
+			"effects": [
+				{
+					"type": "CIMGeometricEffectDashes",
+					"dashTemplate": [30, 30],
+					"lineDashEnding": "NoConstraint",
+					"offsetAlongLine": 0
+				}
+			],
+			"enable": true,
+			"capStyle": "Butt",
+			"joinStyle": "Miter",
+			"width": 7,
+			"color": [255, 255, 255, 255]
+		},
+		{
+			"type": "CIMVectorMarker",
+			"enable": true,
+			"size": 5,
+			"markerPlacement": {
+				"type": "CIMMarkerPlacementAlongLineSameSize",
+				"offsetAlongLine": 10,
+				"placementTemplate": [30],
+				"angleToLine": true
+			},
+			"frame": {
+				"xmin": -5,
+				"ymin": -5,
+				"xmax": 5,
+				"ymax": 5
+			},
+			"markerGraphics": [
+				{
+					"type": "CIMMarkerGraphic",
+					"textString": "",
+					"primitiveName": "",
+					"geometry": {
+						"rings": [
+							[
+								[-4, 0],
+								[5, 5],
+								[5, -5],
+								[-4, 0]
+							]
+						]
+					},
+					"symbol": {
+						"type": "CIMPolygonSymbol",
+						"symbolLayers": [
+							{
+								"type": "CIMSolidFill",
+								"enable": true,
+								"color": [0, 0, 0, 255]
+							}
+						]
+					}
+				}
+			]
+		},
+		{
+			"type": "CIMSolidStroke",
+			"enable": true,
+			"capStyle": "Butt",
+			"joinStyle": "Miter",
+			"width": 7,
+			"color": [0, 0, 0, 255]
+		},
+		{
+			"type": "CIMSolidStroke",
+			"enable": true,
+			"capStyle": "Butt",
+			"joinStyle": "Miter",
+			"width": 9,
+			"color": [0, 0, 0, 255]
+		},
+		{
+			"type": "CIMSolidStroke",
+			"enable": true,
+			"capStyle": "Butt",
+			"joinStyle": "Round",
+			"width": 13,
+			"color": [243, 245, 249, 255]
+		}
+	]
+}

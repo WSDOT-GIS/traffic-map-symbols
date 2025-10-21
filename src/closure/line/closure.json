@@ -1,0 +1,46 @@
+{
+	"type": "CIMLineSymbol",
+	"symbolLayers": [
+		{
+			"type": "CIMSolidStroke",
+			"effects": [
+				{
+					"type": "CIMGeometricEffectDashes",
+					"dashTemplate": [30, 30],
+					"lineDashEnding": "NoConstraint",
+					"offsetAlongLine": 0
+				}
+			],
+			"enable": true,
+			"capStyle": "Butt",
+			"joinStyle": "Round",
+			"width": 5,
+			"color": [0, 0, 0, 255]
+		},
+		{
+			"type": "CIMSolidStroke",
+			"enable": true,
+			"colorLocked": true,
+			"capStyle": "Butt",
+			"joinStyle": "Round",
+			"width": 4,
+			"color": [255, 255, 255, 255]
+		},
+		{
+			"type": "CIMSolidStroke",
+			"enable": true,
+			"capStyle": "Butt",
+			"joinStyle": "Round",
+			"width": 5,
+			"color": [0, 0, 0, 255]
+		},
+		{
+			"type": "CIMSolidStroke",
+			"enable": true,
+			"capStyle": "Butt",
+			"joinStyle": "Round",
+			"width": 13.5,
+			"color": [243, 245, 249, 255]
+		}
+	]
+}
