@@ -9,7 +9,7 @@ import {
 	parseIndentCliOption,
 	type CimToJsonOptions,
 } from "../src/serialization";
-import { StyleItem, type StyleItemRow } from "../src/stylx";
+import { StyleItem, type StyleItemRow } from "../src/stylx/items";
 
 /**
  * Retrieves an array of StyleItem objects from an ArcGIS Style (.stylx) file, which is a SQLite database.

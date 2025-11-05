@@ -1,48 +1,6 @@
 import { removeUnsupportedReviver } from "../serialization";
-
-/**
- * | ID | Name                     |
- * |---:|:-------------------------|
- * |  1 | Color                    |
- * |  2 | Color Scheme             |
- * |  3 | Point Symbol             |
- * |  4 | Line Symbol              |
- * |  5 | Polygon Symbol           |
- * |  6 | Text Symbol              |
- * |  7 | North Arrow              |
- * |  8 | Scale Bar                |
- * |  9 | Standard Label Placement |
- * | 10 | Maplex Label Placement   |
- * | 11 | Grid                     |
- * | 12 | Mesh Symbol              |
- * | 13 | Legend                   |
- * | 14 | Table Frame              |
- * | 15 | Map Surround             |
- * | 17 | Legend Item              |
- * | 18 | Table Frame Field        |
- * | 19 | Area Legend Patch        |
- * | 20 | Line Legend Patch        |
- */
-export type ClassName =
-	| "Color"
-	| "Color Scheme"
-	| "Point Symbol"
-	| "Line Symbol"
-	| "Polygon Symbol"
-	| "Text Symbol"
-	| "North Arrow"
-	| "Scale Bar"
-	| "Standard Label Placement"
-	| "Maplex Label Placement"
-	| "Grid"
-	| "Mesh Symbol"
-	| "Legend"
-	| "Table Frame"
-	| "Map Surround"
-	| "Legend Item"
-	| "Table Frame Field"
-	| "Area Legend Patch"
-	| "Line Legend Patch";
+import type { ClassName } from "./classes";
+import { parseTags } from "./tags";
 
 export interface StyleItemRow {
 	/**
@@ -104,11 +62,11 @@ export class StyleItem implements Omit<StyleItemRow, "tags" | "cimJson"> {
 	 * semicolon-separated list of tags.
 	 * example: "rgb;orange;multilayer;low;4;alert"
 	 */
-	tags: string[];
+	tags: ReturnType<typeof parseTags>;
 	/**
 	 * CIM definition
 	 */
-	cim: Record<string, unknown>;
+	cim: HashMap<unknown>;
 
 	/**
 	 * Creates a new instance.
@@ -121,7 +79,7 @@ export class StyleItem implements Omit<StyleItemRow, "tags" | "cimJson"> {
 		this.id = row.id;
 		this.key = row.key;
 		this.name = row.name;
-		this.tags = row.tags.split(";").filter((t) => !!t);
+		this.tags = parseTags(row.tags);
 	}
 
 	// public get cim(): Record<string, unknown> {
